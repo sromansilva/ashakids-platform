@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
+
+/* ── Global polish ──────────────────────────────────────────────── */
+html, body, #root {
+  overflow-x: hidden;
+}
+
+/* Skeleton shimmer */
+@keyframes skeleton-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+/* Scrollbar – webkit */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D4CCEC; border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: #B5ACDC; }
+
+/* Smooth focus ring */
+*:focus-visible {
+  outline: 2px solid #7C3AED;
+  outline-offset: 2px;
+}
+/* Remove default outline only when focus-visible is applied */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Prevent tap highlight on mobile */
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ── Family sidebar: clean white, no decoration bleed ── */
+.family-sidebar {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #fff !important;
+}
+.family-sidebar::before,
+.family-sidebar::after {
+  content: none !important;
+  display: none !important;
+  background: transparent !important;
+}
+
+/* Select/input consistency */
+select { appearance: none; }
+
+/* ── iOS safe areas ─────────────────────────────────────────────── */
+:root {
+  --ios-safe-top: env(safe-area-inset-top, 0px);
+  --ios-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Keep the application background visible behind iPhone hardware while
+   positioning screen content below the status area. */
+@supports (padding: env(safe-area-inset-top)) {
+  @media (max-width: 767px) {
+    html { background: #FFFFFF; }
+
+    /* Auth and standalone routes that do not render the shared mobile bar. */
+    #root > .min-h-screen {
+      padding-top: var(--ios-safe-top);
+      padding-bottom: var(--ios-safe-bottom);
+      min-height: 100dvh;
+    }
+
+    /* The shared top bar and mobile drawer already reserve the top inset.
+       This prevents bottom controls from resting on the Home Indicator. */
+    #root {
+      padding-bottom: var(--ios-safe-bottom);
+    }
+  }
+}
