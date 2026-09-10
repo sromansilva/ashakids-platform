@@ -104,7 +104,7 @@ export type View =
   | "terapeuta/reportes" | "terapeuta/analiticas" | "terapeuta/ingresos"
   | "terapeuta/valoraciones" | "terapeuta/config" | "terapeuta/datos-actividad"
   | "terapeuta/incidencias"
-  | "admin" | "admin/dashboard" | "admin/terapeutas" | "admin/operacion" | "admin/pagos"
+  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/terapeutas" | "admin/operacion" | "admin/pagos"
   | "admin/contenido" | "admin/ml" | "admin/auditoria" | "admin/config"
   | "mundo-asha" | "mundo-asha/cuentos" | "mundo-asha/canciones" | "mundo-asha/trabalenguas"
   | "mundo-asha/adivinanzas" | "mundo-asha/juegos" | "mundo-asha/isla" | "mundo-asha/academia"

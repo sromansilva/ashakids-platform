@@ -3,7 +3,7 @@ import {
   Search, Star, Heart, ChevronLeft, ChevronRight, Plus, X, Check,
   Video, Phone, Send, Paperclip, Download, CreditCard, Clock,
   MessageCircle, Calendar, ArrowRight, CheckCircle, Globe,
-  AlertTriangle, FileText, Share2,
+  AlertTriangle, FileText, Share2, MapPin,
 } from "lucide-react";
 import { B, View, Btn, Crd, Bdg, Av, Inp, therapists, appointments, msgs } from "../shared";
 
@@ -87,7 +87,7 @@ export type AppointmentRequest = {
   parent?: string;
   date: string;
   time: string;
-  type: "virtual";
+  type: "virtual" | "presencial";
   status: "por confirmar" | "confirmada" | "cancelada" | "rechazada";
   paymentStatus?: "pendiente" | "pagada";
 };
@@ -102,6 +102,7 @@ export function PadrePsicologos({ go, onRequest, bookedSlots = [] }: { go: (v: V
   const [bookStep, setBookStep]   = useState(0);
   const [selDate, setSelDate]     = useState("");
   const [selTime, setSelTime]     = useState("");
+  const [selModality, setSelModality] = useState<"virtual"|"presencial"|null>(null);
   const [toast, setToast]         = useState("");
 
   const toggleFav = (id: number) =>
@@ -288,7 +289,23 @@ export function PadrePsicologos({ go, onRequest, bookedSlots = [] }: { go: (v: V
 
       {/* Booking modal */}
       {booking && (
-        <Modal title={bookStep === 2 ? "¡Solicitud enviada!" : `Solicitar cita con ${booking.name}`} onClose={() => setBooking(null)} wide>
+        <Modal title={bookStep === 3 ? "¡Solicitud enviada!" : `Solicitar cita con ${booking.name}`} onClose={() => setBooking(null)} wide>
+          {/* Step indicator */}
+          {bookStep < 3 && (
+            <div className="px-6 pt-5 pb-0">
+              <div className="flex items-center gap-1.5 mb-1">
+                {["Fecha y hora","Modalidad","Confirmar"].map((s,i)=>(
+                  <div key={s} className="flex items-center gap-1.5 flex-1">
+                    <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-extrabold flex-shrink-0" style={{background:i<=bookStep?B.violet:"#E8E5F4",color:i<=bookStep?"white":B.textMuted}}>
+                      {i<bookStep?<Check size={9}/>:i+1}
+                    </div>
+                    <span className="text-[10px] font-bold hidden sm:block" style={{color:i<=bookStep?B.violet:B.textMuted}}>{s}</span>
+                    {i<2&&<div className="flex-1 h-px" style={{background:i<bookStep?B.violet:"#E8E5F4"}}/>}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           {bookStep === 0 && (
             <div className="p-6">
               <p className="text-sm font-extrabold text-[#1C1135] mb-3">Selecciona una fecha</p>
@@ -330,6 +347,62 @@ export function PadrePsicologos({ go, onRequest, bookedSlots = [] }: { go: (v: V
           )}
           {bookStep === 1 && (
             <div className="p-6">
+              <p className="text-sm font-extrabold text-[#1C1135] mb-4">¿Cómo quieres realizar la sesión?</p>
+              <div className="flex flex-col gap-3 mb-6">
+                <button onClick={() => setSelModality("virtual")}
+                  className="flex items-start gap-4 p-4 rounded-2xl border-2 text-left transition-all"
+                  style={{ borderColor: selModality === "virtual" ? B.violet : B.border, background: selModality === "virtual" ? B.violetLight : "white" }}>
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: selModality === "virtual" ? B.violet : "#F5F3FF" }}>
+                    <span style={{ filter: selModality === "virtual" ? "brightness(10)" : "none" }}>💻</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-extrabold text-[#1C1135] mb-0.5">Virtual</p>
+                    <p className="text-xs text-[#7C6F9A] font-medium">Sesión por videollamada a través de ASHA Session. Conéctate desde casa.</p>
+                  </div>
+                  {selModality === "virtual" && <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: B.violet }}><Check size={10} color="white" /></div>}
+                </button>
+                <button onClick={() => setSelModality("presencial")}
+                  className="flex items-start gap-4 p-4 rounded-2xl border-2 text-left transition-all"
+                  style={{ borderColor: selModality === "presencial" ? B.teal : B.border, background: selModality === "presencial" ? B.tealLight : "white" }}>
+                  <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: selModality === "presencial" ? B.teal : "#F0FDFA" }}>
+                    <span style={{ filter: selModality === "presencial" ? "brightness(10)" : "none" }}>🏥</span>
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-extrabold text-[#1C1135] mb-0.5">Presencial</p>
+                    <p className="text-xs text-[#7C6F9A] font-medium">Asiste al centro de terapia. Sesión en consultorio con la terapeuta.</p>
+                  </div>
+                  {selModality === "presencial" && <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5" style={{ background: B.teal }}><Check size={10} color="white" /></div>}
+                </button>
+              </div>
+              {selModality === "presencial" && (
+                <div className="rounded-2xl p-4 mb-5 border border-teal-100" style={{ background: "#F0FDFA" }}>
+                  <div className="flex items-start gap-3">
+                    <span className="text-xl">📍</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-extrabold text-[#1C1135] text-sm mb-0.5">Integrakids Perú</p>
+                      <p className="text-xs text-[#7C6F9A] font-medium mb-2">Centro de terapia sensorial · terapia ocupacional · terapia de lenguaje · terapia psicológica para niños</p>
+                      <p className="text-xs font-bold text-[#1C1135] mb-3">Jr. Ricardo Treneman 252, Chorrillos 15064</p>
+                      <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1.5 rounded-xl text-white transition-opacity hover:opacity-90"
+                        style={{ background: B.teal }}>
+                        <MapPin size={11} /> Ver en Google Maps
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              )}
+              <div className="flex gap-3">
+                <Btn variant="outline" className="flex-1 justify-center" onClick={() => setBookStep(0)}>
+                  <ChevronLeft size={14} /> Atrás
+                </Btn>
+                <Btn variant="primary" className="flex-1 justify-center" disabled={!selModality} onClick={() => setBookStep(2)}>
+                  Continuar <ArrowRight size={15} />
+                </Btn>
+              </div>
+            </div>
+          )}
+          {bookStep === 2 && (
+            <div className="p-6">
               <div className="rounded-2xl p-5 border border-[#E8E5F4] mb-5">
                 <p className="text-xs font-extrabold text-[#9E95B7] uppercase tracking-wider mb-3">Resumen de la cita</p>
                 {[
@@ -338,7 +411,7 @@ export function PadrePsicologos({ go, onRequest, bookedSlots = [] }: { go: (v: V
                   { label: "Fecha", value: selDate },
                   { label: "Hora", value: selTime },
                   { label: "Duración", value: "45 minutos" },
-                  { label: "Modalidad", value: "Virtual (ASHA Session)" },
+                  { label: "Modalidad", value: selModality === "presencial" ? "Presencial" : "Virtual (ASHA Session)" },
                 ].map(r => (
                   <div key={r.label} className="flex justify-between py-2 border-b border-[#F5F3FF] last:border-0">
                     <span className="text-sm font-bold text-[#9E95B7]">{r.label}</span>
@@ -346,8 +419,19 @@ export function PadrePsicologos({ go, onRequest, bookedSlots = [] }: { go: (v: V
                   </div>
                 ))}
               </div>
+              {selModality === "presencial" && (
+                <div className="rounded-2xl p-4 mb-5 border border-teal-100 flex items-start gap-3" style={{ background: "#F0FDFA" }}>
+                  <span className="text-lg">📍</span>
+                  <div>
+                    <p className="text-sm font-extrabold text-[#1C1135] mb-0.5">Integrakids Perú</p>
+                    <p className="text-xs text-[#7C6F9A] font-medium mb-2">Jr. Ricardo Treneman 252, Chorrillos 15064</p>
+                    <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer"
+                      className="text-xs font-extrabold hover:underline" style={{ color: B.teal }}>Ver en Google Maps →</a>
+                  </div>
+                </div>
+              )}
               <div className="flex gap-3">
-                <Btn variant="outline" className="flex-1 justify-center" onClick={() => setBookStep(0)}>
+                <Btn variant="outline" className="flex-1 justify-center" onClick={() => setBookStep(1)}>
                   <ChevronLeft size={14} /> Atrás
                 </Btn>
                 <Btn variant="cta" className="flex-1 justify-center" onClick={() => {
@@ -355,21 +439,24 @@ export function PadrePsicologos({ go, onRequest, bookedSlots = [] }: { go: (v: V
                   onRequest({
                     id: Date.now(), therapist: booking.name, specialty: booking.specialty,
                     child: "Mateo", parent: "Laura Gómez",
-                    date: `${day} ${month} 2026`, time: selTime, type: "virtual", status: "por confirmar",
+                    date: `${day} ${month} 2026`, time: selTime, type: selModality ?? "virtual", status: "por confirmar",
                   });
-                  setBookStep(2);
+                  setBookStep(3);
                 }}>
                   <Check size={14} /> Enviar solicitud
                 </Btn>
               </div>
             </div>
           )}
-          {bookStep === 2 && (
+          {bookStep === 3 && (
             <div className="p-6 text-center">
               <div className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl mx-auto mb-4" style={{ background: B.successLight }}>🎉</div>
               <h3 className="font-black text-xl text-[#1C1135] mb-2">¡Solicitud enviada!</h3>
-              <p className="text-sm text-[#7C6F9A] font-medium mb-5">{booking.name} revisará tu solicitud para el <strong>{selDate}</strong> a las <strong>{selTime}</strong>.</p>
-              <p className="text-xs text-[#9E95B7] font-medium mb-6">Cuando la terapeuta la acepte, habilitaremos el pago y te avisaremos por aquí.</p>
+              <p className="text-sm text-[#7C6F9A] font-medium mb-2">{booking.name} revisará tu solicitud para el <strong>{selDate}</strong> a las <strong>{selTime}</strong>.</p>
+              {selModality === "presencial" && (
+                <p className="text-xs text-teal-700 font-bold mb-3 p-2 rounded-xl" style={{ background: "#F0FDFA" }}>📍 Sesión presencial · Jr. Ricardo Treneman 252, Chorrillos</p>
+              )}
+              <p className="text-xs text-[#9E95B7] font-medium mb-6">Cuando la terapeuta la acepte, te avisaremos por aquí.</p>
               <div className="flex gap-3">
                 <Btn variant="outline" className="flex-1 justify-center" onClick={() => { setBooking(null); setToast("Solicitud enviada. Te avisaremos cuando sea aceptada."); }}>
                   Cerrar
@@ -419,6 +506,7 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
   const [newDay, setNewDay]   = useState<number | null>(null);
   const [newTime, setNewTime] = useState("");
   const [newChild, setNewChild] = useState("Mateo");
+  const [newModality, setNewModality] = useState<"virtual"|"presencial"|null>(null);
 
   const daysInMonth = getDaysInMonth(year, month);
   const firstDay    = getFirstDayOfWeek(year, month);
@@ -462,7 +550,7 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
       child: newChild,
       date: `${newDay} ${MONTHS[month].slice(0,3)} ${year}`,
       time: newTime,
-      type: "virtual",
+      type: newModality ?? "virtual",
       status: "por confirmar",
     };
     setApts(prev => [...prev, newApt]);
@@ -471,6 +559,7 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
     setNewTherapist("");
     setNewDay(null);
     setNewTime("");
+    setNewModality(null);
     setToast("Solicitud enviada. Te avisaremos cuando sea aceptada.");
   };
 
@@ -565,14 +654,14 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
             )}
             {waitingApts.map((apt) => (
               <div key={apt.id} className="rounded-2xl border border-orange-100 bg-orange-50/50 p-4">
-                <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · Virtual</p></div><Bdg color="orange">Por confirmar</Bdg></div>
+                <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}</p></div><Bdg color="orange">Por confirmar</Bdg></div>
                 <div className="mt-3 flex justify-end"><Btn size="sm" variant="secondary" onClick={() => { setApts(current => current.map(item => item.id === apt.id ? { ...item, status: "confirmada", paymentStatus: "pendiente" } : item)); setToast("Demo: la terapeuta confirmó la sesión. Ya está disponible en Pagos."); }}><Check size={12} /> Simular confirmación</Btn></div>
               </div>
             ))}
             {rejectedApts.map((apt) => (
               <div key={apt.id} className="rounded-2xl border border-red-100 bg-red-50/50 p-4">
                 <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · Virtual</p></div>
+                  <div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}</p></div>
                   <Bdg color="red">Rechazada</Bdg>
                 </div>
                 <p className="text-xs text-red-600 font-medium mt-2">El terapeuta no pudo aceptar esta solicitud. Puedes elegir otro horario o terapeuta.</p>
@@ -593,15 +682,28 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
               return <div key={apt.id} className="rounded-2xl border border-[#E8E5F4] bg-white overflow-hidden transition-shadow hover:shadow-sm">
                 <button type="button" onClick={() => setExpandedReservationIds((current) => current.includes(apt.id) ? current.filter((id) => id !== apt.id) : [...current, apt.id])} aria-expanded={isExpanded} aria-controls={detailsId} className="w-full min-h-12 p-4 flex items-center gap-3 text-left hover:bg-[#FAFAF9] focus-visible:ring-2 focus-visible:ring-violet-500">
                   <Av initials={apt.therapist.split(" ").map((word) => word[0]).join("").slice(0, 2)} color={B.violet} size="sm" />
-                  <div className="min-w-0 flex-1"><p className="font-extrabold text-[#1C1135] truncate">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium truncate mt-0.5">{apt.therapist} · {apt.child} · Virtual</p></div>
+                  <div className="min-w-0 flex-1"><p className="font-extrabold text-[#1C1135] truncate">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium truncate mt-0.5">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}</p></div>
                   <Bdg color="green">Confirmada</Bdg><ChevronRight size={17} className={`shrink-0 text-[#7C6F9A] transition-transform ${isExpanded ? "rotate-90" : ""}`} />
                 </button>
                 {isExpanded && <div id={detailsId} className="border-t border-[#F5F3FF] px-4 pb-4 pt-3 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <div className="grid sm:grid-cols-2 gap-x-5 gap-y-2 text-sm text-[#7C6F9A] font-medium"><p><span className="font-bold text-[#1C1135]">Terapeuta:</span> {apt.therapist}</p><p><span className="font-bold text-[#1C1135]">Niño:</span> {apt.child}</p><p><span className="font-bold text-[#1C1135]">Fecha:</span> {apt.date}</p><p><span className="font-bold text-[#1C1135]">Hora y duración:</span> {apt.time} · 45 min</p><p><span className="font-bold text-[#1C1135]">Modalidad:</span> Virtual</p><p><span className="font-bold text-[#1C1135]">Referencia:</span> ASHA-{String(apt.id).slice(-6)}</p></div>
+                  <div className="grid sm:grid-cols-2 gap-x-5 gap-y-2 text-sm text-[#7C6F9A] font-medium"><p><span className="font-bold text-[#1C1135]">Terapeuta:</span> {apt.therapist}</p><p><span className="font-bold text-[#1C1135]">Niño:</span> {apt.child}</p><p><span className="font-bold text-[#1C1135]">Fecha:</span> {apt.date}</p><p><span className="font-bold text-[#1C1135]">Hora y duración:</span> {apt.time} · 45 min</p><p><span className="font-bold text-[#1C1135]">Modalidad:</span> {apt.type === "presencial" ? "Presencial" : "Virtual"}</p><p><span className="font-bold text-[#1C1135]">Referencia:</span> ASHA-{String(apt.id).slice(-6)}</p></div>
+                  {apt.type === "presencial" && (
+                    <div className="mt-3 rounded-xl p-3 flex items-start gap-2 border border-teal-100" style={{background:"#F0FDFA"}}>
+                      <span className="text-base">📍</span>
+                      <div>
+                        <p className="text-sm font-extrabold text-[#1C1135]">Integrakids Perú</p>
+                        <p className="text-xs text-[#7C6F9A] font-medium">Jr. Ricardo Treneman 252, Chorrillos 15064</p>
+                        <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer" className="text-xs font-extrabold hover:underline" style={{color:"#0D9488"}}>Ver en Google Maps →</a>
+                      </div>
+                    </div>
+                  )}
                   <div className="mt-4 flex justify-end gap-2">
                     <Btn size="sm" variant="outline" onClick={() => setCancelId(apt.id)}><X size={12} /> Cancelar</Btn>
-                    <Btn size="sm" variant="ghost" onClick={() => downloadPdf(`notas-${String(apt.id).slice(-6)}.txt`, `Notas de sesión · ASHA-${String(apt.id).slice(-6)}`, [`Terapeuta: ${apt.therapist}`, `Niño: ${apt.child}`, `Fecha: ${apt.date}`, `Hora: ${apt.time} · 45 min`, `Modalidad: Virtual`, `Especialidad: ${apt.specialty}`])}><Download size={12} /> Descargar notas</Btn>
-                    <Btn size="sm" variant="cta" onClick={() => go("session")}><Video size={12} /> Unirse</Btn>
+                    <Btn size="sm" variant="ghost" onClick={() => downloadPdf(`notas-${String(apt.id).slice(-6)}.txt`, `Notas de sesión · ASHA-${String(apt.id).slice(-6)}`, [`Terapeuta: ${apt.therapist}`, `Niño: ${apt.child}`, `Fecha: ${apt.date}`, `Hora: ${apt.time} · 45 min`, `Modalidad: ${apt.type === "presencial" ? "Presencial" : "Virtual"}`, `Especialidad: ${apt.specialty}`])}><Download size={12} /> Descargar notas</Btn>
+                    {apt.type === "presencial"
+                      ? <Btn size="sm" variant="cta" onClick={() => window.open("https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064","_blank")}><MapPin size={12} /> Cómo llegar</Btn>
+                      : <Btn size="sm" variant="cta" onClick={() => go("session")}><Video size={12} /> Unirse</Btn>
+                    }
                   </div>
                 </div>}
               </div>;
@@ -697,18 +799,18 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
 
       {/* Solicitar cita modal */}
       {showNew && (
-        <Modal title={["Elegir terapeuta", "Elegir fecha y hora", "Enviar solicitud"][newStep]} onClose={() => setShowNew(false)} wide>
+        <Modal title={["Elegir terapeuta", "Elegir modalidad", "Elegir fecha y hora", "Enviar solicitud"][newStep]} onClose={() => setShowNew(false)} wide>
           <div className="p-6">
             {/* Step indicator */}
-            <div className="flex items-center gap-2 mb-6">
-              {["Terapeuta", "Fecha y hora", "Solicitar"].map((s, i) => (
-                <div key={s} className="flex items-center gap-2 flex-1">
+            <div className="flex items-center gap-1.5 mb-6">
+              {["Terapeuta", "Modalidad", "Fecha y hora", "Solicitar"].map((s, i) => (
+                <div key={s} className="flex items-center gap-1.5 flex-1">
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs font-extrabold flex-shrink-0 transition-all"
                     style={{ background: i <= newStep ? B.violet : "#E8E5F4", color: i <= newStep ? "white" : B.textMuted }}>
-                    {i < newStep ? <Check size={10} /> : i + 1}
+                    {i < newStep ? <Check size={9} /> : i + 1}
                   </div>
-                  <span className="text-xs font-bold" style={{ color: i <= newStep ? B.violet : B.textMuted }}>{s}</span>
-                  {i < 2 && <div className="flex-1 h-px" style={{ background: i < newStep ? B.violet : "#E8E5F4" }} />}
+                  <span className="text-xs font-bold hidden sm:block" style={{ color: i <= newStep ? B.violet : B.textMuted }}>{s}</span>
+                  {i < 3 && <div className="flex-1 h-px" style={{ background: i < newStep ? B.violet : "#E8E5F4" }} />}
                 </div>
               ))}
             </div>
@@ -724,11 +826,9 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
                       <p className="font-extrabold text-[#1C1135]">{t.name}</p>
                       <p className="text-xs text-[#7C6F9A] font-medium">{t.specialty}</p>
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1 justify-end mb-0.5">
-                        <Star size={11} className="fill-amber-400 text-amber-400" />
-                        <span className="text-xs font-bold text-[#1C1135]">{t.rating}</span>
-                      </div>
+                    <div className="flex items-center gap-1">
+                      <Star size={11} className="fill-amber-400 text-amber-400" />
+                      <span className="text-xs font-bold text-[#1C1135]">{t.rating}</span>
                     </div>
                     {newTherapist === t.name && <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: B.violet }}><Check size={10} color="white" /></div>}
                   </button>
@@ -740,6 +840,63 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
             )}
 
             {newStep === 1 && (
+              <div>
+                <p className="text-sm font-extrabold text-[#1C1135] mb-4">¿Cómo quieres realizar la sesión?</p>
+                <div className="flex flex-col gap-3 mb-5">
+                  <button onClick={() => setNewModality("virtual")}
+                    className="flex items-start gap-4 p-4 rounded-2xl border-2 text-left transition-all"
+                    style={{ borderColor: newModality === "virtual" ? B.violet : B.border, background: newModality === "virtual" ? B.violetLight : "white" }}>
+                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: newModality === "virtual" ? B.violet : "#F5F3FF" }}>
+                      <span style={{ filter: newModality === "virtual" ? "brightness(10)" : "none" }}>💻</span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-extrabold text-[#1C1135] mb-0.5">Virtual</p>
+                      <p className="text-xs text-[#7C6F9A] font-medium">Sesión por videollamada a través de ASHA Session. Conéctate desde casa.</p>
+                    </div>
+                    {newModality === "virtual" && <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-1" style={{ background: B.violet }}><Check size={10} color="white" /></div>}
+                  </button>
+                  <button onClick={() => setNewModality("presencial")}
+                    className="flex items-start gap-4 p-4 rounded-2xl border-2 text-left transition-all"
+                    style={{ borderColor: newModality === "presencial" ? B.teal : B.border, background: newModality === "presencial" ? B.tealLight : "white" }}>
+                    <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: newModality === "presencial" ? B.teal : "#F0FDFA" }}>
+                      <span style={{ filter: newModality === "presencial" ? "brightness(10)" : "none" }}>🏥</span>
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-extrabold text-[#1C1135] mb-0.5">Presencial</p>
+                      <p className="text-xs text-[#7C6F9A] font-medium">Asiste al centro de terapia. Sesión en consultorio con la terapeuta.</p>
+                    </div>
+                    {newModality === "presencial" && <div className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 mt-1" style={{ background: B.teal }}><Check size={10} color="white" /></div>}
+                  </button>
+                </div>
+                {newModality === "presencial" && (
+                  <div className="rounded-2xl p-4 mb-4 border border-teal-100" style={{ background: "#F0FDFA" }}>
+                    <div className="flex items-start gap-3">
+                      <span className="text-xl">📍</span>
+                      <div>
+                        <p className="font-extrabold text-[#1C1135] text-sm mb-0.5">Integrakids Perú</p>
+                        <p className="text-xs text-[#7C6F9A] font-medium mb-2">Centro de terapia sensorial · terapia ocupacional · terapia de lenguaje · terapia psicológica para niños</p>
+                        <p className="text-xs font-bold text-[#1C1135] mb-2">Jr. Ricardo Treneman 252, Chorrillos 15064</p>
+                        <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1.5 rounded-xl text-white transition-opacity hover:opacity-90"
+                          style={{ background: B.teal }}>
+                          <MapPin size={11} /> Ver en Google Maps
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="flex gap-3">
+                  <Btn variant="outline" className="flex-1 justify-center" onClick={() => setNewStep(0)}>
+                    <ChevronLeft size={14} /> Atrás
+                  </Btn>
+                  <Btn variant="primary" className="flex-1 justify-center" disabled={!newModality} onClick={() => setNewStep(2)}>
+                    Continuar <ArrowRight size={15} />
+                  </Btn>
+                </div>
+              </div>
+            )}
+
+            {newStep === 2 && (
               <div>
                 <p className="text-sm font-extrabold text-[#1C1135] mb-3">¿Para qué hijo?</p>
                 <div className="flex gap-2 mb-5">
@@ -772,26 +929,26 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
                   ))}
                 </div>
                 <div className="flex gap-3">
-                  <Btn variant="outline" className="flex-1 justify-center" onClick={() => setNewStep(0)}>
+                  <Btn variant="outline" className="flex-1 justify-center" onClick={() => setNewStep(1)}>
                     <ChevronLeft size={14} /> Atrás
                   </Btn>
-                  <Btn variant="primary" className="flex-1 justify-center" disabled={!newDay || !newTime} onClick={() => setNewStep(2)}>
+                  <Btn variant="primary" className="flex-1 justify-center" disabled={!newDay || !newTime} onClick={() => setNewStep(3)}>
                     Revisar cita <ArrowRight size={15} />
                   </Btn>
                 </div>
               </div>
             )}
 
-            {newStep === 2 && (
+            {newStep === 3 && (
               <div>
-                <div className="rounded-2xl p-5 border border-[#E8E5F4] mb-5">
+                <div className="rounded-2xl p-5 border border-[#E8E5F4] mb-4">
                   {[
                     { l: "Terapeuta", v: newTherapist },
                     { l: "Para", v: newChild },
                     { l: "Fecha", v: `${newDay} de ${MONTHS[month]} ${year}` },
                     { l: "Hora", v: newTime },
                     { l: "Duración", v: "45 minutos" },
-                    { l: "Modalidad", v: "Virtual (ASHA Session)" },
+                    { l: "Modalidad", v: newModality === "presencial" ? "Presencial" : "Virtual (ASHA Session)" },
                   ].map(r => (
                     <div key={r.l} className="flex justify-between py-2.5 border-b border-[#F5F3FF] last:border-0">
                       <span className="text-sm font-bold text-[#9E95B7]">{r.l}</span>
@@ -799,8 +956,19 @@ export function PadreAgenda({ go, appointments: apts, onAppointmentsChange }: { 
                     </div>
                   ))}
                 </div>
+                {newModality === "presencial" && (
+                  <div className="rounded-2xl p-4 mb-4 border border-teal-100 flex items-start gap-3" style={{ background: "#F0FDFA" }}>
+                    <span className="text-lg">📍</span>
+                    <div>
+                      <p className="text-sm font-extrabold text-[#1C1135] mb-0.5">Integrakids Perú</p>
+                      <p className="text-xs text-[#7C6F9A] font-medium mb-1">Jr. Ricardo Treneman 252, Chorrillos 15064</p>
+                      <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer"
+                        className="text-xs font-extrabold hover:underline" style={{ color: B.teal }}>Ver en Google Maps →</a>
+                    </div>
+                  </div>
+                )}
                 <div className="flex gap-3">
-                  <Btn variant="outline" className="flex-1 justify-center" onClick={() => setNewStep(1)}>
+                  <Btn variant="outline" className="flex-1 justify-center" onClick={() => setNewStep(2)}>
                     <ChevronLeft size={14} /> Atrás
                   </Btn>
                   <Btn variant="cta" className="flex-1 justify-center" onClick={confirmNew}>
@@ -1176,7 +1344,8 @@ export function PadreCompras({ go, appointments, onAppointmentsChange }: { go: (
                   <span className="text-xs font-bold text-emerald-600">Confirmada</span><ChevronRight size={17} className={`shrink-0 text-[#7C6F9A] transition-transform ${open ? "rotate-90" : ""}`} />
                 </button>
                 {open && <div id={contentId} className="px-4 pb-4 pt-3 border-t border-[#F5F3FF] text-sm text-[#7C6F9A] font-medium animate-in fade-in slide-in-from-top-1 duration-200">
-                  <div className="grid sm:grid-cols-2 gap-x-5 gap-y-2 py-1"><p><span className="font-bold text-[#1C1135]">Terapeuta:</span> {apt.therapist}</p><p><span className="font-bold text-[#1C1135]">Niño:</span> {apt.child}</p><p><span className="font-bold text-[#1C1135]">Fecha:</span> {apt.date}</p><p><span className="font-bold text-[#1C1135]">Hora y duración:</span> {apt.time} · 45 min</p><p><span className="font-bold text-[#1C1135]">Modalidad:</span> Virtual</p><p><span className="font-bold text-[#1C1135]">Referencia:</span> ASHA-{String(apt.id).slice(-6)}</p><p><span className="font-bold text-[#1C1135]">Confirmación:</span> Confirmada por terapeuta</p></div>
+                  <div className="grid sm:grid-cols-2 gap-x-5 gap-y-2 py-1"><p><span className="font-bold text-[#1C1135]">Terapeuta:</span> {apt.therapist}</p><p><span className="font-bold text-[#1C1135]">Niño:</span> {apt.child}</p><p><span className="font-bold text-[#1C1135]">Fecha:</span> {apt.date}</p><p><span className="font-bold text-[#1C1135]">Hora y duración:</span> {apt.time} · 45 min</p><p><span className="font-bold text-[#1C1135]">Modalidad:</span> {apt.type === "presencial" ? "Presencial" : "Virtual"}</p><p><span className="font-bold text-[#1C1135]">Referencia:</span> ASHA-{String(apt.id).slice(-6)}</p><p><span className="font-bold text-[#1C1135]">Confirmación:</span> Confirmada por terapeuta</p></div>
+                  {apt.type === "presencial" && <div className="mt-2 rounded-xl p-2.5 flex items-center gap-2 border border-teal-100 text-xs" style={{background:"#F0FDFA"}}><span>📍</span><span className="font-medium text-[#0D9488]">Jr. Ricardo Treneman 252, Chorrillos 15064 · <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer" className="underline">Ver mapa</a></span></div>}
                   <div className="mt-4 flex justify-end"><Btn size="sm" variant="cta" onClick={() => { onAppointmentsChange((current) => current.map((item) => item.id === apt.id ? { ...item, paymentStatus: "pagada" } : item)); setToast("Pago simulado registrado."); }}><CreditCard size={13} /> Pagar</Btn></div>
                 </div>}
               </article>

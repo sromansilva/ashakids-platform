@@ -34,8 +34,7 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
           ))}
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <Btn variant="ghost" size="sm" onClick={() => go("login")}>Iniciar sesión</Btn>
-          <Btn variant="cta"   size="sm" onClick={() => go("register")}>Crear Cuenta</Btn>
+          <Btn variant="cta" size="sm" onClick={() => go("login")}>Iniciar sesión</Btn>
         </div>
 
       </div>
@@ -46,7 +45,7 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
             <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-2 flex flex-col gap-0.5">
               {links.map(l => <button key={l.view} onClick={() => { go(l.view); setMob(false); }} className={`w-full flex items-center px-3.5 py-2.5 rounded-2xl text-left text-sm font-bold transition-all ${cur === l.view ? "bg-violet-700 text-white shadow-sm shadow-violet-200" : "text-[#7C6F9A] hover:bg-violet-50 hover:text-violet-700"}`}>{l.label}</button>)}
             </nav>
-            <div className="shrink-0 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"><div className="grid grid-cols-2 gap-2"><Btn variant="outline" className="w-full justify-center" onClick={() => { go("login"); setMob(false); }}>Iniciar sesión</Btn><Btn variant="cta" className="w-full justify-center" onClick={() => { go("register"); setMob(false); }}>Crear Cuenta</Btn></div></div>
+            <div className="shrink-0 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"><Btn variant="cta" className="w-full justify-center" onClick={() => { go("login"); setMob(false); }}>Iniciar sesión</Btn></div>
           </aside>
           <button type="button" aria-label="Cerrar menú" onClick={() => setMob(false)} className="flex-1" />
         </div>
