@@ -139,6 +139,7 @@ import {
   MundoAshaRetos,
   MundoAshaInsignias,
   MundoAshaPerfil,
+  MundoAshaJuegos,
 } from "./views/SessionsGames";
 import {
   TerapeutaDatosActividad,
@@ -149,7 +150,6 @@ import {
   AshaSessionEnd,
   AshaSessionSummary,
 } from "./views/SessionsMeeting";
-import { MundoAshaJuegos } from "./MundoAsha";
 import {
   PublicEspecialistas,
   PublicEspecialidades,
