@@ -3,13 +3,17 @@
 Genera los hashes utilizando la función centralizada app.core.security.hash_password()
 para garantizar total compatibilidad con el sistema de autenticación de ASHAKids.
 
-Usuarios de prueba definidos:
-- Padre / Tutor: padre@ashakids.test
-- Terapeuta: terapeuta@ashakids.test
-- Administrador: admin@ashakids.test
+Esquema de Base de Datos verificado (Fuente de Verdad):
+- USUARIOS: id_usuario, nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion
+- ROLES: id_rol, nombre_rol, descripcion, fecha_creacion (PADRE, TERAPEUTA, ADMIN)
+- ADMINISTRADORES: id_administrador, id_usuario, fecha_creacion
+- USUARIO_ROLES: id_usuario_rol, id_usuario, id_rol, asignado_por, fecha_asignacion, activo
+  (asignado_por es FK -> ADMINISTRADORES.id_administrador)
 
-Contraseña común de desarrollo: '12345'
-(Cada usuario recibe un hash Argon2id diferente debido al salt criptográfico aleatorio).
+Usuarios de prueba definidos:
+- Padre / Tutor: padre@ashakids.test (contraseña: 12345)
+- Terapeuta: terapeuta@ashakids.test (contraseña: 12345)
+- Administrador: admin@ashakids.test (contraseña: 12345)
 """
 
 from pathlib import Path
@@ -22,28 +26,31 @@ if str(BACKEND_DIR) not in sys.path:
 
 from app.core.security import hash_password, verify_password
 
-# Usuarios de prueba definidos para el entorno de desarrollo
+# Usuarios de prueba adaptados al esquema real
 TEST_USERS = [
     {
-        "email": "padre@ashakids.test",
+        "email": "admin@ashakids.test",
         "password": "12345",
-        "role": "padre",
-        "nombre": "Padre",
-        "apellido": "Prueba",
+        "role": "ADMIN",
+        "nombres": "Administrador",
+        "apellidos": "Sistema",
+        "codigo_usuario": "ADM-001",
     },
     {
         "email": "terapeuta@ashakids.test",
         "password": "12345",
-        "role": "terapeuta",
-        "nombre": "Terapeuta",
-        "apellido": "Prueba",
+        "role": "TERAPEUTA",
+        "nombres": "Terapeuta",
+        "apellidos": "Especialista",
+        "codigo_usuario": "TER-001",
     },
     {
-        "email": "admin@ashakids.test",
+        "email": "padre@ashakids.test",
         "password": "12345",
-        "role": "admin",
-        "nombre": "Administrador",
-        "apellido": "Sistema",
+        "role": "PADRE",
+        "nombres": "Padre",
+        "apellidos": "Familia",
+        "codigo_usuario": "PAD-001",
     },
 ]
 
@@ -74,8 +81,9 @@ def generate_test_users_data(save_sql: bool = True) -> list[dict]:
             "email": user["email"],
             "password_hash": pwd_hash,
             "role": user["role"],
-            "nombre": user["nombre"],
-            "apellido": user["apellido"],
+            "nombres": user["nombres"],
+            "apellidos": user["apellidos"],
+            "codigo_usuario": user["codigo_usuario"],
             "verified": is_valid,
         })
 
@@ -96,45 +104,103 @@ def generate_test_users_data(save_sql: bool = True) -> list[dict]:
 
 
 def generate_sql_seed_file(records: list[dict], target_path: Path):
-    """Escribe las sentencias SQL preparadas para poblar la base de datos sin ejecutarla automáticamente."""
+    """Escribe las sentencias SQL preparadas para poblar la base de datos según el esquema oficial."""
     lines = [
         "-- =====================================================================",
         "-- ASHAKids - Seed de Usuarios de Prueba (Entorno de Desarrollo)",
+        "-- Adaptado al esquema oficial de base de datos de ASHAKids",
         "-- Hashes generados con algoritmo Argon2id (app.core.security.hash_password)",
         "-- Contrasena inicial de desarrollo: 12345",
         "-- =====================================================================",
         "",
         "BEGIN;",
         "",
-        "-- Insercion de usuarios en tabla 'usuarios'",
+        "-- 1. Asegurar roles base en tabla 'roles'",
+        "INSERT INTO roles (nombre_rol, descripcion, fecha_creacion)",
+        "VALUES ",
+        "    ('ADMIN', 'Administrador del sistema con control total', NOW()),",
+        "    ('TERAPEUTA', 'Profesional especialista clinico', NOW()),",
+        "    ('PADRE', 'Tutor o padre de familia a cargo del nino', NOW())",
+        "ON CONFLICT (nombre_rol) DO UPDATE SET descripcion = EXCLUDED.descripcion;",
+        "",
+        "-- 2. Insercion de usuarios en tabla 'usuarios' (columnas exactas del esquema)",
     ]
 
     for r in records:
         email = r["email"]
         h = r["password_hash"]
+        nombres = r["nombres"]
+        apellidos = r["apellidos"]
+        codigo = r["codigo_usuario"]
         lines.append(
-            f"INSERT INTO usuarios (email, password_hash, activo, creado_en) "
-            f"VALUES ('{email}', '{h}', true, NOW()) "
-            f"ON CONFLICT (email) DO UPDATE SET password_hash = '{h}';"
+            f"INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion) "
+            f"VALUES ('{nombres}', '{apellidos}', '{codigo}', '{email}', '{h}', true, NOW()) "
+            f"ON CONFLICT (email) DO UPDATE SET password_hash = '{h}', activo = true;"
         )
 
     lines.extend([
         "",
-        "-- Asignacion de roles en 'usuario_roles' (relacion usuarios - roles)",
-        "-- Nota: Requiere que los roles correspondientes existan en la tabla 'roles'",
-        "INSERT INTO usuario_roles (usuario_id, rol_id) ",
-        "SELECT u.id, r.id FROM usuarios u CROSS JOIN roles r ",
-        "WHERE u.email = 'admin@ashakids.test' AND r.nombre IN ('admin', 'administrador') ",
+        "-- 3. Registro en 'administradores' para admin@ashakids.test",
+        "INSERT INTO administradores (id_usuario, fecha_creacion)",
+        "SELECT u.id_usuario, NOW()",
+        "FROM usuarios u",
+        "WHERE u.email = 'admin@ashakids.test'",
+        "  AND NOT EXISTS (",
+        "    SELECT 1 FROM administradores a WHERE a.id_usuario = u.id_usuario",
+        "  );",
+        "",
+        "-- 4. Asignacion de roles en 'usuario_roles'",
+        "-- Nota: asignado_por es FK -> administradores.id_administrador",
+        "",
+        "-- Rol ADMIN para admin@ashakids.test (auto-asignado por el id_administrador creado)",
+        "INSERT INTO usuario_roles (id_usuario, id_rol, asignado_por, fecha_asignacion, activo)",
+        "SELECT ",
+        "    u.id_usuario,",
+        "    r.id_rol,",
+        "    a.id_administrador,",
+        "    NOW(),",
+        "    true",
+        "FROM usuarios u",
+        "CROSS JOIN roles r",
+        "CROSS JOIN administradores a",
+        "JOIN usuarios u_admin ON a.id_usuario = u_admin.id_usuario",
+        "WHERE u.email = 'admin@ashakids.test'",
+        "  AND r.nombre_rol = 'ADMIN'",
+        "  AND u_admin.email = 'admin@ashakids.test'",
         "ON CONFLICT DO NOTHING;",
         "",
-        "INSERT INTO usuario_roles (usuario_id, rol_id) ",
-        "SELECT u.id, r.id FROM usuarios u CROSS JOIN roles r ",
-        "WHERE u.email = 'terapeuta@ashakids.test' AND r.nombre IN ('terapeuta') ",
+        "-- Rol TERAPEUTA para terapeuta@ashakids.test (asignado por administrador)",
+        "INSERT INTO usuario_roles (id_usuario, id_rol, asignado_por, fecha_asignacion, activo)",
+        "SELECT ",
+        "    u.id_usuario,",
+        "    r.id_rol,",
+        "    a.id_administrador,",
+        "    NOW(),",
+        "    true",
+        "FROM usuarios u",
+        "CROSS JOIN roles r",
+        "CROSS JOIN administradores a",
+        "JOIN usuarios u_admin ON a.id_usuario = u_admin.id_usuario",
+        "WHERE u.email = 'terapeuta@ashakids.test'",
+        "  AND r.nombre_rol = 'TERAPEUTA'",
+        "  AND u_admin.email = 'admin@ashakids.test'",
         "ON CONFLICT DO NOTHING;",
         "",
-        "INSERT INTO usuario_roles (usuario_id, rol_id) ",
-        "SELECT u.id, r.id FROM usuarios u CROSS JOIN roles r ",
-        "WHERE u.email = 'padre@ashakids.test' AND r.nombre IN ('padre', 'tutor') ",
+        "-- Rol PADRE para padre@ashakids.test (asignado por administrador)",
+        "INSERT INTO usuario_roles (id_usuario, id_rol, asignado_por, fecha_asignacion, activo)",
+        "SELECT ",
+        "    u.id_usuario,",
+        "    r.id_rol,",
+        "    a.id_administrador,",
+        "    NOW(),",
+        "    true",
+        "FROM usuarios u",
+        "CROSS JOIN roles r",
+        "CROSS JOIN administradores a",
+        "JOIN usuarios u_admin ON a.id_usuario = u_admin.id_usuario",
+        "WHERE u.email = 'padre@ashakids.test'",
+        "  AND r.nombre_rol = 'PADRE'",
+        "  AND u_admin.email = 'admin@ashakids.test'",
         "ON CONFLICT DO NOTHING;",
         "",
         "COMMIT;",

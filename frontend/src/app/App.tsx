@@ -184,6 +184,16 @@ import {
   AppointmentRequest,
 } from "./views/Padre";
 import { EvaluacionInicial } from "./views/EvalInicial";
+import { useAuth } from "@/hooks/useAuth";
+import { LoginPage } from "@/pages/auth/LoginPage";
+import { SpecialistsPage } from "@/pages/public/SpecialistsPage";
+import { MundoASHAPage } from "@/pages/public/MundoASHAPage";
+import { ResourcesPage } from "@/pages/public/ResourcesPage";
+import { AboutUsPage } from "@/pages/public/AboutUsPage";
+import { PadreDashboardPage } from "@/pages/padre/DashboardPage";
+import { TerapeutaDashboardPage } from "@/pages/terapeuta/DashboardPage";
+import { AdminDashboardPage } from "@/pages/admin/DashboardPage";
+
 
 // ─── Sidebar ───────────────────────────────────────────────────────────────────
 
@@ -6845,6 +6855,7 @@ function PadreAyuda({ go }: { go: (v: View) => void }) {
 }
 
 export default function App() {
+  const { user, logout: authLogout } = useAuth();
   const [view, setView] = useState<View>("landing");
   const [role, setRole] = useState<Role>(null);
   const [padreUserName, setPadreUserName] = useState("Laura Gómez");
@@ -6857,6 +6868,20 @@ export default function App() {
   const addParentAppointment = (appointment: AppointmentRequest) => setParentAppointments((current) => current.some((item) => item.id === appointment.id) ? current : [...current, appointment]);
 
   const [padreExtraNotifs, setPadreExtraNotifs] = useState<PadreNotif[]>([]);
+
+  // Sincronizar datos y rol cuando FastAPI autentica
+  useEffect(() => {
+    if (user) {
+      setPadreUserName(`${user.nombres} ${user.apellidos}`);
+      if (user.rol === "ADMIN") {
+        setRole("admin");
+      } else if (user.rol === "TERAPEUTA") {
+        setRole("terapeuta");
+      } else if (user.rol === "PADRE") {
+        setRole("padre");
+      }
+    }
+  }, [user]);
 
   const handleTerapeutaRequestUpdate = (id: number, status: "confirmada" | "rechazada") => {
     setParentAppointments(current => {
@@ -6884,18 +6909,48 @@ export default function App() {
     setView(v);
     if (r === "padre") setPadrePlan(plan);
   };
-  const handleLogout = () => {
+
+  const handleLogout = async () => {
+    try {
+      await authLogout();
+    } catch {
+      // Ignorar error de red si expiró la sesión
+    }
     setRole(null);
     setView("landing");
   };
+
   const go = (v: View) => setView(v);
 
   if (view === "landing") return <Landing go={go} />;
   if (view === "login")
-    return <Login go={go} onLogin={handleLogin} />;
+    return (
+      <LoginPage
+        onSuccess={(semanticRole) => {
+          if (semanticRole === "ADMIN") {
+            handleLogin("admin", "admin");
+          } else if (semanticRole === "TERAPEUTA") {
+            handleLogin("terapeuta", "terapeuta");
+          } else {
+            handleLogin("padre", "padre", "familia");
+          }
+        }}
+        onGoHome={() => setView("landing")}
+        onForgotPassword={() => setView("forgot-password")}
+      />
+    );
   if (view === "register" || view === "register/padre" || view === "register/verify" ||
       view === "register/terapeuta" || view === "register/terapeuta/landing" || view === "register/terapeuta/success")
-    return <Login go={go} onLogin={handleLogin} />;
+    return (
+      <LoginPage
+        onSuccess={(semanticRole) => {
+          if (semanticRole === "ADMIN") handleLogin("admin", "admin");
+          else if (semanticRole === "TERAPEUTA") handleLogin("terapeuta", "terapeuta");
+          else handleLogin("padre", "padre", "familia");
+        }}
+        onGoHome={() => setView("landing")}
+      />
+    );
   if (view === "onboarding") return <Onboarding go={go} onComplete={() => { setRole("padre"); setView("padre"); }} />;
   if (view === "forgot-password")
     return <ForgotPassword go={go} />;
@@ -6907,23 +6962,24 @@ export default function App() {
 
   // Public pages (unauthenticated)
   if (view === "public/especialistas")
-    return <PublicEspecialistas go={go} />;
+    return <SpecialistsPage go={go} />;
   if (view === "public/especialidades")
     return <PublicEspecialidades go={go} />;
-  if (view === "public/mundo") return <PublicMundo go={go} />;
+  if (view === "public/mundo") return <MundoASHAPage go={go} />;
   if (view === "public/recursos")
-    return <PublicRecursos go={go} />;
+    return <ResourcesPage go={go} />;
   if (view === "public/ashi") return <PublicAshi go={go} />;
   if (view === "public/historias")
     return <PublicHistorias go={go} />;
   if (view === "public/nosotros")
-    return <PublicNosotros go={go} />;
+    return <AboutUsPage go={go} />;
   if (view === "public/planes") return <PublicPlanes go={go} />;
   if (view === "public/ayuda") return <PublicAyuda go={go} />;
   if (view === "public/contacto")
     return <PublicContacto go={go} />;
   if (view === "public/trabaja")
     return <PublicTrabaja go={go} />;
+
 
   const titles: Partial<Record<View, string>> = {
     padre: "Inicio",
@@ -6992,7 +7048,11 @@ export default function App() {
   const renderView = () => {
     switch (view) {
       case "padre":
-        return <PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />;
+        return (
+          <PadreDashboardPage>
+            <PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />
+          </PadreDashboardPage>
+        );
       case "padre/camino":
         return <MiCaminoAsha go={go} padrePlan={padrePlan} />;
       case "padre/ayuda":
@@ -7050,7 +7110,7 @@ export default function App() {
       case "mundo-asha/perfil":
         return <MundoAshaPerfil go={go} />;
       case "terapeuta":
-        return <TerapeutaHome go={go} />;
+        return <TerapeutaDashboardPage go={go} />;
       case "terapeuta/agenda":
         return <TerapeutaAgenda go={go} requests={parentAppointments} onRequestUpdate={handleTerapeutaRequestUpdate} />;
       case "terapeuta/pacientes":
@@ -7089,7 +7149,7 @@ export default function App() {
         return <AshaSessionSummary go={go} />;
       case "admin":
       case "admin/dashboard":
-        return <AdminPanel go={go} />;
+        return <AdminDashboardPage go={go} />;
       case "admin/cuentas":
         return <AdminCuentas go={go} />;
       case "admin/terapeutas":
@@ -7107,7 +7167,11 @@ export default function App() {
       case "admin/config":
         return <AdminConfig />;
       default:
-        return <PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />;
+        return (
+          <PadreDashboardPage>
+            <PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />
+          </PadreDashboardPage>
+        );
     }
   };
 
