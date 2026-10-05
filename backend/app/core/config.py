@@ -1,27 +1,27 @@
-import os
-from typing import Optional
+from pathlib import Path
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
-try:
-    from pydantic_settings import BaseSettings
+# Directorio base del backend para resolver .env de manera determinista
+BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 
-    class Settings(BaseSettings):
-        PROJECT_NAME: str = "ASHAKids API"
-        VERSION: str = "0.1.0"
-        API_V1_PREFIX: str = "/api/v1"
-        SUPABASE_URL: Optional[str] = os.getenv("SUPABASE_URL", "")
-        SUPABASE_KEY: Optional[str] = os.getenv("SUPABASE_KEY", "")
 
-        class Config:
-            env_file = ".env"
-            extra = "ignore"
+class Settings(BaseSettings):
+    PROJECT_NAME: str = "ASHAKids API"
+    VERSION: str = "0.1.0"
+    API_V1_PREFIX: str = "/api/v1"
+    PORT: int = 8000
+    ENVIRONMENT: str = "development"
 
-    settings = Settings()
-except ImportError:
-    class Settings:
-        PROJECT_NAME: str = os.getenv("PROJECT_NAME", "ASHAKids API")
-        VERSION: str = "0.1.0"
-        API_V1_PREFIX: str = os.getenv("API_V1_PREFIX", "/api/v1")
-        SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
-        SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
+    # Credenciales de infraestructura Supabase / PostgreSQL
+    # Cargadas automáticamente desde backend/.env o variables de entorno del sistema
+    SUPABASE_URL: str = ""
+    SUPABASE_KEY: str = ""
 
-    settings = Settings()
+    model_config = SettingsConfigDict(
+        env_file=(BACKEND_DIR / ".env", ".env"),
+        env_file_encoding="utf-8",
+        extra="ignore",
+    )
+
+
+settings = Settings()
