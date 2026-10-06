@@ -10,6 +10,8 @@ from app.models.perfiles import (
     Paciente,
     Perfil,
     PerfilLogro,
+    Terapeuta,
+    Tutor,
 )
 
 __all__ = [
@@ -22,5 +24,7 @@ __all__ = [
     "Perfil",
     "Logro",
     "PerfilLogro",
+    "Tutor",
+    "Terapeuta",
 ]
 

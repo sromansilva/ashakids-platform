@@ -185,6 +185,8 @@ import {
 } from "@/pages/padre/Padre";
 import { EvaluacionInicial } from "@/pages/padre/EvalInicial";
 import { useAuth } from "@/hooks/useAuth";
+import { useLocation, useNavigate, Navigate } from "react-router-dom";
+import { pathToView, viewToPath, getRequiredRoleForPath } from "@/routes/paths";
 import { LoginPage } from "@/pages/auth/LoginPage";
 import { SpecialistsPage } from "@/pages/public/SpecialistsPage";
 import { MundoASHAPage } from "@/pages/public/MundoASHAPage";
@@ -6855,9 +6857,14 @@ function PadreAyuda({ go }: { go: (v: View) => void }) {
 }
 
 export default function App() {
-  const { user, logout: authLogout } = useAuth();
-  const [view, setView] = useState<View>("landing");
-  const [role, setRole] = useState<Role>(null);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, role: authRole, isAuthenticated, isLoading, logout: authLogout } = useAuth();
+
+  // La URL del navegador es la única fuente de verdad para la vista activa
+  const view: View = pathToView(location.pathname, authRole);
+  const role: Role = authRole ? (authRole.toLowerCase() as Role) : null;
+
   const [padreUserName, setPadreUserName] = useState("Laura Gómez");
   const [padrePlan, setPadrePlan] = useState<"exploracion" | "familia">("exploracion");
   const [parentAppointments, setParentAppointments] = useState<AppointmentRequest[]>(() => appointments.map((appointment) => ({
@@ -6869,17 +6876,10 @@ export default function App() {
 
   const [padreExtraNotifs, setPadreExtraNotifs] = useState<PadreNotif[]>([]);
 
-  // Sincronizar datos y rol cuando FastAPI autentica
+  // Sincronizar datos del usuario autenticado
   useEffect(() => {
     if (user) {
       setPadreUserName(`${user.nombres} ${user.apellidos}`);
-      if (user.rol === "ADMIN") {
-        setRole("admin");
-      } else if (user.rol === "TERAPEUTA") {
-        setRole("terapeuta");
-      } else if (user.rol === "PADRE") {
-        setRole("padre");
-      }
     }
   }, [user]);
 
@@ -6904,10 +6904,11 @@ export default function App() {
     .filter(a => a.status === "por confirmar" || a.status === "confirmada")
     .map(a => ({ therapist: a.therapist, date: a.date, time: a.time }));
 
-  const handleLogin = (r: Role, v: View, plan: "exploracion" | "familia" = "familia") => {
-    setRole(r);
-    setView(v);
-    if (r === "padre") setPadrePlan(plan);
+  const handleLogin = (semanticRole: SemanticRole, plan: "exploracion" | "familia" = "familia") => {
+    if (semanticRole === "PADRE") setPadrePlan(plan);
+    if (semanticRole === "ADMIN") navigate("/admin");
+    else if (semanticRole === "TERAPEUTA") navigate("/terapeuta");
+    else navigate("/padre");
   };
 
   const handleLogout = async () => {
@@ -6916,42 +6917,83 @@ export default function App() {
     } catch {
       // Ignorar error de red si expiró la sesión
     }
-    setRole(null);
-    setView("landing");
+    navigate("/login");
   };
 
-  const go = (v: View) => setView(v);
+  // Callback go(): navega directamente a la URL real correspondiente
+  const go = (target: View | string) => {
+    const targetPath = viewToPath(target);
+    navigate(targetPath);
+  };
+
+  // Determinar rol requerido según la URL
+  const requiredRole = getRequiredRoleForPath(location.pathname, authRole);
+
+  // Spinner de verificación de sesión para rutas protegidas
+  if (isLoading && requiredRole) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#FAFAF9]" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[#7C3AED] border-t-transparent" />
+          <p className="text-sm font-semibold text-[#6B5E8A]">
+            Verificando sesión segura...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Protección: Si no está autenticado y la ruta requiere rol -> Redirigir a /login
+  if (requiredRole && !isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
+  }
+
+  // Protección: Si el rol del usuario no coincide con el requerido -> Acceso Restringido
+  if (requiredRole && authRole !== requiredRole) {
+    const homeView = authRole === "ADMIN" ? "/admin" : authRole === "TERAPEUTA" ? "/terapeuta" : "/padre";
+    return (
+      <div className="flex h-screen items-center justify-center p-6 text-center bg-[#FAFAF9]" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+        <div className="max-w-md rounded-3xl border border-[#E8E5F4] bg-white p-8 shadow-sm">
+          <span className="text-4xl">🚫</span>
+          <h2 className="mt-3 text-xl font-black text-[#1C1135]">
+            Acceso Restringido
+          </h2>
+          <p className="mt-2 text-sm font-semibold text-[#6B5E8A]">
+            Tu rol actual ({authRole || "Sin rol"}) no tiene autorización para acceder a la sección de {requiredRole}.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <Btn variant="primary" onClick={() => navigate(homeView)}>
+              Ir a mi panel principal
+            </Btn>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Si ya está autenticado e ingresa a /login, redirigir a su panel
+  if (location.pathname === "/login" && isAuthenticated && authRole) {
+    const defaultHome = authRole === "ADMIN" ? "/admin" : authRole === "TERAPEUTA" ? "/terapeuta" : "/padre";
+    return <Navigate to={defaultHome} replace />;
+  }
 
   if (view === "landing") return <Landing go={go} />;
   if (view === "login")
     return (
       <LoginPage
-        onSuccess={(semanticRole) => {
-          if (semanticRole === "ADMIN") {
-            handleLogin("admin", "admin");
-          } else if (semanticRole === "TERAPEUTA") {
-            handleLogin("terapeuta", "terapeuta");
-          } else {
-            handleLogin("padre", "padre", "familia");
-          }
-        }}
-        onGoHome={() => setView("landing")}
-        onForgotPassword={() => setView("forgot-password")}
+        onSuccess={(semanticRole) => handleLogin(semanticRole)}
+        onGoHome={() => navigate("/")}
+        onForgotPassword={() => navigate("/forgot-password")}
       />
     );
-  if (view === "register" || view === "register/padre" || view === "register/verify" ||
-      view === "register/terapeuta" || view === "register/terapeuta/landing" || view === "register/terapeuta/success")
+  if (view.startsWith("register"))
     return (
       <LoginPage
-        onSuccess={(semanticRole) => {
-          if (semanticRole === "ADMIN") handleLogin("admin", "admin");
-          else if (semanticRole === "TERAPEUTA") handleLogin("terapeuta", "terapeuta");
-          else handleLogin("padre", "padre", "familia");
-        }}
-        onGoHome={() => setView("landing")}
+        onSuccess={(semanticRole) => handleLogin(semanticRole)}
+        onGoHome={() => navigate("/")}
       />
     );
-  if (view === "onboarding") return <Onboarding go={go} onComplete={() => { setRole("padre"); setView("padre"); }} />;
+  if (view === "onboarding") return <Onboarding go={go} onComplete={() => navigate("/padre")} />;
   if (view === "forgot-password")
     return <ForgotPassword go={go} />;
   if (view === "session/waiting")

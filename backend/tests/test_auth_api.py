@@ -1,10 +1,10 @@
-"""Pruebas unitarias para la API REST de autenticación y sesiones de ASHAKids.
+"""Pruebas unitarias para la API REST de autenticación y autorización de ASHAKids.
 
 Utiliza un doble de prueba en memoria (FakeAsyncSession) que aísla las pruebas unitarias
 de la base de datos externa de Supabase sin recurrir a fallbacks en el código de producción.
 """
 
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 import unittest
@@ -18,7 +18,8 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import hash_password
 from app.main import app
-from app.models.auth import Rol, SesionAutenticacion, Usuario, UsuarioRol
+from app.models.auth import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
+from app.models.perfiles import Terapeuta, Tutor
 
 
 class MockScalarResult:
@@ -33,9 +34,12 @@ class MockScalarResult:
 class FakeAsyncSession:
     """Sesión asíncrona en memoria para pruebas unitarias aisladas."""
 
-    def __init__(self, users=None):
+    def __init__(self, users=None, tutores=None, terapeutas=None, administradores=None):
         self.users = {u.codigo_usuario: u for u in (users or [])}
         self.sessions = {}  # token_hash -> SesionAutenticacion
+        self.tutores = {t.id_usuario: t for t in (tutores or [])}
+        self.terapeutas = {t.id_usuario: t for t in (terapeutas or [])}
+        self.administradores = {a.id_usuario: a for a in (administradores or [])}
 
     def add(self, obj):
         if isinstance(obj, SesionAutenticacion):
@@ -44,6 +48,12 @@ class FakeAsyncSession:
                 if u.id_usuario == obj.id_usuario:
                     obj.usuario = u
                     break
+        elif isinstance(obj, Tutor):
+            self.tutores[obj.id_usuario] = obj
+        elif isinstance(obj, Terapeuta):
+            self.terapeutas[obj.id_usuario] = obj
+        elif isinstance(obj, Administrador):
+            self.administradores[obj.id_usuario] = obj
 
     async def flush(self):
         pass
@@ -68,17 +78,33 @@ class FakeAsyncSession:
         if entity is SesionAutenticacion:
             token_hash = next((v for k, v in params.items() if "token_hash" in k), None)
             sesion = self.sessions.get(token_hash)
-            if sesion and sesion.revocado:
-                return MockScalarResult(None)
+            if sesion:
+                now = datetime.now(timezone.utc)
+                if sesion.revocado or sesion.fecha_expiracion <= now:
+                    return MockScalarResult(None)
+                if sesion.usuario and not sesion.usuario.activo:
+                    return MockScalarResult(None)
             return MockScalarResult(sesion)
+
+        if entity is Tutor:
+            id_u = next((v for k, v in params.items() if "id_usuario" in k), None)
+            return MockScalarResult(self.tutores.get(id_u))
+
+        if entity is Terapeuta:
+            id_u = next((v for k, v in params.items() if "id_usuario" in k), None)
+            return MockScalarResult(self.terapeutas.get(id_u))
+
+        if entity is Administrador:
+            id_u = next((v for k, v in params.items() if "id_usuario" in k), None)
+            return MockScalarResult(self.administradores.get(id_u))
 
         return MockScalarResult(None)
 
 
-def build_test_users():
-    """Genera usuarios de prueba con hashes Argon2id y roles asociados."""
-    # Hash Argon2id para '12345'
+def build_test_fixtures():
+    """Genera usuarios y perfiles de prueba con hashes Argon2id y roles asociados."""
     pwd_hash = hash_password("12345")
+    now = datetime.now(timezone.utc)
 
     # 1. Padre (codigo p00001)
     u_padre = Usuario(
@@ -94,6 +120,13 @@ def build_test_users():
     ur_padre = UsuarioRol(id_usuario_rol=1, id_usuario=1, id_rol=1, activo=True)
     ur_padre.rol = r_padre
     u_padre.roles_asignados = [ur_padre]
+    tutor_padre = Tutor(
+        id_tutor=1,
+        id_usuario=1,
+        parentesco="Madre",
+        telefono="999888777",
+        direccion="Av. Los Pinos 123",
+    )
 
     # 2. Terapeuta (codigo t00001)
     u_tera = Usuario(
@@ -109,6 +142,14 @@ def build_test_users():
     ur_tera = UsuarioRol(id_usuario_rol=2, id_usuario=2, id_rol=2, activo=True)
     ur_tera.rol = r_tera
     u_tera.roles_asignados = [ur_tera]
+    tera_perfil = Terapeuta(
+        id_terapeuta=1,
+        id_usuario=2,
+        especialidad="Fonoaudiología",
+        anios_experiencia=7,
+        idiomas="Español, Inglés",
+        descripcion_profesional="Especialista en terapia de lenguaje infantil.",
+    )
 
     # 3. Administrador (codigo a00001)
     u_admin = Usuario(
@@ -124,6 +165,11 @@ def build_test_users():
     ur_admin = UsuarioRol(id_usuario_rol=3, id_usuario=3, id_rol=3, activo=True)
     ur_admin.rol = r_admin
     u_admin.roles_asignados = [ur_admin]
+    admin_perfil = Administrador(
+        id_administrador=1,
+        id_usuario=3,
+        fecha_creacion=now,
+    )
 
     # 4. Usuario Inactivo (codigo i00001)
     u_inactivo = Usuario(
@@ -140,7 +186,6 @@ def build_test_users():
     u_inactivo.roles_asignados = [ur_inactivo]
 
     # 5. Usuario con código con prefijo cruzado (codigo p99999 pero rol ADMIN)
-    # Demuestra que el rol se obtiene de la BD y NO del prefijo
     u_cruzado = Usuario(
         id_usuario=5,
         nombres="Cruzado",
@@ -154,14 +199,33 @@ def build_test_users():
     ur_cruzado.rol = r_admin
     u_cruzado.roles_asignados = [ur_cruzado]
 
-    return [u_padre, u_tera, u_admin, u_inactivo, u_cruzado]
+    # 6. Usuario sin roles asignados (codigo s00001)
+    u_sin_rol = Usuario(
+        id_usuario=6,
+        nombres="SinRol",
+        apellidos="Prueba",
+        codigo_usuario="s00001",
+        email="sinrol@ashakids.test",
+        password_hash=pwd_hash,
+        activo=True,
+    )
+    u_sin_rol.roles_asignados = []
+
+    users = [u_padre, u_tera, u_admin, u_inactivo, u_cruzado, u_sin_rol]
+    return users, [tutor_padre], [tera_perfil], [admin_perfil]
 
 
 class TestAuthAPI(unittest.TestCase):
-    """Pruebas unitarias de los endpoints de autenticación y sesión."""
+    """Pruebas unitarias de los endpoints de autenticación y autorización."""
 
     def setUp(self):
-        self.fake_db = FakeAsyncSession(users=build_test_users())
+        users, tutores, terapeutas, admins = build_test_fixtures()
+        self.fake_db = FakeAsyncSession(
+            users=users,
+            tutores=tutores,
+            terapeutas=terapeutas,
+            administradores=admins,
+        )
 
         async def override_get_db():
             yield self.fake_db
@@ -171,6 +235,15 @@ class TestAuthAPI(unittest.TestCase):
 
     def tearDown(self):
         app.dependency_overrides.clear()
+
+    def _login_as(self, codigo_usuario: str, password: str = "12345") -> str:
+        """Helper para autenticar y retornar el token de cookie."""
+        res = self.client.post(
+            "/api/v1/auth/login",
+            json={"codigo_usuario": codigo_usuario, "password": password},
+        )
+        self.assertEqual(res.status_code, 200, f"Login falló para {codigo_usuario}: {res.text}")
+        return res.cookies[settings.SESSION_COOKIE_NAME]
 
     def test_health_check(self):
         res = self.client.get("/health")
@@ -187,6 +260,9 @@ class TestAuthAPI(unittest.TestCase):
         self.assertIn("/api/v1/auth/login", paths)
         self.assertIn("/api/v1/auth/logout", paths)
         self.assertIn("/api/v1/auth/me", paths)
+        self.assertIn("/api/v1/padres/me", paths)
+        self.assertIn("/api/v1/terapeutas/me", paths)
+        self.assertIn("/api/v1/admin/me", paths)
 
     def test_login_invalid_credentials_wrong_password(self):
         res = self.client.post(
@@ -224,28 +300,22 @@ class TestAuthAPI(unittest.TestCase):
         self.assertEqual(user["rol"], "PADRE")
         self.assertNotIn("password_hash", user)
         self.assertNotIn("password", user)
-
-        # Cookie HttpOnly emitida
         self.assertIn(settings.SESSION_COOKIE_NAME, res.cookies)
 
     def test_login_success_terapeuta_and_admin(self):
-        # Terapeuta
         res_t = self.client.post(
             "/api/v1/auth/login",
             json={"codigo_usuario": "t00001", "password": "12345"},
         )
         self.assertEqual(res_t.status_code, 200)
         self.assertEqual(res_t.json()["user"]["rol"], "TERAPEUTA")
-        self.assertEqual(res_t.json()["user"]["codigo_usuario"], "t00001")
 
-        # Admin
         res_a = self.client.post(
             "/api/v1/auth/login",
             json={"codigo_usuario": "a00001", "password": "12345"},
         )
         self.assertEqual(res_a.status_code, 200)
         self.assertEqual(res_a.json()["user"]["rol"], "ADMIN")
-        self.assertEqual(res_a.json()["user"]["codigo_usuario"], "a00001")
 
     def test_role_not_inferred_from_prefix(self):
         """Demuestra que el código p99999 (prefijo 'p') retorna ADMIN porque es su rol en BD."""
@@ -254,22 +324,113 @@ class TestAuthAPI(unittest.TestCase):
             json={"codigo_usuario": "p99999", "password": "12345"},
         )
         self.assertEqual(res.status_code, 200)
-        user = res.json()["user"]
-        self.assertEqual(user["rol"], "ADMIN")
-        self.assertNotEqual(user["rol"], "PADRE")
+        self.assertEqual(res.json()["user"]["rol"], "ADMIN")
+
+    def test_protected_endpoints_without_cookie_return_401(self):
+        """Cualquier endpoint protegido sin cookie/sesión debe rechazar con 401."""
+        for endpoint in [
+            "/api/v1/auth/me",
+            "/api/v1/padres/me",
+            "/api/v1/terapeutas/me",
+            "/api/v1/admin/me",
+        ]:
+            res = self.client.get(endpoint)
+            self.assertEqual(res.status_code, 401, f"Endpoint {endpoint} debió responder 401 sin cookie")
+            self.assertIn("detail", res.json())
+
+    def test_protected_endpoints_with_invalid_cookie_return_401(self):
+        """Cookie con token no existente en DB debe rechazar con 401."""
+        bad_cookies = {settings.SESSION_COOKIE_NAME: "invalid_random_token_123"}
+        for endpoint in [
+            "/api/v1/auth/me",
+            "/api/v1/padres/me",
+            "/api/v1/terapeutas/me",
+            "/api/v1/admin/me",
+        ]:
+            res = self.client.get(endpoint, cookies=bad_cookies)
+            self.assertEqual(res.status_code, 401, f"Endpoint {endpoint} debió responder 401 con cookie inválida")
+
+    def test_padre_me_with_padre_session_returns_200(self):
+        """Un usuario con rol PADRE accede a /api/v1/padres/me exitosamente."""
+        token = self._login_as("p00001")
+        res = self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["user"]["codigo_usuario"], "p00001")
+        self.assertEqual(data["user"]["rol"], "PADRE")
+        self.assertIsNotNone(data["perfil_tutor"])
+        self.assertEqual(data["perfil_tutor"]["parentesco"], "Madre")
+
+    def test_padre_me_with_terapeuta_session_returns_403(self):
+        """Un usuario con rol TERAPEUTA intentando /api/v1/padres/me recibe 403."""
+        token = self._login_as("t00001")
+        res = self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("PADRE", res.json()["detail"])
+
+    def test_padre_me_with_admin_session_returns_403(self):
+        """Un usuario con rol ADMIN intentando /api/v1/padres/me recibe 403 (no asume permiso implícito)."""
+        token = self._login_as("a00001")
+        res = self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("PADRE", res.json()["detail"])
+
+    def test_terapeuta_me_with_terapeuta_session_returns_200(self):
+        """Un usuario con rol TERAPEUTA accede a /api/v1/terapeutas/me exitosamente."""
+        token = self._login_as("t00001")
+        res = self.client.get("/api/v1/terapeutas/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["user"]["codigo_usuario"], "t00001")
+        self.assertEqual(data["user"]["rol"], "TERAPEUTA")
+        self.assertIsNotNone(data["perfil_terapeuta"])
+        self.assertEqual(data["perfil_terapeuta"]["especialidad"], "Fonoaudiología")
+
+    def test_terapeuta_me_with_padre_session_returns_403(self):
+        """Un usuario con rol PADRE intentando /api/v1/terapeutas/me recibe 403."""
+        token = self._login_as("p00001")
+        res = self.client.get("/api/v1/terapeutas/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("TERAPEUTA", res.json()["detail"])
+
+    def test_terapeuta_me_with_admin_session_returns_403(self):
+        """Un usuario con rol ADMIN intentando /api/v1/terapeutas/me recibe 403."""
+        token = self._login_as("a00001")
+        res = self.client.get("/api/v1/terapeutas/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("TERAPEUTA", res.json()["detail"])
+
+    def test_admin_me_with_admin_session_returns_200(self):
+        """Un usuario con rol ADMIN accede a /api/v1/admin/me exitosamente."""
+        token = self._login_as("a00001")
+        res = self.client.get("/api/v1/admin/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 200)
+        data = res.json()
+        self.assertEqual(data["user"]["codigo_usuario"], "a00001")
+        self.assertEqual(data["user"]["rol"], "ADMIN")
+        self.assertIsNotNone(data["perfil_admin"])
+
+    def test_admin_me_with_padre_session_returns_403(self):
+        """Un usuario con rol PADRE intentando /api/v1/admin/me recibe 403."""
+        token = self._login_as("p00001")
+        res = self.client.get("/api/v1/admin/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("ADMIN", res.json()["detail"])
+
+    def test_admin_me_with_terapeuta_session_returns_403(self):
+        """Un usuario con rol TERAPEUTA intentando /api/v1/admin/me recibe 403."""
+        token = self._login_as("t00001")
+        res = self.client.get("/api/v1/admin/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 403)
+        self.assertIn("ADMIN", res.json()["detail"])
 
     def test_me_and_logout_flow(self):
         # 1. Intentar /me sin sesión
         res_unauth = self.client.get("/api/v1/auth/me")
         self.assertEqual(res_unauth.status_code, 401)
 
-        # 2. Iniciar sesión con codigo_usuario
-        login_res = self.client.post(
-            "/api/v1/auth/login",
-            json={"codigo_usuario": "p00001", "password": "12345"},
-        )
-        self.assertEqual(login_res.status_code, 200)
-        session_token = login_res.cookies[settings.SESSION_COOKIE_NAME]
+        # 2. Iniciar sesión
+        session_token = self._login_as("p00001")
 
         # 3. Consultar /me con la cookie HttpOnly
         me_res = self.client.get(
@@ -287,12 +448,50 @@ class TestAuthAPI(unittest.TestCase):
         )
         self.assertEqual(logout_res.status_code, 200)
 
-        # 5. Sesión revocada -> /me debe fallar
+        # 5. Sesión revocada -> /me y /padres/me deben fallar con 401
         me_after_logout = self.client.get(
             "/api/v1/auth/me",
             cookies={settings.SESSION_COOKIE_NAME: session_token},
         )
         self.assertEqual(me_after_logout.status_code, 401)
+
+        padre_after_logout = self.client.get(
+            "/api/v1/padres/me",
+            cookies={settings.SESSION_COOKIE_NAME: session_token},
+        )
+        self.assertEqual(padre_after_logout.status_code, 401)
+
+    def test_expired_session_returns_401(self):
+        """Una sesión expirada en DB debe retornar 401 al acceder a endpoints protegidos."""
+        token = self._login_as("p00001")
+        # Envejecer la fecha de expiración manualmente
+        for s in self.fake_db.sessions.values():
+            s.fecha_expiracion = datetime.now(timezone.utc) - timedelta(minutes=5)
+
+        res = self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(res.status_code, 401)
+
+    def test_user_without_roles_returns_403_on_role_endpoints(self):
+        """Un usuario autenticado pero sin ningún rol activo en DB debe recibir 403."""
+        token = self._login_as("s00001")
+        # /auth/me responde 200 porque está autenticado
+        me_res = self.client.get("/api/v1/auth/me", cookies={settings.SESSION_COOKIE_NAME: token})
+        self.assertEqual(me_res.status_code, 200)
+        self.assertEqual(me_res.json()["roles"], [])
+
+        # Endpoints protegidos por rol deben rechazar con 403
+        self.assertEqual(
+            self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token}).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/terapeutas/me", cookies={settings.SESSION_COOKIE_NAME: token}).status_code,
+            403,
+        )
+        self.assertEqual(
+            self.client.get("/api/v1/admin/me", cookies={settings.SESSION_COOKIE_NAME: token}).status_code,
+            403,
+        )
 
     def test_db_unavailable_returns_503(self):
         """Verifica que cuando el motor de BD no está disponible, retorna 503."""

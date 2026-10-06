@@ -69,3 +69,12 @@ def require_role(required_role: str):
         return current_data
 
     return role_checker
+
+
+# Alias explícito para requerir usuario autenticado
+require_authenticated_user = get_current_user
+
+# Dependencias convenientes y semánticas por rol
+require_padre = require_role("PADRE")
+require_terapeuta = require_role("TERAPEUTA")
+require_admin = require_role("ADMIN")

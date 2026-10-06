@@ -37,3 +37,38 @@ export interface AuthState {
   isLoading: boolean;
   error: string | null;
 }
+
+export interface TutorData {
+  id_tutor: number | null;
+  parentesco: string | null;
+  telefono: string | null;
+  direccion: string | null;
+}
+
+export interface PadreProfileResponse {
+  user: User;
+  perfil_tutor: TutorData | null;
+}
+
+export interface TerapeutaData {
+  id_terapeuta: number | null;
+  especialidad: string | null;
+  anios_experiencia: number | null;
+  idiomas: string | null;
+  descripcion_profesional: string | null;
+}
+
+export interface TerapeutaProfileResponse {
+  user: User;
+  perfil_terapeuta: TerapeutaData | null;
+}
+
+export interface AdministradorData {
+  id_administrador: number | null;
+  fecha_creacion: string | null;
+}
+
+export interface AdminProfileResponse {
+  user: User;
+  perfil_admin: AdministradorData | null;
+}

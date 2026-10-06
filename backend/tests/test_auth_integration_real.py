@@ -126,6 +126,85 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(me_after.status_code, 401)
 
+    async def test_04_padre_real_authorization_and_cross_role_403(self):
+        """Verifica que un PADRE en Supabase real accede a /padres/me y es rechazado con 403 en otros roles."""
+        login_res = await self.client.post(
+            "/api/v1/auth/login",
+            json={"codigo_usuario": "p00001", "password": "12345"},
+        )
+        if login_res.status_code == 401:
+            self.skipTest("Usuario p00001 no disponible en la BD real")
+
+        cookie_val = login_res.cookies.get(settings.SESSION_COOKIE_NAME)
+
+        # 1. Acceso a su endpoint propio -> 200 OK
+        res_padre = await self.client.get(
+            "/api/v1/padres/me",
+            cookies={settings.SESSION_COOKIE_NAME: cookie_val},
+        )
+        self.assertEqual(res_padre.status_code, 200)
+        self.assertEqual(res_padre.json()["user"]["rol"], "PADRE")
+
+        # 2. Intento de acceso a terapeuta -> 403 Forbidden
+        res_tera = await self.client.get(
+            "/api/v1/terapeutas/me",
+            cookies={settings.SESSION_COOKIE_NAME: cookie_val},
+        )
+        self.assertEqual(res_tera.status_code, 403)
+
+        # 3. Intento de acceso a admin -> 403 Forbidden
+        res_admin = await self.client.get(
+            "/api/v1/admin/me",
+            cookies={settings.SESSION_COOKIE_NAME: cookie_val},
+        )
+        self.assertEqual(res_admin.status_code, 403)
+
+        await self.client.post("/api/v1/auth/logout", cookies={settings.SESSION_COOKIE_NAME: cookie_val})
+
+    async def test_05_terapeuta_and_admin_real_authorization(self):
+        """Verifica que TERAPEUTA y ADMIN acceden a sus endpoints respectivos y rechazan accesos cruzados."""
+        # Terapeuta
+        res_login_t = await self.client.post(
+            "/api/v1/auth/login",
+            json={"codigo_usuario": "t00001", "password": "12345"},
+        )
+        if res_login_t.status_code == 200:
+            cookie_t = res_login_t.cookies.get(settings.SESSION_COOKIE_NAME)
+            res_t = await self.client.get(
+                "/api/v1/terapeutas/me",
+                cookies={settings.SESSION_COOKIE_NAME: cookie_t},
+            )
+            self.assertEqual(res_t.status_code, 200)
+
+            # Terapeuta intentando acceder a padre -> 403
+            res_cross = await self.client.get(
+                "/api/v1/padres/me",
+                cookies={settings.SESSION_COOKIE_NAME: cookie_t},
+            )
+            self.assertEqual(res_cross.status_code, 403)
+            await self.client.post("/api/v1/auth/logout", cookies={settings.SESSION_COOKIE_NAME: cookie_t})
+
+        # Administrador
+        res_login_a = await self.client.post(
+            "/api/v1/auth/login",
+            json={"codigo_usuario": "a00001", "password": "12345"},
+        )
+        if res_login_a.status_code == 200:
+            cookie_a = res_login_a.cookies.get(settings.SESSION_COOKIE_NAME)
+            res_a = await self.client.get(
+                "/api/v1/admin/me",
+                cookies={settings.SESSION_COOKIE_NAME: cookie_a},
+            )
+            self.assertEqual(res_a.status_code, 200)
+
+            # Admin intentando acceder a padre -> 403
+            res_admin_padre = await self.client.get(
+                "/api/v1/padres/me",
+                cookies={settings.SESSION_COOKIE_NAME: cookie_a},
+            )
+            self.assertEqual(res_admin_padre.status_code, 403)
+            await self.client.post("/api/v1/auth/logout", cookies={settings.SESSION_COOKIE_NAME: cookie_a})
+
 
 if __name__ == "__main__":
     unittest.main()

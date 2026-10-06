@@ -10,12 +10,36 @@ from sqlalchemy import (
     ForeignKey,
     Integer,
     String,
+    Text,
     UniqueConstraint,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+
+
+class Tutor(Base):
+    """Tabla 'tutores' en PostgreSQL (Perfil de Padre / Tutor)."""
+    __tablename__ = "tutores"
+
+    id_tutor: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id_usuario: Mapped[int] = mapped_column(Integer, ForeignKey("usuarios.id_usuario"), unique=True, nullable=False)
+    parentesco: Mapped[Optional[str]] = mapped_column(String(30), nullable=True)
+    telefono: Mapped[Optional[str]] = mapped_column(String(12), nullable=True)
+    direccion: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+
+
+class Terapeuta(Base):
+    """Tabla 'terapeutas' en PostgreSQL (Perfil de Especialista Clínico)."""
+    __tablename__ = "terapeutas"
+
+    id_terapeuta: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    id_usuario: Mapped[int] = mapped_column(Integer, ForeignKey("usuarios.id_usuario"), unique=True, nullable=False)
+    especialidad: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    anios_experiencia: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    idiomas: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
+    descripcion_profesional: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
 
 
 class Paciente(Base):
