@@ -3,8 +3,8 @@
  */
 
 import React from "react";
-import { View } from "@/app/shared";
-import { PublicNosotros } from "@/app/views/Public";
+import { View } from "@/components/shared";
+import { PublicNosotros } from "./Public";
 
 interface AboutUsPageProps {
   go: (v: View) => void;

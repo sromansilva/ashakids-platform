@@ -4,8 +4,8 @@
  */
 
 import React from "react";
-import { View } from "@/app/shared";
-import { TerapeutaHome } from "@/app/views/Terapeuta";
+import { View } from "@/components/shared";
+import { TerapeutaHome } from "./Terapeuta";
 import { RoleRoute } from "@/routes/RoleRoute";
 
 interface TerapeutaDashboardPageProps {

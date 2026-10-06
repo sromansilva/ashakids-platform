@@ -4,8 +4,8 @@
  */
 
 import React from "react";
-import { View } from "@/app/shared";
-import { AdminPanel } from "@/app/views/Admin";
+import { View } from "@/components/shared";
+import { AdminPanel } from "./Admin";
 import { RoleRoute } from "@/routes/RoleRoute";
 
 interface AdminDashboardPageProps {

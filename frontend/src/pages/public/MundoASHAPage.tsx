@@ -3,8 +3,8 @@
  */
 
 import React from "react";
-import { View } from "@/app/shared";
-import { PublicMundo } from "@/app/views/Public";
+import { View } from "@/components/shared";
+import { PublicMundo } from "./Public";
 
 interface MundoASHAPageProps {
   go: (v: View) => void;

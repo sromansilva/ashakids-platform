@@ -13,7 +13,7 @@ import {
   Lock,
   User as UserIcon,
 } from "lucide-react";
-import { B, IsotipoWhite, LoginIllustration, AshaKidsLogo } from "@/app/shared";
+import { B, IsotipoWhite, LoginIllustration, AshaKidsLogo } from "@/components/shared";
 import { useAuth } from "@/hooks/useAuth";
 import { SemanticRole } from "@/types/auth";
 
