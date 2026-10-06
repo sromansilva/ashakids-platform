@@ -5,8 +5,8 @@ from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class LoginRequest(BaseModel):
-    """Payload para solicitud de inicio de sesión."""
-    email: str
+    """Payload para solicitud de inicio de sesión mediante código de usuario único (VARCHAR(6))."""
+    codigo_usuario: str
     password: str
 
 

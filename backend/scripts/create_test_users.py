@@ -26,7 +26,7 @@ if str(BACKEND_DIR) not in sys.path:
 
 from app.core.security import hash_password, verify_password
 
-# Usuarios de prueba adaptados al esquema real
+# Usuarios de prueba adaptados al esquema real (VARCHAR(6))
 TEST_USERS = [
     {
         "email": "admin@ashakids.test",
@@ -34,7 +34,7 @@ TEST_USERS = [
         "role": "ADMIN",
         "nombres": "Administrador",
         "apellidos": "Sistema",
-        "codigo_usuario": "ADM-001",
+        "codigo_usuario": "a00001",
     },
     {
         "email": "terapeuta@ashakids.test",
@@ -42,7 +42,7 @@ TEST_USERS = [
         "role": "TERAPEUTA",
         "nombres": "Terapeuta",
         "apellidos": "Especialista",
-        "codigo_usuario": "TER-001",
+        "codigo_usuario": "t00001",
     },
     {
         "email": "padre@ashakids.test",
@@ -50,7 +50,7 @@ TEST_USERS = [
         "role": "PADRE",
         "nombres": "Padre",
         "apellidos": "Familia",
-        "codigo_usuario": "PAD-001",
+        "codigo_usuario": "p00001",
     },
 ]
 

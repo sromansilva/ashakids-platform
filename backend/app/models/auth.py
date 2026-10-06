@@ -13,10 +13,10 @@ class Usuario(Base):
     __tablename__ = "usuarios"
 
     id_usuario: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    nombres: Mapped[str] = mapped_column(String(100), nullable=False)
-    apellidos: Mapped[str] = mapped_column(String(100), nullable=False)
-    codigo_usuario: Mapped[Optional[str]] = mapped_column(String(50), nullable=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True, nullable=False)
+    nombres: Mapped[str] = mapped_column(String(60), nullable=False)
+    apellidos: Mapped[str] = mapped_column(String(80), nullable=False)
+    codigo_usuario: Mapped[str] = mapped_column(String(6), unique=True, index=True, nullable=False)
+    email: Mapped[str] = mapped_column(String(150), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     fecha_creacion: Mapped[datetime] = mapped_column(
@@ -42,8 +42,8 @@ class Rol(Base):
     __tablename__ = "roles"
 
     id_rol: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    nombre_rol: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
-    descripcion: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
+    nombre_rol: Mapped[str] = mapped_column(String(12), unique=True, nullable=False)
+    descripcion: Mapped[Optional[str]] = mapped_column(String(150), nullable=True)
     fecha_creacion: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

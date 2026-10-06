@@ -9,14 +9,14 @@ export interface User {
   email: string;
   nombres: string;
   apellidos: string;
-  codigo_usuario?: string | null;
+  codigo_usuario: string;
   rol: SemanticRole;
   roles: SemanticRole[];
   activo: boolean;
 }
 
 export interface LoginCredentials {
-  email: string;
+  codigo_usuario: string;
   password: string;
 }
 

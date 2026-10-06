@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import List, Union
+from typing import List, Optional, Union
+import urllib.parse
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -14,8 +15,21 @@ class Settings(BaseSettings):
     PORT: int = 8000
     ENVIRONMENT: str = "development"
 
-    # Conexión a PostgreSQL en Supabase mediante SQLAlchemy 2.x
+    # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""
+
+    # Parámetros individuales de PostgreSQL (Soporta mayúsculas y minúsculas)
+    DB_USER: Optional[str] = None
+    DB_PASSWORD: Optional[str] = None
+    DB_HOST: Optional[str] = None
+    DB_PORT: Optional[int] = None
+    DB_NAME: Optional[str] = None
+
+    user: Optional[str] = None
+    password: Optional[str] = None
+    host: Optional[str] = None
+    port: Optional[int] = None
+    database: Optional[str] = None
 
     # Configuración de Sesión y Cookies HttpOnly
     SESSION_COOKIE_NAME: str = "ashakids_session"
@@ -31,6 +45,31 @@ class Settings(BaseSettings):
     # Credenciales de infraestructura Supabase (si se requieren para servicios adicionales)
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
+
+    @property
+    def effective_database_url(self) -> str:
+        """Determina la URL de base de datos activa para SQLAlchemy 2.x + asyncpg.
+        
+        Prioriza DATABASE_URL si está presente; de lo contrario ensambla a partir de
+        host, port, database, user y password (codificando caracteres especiales).
+        """
+        if self.DATABASE_URL:
+            url = self.DATABASE_URL
+            if url.startswith("postgresql://"):
+                url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
+            return url
+
+        u = self.DB_USER or self.user
+        p = self.DB_PASSWORD or self.password
+        h = self.DB_HOST or self.host
+        pt = self.DB_PORT or self.port or 5432
+        db = self.DB_NAME or self.database
+
+        if u and p and h and db:
+            encoded_password = urllib.parse.quote_plus(p)
+            return f"postgresql+asyncpg://{u}:{encoded_password}@{h}:{pt}/{db}"
+
+        return ""
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod

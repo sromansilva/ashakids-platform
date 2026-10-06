@@ -29,8 +29,8 @@ async def get_current_token(
 
 async def get_current_user(
     token: Optional[str] = Depends(get_current_token),
-    db: Optional[AsyncSession] = Depends(get_db),
-) -> Tuple[Usuario | dict, List[str]]:
+    db: AsyncSession = Depends(get_db),
+) -> Tuple[Usuario, List[str]]:
     """Valida la sesión y retorna el usuario autenticado y sus roles.
     
     Lanza HTTPException 401 si no está autenticado o la sesión expiró.
@@ -56,8 +56,8 @@ async def get_current_user(
 def require_role(required_role: str):
     """Dependencia para restringir el acceso a usuarios con un rol específico."""
     async def role_checker(
-        current_data: Tuple[Usuario | dict, List[str]] = Depends(get_current_user)
-    ) -> Tuple[Usuario | dict, List[str]]:
+        current_data: Tuple[Usuario, List[str]] = Depends(get_current_user)
+    ) -> Tuple[Usuario, List[str]]:
         _, roles = current_data
         # Coincidencia insensible a mayúsculas
         upper_roles = [r.upper() for r in roles]

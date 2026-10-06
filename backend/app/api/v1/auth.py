@@ -18,35 +18,20 @@ from app.services.auth_service import (
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
 
 
-def build_user_response(user: Usuario | dict, roles: List[str]) -> UserResponse:
-    """Construye un UserResponse seguro compatible con objetos SQLAlchemy y diccionarios."""
-    if isinstance(user, dict):
-        uid = user["id_usuario"]
-        email = user["email"]
-        nombres = user["nombres"]
-        apellidos = user["apellidos"]
-        codigo = user.get("codigo_usuario")
-        activo = user.get("activo", True)
-    else:
-        uid = user.id_usuario
-        email = user.email
-        nombres = user.nombres
-        apellidos = user.apellidos
-        codigo = user.codigo_usuario
-        activo = user.activo
-
+def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
+    """Construye un UserResponse seguro compatible con el modelo Usuario."""
     # Rol semántico principal en mayúsculas
     main_role = roles[0].upper() if roles else "PADRE"
 
     return UserResponse(
-        id_usuario=uid,
-        email=email,
-        nombres=nombres,
-        apellidos=apellidos,
-        codigo_usuario=codigo,
+        id_usuario=user.id_usuario,
+        email=user.email,
+        nombres=user.nombres,
+        apellidos=user.apellidos,
+        codigo_usuario=user.codigo_usuario,
         rol=main_role,
         roles=[r.upper() for r in roles],
-        activo=activo,
+        activo=user.activo,
     )
 
 
@@ -54,14 +39,14 @@ def build_user_response(user: Usuario | dict, roles: List[str]) -> UserResponse:
     "/login",
     response_model=AuthResponse,
     summary="Iniciar sesión",
-    description="Verifica credenciales con Argon2id, genera una sesión segura y fija una cookie HttpOnly.",
+    description="Verifica credenciales con Argon2id por codigo_usuario, genera una sesión en PostgreSQL y fija una cookie HttpOnly.",
 )
 async def login(
     req: LoginRequest,
     response: Response,
     db: AsyncSession = Depends(get_db),
 ):
-    auth_result = await authenticate_user(db, req.email, req.password)
+    auth_result = await authenticate_user(db, req.codigo_usuario, req.password)
     if not auth_result:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -69,10 +54,9 @@ async def login(
         )
 
     user, roles = auth_result
-    uid = user["id_usuario"] if isinstance(user, dict) else user.id_usuario
 
-    # Crear sesión y obtener token en texto claro para la cookie
-    raw_token, expires_at = await create_user_session(db, uid)
+    # Crear sesión en PostgreSQL y obtener token en texto claro para la cookie
+    raw_token, expires_at = await create_user_session(db, user.id_usuario)
 
     # Establecer cookie HttpOnly (protege contra XSS)
     is_prod = settings.ENVIRONMENT.lower() == "production"
@@ -97,7 +81,7 @@ async def login(
     "/logout",
     response_model=MessageResponse,
     summary="Cerrar sesión",
-    description="Revoca la sesión activa en el backend y limpia la cookie de sesión del navegador.",
+    description="Revoca la sesión activa en PostgreSQL y limpia la cookie de sesión del navegador.",
 )
 async def logout(
     response: Response,
@@ -119,10 +103,10 @@ async def logout(
     "/me",
     response_model=UserResponse,
     summary="Obtener usuario actual",
-    description="Retorna el perfil y rol del usuario correspondiente a la sesión activa.",
+    description="Retorna el perfil y roles reales del usuario correspondientes a la sesión activa en PostgreSQL.",
 )
 async def get_me(
-    current_data: Tuple[Usuario | dict, List[str]] = Depends(get_current_user),
+    current_data: Tuple[Usuario, List[str]] = Depends(get_current_user),
 ):
     user, roles = current_data
     return build_user_response(user, roles)

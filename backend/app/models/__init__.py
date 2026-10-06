@@ -1,11 +1,15 @@
-"""Paquete de modelos SQLAlchemy 2.x."""
-
 from app.models.auth import (
     Administrador,
     Rol,
     SesionAutenticacion,
     Usuario,
     UsuarioRol,
+)
+from app.models.perfiles import (
+    Logro,
+    Paciente,
+    Perfil,
+    PerfilLogro,
 )
 
 __all__ = [
@@ -14,4 +18,9 @@ __all__ = [
     "Administrador",
     "UsuarioRol",
     "SesionAutenticacion",
+    "Paciente",
+    "Perfil",
+    "Logro",
+    "PerfilLogro",
 ]
+

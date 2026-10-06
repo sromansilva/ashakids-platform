@@ -21,19 +21,28 @@ class Base(DeclarativeBase):
     pass
 
 
-# Inicializar el motor asíncrono si DATABASE_URL está configurada
+# Inicializar el motor asíncrono
 async_engine: Optional[AsyncEngine] = None
 async_session_factory: Optional[async_sessionmaker[AsyncSession]] = None
 
-if settings.DATABASE_URL:
+
+def init_db(database_url: Optional[str] = None) -> None:
+    """Inicializa o actualiza el motor y la fábrica de sesiones asíncronas con SQLAlchemy 2.x."""
+    global async_engine, async_session_factory
+    url = database_url or settings.effective_database_url
+    if not url:
+        async_engine = None
+        async_session_factory = None
+        logger.warning("DATABASE_URL no está configurada. Las peticiones a BD retornarán 503 Service Unavailable.")
+        return
+
     try:
-        # Asegurar prefijo de driver asyncpg si se pasó postgresql://
-        db_url = settings.DATABASE_URL
-        if db_url.startswith("postgresql://"):
-            db_url = db_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        # Asegurar prefijo de driver asyncpg si se especificó postgresql://
+        if url.startswith("postgresql://"):
+            url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
         async_engine = create_async_engine(
-            db_url,
+            url,
             echo=False,
             future=True,
             pool_pre_ping=True,
@@ -46,19 +55,27 @@ if settings.DATABASE_URL:
         )
         logger.info("Motor asíncrono de SQLAlchemy 2.x inicializado con éxito.")
     except Exception as e:
-        logger.warning("No se pudo inicializar la conexión a PostgreSQL: %s", e)
+        async_engine = None
+        async_session_factory = None
+        logger.error("Error al inicializar la conexión a PostgreSQL: %s", e)
 
 
-async def get_db() -> AsyncGenerator[Optional[AsyncSession], None]:
+# Inicialización en la carga del módulo
+init_db()
+
+
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Generador de dependencias de sesión de base de datos para FastAPI.
     
     Cierra o hace rollback automáticamente tras cada petición HTTP.
+    Lanza HTTP 503 si la base de datos no está disponible en tiempo de ejecución.
     """
     if async_session_factory is None:
-        # Si la base de datos aún no tiene DATABASE_URL configurada en el entorno,
-        # yield None para permitir que el backend opere en modo desarrollo / mock
-        yield None
-        return
+        logger.error("DATABASE_URL no configurada o motor no inicializado.")
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Servicio de base de datos no disponible. Verifique la configuración del servidor.",
+        )
 
     async with async_session_factory() as session:
         try:

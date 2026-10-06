@@ -1,6 +1,7 @@
 /**
  * Página de Login conectada a FastAPI (POST /api/v1/auth/login).
  * Conserva el diseño visual exportado de Figma y conecta con useAuth().
+ * Identificador de acceso: codigo_usuario (VARCHAR(6)).
  */
 
 import React, { useState } from "react";
@@ -10,7 +11,7 @@ import {
   Eye,
   EyeOff,
   Lock,
-  Mail,
+  User as UserIcon,
 } from "lucide-react";
 import { B, IsotipoWhite, LoginIllustration, AshaKidsLogo } from "@/app/shared";
 import { useAuth } from "@/hooks/useAuth";
@@ -28,26 +29,26 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onForgotPassword,
 }) => {
   const { login, isLoading } = useAuth();
-  const [email, setEmail] = useState("");
+  const [codigoUsuario, setCodigoUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSubmit = async (e?: React.FormEvent, customEmail?: string, customPass?: string) => {
+  const handleSubmit = async (e?: React.FormEvent, customCodigo?: string, customPass?: string) => {
     if (e) e.preventDefault();
     setErrorMessage(null);
 
-    const emailToSend = customEmail || email;
+    const codigoToSend = (customCodigo || codigoUsuario).trim();
     const passToSend = customPass || password;
 
-    if (!emailToSend || !passToSend) {
-      setErrorMessage("Por favor ingresa tu correo y contraseña.");
+    if (!codigoToSend || !passToSend) {
+      setErrorMessage("Por favor ingresa tu código de usuario y contraseña.");
       return;
     }
 
     try {
-      const user = await login({ email: emailToSend, password: passToSend });
+      const user = await login({ codigo_usuario: codigoToSend, password: passToSend });
       onSuccess(user.rol);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error al iniciar sesión.";
@@ -55,10 +56,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     }
   };
 
-  const handleQuickDemo = (demoEmail: string) => {
-    setEmail(demoEmail);
+  const handleQuickDemo = (demoCodigo: string) => {
+    setCodigoUsuario(demoCodigo);
     setPassword("12345");
-    handleSubmit(undefined, demoEmail, "12345");
+    handleSubmit(undefined, demoCodigo, "12345");
   };
 
   return (
@@ -120,7 +121,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
 
           <h1 className="text-2xl font-black text-[#1C1135] mb-1">Bienvenido de vuelta 👋</h1>
           <p className="text-sm text-[#7C6F9A] font-medium mb-6">
-            Inicia sesión con tu cuenta de ASHAKids.
+            Inicia sesión con tu código de usuario de ASHAKids.
           </p>
 
           {errorMessage && (
@@ -131,20 +132,21 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           )}
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            {/* Campo Email */}
+            {/* Campo Código de Usuario */}
             <div>
               <label className="block text-sm font-extrabold text-[#1C1135] mb-1.5">
-                Correo electrónico
+                Código de usuario
               </label>
               <div className="relative">
-                <Mail size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
+                <UserIcon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                 <input
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="ejemplo@ashakids.test"
+                  type="text"
+                  value={codigoUsuario}
+                  onChange={e => setCodigoUsuario(e.target.value)}
+                  placeholder="Ej. p00001, t00001, a00001"
                   disabled={isLoading}
-                  className="w-full rounded-2xl border border-[#E8E5F4] bg-white pl-10 pr-4 py-3 text-sm font-medium focus:outline-none focus:border-violet-400"
+                  maxLength={6}
+                  className="w-full rounded-2xl border border-[#E8E5F4] bg-white pl-10 pr-4 py-3 text-sm font-medium focus:outline-none focus:border-violet-400 font-mono"
                 />
               </div>
             </div>
@@ -219,23 +221,23 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           {/* Accesos rápidos de desarrollo (Usuarios de prueba oficiales) */}
           <div className="mt-6 p-4 rounded-2xl border border-[#E8E5F4] bg-white shadow-sm">
             <p className="text-xs font-extrabold text-[#9E95B7] uppercase tracking-wider mb-2.5">
-              Usuarios de desarrollo (Fase 2)
+              Usuarios de desarrollo (Fase 3A)
             </p>
             <div className="flex flex-col gap-1.5">
               {[
-                { label: "👨‍👩‍👧 Padre / Familia", email: "padre@ashakids.test", role: "PADRE" },
-                { label: "👩‍⚕️ Terapeuta", email: "terapeuta@ashakids.test", role: "TERAPEUTA" },
-                { label: "🛡️ Administrador", email: "admin@ashakids.test", role: "ADMIN" },
+                { label: "👨‍👩‍👧 Padre / Familia", codigo: "p00001", role: "PADRE" },
+                { label: "👩‍⚕️ Terapeuta", codigo: "t00001", role: "TERAPEUTA" },
+                { label: "🛡️ Administrador", codigo: "a00001", role: "ADMIN" },
               ].map(d => (
                 <button
-                  key={d.email}
+                  key={d.codigo}
                   type="button"
                   disabled={isLoading}
-                  onClick={() => handleQuickDemo(d.email)}
+                  onClick={() => handleQuickDemo(d.codigo)}
                   className="flex items-center justify-between text-xs px-3 py-2 rounded-xl hover:bg-violet-50 border border-transparent hover:border-[#E8E5F4] transition-all text-left"
                 >
                   <span className="font-extrabold text-[#1C1135]">{d.label}</span>
-                  <span className="font-mono text-[11px] text-[#7C6F9A]">{d.email}</span>
+                  <span className="font-mono text-[11px] text-[#7C6F9A] font-bold">{d.codigo}</span>
                 </button>
               ))}
             </div>
