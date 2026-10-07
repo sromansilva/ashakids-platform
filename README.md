@@ -79,3 +79,14 @@ Una vez iniciado el backend, verificar en:
 
 - Health check: `http://localhost:8000/health`
 - Documentación OpenAPI interactiva: `http://localhost:8000/docs`
+## Conocimiento compartido para el equipo
+
+Leer [contexto actual](docs/PROJECT_CONTEXT.md), [arquitectura](docs/architecture.md) y [flujo Graphify](docs/knowledge-workflow.md). La skill está en `.agents/skills/graphify/`; las instrucciones para agentes están en `AGENTS.md`.
+
+```sh
+python tools/knowledge/manage.py setup
+python tools/knowledge/manage.py query "authenticate_user"
+python tools/knowledge/manage.py refresh
+```
+
+El entorno y mapa son regenerables y no se versionan. Graphify es tooling de desarrollo separado del frontend y backend.

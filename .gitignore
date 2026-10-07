@@ -44,3 +44,7 @@ Thumbs.db
 .idea/
 .vscode/
 ~$*
+# Development knowledge tooling (generated independently in each clone)
+.venv-graphify/
+graphify-out/
+.graphify_cache/
