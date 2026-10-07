@@ -19,6 +19,8 @@ build/
 
 # Python
 .venv/
+.venv*/
+graphify-out/
 venv/
 ENV/
 env/
