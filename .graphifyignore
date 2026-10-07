@@ -1,0 +1,14 @@
+# Code-only scope; documentation is maintained separately in docs/.
+.agents/
+.github/
+tools/
+docs/
+.venv-graphify/
+graphify-out/
+backend/scripts/
+frontend/public/
+frontend/src/assets/
+**/package-lock.json
+**/skills-lock.json
+**/.env*
+**/*.log
