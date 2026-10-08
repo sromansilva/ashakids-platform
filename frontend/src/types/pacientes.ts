@@ -55,3 +55,5 @@ export interface OperacionHijoResponse {
   message: string;
   paciente?: PacienteItem | null;
 }
+
+export type HijoItemResponse = PacienteItem;
