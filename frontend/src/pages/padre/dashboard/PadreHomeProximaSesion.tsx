@@ -6,8 +6,12 @@ import { Crd } from "@/components/common/Crd";
 import { Bdg } from "@/components/common/Bdg";
 import { Av } from "@/components/common/Av";
 
-type Props = Pick<ReturnType<typeof usePadreHome>, "go" | "setShowReprog" | "setShowDetails" | "child" | "recommendations" | "wellnessArticles" | "setShowArticle">;
-export function PadreHomeProximaSesion({ go, setShowReprog, setShowDetails, child, recommendations, wellnessArticles, setShowArticle }: Props) {
+type Props = Pick<ReturnType<typeof usePadreHome>, "go" | "setShowReprog" | "setShowDetails" | "child" | "recommendations" | "wellnessArticles" | "setShowArticle"> & { nextSessionAppt?: ReturnType<typeof usePadreHome>["nextSessionAppt"] };
+export function PadreHomeProximaSesion({ go, setShowReprog, setShowDetails, child, recommendations, wellnessArticles, setShowArticle, nextSessionAppt }: Props) {
+  const therapistName = nextSessionAppt?.therapist ?? "Dra. Ana Ruiz";
+  const therapistInitials = therapistName.split(" ").map((w: string) => w[0]).filter(Boolean).slice(-2).join("").toUpperCase() || "AR";
+  const apptStatus = nextSessionAppt?.status ?? "confirmada";
+  const statusColor = apptStatus === "confirmada" ? "green" : apptStatus === "cancelada" ? "red" : "orange";
 return (<div className="flex flex-col gap-5">
           {/* Next session premium card */}
           <Crd
@@ -18,26 +22,26 @@ return (<div className="flex flex-col gap-5">
               <h3 className="font-extrabold text-[#1C1135] text-base">
                 Próxima Sesión
               </h3>
-              <Bdg color="green">
+              <Bdg color={statusColor}>
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />{" "}
-                Confirmada
+                {apptStatus.charAt(0).toUpperCase() + apptStatus.slice(1)}
               </Bdg>
             </div>
             <div className="flex items-start gap-4">
-              <Av initials="AR" color={B.violet} size="xl" />
+              <Av initials={therapistInitials} color={B.violet} size="xl" />
               <div className="flex-1 min-w-0">
                 <p className="font-extrabold text-[#1C1135] text-lg leading-tight">
-                  Dra. Ana Ruiz
+                  {therapistName}
                 </p>
                 <p className="text-sm text-[#7C6F9A] font-medium mb-3">
-                  Terapia del Lenguaje · Mateo
+                  Terapia del Lenguaje · {child?.name ?? "Paciente"}
                 </p>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
                   {[
-                    ["📅", "Fecha", "30 Jul 2026"],
-                    ["🕙", "Hora", "10:00 AM"],
+                    ["📅", "Fecha", nextSessionAppt?.date ?? "30 Jul 2026"],
+                    ["🕙", "Hora", nextSessionAppt?.time ?? "10:00 AM"],
                     ["⏱️", "Duración", "45 min"],
-                    ["🎥", "Tipo", "Virtual"],
+                    ["🎥", "Tipo", nextSessionAppt?.type === "virtual" ? "Virtual" : "Presencial"],
                   ].map(([icon, lbl, val]) => (
                     <div
                       key={lbl}

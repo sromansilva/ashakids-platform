@@ -22,7 +22,7 @@ router = APIRouter(prefix="/admin", tags=["Administración"])
 )
 async def get_admin_me(
     current_data: Tuple[Usuario, List[str]] = Depends(require_admin),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db, scope="function"),
 ):
     user, roles = current_data
 

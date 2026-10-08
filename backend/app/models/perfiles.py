@@ -47,7 +47,7 @@ class Paciente(Base):
     __tablename__ = "pacientes"
 
     id_paciente: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    id_tutor: Mapped[int] = mapped_column(Integer, nullable=False)
+    id_tutor: Mapped[int] = mapped_column(Integer, ForeignKey("tutores.id_tutor"), nullable=False)
     nombres_paciente: Mapped[str] = mapped_column(String(60), nullable=False)
     apellidos_paciente: Mapped[str] = mapped_column(String(80), nullable=False)
     fecha_nacimiento: Mapped[date] = mapped_column(Date, nullable=False)

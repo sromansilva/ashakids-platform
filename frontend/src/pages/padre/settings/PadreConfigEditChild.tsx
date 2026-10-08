@@ -1,3 +1,6 @@
+import { patientsService } from "@/services/clinicalService";
+import { useWrite } from "@/hooks/useRemoteData";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 import type { usePadreConfig } from "@/pages/padre/settings/usePadreConfig";
 import { X } from "lucide-react";
 import { Btn } from "@/components/common/Btn";
@@ -5,6 +8,7 @@ import { Inp } from "@/components/common/Inp";
 
 type Props = Pick<ReturnType<typeof usePadreConfig>, "setEditChild" | "editChild" | "setChildList" | "showToast">;
 export function PadreConfigEditChild({ setEditChild, editChild, setChildList, showToast }: Props) {
+const save = useWrite(() => patientsService.edit(editChild!.id, { nombres_paciente: editChild!.name, apellidos_paciente: editChild!.surname, fecha_nacimiento: editChild!.birthdate, sexo: editChild!.sex }), () => { setChildList(); setEditChild(null); showToast("Cambios guardados en el servidor"); });
 return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -54,6 +58,9 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                   </p>
                 )}
               </div>
+              <Inp label="Apellidos" value={editChild.surname} onChange={surname => setEditChild(c => c ? { ...c, surname } : null)} />
+              <Inp label="Sexo" value={editChild.sex} onChange={sex => setEditChild(c => c ? { ...c, sex } : null)} />
+              <RemoteFeedback error={save.error} />
               <div className="flex gap-3">
                 <Btn
                   variant="secondary"
@@ -65,15 +72,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                 <Btn
                   variant="primary"
                   className="flex-1 justify-center"
-                  onClick={() => {
-                    setChildList((prev) =>
-                      prev.map((c) =>
-                        c.id === editChild!.id ? editChild! : c,
-                      ),
-                    );
-                    setEditChild(null);
-                    showToast("Cambios guardados");
-                  }}
+                  disabled={save.isPending} onClick={() => void save.submit(undefined)}
                 >
                   Guardar
                 </Btn>

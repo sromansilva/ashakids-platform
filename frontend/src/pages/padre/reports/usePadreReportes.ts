@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useRemote } from "@/hooks/useRemoteData";
+import { sessionsService } from "@/services/clinicalService";
+import { readAllPages } from "@/services/readAllPages";
 
 export function usePadreReportes() {
 const [tab, setTab] = useState<"sesiones" | "progreso">(
@@ -15,74 +18,15 @@ const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(""), 3000);
   };
-const sessions = [
-    {
-      id: 1,
-      date: "30 Jul 2026",
-      time: "10:00 AM",
-      duration: "45 min",
-      therapist: "Dra. Ana Ruiz",
-      type: "virtual",
-      goals: ["Pronunciación R", "Comprensión verbal"],
-      notes:
-        "Excelente progreso en R inicial. Se recomienda repetir ejercicios en casa.",
-    },
-    {
-      id: 2,
-      date: "23 Jul 2026",
-      time: "10:00 AM",
-      duration: "45 min",
-      therapist: "Dra. Ana Ruiz",
-      type: "virtual",
-      goals: ["Vocabulario", "Lenguaje expresivo"],
-      notes:
-        "Amplió vocabulario a 12 nuevas palabras. Participó activamente.",
-    },
-    {
-      id: 3,
-      date: "16 Jul 2026",
-      time: "10:30 AM",
-      duration: "40 min",
-      therapist: "Dra. Ana Ruiz",
-      type: "virtual",
-      goals: ["Atención sostenida", "Comprensión"],
-      notes:
-        "Mejoró 15% en tiempo de atención sostenida. Excelente concentración.",
-    },
-    {
-      id: 4,
-      date: "9 Jul 2026",
-      time: "10:00 AM",
-      duration: "45 min",
-      therapist: "Dra. Ana Ruiz",
-      type: "virtual",
-      goals: ["Pronunciación R", "Lectura"],
-      notes:
-        "Leyó su primer cuento completo. Gran logro emocional para la familia.",
-    },
-    {
-      id: 5,
-      date: "2 Jul 2026",
-      time: "10:00 AM",
-      duration: "45 min",
-      therapist: "Dra. Ana Ruiz",
-      type: "virtual",
-      goals: ["Vocabulario", "Comprensión verbal"],
-      notes:
-        "Trabajó con tarjetas de imágenes. Identificó 20 nuevas palabras.",
-    },
-    {
-      id: 6,
-      date: "25 Jun 2026",
-      time: "10:30 AM",
-      duration: "40 min",
-      therapist: "Dra. Ana Ruiz",
-      type: "virtual",
-      goals: ["Lenguaje expresivo", "Frases"],
-      notes:
-        "Construyó frases de 5-6 palabras con estructura correcta.",
-    },
-  ];
+const sessionsQuery = useRemote(['sessions'], signal => readAllPages(offset => sessionsService.list({ limit: 100, offset }, signal), signal));
+const sessions = (sessionsQuery.data ?? []).map(s => ({
+  id: s.id_sesion, appointmentId: s.id_reserva, patient: s.cita.paciente_nombre,
+  date: new Date(s.cita.fecha_hora_inicio).toLocaleDateString('es-PE', { timeZone: 'America/Lima' }),
+  time: new Date(s.cita.fecha_hora_inicio).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit' }),
+  duration: s.fecha_hora_inicio_real && s.fecha_hora_fin_real ? `${Math.round((Date.parse(s.fecha_hora_fin_real) - Date.parse(s.fecha_hora_inicio_real))/60000)} min` : 'Sin duración registrada',
+  therapist: s.cita.terapeuta_nombre, type: s.cita.modalidad === 'VIRTUAL' ? 'virtual' : 'presencial',
+  goals: [] as string[], notes: '', state: s.estado_sesion,
+}));
 const reports = [
     {
       id: 1,
@@ -161,5 +105,5 @@ const downloadReport = (r: (typeof reports)[0]) => {
     ]);
     showToast(`Descargando "${r.title}"...`);
   };
-return { tab, setTab, toast, setToast, openSession, setOpenSession, reportViewId, setReportViewId, showToast, sessions, reports, selectedReport, downloadPdf, downloadReport };
+return { sessionsQuery, tab, setTab, toast, setToast, openSession, setOpenSession, reportViewId, setReportViewId, showToast, sessions, reports, selectedReport, downloadPdf, downloadReport };
 }

@@ -4,8 +4,8 @@ import { B } from "@/theme/brand/B";
 import { Av } from "@/components/common/Av";
 import { ChildPicker } from "@/pages/padre/dashboard/ChildPicker";
 
-type Props = Pick<ReturnType<typeof usePadreHome>, "padreUserName" | "padrePlan" | "activeChild" | "handleSetChild" | "searchVal" | "setSearchVal" | "searchResults" | "go" | "setShowNotifs" | "setNotifsRead" | "onNotifsRead" | "hasUnread" | "showNotifs" | "notifs">;
-export function PadreHomeBuenosDias({ padreUserName, padrePlan, activeChild, handleSetChild, searchVal, setSearchVal, searchResults, go, setShowNotifs, setNotifsRead, onNotifsRead, hasUnread, showNotifs, notifs }: Props) {
+type Props = Pick<ReturnType<typeof usePadreHome>, "padreUserName" | "padrePlan" | "activeChild" | "handleSetChild" | "searchVal" | "setSearchVal" | "searchResults" | "go" | "setShowNotifs" | "setNotifsRead" | "onNotifsRead" | "hasUnread" | "showNotifs" | "notifs" | "childrenList">;
+export function PadreHomeBuenosDias({ padreUserName, padrePlan, activeChild, handleSetChild, searchVal, setSearchVal, searchResults, go, setShowNotifs, setNotifsRead, onNotifsRead, hasUnread, showNotifs, notifs, childrenList }: Props) {
 return (<div className="hidden md:flex items-center justify-between px-6 py-4 bg-white border-b border-[#E8E5F4] sticky top-0 z-20 gap-4">
         <div className="min-w-0">
           <p className="text-xs font-black text-[#9E95B7] uppercase tracking-widest">
@@ -20,7 +20,7 @@ return (<div className="hidden md:flex items-center justify-between px-6 py-4 bg
         </div>
         <div className="flex items-center gap-3 flex-shrink-0">
           {/* Child selector — custom dropdown */}
-          {padrePlan === "familia" && <ChildPicker activeChild={activeChild} setActiveChild={handleSetChild} />}
+          {padrePlan === "familia" && <ChildPicker activeChild={activeChild} setActiveChild={handleSetChild} childrenList={childrenList} />}
 
           {/* Search with results dropdown */}
           <div className="relative">

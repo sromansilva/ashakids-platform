@@ -471,27 +471,12 @@ class TestAuthAPI(unittest.TestCase):
         res = self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token})
         self.assertEqual(res.status_code, 401)
 
-    def test_user_without_roles_returns_403_on_role_endpoints(self):
-        """Un usuario autenticado pero sin ningún rol activo en DB debe recibir 403."""
-        token = self._login_as("s00001")
-        # /auth/me responde 200 porque está autenticado
-        me_res = self.client.get("/api/v1/auth/me", cookies={settings.SESSION_COOKIE_NAME: token})
-        self.assertEqual(me_res.status_code, 200)
-        self.assertEqual(me_res.json()["roles"], [])
-
-        # Endpoints protegidos por rol deben rechazar con 403
-        self.assertEqual(
-            self.client.get("/api/v1/padres/me", cookies={settings.SESSION_COOKIE_NAME: token}).status_code,
-            403,
-        )
-        self.assertEqual(
-            self.client.get("/api/v1/terapeutas/me", cookies={settings.SESSION_COOKIE_NAME: token}).status_code,
-            403,
-        )
-        self.assertEqual(
-            self.client.get("/api/v1/admin/me", cookies={settings.SESSION_COOKIE_NAME: token}).status_code,
-            403,
-        )
+    def test_user_without_roles_cannot_login(self):
+        """No inventar un rol PADRE ni emitir cookies a una cuenta sin roles."""
+        res = self.client.post("/api/v1/auth/login", json={
+            "codigo_usuario": "s00001", "password": "12345"})
+        self.assertEqual(res.status_code, 401)
+        self.assertNotIn("set-cookie", res.headers)
 
     def test_db_unavailable_returns_503(self):
         """Verifica que cuando el motor de BD no está disponible, retorna 503."""

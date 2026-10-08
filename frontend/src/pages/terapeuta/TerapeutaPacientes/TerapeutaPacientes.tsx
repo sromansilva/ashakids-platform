@@ -13,9 +13,9 @@ import { terapeutaPatients } from "@/pages/terapeuta/TerapeutaPacientes/terapeut
 import { ExpTab } from "@/pages/terapeuta/TerapeutaPacientes/ExpTab";
 
 export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPacientes>[0]) {
-const { go, selected, setSelected, expTab, setExpTab, search, setSearch, expandedSession, setExpandedSession, showAddObj, setShowAddObj, objectives, setObjectives, newObj, setNewObj, actSubTab, setActSubTab, resSubTab, setResSubTab, resFilterDesde, setResFilterDesde, resFilterHasta, setResFilterHasta, resFilterMundo, setResFilterMundo, resFilterTipo, setResFilterTipo, resFilterBuscar, setResFilterBuscar, resRapido, setResRapido, expandedRes, setExpandedRes, expandedSesAct, setExpandedSesAct, showGenReport, setShowGenReport, reportPeriod, setReportPeriod, reportType, setReportType, reportNotes, setReportNotes, noteType, setNoteType, noteText, setNoteText, noteTitle, setNoteTitle, savedNotes, setSavedNotes } = useTerapeutaPacientes(props);
+const { go, selected, setSelected, expTab, setExpTab, search, setSearch, expandedSession, setExpandedSession, showAddObj, setShowAddObj, objectives, setObjectives, newObj, setNewObj, actSubTab, setActSubTab, resSubTab, setResSubTab, resFilterDesde, setResFilterDesde, resFilterHasta, setResFilterHasta, resFilterMundo, setResFilterMundo, resFilterTipo, setResFilterTipo, resFilterBuscar, setResFilterBuscar, resRapido, setResRapido, expandedRes, setExpandedRes, expandedSesAct, setExpandedSesAct, showGenReport, setShowGenReport, reportPeriod, setReportPeriod, reportType, setReportType, reportNotes, setReportNotes, noteType, setNoteType, noteText, setNoteText, noteTitle, setNoteTitle, savedNotes, setSavedNotes, patientsList } = useTerapeutaPacientes(props);
 if (selected !== null) {
-    const p = terapeutaPatients[selected];
+    const p = patientsList[selected] ?? patientsList[0];
     const expTabs: { id: ExpTab; label: string }[] = [
       { id: "resumen",    label: "Resumen"     },
       { id: "historial",  label: "Evolución"   },
@@ -197,7 +197,7 @@ if (selected !== null) {
     );
   }
 
-  const filtered = terapeutaPatients.filter(p =>
+  const filtered = patientsList.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||
     p.dx.toLowerCase().includes(search.toLowerCase())
   );
@@ -207,7 +207,7 @@ if (selected !== null) {
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
         <div>
           <h2 className="text-2xl font-black text-[#1C1135] mb-1">Pacientes</h2>
-          <p className="text-sm text-[#7C6F9A] font-medium">{terapeutaPatients.length} pacientes activos</p>
+          <p className="text-sm text-[#7C6F9A] font-medium">{patientsList.length} pacientes activos</p>
         </div>
         <div className="flex items-center gap-3">
           <Inp placeholder="Buscar paciente…" value={search} onChange={v => setSearch(v)} />
@@ -254,7 +254,7 @@ if (selected !== null) {
                   <p className="font-bold text-[#1C1135]">{p.sessions}</p>
                 </div>
               </div>
-              <Btn variant="secondary" size="sm" className="w-full justify-center" onClick={() => { setSelected(terapeutaPatients.indexOf(p)); setExpTab("resumen"); }}>
+              <Btn variant="secondary" size="sm" className="w-full justify-center" onClick={() => { setSelected(patientsList.indexOf(p)); setExpTab("resumen"); }}>
                 <Eye size={13} /> Abrir expediente
               </Btn>
             </div>

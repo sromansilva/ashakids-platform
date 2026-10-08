@@ -29,7 +29,7 @@ async def get_current_token(
 
 async def get_current_user(
     token: Optional[str] = Depends(get_current_token),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db, scope="function"),
 ) -> Tuple[Usuario, List[str]]:
     """Valida la sesión y retorna el usuario autenticado y sus roles.
     

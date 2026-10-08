@@ -13,6 +13,7 @@ from typing import List, Optional, Tuple
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from starlette.concurrency import run_in_threadpool
 
 from app.core.config import settings
 from app.core.security import verify_password
@@ -54,12 +55,12 @@ async def authenticate_user(
     user = result.scalar_one_or_none()
 
     if not user or not user.activo:
-        logger.info("Intento de login fallido: codigo_usuario '%s' no encontrado o inactivo.", clean_codigo)
+        logger.info("Intento de login fallido: cuenta no encontrada o inactiva.")
         return None
 
     # Verificar contraseña con el hash Argon2id almacenado
-    if not verify_password(password, user.password_hash):
-        logger.info("Intento de login fallido: contraseña incorrecta para usuario '%s'.", clean_codigo)
+    if not await run_in_threadpool(verify_password, password, user.password_hash):
+        logger.info("Intento de login fallido: contraseña incorrecta.")
         return None
 
     # Obtener lista de roles activos desde la relación en base de datos
@@ -69,6 +70,8 @@ async def authenticate_user(
         if ur.activo and ur.rol
     ]
 
+    if not any(r.upper() in {"PADRE", "TERAPEUTA", "ADMIN"} for r in roles):
+        return None
     return user, roles
 
 
@@ -145,6 +148,8 @@ async def get_user_by_session(
         for ur in sesion.usuario.roles_asignados
         if ur.activo and ur.rol
     ]
+    if not any(r.upper() in {"PADRE", "TERAPEUTA", "ADMIN"} for r in roles):
+        return None
     return sesion.usuario, roles
 
 

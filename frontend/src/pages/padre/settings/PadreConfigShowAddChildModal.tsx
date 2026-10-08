@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { patientsService } from "@/services/clinicalService";
+import { useWrite } from "@/hooks/useRemoteData";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 import type { usePadreConfig } from "@/pages/padre/settings/usePadreConfig";
 import { Plus, X } from "lucide-react";
 import { B } from "@/theme/brand/B";
@@ -6,6 +10,10 @@ import { Inp } from "@/components/common/Inp";
 
 type Props = Pick<ReturnType<typeof usePadreConfig>, "setShowAddChildModal" | "setNewCN" | "setNewBirth" | "setNewAvatar" | "newAvatar" | "avatarOptions" | "newCN" | "newBirth" | "setNewCA" | "newCA" | "setChildList" | "showToast">;
 export function PadreConfigShowAddChildModal({ setShowAddChildModal, setNewCN, setNewBirth, setNewAvatar, newAvatar, avatarOptions, newCN, newBirth, setNewCA, newCA, setChildList, showToast }: Props) {
+const [surname, setSurname] = useState(""); const [sex, setSex] = useState("");
+const save = useWrite(() => patientsService.create({ nombres_paciente: newCN, apellidos_paciente: surname, fecha_nacimiento: newBirth, sexo: sex }), () => {
+  setChildList(); setShowAddChildModal(false); setNewCN(""); setNewBirth(""); setNewAvatar("🐻"); setNewCA(""); showToast("Hijo registrado en el servidor");
+});
 return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -67,6 +75,9 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                 value={newCN}
                 onChange={setNewCN}
               />
+              <Inp label="Apellidos" value={surname} onChange={setSurname} />
+              <Inp label="Sexo" value={sex} onChange={setSex} />
+              <RemoteFeedback error={save.error} />
               {/* Birth date */}
               <div>
                 <label className="block text-sm font-bold text-[#1C1135] mb-2">
@@ -104,35 +115,8 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
               <Btn
                 variant="primary"
                 className="w-full justify-center"
-                disabled={!newCN || !newBirth}
-                onClick={() => {
-                  const colors = [
-                    B.violet,
-                    B.teal,
-                    B.orange,
-                    "#F472B6",
-                  ];
-                  setChildList((prev) => [
-                    ...prev,
-                    {
-                      id: Date.now(),
-                      name: newCN,
-                      age: Number(newCA),
-                      therapist: "Por asignar",
-                      sessions: 0,
-                      emoji: newAvatar,
-                      bg:
-                        colors[prev.length % colors.length],
-                      progress: 0,
-                    },
-                  ]);
-                  setShowAddChildModal(false);
-                  setNewCN("");
-                  setNewBirth("");
-                  setNewAvatar("🐻");
-                  setNewCA("");
-                  showToast(`${newCN} agregado exitosamente`);
-                }}
+                disabled={save.isPending || !newCN || !surname || !sex || !newBirth}
+                onClick={() => void save.submit(undefined)}
               >
                 <Plus size={14} /> Agregar hijo
               </Btn>
