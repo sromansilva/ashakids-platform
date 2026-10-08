@@ -3,12 +3,7 @@
  */
 
 import { apiClient } from "@/api/client";
-import {
-  AuthResponse,
-  LoginCredentials,
-  MessageResponse,
-  User,
-} from "@/types/auth";
+import { AuthResponse, LoginCredentials, MessageResponse, User } from "@/types/auth";
 
 export const authService = {
   /**

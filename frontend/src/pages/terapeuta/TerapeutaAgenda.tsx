@@ -1,6 +1,12 @@
 import { useState } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Video, Plus, X, Clock, AlertCircle, Check } from "lucide-react";
-import { B, View, Btn, Crd, Bdg, Av } from "@/components/shared";
+import type { AppointmentRequest } from "@/types/AppointmentRequest";
+import { Calendar, ChevronLeft, ChevronRight, Video, X, Clock, Check } from "lucide-react";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Bdg } from "@/components/common/Bdg";
+import { Av } from "@/components/common/Av";
 
 // ─── Calendar helpers ──────────────────────────────────────────────────────────
 const MONTHS_ES_SHORT = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
@@ -189,7 +195,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                       style={{ borderColor: B.border }}
                       onClick={() => { setSelDate(wd); setAgView("dia"); }}
                     >
-                      <p className="text-xs font-medium" style={{ color: B.textLight }}>{DAY_NAMES_SHORT[wd.getDay()]}</p>
+                      <p className="text-xs font-medium" style={{ color: B.textMuted }}>{DAY_NAMES_SHORT[wd.getDay()]}</p>
                       <p className={`font-extrabold text-sm mt-0.5 w-7 h-7 rounded-full flex items-center justify-center mx-auto transition-all
                         ${today ? "text-white" : active ? "text-violet-700 bg-violet-100" : "text-[#1C1135]"}`}
                         style={today ? { background: B.violet } : {}}>
@@ -203,7 +209,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
               <div className="overflow-y-auto" style={{ maxHeight: 440 }}>
                 {hours.map((h, hi) => (
                   <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "64px repeat(7, 1fr)", borderColor: B.border, minHeight: 52 }}>
-                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: B.textLight }}>{h}</div>
+                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: B.textMuted }}>{h}</div>
                     {weekDays.map((wd, di) => {
                       const apt = aptForSlot(wd, hi + 8);
                       const col = apt ? childColor(apt.child) : "";

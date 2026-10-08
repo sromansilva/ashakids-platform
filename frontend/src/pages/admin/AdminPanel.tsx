@@ -1,17 +1,9 @@
-import React from "react";
-import {
-  Calendar,
-  Zap,
-  Star,
-  Globe,
-  Bot,
-  Stethoscope,
-  Activity,
-  Shield,
-  Download,
-  Bell,
-} from "lucide-react";
-import { B, View, Crd, Av } from "@/components/shared";
+
+import { Calendar, Zap, Star, Globe, Bot, Stethoscope, Activity, Shield, Download, Bell } from "lucide-react";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Crd } from "@/components/common/Crd";
+import { Av } from "@/components/common/Av";
 
 export function AdminPanel({ go }: { go: (v: View) => void }) {
   const kpis = [

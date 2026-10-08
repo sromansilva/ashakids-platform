@@ -2,7 +2,7 @@
  * Mapeo bidireccional entre URLs del navegador y vistas internas de ASHAKids.
  */
 
-import type { View } from "@/components/shared";
+import type { View } from "@/types/navigation";
 import type { SemanticRole } from "@/types/auth";
 
 /**

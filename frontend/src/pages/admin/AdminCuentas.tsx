@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Plus, Search, X, Mail, CheckCircle, Trash2 } from "lucide-react";
-import { B, View } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
 
 // ─── Gestión de Cuentas ────────────────────────────────────────────────────────
 

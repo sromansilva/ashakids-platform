@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Bell, Users, Calendar, FileText, MessageCircle, Star, Activity, Video } from "lucide-react";
-import { B, View, Btn, Crd, Bdg, Av } from "@/components/shared";
-import type { AppointmentRequest } from "@/pages/padre/Padre";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Bdg } from "@/components/common/Bdg";
+import { Av } from "@/components/common/Av";
+import type { AppointmentRequest } from "@/types/AppointmentRequest";
 
 export function TerapeutaHome({ go }: { go: (v: View) => void }) {
   const pendingRequests: AppointmentRequest[] = [

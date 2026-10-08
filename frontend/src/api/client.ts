@@ -4,7 +4,8 @@
  */
 
 const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:8000/api/v1";
+  (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL ||
+    (import.meta.env.DEV ? "http://localhost:8000/api/v1" : "/api/v1")).replace(/\/+$/, "");
 
 export class ApiError extends Error {
   status: number;
@@ -50,9 +51,15 @@ async function request<T>(
     const data = isJson ? await response.json() : await response.text();
 
     if (!response.ok) {
-      const message =
+      const detail =
         (isJson && data && (data.detail || data.message)) ||
         `Error HTTP ${response.status}: ${response.statusText}`;
+      const message = typeof detail === "string" ? detail : Array.isArray(detail)
+        ? detail.map(item => typeof item?.msg === "string" ? item.msg : "Solicitud inválida").join(". ")
+        : "No se pudo completar la solicitud.";
+      if (response.status === 401 && endpoint !== "/auth/login") {
+        window.dispatchEvent(new Event("ashakids:session-expired"));
+      }
       throw new ApiError(message, response.status, data);
     }
 

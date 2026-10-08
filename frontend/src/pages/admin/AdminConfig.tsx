@@ -1,6 +1,7 @@
-import React from "react";
+
 import { ChevronRight } from "lucide-react";
-import { B, Crd } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { Crd } from "@/components/common/Crd";
 
 export function AdminConfig() {
   const sections = [

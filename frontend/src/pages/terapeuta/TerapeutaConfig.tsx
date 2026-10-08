@@ -1,6 +1,11 @@
 import { useState, useRef } from "react";
-import { Eye, EyeOff, Upload, Bell, Lock, Globe, User, Shield, CheckCircle, Check, X } from "lucide-react";
-import { B, View, Btn, Crd, Av, Inp } from "@/components/shared";
+import { Eye, EyeOff, Upload, CheckCircle, Check, X } from "lucide-react";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+
+import { Inp } from "@/components/common/Inp";
 
 export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
   const [title, setTitle] = useState("");
@@ -113,7 +118,7 @@ export function TerapeutaConfig() {
     <div className="p-4 sm:p-6 max-w-4xl" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
 
       {securityNotice && <div className="fixed right-4 top-5 z-[70] flex max-w-sm items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-xl"><CheckCircle size={18} />{securityNotice}</div>}
-      {show2faModal && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setShow2faModal(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><button onClick={() => setShow2faModal(false)} className="absolute right-4 top-4 rounded-xl p-2 text-[#7C6F9A] hover:bg-[#F5F3FF]"><X size={18} /></button><div className="mb-5 pr-8"><p className="text-xs font-bold uppercase tracking-wider text-violet-600">Seguridad</p><h3 className="mt-1 text-xl font-black text-[#1C1135]">Activar autenticación en dos pasos</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Te enviaremos una confirmación al correo indicado antes de activar 2FA.</p></div><Inp label="Correo de confirmación" type="email" value={twoFaEmail} onChange={(e) => setTwoFaEmail(e.target.value)} /><div className="mt-6 flex justify-end gap-3"><Btn variant="outline" onClick={() => setShow2faModal(false)}>Cancelar</Btn><Btn variant="cta" onClick={() => { setTwoFaEnabled(true); setShow2faModal(false); setSecurityNotice(`2FA activado. Confirmación enviada a ${twoFaEmail}.`); window.setTimeout(() => setSecurityNotice(""), 3500); }}><Check size={14} /> Confirmar activación</Btn></div></div></div>}
+      {show2faModal && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setShow2faModal(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><button onClick={() => setShow2faModal(false)} className="absolute right-4 top-4 rounded-xl p-2 text-[#7C6F9A] hover:bg-[#F5F3FF]"><X size={18} /></button><div className="mb-5 pr-8"><p className="text-xs font-bold uppercase tracking-wider text-violet-600">Seguridad</p><h3 className="mt-1 text-xl font-black text-[#1C1135]">Activar autenticación en dos pasos</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Te enviaremos una confirmación al correo indicado antes de activar 2FA.</p></div><Inp label="Correo de confirmación" type="email" value={twoFaEmail} onChange={(e) => setTwoFaEmail(e)} /><div className="mt-6 flex justify-end gap-3"><Btn variant="outline" onClick={() => setShow2faModal(false)}>Cancelar</Btn><Btn variant="cta" onClick={() => { setTwoFaEnabled(true); setShow2faModal(false); setSecurityNotice(`2FA activado. Confirmación enviada a ${twoFaEmail}.`); window.setTimeout(() => setSecurityNotice(""), 3500); }}><Check size={14} /> Confirmar activación</Btn></div></div></div>}
       {confirmDelete && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setConfirmDelete(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600"><X size={22} /></div><h3 className="text-xl font-black text-[#1C1135]">¿Eliminar esta cuenta?</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Esta acción elimina el acceso y no se puede deshacer. Revisa tus reportes y pagos antes de continuar.</p><div className="mt-6 flex justify-end gap-3"><Btn variant="outline" onClick={() => setConfirmDelete(false)}>Cancelar</Btn><Btn variant="danger" onClick={() => { setConfirmDelete(false); setSecurityNotice("Solicitud de eliminación recibida. Te contactaremos para verificarla."); window.setTimeout(() => setSecurityNotice(""), 3500); }}>Confirmar eliminación</Btn></div></div></div>}
 
       {/* ── Modal selector de foto ── */}
@@ -219,12 +224,12 @@ export function TerapeutaConfig() {
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
-                  <Inp label="Nombre completo" value={perfilNombre} onChange={e => setPerfilNombre(e.target.value)} />
-                  <Inp label="Correo electrónico" value={perfilEmail} onChange={e => setPerfilEmail(e.target.value)} />
-                  <Inp label="Teléfono" value={perfilTel} onChange={e => setPerfilTel(e.target.value)} />
-                  <Inp label="Especialidad principal" value={perfilEsp} onChange={e => setPerfilEsp(e.target.value)} />
-                  <Inp label="Años de experiencia" value={perfilExp} onChange={e => setPerfilExp(e.target.value)} />
-                  <Inp label="Cédula profesional" value={perfilCedula} onChange={e => setPerfilCedula(e.target.value)} />
+                  <Inp label="Nombre completo" value={perfilNombre} onChange={e => setPerfilNombre(e)} />
+                  <Inp label="Correo electrónico" value={perfilEmail} onChange={e => setPerfilEmail(e)} />
+                  <Inp label="Teléfono" value={perfilTel} onChange={e => setPerfilTel(e)} />
+                  <Inp label="Especialidad principal" value={perfilEsp} onChange={e => setPerfilEsp(e)} />
+                  <Inp label="Años de experiencia" value={perfilExp} onChange={e => setPerfilExp(e)} />
+                  <Inp label="Cédula profesional" value={perfilCedula} onChange={e => setPerfilCedula(e)} />
                 </div>
                 <div>
                   <label className="text-sm font-bold text-[#1C1135] mb-1.5 block">Sobre mí</label>

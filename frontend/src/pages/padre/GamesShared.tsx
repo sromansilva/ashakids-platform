@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronRight, Database } from "lucide-react";
-import { B } from "@/components/shared";
+import { B } from "@/theme/brand/B";
 
 export type VoiceRecognition = {
   lang: string;

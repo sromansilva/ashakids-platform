@@ -20,7 +20,7 @@ React + TypeScript + Vite (Frontend)
 
 ### Componentes
 
-- **Frontend (`frontend/`)**: React 18, TypeScript, Vite, Tailwind CSS / shadcn/ui.
+- **Frontend (`frontend/`)**: React 18, TypeScript, Vite, React Router y Tailwind CSS; UI modular propia por rol.
 - **Backend (`backend/`)**: Python, FastAPI, Uvicorn, Pydantic. Responsable de la lógica de negocio, autenticación propia, autorización, operaciones clínicas y acceso a datos.
 - **Database**: Supabase como infraestructura de PostgreSQL gestionado. La base de datos es la fuente de verdad. ASHAKids utiliza **autenticación propia** (sin Supabase Auth).
 

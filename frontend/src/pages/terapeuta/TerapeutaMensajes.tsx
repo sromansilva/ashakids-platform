@@ -1,6 +1,8 @@
 import { useState } from "react";
-import { Search, ChevronLeft, Phone, Video, Paperclip, Send } from "lucide-react";
-import { B, Av, Btn } from "@/components/shared";
+import { ChevronLeft, Paperclip, Send } from "lucide-react";
+import { B } from "@/theme/brand/B";
+import { Av } from "@/components/common/Av";
+import { Btn } from "@/components/common/Btn";
 
 export function TerapeutaMensajes() {
   const [activeChat, setActiveChat] = useState(0);

@@ -2,13 +2,7 @@
  * Contexto de autenticación para la gestión de sesión con FastAPI.
  */
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useEffect, useState, useRef } from "react";
 import { authService } from "@/services/authService";
 import { LoginCredentials, SemanticRole, User } from "@/types/auth";
 
@@ -31,15 +25,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const requestVersion = useRef(0);
 
   const refreshUser = useCallback(async () => {
+    const version = ++requestVersion.current;
     try {
       const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
+      if (version === requestVersion.current) setUser(currentUser);
     } catch {
-      setUser(null);
+      if (version === requestVersion.current) setUser(null);
     } finally {
-      setIsLoading(false);
+      if (version === requestVersion.current) setIsLoading(false);
     }
   }, []);
 
@@ -47,18 +43,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     refreshUser();
   }, [refreshUser]);
 
+  useEffect(() => {
+    const expire = () => { requestVersion.current++; setUser(null); setIsLoading(false); };
+    window.addEventListener("ashakids:session-expired", expire);
+    return () => window.removeEventListener("ashakids:session-expired", expire);
+  }, []);
+
   const login = async (credentials: LoginCredentials): Promise<User> => {
-    setIsLoading(true);
-    try {
-      const res = await authService.login(credentials);
-      setUser(res.user);
-      return res.user;
-    } finally {
-      setIsLoading(false);
-    }
+    const version = ++requestVersion.current;
+    const res = await authService.login(credentials);
+    if (version === requestVersion.current) setUser(res.user);
+    return res.user;
   };
 
   const logout = async (): Promise<void> => {
+    ++requestVersion.current;
     setIsLoading(true);
     try {
       await authService.logout();

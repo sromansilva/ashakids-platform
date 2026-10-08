@@ -1,16 +1,6 @@
-import React from "react";
-import {
-  Globe,
-  Heart,
-  Stethoscope,
-  BarChart2,
-  Cpu,
-  Server,
-  Database,
-  Search,
-  Bell,
-} from "lucide-react";
-import { B } from "@/components/shared";
+
+import { Globe, Heart, Stethoscope, BarChart2, Cpu, Server, Database, Search, Bell } from "lucide-react";
+import { B } from "@/theme/brand/B";
 
 // ─── ASHA Core ────────────────────────────────────────────────────────────────
 

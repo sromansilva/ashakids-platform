@@ -1,6 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronRight, CheckCircle } from "lucide-react";
-import { B, View, Btn, Crd, Av } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Av } from "@/components/common/Av";
 
 // ── Operación — Incidencias + Sesiones activas ─────────────────────────────────
 export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {

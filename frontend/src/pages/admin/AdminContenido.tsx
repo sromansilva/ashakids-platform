@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { B, Btn, Crd } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
 
 export function AdminContenido() {
   const [catFilter, setCatFilter] = useState("todos");

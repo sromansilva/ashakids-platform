@@ -1,0 +1,244 @@
+# Inventario de limpieza del frontend
+
+## Retirados después de la consolidación final
+
+- `src/components/illustrations/Blob.tsx`: sin consumidores tras retirar imports no usados; no es un servicio pendiente.
+- `src/components/common/AshiMsg.tsx`: sin consumidores tras retirar imports no usados; no es un servicio pendiente.
+- `src/components/common/Skeleton.tsx`: sin consumidores tras retirar imports no usados; no es un servicio pendiente.
+- `src/components/common/StatCard.tsx`: sin consumidores tras retirar imports no usados; no es un servicio pendiente.
+- `src/pages/padre/Sessions/normalizeVoiceText.tsx`: sin consumidores tras retirar imports no usados; no es un servicio pendiente.
+
+Se retiraron también los scripts temporales de migración modularize.cjs, split-panels.cjs, extract-activities.cjs, migrate-router.cjs, relocate-modules.cjs, fix-form-contracts.cjs, consolidate-data.cjs y trim-imports.cjs. Fueron herramientas de esta refactorización, no utilidades del producto. Permanecen los controles reproducibles audit-unused.cjs y check-frontend.mjs.
+
+## Dependencias directas retiradas
+
+- `@emotion/react`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@emotion/styled`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@mui/icons-material`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@mui/material`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@popperjs/core`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-accordion`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-alert-dialog`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-aspect-ratio`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-avatar`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-checkbox`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-collapsible`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-context-menu`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-dialog`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-dropdown-menu`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-hover-card`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-label`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-menubar`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-navigation-menu`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-popover`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-progress`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-radio-group`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-scroll-area`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-select`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-separator`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-slider`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-slot`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-switch`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-tabs`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-toggle`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-toggle-group`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `@radix-ui/react-tooltip`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `canvas-confetti`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `class-variance-authority`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `clsx`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `cmdk`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `date-fns`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `embla-carousel-react`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `input-otp`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `motion`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `next-themes`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-day-picker`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-dnd`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-dnd-html5-backend`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-hook-form`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-popper`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-resizable-panels`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-responsive-masonry`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `react-router`: se consume a través de react-router-dom; deja de declararse directamente, no se elimina su dependencia transitiva.
+- `react-slick`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `recharts`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `sonner`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `tailwind-merge`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+- `vaul`: sin imports consumidores tras retirar las plantillas reemplazadas; no necesaria para el runtime actual.
+
+Vite se actualizó dentro de la versión 6, React Router dentro de la 7 y Vitest a 4.1.11 para corregir los avisos de seguridad detectados. Se añadieron TypeScript, tipos de React, Vitest, jsdom y Testing Library para verificar el frontend. package-lock.json se actualizó sobre el archivo local existente, sin reset ni reemplazo desde Git.
+
+El inventario incluye archivos originales y módulos intermedios generados durante la migración: no todos los elementos listados existían al comenzar. Git registra 82 rutas originales retiradas (70 de código reemplazado/no usado y 12 recursos); las vistas necesarias fueron migradas, no descartadas.
+
+
+Cada archivo de código se comprobó contra el grafo de imports, exports, imports dinámicos, estilos y pruebas. Se conservaron servicios y contratos pendientes. Los archivos originales versionados son recuperables desde Git; los paneles intermedios creados durante esta refactorización se retiraron cuando fueron reemplazados.
+
+## Código eliminado
+
+- `src/app/layouts/AdminSidebar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/app/layouts/PadreSidebar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/app/layouts/TerapeutaSidebar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/assistant/AshhiFloatBody.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/assistant/AshhiFloatContentSection3.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/assistant/AshhiFloatInputArea.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ImageWithFallback.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/shared.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/accordion.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/alert-dialog.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/alert.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/aspect-ratio.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/avatar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/badge.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/breadcrumb.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/button.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/calendar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/card.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/carousel.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/chart.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/checkbox.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/collapsible.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/command.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/context-menu.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/dialog.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/drawer.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/dropdown-menu.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/form.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/hover-card.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/input-otp.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/input.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/label.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/menubar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/navigation-menu.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/pagination.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/popover.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/progress.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/radio-group.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/resizable.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/scroll-area.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/select.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/separator.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sheet.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/Sidebar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarContent.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarContext.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarContextProps.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarFooter.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarGroup.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarGroupAction.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarGroupContent.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarGroupLabel.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarHeader.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarInput.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarInset.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenu.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuAction.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuBadge.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuButton.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/sidebarMenuButtonVariants.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuItem.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuSkeleton.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuSub.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuSubButton.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarMenuSubItem.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarProvider.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarRail.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarSeparator.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SidebarTrigger.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SIDEBAR_COOKIE_MAX_AGE.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SIDEBAR_COOKIE_NAME.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SIDEBAR_KEYBOARD_SHORTCUT.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SIDEBAR_WIDTH.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SIDEBAR_WIDTH_ICON.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/SIDEBAR_WIDTH_MOBILE.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar/useSidebar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sidebar.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/skeleton.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/slider.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/sonner.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/switch.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/table.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/tabs.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/textarea.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/toggle-group.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/toggle.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/components/ui/tooltip.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/hooks/use-mobile.ts`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/lib/utils.ts`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/mocks/demo/chartData.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/mocks/demo/pieData.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/mocks/demo/pieDataReportes.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/admin/Admin.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/admin/AdminModulosGenerales/adminMonthly.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/admin/AdminModulosGenerales.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/auth/Auth/STEPS.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/auth/Auth.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaPay.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/AshaSessionActive.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/AshaSessionEnd.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/AshaSessionHome.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/AshaSessionPrep.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/AshaSessionSummary.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/AshaSessionWaiting.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession/SESSION_THERAPIST.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/AshaSession.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/DashboardPage.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/EvalInicial.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/journey/camino/MiCaminoAshaActividades.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/journey/camino/MiCaminoAshaObjetivos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/journey/camino/MiCaminoAshaResumen.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/journey/camino/MiCaminoAshaSesiones.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/AshaHUD.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaAcademia.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaAdivinanzas.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaCanciones.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaCuentos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaHome.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaInsignias.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaPerfil.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaRetos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/MundoAshaTrabalenguas.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/PadreRecompensas.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha/WorldZone.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAsha.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAshaCuentos/_UnusedStoryCatalog.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAshaCuentos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAshaJuegos/MundoAshaJuegos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAshaJuegos/useMundoAshaJuegos.ts`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAshaJuegos/useMundoAshaJuegos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/MundoAshaJuegos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Padre/PadreAgendaLineaDeTiempo.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Padre/PadreAgendaShowNew.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Padre/PadreAgendaundefined.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Padre.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/reports/PadreReportesProgreso.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/reports/PadreReportesSelectedReport.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/reports/PadreReportesSesiones.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Sessions/calcularEstrellas.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Sessions/VoiceRecognition.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/Sessions.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/SessionsGames.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/SessionsMeeting/AdminCalidadDatos.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/SessionsMeeting/AshaSessionEndDatosDeLaSesion.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/padre/SessionsMeeting.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/public/Public.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/terapeuta/MiCaminoAsha.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/terapeuta/Terapeuta.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/pages/terapeuta/TerapeutaPacientes.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/routes/ProtectedRoute.tsx`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+- `src/theme/globals.css`: sin consumidores tras migrar a módulos directos; plantilla no utilizada, duplicado reemplazado o panel intermedio obsoleto.
+
+## Recursos eliminados
+
+- `src/assets/ashakids-logo-final-transparent.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/aura.mp3`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image-1.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image-2.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image-3.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image-4.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image-5.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image-6.png`: sin referencias en código, estilos y rutas públicas.
+- `src/assets/image.png`: sin referencias en código, estilos y rutas públicas.
+- `public/audio/mary-lamb.mp3`: sin referencias en código, estilos y rutas públicas.
+- `public/audio/row-row.mp3`: sin referencias en código, estilos y rutas públicas.
+- `public/audio/twinkle-twinkle.mp3`: sin referencias en código, estilos y rutas públicas.
+

@@ -1,13 +1,21 @@
-import { useEffect, useRef, useState } from "react";
-import {
-  Star, ChevronRight, ChevronLeft, ArrowRight, Check, X, Plus, Search, Download,
-  Video, Clock, Mic, MicOff, VideoOff, PhoneOff, MessageCircle, Sparkles,
-  Users, PlayCircle, BookOpen, Activity, Globe, Phone, CheckCircle, Calendar, Volume2,
-  Pause, Play, RotateCcw, HelpCircle, Flag, FileText, BarChart2, Shield, Database,
-} from "lucide-react";
-import { B, View, Btn, Crd, Bdg, Av, StatCard, Skeleton, EmptyState, AshiMsg, Isotipo } from "@/components/shared";
-import { speakForChild, normalizeVoiceText, Ashi, MundoAshaHome } from "./Sessions";
-import { SimulatedDataLog, ExitConfirmModal, type VoiceRecognition, Confetti } from "./GamesShared";
+import { useState } from "react";
+import { ChevronRight, ChevronLeft, Volume2, Pause, Play, RotateCcw, HelpCircle } from "lucide-react";
+
+import { View } from "@/types/navigation";
+
+import { Crd } from "@/components/common/Crd";
+
+
+
+
+
+
+
+import { speakForChild } from "@/pages/padre/Sessions/speakForChild";
+
+
+
+import { SimulatedDataLog, ExitConfirmModal } from "@/pages/padre/GamesShared";
 
 export function MundoAshaCanciones({ go }: { go: (v: View) => void }) {
   type Phase = "pre" | "playing" | "paused" | "exit-confirm" | "done";
