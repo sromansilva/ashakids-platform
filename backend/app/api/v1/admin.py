@@ -17,7 +17,9 @@ from app.schemas.admin import (
     CuentaListResponse,
     OperacionCuentaResponse,
 )
+from app.schemas.pacientes import HijoListResponse, OperacionHijoResponse
 from app.schemas.perfiles import AdminProfileResponse, AdministradorData
+from app.services import pacientes_service
 from app.services.admin_service import (
     activar_cuenta,
     actualizar_cuenta,
@@ -222,3 +224,41 @@ async def delete_eliminar_cuenta(
         message=res["message"],
         cuenta=None,
     )
+
+
+# ─── Gestión Administrativa de Hijos (Pacientes) ──────────────────────────────
+
+
+@router.get(
+    "/cuentas/{id_usuario}/hijos",
+    response_model=HijoListResponse,
+    summary="Listar hijos de una cuenta de padre (activos e inactivos)",
+    description="Permite a un administrador consultar todos los hijos asociados a una cuenta de tutor. Requiere rol ADMIN.",
+)
+async def get_admin_hijos_padre(
+    id_usuario: int,
+    current_data: Tuple[Usuario, List[str]] = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    items = await pacientes_service.listar_hijos_admin(db, id_usuario)
+    return HijoListResponse(items=items, total=len(items))
+
+
+@router.patch(
+    "/pacientes/{id_paciente}/reactivar",
+    response_model=OperacionHijoResponse,
+    summary="Reactivar paciente infantil",
+    description="Reactiva un paciente inactivo estableciendo activo=TRUE y registrando la auditoría administrativa. Requiere rol ADMIN.",
+)
+async def patch_reactivar_paciente_admin(
+    id_paciente: int,
+    current_data: Tuple[Usuario, List[str]] = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    actor, _ = current_data
+    res = await pacientes_service.reactivar_hijo_admin(db, id_paciente, actor)
+    return OperacionHijoResponse(
+        message=res["message"],
+        paciente=res["paciente"],
+    )
+

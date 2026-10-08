@@ -12,6 +12,14 @@ from app.schemas.auth import (
     MessageResponse,
     UserResponse,
 )
+from app.schemas.pacientes import (
+    ActualizarHijoRequest,
+    CrearHijoRequest,
+    HijoItemResponse,
+    HijoListResponse,
+    OperacionHijoResponse,
+    PerfilInfantilResponse,
+)
 from app.schemas.perfiles import (
     AdminProfileResponse,
     AdministradorData,
@@ -38,4 +46,11 @@ __all__ = [
     "CuentaItemResponse",
     "CuentaListResponse",
     "OperacionCuentaResponse",
+    "CrearHijoRequest",
+    "ActualizarHijoRequest",
+    "PerfilInfantilResponse",
+    "HijoItemResponse",
+    "HijoListResponse",
+    "OperacionHijoResponse",
 ]
+

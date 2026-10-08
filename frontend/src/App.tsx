@@ -195,6 +195,11 @@ import { AboutUsPage } from "@/pages/public/AboutUsPage";
 import { PadreDashboardPage } from "@/pages/padre/DashboardPage";
 import { TerapeutaDashboardPage } from "@/pages/terapeuta/DashboardPage";
 import { AdminDashboardPage } from "@/pages/admin/DashboardPage";
+import { useChild } from "@/context/ChildContext";
+import { AVATAR_CATALOG, getAvatarInfo } from "@/config/avatars";
+import { pacientesService } from "@/services/pacientesService";
+import { PacienteItem } from "@/types/pacientes";
+import { ApiError } from "@/api/client";
 
 
 // ─── Sidebar ───────────────────────────────────────────────────────────────────
@@ -1330,8 +1335,7 @@ function AshhiFloat({ role }: { role: Role }) {
 // ─── Persistent Role Sidebars ────────────────────────────────────────────────
 
 function PadreSidebar({ go }: { go: (v: View) => void }) {
-  const [activeChild, setActiveChild] = useState(0);
-  const [showAddChild, setShowAddChild] = useState(false);
+  const { children, activeChild, selectChild } = useChild();
   const calDays: (number | null)[] = [
     null,
     null,
@@ -1396,53 +1400,61 @@ function PadreSidebar({ go }: { go: (v: View) => void }) {
           <Btn
             size="sm"
             variant="secondary"
-            onClick={() => setShowAddChild(true)}
+            onClick={() => go("padre/config")}
           >
-            <Plus size={13} /> Agregar
+            <Plus size={13} /> Gestionar
           </Btn>
         </div>
         <div className="flex flex-col gap-1.5">
-          {kids.map((k, i) => (
-            <button
-              key={k.id}
-              onClick={() => setActiveChild(i)}
-              className={`flex items-center gap-3 p-3 rounded-2xl w-full text-left transition-all border
-                ${activeChild === i ? "border-violet-200 bg-violet-50" : "border-transparent hover:bg-[#F5F3FF]"}`}
-            >
-              <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0"
-                style={{ background: k.bg }}
+          {children.length === 0 ? (
+            <div className="p-3 text-center bg-white/70 rounded-2xl">
+              <p className="text-xs text-[#7C6F9A] font-medium mb-2">No tienes hijos registrados.</p>
+              <button
+                onClick={() => go("padre/config")}
+                className="text-xs font-bold text-violet-700 hover:underline"
               >
-                {k.emoji}
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-extrabold text-[#1C1135] text-sm">
-                  {k.name}
-                </p>
-                <p className="text-xs text-[#9E95B7] font-medium">
-                  {k.age} años · {k.sessions} sesiones
-                </p>
-                <div
-                  className="mt-1.5 h-1.5 rounded-full overflow-hidden"
-                  style={{ background: B.violetLight }}
+                + Registrar hijo
+              </button>
+            </div>
+          ) : (
+            children.map((k) => {
+              const av = getAvatarInfo(k.avatar_nombre);
+              const isSelected = activeChild?.id_paciente === k.id_paciente;
+              return (
+                <button
+                  key={k.id_paciente}
+                  onClick={() => selectChild(k.id_paciente)}
+                  className={`flex items-center gap-3 p-3 rounded-2xl w-full text-left transition-all border
+                    ${isSelected ? "border-violet-300 bg-violet-50/90 shadow-sm" : "border-transparent hover:bg-[#F5F3FF]"}`}
                 >
                   <div
-                    className="h-full rounded-full transition-all"
-                    style={{
-                      width: `${k.progress}%`,
-                      background: B.violet,
-                    }}
-                  />
-                </div>
-              </div>
-              <span
-                className="text-xs font-black flex-shrink-0"
-                style={{ color: B.violet }}
-              >
-                {k.progress}%
-              </span>
-            </button>
-          ))}
+                    className="w-10 h-10 rounded-2xl flex items-center justify-center overflow-hidden flex-shrink-0 border border-violet-100 bg-white"
+                  >
+                    <img
+                      src={av.assetPath}
+                      alt={av.name}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLElement).style.display = "none";
+                      }}
+                    />
+                    <span className="text-lg leading-none" style={{ display: "none" }}>{av.fallbackIcon}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-extrabold text-[#1C1135] text-sm truncate">
+                      {k.nombres}
+                    </p>
+                    <p className="text-xs text-[#9E95B7] font-medium">
+                      {k.edad_anios} años · {k.sexo}
+                    </p>
+                  </div>
+                  {isSelected && (
+                    <span className="w-2 h-2 rounded-full bg-violet-600 flex-shrink-0" />
+                  )}
+                </button>
+              );
+            })
+          )}
         </div>
       </Crd>
 
@@ -3159,9 +3171,10 @@ function Login({
 
 // ─── Child picker dropdown ──────────────────────────────────────────────────────
 
-function ChildPicker({ activeChild, setActiveChild }: { activeChild: number; setActiveChild: (i: number, changed: boolean) => void }) {
+function ChildPicker({ activeChild, setActiveChild }: { activeChild?: number; setActiveChild?: (i: number, changed: boolean) => void }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const { children, activeChild: currentChild, selectChild } = useChild();
 
   useEffect(() => {
     if (!open) return;
@@ -3174,7 +3187,12 @@ function ChildPicker({ activeChild, setActiveChild }: { activeChild: number; set
     return () => { document.removeEventListener("mousedown", handleOutside); document.removeEventListener("keydown", handleEsc); };
   }, [open]);
 
-  const current = kids[activeChild];
+  if (!currentChild && children.length === 0) {
+    return null;
+  }
+
+  const activeAvatar = getAvatarInfo(currentChild?.avatar_nombre);
+  const displayName = currentChild?.nombres || "Hijo";
 
   return (
     <div ref={ref} className="relative flex-shrink-0">
@@ -3182,14 +3200,23 @@ function ChildPicker({ activeChild, setActiveChild }: { activeChild: number; set
         onClick={() => setOpen(o => !o)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        aria-label={`Viendo a ${current.name}. Cambiar niño`}
+        aria-label={`Viendo a ${displayName}. Cambiar niño`}
         className="flex items-center gap-2 bg-[#F5F3FF] hover:bg-[#EDE9FE] border border-[#E8E5F4] rounded-2xl px-3 py-2 transition-colors"
         style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}
       >
-        <span className="text-lg leading-none" aria-hidden="true">{current.emoji}</span>
+        <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center overflow-hidden border border-violet-100 flex-shrink-0">
+          <img
+            src={activeAvatar.assetPath}
+            alt={activeAvatar.name}
+            className="w-5 h-5 object-contain"
+            onError={(e) => {
+              (e.target as HTMLElement).style.display = "none";
+            }}
+          />
+        </div>
         <div className="leading-none text-left">
           <p className="text-[10px] text-[#9E95B7] font-bold uppercase tracking-wide leading-none mb-0.5">Viendo</p>
-          <p className="text-sm font-extrabold text-[#1C1135] leading-none">{current.name}</p>
+          <p className="text-sm font-extrabold text-[#1C1135] leading-none truncate max-w-[100px]">{displayName}</p>
         </div>
         <ChevronDown size={14} className={`text-[#9E95B7] transition-transform duration-150 flex-shrink-0 ${open ? "rotate-180" : ""}`} aria-hidden="true" />
       </button>
@@ -3198,22 +3225,38 @@ function ChildPicker({ activeChild, setActiveChild }: { activeChild: number; set
         <div
           role="listbox"
           aria-label="Seleccionar niño"
-          className="absolute left-0 top-full mt-2 bg-white rounded-2xl border border-[#E8E5F4] py-1.5 z-50 min-w-[160px]"
+          className="absolute left-0 top-full mt-2 bg-white rounded-2xl border border-[#E8E5F4] py-1.5 z-50 min-w-[180px]"
           style={{ boxShadow: "0 8px 32px rgba(124,58,237,0.13), 0 2px 8px rgba(0,0,0,0.07)", fontFamily: '"Nunito", system-ui, sans-serif' }}
         >
-          {kids.map((k, i) => (
-            <button
-              key={k.id}
-              role="option"
-              aria-selected={activeChild === i}
-              onClick={() => { setActiveChild(i, i !== activeChild); setOpen(false); }}
-              className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-left transition-colors ${activeChild === i ? "bg-violet-50" : "hover:bg-[#F5F3FF]"}`}
-            >
-              <span className="text-lg leading-none" aria-hidden="true">{k.emoji}</span>
-              <span className={`text-sm font-bold flex-1 ${activeChild === i ? "text-violet-700" : "text-[#1C1135]"}`}>{k.name}</span>
-              {activeChild === i && <Check size={14} className="text-violet-600 flex-shrink-0" aria-hidden="true" />}
-            </button>
-          ))}
+          {children.map((k) => {
+            const av = getAvatarInfo(k.avatar_nombre);
+            const isSelected = currentChild?.id_paciente === k.id_paciente;
+            return (
+              <button
+                key={k.id_paciente}
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  selectChild(k.id_paciente);
+                  setOpen(false);
+                }}
+                className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-left transition-colors ${isSelected ? "bg-violet-50" : "hover:bg-[#F5F3FF]"}`}
+              >
+                <div className="w-6 h-6 rounded-lg bg-white flex items-center justify-center overflow-hidden border border-violet-100 flex-shrink-0">
+                  <img
+                    src={av.assetPath}
+                    alt={av.name}
+                    className="w-5 h-5 object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLElement).style.display = "none";
+                    }}
+                  />
+                </div>
+                <span className={`text-sm font-bold flex-1 truncate ${isSelected ? "text-violet-700" : "text-[#1C1135]"}`}>{k.nombres}</span>
+                {isSelected && <Check size={14} className="text-violet-600 flex-shrink-0" aria-hidden="true" />}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
@@ -3225,6 +3268,7 @@ function ChildPicker({ activeChild, setActiveChild }: { activeChild: number; set
 type PadreNotif = { icon: string; title: string; time: string; color: string; bg: string };
 
 function PadreHome({ go, padreUserName = "Laura Gómez", padrePlan = "exploracion", extraNotifs = [], onNotifsRead }: { go: (v: View) => void; padreUserName?: string; padrePlan?: "exploracion" | "familia"; extraNotifs?: PadreNotif[]; onNotifsRead?: () => void }) {
+  const { activeChild: currentChild } = useChild();
   const [activeChild, setActiveChild] = useState(0);
   const [childLoading, setChildLoading] = useState(false);
   const handleSetChild = (i: number, changed: boolean) => {
@@ -3279,7 +3323,18 @@ function PadreHome({ go, padreUserName = "Laura Gómez", padrePlan = "exploracio
         )
       : [];
 
-  const child = kids[activeChild];
+  const child = currentChild
+    ? {
+        id: currentChild.id_paciente,
+        name: currentChild.nombres,
+        age: currentChild.edad_anios,
+        emoji: getAvatarInfo(currentChild.avatar_nombre).fallbackIcon,
+        bg: "#EDE9FE",
+        sessions: 12,
+        progress: 78,
+      }
+    : kids[activeChild] || kids[0];
+
 
   const recommendations = [
     {
@@ -5516,43 +5571,44 @@ function PadreConfig({ onNameChange, padrePlan = "exploracion", go: configGo }: 
   const [pwConfirmInput, setPwConfirmInput] = useState("");
 
   // Hijos
-  const [childList, setChildList] = useState(kids);
-  const [showAddChildModal, setShowAddChildModal] =
-    useState(false);
+  const { children: childList, refreshChildren, isLoadingChildren } = useChild();
+  const [showAddChildModal, setShowAddChildModal] = useState(false);
   const [showPlanUpgradeModal, setShowPlanUpgradeModal] = useState(false);
-  const [editChild, setEditChild] = useState<
-    (typeof kids)[0] | null
-  >(null);
-  const [deleteChild, setDeleteChild] = useState<
-    (typeof kids)[0] | null
-  >(null);
-  const [newCN, setNewCN] = useState("");
-  const [newCA, setNewCA] = useState("");
-  const [newCS, setNewCS] = useState("Lenguaje");
-  const [newBirth, setNewBirth] = useState("");
-  const [newAvatar, setNewAvatar] = useState("🐻");
-  const avatarOptions = [
-    "🐻",
-    "🦊",
-    "🐼",
-    "🐨",
-    "🐸",
-    "🦁",
-    "🐙",
-    "🦋",
-    "🐬",
-    "🦄",
-    "🐧",
-    "🐺",
-    "🦝",
-    "🐱",
-    "🐶",
-    "🐹",
-    "🐰",
-    "🦔",
-    "🦜",
-    "🐳",
-  ];
+  const [childToEdit, setChildToEdit] = useState<PacienteItem | null>(null);
+  const [childToInactivate, setChildToInactivate] = useState<PacienteItem | null>(null);
+  const [childToDelete, setChildToDelete] = useState<PacienteItem | null>(null);
+
+  // Form states for Add Child
+  const [addNombres, setAddNombres] = useState("");
+  const [addApellidos, setAddApellidos] = useState("");
+  const [addFechaNacimiento, setAddFechaNacimiento] = useState("");
+  const [addSexo, setAddSexo] = useState<"Masculino" | "Femenino" | "Otro">("Masculino");
+  const [addAvatar, setAddAvatar] = useState<string>("zorro");
+  const [addLoading, setAddLoading] = useState(false);
+  const [addError, setAddError] = useState<string | null>(null);
+
+  // Form states for Edit Child
+  const [editNombres, setEditNombres] = useState("");
+  const [editApellidos, setEditApellidos] = useState("");
+  const [editFechaNacimiento, setEditFechaNacimiento] = useState("");
+  const [editSexo, setEditSexo] = useState<"Masculino" | "Femenino" | "Otro">("Masculino");
+  const [editAvatar, setEditAvatar] = useState<string>("zorro");
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState<string | null>(null);
+
+  // Inactivate / Delete states
+  const [actionLoading, setActionLoading] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  const openEditModal = (k: PacienteItem) => {
+    setChildToEdit(k);
+    setEditNombres(k.nombres);
+    setEditApellidos(k.apellidos);
+    setEditFechaNacimiento(k.fecha_nacimiento);
+    setEditSexo(k.sexo);
+    setEditAvatar(k.avatar_nombre || "zorro");
+    setEditError(null);
+  };
 
   // Notificaciones
   const [notifs, setNotifs] = useState({
@@ -5784,272 +5840,527 @@ function PadreConfig({ onNameChange, padrePlan = "exploracion", go: configGo }: 
         </div>
       )}
 
-      {/* Add child modal */}
+      {/* ── Modal: Añadir hijo ── */}
       {showAddChildModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setShowAddChildModal(false)}
+            onClick={() => {
+              if (!addLoading) {
+                setShowAddChildModal(false);
+                setAddError(null);
+              }
+            }}
           />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] flex flex-col">
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E5F4] flex-shrink-0">
-              <h2 className="font-extrabold text-[#1C1135]">
-                Añadir hijo
-              </h2>
+              <div>
+                <h2 className="font-extrabold text-[#1C1135] text-lg">Añadir hijo</h2>
+                <p className="text-xs text-[#7C6F9A] font-medium">Registra el perfil de tu hijo para iniciar su acompañamiento</p>
+              </div>
               <button
+                disabled={addLoading}
                 onClick={() => {
                   setShowAddChildModal(false);
-                  setNewCN("");
-                  setNewBirth("");
-                  setNewAvatar("🐻");
+                  setAddError(null);
                 }}
-                className="p-2 rounded-xl hover:bg-violet-50"
+                className="p-2 rounded-xl hover:bg-violet-50 text-[#7C6F9A] transition-colors"
               >
                 <X size={18} />
               </button>
             </div>
-            <div className="overflow-y-auto flex-1 p-6 flex flex-col gap-5">
-              {/* Avatar picker */}
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!addNombres.trim() || !addApellidos.trim() || !addFechaNacimiento) {
+                  setAddError("Por favor completa los nombres, apellidos y fecha de nacimiento.");
+                  return;
+                }
+                setAddLoading(true);
+                setAddError(null);
+                try {
+                  await pacientesService.crearHijo({
+                    nombres: addNombres.trim(),
+                    apellidos: addApellidos.trim(),
+                    fecha_nacimiento: addFechaNacimiento,
+                    sexo: addSexo,
+                    avatar_nombre: addAvatar,
+                  });
+                  await refreshChildren();
+                  setShowAddChildModal(false);
+                  setAddNombres("");
+                  setAddApellidos("");
+                  setAddFechaNacimiento("");
+                  setAddSexo("Masculino");
+                  setAddAvatar("zorro");
+                  showToast("Hijo registrado exitosamente");
+                } catch (err) {
+                  if (err instanceof ApiError) {
+                    setAddError(err.message);
+                  } else {
+                    setAddError("Error al registrar el hijo. Inténtalo de nuevo.");
+                  }
+                } finally {
+                  setAddLoading(false);
+                }
+              }}
+              className="overflow-y-auto flex-1 p-6 flex flex-col gap-4"
+            >
+              {addError && (
+                <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs font-bold text-red-700 flex items-start gap-2">
+                  <span className="text-base leading-none">⚠️</span>
+                  <span>{addError}</span>
+                </div>
+              )}
+
+              {/* Selector de Avatar */}
               <div>
-                <label className="block text-sm font-bold text-[#1C1135] mb-3">
-                  Avatar
+                <label className="block text-xs font-extrabold text-[#1C1135] mb-2 uppercase tracking-wider">
+                  Selecciona un avatar
                 </label>
-                <div className="flex flex-col items-center gap-3">
-                  <div
-                    className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl border-2 border-violet-300 shadow-md"
-                    style={{ background: B.violetLight }}
-                  >
-                    {newAvatar}
-                  </div>
-                  <div className="grid grid-cols-10 gap-1.5 w-full">
-                    {avatarOptions.map((a) => (
+                <div className="grid grid-cols-5 gap-2 p-3 bg-[#F8F7FF] rounded-2xl border border-[#E8E5F4]">
+                  {AVATAR_CATALOG.map((av) => {
+                    const isSelected = addAvatar === av.id;
+                    return (
                       <button
-                        key={a}
-                        onClick={() => setNewAvatar(a)}
-                        className={`w-full aspect-square rounded-xl text-xl flex items-center justify-center transition-all hover:scale-110 ${newAvatar === a ? "ring-2 ring-violet-500 scale-110" : ""}`}
-                        style={{
-                          background:
-                            newAvatar === a
-                              ? B.violetLight
-                              : "#F9F8FE",
-                        }}
+                        type="button"
+                        key={av.id}
+                        onClick={() => setAddAvatar(av.id)}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
+                          isSelected
+                            ? "bg-white border-2 border-violet-500 shadow-sm scale-105"
+                            : "bg-white/60 hover:bg-white border border-transparent"
+                        }`}
                       >
-                        {a}
+                        <div className="w-10 h-10 flex items-center justify-center">
+                          <img
+                            src={av.assetPath}
+                            alt={av.name}
+                            className="w-8 h-8 object-contain"
+                            onError={(ev) => {
+                              (ev.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold text-[#4B4264] truncate w-full text-center">
+                          {av.name}
+                        </span>
                       </button>
-                    ))}
-                  </div>
+                    );
+                  })}
                 </div>
               </div>
-              {/* Name */}
-              <Inp
-                label="Nombre completo"
-                placeholder="Ej. Lucía Gómez"
-                value={newCN}
-                onChange={setNewCN}
-              />
-              {/* Birth date */}
-              <div>
-                <label className="block text-sm font-bold text-[#1C1135] mb-2">
-                  Fecha de nacimiento
-                </label>
-                <input
-                  type="date"
-                  value={newBirth}
-                  onChange={(e) => {
-                    setNewBirth(e.target.value);
-                    if (e.target.value) {
-                      const age = Math.floor(
-                        (Date.now() -
-                          new Date(e.target.value).getTime()) /
-                          31557600000,
-                      );
-                      setNewCA(String(age));
-                    }
-                  }}
-                  max={new Date().toISOString().split("T")[0]}
-                  className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
-                  style={{
-                    fontFamily:
-                      '"Nunito", system-ui, sans-serif',
-                  }}
+
+              {/* Nombres y Apellidos */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Inp
+                  label="Nombres *"
+                  placeholder="Ej. Mateo"
+                  value={addNombres}
+                  onChange={setAddNombres}
                 />
-                {newCA && (
-                  <p className="mt-1.5 text-xs font-bold text-violet-600">
-                    📅 {newCA} años
-                  </p>
-                )}
+                <Inp
+                  label="Apellidos *"
+                  placeholder="Ej. Gómez Ruiz"
+                  value={addApellidos}
+                  onChange={setAddApellidos}
+                />
               </div>
+
+              {/* Fecha de nacimiento y Sexo */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-bold text-[#1C1135] mb-2">
+                    Fecha de nacimiento *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={addFechaNacimiento}
+                    onChange={(e) => setAddFechaNacimiento(e.target.value)}
+                    max={new Date().toISOString().split("T")[0]}
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
+                  />
+                  {addFechaNacimiento && (
+                    <p className="mt-1 text-xs font-bold text-violet-600">
+                      📅 {Math.floor((Date.now() - new Date(addFechaNacimiento).getTime()) / 31557600000)} años
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-[#1C1135] mb-2">
+                    Sexo *
+                  </label>
+                  <select
+                    required
+                    value={addSexo}
+                    onChange={(e) => setAddSexo(e.target.value as "Masculino" | "Femenino" | "Otro")}
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
+                  >
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-3 border-t border-[#E8E5F4] mt-2">
+                <Btn
+                  variant="secondary"
+                  type="button"
+                  disabled={addLoading}
+                  onClick={() => setShowAddChildModal(false)}
+                >
+                  Cancelar
+                </Btn>
+                <Btn
+                  variant="primary"
+                  type="submit"
+                  disabled={addLoading || !addNombres.trim() || !addApellidos.trim() || !addFechaNacimiento}
+                >
+                  {addLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Guardando...</span>
+                    </div>
+                  ) : (
+                    <>
+                      <Plus size={14} /> Registrar hijo
+                    </>
+                  )}
+                </Btn>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal: Editar hijo ── */}
+      {childToEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => {
+              if (!editLoading) setChildToEdit(null);
+            }}
+          />
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden max-h-[92vh] flex flex-col">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E5F4] flex-shrink-0">
+              <div>
+                <h2 className="font-extrabold text-[#1C1135] text-lg">
+                  Editar a {childToEdit.nombres}
+                </h2>
+                <p className="text-xs text-[#7C6F9A] font-medium">Actualiza los datos personales y el avatar</p>
+              </div>
+              <button
+                disabled={editLoading}
+                onClick={() => setChildToEdit(null)}
+                className="p-2 rounded-xl hover:bg-violet-50 text-[#7C6F9A]"
+              >
+                <X size={18} />
+              </button>
             </div>
-            <div className="px-6 py-4 border-t border-[#E8E5F4] flex-shrink-0">
+
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (!editNombres.trim() || !editApellidos.trim() || !editFechaNacimiento) {
+                  setEditError("Por favor completa los campos requeridos.");
+                  return;
+                }
+                setEditLoading(true);
+                setEditError(null);
+                try {
+                  await pacientesService.actualizarHijo(childToEdit.id_paciente, {
+                    nombres: editNombres.trim(),
+                    apellidos: editApellidos.trim(),
+                    fecha_nacimiento: editFechaNacimiento,
+                    sexo: editSexo,
+                    avatar_nombre: editAvatar,
+                  });
+                  await refreshChildren();
+                  setChildToEdit(null);
+                  showToast("Datos actualizados correctamente");
+                } catch (err) {
+                  if (err instanceof ApiError) {
+                    setEditError(err.message);
+                  } else {
+                    setEditError("Error al actualizar datos. Inténtalo de nuevo.");
+                  }
+                } finally {
+                  setEditLoading(false);
+                }
+              }}
+              className="overflow-y-auto flex-1 p-6 flex flex-col gap-4"
+            >
+              {editError && (
+                <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs font-bold text-red-700 flex items-start gap-2">
+                  <span className="text-base leading-none">⚠️</span>
+                  <span>{editError}</span>
+                </div>
+              )}
+
+              {/* Selector de Avatar */}
+              <div>
+                <label className="block text-xs font-extrabold text-[#1C1135] mb-2 uppercase tracking-wider">
+                  Cambiar avatar
+                </label>
+                <div className="grid grid-cols-5 gap-2 p-3 bg-[#F8F7FF] rounded-2xl border border-[#E8E5F4]">
+                  {AVATAR_CATALOG.map((av) => {
+                    const isSelected = editAvatar === av.id;
+                    return (
+                      <button
+                        type="button"
+                        key={av.id}
+                        onClick={() => setEditAvatar(av.id)}
+                        className={`flex flex-col items-center gap-1 p-2 rounded-xl transition-all ${
+                          isSelected
+                            ? "bg-white border-2 border-violet-500 shadow-sm scale-105"
+                            : "bg-white/60 hover:bg-white border border-transparent"
+                        }`}
+                      >
+                        <div className="w-10 h-10 flex items-center justify-center">
+                          <img
+                            src={av.assetPath}
+                            alt={av.name}
+                            className="w-8 h-8 object-contain"
+                            onError={(ev) => {
+                              (ev.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                        </div>
+                        <span className="text-[10px] font-bold text-[#4B4264] truncate w-full text-center">
+                          {av.name}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Nombres y Apellidos */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Inp
+                  label="Nombres *"
+                  value={editNombres}
+                  onChange={setEditNombres}
+                />
+                <Inp
+                  label="Apellidos *"
+                  value={editApellidos}
+                  onChange={setEditApellidos}
+                />
+              </div>
+
+              {/* Fecha y Sexo */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-bold text-[#1C1135] mb-2">
+                    Fecha de nacimiento *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    value={editFechaNacimiento}
+                    onChange={(e) => setEditFechaNacimiento(e.target.value)}
+                    max={new Date().toISOString().split("T")[0]}
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
+                  />
+                  {editFechaNacimiento && (
+                    <p className="mt-1 text-xs font-bold text-violet-600">
+                      📅 {Math.floor((Date.now() - new Date(editFechaNacimiento).getTime()) / 31557600000)} años
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-[#1C1135] mb-2">
+                    Sexo *
+                  </label>
+                  <select
+                    required
+                    value={editSexo}
+                    onChange={(e) => setEditSexo(e.target.value as "Masculino" | "Femenino" | "Otro")}
+                    className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
+                  >
+                    <option value="Masculino">Masculino</option>
+                    <option value="Femenino">Femenino</option>
+                    <option value="Otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="pt-2 flex justify-end gap-3 border-t border-[#E8E5F4] mt-2">
+                <Btn
+                  variant="secondary"
+                  type="button"
+                  disabled={editLoading}
+                  onClick={() => setChildToEdit(null)}
+                >
+                  Cancelar
+                </Btn>
+                <Btn
+                  variant="primary"
+                  type="submit"
+                  disabled={editLoading}
+                >
+                  {editLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Guardando...</span>
+                    </div>
+                  ) : (
+                    "Guardar cambios"
+                  )}
+                </Btn>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* ── Modal: Inactivar hijo ── */}
+      {childToInactivate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={() => {
+              if (!actionLoading) setChildToInactivate(null);
+            }}
+          />
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden p-6">
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
+              style={{ background: "#FEF3C7" }}
+            >
+              ⏸️
+            </div>
+            <h2 className="font-extrabold text-center text-[#1C1135] text-lg mb-2">
+              Inactivar a {childToInactivate.nombres}
+            </h2>
+            <p className="text-sm text-center text-[#7C6F9A] font-medium mb-4 leading-relaxed">
+              Esta acción ocultará el perfil del niño de tus listados diarios y del selector de la plataforma.
+            </p>
+            <div className="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900 mb-5 leading-relaxed">
+              🛡️ <strong>Historial protegido:</strong> Todo su historial clínico, tratamientos, sesiones y actividades se conservarán intactos. Podrás solicitar la reactivación a través de la administración.
+            </div>
+
+            {actionError && (
+              <div className="p-3 rounded-xl bg-red-50 border border-red-200 text-xs font-bold text-red-700 mb-4">
+                {actionError}
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Btn
+                variant="secondary"
+                className="flex-1 justify-center"
+                disabled={actionLoading}
+                onClick={() => setChildToInactivate(null)}
+              >
+                Cancelar
+              </Btn>
               <Btn
                 variant="primary"
-                className="w-full justify-center"
-                disabled={!newCN || !newBirth}
-                onClick={() => {
-                  const colors = [
-                    B.violet,
-                    B.teal,
-                    B.orange,
-                    "#F472B6",
-                  ];
-                  setChildList((prev) => [
-                    ...prev,
-                    {
-                      id: Date.now(),
-                      name: newCN,
-                      age: `${newCA} años`,
-                      specialty: "Lenguaje",
-                      av: newAvatar,
-                      color:
-                        colors[prev.length % colors.length],
-                      progress: 0,
-                      lastSession: "Sin sesiones",
-                      nextSession: "Por agendar",
-                    },
-                  ]);
-                  setShowAddChildModal(false);
-                  setNewCN("");
-                  setNewBirth("");
-                  setNewAvatar("🐻");
-                  setNewCA("");
-                  showToast(`${newCN} agregado exitosamente`);
+                className="flex-1 justify-center bg-amber-600 hover:bg-amber-700"
+                disabled={actionLoading}
+                onClick={async () => {
+                  setActionLoading(true);
+                  setActionError(null);
+                  try {
+                    await pacientesService.inactivarHijo(childToInactivate.id_paciente);
+                    await refreshChildren();
+                    setChildToInactivate(null);
+                    showToast("Hijo inactivado correctamente");
+                  } catch (err) {
+                    if (err instanceof ApiError) {
+                      setActionError(err.message);
+                    } else {
+                      setActionError("Error al inactivar al paciente.");
+                    }
+                  } finally {
+                    setActionLoading(false);
+                  }
                 }}
               >
-                <Plus size={14} /> Agregar hijo
+                {actionLoading ? "Inactivando..." : "Confirmar inactivación"}
               </Btn>
             </div>
           </div>
         </div>
       )}
 
-      {/* Edit child modal */}
-      {editChild && (
+      {/* ── Modal: Eliminar hijo (con control 409) ── */}
+      {childToDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setEditChild(null)}
+            onClick={() => {
+              if (!actionLoading) setChildToDelete(null);
+            }}
           />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E5F4]">
-              <h2 className="font-extrabold text-[#1C1135]">
-                Editar a {editChild.name}
-              </h2>
-              <button
-                onClick={() => setEditChild(null)}
-                className="p-2 rounded-xl hover:bg-violet-50"
-              >
-                <X size={18} />
-              </button>
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden p-6">
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
+              style={{ background: "#FEF2F2" }}
+            >
+              ⚠️
             </div>
-            <div className="p-6 flex flex-col gap-4">
-              <Inp
-                label="Nombre"
-                value={editChild.name}
-                onChange={(v) =>
-                  setEditChild((ec) =>
-                    ec ? { ...ec, name: v } : null,
-                  )
-                }
-              />
-              <div>
-                <label className="block text-sm font-bold text-[#1C1135] mb-2">
-                  Fecha de nacimiento
-                </label>
-                <input
-                  type="date"
-                  value={(editChild as any).birthdate || ""}
-                  onChange={(e) =>
-                    setEditChild((ec) =>
-                      ec ? { ...ec, birthdate: e.target.value, age: e.target.value ? `${Math.floor((Date.now() - new Date(e.target.value).getTime()) / 31557600000)} años` : (ec as any).age } as any : null
-                    )
-                  }
-                  max={new Date().toISOString().split("T")[0]}
-                  className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
-                  style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}
-                />
-                {(editChild as any).birthdate && (
-                  <p className="mt-1.5 text-xs font-bold text-violet-600">
-                    📅 {Math.floor((Date.now() - new Date((editChild as any).birthdate).getTime()) / 31557600000)} años
-                  </p>
-                )}
-              </div>
-              <div className="flex gap-3">
-                <Btn
-                  variant="secondary"
-                  className="flex-1 justify-center"
-                  onClick={() => setEditChild(null)}
-                >
-                  Cancelar
-                </Btn>
-                <Btn
-                  variant="primary"
-                  className="flex-1 justify-center"
-                  onClick={() => {
-                    setChildList((prev) =>
-                      prev.map((c) =>
-                        c.id === editChild!.id ? editChild! : c,
-                      ),
-                    );
-                    setEditChild(null);
-                    showToast("Cambios guardados");
-                  }}
-                >
-                  Guardar
-                </Btn>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+            <h2 className="font-extrabold text-center text-[#1C1135] text-lg mb-2">
+              Eliminar a {childToDelete.nombres}
+            </h2>
+            <p className="text-sm text-center text-[#7C6F9A] font-medium mb-4 leading-relaxed">
+              La eliminación física es permanente. Solo se permite si el paciente no cuenta con historial clínico, expedientes, sesiones o evaluaciones registradas.
+            </p>
 
-      {/* Delete child confirm */}
-      {deleteChild && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => setDeleteChild(null)}
-          />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
-            <div className="p-6">
-              <div
-                className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl mx-auto mb-4"
-                style={{ background: "#FEF2F2" }}
+            {actionError ? (
+              <div className="p-3.5 rounded-2xl bg-red-50 border border-red-200 text-xs font-bold text-red-700 mb-5 leading-relaxed">
+                ❌ {actionError}
+              </div>
+            ) : (
+              <div className="p-3 rounded-xl bg-gray-50 border border-gray-200 text-xs text-[#7C6F9A] mb-5">
+                💡 Si el paciente ya tiene sesiones o tratamientos asociados, el sistema bloqueará la eliminación para proteger los datos médicos. En ese caso, debes inactivarlo.
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <Btn
+                variant="secondary"
+                className="flex-1 justify-center"
+                disabled={actionLoading}
+                onClick={() => setChildToDelete(null)}
               >
-                ⚠️
-              </div>
-              <h2 className="font-extrabold text-center text-[#1C1135] text-lg mb-2">
-                Eliminar a {deleteChild.name}
-              </h2>
-              <p className="text-sm text-center text-[#7C6F9A] font-medium mb-5">
-                Esta acción eliminará el perfil y todo el
-                historial asociado. No puede deshacerse.
-              </p>
-              <div className="flex gap-3">
-                <Btn
-                  variant="secondary"
-                  className="flex-1 justify-center"
-                  onClick={() => setDeleteChild(null)}
-                >
-                  Cancelar
-                </Btn>
-                <Btn
-                  variant="danger"
-                  className="flex-1 justify-center"
-                  onClick={() => {
-                    setChildList((prev) =>
-                      prev.filter(
-                        (c) => c.id !== deleteChild!.id,
-                      ),
-                    );
-                    setDeleteChild(null);
-                    showToast(
-                      `Perfil de ${deleteChild!.name} eliminado`,
-                    );
-                  }}
-                >
-                  Eliminar
-                </Btn>
-              </div>
+                Cancelar
+              </Btn>
+              <Btn
+                variant="danger"
+                className="flex-1 justify-center"
+                disabled={actionLoading}
+                onClick={async () => {
+                  setActionLoading(true);
+                  setActionError(null);
+                  try {
+                    await pacientesService.eliminarHijo(childToDelete.id_paciente);
+                    await refreshChildren();
+                    setChildToDelete(null);
+                    showToast(`Perfil de ${childToDelete.nombres} eliminado`);
+                  } catch (err) {
+                    if (err instanceof ApiError && err.status === 409) {
+                      setActionError("No se puede eliminar: el paciente tiene registros clínicos, sesiones o historial protegido. Puedes inactivarlo en su lugar.");
+                    } else if (err instanceof ApiError) {
+                      setActionError(err.message);
+                    } else {
+                      setActionError("Error al intentar eliminar el paciente.");
+                    }
+                  } finally {
+                    setActionLoading(false);
+                  }
+                }}
+              >
+                {actionLoading ? "Eliminando..." : "Eliminar"}
+              </Btn>
             </div>
           </div>
         </div>
@@ -6405,67 +6716,100 @@ function PadreConfig({ onNameChange, padrePlan = "exploracion", go: configGo }: 
                   </div>
                 )}
                 <div className="flex items-center justify-between">
-                  <h2 className="font-extrabold text-[#1C1135] text-lg">
-                    Mis hijos ({childList.length})
-                  </h2>
-                  <Btn variant="secondary" size="sm" onClick={() => padrePlan === "exploracion" ? setShowPlanUpgradeModal(true) : setShowAddChildModal(true)}>
+                  <div>
+                    <h2 className="font-extrabold text-[#1C1135] text-lg">
+                      Mis hijos ({childList.length})
+                    </h2>
+                    <p className="text-xs text-[#7C6F9A] font-medium">Hijos activos registrados bajo tu cuenta</p>
+                  </div>
+                  <Btn variant="secondary" size="sm" onClick={() => padrePlan === "exploracion" && childList.length >= 1 ? setShowPlanUpgradeModal(true) : setShowAddChildModal(true)}>
                     <Plus size={13} /> Añadir hijo
                   </Btn>
                 </div>
-                {childList.length === 0 ? (
+                {isLoadingChildren ? (
+                  <div className="p-8 text-center bg-white rounded-2xl border border-[#E8E5F4]">
+                    <div className="w-8 h-8 border-4 border-violet-200 border-t-violet-600 rounded-full animate-spin mx-auto mb-2" />
+                    <p className="text-xs font-bold text-[#7C6F9A]">Cargando hijos...</p>
+                  </div>
+                ) : childList.length === 0 ? (
                   <EmptyState
                     icon="👧"
                     title="Sin hijos registrados"
-                    desc="Agrega el perfil de tu hijo para comenzar."
+                    desc="Agrega el perfil de tu hijo para comenzar a acompañar su desarrollo."
                     action="Agregar hijo"
                     onAction={() => setShowAddChildModal(true)}
                   />
                 ) : (
-                  (padrePlan === "exploracion" ? childList.slice(0, 1) : childList).map((k) => (
-                    <div
-                      key={k.id}
-                      className="flex items-center gap-4 p-4 rounded-2xl border border-[#E8E5F4] bg-white"
-                    >
+                  (padrePlan === "exploracion" ? childList.slice(0, 1) : childList).map((k) => {
+                    const av = getAvatarInfo(k.avatar_nombre);
+                    return (
                       <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                        style={{ background: (k as any).color || B.violetLight }}
+                        key={k.id_paciente}
+                        className="flex items-center gap-4 p-4 rounded-2xl border border-[#E8E5F4] bg-white shadow-sm"
                       >
-                        {(k as any).av || (k as any).emoji || k.name.slice(0, 2)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-extrabold text-[#1C1135]">
-                          {k.name}
-                        </p>
-                        <p className="text-xs text-[#7C6F9A] font-medium">
-                          {(k as any).age || ""} {(k as any).specialty ? `· ${(k as any).specialty}` : ""}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span
-                          className="text-xs font-bold px-2 py-1 rounded-xl"
-                          style={{
-                            background: B.successLight,
-                            color: B.success,
-                          }}
+                        <div
+                          className="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 border border-violet-100 bg-[#F5F3FF] overflow-hidden"
                         >
-                          Activo
-                        </span>
-                        <Btn
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setEditChild(k)}
-                        >
-                          <Edit size={12} /> Editar
-                        </Btn>
-                        <button
-                          onClick={() => setDeleteChild(k)}
-                          className="p-2 rounded-xl hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors"
-                        >
-                          <Trash2 size={14} />
-                        </button>
+                          <img
+                            src={av.assetPath}
+                            alt={av.name}
+                            className="w-10 h-10 object-contain"
+                            onError={(ev) => {
+                              (ev.target as HTMLElement).style.display = "none";
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <p className="font-extrabold text-[#1C1135] text-base truncate">
+                              {k.nombres} {k.apellidos}
+                            </p>
+                            <span
+                              className="text-[11px] font-black px-2 py-0.5 rounded-full"
+                              style={{
+                                background: B.successLight,
+                                color: B.success,
+                              }}
+                            >
+                              Activo
+                            </span>
+                          </div>
+                          <p className="text-xs text-[#7C6F9A] font-medium">
+                            {k.edad_anios} años · Nacimiento: {k.fecha_nacimiento} · Sexo: {k.sexo}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <Btn
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => openEditModal(k)}
+                          >
+                            <Edit size={12} /> Editar
+                          </Btn>
+                          <button
+                            onClick={() => {
+                              setChildToInactivate(k);
+                              setActionError(null);
+                            }}
+                            className="px-3 py-1.5 rounded-xl border border-amber-200 text-amber-700 bg-amber-50 hover:bg-amber-100 text-xs font-bold transition-colors"
+                            title="Inactivar hijo conservando su historial"
+                          >
+                            Inactivar
+                          </button>
+                          <button
+                            onClick={() => {
+                              setChildToDelete(k);
+                              setActionError(null);
+                            }}
+                            className="p-2 rounded-xl hover:bg-red-50 text-red-400 hover:text-red-600 transition-colors"
+                            title="Eliminar paciente"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             )}

@@ -12,6 +12,7 @@ import {
   CuentaListResponse,
   OperacionCuentaResponse,
 } from "@/types/auth";
+import { HijoListResponse, OperacionHijoResponse } from "@/types/pacientes";
 
 export const adminService = {
   /**
@@ -103,4 +104,23 @@ export const adminService = {
   async eliminarCuenta(id_usuario: number): Promise<OperacionCuentaResponse> {
     return apiClient.del<OperacionCuentaResponse>(`/admin/cuentas/${id_usuario}`);
   },
+
+  /**
+   * Obtiene todos los hijos asociados a una cuenta de padre (activos e inactivos).
+   */
+  async getHijosDePadre(id_usuario: number): Promise<HijoListResponse> {
+    return apiClient.get<HijoListResponse>(`/admin/cuentas/${id_usuario}/hijos`);
+  },
+
+  /**
+   * Reactiva un paciente inactivo (PATCH /api/v1/admin/pacientes/{id}/reactivar).
+   */
+  async reactivarHijo(id_paciente: number): Promise<OperacionHijoResponse> {
+    return apiClient.put<OperacionHijoResponse>(
+      `/admin/pacientes/${id_paciente}/reactivar`,
+      {},
+      { method: "PATCH" }
+    );
+  },
 };
+

@@ -47,15 +47,21 @@ class Paciente(Base):
     __tablename__ = "pacientes"
 
     id_paciente: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    id_tutor: Mapped[int] = mapped_column(Integer, nullable=False)
+    id_tutor: Mapped[int] = mapped_column(Integer, ForeignKey("tutores.id_tutor"), nullable=False)
     nombres_paciente: Mapped[str] = mapped_column(String(60), nullable=False)
     apellidos_paciente: Mapped[str] = mapped_column(String(80), nullable=False)
     fecha_nacimiento: Mapped[date] = mapped_column(Date, nullable=False)
     sexo: Mapped[str] = mapped_column(String(10), nullable=False)
+    avatar_nombre: Mapped[str] = mapped_column(
+        String(20), default="zorro", server_default="'zorro'::character varying", nullable=False
+    )
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    # Relación N:1 con Tutor
+    tutor: Mapped["Tutor"] = relationship("Tutor", foreign_keys=[id_tutor])
 
     # Relación 1:1 con Perfil
     perfil: Mapped[Optional["Perfil"]] = relationship(

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { ChevronRight, Download, X, Star } from "lucide-react";
 import { B, View, Btn, Crd, Bdg, Av, kids, Ashi } from "@/components/shared";
+import { useChild } from "@/context/ChildContext";
+import { getAvatarInfo } from "@/config/avatars";
 
 // ─── Mi Camino ASHA ─────────────────────────────────────────────────────────────
 
@@ -68,7 +70,26 @@ export function MiCaminoAsha({ go, padrePlan = "familia" }: { go: (v: View) => v
   const isExploracion = padrePlan === "exploracion";
   const ALLOWED_CATS = ["cuentos", "canciones", "adivinanzas"];
 
-  const child = kids[0];
+  const { activeChild } = useChild();
+
+  const child = activeChild
+    ? {
+        name: activeChild.nombres,
+        fullName: `${activeChild.nombres} ${activeChild.apellidos}`,
+        age: activeChild.edad_anios,
+        avatarNombre: activeChild.avatar_nombre,
+        emoji: getAvatarInfo(activeChild.avatar_nombre).fallbackIcon,
+        bg: "#EDE9FE",
+      }
+    : {
+        name: kids[0].name,
+        fullName: `${kids[0].name} Gómez`,
+        age: kids[0].age,
+        avatarNombre: "zorro",
+        emoji: kids[0].emoji,
+        bg: kids[0].bg,
+      };
+  const avatarInfo = getAvatarInfo(child.avatarNombre);
 
   const caminoTabs: { id: CaminoTab; icon: string; label: string }[] = [
     { id: "resumen",     icon: "📈", label: "Resumen"     },
@@ -195,7 +216,7 @@ h1{font-size:21px;font-weight:900;margin-bottom:4px}
   <p class="meta">${r.date} · ${r.therapist} · <span class="badge ${r.status === "activo" ? "bo" : "bg"}">${r.status}</span></p>
 </div>
 <div class="content">
-  <p class="patient">Paciente: Mateo Gómez · 7 años · Terapia del Lenguaje</p>
+  <p class="patient">Paciente: ${child.fullName} · ${child.age} años · Terapia del Lenguaje</p>
   ${sections.map(s => `<div class="section"><div class="stitle">${s.title}</div><div class="sbody">${s.content}</div></div>`).join("")}
 </div>
 <div class="footer">
@@ -229,12 +250,12 @@ h1{font-size:21px;font-weight:900;margin-bottom:4px}
               </button>
             </div>
             <div className="flex-1 overflow-y-auto p-6 space-y-4">
-              <p className="text-xs font-bold text-[#9E95B7] uppercase tracking-wider">Paciente: Mateo Gómez · 7 años · Terapia del Lenguaje</p>
+              <p className="text-xs font-bold text-[#9E95B7] uppercase tracking-wider">Paciente: {child.fullName} · {child.age} años · Terapia del Lenguaje</p>
               {[
                 { title: "Resumen Ejecutivo", content: reportView.summary },
                 { title: "Objetivos Trabajados", content: "Pronunciación de la R en posición inicial e intervocálica. Comprensión verbal con imágenes secuenciales. Vocabulario temático: animales y colores." },
-                { title: "Observaciones Clínicas", content: "Mateo mostró alta motivación durante las actividades lúdicas. Se observó mayor tiempo de atención sostenida (hasta 8 min vs 5 min inicial). La racha de 7 días en Mundo ASHA correlaciona positivamente con el avance fonológico." },
-                { title: "Recomendaciones para Casa", content: "Practicar 10–15 minutos diarios de lectura en voz alta. Usar los cuentos del Bosque ASHA. Celebrar cada pequeño logro para reforzar la autoconfianza." },
+                { title: "Observaciones Clínicas", content: "El paciente mostró alta motivación durante las actividades lúdicas. Se observó mayor tiempo de atención sostenida. La racha de actividades correlaciona positivamente con el avance fonológico." },
+                { title: "Recomendaciones para Casa", content: "Practicar 10–15 minutos diarios de lectura en voz alta. Usar los cuentos de Mundo ASHA. Celebrar cada pequeño logro para reforzar la autoconfianza." },
               ].map(s => (
                 <div key={s.title} className="rounded-2xl p-4" style={{ background: B.bg }}>
                   <p className="text-xs font-black text-[#9E95B7] uppercase tracking-wider mb-1.5">{s.title}</p>
@@ -266,14 +287,23 @@ h1{font-size:21px;font-weight:900;margin-bottom:4px}
         <div className="relative z-10 px-4 sm:px-6 pt-8 pb-6 max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6">
             {/* Avatar */}
-            <div className="w-24 h-24 rounded-3xl flex items-center justify-center text-5xl flex-shrink-0 shadow-lg border-2 border-white/20" style={{ background: child.bg }}>
-              {child.emoji}
+            <div className="w-24 h-24 rounded-3xl flex items-center justify-center overflow-hidden flex-shrink-0 shadow-lg border-2 border-white/20 bg-white/90">
+              <img
+                src={avatarInfo.assetPath}
+                alt={avatarInfo.name}
+                className="w-16 h-16 object-contain"
+                onError={(ev) => {
+                  (ev.target as HTMLElement).style.display = "none";
+                }}
+              />
+              <span className="text-5xl leading-none" style={{ display: "none" }}>{child.emoji}</span>
             </div>
             {/* Info */}
             <div className="flex-1 min-w-0">
               <span className="text-xs font-black text-violet-300 uppercase tracking-widest">🌱 Mi Camino ASHA</span>
-              <h1 className="text-3xl sm:text-4xl font-black text-white mt-1 mb-1">{child.name} Gómez</h1>
+              <h1 className="text-3xl sm:text-4xl font-black text-white mt-1 mb-1">{child.fullName}</h1>
               <p className="text-violet-200 text-lg font-bold mb-3">{child.age} años · Terapia del Lenguaje</p>
+
               <div className="flex flex-wrap items-center gap-3 mb-3">
                 <div className="flex items-center gap-1.5 bg-white/15 text-white px-3.5 py-2 rounded-full backdrop-blur-sm">
                   <span className="text-sm font-black">👩‍⚕️</span>
