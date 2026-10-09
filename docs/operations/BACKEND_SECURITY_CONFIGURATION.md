@@ -18,7 +18,7 @@ WEB_CONCURRENCY=1 y un solo proceso de aplicación hasta disponer de protección
 
 DB_CONNECT_TIMEOUT=10s, DB_COMMAND_TIMEOUT=15s, DB_POOL_TIMEOUT=10s. Un conflicto de datos/deadlock/serialización falla409, entrada inválida422, origen/rol403, sesión inválida401 y indisponibilidad503. No reintentar automáticamente escrituras: una respuesta perdida puede requerir cotejar la persistencia. Reportes concurrentes se serializan por sesión y usan último escritor completo; no hay control optimista por versión. Chat sin UNIQUE de pareja/idempotencia solo protege escritores que respetan los bloqueos de esta API.
 
-Antes de publicar: responsable coordina rotación de credenciales existentes, confirma backups/restauración, evalúa privilegios y aprueba B02. No suspender cuentas ni revocar permisos por seguir esta guía. Una publicación Git no es un hosting de producción.
+Antes del hosting público: responsable coordina rotación de credenciales existentes y confirma backups/restauración. B02 fue aprobado y aplicado en el corte14: API8000 de este clon usa ashakids_runtime, con las comprobaciones documentadas en B02_MINIMO_PRIVILEGIO.md. Los compañeros necesitan configurar la credencial runtime por un canal privado; no compartirla en Git ni en el chat. No suspender cuentas ni revocar permisos de identidades anteriores. Una publicación Git no es un hosting de producción.
 
 ## Pruebas autorizadas y continuidad
 

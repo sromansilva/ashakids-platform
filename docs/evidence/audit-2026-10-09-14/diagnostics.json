@@ -1,0 +1,23 @@
+{
+  "scope": "Only authorized new role/grants/RLS, new AUDITORIA cohorts, their auth sessions and bootstrap auth sessions; no old clinical/account changes, physical DELETE or TRUNCATE.",
+  "base_sha": "e756e7b5865201c2a0bd311786746d20b940449f",
+  "postgres_version": "17.6; no platform upgrade performed",
+  "configured_database_destination_preserved": true,
+  "private_backup": "tmp/b02-env-before-private.txt; excluded from Git",
+  "private_role_credentials": "tmp/b02-runtime-private.json; excluded from Git",
+  "candidate_transport": "FastAPI ASGI in process; real Supabase role/SQL; no new port",
+  "candidate_http": 99,
+  "live_http": 133,
+  "failed_expected_cases": 0,
+  "backend_unit_passed": 114,
+  "backend_unit_warnings": 19,
+  "frontend": "No frontend source changed; cut13 257+25 tests/types/build inherited, not rerun.",
+  "runtime_api": "Existing Uvicorn reload instance8000; main.py timestamp touched, bytes unchanged; candidate clients disposed before final adoption metadata.",
+  "other_api_instance": "Existing8001 instance observed; not created, used or stopped by this task.",
+  "public_defaults": "CONNECT/TEMP and schema public USAGE retained; no PUBLIC ACL changes. Runtime cannot CREATE schema/database or reach SECURITY DEFINER functions.",
+  "rollback": "Nested transaction denial probes rolled back; real concurrent409 conflicts persist one appointment/session. URL reversal prepared, not an outage/restoration drill.",
+  "documentation_lookup": "Official PostgreSQL17 role/policy/password docs and Supabase roles/connection/changelog reviewed. web markdown fetch unsupported, initial sandbox HTTP denied; authorized read succeeded.",
+  "process_lookup": "Sandbox CIM/network listing denied; authorized read succeeded; no unrelated process terminated.",
+  "marker_note": "Reused V20 verifier retains AUDITORIA13_ prefix; these two new cohorts belong to cut14 and their IDs are explicit.",
+  "ci_remote": "Not observed; local checks are not attributed to CI."
+}

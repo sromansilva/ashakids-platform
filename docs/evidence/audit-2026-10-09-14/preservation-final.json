@@ -1,0 +1,37 @@
+{
+  "success": true,
+  "existing_catalog_and_acls_match_original": true,
+  "final_snapshot": {
+    "roles": {
+      "count": 29,
+      "sha256": "5519c88f2d42cb83d07a6c27a0d65ac16afdc0d17c334a4b5f704b220621a1c8"
+    },
+    "memberships": {
+      "count": 19,
+      "sha256": "5448588f62d386936dc93321d001bbe3aec88b6ace7b8c77f9097dd0e63b7852"
+    },
+    "objects": {
+      "count": 52,
+      "sha256": "f8f935f2e24650d2df3e9ffc93f728effe57d2ea4ecdb7505349a564fdd6e32b"
+    },
+    "object_acl": {
+      "count": 1144,
+      "sha256": "273fcac3c22b92a027c1adea66b96e10a103833cb4923a8fc214093c66448d95"
+    },
+    "namespace_acl": {
+      "count": 274,
+      "sha256": "9e6a572c4247ba0e3154d1c4435aa2e4b169b527cf110d88d8069e11762061a8"
+    },
+    "database_acl": {
+      "count": 17,
+      "sha256": "57d58212ff94948b9744d85f737f94f26afd7ed4fa18f68254792293ec192b33"
+    },
+    "policies_existing": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "only_changed_env_setting": "DATABASE_URL",
+  "clinical_deletion": false,
+  "old_role_permission_changes": false
+}

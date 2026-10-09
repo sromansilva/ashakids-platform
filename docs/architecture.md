@@ -206,3 +206,20 @@ nuevas12..128 y escritura de sexo comparten validación; lectura no migra valore
 Errores de concurrencia409 y de disponibilidad503; rollback fallido no oculta el original.
 No hay DDL ni cambios de permisos en Supabase. B02 se propone en operations/B02_MINIMO_PRIVILEGIO.md.
 No hay hostingHTTPS ni producción publicados. Ver auditoría13 para resultados y límites reales.
+
+## Adopción del rol PostgreSQL del backend - corte14
+
+ADR0010 separa ashakids_runtime de la identidad propietaria. Tras autorización expresa,
+Supabase conserva RLS y usa 58 políticas TO ashakids_runtime para 22 tablas, con USAGE
+en 16 secuencias. El runtime no tiene superuser/BYPASSRLS/CREATEDB/CREATEROLE,
+replicación, propiedad ni pertenencia a otros roles. Los atributos, ACL y membresías
+anteriores se conservaron; no se revocaron derechos de PUBLIC ni de roles existentes.
+PUBLIC CONNECT/TEMP permanecen como defaults de la plataforma.
+
+La autorización de familias/terapeutas sigue en FastAPI: USING true del rol técnico
+no aporta aislamiento de familias dentro de PostgreSQL. ADMIN de AshaKids mantiene
+sus funciones; no se añadió Supabase Auth ni acceso SQL desde React. El candidato
+pasó con FastAPI ASGI y SQL real antes de adoptar la credencial en API8000; el recorrido
+HTTP real posterior y READ ONLY verifican persistencia y revocación de las cohortes
+nuevas. La conexión anterior queda en un respaldo privado ignorado para reversión.
+No hosting HTTPS, borrados físicos, bases descartables ni recuperación de backup.

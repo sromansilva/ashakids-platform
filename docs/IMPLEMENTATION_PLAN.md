@@ -299,3 +299,12 @@ y133HTTP reales (99 núcleo+29 complemento+5 sistema) con nueva cohorteAUDITORIA
 políticas; B03 pendiente de rotación/HTTPS; B06 probado en concurrencia acotada, no carga/
 backup/caída real. Conservar límites de autorización y evidencia por corte. Sin bases
 descartables ni DELETE físico en esta continuación. No ampliar módulos ni pagos.
+
+## Adopción B02 - corte14
+
+B02 aplicado y verificado con autorización expresa: rol exclusivo,22 tablas/58 políticas/
+16 secuencias, sin privilegios de administración ni permisos de identidades anteriores
+alterados. Candidato99 ASGI/SQL real y133HTTP tras adoptar API8000;114 backend sin BD.
+Conservar datos AUDITORIA y documentar fuente/PDF/evidencias del corte. Próxima prioridad:
+hostingHTTPS/proxy/cookies, coordinación de credenciales runtime para clones y respaldo/
+recuperación. No se amplía alcance, no pagos ni DELETE físicos.

@@ -2,7 +2,16 @@
 
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base de revisión: piero-dev/V19/a1930df456aed94a727acfa4625ef32a7bc6385d, más correcciones del corte 2026-10-09-13.
 
-Estado: propuesta preparada, **no aplicada ni validada como nuevo rol**. Supabase real: usuario actual no superusuario, con BYPASSRLS, CREATEDB y CREATEROLE. RLS habilitada y cero políticas públicas; pasar solamente a NOBYPASSRLS impediría el funcionamiento. El usuario prohíbe bases descartables en este chat. El responsable deberá aprobar el ensayo en un entorno permitido o autorizar una adopción controlada en Supabase; no se sustituye esa validación por mocks.
+Estado vigente: **aplicado y adoptado el 2026-10-09**, corte14. El candidato pasó
+99 respuestas ASGI con SQL real; API8000 pasó 133 respuestas HTTP (99 núcleo,
+29 complemento y 5 sistema), sin fallos. Ambas cohortes persistieron y terminaron
+con cero sesiones auth nuevas activas. Se comprobaron 58 políticas, 16 secuencias,
+ACL exactas y seis denegaciones 42501. .env privada ya usa ashakids_runtime.
+La propuesta histórica del corte13 sigue abajo. La identidad propietaria conserva sus
+permisos; ashakids_runtime es una identidad nueva. RLS sigue activa y las políticas se
+dirigen exclusivamente al runtime. No se usan bases descartables, borrados físicos ni
+modificaciones a datos preexistentes. Registrar el resultado final de adopción en el
+contexto y la auditoría14; no confundir creación del rol con aceptación del backend.
 
 ## Separación e inventario de operaciones
 
@@ -26,7 +35,7 @@ Revisar los DELETE en cuentas contra los cascades reales antes de concederlos: l
 
 Secuencias: el inventario `database-readonly.json` obtiene cada dependencia mediante `pg_get_serial_sequence`, incluyendo columnas identity que no aparecen en information_schema.sequences. Conceder solamente USAGE sobre las secuencias dependientes de tablas con INSERT. No dar UPDATE (setval), permisos sobre secuencias de otros módulos ni permiso de reiniciar identidades. No usar TRUNCATE para verificarlo.
 
-## Propuesta RLS, pendiente de aprobación específica
+## Políticas RLS autorizadas
 
 La autenticación es propia de FastAPI. `auth.uid()` no representa nuestras sesiones y no debe añadirse a estas políticas. React continúa sin acceso directo a PostgreSQL.
 
@@ -53,6 +62,35 @@ Fijar una contraseña aleatoria fuera de Git e informes por un canal seguro. Oto
 5. Cambiar únicamente la conexión privada de la API habitual 8000 al rol comprobado; reiniciar el proceso y verificar readiness y recorrido de roles. Mantener cuenta de migraciones separada. No hay despliegue público realizado.
 6. Si falla, volver a la conexión privada anterior y reiniciar API8000. Revertir políticas y rol nuevo solo con responsable y revisión de dependencias. No alterar privilegios del propietario ni borrar datos AUDITORIA.
 
-Aceptación: conexión y núcleo correctos bajo el rol nuevo; sin BYPASSRLS/CREATEDB/CREATEROLE/superuser/propiedad/membresías; tabla y secuencia fuera del inventario denegadas; políticas solo del rol runtime; evidencia del rollback y revisión de PUBLIC. Hasta entonces B02 queda pendiente.
+Aceptación: conexión y núcleo correctos bajo el rol nuevo; sin BYPASSRLS/CREATEDB/CREATEROLE/superuser/propiedad/pertenencia a otros roles; tabla y secuencia fuera del inventario denegadas; políticas solo del rol runtime; evidencia del rollback y revisión de PUBLIC. Consultar auditoría14 para el estado efectivo.
+
+## Guiones operacionales y revisión de PUBLIC
+
+Desde backend, con la cuenta propietaria configurada en privado:
+`python -m scripts.apply_b02_runtime_role --execute-authorized --output ../tmp/b02-application.json`.
+Aborta si el rol existe; no es una migración automática ni un guion para rotar contraseñas.
+El inventario preciso vive en scripts/b02_role_inventory.py; aplica 22 tablas, 58 políticas
+y USAGE en las 16 secuencias dependientes de tablas con INSERT. Guarda conexión anterior,
+runtime y contraseña aleatoria solo en tmp/b02-runtime-private.json ignorado.
+
+`python -m scripts.verify_b02_runtime_role --private ../tmp/b02-runtime-private.json --output ../tmp/b02-verification.json`
+verifica atributos, ausencia de propiedad/pertenencia, ACL exactas, RLS y TLS. Pruebas
+denegadas: LIMIT 0 sobre tabla no concedida, EXPLAIN sin ANALYZE de operaciones no
+concedidas, currval de secuencia no concedida y CREATE SCHEMA AUDITORIA_B02_DENIED
+con savepoint siempre revertido. No ejecutar TRUNCATE, setval, ALTER ni DELETE físicos
+sobre tablas compartidas para demostrar una denegación: consultar sus privilegios.
+
+`python -m scripts.verify_b02_journey --execute-authorized --private ../tmp/b02-runtime-private.json --output ../tmp/b02-candidate/journey.json`
+usa FastAPI ASGI en proceso y SQL real con el rol candidato, antes de cambiar API8000.
+No abre puerto8001 ni sustituye .env. El recorrido HTTP habitual se repite solo después
+de que este ensayo pase y se recargue la API con la conexión aprobada.
+
+PUBLIC conserva CONNECT/TEMP en la BD y USAGE en public. No permite CREATE en BD ni
+en public. No hay grants públicos de tablas/secuencias; las funciones SECURITY DEFINER
+con EXECUTE público en graphql no son alcanzables por el runtime sin USAGE de ese
+schema. Verificar ambas condiciones juntas, no solo has_function_privilege. NOINHERIT
+no elimina derechos de PUBLIC; no se alteran esos defaults ni identidades anteriores.
+Por ello no afirmar prohibición absoluta de conexiones/objetos temporales. La cuenta
+propietaria queda fuera del runtime para administración y reversión.
 
 Referencias: [Roles PostgreSQL](https://www.postgresql.org/docs/current/user-manag.html), [CREATE POLICY](https://www.postgresql.org/docs/current/sql-createpolicy.html), [Secuencias](https://www.postgresql.org/docs/current/functions-sequence.html), [Supabase: conexión](https://supabase.com/docs/guides/database/connecting-to-postgres).

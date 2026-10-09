@@ -6,6 +6,18 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### B02 aplicado en Supabase - corte 2026-10-09-14
+
+- Base V21/e756e7b5865201c2a0bd311786746d20b940449f; rama de trabajo piero-dev, dev y feat/piero-dev comprobadas antes del cambio. El cierre de implementación y su SHA se publican al completar esta fase; informe/PDF14 se incorporan en el cierre de evidencia posterior.
+- Autorización expresa para crear ashakids_runtime, GRANT por operación, políticas RLS y cambiar la conexión tras probar el candidato. Rol LOGIN sin superuser, BYPASSRLS, CREATEDB, CREATEROLE, replicación, propiedad ni pertenencia a otros roles. ACL exactas en 22 tablas, 58 políticas exclusivamente TO runtime y USAGE en 16 secuencias.
+- Seis denegaciones SQL42501 comprobadas sin ejecutar DML destructivo: tabla y secuencia no concedidas, UPDATE/DELETE de mensajes, INSERT de roles y CREATE SCHEMA de ensayo con savepoint revertido. TRUNCATE/setval/DDL sobre tablas clínicas no se ejecutaron. Snapshots antes/después/final conservan roles, membresías anteriores, propietarios, RLS y ACL de otros destinatarios.
+- Candidato FastAPI ASGI en proceso + SQL Supabase real: 99 respuestas esperadas. Después, API habitual8000 recargada: 99 núcleo+29 complemento+5 sistema=133 respuestas esperadas, 0 fallos, éxito en53/55 operaciones. Las2 operaciones DELETE físicas no se ensayaron. 114 pruebas backend sin BD/conftest,19 avisos; sin nueva ejecución frontend (regresión del corte13 heredada).
+- Persistencia de cada cohorte: 2 reservas,2 sesiones FINALIZADA,1 reporte completo,2 mensajes y0 sesiones auth nuevas activas. Prefijo AUDITORIA13_ heredado del guion: candidato AUDITORIA13_222612, usuarios62..66/pacientes91,92/tratamientos11,12/citas8,9/sesiones7,8/chat4; HTTP final AUDITORIA13_222932, usuarios67..71/pacientes93,94/tratamientos13,14/citas10,11/sesiones9,10/chat5. Conservar y excluir de métricas clínicas; no borrar ni modificar cohortes anteriores.
+- Solo DATABASE_URL de backend/.env cambió; host/puerto/BD y configuración TLS permanecen. Respaldo privado tmp/b02-env-before-private.txt y credencial nueva tmp/b02-runtime-private.json, ambos ignorados. No publicar URLs, contraseñas, SCRAM, cookies, tokens ni logs privados. ADMIN de AshaKids conserva funciones; propietario PostgreSQL conserva permisos separado del runtime. El push no cambia .env de otros clones: coordinar configuración por canal privado.
+- PUBLIC CONNECT/TEMP y USAGE de public conservados; runtime no tiene CREATE en BD/schema ni funciones SECURITY DEFINER alcanzables. RLS USING true para el rol técnico no aísla familias en SQL; FastAPI sigue autorizando cada recurso. ADR0010 y B02_MINIMO_PRIVILEGIO.md documentan límites y reversión. No instancia nueva8001; una preexistente no fue usada ni detenida.
+- Evidencia nueva docs/evidence/audit-2026-10-09-14/. B02 aplicado/verificado en este clon y destino real. HTTPS/hosting, rotación de cuentas anteriores, backup/restauración, carga, expiración natural y DELETE físicos siguen pendientes. CI remoto no observado. No ampliación de módulos ni pagos.
+- Siguiente: completar publicación de implementación y auditoría14/PDF; después preparar hosting HTTPS y recuperación con responsables. No confundir Git con despliegue público ni solicitar otra aprobación B02 ya concedida.
+
 ### Corrección backend B01-B06 - corte 2026-10-09-13
 
 - Trabajo exclusivamente en piero-dev desde V19/a1930df. V20_Correccion_Backend_Seguridad_Contratos publicado y verificado en dev y feat/piero-dev: b76a34a6125cae42614e9bee6da41ccc28163d7b. Informe y complemento de evidencia corresponden al cierre V21_Auditoria_Backend_Supabase_Documentacion; comprobar su SHA remoto con Git antes de continuar.
