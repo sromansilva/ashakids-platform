@@ -6,6 +6,22 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Preparación Render gratis - 2026-10-09
+
+- Solicitud: sincronizar dev con piero-dev y comenzar hosting gratuito para demo.
+  Base V23/f7bc5ecbca68eb0d21895bcc7a19ff34fecacd0b. Remotas dev/feat/piero-dev ya
+  coincidían; dev local avanzó4 commits por fast-forward y se volvió a piero-dev.
+- Docker Node22/Python3.13, render.yaml dev/Free/manual, app.hosted sirve React + FastAPI
+  en un origen. app.main conserva API local; no nuevas bases ni escrituras Supabase.
+- ADR0011 y operations/DEPLOY_RENDER.md.138 pruebas sin BD aprobadas/19 avisos;
+  tipos/build React y11 respuestas ASGI con dist real aprobados (sin BD/sesiones).
+  Mapa refresh/check vigente.4 fallos Windows/dotfile corregidos; bloqueos sandbox
+  de temporales/esbuild resueltos con acceso autorizado. Docker Linux no construido.
+- Usuario necesita crear/vincular Render con GitHub. Cuenta, credencial pooler IPv4,
+  CA y proxies de ingreso confirmados pendientes. Loopback por defecto rechaza escrituras
+  HTTP del proxy no confiable. Sin URL pública ni aceptación HTTPS declarada.
+  Cierre V24 corresponde al paquete revisable; publicación del hosting sigue pendiente.
+
 ### B02 aplicado en Supabase - corte 2026-10-09-14
 
 - Base V21/e756e7b5865201c2a0bd311786746d20b940449f; rama de trabajo piero-dev, dev y feat/piero-dev comprobadas antes del cambio. V22_Seguridad_BD_Rol_Backend publicado y verificado en dev y feat/piero-dev: dd71407a8e21f0bacf6904bf430784d1c3b26dda. Informe/PDF14 y cierre de evidencia corresponden a V23_Auditoria_BD_Permisos_Backend; comprobar SHA remoto efectivo con Git al continuar.

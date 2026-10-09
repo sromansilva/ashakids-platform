@@ -28,6 +28,10 @@ React + TypeScript + Vite (Frontend)
 
 ## Ejecución del proyecto
 
+Despliegue gratuito de demostración: [guía Render](docs/operations/DEPLOY_RENDER.md).
+El paquete Docker usa la rama dev y sirve frontend/API bajo una URL; la publicación
+requiere vincular la cuenta, configurar secretos y completar aceptación HTTPS.
+
 ### 1. Frontend
 
 El frontend se gestiona con `npm`.

@@ -1,0 +1,27 @@
+# First deploy is manual. No paid resources or new database are provisioned here.
+services:
+  - type: web
+    name: ashakids
+    runtime: docker
+    repo: https://github.com/sromansilva/ashakids-platform
+    branch: dev
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    autoDeployTrigger: "off"
+    healthCheckPath: /health/ready
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: WEB_CONCURRENCY
+        value: "1"
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_SSL_CA_FILE
+        sync: false
+      - key: DB_SSL_LEGACY_CA
+        value: "false"
+      # Configure the actual ingress proxy addresses after inspecting the first deploy.
+      # Until then forwarded headers from other peers are ignored; writes fail closed.
+      - key: FORWARDED_ALLOW_IPS
+        value: "127.0.0.1,::1"

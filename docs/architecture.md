@@ -223,3 +223,13 @@ pasó con FastAPI ASGI y SQL real antes de adoptar la credencial en API8000; el 
 HTTP real posterior y READ ONLY verifican persistencia y revocación de las cohortes
 nuevas. La conexión anterior queda en un respaldo privado ignorado para reversión.
 No hosting HTTPS, borrados físicos, bases descartables ni recuperación de backup.
+
+## Preparación de hosting de demostración - ADR0011
+
+Docker compila React Node22 y ejecuta FastAPI Python3.13. app.hosted monta solo dist
+después de API/health/docs y resuelve recarga SPA; app.main conserva API local.
+Web/API comparten origen HTTPS sin cambiar autenticación ni flujo HTTP/JSON.
+Render.yaml apunta a dev, Free y deploy manual; hosted_start exige producción, un
+worker y proxies explícitos sin '*' ni redes /0. Origen por CORS_ORIGINS/PUBLIC_ORIGIN
+o RENDER_EXTERNAL_URL. Supabase mantiene runtime B02, pooler sesión5432 por verificar
+en Render. Cuenta, secretos, ingreso/CA y aceptación HTTPS pendientes; sin DDL al arranque.

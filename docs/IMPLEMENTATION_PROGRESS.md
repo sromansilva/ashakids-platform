@@ -6,6 +6,23 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Preparación de deploy gratuito Render - V24
+
+2026-10-09. Rama piero-dev; base V23/f7bc5ecbca68eb0d21895bcc7a19ff34fecacd0b.
+Remotas dev/feat/piero-dev iguales al inicio; dev local actualizado por fast-forward.
+Objetivo: paquete de hosting, no declarar publicada la extensión HTTPS pendiente.
+Dockerfile/.dockerignore/render.yaml; backend/app/hosted.py, hosted_start.py,
+core/frontend_hosting.py, tests/test_frontend_hosting.py; ADR0011 y DEPLOY_RENDER.md.
+138 pruebas sin BD aprobadas/19avisos, tipos/build React y11 respuestas ASGI con dist
+real aprobados. Sin consultas BD/sesiones; Graphify refresh/check vigente. Sandbox bloqueó
+tmpdir pytest/esbuild; repetición autorizada.4 errores Windows/dotfile corregidos.
+No Docker disponible ni build Linux. No .env cambiado, escrituras Supabase o servicio
+pagado creado. Usuario eligió Free y necesita crear/vincular cuenta Render.
+Siguiente: cuenta GitHub/Render, importar dev, pooler sesión IPv4 con runtime y TLS,
+confirmar ingreso/proxies y recorrer HTTPS con cohortes nuevas AUDITORIA autorizadas.
+No ejecutar TRUNCATE/DELETE físicos ni modificar datos previos. Preparación local no
+certifica deploy. V24 identifica este avance; verificar SHA/publicación en Git al continuar.
+
 ### B02 aplicado en Supabase - corte 2026-10-09-14
 
 - Base V21/e756e7b5865201c2a0bd311786746d20b940449f; rama de trabajo piero-dev, dev y feat/piero-dev comprobadas antes del cambio. V22_Seguridad_BD_Rol_Backend publicado y verificado en dev y feat/piero-dev: dd71407a8e21f0bacf6904bf430784d1c3b26dda. Informe/PDF14 y cierre de evidencia corresponden a V23_Auditoria_BD_Permisos_Backend; comprobar SHA remoto efectivo con Git al continuar.
