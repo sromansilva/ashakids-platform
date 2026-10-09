@@ -81,6 +81,14 @@ Una vez iniciado el backend, verificar en:
 - Documentación OpenAPI interactiva: `http://localhost:8000/docs`
 ## Conocimiento compartido para el equipo
 
+Guía progresiva: [contexto maestro](docs/PROJECT_CONTEXT.md),
+[plan por fases](docs/IMPLEMENTATION_PLAN.md) y [avance/relevos](docs/IMPLEMENTATION_PROGRESS.md).
+Pagos: solo maqueta existente; sin desarrollo ni commits nuevos de pagos, según el profesor.
+Registrar el estado en Git al cambiar de integrante o asistente.
+Entrega: 2026-10-09 18:00 Lima. Ver [lista de entrega](docs/DELIVERY_CHECKLIST.md) y
+[protocolo de auditorías](docs/audits/README.md).
+
+
 Leer [contexto actual](docs/PROJECT_CONTEXT.md), [arquitectura](docs/architecture.md) y [flujo Graphify](docs/knowledge-workflow.md). La skill está en `.agents/skills/graphify/`; las instrucciones para agentes están en `AGENTS.md`.
 
 ```sh

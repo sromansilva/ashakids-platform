@@ -133,12 +133,13 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Campo Código de Usuario */}
             <div>
-              <label className="block text-sm font-extrabold text-[#1C1135] mb-1.5">
+              <label htmlFor="login-user-code" className="block text-sm font-extrabold text-[#1C1135] mb-1.5">
                 Código de usuario
               </label>
               <div className="relative">
                 <UserIcon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                 <input
+                  id="login-user-code"
                   type="text"
                   value={codigoUsuario}
                   onChange={e => setCodigoUsuario(e.target.value)}
@@ -153,7 +154,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Campo Contraseña */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-extrabold text-[#1C1135]">Contraseña</label>
+                <label htmlFor="login-password" className="text-sm font-extrabold text-[#1C1135]">Contraseña</label>
                 {onForgotPassword && (
                   <button
                     type="button"
@@ -168,6 +169,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               <div className="relative">
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                 <input
+                  id="login-password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={e => setPassword(e.target.value)}

@@ -1,0 +1,194 @@
+{
+  "environment": "127.0.0.1:8001 / ashakids_test_phase2",
+  "verified_cases": 27,
+  "cases": [
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "resource": "pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "resource": "citas/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "resource": "sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "resource": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "resource": "pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "resource": "citas/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "resource": "sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "resource": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "PUT",
+      "resource": "sesiones/1/reporte",
+      "status": 403
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "resource": "pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "resource": "citas/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "resource": "sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "resource": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "pacientes/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "citas/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "sesiones/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "sesiones/1/reporte",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "pacientes",
+      "status": 200,
+      "items": 0
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "citas",
+      "status": 200,
+      "items": 0
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "resource": "sesiones",
+      "status": 200,
+      "items": 0
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "pacientes/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "citas/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "sesiones/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "sesiones/1/reporte",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "pacientes",
+      "status": 200,
+      "items": 0
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "citas",
+      "status": 200,
+      "items": 0
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "resource": "sesiones",
+      "status": 200,
+      "items": 0
+    }
+  ]
+}

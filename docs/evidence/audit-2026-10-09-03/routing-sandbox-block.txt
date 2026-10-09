@@ -1,0 +1,33 @@
+
+> ashakids-frontend@0.0.1 test:routing
+> node --experimental-strip-types --test tests/routing.test.mjs
+
+✖ tests\routing.test.mjs (5.3569ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 17.7617
+
+✖ failing tests:
+
+test at tests\routing.test.mjs:1:1
+✖ tests\routing.test.mjs (5.3569ms)
+  Error: spawn EPERM
+      at ChildProcess.spawn (node:internal/child_process:457:11)
+      at spawn (node:child_process:813:9)
+      at TestContext.<anonymous> (node:internal/test_runner/runner:549:19)
+      at FileTest.runInAsyncScope (node:async_hooks:226:14)
+      at FileTest.run (node:internal/test_runner/test:1402:25)
+      at FileTest.start (node:internal/test_runner/test:1262:17)
+      at runTestFile (node:internal/test_runner/runner:631:32)
+      at node:internal/test_runner/runner:1074:25
+      at node:internal/per_context/primordials:600:37
+      at new Promise (<anonymous>) {
+    errno: -4048,
+    code: 'EPERM',
+    syscall: 'spawn'
+  }

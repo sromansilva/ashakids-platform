@@ -8,8 +8,8 @@ import httpx
 import pytest
 import pytest_asyncio
 from sqlalchemy import select, text
-from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+from scripts.testing_database import disposable_database_urls
 
 from app.core import database
 from app.core.security import hash_password
@@ -38,16 +38,15 @@ async def clinical():
     url = os.getenv("ASHAKIDS_TEST_DATABASE_URL")
     if not url:
         pytest.skip("Defina ASHAKIDS_TEST_DATABASE_URL a PostgreSQL local descartable.")
-    parsed = make_url(url)
-    if parsed.host not in {"127.0.0.1", "localhost"} or not (parsed.database or "").startswith("ashakids_test_"):
-        pytest.fail("La suite se niega a escribir fuera de una BD local ashakids_test_*.")
+    url, admin_url = disposable_database_urls()
     engine = create_async_engine(url)
+    cleanup_engine = create_async_engine(admin_url)
     factory = async_sessionmaker(engine, expire_on_commit=False, autoflush=False)
     previous = database.async_session_factory
     database.async_session_factory = factory
     clients = {}
     try:
-        async with engine.begin() as conn:
+        async with cleanup_engine.begin() as conn:
             await conn.execute(text("TRUNCATE usuarios RESTART IDENTITY CASCADE"))
         async with factory.begin() as db:
             roles = {r.nombre_rol: r.id_rol for r in (await db.scalars(select(Rol))).all()}
@@ -75,6 +74,7 @@ async def clinical():
         for client in clients.values():
             await client.aclose()
         database.async_session_factory = previous
-        async with engine.begin() as conn:
+        async with cleanup_engine.begin() as conn:
             await conn.execute(text("TRUNCATE usuarios RESTART IDENTITY CASCADE"))
+        await cleanup_engine.dispose()
         await engine.dispose()

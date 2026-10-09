@@ -19,7 +19,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setShowAddChildModal(false)}
           />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
+          <div role="dialog" aria-modal="true" aria-label="Añadir hijo" className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden max-h-[90vh] flex flex-col">
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E5F4] flex-shrink-0">
               <h2 className="font-extrabold text-[#1C1135]">
                 Añadir hijo
@@ -31,47 +31,17 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                   setNewBirth("");
                   setNewAvatar("🐻");
                 }}
+                aria-label="Cerrar formulario de hijo"
                 className="p-2 rounded-xl hover:bg-violet-50"
               >
                 <X size={18} />
               </button>
             </div>
             <div className="overflow-y-auto flex-1 p-6 flex flex-col gap-5">
-              {/* Avatar picker */}
-              <div>
-                <label className="block text-sm font-bold text-[#1C1135] mb-3">
-                  Avatar
-                </label>
-                <div className="flex flex-col items-center gap-3">
-                  <div
-                    className="w-20 h-20 rounded-3xl flex items-center justify-center text-4xl border-2 border-violet-300 shadow-md"
-                    style={{ background: B.violetLight }}
-                  >
-                    {newAvatar}
-                  </div>
-                  <div className="grid grid-cols-10 gap-1.5 w-full">
-                    {avatarOptions.map((a) => (
-                      <button
-                        key={a}
-                        onClick={() => setNewAvatar(a)}
-                        className={`w-full aspect-square rounded-xl text-xl flex items-center justify-center transition-all hover:scale-110 ${newAvatar === a ? "ring-2 ring-violet-500 scale-110" : ""}`}
-                        style={{
-                          background:
-                            newAvatar === a
-                              ? B.violetLight
-                              : "#F9F8FE",
-                        }}
-                      >
-                        {a}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
               {/* Name */}
               <Inp
-                label="Nombre completo"
-                placeholder="Ej. Lucía Gómez"
+                label="Nombres"
+                placeholder="Ej. Lucía"
                 value={newCN}
                 onChange={setNewCN}
               />
@@ -80,10 +50,11 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
               <RemoteFeedback error={save.error} />
               {/* Birth date */}
               <div>
-                <label className="block text-sm font-bold text-[#1C1135] mb-2">
+                <label htmlFor="new-child-birthdate" className="block text-sm font-bold text-[#1C1135] mb-2">
                   Fecha de nacimiento
                 </label>
                 <input
+                  id="new-child-birthdate"
                   type="date"
                   value={newBirth}
                   onChange={(e) => {

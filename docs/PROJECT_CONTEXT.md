@@ -1,4 +1,219 @@
-# Contexto actual de ASHAKids
+# ASHAKids — Contexto maestro progresivo
+
+Actualización de alcance y coordinación: 2026-10-09. Base inspeccionada: commit 82f868f
+(rama local piero-dev, basada en dev). El usuario confirma dev como base compartida del equipo;
+no se ha vinculado el PDF a un SHA declarado por su autor.
+
+## Entrada única del equipo
+
+### Corte vigente: fase 3, coherencia del núcleo, 2026-10-09-04
+
+- [Informe](audits/auditoria-2026-10-09-04.md): cierre de fase 3 para el núcleo mínimo,
+  sin certificar todas las extensiones ni estabilidad de toda la plataforma.
+- Recorrido/Seguimiento familiar reutilizan registros persistentes; paneles ADMIN/TERAPEUTA
+  calculan datos autorizados, sin nombres, mensajes, disponibilidad o métricas clínicas ficticios.
+- Familias consultan profesionales por tratamientos asignados y reservan por el diálogo real.
+  Configuración muestra todos los hijos sin límites de plan; baja lógica conserva historial.
+- Alta y cambios de cuenta/credenciales por administración existente. Registro público,
+  recuperación/verificación por correo, consentimiento, preferencias y 2FA pendientes:
+  entradas explicativas, sin envío, guardado o aceptación simulados.
+- 198 componentes (33 nuevos), 25 rutas, tipos/estructura/build correctos; 35 respuestas
+  HTTP + OpenAPI en réplica local y navegador 1366/390 px. Sin clínica nueva ni Supabase.
+- [Mundo ASHA](MUNDO_ASHA_PLAN.md) pasa a etapa propia MA-01..MA-07 por petición del usuario:
+  mundos por habilidad, diferentes dificultades y niveles. Catálogo draft-1: 4 mundos,
+  24 niveles propuestos (6/8/5/5), sujetos a revisión. Juegos actuales siguen prototipos.
+  Cálculo secuencial probado con intentos sintéticos; todavía no conectado/persistente.
+  Sin estrellas, rachas, asignaciones ni premios ficticios en portada/perfil/retos/academia.
+- ADR 0005: experiencia del núcleo y límite educativo. Selección de hijo por ID compartida,
+  identidad en claves de consulta; el almacenamiento local no concede autorización.
+- Código identificado por V01_Fase3, 9a6b06160c5210ec05bd3273ef516bba6989560d.
+  Documentación/evidencia se conserva en V02_AuditoriaFase3. Destino compartido: dev,
+  integración por PR; consultar historial remoto para SHA de publicación y CI.
+- Nueva regla del usuario: commit obligatorio corto con versión/objetivo y descripción
+  breve al cerrar cada fase; publicar en dev y sincronizar su rama. No esperar la palabra
+  clave. La señal de tokens bajos prepara un relevo anticipado incluso a mitad de fase.
+- Siguiente: F5-01, decidir mínimos de comunicación/documentos; MA-01 requiere revisión
+  detenida de contenido/criterios con el usuario. Incidencia01 y reproducción del equipo
+  pendientes; hosting solo se comparará después de demostrar estabilidad.
+
+### Corte anterior: F3-01, seguimiento familiar persistente, 2026-10-09-03
+
+- [Informe](audits/auditoria-2026-10-09-03.md): Centro Familiar y Mi Camino ASHA consumen
+  registros del servidor; selección por ID también en móvil, sin niños ficticios de respaldo.
+- Hitos y contadores proceden de perfil/tratamientos/citas/sesiones/reportes. Solo sesiones
+  FINALIZADA/ASISTIO cuentan como realizadas; fechas y mes America/Lima. Progreso clínico
+  sigue "Sin medición"; no se infiere mejoría a partir de sesiones o actividades.
+- Próxima cita excluye completadas/canceladas/vencidas; recomendaciones salen del reporte
+  profesional guardado. Reprogramación va a agenda real; no hay toast de éxito simulado.
+- 165 componentes y 25 rutas aprobados; tipos/check/build correctos. 12 casos nuevos con
+  mocks; navegador real 1366/390 px, hermanos homónimos, recarga, familia sin hijos y reporte.
+- API 8001/PG 17.6 local 6544: añadido un segundo hijo sintético y una cita futura, sin reset.
+  El reporte del corte 02 se reutiliza como dato persistente, no como reporte creado nuevamente.
+  Supabase no se consultó ni se escribió en este corte. No repetir prepare/pytest en esta demo.
+- ADR 0004 documenta modelo de lectura compartido y selección. Componentes antiguos demo
+  permanecen sin importarse desde estas entradas; otros módulos aún pueden ser demostrativos.
+- F3-01 verificado en las dos vistas; fase 3 general/otras pantallas no certificadas. Siguiente:
+  cerrar decisiones/módulos mínimos de entrega F5-01 y revisar recuperación/consentimiento
+  demostrativos antes de prometer esas capacidades. Incidencia histórica sigue abierta.
+- Señal de relevo acordada: "tokens bajos dejar todo listo para siguiente desarollador".
+  Al recibirla, preparar documentación, revisar/integrar en dev con commit/push y entregar prompt.
+  Rama actual piero-dev, HEAD 82f868f más cambios sin commit/push; señal aún no recibida.
+
+### Corte anterior: compatibilidad con esquema compartido, 2026-10-09-02
+
+- [Informe nuevo](audits/auditoria-2026-10-09-02.md): Supabase inspeccionado en solo lectura;
+  réplica local PostgreSQL 17.6 con 26 tablas, 178 columnas, 92 restricciones y 71 índices
+  equivalentes. No se copiaron registros reales ni hubo escrituras compartidas en este corte.
+- Corregidas 6 diferencias de columnas en 4 campos ORM; comparación posterior: 0 diferencias
+  de tipo/longitud/nulabilidad/precisión/escala en columnas modeladas. avatar_nombre ya existe
+  en Supabase; no aplicar allí la migración 001 por la falta que tenía el SQL inicial local.
+- 79 pruebas backend aprobadas, 25 omitidas, 19 advertencias; 48 respuestas HTTP reales
+  verificadas. Familia consulta reporte y lo conserva al recargar en navegador.
+- Runtime SQL local no superusuario con BYPASSRLS, sin CREATEDB/CREATEROLE. Limpieza de
+  fixtures usa propietario separado y guardas de mismo destino local descartable.
+- Entorno nuevo: PostgreSQL 17.6 local 6544, ashakids_test_compat17; API 8001, frontend 5174.
+  No ejecutar pytest/prepare sobre estos datos si se desea conservar la demostración.
+- Rol compartido omite RLS y tiene CREATEDB/CREATEROLE. Antes de desplegar, acordar mínimos
+  privilegios; autorización por recurso sigue en FastAPI. No se cambiaron permisos compartidos.
+- Próxima implementación: F3-01, Centro Familiar y Mi Camino ASHA; retirar cifras/pasos demo
+  que aparentan seguimiento real. Incidencia histórica y reproducción por otro integrante
+  pendientes. HEAD 82f868f + cambios locales sin commit/push; hosting aún no seleccionado.
+
+### Corte anterior: auditoría local de fase 2, 2026-10-09-01
+
+- [Informe y evidencia](audits/auditoria-2026-10-09-01.md): núcleo ADMIN -> paciente/tratamiento ->
+  PADRE/cita -> TERAPEUTA/sesión/reporte -> PADRE/lectura verificado en PostgreSQL descartable.
+- 72 pruebas backend aprobadas, 25 omitidas y 19 advertencias; frontend 153 componentes y
+  25 rutas aprobadas, tipos/check/build correctos. 27 casos HTTP posteriores verifican
+  persistencia y acceso ajeno rechazado. Capturas en evidence/audit-2026-10-09-01/.
+- Correcciones: columna avatar_nombre en SQL inicial y migración explícita; guardas de
+  pruebas HTTP; retirada de confirmación ficticia; métricas inexistentes eliminadas de reportes.
+- Incidencia: la primera suite heredada alcanzó API habitual 8000 y operó cuentas de prueba
+  compartidas. Se detuvo; no se restauró esa base. Equipo debe revisar logs/impacto antes de
+  cerrar la incidencia. No afirmar que toda esta auditoría estuvo aislada.
+- HEAD 82f868fd4a1b7e7d40a636651c13d9add472c71f más cambios locales sin commit/push.
+  Compartir el corte y reproducir en otro equipo; después continuar fase 3 (paneles/demo).
+- Entorno de evidencia: PostgreSQL 18 local 6543, API 8001 y frontend 5174. La migración
+  no se aplicó a Supabase. No volver a ejecutar pytest sobre fixtures que se quieran conservar.
+
+Los apartados históricos inferiores describen cortes previos y no sustituyen este resultado.
+
+### Objetivo de reproducción local y despliegue (2026-10-09)
+
+El usuario confirma acceso a su configuración/BD y busca resultados persistentes reales que
+puedan reproducirse al desplegar. La base descartable usa PostgreSQL real para pruebas que
+reinician datos; el corte 02 comparó el esquema/configuración compartido y verificó una réplica
+local representativa de su versión y estructura pública. El acceso facilitado permite avanzar en esa integración,
+pero no convierte las fixtures destructivas actuales en apropiadas para una BD compartida.
+Próximo paso: fase 3 y reproducción del corte por otro integrante; revisión de incidencia
+histórica pendiente. La infraestructura y dominios del alojamiento no han sido ensayados.
+
+Cuando el alcance esté estable, seleccionar el hosting gratuito más adecuado para React/Vite,
+FastAPI y la BD actual, comprobando costes/límites vigentes y sesión en dominios reales.
+Tareas F7-02/F7-03 añadidas al plan. Proveedor pendiente; selección y ensayo de despliegue
+no realizados en esta actualización documental. No cambia la arquitectura vigente.
+Precisión del usuario: primero demostrar estabilidad con pruebas del alcance; después entregar
+información y una recomendación comparando Vercel, Railway, Render y alternativas para que él
+decida. La etapa actual es de orientación; la ejecución del despliegue requiere petición posterior.
+
+Este archivo reúne objetivo, alcance, estado y siguiente prioridad. Leer después:
+- [Plan de implementación](IMPLEMENTATION_PLAN.md): fases y criterios de salida.
+- [Avance y relevos](IMPLEMENTATION_PROGRESS.md): tarea activa, evidencias y traspaso.
+- [Arquitectura](architecture.md) y [ADR](decisions/): reglas técnicas vigentes.
+
+Los informes históricos conservan evidencia de su fecha, no certifican el estado actual.
+Las propuestas de diseño en specs/pasted_text no incorporan automáticamente requisitos.
+flujo_vistas_ashakids.md contiene referencias heredadas a Spring/Node/HTML; el producto
+actual usa React/FastAPI/PostgreSQL.
+
+## Objetivo y alcance académico
+
+Web de apoyo a terapia de lenguaje infantil para familias, terapeutas y administración.
+Recorrido prioritario: usuario -> paciente -> tratamiento asignado -> cita -> sesión ->
+reporte -> seguimiento. Reutilizar las tablas y capas existentes; no reconstruir el backend.
+
+| Capacidad | Alcance acordado o propuesto |
+| --- | --- |
+| Núcleo | Acceso por rol, pacientes, asignaciones, agenda, sesiones, reportes y seguimiento básico: primera entrega funcional propuesta |
+| Pagos | Maqueta existente de demostración; sin desarrollo nuevo ni commits dedicados, conforme a la observación del profesor. Sin cobros reales |
+| Actividades | Mundo ASHA por habilidades y niveles: etapa propia MA-01..MA-07, revisión detenida antes de juegos completos |
+| Comunicación/documentos | Mensajes y PDF: seleccionar los mínimos exigidos por el curso |
+| Avanzados | WebRTC, reconocimiento de voz, ASHI/IA, correo y límites de planes: decisión pendiente según rúbrica y tiempo |
+
+La simulación visual existente puede conservarse con etiqueta de demostración. La observación
+más reciente del profesor excluye pagos del alcance, por lo que se retira la fase de desarrollo
+prevista anteriormente; no implementar persistencia o API de pagos ni un commit dedicado.
+Agenda, sesiones y reportes deben poder demostrarse sin cobros reales o simulados obligatorios.
+
+## Entrega confirmada y rúbrica recibida
+
+Entrega: **2026-10-09 a las 18:00, America/Lima**. El equipo confirma dev como base común.
+La fecha actual sustituye el horizonte del 10 de octubre del informe histórico.
+Prioridades visibles de la rúbrica: arquitectura/backend, modelo físico/tablas/relaciones y
+operaciones BD, seguridad/usuarios/permisos, pruebas funcionales y no funcionales con evidencias.
+La captura es parcial; no consta puntuación ni todos los criterios.
+
+- [Lista de entrega y evidencia](DELIVERY_CHECKLIST.md).
+- [Índice y protocolo de auditorías](audits/README.md).
+- [Plantilla de auditoría](audits/AUDIT_TEMPLATE.md).
+- PDF aportado: evidence/backend-2026-10-08/Auditoria_Backend_AshaKids_2026-10-08.pdf.
+- Repositorio para todos los informes: https://github.com/sromansilva/ashakids-platform .
+- Commits con estructura de versiones y objetivo, conforme a AGENTS.md.
+
+## Forma de trabajo: relevos de personas y asistentes
+
+El equipo tiene conocimientos universitarios y desarrolla con apoyo de asistentes. Puede
+continuar otra persona cuando la anterior agota sus tokens. El estado debe vivir en Git y
+la documentación, no únicamente en chats. Para cada relevo registrar tarea, responsable,
+rama/SHA, archivos cambiados, pruebas realmente ejecutadas, fallos y siguiente comando/acción.
+Trabajar una tarea acotada a la vez por relevo; no continuar desde cambios que solo existen
+localmente en la computadora de otra persona. Ver protocolo en IMPLEMENTATION_PROGRESS.md.
+Nunca incluir secretos ni datos reales de pacientes en el traspaso.
+
+## Estado observado y decisión inmediata
+
+El usuario informa que el equipo desarrolla el backend y que las tablas ya están estructuradas.
+En este clon existen API/services/models/schemas y contratos de usuarios, pacientes,
+tratamientos, citas, sesiones y reportes. clinicalService.ts, SessionActions, usePadreHome,
+usePadreAgenda y usePadreReportes tienen consumidores HTTP; useDemoWorkflow conserva simulaciones.
+Hay pruebas de interfaz con fetch simulado; no equivalen a una prueba real de los tres roles.
+
+Continuar el backend existente y sus auditorías. Primero identificar el SHA que está trabajando
+el equipo, comparar su OpenAPI con los consumidores frontend y cerrar un recorrido persistente
+ADMIN/PADRE/TERAPEUTA en PostgreSQL descartable. Después ampliar módulos. No repetir una auditoría
+completa sin cambios nuevos como sustituto de integrar el producto.
+
+No se ha contactado al equipo. Base dev, plazo y extracto de rúbrica confirmados por el usuario.
+Personas responsables y requisitos no visibles de la rúbrica siguen por confirmar. Las fases
+de extensión son una guía futura y no una promesa de completarlas antes de la entrega.
+
+## Evidencia local y límites
+
+En esta conversación se instalaron dependencias, se verificaron build, typecheck y check:frontend;
+web y /health respondieron, y /health/ready confirmó conectividad. No se verificó el producto
+completo con cuentas de los tres roles. Mapa local: 1673 nodos y check correcto.
+Backend local: Python 3.13 en backend/.venv313, SQLAlchemy sin extensiones C opcionales por
+bloqueo de DLL de Windows. Esto describe este equipo, no un requisito nuevo de arquitectura.
+
+Entornos: API habitual 8000, frontend 5173; Postman aislado usa 8001. .env permanece ignorado.
+Pruebas y semillas que escriben: solo datos sintéticos en una base descartable o staging
+expresamente autorizado; no crear usuarios ni modificar tablas reales para pruebas.
+
+## Mantenimiento
+
+Actualizar contexto y avance en el mismo PR que cambia una capacidad. Al cerrar cada fase, commit obligatorio con versión/objetivo y descripción breve, publicar en dev y verificar sincronización (instrucción del usuario 2026-10-09). Marcar verificada solo
+con fecha, SHA, entorno, casos y resultados. No usar porcentajes sin inventario, ni declarar
+cierre por compilar, abrir una pantalla o recibir un 200 de salud. Para cambios de arquitectura,
+actualizar architecture.md y crear ADR; este plan conserva las decisiones vigentes.
+
+Historial: 2026-10-08 — inicialmente se incluyó desarrollo de pagos simulados. La observación
+posterior del profesor lo sustituye por maqueta existente sin nuevas tareas/commits de pagos.
+Se confirman base dev y entrega 2026-10-09 18:00 Lima; se incorpora auditoría PDF de referencia.
+
+---
+
+## Antecedentes técnicos (evidencia previa, no ejecutada nuevamente en esta revisión)
+
 
 Actualizado: 2026-10-08. Base de implementación: Tarea 1 frontend (modularización, rutas declarativas y limpieza de dependencias) integrada en la rama dev. Esta documentación describe el estado comprobado; actualizarla junto a cambios importantes.
 
@@ -19,10 +234,10 @@ Las fases registradas en Git incluyen reorganización del frontend, modularizaci
 Estas comprobaciones no demuestran cobertura completa de pantallas o funcionalidad clínica. Varias vistas muestran datos ilustrativos; comprobar conexión real antes de declarar una funcionalidad terminada.
 
 ## Pendientes conocidos
-- Fase 2: Implementar persistencia de juegos fonológicos en PostgreSQL y reconocimiento de voz infantil (Web Speech API).
-- Fase 3: Integración de teleconsulta interactiva con WebRTC / sala virtual compartida.
-- Fase 4: Descarga de reportes clínicos oficiales membretados en PDF y mensajería clínica entre terapeuta y tutor.
-- Fase 5: Notificaciones automáticas por correo, migraciones con Alembic y rate limiting en producción.
+- Extensión pendiente: persistencia de juegos fonológicos; reconocimiento de voz sujeto al alcance académico acordado.
+- Extensión pendiente: teleconsulta; elegir enlace externo o WebRTC según los requisitos del curso.
+- Extensión pendiente: exportación PDF de reportes y mensajería entre terapeuta y tutor; no declarar certificación clínica.
+- Preparación de entrega pendiente: migraciones versionadas, configuración de despliegue y límites de tráfico; correo sujeto al alcance acordado.
 - Suite de integración con advertencias de conexiones sin cerrar: revisar inicialización/disposición del motor y el aislamiento de event loops.
 
 ## Backend: avance del 2026-10-08
@@ -38,7 +253,9 @@ Estas comprobaciones no demuestran cobertura completa de pantallas o funcionalid
 - RLS habilitada en 26 tablas públicas y cero políticas públicas observadas; el rol de conexión
   omite RLS. La autorización de FastAPI es esencial; reducir privilegios antes de producción.
 - En frontend, `AuthContext` usa login, logout y `/auth/me`. Los servicios de perfil existen, pero
-  todavía no están llamados desde pantallas. Pacientes, clínica, agenda y sesiones siguen simulados.
+  su integración debe revisarse por pantalla. Hay consumidores reales de pacientes, citas, sesiones
+  y reportes en el código actual; también quedan datos y coordinación de demostración.
+  La presencia de llamadas HTTP no certifica el recorrido completo con persistencia.
 - Para integración local aislada, `frontend/.env.local` y el entorno `ASHAKids Local Isolated` de
   Postman apuntan al backend de prueba en `localhost:8001`, conectado a PostgreSQL local descartable.
   El `.env.local` está ignorado por Git. El backend habitual `localhost:8000` conserva la conexión

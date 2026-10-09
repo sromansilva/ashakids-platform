@@ -1,0 +1,262 @@
+{
+  "audit": "2026-10-09-04",
+  "environment": "local API8001 / PG17.6 6544 ashakids_test_compat17",
+  "verified_responses": 35,
+  "cases": [
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "pacientes?activo=true&limit=100",
+      "status": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "citas?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "sesiones?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "usuarios?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "pacientes?activo=true&limit=100",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "citas?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "usuarios?limit=100",
+      "status": 403
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "pacientes?activo=true&limit=100",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "citas?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "usuarios?limit=100",
+      "status": 403
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "pacientes?activo=true&limit=100",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "citas?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "sesiones?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "usuarios?limit=100",
+      "status": 403
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "pacientes?activo=true&limit=100",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "citas?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones?limit=100",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "usuarios?limit=100",
+      "status": 403
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    }
+  ],
+  "snapshots": {
+    "a90001": {
+      "pacientes": 2,
+      "patient_ids": [
+        1,
+        2
+      ],
+      "citas": 2,
+      "sesiones": 1
+    },
+    "p90001": {
+      "pacientes": 2,
+      "patient_ids": [
+        1,
+        2
+      ],
+      "citas": 2,
+      "sesiones": 1
+    },
+    "p90002": {
+      "pacientes": 0,
+      "patient_ids": [],
+      "citas": 0,
+      "sesiones": 0
+    },
+    "t90001": {
+      "pacientes": 1,
+      "patient_ids": [
+        1
+      ],
+      "citas": 2,
+      "sesiones": 1
+    },
+    "t90002": {
+      "pacientes": 0,
+      "patient_ids": [],
+      "citas": 0,
+      "sesiones": 0
+    }
+  },
+  "openapi": {
+    "status": 200,
+    "recovery_consent_learning_paths": []
+  },
+  "limits": "Clinical rows untouched. Login/logout creates and revokes local auth sessions. Guards validate client configuration, not the database behind an arbitrary API."
+}
