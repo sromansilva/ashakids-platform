@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Response
+from fastapi import APIRouter, Response
+from starlette.concurrency import run_in_threadpool
 from app.api.filtros import Agenda
 from app.services import presentacion
 from sqlalchemy import select
@@ -8,6 +9,7 @@ from app.models.clinica import ReporteSesion, Reserva, Sesion
 from app.schemas.clinica import ReporteDatos, ReporteSalida, SesionCerrar, SesionCrear, SesionSalida
 from app.services import sesiones as service
 from app.services.citas import citas_visibles
+from app.services.report_pdf import build_report_pdf
 
 router = APIRouter(prefix="/sesiones", tags=["Sesiones"])
 
@@ -47,11 +49,19 @@ async def cerrar(key: int, data: SesionCerrar, db: DB, identity: Identity):
 
 @router.get("/{key}/reporte", response_model=ReporteSalida)
 async def reporte(key: int, db: DB, identity: Identity):
-    await service.sesion_visible(db, identity, key)
-    row = await db.scalar(select(ReporteSesion).where(ReporteSesion.id_sesion == key))
-    if row is None:
-        raise HTTPException(404, "Reporte no registrado.")
-    return row
+    return (await service.reporte_visible(db, identity, key))[2]
+
+
+@router.get("/{key}/reporte/pdf", response_class=Response,
+            responses={200: {"content": {"application/pdf": {}}}})
+async def descargar_reporte(key: int, db: DB, identity: Identity):
+    session, appointment, report = await service.reporte_visible(db, identity, key)
+    appointment_view = (await presentacion.citas(db, [appointment]))[0]
+    pdf = await run_in_threadpool(build_report_pdf, session, appointment_view, report)
+    return Response(pdf, media_type="application/pdf", headers={
+        "Content-Disposition": f'attachment; filename="reporte-sesion-{session.id_sesion}.pdf"',
+        "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff",
+    })
 
 
 @router.put("/{key}/reporte", response_model=ReporteSalida)

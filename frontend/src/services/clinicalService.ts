@@ -33,5 +33,6 @@ export const sessionsService = {
   start: (id: number) => apiClient.post<Session>(`/sesiones/${id}/iniciar`),
   close: (id: number, asistencia: "ASISTIO" | "NO_ASISTIO") => apiClient.post<Session>(`/sesiones/${id}/cerrar`, { asistencia }),
   report: (id: number, signal?: AbortSignal) => apiClient.get<Report>(`/sesiones/${id}/reporte`, { signal }),
+  reportPdf: (id: number, signal?: AbortSignal) => apiClient.pdf(`/sesiones/${id}/reporte/pdf`, signal),
   saveReport: (id: number, data: ReportData) => apiClient.put<Report>(`/sesiones/${id}/reporte`, data),
 };

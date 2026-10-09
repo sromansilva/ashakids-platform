@@ -29,6 +29,14 @@ async def sesion_visible(db, identity, key, *, escritura=False):
     return row, cita
 
 
+async def reporte_visible(db, identity, key):
+    session, appointment = await sesion_visible(db, identity, key)
+    report = await db.scalar(select(ReporteSesion).where(ReporteSesion.id_sesion == key))
+    if report is None:
+        raise HTTPException(404, "Reporte no registrado.")
+    return session, appointment, report
+
+
 async def iniciar_sesion(db, identity, key):
     row, cita = await sesion_visible(db, identity, key, escritura=True)
     if row.estado_sesion != "PROGRAMADA" or cita.estado_reserva != "CONFIRMADA":
