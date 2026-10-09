@@ -295,7 +295,7 @@ extensiones no exigidas por los criterios recibidos se difieren; registrar lími
 ## Correcciones backend sobre V19 - corte13
 
 B01 TLS, B04 límites locales de login y B05 contratos corregidos; pruebas114backend
-y99HTTP reales con nueva cohorteAUDITORIA autorizada. B02 requiere aprobación de rol/
+y133HTTP reales (99 núcleo+29 complemento+5 sistema) con nueva cohorteAUDITORIA autorizada;53/55 operaciones positivas. V20/b76a34a publicado en dev y feat/piero-dev; informe13/PDF y evidencia en cierreV21, valoración83/100. B02 requiere aprobación de rol/
 políticas; B03 pendiente de rotación/HTTPS; B06 probado en concurrencia acotada, no carga/
 backup/caída real. Conservar límites de autorización y evidencia por corte. Sin bases
 descartables ni DELETE físico en esta continuación. No ampliar módulos ni pagos.

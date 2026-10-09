@@ -1,0 +1,1618 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/login",
+    "cases": [
+      {
+        "actor": "bootstrap",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1165.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 972.2,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1014.4,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_parent",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 973.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 980.3,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 980.3,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent_peer",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 974.0,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist_peer",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1051.0,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1014.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "/api/v1/auth/login",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 972.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "other_parent",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/auth/login",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/logout",
+    "cases": [
+      {
+        "actor": "bootstrap",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 690.3,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 754.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "bootstrap",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 4.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 690.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 700.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_parent",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 738.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 744.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 984.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent_peer",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 649.8,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist_peer",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "/api/v1/auth/logout",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 713.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "other_parent",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/auth/logout",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/auth/me",
+        "case": "/api/v1/auth/me",
+        "expected": 401,
+        "obtained": 401,
+        "duration_ms": 2.2,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/auth/me",
+        "case": "suspended session rejected",
+        "expected": 401,
+        "obtained": 401,
+        "duration_ms": 589.9,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/auth/me",
+        "case": "reactivation does not revive session",
+        "expected": 401,
+        "obtained": 401,
+        "duration_ms": 600.8,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/auth/me",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/auth/me",
+        "case": "new-cohort followup",
+        "expected": 401,
+        "obtained": 401,
+        "evidence": "F"
+      },
+      {
+        "method": "GET",
+        "path": "/api/v1/auth/me",
+        "actor": "anonymous",
+        "case": "system/readiness/anonymous",
+        "expected": 401,
+        "obtained": 401,
+        "evidence": "S"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/me",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/padres/me",
+        "case": "/api/v1/padres/me",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1334.4,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/hijos",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/padres/hijos",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/padres/hijos",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/padres/hijos",
+        "case": "/api/v1/padres/hijos",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2280.4,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/padres/hijos",
+        "case": "invalid sex /padres/hijos",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 1131.0,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/hijos/{id_paciente}",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/padres/hijos/89",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/padres/hijos/{id_paciente}",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "PATCH",
+        "path": "/api/v1/padres/hijos/89",
+        "case": "/api/v1/padres/hijos/89",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2457.0,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/padres/hijos/{id_paciente}",
+    "cases": []
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/padres/hijos/{id_paciente}/inactivar",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "PATCH",
+        "path": "/api/v1/padres/hijos/90/inactivar",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/terapeutas/me",
+    "cases": [
+      {
+        "actor": "therapist",
+        "method": "GET",
+        "path": "/api/v1/terapeutas/me",
+        "case": "/api/v1/terapeutas/me",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1199.5,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/me",
+    "cases": [
+      {
+        "actor": "bootstrap",
+        "method": "GET",
+        "path": "/api/v1/admin/me",
+        "case": "/api/v1/admin/me",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1220.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/admin/me",
+        "case": "/api/v1/admin/me",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1181.2,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/admin/cuentas?search=AUDITORIA13_214527",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas/{id_usuario}",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/admin/cuentas/59",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "PATCH",
+        "path": "/api/v1/admin/cuentas/59",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/admin/cuentas/{id_usuario}",
+    "cases": []
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/admin/cuentas/padres",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/admin/cuentas/padres",
+        "case": "/api/v1/admin/cuentas/padres",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 3743.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/admin/cuentas/padres",
+        "case": "short password /admin/cuentas/padres",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 1005.9,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/admin/cuentas/terapeutas",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/admin/cuentas/terapeutas",
+        "case": "/api/v1/admin/cuentas/terapeutas",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2830.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/admin/cuentas/terapeutas",
+        "case": "/api/v1/admin/cuentas/terapeutas",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2891.2,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/admin/cuentas/terapeutas",
+        "case": "short password /admin/cuentas/terapeutas",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 1064.6,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/suspender",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "PATCH",
+        "path": "/api/v1/admin/cuentas/58/suspender",
+        "case": "/api/v1/admin/cuentas/58/suspender",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2315.3,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/activar",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "PATCH",
+        "path": "/api/v1/admin/cuentas/58/activar",
+        "case": "/api/v1/admin/cuentas/58/activar",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2188.8,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/hijos",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/admin/cuentas/58/hijos",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/pacientes/{id_paciente}/reactivar",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "PATCH",
+        "path": "/api/v1/admin/pacientes/90/reactivar",
+        "case": "/api/v1/admin/pacientes/90/reactivar",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1921.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "PATCH",
+        "path": "/api/v1/admin/pacientes/90/reactivar",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/usuarios",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/usuarios?q=AUDITORIA13_214527",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/usuarios",
+    "cases": [
+      {
+        "actor": "bootstrap",
+        "method": "POST",
+        "path": "/api/v1/usuarios",
+        "case": "/api/v1/usuarios",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2884.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/usuarios",
+        "case": "/api/v1/usuarios",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2492.9,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/usuarios",
+        "case": "short password /usuarios",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 994.7,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/usuarios/{key}",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/usuarios/57",
+        "case": "/api/v1/usuarios/57",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1417.2,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/usuarios/58",
+        "case": "/api/v1/usuarios/58",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1473.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/usuarios/59",
+        "case": "/api/v1/usuarios/59",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1505.0,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/usuarios/60",
+        "case": "/api/v1/usuarios/60",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1417.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/usuarios/61",
+        "case": "/api/v1/usuarios/61",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1389.3,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/usuarios/{key}",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "PATCH",
+        "path": "/api/v1/usuarios/59",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/pacientes?q=AUDITORIA13_214527",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/pacientes",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/pacientes",
+        "case": "/api/v1/pacientes",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 1446.9,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/pacientes",
+        "case": "invalid sex /pacientes",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 1012.9,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes/{key}",
+    "cases": [
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/pacientes/89",
+        "case": "/api/v1/pacientes/89",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1069.1,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "GET",
+        "path": "/api/v1/pacientes/89",
+        "case": "/api/v1/pacientes/89",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1324.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/pacientes/89",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/pacientes/{key}",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "PUT",
+        "path": "/api/v1/pacientes/90",
+        "case": "/api/v1/pacientes/90",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2072.4,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/pacientes/{key}",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "DELETE",
+        "path": "/api/v1/pacientes/90",
+        "case": "logical deactivation only",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1300.5,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes/{key}/tratamientos",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/pacientes/89/tratamientos",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/tratamientos",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/tratamientos",
+        "case": "/api/v1/tratamientos",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2521.3,
+        "evidence": "L"
+      },
+      {
+        "actor": "admin",
+        "method": "POST",
+        "path": "/api/v1/tratamientos",
+        "case": "/api/v1/tratamientos",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2401.9,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/citas",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/citas",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/citas",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/citas",
+        "case": "concurrent reservation",
+        "expected": 409,
+        "obtained": 409,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/citas",
+        "case": "concurrent reservation",
+        "expected": 201,
+        "obtained": 201,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/citas",
+        "case": "/api/v1/citas",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 2277.4,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/citas/{key}",
+    "cases": [
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/citas/6",
+        "case": "/api/v1/citas/6",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1098.3,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "GET",
+        "path": "/api/v1/citas/6",
+        "case": "/api/v1/citas/6",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1090.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/citas/6",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/citas/{key}",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "PUT",
+        "path": "/api/v1/citas/6",
+        "case": "/api/v1/citas/6",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2534.0,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "PUT",
+        "path": "/api/v1/citas/6",
+        "case": "/api/v1/citas/6",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2100.6,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/citas/{key}/estado",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "PATCH",
+        "path": "/api/v1/citas/6/estado",
+        "case": "/api/v1/citas/6/estado",
+        "expected": 403,
+        "obtained": 403,
+        "duration_ms": 1463.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "PATCH",
+        "path": "/api/v1/citas/6/estado",
+        "case": "/api/v1/citas/6/estado",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1997.3,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "PATCH",
+        "path": "/api/v1/citas/7/estado",
+        "case": "/api/v1/citas/7/estado",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1697.9,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones",
+    "cases": [
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones",
+        "case": "concurrent session create",
+        "expected": 409,
+        "obtained": 409,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones",
+        "case": "concurrent session create",
+        "expected": 201,
+        "obtained": 201,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones",
+        "case": "/api/v1/sesiones",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 1980.8,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}",
+    "cases": [
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5",
+        "case": "/api/v1/sesiones/5",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1215.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5",
+        "case": "/api/v1/sesiones/5",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1215.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones/{key}/iniciar",
+    "cases": [
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/iniciar",
+        "case": "start before appointment",
+        "expected": 409,
+        "obtained": 409,
+        "duration_ms": 1304.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/iniciar",
+        "case": "concurrent transition",
+        "expected": 409,
+        "obtained": 409,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/iniciar",
+        "case": "concurrent transition",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/iniciar",
+        "case": "repeated start",
+        "expected": 409,
+        "obtained": 409,
+        "duration_ms": 1287.2,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones/{key}/cerrar",
+    "cases": [
+      {
+        "actor": "other_therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/6/cerrar",
+        "case": "early no-show",
+        "expected": 409,
+        "obtained": 409,
+        "duration_ms": 1280.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/cerrar",
+        "case": "concurrent transition",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/cerrar",
+        "case": "concurrent transition",
+        "expected": 409,
+        "obtained": 409,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/5/cerrar",
+        "case": "repeated close",
+        "expected": 409,
+        "obtained": 409,
+        "duration_ms": 1354.2,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/6/cerrar",
+        "case": "/api/v1/sesiones/6/cerrar",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1998.0,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "POST",
+        "path": "/api/v1/sesiones/6/cerrar",
+        "case": "repeated no-show",
+        "expected": 409,
+        "obtained": 409,
+        "duration_ms": 1328.8,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}/reporte",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1348.4,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1439.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1197.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1382.1,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/sesiones/{key}/reporte",
+    "cases": [
+      {
+        "actor": "therapist_peer",
+        "method": "PUT",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1711.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "PUT",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2316.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "PUT",
+        "path": "/api/v1/sesiones/5/reporte",
+        "case": "/api/v1/sesiones/5/reporte",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 1018.5,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}/reporte/pdf",
+    "cases": [
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte/pdf",
+        "case": "/api/v1/sesiones/5/reporte/pdf",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1221.2,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_therapist",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte/pdf",
+        "case": "/api/v1/sesiones/5/reporte/pdf",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1230.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/sesiones/5/reporte/pdf",
+        "case": "/api/v1/sesiones/5/reporte/pdf",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1814.5,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/contactos",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/contactos",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/conversaciones",
+        "case": "/api/v1/conversaciones",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1331.4,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/conversaciones",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/conversaciones",
+        "case": "/api/v1/conversaciones",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2123.5,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent_peer",
+        "method": "POST",
+        "path": "/api/v1/conversaciones",
+        "case": "/api/v1/conversaciones",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 2632.6,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/{key}",
+    "cases": [
+      {
+        "actor": "admin",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/3",
+        "case": "/api/v1/conversaciones/3",
+        "expected": 403,
+        "obtained": 403,
+        "duration_ms": 975.8,
+        "evidence": "L"
+      },
+      {
+        "actor": "other_parent",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/3",
+        "case": "/api/v1/conversaciones/3",
+        "expected": 404,
+        "obtained": 404,
+        "duration_ms": 1184.4,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/3",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/contactos",
+        "case": "new-cohort followup",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "F"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/{key}/mensajes",
+    "cases": [
+      {
+        "actor": "therapist",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/3/mensajes?limit=1",
+        "case": "/api/v1/conversaciones/3/mensajes?limit=1",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1285.6,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "GET",
+        "path": "/api/v1/conversaciones/3/mensajes",
+        "case": "/api/v1/conversaciones/3/mensajes",
+        "expected": 200,
+        "obtained": 200,
+        "duration_ms": 1452.5,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/conversaciones/{key}/mensajes",
+    "cases": [
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/conversaciones/3/mensajes",
+        "case": "/api/v1/conversaciones/3/mensajes",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 1772.8,
+        "evidence": "L"
+      },
+      {
+        "actor": "therapist",
+        "method": "POST",
+        "path": "/api/v1/conversaciones/3/mensajes",
+        "case": "/api/v1/conversaciones/3/mensajes",
+        "expected": 201,
+        "obtained": 201,
+        "duration_ms": 1795.7,
+        "evidence": "L"
+      },
+      {
+        "actor": "parent",
+        "method": "POST",
+        "path": "/api/v1/conversaciones/3/mensajes",
+        "case": "/api/v1/conversaciones/3/mensajes",
+        "expected": 422,
+        "obtained": 422,
+        "duration_ms": 1007.6,
+        "evidence": "L"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/",
+    "cases": [
+      {
+        "method": "GET",
+        "path": "/",
+        "actor": "anonymous",
+        "case": "system/readiness/anonymous",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "S"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/health",
+    "cases": [
+      {
+        "method": "GET",
+        "path": "/health",
+        "actor": "anonymous",
+        "case": "system/readiness/anonymous",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "S"
+      }
+    ]
+  },
+  {
+    "method": "GET",
+    "path": "/health/ready",
+    "cases": [
+      {
+        "method": "GET",
+        "path": "/health/ready",
+        "actor": "anonymous",
+        "case": "system/readiness/anonymous",
+        "expected": 200,
+        "obtained": 200,
+        "evidence": "S"
+      }
+    ]
+  }
+]

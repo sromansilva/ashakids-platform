@@ -1,0 +1,930 @@
+{
+  "captured_utc": "2026-10-09T21:41:37.340060+00:00",
+  "target": "Supabase backend/.env",
+  "api": "http://127.0.0.1:8000",
+  "marker": "AUDITORIA13_214137",
+  "requests": [
+    {
+      "actor": "bootstrap",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2984.7
+    },
+    {
+      "actor": "bootstrap",
+      "method": "GET",
+      "path": "/api/v1/admin/me",
+      "case": "/api/v1/admin/me",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 3170.2
+    },
+    {
+      "actor": "bootstrap",
+      "method": "POST",
+      "path": "/api/v1/usuarios",
+      "case": "/api/v1/usuarios",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 3252.8
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1203.2
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/usuarios/52",
+      "case": "/api/v1/usuarios/52",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1521.8
+    },
+    {
+      "actor": "bootstrap",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 904.4
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/padres",
+      "case": "/api/v1/admin/cuentas/padres",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 4021.0
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1487.8
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/usuarios/53",
+      "case": "/api/v1/usuarios/53",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1386.0
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/usuarios",
+      "case": "/api/v1/usuarios",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2648.7
+    },
+    {
+      "actor": "other_parent",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 968.1
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/usuarios/54",
+      "case": "/api/v1/usuarios/54",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1508.0
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/terapeutas",
+      "case": "/api/v1/admin/cuentas/terapeutas",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2848.8
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 986.3
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/usuarios/55",
+      "case": "/api/v1/usuarios/55",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1369.9
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/terapeutas",
+      "case": "/api/v1/admin/cuentas/terapeutas",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2937.1
+    },
+    {
+      "actor": "other_therapist",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1043.3
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/usuarios/56",
+      "case": "/api/v1/usuarios/56",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1415.8
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/padres/me",
+      "case": "/api/v1/padres/me",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1216.0
+    },
+    {
+      "actor": "therapist",
+      "method": "GET",
+      "path": "/api/v1/terapeutas/me",
+      "case": "/api/v1/terapeutas/me",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1490.7
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/admin/me",
+      "case": "/api/v1/admin/me",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1077.2
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/padres/hijos",
+      "case": "/api/v1/padres/hijos",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2347.0
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/pacientes",
+      "case": "/api/v1/pacientes",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 1426.8
+    },
+    {
+      "actor": "parent",
+      "method": "PATCH",
+      "path": "/api/v1/padres/hijos/87",
+      "case": "/api/v1/padres/hijos/87",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2377.4
+    },
+    {
+      "actor": "admin",
+      "method": "PUT",
+      "path": "/api/v1/pacientes/88",
+      "case": "/api/v1/pacientes/88",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1445.7
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/padres/hijos",
+      "case": "invalid sex /padres/hijos",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 990.5
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/pacientes",
+      "case": "invalid sex /pacientes",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 1170.1
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/usuarios",
+      "case": "short password /usuarios",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 1014.8
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/padres",
+      "case": "short password /admin/cuentas/padres",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 996.2
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/terapeutas",
+      "case": "short password /admin/cuentas/terapeutas",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 1016.9
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/tratamientos",
+      "case": "/api/v1/tratamientos",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2604.8
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/tratamientos",
+      "case": "/api/v1/tratamientos",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2715.6
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/citas",
+      "case": "concurrent reservation",
+      "expected": 201,
+      "obtained": 201
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/citas",
+      "case": "concurrent reservation",
+      "expected": 409,
+      "obtained": 409
+    },
+    {
+      "actor": "parent",
+      "method": "PUT",
+      "path": "/api/v1/citas/4",
+      "case": "/api/v1/citas/4",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2497.5
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/pacientes/87",
+      "case": "/api/v1/pacientes/87",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1099.9
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/citas/4",
+      "case": "/api/v1/citas/4",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1200.6
+    },
+    {
+      "actor": "other_therapist",
+      "method": "GET",
+      "path": "/api/v1/pacientes/87",
+      "case": "/api/v1/pacientes/87",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1216.7
+    },
+    {
+      "actor": "other_therapist",
+      "method": "GET",
+      "path": "/api/v1/citas/4",
+      "case": "/api/v1/citas/4",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1190.5
+    },
+    {
+      "actor": "parent",
+      "method": "PATCH",
+      "path": "/api/v1/citas/4/estado",
+      "case": "/api/v1/citas/4/estado",
+      "expected": 403,
+      "obtained": 403,
+      "duration_ms": 1599.5
+    },
+    {
+      "actor": "parent",
+      "method": "PUT",
+      "path": "/api/v1/citas/4",
+      "case": "/api/v1/citas/4",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2094.0
+    },
+    {
+      "actor": "therapist",
+      "method": "PATCH",
+      "path": "/api/v1/citas/4/estado",
+      "case": "/api/v1/citas/4/estado",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2003.4
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones",
+      "case": "concurrent session create",
+      "expected": 201,
+      "obtained": 201
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones",
+      "case": "concurrent session create",
+      "expected": 409,
+      "obtained": 409
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/iniciar",
+      "case": "start before appointment",
+      "expected": 409,
+      "obtained": 409,
+      "duration_ms": 1393.5
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/conversaciones",
+      "case": "/api/v1/conversaciones",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2370.1
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/conversaciones",
+      "case": "/api/v1/conversaciones",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 3297.4
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/conversaciones/2",
+      "case": "/api/v1/conversaciones/2",
+      "expected": 403,
+      "obtained": 403,
+      "duration_ms": 989.6
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/conversaciones/2",
+      "case": "/api/v1/conversaciones/2",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1247.9
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/conversaciones/2/mensajes",
+      "case": "/api/v1/conversaciones/2/mensajes",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 1795.8
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/conversaciones/2/mensajes",
+      "case": "/api/v1/conversaciones/2/mensajes",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 1791.3
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/conversaciones/2/mensajes",
+      "case": "/api/v1/conversaciones/2/mensajes",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 1000.3
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/conversaciones",
+      "case": "/api/v1/conversaciones",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1339.3
+    },
+    {
+      "actor": "therapist",
+      "method": "GET",
+      "path": "/api/v1/conversaciones/2/mensajes?limit=1",
+      "case": "/api/v1/conversaciones/2/mensajes?limit=1",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1698.0
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/citas",
+      "case": "/api/v1/citas",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2405.7
+    },
+    {
+      "actor": "other_therapist",
+      "method": "PATCH",
+      "path": "/api/v1/citas/5/estado",
+      "case": "/api/v1/citas/5/estado",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1830.4
+    },
+    {
+      "actor": "other_therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones",
+      "case": "/api/v1/sesiones",
+      "expected": 201,
+      "obtained": 201,
+      "duration_ms": 2234.9
+    },
+    {
+      "actor": "other_therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/4/cerrar",
+      "case": "early no-show",
+      "expected": 409,
+      "obtained": 409,
+      "duration_ms": 1313.0
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/iniciar",
+      "case": "concurrent transition",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/iniciar",
+      "case": "concurrent transition",
+      "expected": 409,
+      "obtained": 409
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/iniciar",
+      "case": "repeated start",
+      "expected": 409,
+      "obtained": 409,
+      "duration_ms": 1282.7
+    },
+    {
+      "actor": "therapist",
+      "method": "PUT",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1697.7
+    },
+    {
+      "actor": "therapist",
+      "method": "PUT",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2555.8
+    },
+    {
+      "actor": "therapist",
+      "method": "PUT",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 422,
+      "obtained": 422,
+      "duration_ms": 988.4
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1494.6
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/cerrar",
+      "case": "concurrent transition",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/cerrar",
+      "case": "concurrent transition",
+      "expected": 409,
+      "obtained": 409
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/3/cerrar",
+      "case": "repeated close",
+      "expected": 409,
+      "obtained": 409,
+      "duration_ms": 1314.2
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3",
+      "case": "/api/v1/sesiones/3",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1215.0
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1286.6
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte/pdf",
+      "case": "/api/v1/sesiones/3/reporte/pdf",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1202.6
+    },
+    {
+      "actor": "other_therapist",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3",
+      "case": "/api/v1/sesiones/3",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1205.9
+    },
+    {
+      "actor": "other_therapist",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1194.4
+    },
+    {
+      "actor": "other_therapist",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte/pdf",
+      "case": "/api/v1/sesiones/3/reporte/pdf",
+      "expected": 404,
+      "obtained": 404,
+      "duration_ms": 1175.1
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte/pdf",
+      "case": "/api/v1/sesiones/3/reporte/pdf",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1862.8
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 907.8
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "case": "/api/v1/auth/me",
+      "expected": 401,
+      "obtained": 401,
+      "duration_ms": 2.4
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 953.7
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/3/reporte",
+      "case": "/api/v1/sesiones/3/reporte",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 4936.0
+    },
+    {
+      "actor": "admin",
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/53/suspender",
+      "case": "/api/v1/admin/cuentas/53/suspender",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 3767.1
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "case": "suspended session rejected",
+      "expected": 401,
+      "obtained": 401,
+      "duration_ms": 792.9
+    },
+    {
+      "actor": "admin",
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/53/activar",
+      "case": "/api/v1/admin/cuentas/53/activar",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2177.3
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "case": "reactivation does not revive session",
+      "expected": 401,
+      "obtained": 401,
+      "duration_ms": 608.2
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "/api/v1/auth/login",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1166.9
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/conversaciones/2/mensajes",
+      "case": "/api/v1/conversaciones/2/mensajes",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1567.5
+    },
+    {
+      "actor": "other_therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/4/cerrar",
+      "case": "/api/v1/sesiones/4/cerrar",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2999.8
+    },
+    {
+      "actor": "other_therapist",
+      "method": "POST",
+      "path": "/api/v1/sesiones/4/cerrar",
+      "case": "repeated no-show",
+      "expected": 409,
+      "obtained": 409,
+      "duration_ms": 1793.6
+    },
+    {
+      "actor": "parent",
+      "method": "DELETE",
+      "path": "/api/v1/pacientes/88",
+      "case": "logical deactivation only",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 1569.6
+    },
+    {
+      "actor": "admin",
+      "method": "PATCH",
+      "path": "/api/v1/admin/pacientes/88/reactivar",
+      "case": "/api/v1/admin/pacientes/88/reactivar",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 2181.7
+    },
+    {
+      "actor": "bootstrap",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 4.2
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 881.1
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 875.1
+    },
+    {
+      "actor": "other_parent",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 683.1
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 687.0
+    },
+    {
+      "actor": "other_therapist",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "/api/v1/auth/logout",
+      "expected": 200,
+      "obtained": 200,
+      "duration_ms": 709.4
+    }
+  ],
+  "ids": {
+    "users": [
+      52,
+      53,
+      54,
+      55,
+      56
+    ],
+    "patients": [
+      87,
+      88
+    ],
+    "treatments": [
+      7,
+      8
+    ],
+    "appointments": [
+      4,
+      5
+    ],
+    "sessions": [
+      3,
+      4
+    ],
+    "conversations": [
+      2
+    ]
+  },
+  "limits": "Only new synthetic IDs; no DDL/TRUNCATE/physical DELETE; no load test.",
+  "target_proofs": [
+    {
+      "actor": "bootstrap",
+      "matched": true
+    },
+    {
+      "actor": "admin",
+      "matched": true
+    }
+  ],
+  "reservation_concurrency": [
+    201,
+    409
+  ],
+  "session_concurrency": [
+    201,
+    409
+  ],
+  "chat_concurrency": "same_new_id",
+  "concurrent_transitions": [
+    {
+      "path": "/api/v1/sesiones/3/iniciar",
+      "expected": [
+        200,
+        409
+      ],
+      "obtained": [
+        200,
+        409
+      ]
+    },
+    {
+      "path": "/api/v1/sesiones/3/cerrar",
+      "expected": [
+        200,
+        409
+      ],
+      "obtained": [
+        200,
+        409
+      ]
+    }
+  ],
+  "concurrent_report": "one_complete_report_last_writer_wins",
+  "report_persists_after_relogin": true,
+  "success": true
+}

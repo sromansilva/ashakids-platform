@@ -1,0 +1,19 @@
+[graphify extract] --force --code-only: full AST re-scan, existing semantic layer preserved (no semantic pass this run)
+[graphify extract] --force: full re-scan, semantic cache reads skipped
+[graphify extract] scanning C:\Users\piero\Desktop\ASHAKIDS
+[graphify extract] --code-only: skipping 16 non-code file(s) (16 docs, 0 papers, 0 images) — no LLM extraction
+[graphify extract] found 390 code, 0 docs, 0 papers, 0 images
+[graphify extract] 9 file(s) not classified (no supported extension or shebang), skipped: .gitattributes, .gitignore, .graphifyignore, Index.css, default_shadcn_theme.css, fonts.css (+3 more)
+[graphify extract] AST extraction on 390 code files...
+  warning: parallel extraction unavailable ([WinError 5] Acceso denegado); falling back to sequential.
+  AST extraction: 100/310 uncached files (32%)
+  AST extraction: 200/310 uncached files (64%)
+  AST extraction: 300/310 uncached files (96%)
+  AST extraction: 310/310 uncached files (100%)
+  warning: 12 code file(s) yielded no symbols (0.01 MB) — a data file, or source this extractor models no symbols for: backend/app/models/__init__.py, backend/app/schemas/__init__.py, backend/app/services/__init__.py, backend/tests/__init__.py, frontend/postcss.config.mjs (+7 more)
+[graphify extract] wrote C:\Users\piero\Desktop\ASHAKIDS\graphify-out\graph.json — 1952 nodes, 6708 edges (no clustering)
+Loading existing graph...
+Graph: 1952 nodes, 6505 edges
+Re-clustering...
+Done - 99 communities. GRAPH_REPORT.md, graph.json and graph.html updated.
+Knowledge map ready: 1952 nodes. Local code-only extraction.

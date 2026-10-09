@@ -7,6 +7,12 @@ evidencia V12_Auditoria_Nucleo_Integrado. Verificar PR/V13_Integracion_Aceptacio
 SHA remoto antes de preparar la entrega. El corte05 está integrado por PR105/1398e70.
 Los apartados históricos conservan su estado de publicación original.
 
+## Evidencia vigente del backend, corte13
+
+[Informe13](audits/auditoria-2026-10-09-13.md) y [PDF](../output/pdf/Auditoria_Backend_AshaKids_2026-10-09-13.pdf): rama piero-dev, SHA funcional b76a34a6125cae42614e9bee6da41ccc28163d7b, publicado en dev y feat/piero-dev. Arquitectura propia FastAPI, modelo físico real de26tablas, TLS verificado, usuarios/permisos y persistencia de nueva cohorteAUDITORIA autorizada. 114 pruebas backend sin BD,133 respuestas HTTP esperadas y53/55 operaciones positivas; regresión frontend257+25. Valoración técnica83/100, no puntuación oficial de la rúbrica. El cierre documental V21 conserva fuente/PDF/evidencias; comprobar SHA remoto efectivo en Git.
+
+B02 mínimo privilegio requiere aprobación específica; hostingHTTPS, rotación, backup/restauración, carga y DELETE físicos no certificados. No pagos, SupabaseAuth ni cambios a datos clínicos anteriores. El informe diferencia evidencia nueva, histórica y casos no ejecutados.
+
 ## Requisitos recibidos del profesor
 
 Observación transcrita de la primera imagen: los commits deben seguir una estructura
