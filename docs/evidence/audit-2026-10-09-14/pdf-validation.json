@@ -1,0 +1,55 @@
+{
+  "path": "output/pdf/Auditoria_BD_Permisos_AshaKids_2026-10-09-14.pdf",
+  "sha256": "cf5d9728ef9178275fccc38481cc2d2d20ae6e8a5290f6883179f549d96b56fa",
+  "pages": 10,
+  "format": "A4 portrait; selectable text; unencrypted",
+  "render_command": "pdftoppm -scale-to 1300 -png [PDF] tmp/pdfs/audit14-final",
+  "rendered_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "visually_inspected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "review": "Teal band, navy/teal headings, alternating tables, margin/numbering checked; no clipping, blank pages or orphan headings.",
+  "layout_corrections": "Separated long permission words with spaces; rubric table moved intact to next page.",
+  "synthetic_reports": [
+    {
+      "path": "report-candidate.pdf",
+      "pages": 1,
+      "marker_matches": true,
+      "fields_verified": true,
+      "rendered_and_inspected_pages": [
+        1
+      ]
+    },
+    {
+      "path": "report-live.pdf",
+      "pages": 1,
+      "marker_matches": true,
+      "fields_verified": true,
+      "rendered_and_inspected_pages": [
+        1
+      ]
+    }
+  ],
+  "source": "docs/audits/auditoria-2026-10-09-14.md",
+  "implementation_sha": "dd71407a8e21f0bacf6904bf430784d1c3b26dda"
+}

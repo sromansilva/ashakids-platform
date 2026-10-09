@@ -7,7 +7,13 @@ evidencia V12_Auditoria_Nucleo_Integrado. Verificar PR/V13_Integracion_Aceptacio
 SHA remoto antes de preparar la entrega. El corte05 está integrado por PR105/1398e70.
 Los apartados históricos conservan su estado de publicación original.
 
-## Evidencia vigente del backend, corte13
+## Evidencia vigente del backend y permisos, corte14
+
+[Informe14](audits/auditoria-2026-10-09-14.md) y [PDF](../output/pdf/Auditoria_BD_Permisos_AshaKids_2026-10-09-14.pdf): piero-dev, V22/dd71407a8e21f0bacf6904bf430784d1c3b26dda publicado en dev y feat/piero-dev. B02 aplicado y adoptado en API8000: runtime sin privilegios administrativos, ACL exactas en22 tablas,58 políticas dirigidas solo al rol y16 secuencias;6 denegaciones SQL42501. Candidato99 ASGI con SQL real y133HTTP finales correctos;114 backend sin BD/conftest. Datos AUDITORIA retenidos, sesiones nuevas revocadas y permisos de identidades anteriores conservados. Valoración técnica86/100; no nota oficial.
+
+V23 incorpora informe/PDF/evidencia final: verificar su SHA remoto efectivo en Git. Frontend257+25/tipos/build del corte13 es heredado; no nueva QA visual. PUBLIC CONNECT/TEMP permanecen; el aislamiento por familia sigue en FastAPI. Los otros clones requieren configurar su credencial runtime por canal privado. Hosting HTTPS, rotación de cuentas anteriores, backup/restauración/carga y DELETE físicos no certificados. No pagos ni cambios a datos preexistentes.
+
+## Evidencia previa del backend, corte13
 
 [Informe13](audits/auditoria-2026-10-09-13.md) y [PDF](../output/pdf/Auditoria_Backend_AshaKids_2026-10-09-13.pdf): rama piero-dev, SHA funcional b76a34a6125cae42614e9bee6da41ccc28163d7b, publicado en dev y feat/piero-dev. Arquitectura propia FastAPI, modelo físico real de26tablas, TLS verificado, usuarios/permisos y persistencia de nueva cohorteAUDITORIA autorizada. 114 pruebas backend sin BD,133 respuestas HTTP esperadas y53/55 operaciones positivas; regresión frontend257+25. Valoración técnica83/100, no puntuación oficial de la rúbrica. El cierre documental V21 conserva fuente/PDF/evidencias; comprobar SHA remoto efectivo en Git.
 

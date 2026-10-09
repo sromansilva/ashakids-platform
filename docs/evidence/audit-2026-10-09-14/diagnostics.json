@@ -19,5 +19,14 @@
   "documentation_lookup": "Official PostgreSQL17 role/policy/password docs and Supabase roles/connection/changelog reviewed. web markdown fetch unsupported, initial sandbox HTTP denied; authorized read succeeded.",
   "process_lookup": "Sandbox CIM/network listing denied; authorized read succeeded; no unrelated process terminated.",
   "marker_note": "Reused V20 verifier retains AUDITORIA13_ prefix; these two new cohorts belong to cut14 and their IDs are explicit.",
-  "ci_remote": "Not observed; local checks are not attributed to CI."
+  "ci_remote": "Not observed; local checks are not attributed to CI.",
+  "publication_review": {
+    "private_files_staged": false,
+    "configured_and_generated_secrets_absent": true,
+    "pdf_text_checked": true,
+    "V22": "dd71407a8e21f0bacf6904bf430784d1c3b26dda; dev and feat/piero-dev verified",
+    "V23": "Audit closure; inspect effective remote SHA in Git",
+    "documentation_patch_attempts": "Two context mismatches; no files modified by failed patches; corrected",
+    "artifact_marker": "One successful create marker for audit14 PDF before source authoring"
+  }
 }
