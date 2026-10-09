@@ -6,12 +6,21 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-Resolución de autenticación en navegador y bucle de recarga en login:
-Vite dev server configurado con proxy inverso `/api` -> `http://127.0.0.1:8001` con `changeOrigin: true` y fijado en `http://127.0.0.1:5174/`.
-`VITE_API_BASE_URL` establecido como `/api/v1` relativo para asegurar que las cookies de sesión `ashakids_session` se manejen estrictamente como first-party (mismo origen), evitando bloqueos en Brave Shields y navegadores basados en Chromium.
-`frontend/src/api/client.ts` actualizado para aislar el modo de test de Vitest (`MODE === "test"` con URL absoluta para parsers de pruebas) del modo runtime/desarrollo (`/api/v1` vía proxy).
-Verificaciones completas: 232 pruebas Vitest y 25 pruebas de rutas pasadas; build Vite limpio; validación directa por urllib del proxy de login (200 OK) y `/auth/me` con cookie activa exitosa.
-Siguiente paso: confirmación visual de los 3 roles en el navegador del usuario y consolidación del paquete final de entrega académica antes de las 18:00 Lima.
+Cierre formal de Fase 6 y transición a Fase 7 (Resolución y Entrega Académica):
+Formalizado el alcance de extensiones de la Fase 6 en [ADR 0008](decisions/0008-cierre-y-alcance-extensiones-fase6.md) conforme a la rúbrica del curso y al plazo del 9 de octubre a las 18:00 Lima.
+Extensiones diferidas: WebRTC nativo (mantiene enlaces y salas en frontend), reconocimiento de voz (mantiene juegos en Mundo ASHA MA-01..MA-07), ASHI (mantiene asistente reactivo local seguro) y SMTP (cubierto por mensajería en PostgreSQL).
+Fase actual en ejecución: Fase 7 (Consolidación de evidencias de rúbrica, análisis de hosting gratuito F7-02 y guion de sustentación académica).
+
+### Relevo técnico: cierre formal de Fase 6 y paso a Fase 7, 2026-10-09-10
+
+- Responsable: desarrollo asistido en el entorno de HailQueso.
+- Base: dev/9227035 (V15_Configuracion_Proxy_Autenticacion_Cookies).
+- Acción realizada:
+  * Evaluación de las cuatro extensiones avanzadas frente a la rúbrica de evaluación y el plazo límite.
+  * Publicación de [ADR 0008](decisions/0008-cierre-y-alcance-extensiones-fase6.md) documentando la arquitectura de teleconsulta por enlace/sala, juegos desacoplados en Mundo ASHA, asistente local seguro sin fugas a LLMs comerciales y mensajería en base de datos.
+  * Actualización de `docs/IMPLEMENTATION_PLAN.md` marcando la Fase 6 como cerrada y diferida para el alcance evaluado.
+- Siguiente tarea:
+  * Ejecutar Fase 7: Consolidar evidencia para los 3 criterios de la rúbrica (Backend, BD, Seguridad/Pruebas), redactar análisis comparativo de hosting gratuito (F7-02) y preparar guion de sustentación académica reproducible.
 
 ### Relevo técnico: resolución de proxy y cookies de sesión para navegador Brave, 2026-10-09-09
 

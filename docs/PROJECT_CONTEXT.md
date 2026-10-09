@@ -6,7 +6,16 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: corrección de proxy local y cookies de sesión en navegador, 2026-10-09-09
+### Corte vigente: cierre formal de Fase 6 y transición a Fase 7, 2026-10-09-10
+
+- Alcance formalizado en [ADR 0008](decisions/0008-cierre-y-alcance-extensiones-fase6.md) para cumplir con la prioridad académica del 9 de octubre (18:00 Lima) y la rúbrica del profesor:
+  1. **Teleconsulta:** Soporte por enlace seguro de cita y salas en cliente (`/session/waiting`, `/session/active`); WebRTC nativo (STUN/TURN) diferido por infraestructura externa no exigida.
+  2. **Voz:** Juegos fonéticos conservados en el plan desacoplado de Mundo ASHA ([MA-01..MA-07](MUNDO_ASHA_PLAN.md)); análisis acústico complejo diferido.
+  3. **ASHI:** Asistente reactivo local seguro en cliente, preservando la privacidad de menores sin llamadas a LLMs de pago externos.
+  4. **Correo (SMTP):** Resuelto mediante el subsistema de mensajería privada en PostgreSQL (ADR 0007).
+- Estado de fases: Fase 6 cerrada formalmente. El proyecto entra en la Fase 7 (Resolución y Entrega Académica).
+
+### Corte anterior: corrección de proxy local y cookies de sesión en navegador, 2026-10-09-09
 
 - Diagnóstico resuelto: el bucle de recarga en login desde navegadores con escudos de privacidad (Brave) se debía a que `VITE_API_BASE_URL` apuntaba de forma cruzada a `http://localhost:8001/api/v1` mientras el frontend se abría en `http://127.0.0.1:5174/`. Al ser orígenes cruzados (`localhost` vs `127.0.0.1`), las cookies de sesión con `SameSite=lax` eran bloqueadas o no adjuntadas en peticiones fetch subsiguientes, provocando 401 Unauthorized y disparando el evento `ashakids:session-expired` que rebotaba a `/login`.
 - Solución arquitectónica implementada:

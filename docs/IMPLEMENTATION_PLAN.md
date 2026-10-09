@@ -182,19 +182,16 @@ Seleccionar mínimos de cada módulo según rúbrica; dividirlos en tareas indep
 Salida de mínimos seleccionados: mensajes solo accesibles a participantes; PDF coincide con
 reporte. Progreso educativo persistente se verifica en la etapa propia de Mundo ASHA. Módulos diferidos se registran y se retiran de promesas de entrega.
 
-## Fase 6 — Extensiones avanzadas, por confirmar
+## Fase 6 — Extensiones avanzadas (Cerrada y diferida para entrega académica)
 
-Antes de desarrollar: acordar requisito académico, responsable, tiempo y aceptación.
+**Cierre formal (2026-10-09, ADR 0008):**
+Conforme a la prioridad de entrega académica (hoy a las 18:00 Lima) y la rúbrica recibida del profesor, se formalizó el alcance de las extensiones:
+- **Teleconsulta:** Se conserva el soporte de enlaces seguros de sesión y salas virtuales en frontend (`/session/waiting`, `/session/active`); se difiere WebRTC nativo (STUN/TURN) por infraestructura externa innecesaria para la rúbrica.
+- **Voz / Fonética:** Juegos de estimulación fonética conservados en el plan desacoplado de Mundo ASHA ([MA-01..MA-07](MUNDO_ASHA_PLAN.md)); inferencia acústica compleja diferida.
+- **ASHI / IA:** Operación reactiva local en cliente sin fuga de datos médicos a modelos comerciales externos de pago.
+- **Correo (SMTP):** Deducido y cubierto por la mensajería interna persistente en PostgreSQL (ADR 0007).
 
-| Extensión | Decisión técnica previa | Aceptación mínima |
-| --- | --- | --- |
-| Teleconsulta | Enlace externo o WebRTC; si WebRTC, señalización/STUN/TURN y autorización de sala | Dos clientes autorizados; conexión/salida y fallos de cámara verificados |
-| Voz | Detección de sonido o reconocimiento, privacidad y dispositivos | Navegador real, permiso denegado y alternativa; medir volumen no reconoce fonemas |
-| ASHI/IA | Propósito, proveedor/costo si aplica, datos y revisión humana | Casos evaluados, errores visibles; no inventa reportes ni diagnostica |
-| Correo | Eventos y proveedor, entorno de prueba y reintentos | Entrega y fallos controlados |
-
-Salida: extensiones seleccionadas verificadas o decisión explícita de diferirlas.
-Ninguna incluye pagos reales. No bloquean entrega del núcleo si la rúbrica permite omitirlas.
+Salida: Fase 6 cerrada formalmente mediante [ADR 0008](decisions/0008-cierre-y-alcance-extensiones-fase6.md). El proyecto procede a la Fase 7.
 
 ## Fase 7 — Resolución y entrega académica
 
