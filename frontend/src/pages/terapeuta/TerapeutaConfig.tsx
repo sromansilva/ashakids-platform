@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, Upload, CheckCircle, Check, X } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
@@ -8,6 +8,8 @@ import { Crd } from "@/components/common/Crd";
 import { Inp } from "@/components/common/Inp";
 import { useAuth } from "@/hooks/useAuth";
 import { usersService } from "@/services/clinicalService";
+import { useRoleProfile } from '@/hooks/useRoleProfile';
+import { RemoteFeedback } from '@/components/common/RemoteFeedback';
 
 export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
   const [title, setTitle] = useState("");
@@ -62,22 +64,33 @@ export function TerapeutaConfig() {
   const [avatarBg, setAvatarBg] = useState(B.teal);
   const [uploadedImg, setUploadedImg] = useState<string | null>(null);
   const [show2faModal, setShow2faModal] = useState(false);
-  const [twoFaEmail, setTwoFaEmail] = useState("ana.ruiz@ashakids.pe");
+  const [twoFaEmail, setTwoFaEmail] = useState("");
   const [twoFaEnabled, setTwoFaEnabled] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [securityNotice, setSecurityNotice] = useState("");
   const { user } = useAuth();
+  const profile = useRoleProfile();
+  const initials = `${user?.nombres[0] ?? ''}${user?.apellidos[0] ?? ''}`;
   const [pwSaving, setPwSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Perfil editable fields
-  const [perfilNombre, setPerfilNombre] = useState("Dra. Ana Ruiz");
-  const [perfilEmail, setPerfilEmail] = useState("ana.ruiz@ashakids.com");
-  const [perfilTel, setPerfilTel] = useState("+51 999 234 567");
-  const [perfilEsp, setPerfilEsp] = useState("Terapia del Lenguaje");
-  const [perfilExp, setPerfilExp] = useState("8 años");
-  const [perfilCedula, setPerfilCedula] = useState("TEL-2018-4821");
-  const [perfilBio, setPerfilBio] = useState("Terapeuta del lenguaje con 8 años de experiencia. Especializada en trastornos fonológicos y del desarrollo del lenguaje en niños de 3 a 12 años.");
+  const [perfilNombre, setPerfilNombre] = useState(`${user?.nombres ?? ''} ${user?.apellidos ?? ''}`.trim());
+  const [perfilEmail, setPerfilEmail] = useState(user?.email ?? '');
+  const [perfilTel, setPerfilTel] = useState("");
+  const [perfilEsp, setPerfilEsp] = useState("");
+  const [perfilExp, setPerfilExp] = useState("");
+  const [perfilCedula, setPerfilCedula] = useState("");
+  const [perfilBio, setPerfilBio] = useState("");
+  useEffect(() => {
+    const data = profile.data;
+    if (!data || !('perfil_terapeuta' in data)) return;
+    setPerfilNombre(`${data.user.nombres} ${data.user.apellidos}`);
+    setPerfilEmail(data.user.email); setTwoFaEmail(data.user.email);
+    setPerfilEsp(data.perfil_terapeuta?.especialidad ?? '');
+    setPerfilExp(data.perfil_terapeuta?.anios_experiencia?.toString() ?? '');
+    setPerfilBio(data.perfil_terapeuta?.descripcion_profesional ?? '');
+  }, [profile.data]);
 
   // Seguridad editable fields
   const [pwActual, setPwActual] = useState("");
@@ -143,7 +156,7 @@ export function TerapeutaConfig() {
                   <img src={uploadedImg} alt="Avatar" className="w-20 h-20 rounded-2xl object-cover shadow-md" />
                 ) : (
                   <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-2xl font-black text-white shadow-md transition-all duration-200" style={{ background: avatarBg }}>
-                    AR
+                    {initials}
                   </div>
                 )}
               </div>
@@ -156,7 +169,7 @@ export function TerapeutaConfig() {
                     <div
                       className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-white text-sm transition-all duration-150 ${avatarBg === p.bg && !uploadedImg ? "ring-2 ring-offset-2 ring-violet-500 scale-105" : "hover:scale-105 hover:shadow-md"}`}
                       style={{ background: p.bg }}>
-                      AR
+                      {initials}
                     </div>
                     <span className="text-xs font-bold text-[#9E95B7] leading-none">{p.label}</span>
                   </button>
@@ -219,7 +232,7 @@ export function TerapeutaConfig() {
                   {uploadedImg ? (
                     <img src={uploadedImg} alt="Perfil" className="w-16 h-16 rounded-2xl object-cover flex-shrink-0 shadow-md" />
                   ) : (
-                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-black text-white flex-shrink-0 transition-all duration-200" style={{ background: avatarBg }}>AR</div>
+                    <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-xl font-black text-white flex-shrink-0 transition-all duration-200" style={{ background: avatarBg }}>{initials}</div>
                   )}
                   <div>
                     <p className="font-extrabold text-sm text-[#1C1135]">{perfilNombre}</p>
@@ -228,6 +241,7 @@ export function TerapeutaConfig() {
                   </div>
                 </div>
                 <div className="grid sm:grid-cols-2 gap-4">
+                  <RemoteFeedback pending={profile.isPending} error={profile.error} retry={() => void profile.refetch()} />
                   <Inp label="Nombre completo" value={perfilNombre} onChange={e => setPerfilNombre(e)} />
                   <Inp label="Correo electrónico" value={perfilEmail} onChange={e => setPerfilEmail(e)} />
                   <Inp label="Teléfono" value={perfilTel} onChange={e => setPerfilTel(e)} />

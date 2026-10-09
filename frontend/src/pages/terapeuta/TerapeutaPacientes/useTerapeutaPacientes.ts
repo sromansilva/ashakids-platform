@@ -4,28 +4,33 @@ import { ExpTab } from "@/pages/terapeuta/TerapeutaPacientes/ExpTab";
 import { B } from "@/theme/brand/B";
 import { useRemote } from "@/hooks/useRemoteData";
 import { readAllPages } from "@/services/readAllPages";
-import { patientsService } from "@/services/clinicalService";
-import { terapeutaPatients } from "@/pages/terapeuta/TerapeutaPacientes/terapeutaPatients";
+import { patientsService, sessionsService, appointmentsService } from "@/services/clinicalService";
 
 export function useTerapeutaPacientes({ go }: { go: (v: View) => void }) {
   const query = useRemote(["therapist-patients"], (signal) =>
     readAllPages((offset) => patientsService.list({ activo: true, limit: 100, offset }, signal), signal)
   );
+  const sessions = useRemote(['therapist-patient-sessions'], signal => readAllPages(offset => sessionsService.list({ limit: 100, offset }, signal), signal));
+  const appointments = useRemote(['therapist-patient-appointments'], signal => readAllPages(offset => appointmentsService.list({ limit: 100, offset }, signal), signal));
   const palette = [B.violet, B.teal, "#22C55E", B.orange, "#8B5CF6", "#EC4899"];
-  const remotePatients = (query.data ?? []).map((p, idx) => ({
+  const remotePatients = (query.error ? [] : query.data ?? []).map((p, idx) => ({
+    id: p.id_paciente,
     name: `${p.nombres_paciente} ${p.apellidos_paciente}`,
     age: Math.max(0, Math.floor((Date.now() - Date.parse(p.fecha_nacimiento)) / 31557600000)),
     parent: (p as { tutor_nombre?: string }).tutor_nombre ?? "Tutor registrado",
-    sessions: 0,
+    sessions: sessions.error || !sessions.data ? 'No disponible' : sessions.data.filter(s => s.cita.id_paciente === p.id_paciente).length,
     progress: 0,
-    dx: "En seguimiento fonoaudiológico",
-    nextSession: "Por programar",
+    dx: "Paciente asignado",
+    nextSession: appointments.error || !appointments.data ? 'No disponible' : (() => {
+      const next = appointments.data.filter(a => a.id_paciente === p.id_paciente && ['PENDIENTE', 'CONFIRMADA'].includes(a.estado_reserva) && Date.parse(a.fecha_hora_inicio) >= Date.now()).sort((a, b) => Date.parse(a.fecha_hora_inicio) - Date.parse(b.fecha_hora_inicio))[0];
+      return next ? new Date(next.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima' }) : 'Por programar';
+    })(),
     status: p.activo ? "activo" : "nuevo",
     av: ((p.nombres_paciente[0] || "") + (p.apellidos_paciente[0] || "")).toUpperCase() || "PA",
     color: palette[idx % palette.length],
     nota: "Expediente activo en el sistema clínico.",
   }));
-  const patientsList = remotePatients.length > 0 ? remotePatients : terapeutaPatients;
+  const patientsList = remotePatients;
 const [selected, setSelected] = useState<number | null>(null);
 const [expTab, setExpTab] = useState<ExpTab>("resumen");
 const [search, setSearch] = useState("");

@@ -4,7 +4,7 @@
  * Identificador de acceso: codigo_usuario (VARCHAR(6)).
  */
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Check, ChevronLeft, Eye, EyeOff, Lock, User as UserIcon } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { IsotipoWhite } from "@/components/illustrations/IsotipoWhite";
@@ -31,9 +31,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const submitting = useRef(false);
 
   const handleSubmit = async (e?: React.FormEvent, customCodigo?: string, customPass?: string) => {
     if (e) e.preventDefault();
+    if (submitting.current) return;
     setErrorMessage(null);
 
     const codigoToSend = (customCodigo || codigoUsuario).trim();
@@ -44,6 +46,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       return;
     }
 
+    submitting.current = true;
     setIsLoading(true);
     try {
       const user = await login({ codigo_usuario: codigoToSend, password: passToSend });
@@ -52,6 +55,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       const msg = err instanceof Error ? err.message : "Error al iniciar sesión.";
       setErrorMessage(msg);
     } finally {
+      submitting.current = false;
       setIsLoading(false);
     }
   };

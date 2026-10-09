@@ -94,12 +94,7 @@ async function request<T>(
     if (err instanceof ApiError || ((err instanceof Error || err instanceof DOMException) && err.name === "AbortError")) {
       throw err;
     }
-    throw new ApiError(
-      err instanceof Error
-        ? err.message
-        : "Error de red o conexión no disponible.",
-      0
-    );
+    throw new ApiError("No hay conexión con el servidor. Comprueba tu conexión e inténtalo nuevamente.", 0);
   }
 }
 

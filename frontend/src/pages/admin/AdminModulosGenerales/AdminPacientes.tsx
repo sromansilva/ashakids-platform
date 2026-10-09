@@ -37,7 +37,7 @@ export function AdminPacientes() {
       <div className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-5 border" style={{ background: "#EFF6FF", borderColor: "#BFDBFE" }}>
         <Shield size={14} className="text-blue-500 flex-shrink-0" />
         <p className="text-xs font-medium text-blue-700">
-          <span className="font-extrabold">Acceso administrativo limitado a información operativa.</span> El contenido clínico permanece restringido.
+          <span className="font-extrabold">Acceso por permisos del servidor.</span> Administración gestiona pacientes, asignaciones, sesiones y reportes; los chats privados son exclusivos de sus participantes.
         </p>
       </div>
       <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
@@ -102,7 +102,7 @@ export function AdminPacientes() {
         </div>
       </Crd>
       <p className="text-xs text-[#9E95B7] font-medium mt-3 text-center italic">
-        Expediente clínico, objetivos terapéuticos y notas de sesión son de acceso exclusivo del terapeuta y representante legal.
+        Acceso clínico sujeto a los permisos del servidor: administración, profesional asignado y representante legal autorizado.
       </p>
     </div>
   );

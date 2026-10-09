@@ -1,21 +1,20 @@
 import { PatientActivities } from "@/pages/terapeuta/TerapeutaPacientes/PatientActivities";
 import { useTerapeutaPacientes } from "@/pages/terapeuta/TerapeutaPacientes/useTerapeutaPacientes";
 import { TerapeutaPacientesObjetivos } from "@/pages/terapeuta/TerapeutaPacientes/TerapeutaPacientesObjetivos";
-import { TerapeutaPacientesSesiones } from "@/pages/terapeuta/TerapeutaPacientes/TerapeutaPacientesSesiones";
-import { TerapeutaPacientesReportes } from "@/pages/terapeuta/TerapeutaPacientes/TerapeutaPacientesReportes";
+import { PatientClinicalHistory } from './PatientClinicalHistory';
+import { RemoteFeedback } from '@/components/common/RemoteFeedback';
 import { ChevronLeft, Video, Eye, Edit, UserPlus } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Btn } from "@/components/common/Btn";
 import { Crd } from "@/components/common/Crd";
 import { Av } from "@/components/common/Av";
 import { Inp } from "@/components/common/Inp";
-import { terapeutaPatients } from "@/pages/terapeuta/TerapeutaPacientes/terapeutaPatients";
 import { ExpTab } from "@/pages/terapeuta/TerapeutaPacientes/ExpTab";
 
 export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPacientes>[0]) {
-const { go, selected, setSelected, expTab, setExpTab, search, setSearch, expandedSession, setExpandedSession, showAddObj, setShowAddObj, objectives, setObjectives, newObj, setNewObj, actSubTab, setActSubTab, resSubTab, setResSubTab, resFilterDesde, setResFilterDesde, resFilterHasta, setResFilterHasta, resFilterMundo, setResFilterMundo, resFilterTipo, setResFilterTipo, resFilterBuscar, setResFilterBuscar, resRapido, setResRapido, expandedRes, setExpandedRes, expandedSesAct, setExpandedSesAct, showGenReport, setShowGenReport, reportPeriod, setReportPeriod, reportType, setReportType, reportNotes, setReportNotes, noteType, setNoteType, noteText, setNoteText, noteTitle, setNoteTitle, savedNotes, setSavedNotes, patientsList } = useTerapeutaPacientes(props);
-if (selected !== null) {
-    const p = patientsList[selected] ?? patientsList[0];
+const { go, selected, setSelected, expTab, setExpTab, search, setSearch, showAddObj, setShowAddObj, objectives, setObjectives, newObj, setNewObj, actSubTab, setActSubTab, resSubTab, setResSubTab, resFilterDesde, setResFilterDesde, resFilterHasta, setResFilterHasta, resFilterMundo, setResFilterMundo, resFilterTipo, setResFilterTipo, resFilterBuscar, setResFilterBuscar, resRapido, setResRapido, expandedRes, setExpandedRes, expandedSesAct, setExpandedSesAct, noteType, setNoteType, noteText, setNoteText, noteTitle, setNoteTitle, savedNotes, setSavedNotes, patientsList, query } = useTerapeutaPacientes(props);
+if (selected !== null && patientsList.some(p => p.id === selected)) {
+    const p = patientsList.find(p => p.id === selected)!;
     const expTabs: { id: ExpTab; label: string }[] = [
       { id: "resumen",    label: "Resumen"     },
       { id: "historial",  label: "Evolución"   },
@@ -46,13 +45,13 @@ if (selected !== null) {
                     style={{ background: p.status === "nuevo" ? B.orangeLight : "#D1FAE5", color: p.status === "nuevo" ? B.orange : "#059669" }}>
                     {p.status}
                   </span>
-                  <Btn size="sm" variant="primary" onClick={() => go("session")}><Video size={12} /> Sesión</Btn>
+                  <Btn size="sm" variant="primary" onClick={() => setExpTab('sesiones')}><Video size={12} /> Sesión</Btn>
                 </div>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-4">
                 {[
                   { label: "Sesiones", val: String(p.sessions) },
-                  { label: "Progreso", val: `${p.progress}%` },
+                  { label: "Progreso", val: 'Sin medición en API' },
                   { label: "Próxima",  val: p.nextSession      },
                 ].map(s => (
                   <div key={s.label} className="rounded-2xl p-3 bg-white/70">
@@ -76,6 +75,7 @@ if (selected !== null) {
         </div>
 
         {/* Tab content */}
+        {!['sesiones', 'reportes'].includes(expTab) && <p role="note" className="mb-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">Prototipo ilustrativo: progreso, evolución, objetivos, actividades y notas no proceden del expediente clínico ni se guardan en el servidor. Las pestañas Sesiones y Reportes contienen registros reales.</p>}
         {expTab === "resumen" && (
           <div className="grid sm:grid-cols-2 gap-5">
             <Crd className="p-5">
@@ -113,7 +113,7 @@ if (selected !== null) {
         )}
 
         {expTab === "sesiones" && (
-          <TerapeutaPacientesSesiones setExpandedSession={setExpandedSession} expandedSession={expandedSession} />
+          <PatientClinicalHistory key={p.id} patientId={p.id} />
         )}
 
         {expTab === "objetivos" && (
@@ -155,7 +155,7 @@ if (selected !== null) {
         {expTab === "actividades" && <PatientActivities resFilterMundo={resFilterMundo} resFilterTipo={resFilterTipo} resFilterBuscar={resFilterBuscar} setActSubTab={setActSubTab} actSubTab={actSubTab} setResSubTab={setResSubTab} resSubTab={resSubTab} resRapido={resRapido} setResRapido={setResRapido} resFilterDesde={resFilterDesde} setResFilterDesde={setResFilterDesde} resFilterHasta={resFilterHasta} setResFilterHasta={setResFilterHasta} setResFilterBuscar={setResFilterBuscar} setResFilterMundo={setResFilterMundo} setResFilterTipo={setResFilterTipo} expandedRes={expandedRes} setExpandedRes={setExpandedRes} expandedSesAct={expandedSesAct} setExpandedSesAct={setExpandedSesAct} />}
 
         {expTab === "reportes" && (
-          <TerapeutaPacientesReportes setShowGenReport={setShowGenReport} showGenReport={showGenReport} reportType={reportType} setReportType={setReportType} reportPeriod={reportPeriod} setReportPeriod={setReportPeriod} reportNotes={reportNotes} setReportNotes={setReportNotes} />
+          <PatientClinicalHistory key={`reports-${p.id}`} patientId={p.id} reportsOnly />
         )}
 
         {expTab === "notas" && (
@@ -214,6 +214,8 @@ if (selected !== null) {
           <Btn variant="primary" size="sm"><UserPlus size={13} /> Nuevo paciente</Btn>
         </div>
       </div>
+      <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />
+      {query.isSuccess && !query.error && !filtered.length && <Crd className="p-5 text-sm text-[#7C6F9A]">Sin pacientes asignados que coincidan con la búsqueda.</Crd>}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((p, i) => (
           <Crd key={p.name} className="overflow-hidden">
@@ -238,7 +240,7 @@ if (selected !== null) {
               <div className="mb-4">
                 <div className="flex justify-between text-xs mb-1.5">
                   <span className="text-[#7C6F9A] font-medium">Progreso</span>
-                  <span className="font-extrabold text-[#1C1135]">{p.progress}%</span>
+                  <span className="font-extrabold text-[#1C1135]">Sin medición en API</span>
                 </div>
                 <div className="h-2.5 rounded-full" style={{ background: B.violetLight }}>
                   <div className="h-full rounded-full transition-all" style={{ width: `${p.progress}%`, backgroundColor: p.color }} />
@@ -254,7 +256,7 @@ if (selected !== null) {
                   <p className="font-bold text-[#1C1135]">{p.sessions}</p>
                 </div>
               </div>
-              <Btn variant="secondary" size="sm" className="w-full justify-center" onClick={() => { setSelected(patientsList.indexOf(p)); setExpTab("resumen"); }}>
+              <Btn variant="secondary" size="sm" className="w-full justify-center" onClick={() => { setSelected(p.id); setExpTab("resumen"); }}>
                 <Eye size={13} /> Abrir expediente
               </Btn>
             </div>

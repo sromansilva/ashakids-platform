@@ -7,6 +7,7 @@ import { Isotipo } from "@/components/illustrations/Isotipo";
 import { MobileTopBar } from "@/components/common/MobileTopBar";
 import { Sidebar } from "@/app/layouts/Sidebar";
 import { AshhiFloat } from "@/components/assistant/AshhiFloat";
+import { useAuth } from '@/hooks/useAuth';
 
 export function DashLayout({
   role,
@@ -28,6 +29,7 @@ export function DashLayout({
   padrePlan?: "exploracion" | "familia";
 }) {
   const [mob, setMob] = useState(false);
+  const { user } = useAuth();
   const mobileMenuButton = useRef<HTMLButtonElement>(null);
   const closeMobileMenu = () => { setMob(false); requestAnimationFrame(() => mobileMenuButton.current?.focus()); };
   useEffect(() => {
@@ -59,6 +61,7 @@ export function DashLayout({
                 </span>
               </div>
               <button
+                aria-label="Cerrar menú de navegación"
                 onClick={closeMobileMenu}
                 className="w-11 h-11 flex items-center justify-center hover:bg-violet-50 rounded-xl transition-colors"
               >
@@ -370,7 +373,7 @@ export function DashLayout({
           )}
         </div>
       </main>
-      <AshhiFloat role={role} />
+      <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />
     </div>
   );
 }
