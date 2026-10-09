@@ -6,7 +6,16 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: aceptación del núcleo/PDF/mensajes en entorno independiente, 2026-10-09-08
+### Corte vigente: corrección de proxy local y cookies de sesión en navegador, 2026-10-09-09
+
+- Diagnóstico resuelto: el bucle de recarga en login desde navegadores con escudos de privacidad (Brave) se debía a que `VITE_API_BASE_URL` apuntaba de forma cruzada a `http://localhost:8001/api/v1` mientras el frontend se abría en `http://127.0.0.1:5174/`. Al ser orígenes cruzados (`localhost` vs `127.0.0.1`), las cookies de sesión con `SameSite=lax` eran bloqueadas o no adjuntadas en peticiones fetch subsiguientes, provocando 401 Unauthorized y disparando el evento `ashakids:session-expired` que rebotaba a `/login`.
+- Solución arquitectónica implementada:
+  1. Configuración de proxy inverso en `frontend/vite.config.ts`: mapeo de `/api` hacia `http://127.0.0.1:8001` con `changeOrigin: true` y servidor fijado en `127.0.0.1:5174`.
+  2. `frontend/.env.local` configurado con `VITE_API_BASE_URL=/api/v1` relativo, convirtiendo todas las peticiones fetch en estrictamente Same-Origin (primer origen).
+  3. En `frontend/src/api/client.ts`, aislamiento del modo test (`import.meta.env.MODE === "test"`) preservando el origen absoluto para los analizadores de URL en pruebas Vitest, mientras el runtime usa `/api/v1`.
+- Verificaciones: 232 pruebas de componentes Vitest y 25 pruebas de rutas pasadas; build limpio; endpoint `/auth/login` y `/auth/me` validados exitosamente a través del proxy devolviendo sesión activa 200 OK.
+
+### Corte anterior: aceptación del núcleo/PDF/mensajes en entorno independiente, 2026-10-09-08
 
 - Aplicación reproducida: dev/b3f84bd828c2002c7f80466410251d9df155550c, V13 y PR107 efectivamente
   integrados.

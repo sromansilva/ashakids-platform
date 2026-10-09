@@ -6,16 +6,31 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-Reproducción independiente completada en el entorno de HailQueso (PostgreSQL 18.4 en puerto 5433).
-Aplicación sobre dev/b3f84bd (V13/PR107 integrado). Bases locales nuevas creadas: ashakids_test_accept07_hq
-y ashakids_test_regress08. 119 pruebas backend aprobadas (25 omitidas, 19 avisos), 232 pruebas frontend
-de componentes y 25 de enrutamiento aprobadas. Guion verify_delivery_journey.py pasó las 92 respuestas HTTP
-completas, cotejando PDF binario y persistencia de mensajes tras logout/relogin.
-La aceptación en navegador real fue detenida por fallo de descarga del driver del gestor Playwright (404 CDN);
-se preservó el origen 5174 sin evasión. Fase 5 se mantiene abierta en la dimensión de aceptación visual real.
-Auditoría 08 y evidencias en docs/evidence/audit-2026-10-09-08/. Commit V14_Aceptacion_Nucleo_Reportes_Mensajes.
-Pendientes inmediatos: resolver driver del navegador o validación visual interactiva en sesión de usuario,
-y consolidar el paquete de entrega final con trazabilidad a rúbrica antes de las 18:00 Lima.
+Resolución de autenticación en navegador y bucle de recarga en login:
+Vite dev server configurado con proxy inverso `/api` -> `http://127.0.0.1:8001` con `changeOrigin: true` y fijado en `http://127.0.0.1:5174/`.
+`VITE_API_BASE_URL` establecido como `/api/v1` relativo para asegurar que las cookies de sesión `ashakids_session` se manejen estrictamente como first-party (mismo origen), evitando bloqueos en Brave Shields y navegadores basados en Chromium.
+`frontend/src/api/client.ts` actualizado para aislar el modo de test de Vitest (`MODE === "test"` con URL absoluta para parsers de pruebas) del modo runtime/desarrollo (`/api/v1` vía proxy).
+Verificaciones completas: 232 pruebas Vitest y 25 pruebas de rutas pasadas; build Vite limpio; validación directa por urllib del proxy de login (200 OK) y `/auth/me` con cookie activa exitosa.
+Siguiente paso: confirmación visual de los 3 roles en el navegador del usuario y consolidación del paquete final de entrega académica antes de las 18:00 Lima.
+
+### Relevo técnico: resolución de proxy y cookies de sesión para navegador Brave, 2026-10-09-09
+
+- Responsable: desarrollo asistido en el entorno de HailQueso.
+- Base: dev/b15b82b (V14_Aceptacion_Nucleo_Reportes_Mensajes).
+- Causa raíz identificada:
+  1. El frontend cargado en `http://127.0.0.1:5174` intentaba consumir la API en `http://localhost:8001/api/v1`.
+  2. Debido a la disparidad de host (`localhost` vs `127.0.0.1`) y puerto (5174 vs 8001), los navegadores consideran la solicitud como cross-site/cross-origin.
+  3. Las cookies HttpOnly con atributo `SameSite=lax` no son enviadas por los navegadores en subrecursos fetch entre orígenes cruzados.
+  4. La siguiente petición autenticada devolvía 401 Unauthorized, lo que emitía el evento `ashakids:session-expired` y hacía que `RouteAccess` redirigiera instantáneamente a `/login`, aparentando una recarga de página.
+- Solución aplicada:
+  * `frontend/vite.config.ts`: configuración del bloque `server` con host `127.0.0.1`, puerto `5174` y proxy de `/api` hacia `http://127.0.0.1:8001`.
+  * `frontend/.env.local`: `VITE_API_BASE_URL=/api/v1`.
+  * `frontend/src/api/client.ts`: soporte transparente para proxy manteniendo fallback para suite de tests Vitest en jsdom/Node.
+- Comprobaciones realizadas:
+  * Suite de componentes: 232 pruebas aprobadas (0 fallos).
+  * Suite de enrutamiento: 25 pruebas aprobadas (0 fallos).
+  * `check:frontend` y `build`: 0 errores.
+  * Petición HTTP al proxy: `POST /api/v1/auth/login` retornó 200 con `Set-Cookie: ashakids_session=...; SameSite=lax; Path=/`. `GET /api/v1/auth/me` con dicha cookie retornó 200 con la información del usuario autenticado.
 
 ### Relevo de aceptación del núcleo/PDF/mensajes en entorno independiente, 2026-10-09-08
 
