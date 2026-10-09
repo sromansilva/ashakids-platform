@@ -2,9 +2,10 @@
 
 Plazo confirmado: **2026-10-09 18:00 America/Lima**.
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base común: dev.
-El corte05 se desarrolló en dev, código V05_Reportes_Exportacion_PDF; evidencia/documentación
-V06_Auditoria_Reportes_PDF. Verificar PR/V07_Integracion_Reportes_PDF y SHA remoto antes
-de preparar la entrega. Los apartados históricos conservan su estado de publicación original.
+El corte06 se desarrolló en dev, código V08_Mensajes_Familia_Terapeuta, 7fddd59;
+evidencia/documentación V09_Auditoria_Mensajeria. Verificar PR/V10_Integracion_Mensajeria y
+SHA remoto antes de preparar la entrega. El corte05 ya está integrado por PR105/1398e70.
+Los apartados históricos conservan su estado de publicación original.
 
 ## Requisitos recibidos del profesor
 
@@ -79,3 +80,12 @@ Cierre técnico local; incidencia histórica/reproducción del equipo y aceptaci
 siguen pendientes. Mundo ASHA completo es etapa propia, no condición ya cumplida: solo
 catálogo borrador y cálculo puro, sin persistencia educativa. Commit obligatorio por fase
 y publicación en dev autorizados por el usuario; verificar historial/PR de integración.
+
+## Corte de mensajes — 2026-10-09-06
+
+232 componentes frontend,36 unidades backend,25 rutas y53 respuestas HTTP + OpenAPI.
+Conversaciones/mensajes privados persistentes en PG local, cursor y concurrencia acotada;
+rechazo de accesos ajenos, respuesta incierta y borradores conservados. Fuente/PDF/ADR0007
+en índice. No certificar UI visual nueva: navegador bloqueado, aceptación desktop/móvil y
+reproducción de núcleo+PDF+mensajes por otro clon pendientes. Incidencia01 sigue abierta.
+Mantener la lista de salida sin marcar hasta que el equipo confirme esas pruebas/entrega.

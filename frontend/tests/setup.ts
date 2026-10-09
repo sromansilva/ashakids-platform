@@ -3,7 +3,7 @@ import { afterEach, beforeEach, vi } from "vitest";
 import { queryClient } from "@/app/providers/queryClient";
 import { cleanup } from "@testing-library/react";
 beforeEach(() => {
-  vi.stubGlobal("fetch", vi.fn().mockImplementation(() => Promise.resolve(new Response(JSON.stringify([]), {
+  vi.stubGlobal("fetch", vi.fn().mockImplementation(input => Promise.resolve(new Response(JSON.stringify(/\/conversaciones(?:\?|$)/.test(String(input)) ? { items: [], next_before_id: null } : []), {
     headers: { "Content-Type": "application/json", "X-Total-Count": "0" },
   }))));
 });

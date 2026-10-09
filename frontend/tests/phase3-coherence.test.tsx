@@ -156,7 +156,8 @@ it("Oral production levels require professional validation, not a server quiz pa
 });
 it("Unreviewed extensions and session prototypes stay explicitly labelled", () => {
   expect(capabilityNotice("/session/active")).toMatch(/Demostración/);
-  expect(capabilityNotice("/padre/mensajes")).toMatch(/demostración/);
+  expect(capabilityNotice("/padre/mensajes")).toBeNull();
+  expect(capabilityNotice("/terapeuta/mensajes")).toBeNull();
   expect(capabilityNotice("/mundo-asha/cuentos")).toMatch(/prototipos/);
   expect(capabilityNotice("/padre/camino")).toBeNull();
 });

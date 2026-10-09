@@ -134,6 +134,16 @@ No invertir tiempo en API, tablas ni persistencia de pagos; no condicionar el n�
 ## Fase 5 — Actividades, comunicación y documentos
 
 Depende de fases 2/3. La fase 4 está retirada del alcance.
+**Corte06, F5-01/mensajes:** implementados en la misma arquitectura y tablas existentes,
+con participantes autorizados, contactos por asignación activa, historial persistente y cursor;
+sin DDL/Supabase. HTTP/manual Actualizar, sin realtime/llamadas/adjuntos/leído simulado.
+232 frontend,36 unitarias backend,25 rutas y53 respuestas HTTP+OpenAPI local. ADR0007/
+auditoría06; V08 código, V09 evidencia, publicación dev por PR/V10 (consultar historial).
+Siguiente mínimo: aceptación conjunta del núcleo + PDF + mensajes por tres roles y segundo
+clon. Revisión visual de mensajes y recaptura móvil PDF pendientes por bloqueo del navegador;
+no declarar fase5 cerrada ni toda la plataforma estable por las suites/build correctos.
+No ampliar fase6 mientras falta aceptación del alcance seleccionado y revisión de incidencia01.
+
 **Corte05, F5-01/PDF:** exportación de reportes guardados implementada y verificada localmente
 (auditoría2026-10-09-05 / ADR0006). La fase no está cerrada. Secuencia de mínimos:
 PDF -> mensajes autorizados con persistencia/paginación -> aceptación del conjunto.
@@ -146,7 +156,8 @@ Seleccionar mínimos de cada módulo según rúbrica; dividirlos en tareas indep
   [MA-01..MA-07](MUNDO_ASHA_PLAN.md). Fase 5 no exige finalizar esos juegos. Base actual:
   catálogo/selección y cálculo puro; la persistencia educativa todavía no está conectada.
 - Mensajes: conversación autorizada familia/profesional, persistencia y paginación.
-  Elegir HTTP/polling inicialmente; una decisión de tiempo real requiere ADR si se adopta.
+  Implementado HTTP con actualización manual (ADR0007); tiempo real requiere ADR si se adopta.
+  Sin prometer entrega exactamente una vez tras respuesta perdida o borradores tras recarga.
 - PDF: exportar el reporte autorizado persistente; contenido e identidad coherentes.
   No declarar certificación clínica ni usar firma institucional no acordada.
 - Recursos: definir catálogo; carga/descarga y validación solo si están dentro del mínimo elegido.

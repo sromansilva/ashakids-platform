@@ -2,6 +2,7 @@
 const persisted = new Set([
   "/padre", "/padre/dashboard", "/padre/camino", "/padre/mi-camino", "/padre/recorrido", "/padre/seguimiento",
   "/padre/hijos", "/padre/pacientes", "/padre/progreso", "/padre/config", "/padre/perfil", "/padre/agenda", "/padre/reportes", "/padre/psicologos",
+  "/padre/mensajes", "/terapeuta/mensajes",
   "/terapeuta", "/terapeuta/agenda", "/terapeuta/pacientes", "/terapeuta/reportes",
   "/admin", "/admin/dashboard", "/admin/usuarios", "/admin/pacientes", "/admin/citas", "/admin/sesiones", "/admin/reportes",
 ]);

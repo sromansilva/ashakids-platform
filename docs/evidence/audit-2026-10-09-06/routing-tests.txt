@@ -1,0 +1,47 @@
+
+> ashakids-frontend@0.0.1 test:routing
+> node --experimental-strip-types --test tests/routing.test.mjs
+
+▶ ASHAKids Frontend Routing Tests
+  ▶ 1. Rutas Públicas
+    ✔ debe reconocer / como ruta pública (sin rol requerido) (1.0209ms)
+    ✔ debe reconocer /login como ruta pública (sin rol requerido) (0.1081ms)
+    ✔ debe reconocer /forgot-password como ruta pública (sin rol requerido) (0.1278ms)
+    ✔ debe reconocer /onboarding como ruta pública (sin rol requerido) (0.0852ms)
+    ✔ debe reconocer /especialistas como ruta pública (sin rol requerido) (0.0808ms)
+    ✔ debe reconocer /especialidades como ruta pública (sin rol requerido) (0.0629ms)
+    ✔ debe reconocer /recursos como ruta pública (sin rol requerido) (0.2408ms)
+    ✔ debe reconocer /sobre-nosotros como ruta pública (sin rol requerido) (0.0708ms)
+    ✔ debe reconocer /nosotros como ruta pública (sin rol requerido) (0.0772ms)
+    ✔ debe reconocer /planes como ruta pública (sin rol requerido) (0.0989ms)
+    ✔ debe reconocer /ayuda como ruta pública (sin rol requerido) (0.0517ms)
+    ✔ debe reconocer /contacto como ruta pública (sin rol requerido) (0.1439ms)
+    ✔ debe reconocer /trabaja como ruta pública (sin rol requerido) (0.036ms)
+    ✔ debe reconocer /ashi como ruta pública (sin rol requerido) (0.0371ms)
+    ✔ debe reconocer /historias como ruta pública (sin rol requerido) (0.0627ms)
+    ✔ debe tratar /mundo-asha como pública cuando el usuario no está logueado como PADRE (0.1949ms)
+  ✔ 1. Rutas Públicas (3.6394ms)
+  ▶ 2. Rutas Protegidas y Determinación de Rol Requerido
+    ✔ debe requerir rol PADRE para rutas del portal de padres, sesiones y pagos (0.0951ms)
+    ✔ debe requerir rol TERAPEUTA para rutas de terapeutas (0.0543ms)
+    ✔ debe requerir rol ADMIN para rutas de administración (0.0318ms)
+  ✔ 2. Rutas Protegidas y Determinación de Rol Requerido (0.2534ms)
+  ▶ 3. Lógica de Protección de Rutas (Simulación Guardias)
+    ✔ Ruta pública sin sesión: debe permitir acceso (0.0899ms)
+    ✔ Ruta protegida sin sesión: debe redirigir a /login (0.4692ms)
+    ✔ Rol correcto: debe permitir acceso a su área correspondiente (0.0528ms)
+    ✔ Rol incorrecto (cruce de accesos): debe restringir y ofrecer su panel legítimo (0.0738ms)
+  ✔ 3. Lógica de Protección de Rutas (Simulación Guardias) (0.763ms)
+  ▶ 4. Mapeo Bidireccional de Vistas y Aliases
+    ✔ debe mapear correctamente viewToPath (0.0708ms)
+    ✔ debe mapear aliases amigables en pathToView (0.1272ms)
+  ✔ 4. Mapeo Bidireccional de Vistas y Aliases (0.2834ms)
+✔ ASHAKids Frontend Routing Tests (5.2777ms)
+ℹ tests 25
+ℹ suites 5
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 122.1561
