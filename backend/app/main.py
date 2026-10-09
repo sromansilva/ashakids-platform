@@ -39,6 +39,8 @@ async def check_origin(request: Request, call_next):
     origin = request.headers.get("origin")
     mutation = request.method in {"POST", "PUT", "PATCH", "DELETE"}
     cookie = request.cookies.get(settings.SESSION_COOKIE_NAME)
+    if mutation and settings.is_production and request.url.scheme != "https":
+        return JSONResponse(status_code=403, content={"detail": "Se requiere HTTPS."})
     if mutation and ((origin and origin not in settings.CORS_ORIGINS) or (
         cookie and not origin and settings.ENVIRONMENT.lower() == "production"
     )):

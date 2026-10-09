@@ -10,9 +10,10 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.exc import IntegrityError, DBAPIError
+from sqlalchemy.exc import IntegrityError, DBAPIError, TimeoutError as PoolTimeoutError
 
 from app.core.config import settings
+from app.core.database_transport import engine_options
 
 logger = logging.getLogger(__name__)
 
@@ -42,8 +43,9 @@ def init_db(database_url: Optional[str] = None) -> None:
         if url.startswith("postgresql://"):
             url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
 
+        url, options = engine_options(url, settings)
         async_engine = create_async_engine(
-            url,
+            url, **options,
             echo=False,
             future=True,
             pool_pre_ping=True,
@@ -65,6 +67,14 @@ def init_db(database_url: Optional[str] = None) -> None:
 init_db()
 
 
+async def rollback_safely(session):
+    """No reemplazar el error original si también se pierde la conexión al revertir."""
+    try:
+        await session.rollback()
+    except Exception as exc:
+        logger.warning("Rollback no disponible: %s", type(exc).__name__)
+
+
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     """Generador de dependencias de sesión de base de datos para FastAPI.
     
@@ -83,11 +93,17 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
             yield session
             await session.commit()
         except IntegrityError:
-            await session.rollback()
+            await rollback_safely(session)
             raise HTTPException(409, "Conflicto de datos: registro duplicado o referencia inválida.") from None
-        except (DBAPIError, OSError, TimeoutError):
-            await session.rollback()
+        except DBAPIError as exc:
+            await rollback_safely(session)
+            sqlstate = getattr(exc.orig, "sqlstate", None)
+            if sqlstate in {"40001", "40P01"}:
+                raise HTTPException(409, "Conflicto concurrente. Reintente la operación.") from None
+            raise HTTPException(503, "Base de datos temporalmente no disponible.") from None
+        except (OSError, TimeoutError, PoolTimeoutError):
+            await rollback_safely(session)
             raise HTTPException(503, "Base de datos temporalmente no disponible.") from None
         except Exception:
-            await session.rollback()
+            await rollback_safely(session)
             raise

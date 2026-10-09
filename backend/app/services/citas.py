@@ -26,7 +26,7 @@ def citas_visibles(identity):
 async def cita_visible(db, identity, key, *, lock=False):
     stmt = citas_visibles(identity).where(Reserva.id_reserva == key)
     if lock:
-        stmt = stmt.with_for_update()
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         raise HTTPException(404, "Recurso no encontrado.")

@@ -194,3 +194,15 @@ reutilizando PG17.6 existente. SQL02 estructura requiere public idempotente en c
 Inspección de modelos incluye mensajería:19 tablas modeladas/0 diferencias. Supabase no se
 consultó ni cambió. Demo compat17 conservada/API8001 restaurada. No CI de producto nuevo
 atribuido a tests locales, E2E visual ni reproducción por otra persona; consultar auditoría07.
+
+## Seguridad del backend - corte 2026-10-09-13
+
+ADR0009 conserva las capas y la autenticación propias. TLS remoto valida cadena/nombre
+mediante CA privada configurada, sin fallback inseguro; CA2021 usa compatibilidad de formato
+explícita con Python3.13. Login tiene límites locales por IP/IP+código y ventana con recuperación;
+no es distribuido. Producción exige origenHTTPS explícito, transporteHTTPS y cookieSecure.
+Servicios administrativos se separan por responsabilidad con interfaz conservada. Contraseñas
+nuevas12..128 y escritura de sexo comparten validación; lectura no migra valores existentes.
+Errores de concurrencia409 y de disponibilidad503; rollback fallido no oculta el original.
+No hay DDL ni cambios de permisos en Supabase. B02 se propone en operations/B02_MINIMO_PRIVILEGIO.md.
+No hay hostingHTTPS ni producción publicados. Ver auditoría13 para resultados y límites reales.

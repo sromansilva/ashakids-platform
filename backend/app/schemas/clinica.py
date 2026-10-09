@@ -3,6 +3,7 @@ from datetime import date, datetime
 from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
+from app.schemas.reglas import Nombre, Apellido, Nacimiento, Sexo
 
 Id = Annotated[int, Field(gt=0)]
 Nota = Annotated[str, Field(max_length=10000)]
@@ -17,17 +18,10 @@ class Salida(BaseModel):
 
 
 class PacienteDatos(Entrada):
-    nombres_paciente: str = Field(min_length=1, max_length=60)
-    apellidos_paciente: str = Field(min_length=1, max_length=80)
-    fecha_nacimiento: date
-    sexo: str = Field(min_length=1, max_length=10)
-
-    @field_validator("fecha_nacimiento")
-    @classmethod
-    def nacimiento_no_futuro(cls, value):
-        if value > date.today():
-            raise ValueError("La fecha de nacimiento no puede ser futura.")
-        return value
+    nombres_paciente: Nombre
+    apellidos_paciente: Apellido
+    fecha_nacimiento: Nacimiento
+    sexo: Sexo
 
 
 class PacienteCrear(PacienteDatos):
@@ -35,6 +29,11 @@ class PacienteCrear(PacienteDatos):
 
 
 class PacienteSalida(PacienteDatos, Salida):
+    # Lectura tolerante de vocabulario/datos antiguos; no reescribirlos al consultar.
+    nombres_paciente: str
+    apellidos_paciente: str
+    fecha_nacimiento: date
+    sexo: str
     id_paciente: int
     id_tutor: int
     activo: bool

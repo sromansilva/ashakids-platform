@@ -49,7 +49,7 @@ def visibles(identity):
 async def visible(db, identity, key, *, lock=False):
     stmt = visibles(identity).where(Conversacion.id_conversacion == key)
     if lock:
-        stmt = stmt.with_for_update(of=Conversacion)
+        stmt = stmt.with_for_update(of=Conversacion).execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         raise HTTPException(404, 'Conversación no encontrada.')

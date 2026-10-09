@@ -3,6 +3,7 @@
 from datetime import date, datetime
 from typing import Any, List, Optional
 from pydantic import BaseModel, ConfigDict, Field, computed_field, field_validator, model_validator
+from app.schemas.reglas import Nombre, Apellido, Nacimiento, Sexo
 
 ALLOWED_AVATARS = {
     "zorro",
@@ -22,10 +23,10 @@ ALLOWED_SEXO = {"Masculino", "Femenino", "Otro"}
 
 class CrearHijoRequest(BaseModel):
     """Payload de creación de hijo por parte de un tutor."""
-    nombres_paciente: str = Field(..., min_length=2, max_length=60, description="Nombres del menor")
-    apellidos_paciente: str = Field(..., min_length=2, max_length=80, description="Apellidos del menor")
-    fecha_nacimiento: date = Field(..., description="Fecha de nacimiento")
-    sexo: str = Field(..., description="Sexo ('Masculino', 'Femenino', 'Otro')")
+    nombres_paciente: Nombre
+    apellidos_paciente: Apellido
+    fecha_nacimiento: Nacimiento
+    sexo: Sexo
     avatar_nombre: str = Field(default="zorro", max_length=20, description="Slug del avatar del catálogo")
 
     @model_validator(mode="before")
@@ -38,34 +39,6 @@ class CrearHijoRequest(BaseModel):
                 data["apellidos_paciente"] = data["apellidos"]
         return data
 
-    @field_validator("nombres_paciente", "apellidos_paciente")
-    @classmethod
-    def validar_nombres(cls, v: str) -> str:
-        v_clean = v.strip()
-        if len(v_clean) < 2:
-            raise ValueError("El nombre y apellido deben tener al menos 2 caracteres.")
-        return v_clean
-
-    @field_validator("fecha_nacimiento")
-    @classmethod
-    def validar_fecha_nacimiento(cls, v: date) -> date:
-        today = date.today()
-        if v > today:
-            raise ValueError("La fecha de nacimiento no puede ser una fecha futura.")
-        # Validación opcional de edad razonable para pediatría/infantil
-        edad = today.year - v.year - ((today.month, today.day) < (v.month, v.day))
-        if edad > 18:
-            raise ValueError("El paciente pediátrico debe ser menor de 18 años.")
-        return v
-
-    @field_validator("sexo")
-    @classmethod
-    def validar_sexo(cls, v: str) -> str:
-        v_clean = v.strip().capitalize()
-        if v_clean not in ALLOWED_SEXO:
-            raise ValueError(f"Sexo inválido. Opciones permitidas: {', '.join(sorted(ALLOWED_SEXO))}")
-        return v_clean
-
     @field_validator("avatar_nombre")
     @classmethod
     def validar_avatar(cls, v: str) -> str:
@@ -77,10 +50,10 @@ class CrearHijoRequest(BaseModel):
 
 class ActualizarHijoRequest(BaseModel):
     """Payload de edición de hijo admitido por el tutor."""
-    nombres_paciente: Optional[str] = Field(None, min_length=2, max_length=60)
-    apellidos_paciente: Optional[str] = Field(None, min_length=2, max_length=80)
-    fecha_nacimiento: Optional[date] = None
-    sexo: Optional[str] = None
+    nombres_paciente: Nombre | None = None
+    apellidos_paciente: Apellido | None = None
+    fecha_nacimiento: Nacimiento | None = None
+    sexo: Sexo | None = None
     avatar_nombre: Optional[str] = Field(None, max_length=20)
 
     @model_validator(mode="before")
@@ -93,38 +66,11 @@ class ActualizarHijoRequest(BaseModel):
                 data["apellidos_paciente"] = data["apellidos"]
         return data
 
-    @field_validator("nombres_paciente", "apellidos_paciente")
-    @classmethod
-    def validar_nombres_opt(cls, v: Optional[str]) -> Optional[str]:
-        if v is None:
-            return None
-        v_clean = v.strip()
-        if len(v_clean) < 2:
-            raise ValueError("El nombre y apellido deben tener al menos 2 caracteres.")
-        return v_clean
-
-    @field_validator("fecha_nacimiento")
-    @classmethod
-    def validar_fecha_opt(cls, v: Optional[date]) -> Optional[date]:
-        if v is None:
-            return None
-        today = date.today()
-        if v > today:
-            raise ValueError("La fecha de nacimiento no puede ser futura.")
-        edad = today.year - v.year - ((today.month, today.day) < (v.month, v.day))
-        if edad > 18:
-            raise ValueError("El paciente pediátrico debe ser menor de 18 años.")
-        return v
-
-    @field_validator("sexo")
-    @classmethod
-    def validar_sexo_opt(cls, v: Optional[str]) -> Optional[str]:
-        if v is None:
-            return None
-        v_clean = v.strip().capitalize()
-        if v_clean not in ALLOWED_SEXO:
-            raise ValueError(f"Sexo inválido. Opciones permitidas: {', '.join(sorted(ALLOWED_SEXO))}")
-        return v_clean
+    @model_validator(mode="after")
+    def campos_enviados_no_nulos(self):
+        if any(getattr(self, key) is None for key in self.model_fields_set):
+            raise ValueError("Los campos enviados no admiten null.")
+        return self
 
     @field_validator("avatar_nombre")
     @classmethod

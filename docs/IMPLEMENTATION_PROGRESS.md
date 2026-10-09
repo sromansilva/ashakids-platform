@@ -6,6 +6,18 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Corrección backend B01-B06 - corte 2026-10-09-13
+
+- Trabajo exclusivamente en piero-dev desde V19/a1930df; dev remoto comprobado sin cambios nuevos. Implementación y comprobaciones terminadas; cierre Git y PDF se registrarán al publicar.
+- TLS remoto CERT_REQUIRED/hostname, CA2021 con compatibilidad explícita por keyUsage en Python3.13; conexión realTLS1.3 y confianza incorrecta rechazada. Producción valida HTTPS/orígenes; login limitado en un proceso; contraseñas nuevas12..128 y sexo compatibles centralizados. ADR0009 y guías operations.
+- Servicios administrativos/pacientes divididos manteniendo27 cuerpos de funciones idénticos por comparación AST. Todos los Python modificados <=500líneas; test_auth_api499.
+- 114 pruebas backend sin BD/conftest,19 avisos; 257 componentes/25 rutas frontend, tipos/check/build y pip check correctos. No suite destructiva ni BD descartable.
+- Autorización humana explícita para nueva cohorteAUDITORIA en Supabase y sesiónADMIN inicial por credenciales privadas. Primera corrida95HTTP con una sesión por actor; final99HTTP con sesiones distintas para concurrencia,0fallos. SQL READ ONLY confirma2reservas/2sesionesFINALIZADA/1reportecompleto/2mensajes y0sesionesauth activas nuevas.
+- Conservar IDs iniciales usuarios52..56,pacientes87/88,tratamientos7/8,citas4/5,sesiones3/4,chat2; finales usuarios57..61,pacientes89/90,tratamientos9/10,citas6/7,sesiones5/6,chat3. Excluir de métricas clínicas; no borrar. No cuentas clínicas anteriores modificadas, DDL/TRUNCATE ni permisos compartidos cambiados.
+- B02 pendiente: propuesta operations/B02_MINIMO_PRIVILEGIO.md; BYPASSRLS/CREATEDB/CREATEROLE siguen activos. B03 parcial por rotación/HTTPS; B06 parcial por caída real/backup/restauración/escritores externos y cargas no ensayadas. DELETE físicos no autorizados; expiración natural/QA visual completa no certificadas.
+- Evidencia nueva docs/evidence/audit-2026-10-09-13/. Credenciales bootstrap en backend/.env; credenciales nuevas en tmp/AUDITORIA13_*private.json ignorado. No publicar esos archivos. API habitual8000 conserva destinoSupabase y --reload; no8001 ni despliegue público.
+- Siguiente: publicar el cierre revisado V20, producir auditoría13/PDF con SHA funcional; después aprobación específicaB02 y ensayoHTTPS/rotación/backup por responsables.
+
 ### Corte vigente de correcciones y auditoría frontend, 2026-10-09-12
 
 - Ejecutado en feat/sroman, base a397c0f y commit funcional V18/a60d671a8523a016a41b50395a7db92b05698f18; cambios CORS locales previos preservados.

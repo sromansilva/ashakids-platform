@@ -20,7 +20,7 @@ async def obtener(db, model, key, *, lock=False):
     pk = model.__mapper__.primary_key[0]
     stmt = select(model).where(pk == key)
     if lock:
-        stmt = stmt.with_for_update()
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         raise HTTPException(404, "Recurso no encontrado.")
@@ -45,7 +45,7 @@ def pacientes_visibles(identity):
 async def paciente_visible(db, identity, key, *, lock=False):
     stmt = pacientes_visibles(identity).where(Paciente.id_paciente == key)
     if lock:
-        stmt = stmt.with_for_update()
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         # No revelar si existe un paciente ajeno.

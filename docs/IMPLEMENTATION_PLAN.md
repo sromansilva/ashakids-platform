@@ -291,3 +291,11 @@ para mañana. Aplicar [DELIVERY_CHECKLIST.md](DELIVERY_CHECKLIST.md).
 
 Esos horarios intermedios son propuesta de organización. IA, WebRTC, voz, correo y otras
 extensiones no exigidas por los criterios recibidos se difieren; registrar límites de entrega.
+
+## Correcciones backend sobre V19 - corte13
+
+B01 TLS, B04 límites locales de login y B05 contratos corregidos; pruebas114backend
+y99HTTP reales con nueva cohorteAUDITORIA autorizada. B02 requiere aprobación de rol/
+políticas; B03 pendiente de rotación/HTTPS; B06 probado en concurrencia acotada, no carga/
+backup/caída real. Conservar límites de autorización y evidencia por corte. Sin bases
+descartables ni DELETE físico en esta continuación. No ampliar módulos ni pagos.

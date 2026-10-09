@@ -1,8 +1,7 @@
-from typing import Annotated, Literal
-from pydantic import EmailStr, Field, StringConstraints, model_validator
+from typing import Literal
+from pydantic import EmailStr, Field, model_validator
 from app.schemas.clinica import Entrada, Salida
-
-Password = Annotated[str, StringConstraints(strip_whitespace=False, min_length=12, max_length=128)]
+from app.schemas.reglas import Password
 
 
 class UsuarioCrear(Entrada):

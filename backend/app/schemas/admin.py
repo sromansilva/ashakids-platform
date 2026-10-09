@@ -6,6 +6,7 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.schemas.perfiles import TerapeutaData, TutorData
+from app.schemas.reglas import Password
 
 EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
@@ -15,7 +16,7 @@ class CrearPadreRequest(BaseModel):
     nombres: str = Field(..., min_length=1, max_length=60)
     apellidos: str = Field(..., min_length=1, max_length=80)
     email: str = Field(..., min_length=3, max_length=150)
-    password: str = Field(..., min_length=6, max_length=100)
+    password: Password
     parentesco: Optional[str] = Field(None, max_length=30)
     telefono: Optional[str] = Field(None, max_length=12)
     direccion: Optional[str] = Field(None, max_length=200)
@@ -42,7 +43,7 @@ class CrearTerapeutaRequest(BaseModel):
     nombres: str = Field(..., min_length=1, max_length=60)
     apellidos: str = Field(..., min_length=1, max_length=80)
     email: str = Field(..., min_length=3, max_length=150)
-    password: str = Field(..., min_length=6, max_length=100)
+    password: Password
     especialidad: Optional[str] = Field(None, max_length=100)
     anios_experiencia: Optional[int] = Field(None, ge=0, le=70)
     idiomas: Optional[str] = Field(None, max_length=50)

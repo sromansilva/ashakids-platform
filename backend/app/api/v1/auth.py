@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.api.deps import get_current_token, get_current_user
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.login_limiter import limit_login
 from app.models.auth import Usuario
 from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, UserResponse
 from app.services.auth_service import (
@@ -44,8 +45,10 @@ def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
 async def login(
     req: LoginRequest,
     response: Response,
+    request: Request,
     db: AsyncSession = Depends(get_db, scope="function"),
 ):
+    limit_login(request, req.codigo_usuario)
     auth_result = await authenticate_user(db, req.codigo_usuario, req.password)
     if not auth_result:
         raise HTTPException(
@@ -59,7 +62,7 @@ async def login(
     raw_token, expires_at = await create_user_session(db, user.id_usuario)
 
     # Establecer cookie HttpOnly (protege contra XSS)
-    is_prod = settings.ENVIRONMENT.lower() == "production"
+    is_prod = settings.is_production
     response.set_cookie(
         key=settings.SESSION_COOKIE_NAME,
         value=raw_token,
@@ -95,6 +98,9 @@ async def logout(
     response.delete_cookie(
         key=settings.SESSION_COOKIE_NAME,
         path="/",
+        secure=settings.is_production,
+        httponly=True,
+        samesite="lax",
     )
     return MessageResponse(message="Sesión cerrada correctamente.")
 

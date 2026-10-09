@@ -1,35 +1,28 @@
 """Pruebas unitarias para la API REST de autenticación y autorización de ASHAKids.
-
 Utiliza un doble de prueba en memoria (FakeAsyncSession) que aísla las pruebas unitarias
 de la base de datos externa de Supabase sin recurrir a fallbacks en el código de producción.
 """
-
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 from fastapi.testclient import TestClient
-
 BACKEND_DIR = Path(__file__).resolve().parent.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
-
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import hash_password
 from app.main import app
 from app.models.auth import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
 from app.models.perfiles import Terapeuta, Tutor
-
-
 class MockScalarResult:
     """Resultado simulado para métodos scalar_one_or_none de SQLAlchemy."""
     def __init__(self, val):
         self._val = val
-
     def scalar_one_or_none(self):
         return self._val
-
 
 class FakeAsyncSession:
     """Sesión asíncrona en memoria para pruebas unitarias aisladas."""
@@ -219,6 +212,12 @@ class TestAuthAPI(unittest.TestCase):
     """Pruebas unitarias de los endpoints de autenticación y autorización."""
 
     def setUp(self):
+        from app.core.login_limiter import LoginLimiter
+        # Cada caso tiene su propio proceso lógico de API; no compartir presupuesto
+        # de intentos con otras pruebas independientes de roles y credenciales.
+        self.limiter_patch = patch("app.core.login_limiter.login_limiter", LoginLimiter())
+        self.limiter_patch.start()
+        self.addCleanup(self.limiter_patch.stop)
         users, tutores, terapeutas, admins = build_test_fixtures()
         self.fake_db = FakeAsyncSession(
             users=users,
@@ -234,6 +233,7 @@ class TestAuthAPI(unittest.TestCase):
         self.client = TestClient(app)
 
     def tearDown(self):
+        self.client.close()
         app.dependency_overrides.clear()
 
     def _login_as(self, codigo_usuario: str, password: str = "12345") -> str:
