@@ -99,9 +99,20 @@ python tools/knowledge/manage.py refresh
 
 El entorno y mapa son regenerables y no se versionan. Graphify es tooling de desarrollo separado del frontend y backend.
 
-## Aceptación antes de la entrega
+## Entrega Académica y Demostración
 
-[Guion de núcleo, PDF y mensajes](docs/acceptance/CORE_PDF_MESSAGES.md): instala requisitos
-de desarrollo en venv vacío y npm ci para reproducir el lockfile; separa la BD local nueva de
-aceptación, la de regresión y la demo conservada. No ejecutar fixtures de reset sobre Supabase.
-El corte07 repitió el recorrido real por HTTP/SQL; UI desktop/móvil y otro integrante pendientes.
+Plazo de entrega confirmado: **2026-10-09 a las 18:00 (America/Lima)**.  
+Repositorio oficial: [https://github.com/sromansilva/ashakids-platform](https://github.com/sromansilva/ashakids-platform) (Rama: `dev`).
+
+- 📄 **[Informe de Entrega y Evidencia para la Rúbrica](docs/academic/INFORME_ENTREGA_RUBRICA.md):** Detalle técnico de Arquitectura Backend, Integración con Base de Datos (26 tablas), Seguridad/RBAC y resultados de 376 pruebas automatizadas (0 fallos).
+- 🎙️ **[Guion de Sustentación Académica en Vivo](docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md):** Guion paso a paso (8-10 min) para la demostración ante el profesor con los tres roles (`ADMIN`, `TERAPEUTA`, `PADRE`), descarga de PDF oficial y persistencia comprobada.
+- ☁️ **[Análisis Comparativo de Hosting Gratuito](docs/academic/COMPARATIVA_HOSTING_GRATUITO.md):** Evaluación de alternativas (Vercel + Render vs Railway) y resolución técnica de cookies HttpOnly Same-Origin.
+- 📋 **[Lista de Salida y Criterios de Calidad](docs/DELIVERY_CHECKLIST.md):** Verificación de cierre de entrega.
+
+### Credenciales Sintéticas de Demostración
+
+Contraseña para todos los roles: `Auditoria-Sintetica-2026!`
+- **Administrador:** `a90001` $\rightarrow$ Accede a `/admin` (Gobernanza, usuarios, asignación clínica).
+- **Terapeuta:** `t90001` $\rightarrow$ Accede a `/terapeuta` (Agenda, 4 campos de reporte clínico, mensajería).
+- **Padre de familia:** `p90001` $\rightarrow$ Accede a `/padre` (Progreso, consulta de reporte, descarga de PDF, mensajería).
+

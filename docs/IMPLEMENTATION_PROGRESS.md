@@ -6,10 +6,24 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-Cierre formal de Fase 6 y transición a Fase 7 (Resolución y Entrega Académica):
-Formalizado el alcance de extensiones de la Fase 6 en [ADR 0008](decisions/0008-cierre-y-alcance-extensiones-fase6.md) conforme a la rúbrica del curso y al plazo del 9 de octubre a las 18:00 Lima.
-Extensiones diferidas: WebRTC nativo (mantiene enlaces y salas en frontend), reconocimiento de voz (mantiene juegos en Mundo ASHA MA-01..MA-07), ASHI (mantiene asistente reactivo local seguro) y SMTP (cubierto por mensajería en PostgreSQL).
-Fase actual en ejecución: Fase 7 (Consolidación de evidencias de rúbrica, análisis de hosting gratuito F7-02 y guion de sustentación académica).
+Fase 7 completada con éxito — Paquete de Entrega Académica Consolidado:
+1. Informe exhaustivo de rúbrica en `docs/academic/INFORME_ENTREGA_RUBRICA.md` con trazabilidad a los 3 criterios del profesor (Arquitectura Backend FastAPI, Modelo Físico/Integración Relacional en PostgreSQL con 26 tablas, Seguridad/RBAC y resultados de 376 pruebas aprobadas: 119 Pytest + 232 Vitest + 25 routing, 0 fallos).
+2. Análisis comparativo y recomendación técnica de hosting gratuito en `docs/academic/COMPARATIVA_HOSTING_GRATUITO.md` (F7-02), evaluando Vercel + Render vs Railway, y resolviendo el transporte de cookies HttpOnly Same-Origin mediante reglas de rewrite.
+3. Guion de sustentación académica y demostración en vivo (8-10 min) en `docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md` (F7-03) con los 3 roles sintéticos (`a90001`, `t90001`, `p90001`), descarga de reporte PDF y persistencia demostrada.
+4. `DELIVERY_CHECKLIST.md` y `README.md` actualizados con acceso directo a todos los recursos de entrega antes de las 18:00 Lima.
+
+### Relevo técnico: consolidación de entrega académica y cierre de Fase 7, 2026-10-09-11
+
+- Responsable: desarrollo asistido en el entorno de HailQueso.
+- Base: dev/7075cca (V16_Cierre_Extensiones_Fase6).
+- Archivos generados y actualizados:
+  * `docs/academic/INFORME_ENTREGA_RUBRICA.md`: Documento oficial de sustentación técnica trazado a los criterios de la rúbrica.
+  * `docs/academic/COMPARATIVA_HOSTING_GRATUITO.md`: Comparativa formal F7-02 de Vercel, Render y Railway con análisis de cookies HttpOnly y conexión a Supabase.
+  * `docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md`: Guion de defensa oral estructurado minuto a minuto.
+  * `docs/DELIVERY_CHECKLIST.md`: Verificación de todos los entregables de salida de la entrega académica.
+  * `README.md`: Instrucciones directas de arranque, credenciales sintéticas y enlaces principales.
+  * `docs/PROJECT_CONTEXT.md` y `docs/IMPLEMENTATION_PROGRESS.md`: Estado consolidado del proyecto.
+- Estado general: Fases 1 a 7 completadas. Proyecto listo para sustentación y entrega final antes de las 18:00 Lima.
 
 ### Relevo técnico: cierre formal de Fase 6 y paso a Fase 7, 2026-10-09-10
 

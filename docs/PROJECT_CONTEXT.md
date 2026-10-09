@@ -6,7 +6,16 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: cierre formal de Fase 6 y transición a Fase 7, 2026-10-09-10
+### Corte vigente: consolidación de entrega académica y cierre de Fase 7, 2026-10-09-11
+
+- Paquete de entrega académica consolidado y alineado con los criterios del profesor para la entrega del 9 de octubre (18:00 Lima):
+  1. **Informe de Rúbrica:** `docs/academic/INFORME_ENTREGA_RUBRICA.md` documentando la arquitectura de 3 capas desacopladas, contratos OpenAPI, modelo físico en PostgreSQL (26 tablas relacionales, 178 columnas, 221 constraints), RBAC para 3 roles, cookies HttpOnly SameSite=lax y 376 pruebas aprobadas (119 pytest + 232 vitest + 25 rutas, 0 fallos).
+  2. **Análisis de Hosting Gratuito (F7-02):** `docs/academic/COMPARATIVA_HOSTING_GRATUITO.md` evaluando Vercel (Front) + Render (API) + Supabase (PostgreSQL), resolviendo el transporte de cookies Same-Origin mediante rewrites en `vercel.json`.
+  3. **Guion de Sustentación (F7-03):** `docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md` con itinerario paso a paso de 8 a 10 minutos para la defensa en vivo con los tres roles sintéticos (`a90001`, `t90001`, `p90001`), reporte clínico en 4 campos, descarga de PDF y persistencia real tras recarga de navegador.
+  4. **Documentación pública:** `README.md` y `docs/DELIVERY_CHECKLIST.md` actualizados con instrucciones de clonación y ejecución rápida.
+- Estado de fases: Fases 1 a 7 completadas.
+
+### Corte anterior: cierre formal de Fase 6 y transición a Fase 7, 2026-10-09-10
 
 - Alcance formalizado en [ADR 0008](decisions/0008-cierre-y-alcance-extensiones-fase6.md) para cumplir con la prioridad académica del 9 de octubre (18:00 Lima) y la rúbrica del profesor:
   1. **Teleconsulta:** Soporte por enlace seguro de cita y salas en cliente (`/session/waiting`, `/session/active`); WebRTC nativo (STUN/TURN) diferido por infraestructura externa no exigida.

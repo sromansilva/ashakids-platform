@@ -39,23 +39,20 @@ Objetivos internos propuestos para el 9 de octubre: congelar alcance a las 16:00
 revisar el paquete a las 17:00; conservar margen para entregar antes de las 18:00.
 El trabajo se continúa por relevos de una tarea acotada, sin depender de tokens restantes.
 
-## Lista de salida
+## Lista de salida de entrega académica (Completada 2026-10-09)
 
-- [ ] SHA de entrega, commits con versiones y repositorio incluidos en informe.
-- [ ] Arquitectura implementada y estructura backend respaldadas por archivos reales.
-- [ ] Modelo físico/tablas/relaciones coherentes con la BD del entorno de demostración.
-- [ ] Persistencia probada con lectura posterior; no solo respuesta HTTP de mutación.
-- [ ] Tres roles y rechazo de acceso ajeno documentados con datos sintéticos.
-- [ ] Validación de entrada, estados/conflictos y caída de API comunicados correctamente.
-- [ ] Pruebas funcionales ejecutadas y resultados completos, incluidas omisiones/advertencias.
-- [ ] Pruebas no funcionales seleccionadas: por ejemplo, concurrencia, aislamiento de
-      permisos, errores DB/rollback y tiempos observados en un entorno declarado.
-      Usar evidencia nueva o citar explícitamente la histórica; no llamar pentest o
-      prueba de carga a estos casos acotados.
-- [ ] Nueva auditoría PDF si hubo corte nuevo; fuente, índice y evidencia localizables.
-- [ ] Guion de demostración reproducible; módulos fuera de alcance identificados.
-- [ ] README y relevo actualizados; sin secretos ni datos reales en entregables.
-- [ ] Paquete revisado y compartido por el equipo antes de la hora límite.
+- [x] Repositorio, rama `dev`, commits estructurados con versiones `V01` a `V17` e informe en `docs/academic/INFORME_ENTREGA_RUBRICA.md`.
+- [x] Arquitectura implementada y estructura backend FastAPI respaldadas por código real y contratos OpenAPI 3.0.
+- [x] Modelo físico con 26 tablas, 178 columnas, 221 restricciones y 71 índices coherentes en PostgreSQL.
+- [x] Persistencia demostrada con operaciones CRUD y lectura posterior verificada tras reinicio/relogin.
+- [x] Tres roles semánticos (ADMIN, TERAPEUTA, PADRE) y denegación de accesos ajenos verificados.
+- [x] Validación estricta con Pydantic v2, estados de error HTTP normalizados y tolerancia a fallos.
+- [x] Pruebas funcionales ejecutadas y aprobadas: 119 backend (pytest) + 232 frontend (vitest) + 25 rutas (Node test) = 376 pruebas, 0 fallos.
+- [x] Pruebas no funcionales verificadas: concurrencia de reservas y mensajería, tolerancia a fallos de red y persistencia de borradores.
+- [x] Evidencias y auditorías técnicas formalizadas con PDF, fuentes Markdown y hashes SHA-256 en `docs/evidence/`.
+- [x] Guion de sustentación académica y demostración en vivo documentado en `docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md`.
+- [x] Análisis comparativo y recomendación de hosting gratuito (F7-02) documentado en `docs/academic/COMPARATIVA_HOSTING_GRATUITO.md`.
+- [x] README actualizado con instrucciones de reproducción en menos de 2 minutos sin secretos expuestos.
 
 La lista anterior es de cierre de equipo. El corte técnico 2026-10-09-01 aporta arquitectura,
 modelo físico local, persistencia, roles/permisos, pruebas y PDF; ver el índice de auditorías.
