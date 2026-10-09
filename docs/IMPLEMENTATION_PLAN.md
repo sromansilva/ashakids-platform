@@ -134,6 +134,13 @@ No invertir tiempo en API, tablas ni persistencia de pagos; no condicionar el n�
 ## Fase 5 — Actividades, comunicación y documentos
 
 Depende de fases 2/3. La fase 4 está retirada del alcance.
+**Corte05, F5-01/PDF:** exportación de reportes guardados implementada y verificada localmente
+(auditoría2026-10-09-05 / ADR0006). La fase no está cerrada. Secuencia de mínimos:
+PDF -> mensajes autorizados con persistencia/paginación -> aceptación del conjunto.
+Recursos quedan diferidos hasta definir catálogo/requisito; Mundo ASHA tiene etapa propia.
+PDF comparte permisos por sesión, campos guardados y cliente central; no guarda archivos
+clínicos públicos, no firma ni inventa informes mensuales. Mensajes es el siguiente paso.
+Confirmar el último margen móvil: el navegador rechazó la recaptura de este corte.
 Seleccionar mínimos de cada módulo según rúbrica; dividirlos en tareas independientes.
 - Mundo ASHA: por instrucción del usuario se desarrolla en una etapa extensa independiente
   [MA-01..MA-07](MUNDO_ASHA_PLAN.md). Fase 5 no exige finalizar esos juegos. Base actual:

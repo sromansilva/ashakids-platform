@@ -30,7 +30,7 @@ it('Family reports distinguish persisted session data from demo metrics', async 
   mockApi(); renderRoute('/padre/reportes', 'PADRE');
   expect(await screen.findByText('Sin medición')).toBeInTheDocument();
   expect(screen.getByText('Sin registro')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: /Progreso Mensual \(demo\)/ })).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Progreso mensual (pendiente)' })).toBeInTheDocument();
   expect(screen.queryByText('78%')).not.toBeInTheDocument();
 });
 

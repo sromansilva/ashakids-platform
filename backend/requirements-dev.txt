@@ -2,3 +2,4 @@
 httpx>=0.28,<1
 pytest>=8,<10
 pytest-asyncio>=0.24,<2
+pypdf>=6,<7

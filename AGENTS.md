@@ -65,6 +65,10 @@
   "Revision_UX/UI" si ese trabajo no se realizó; no atribuir módulos sin cambios.
   Usar un commit por avance coherente y revisable. No renumerar ni reescribir commits
   publicados en dev; conservar sus SHA para los clones y evidencias del equipo.
+- Para documentación usar títulos habituales del desarrollo, como
+  `VNN_Actualizacion_Documentacion_Equipo` o `VNN_Documentacion_Arquitectura`.
+  Describir el contenido real del cambio, sin referencias a instrucciones del chat
+  ni atribuir cambios funcionales a una actualización documental.
 - El profesor excluye pagos del alcance: no implementar pasarelas, cobros, suscripciones
   ni facturación reales, ni abrir nuevas tareas o commits dedicados a pagos simulados.
   La simulación visual ya existente puede conservarse rotulada como demostración;

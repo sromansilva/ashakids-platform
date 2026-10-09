@@ -1,0 +1,29 @@
+{
+  "audit_pages": 9,
+  "render": "Poppler85dpi",
+  "visually_inspected_audit_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "clinical_sample_pages": 1,
+  "long_example_pages": 4,
+  "result": "All audit pages, final clinical sample and four-page long example visually inspected. No clipped/overlapping document text, tables or images. UI screenshot is historical within this cut, before last mobile margin.",
+  "text_characters_per_audit_page": [
+    2468,
+    1861,
+    1128,
+    1562,
+    1217,
+    1590,
+    2056,
+    922,
+    1866
+  ]
+}

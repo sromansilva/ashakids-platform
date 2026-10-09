@@ -122,3 +122,22 @@ calcula prerrequisitos/repetición/conflictos/versiones. No existe endpoint ni e
 educativa en este corte. Nunca confiar en passed/verifiedBy enviados por la familia: el
 backend futuro deberá autorizar y evaluar. Ver MUNDO_ASHA_PLAN.md para la etapa independiente.
 Los prototipos no conceden progreso clínico ni educativo persistente.
+
+## Exportación de reportes autorizados (2026-10-09-05)
+
+ADR0006: React solicita GET /sesiones/{id}/reporte/pdf con la cookie HTTP existente;
+FastAPI reutiliza reporte_visible (sesion_visible primero), presenta los nombres públicos
+de la cita y genera PDF en memoria con ReportLab en threadpool. Responde attachment,
+application/pdf, Cache-Control:no-store y nosniff. No hay archivos clínicos persistidos,
+URLs públicas, cambios de tablas ni un segundo mecanismo de autenticación.
+
+Se exportan los cuatro campos guardados, IDs, nombres actuales, fecha de cita, estado,
+asistencia y fecha de registro. Fechas conscientes de zona usan Lima; registros sin zona
+se rotulan sin atribuirles otra. Markup se escapa; Vera incluida en ReportLab admite el
+español verificado; caracteres no soportados devuelven 422, sin truncar ni sustituir texto.
+
+apiClient.pdf comprueba MIME y firma binaria, comprueba identidad antes/después de leer y
+usa AbortSignal. ReportDownload gestiona estado/error y libera URL temporal; no almacena
+PDF en ReactQuery. SessionActions lo comparte entre agendas y Reportes familiar; una
+edición sin guardar no entra en la descarga. Informes mensuales no se inventan. La pantalla
+independiente /terapeuta/reportes sigue demo y no forma parte de esta exportación conectada.
