@@ -6,6 +6,53 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+F5-01 núcleo/PDF/mensajes aceptado por API/SQL y repetido en dos bases locales nuevas.
+Aplicación dev/e456294 (V10/PR106 integrado); guion V11,8578ca9cde56bac2ec04389a58ae282cc3fdc8e3.
+Clon limpio: instalación venv/npm nuevas;115 backend/25 skip/19 advertencias,232 frontend,
+25 rutas y tipos/check/build correctos. Final con guarda nueva:119 backend/25 skip/19 avisos.
+Dos recorridos de92 HTTP, no184 casos distintos; PDF y mensajes persistentes tras relogin.
+Auditoría07/V12 y guion docs/acceptance/CORE_PDF_MESSAGES.md; integración dev por PR/V13,
+consultar historial para SHA efectivo. API8001 restaurada en demo compat17; datos conservados.
+UI real sigue denegada por preferencia guardada5174 aun tras respuesta de acceso habilitado.
+Pendientes: retirar bloqueo en ajustes de sitios de Codex, aceptar desktop/móvil/recaptura PDF,
+reproducir por otro integrante y revisar impacto histórico01. No cerrar fase5 completa/hosting.
+
+### Relevo de aceptación del núcleo/PDF/mensajes, 2026-10-09-07
+
+- Archivos: verify_delivery_journey.py, test_delivery_guard.py y inspect_schema_compatibility.py
+  (incluye mensajería). No cambios de UI ni endpoints/arquitectura del producto. V11 código;
+  V12 auditoría/fuente/PDF/evidencia/contexto y guion. Publicación concreta: PR/historial V13.
+- Entorno probado: clon e456294 en tmp/acceptance07/clone, Python3.13.7/venv vacío,
+  requirements-dev.txt y npm ci; Node26.9.0/npm11.19.1. Cluster PG17.6 ya existente6544.
+  Aplicación limpia; guion nuevo externo al clon. Mismo equipo/agente, no aceptación humana.
+- BD nuevas accept07 y accept07_repeat: una clínica sintética por corrida, seis cuentas y dos
+  mensajes; guion de92 respuestas repetido. Ajustes de tiempo/estado solo nuevos IDs, sin reset.
+  regress07 exclusiva para pytest completo, cuyos fixtures sí hacen TRUNCATE. No reutilizar
+  compat17 ni bases de aceptación para esa suite. Sin datos reales ni acceso a Supabase.
+- Guardia: sesión emitida por API debe existir en BD local declarada, no revocada ni vencida,
+  antes de primer paciente. Prueba real positiva/negativa y cuatro unidades; auth crea sesiones.
+  Contiene la divergencia de instancia; no resuelve el impacto histórico de cuentas01.
+- Comandos/resultados en evidencia07:115 del clon y119 finales/25 omitidas/19 avisos;
+  232 frontend/25 rutas; schema READ ONLY26/178/92/71,19 modelos/0 diferencias;92 HTTP dos
+  veces;6 restauración/guarda separadas. No sumar suites/corridas como cobertura diferente.
+- API8001 vuelve al código primario y compat17, reporte02/historial14 comprobados. Conteos
+  clínicos originales conservados; no snapshot completo. Vite5174 y otros puertos sin cierre.
+- Fallos: restore public existente; grant antes de tabla roles; EPERM de Node/procesos y bind
+  ocupado. Todos registrados y corregidos localmente. Backend19 avisos son deprecaciones;
+ 25 omitidas mantienen deshabilitadas20 HTTP heredadas y5 integración compartida.
+- Navegador: getState disponible; getTab5174 rechazado una vez tras confirmación del usuario.
+  Preferencia guardada sigue bloqueando. No usar otro origen/CDP/herramienta para eludirla.
+- Próximo prompt: «Lee AGENTS.md, contexto, plan, auditoría07 y guion de aceptación. Confirma
+  dev/V13 actualizado. Completa revisión visual real de núcleo+PDF+mensajes, desktop/móvil y
+  teclado, cuando Codex permita5174; no eludas una denegación. Usa demo compat17 conservada,
+  API8001/web5174/PG17.6 local6544 sin prepare/reset. Otro integrante debe repetir en una BD
+  NUEVA con prefijo ashakids_test_accept07; usa regress separada para pytest. Revisa logs/
+  baseline de incidencia01 y registra alcance real. Entrega nueva evidencia/PDF solo de pruebas
+  nuevas; publica commits versionados reales en dev. No fase6/hosting/pagos/juegos MA completos
+  antes de cerrar aceptación del alcance elegido. Fecha límite hoy18:00 Lima».
+
+### Punto de continuación anterior, corte06
+
 F5-01/PDF + mensajes implementados y verificados localmente; aceptación de conjunto pendiente.
 Código de mensajes V08_Mensajes_Familia_Terapeuta, 7fddd59d6cc6ec594c666c9c80ba184a88c9a91d;
 documentación V09_Auditoria_Mensajeria, auditoría2026-10-09-06 y ADR0007. Base dev/1398e70,

@@ -164,3 +164,18 @@ estos bloqueos. Datos clínicos/estado de asignación no se modifican por probar
 
 Verificación API con PG local y jsdom; aceptación visual desktop/móvil pendiente. No cambios
 de hosting/retención/índices ni prueba de carga en este corte. Fuentes y PDF en auditoría06.
+
+## Aceptación conjunta y comprobación de instancia (2026-10-09-07)
+
+No nueva decisión de arquitectura ni cambio de runtime. verify_delivery_journey es tooling
+de aceptación: loopback8001, BD NUEVA local ashakids_test_accept07*, tablas clínicas vacías
+y cinco fixtures. Comprueba hash de sesión recién emitida en la BD indicada, activa y no
+vencida, antes de escribir clínica; no exporta tokens/hashes. Esta guarda aporta prueba de
+destino del servidor, además de las variables del cliente. Autenticación sí escribe sesiones.
+
+Dos bases nuevas repiten núcleo/PDF/chat por HTTP con SQL real; regress07 separada admite
+fixtures destructivas solo locales para pytest. Se reinstalaron Python/npm en clon limpio,
+reutilizando PG17.6 existente. SQL02 estructura requiere public idempotente en copia local.
+Inspección de modelos incluye mensajería:19 tablas modeladas/0 diferencias. Supabase no se
+consultó ni cambió. Demo compat17 conservada/API8001 restaurada. No CI de producto nuevo
+atribuido a tests locales, E2E visual ni reproducción por otra persona; consultar auditoría07.

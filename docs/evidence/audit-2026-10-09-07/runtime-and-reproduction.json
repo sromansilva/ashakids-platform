@@ -1,0 +1,81 @@
+{
+  "audit": "AUDIT-2026-10-09-07",
+  "application_sha": "e456294cd7d13aea41dc5d00940b84aa782acbad",
+  "verification_code_sha": "8578ca9cde56bac2ec04389a58ae282cc3fdc8e3",
+  "clone": "tmp/acceptance07/clone",
+  "clone_git_status": "clean; generated dependencies and .venv ignored",
+  "same_machine_same_agent": true,
+  "independent_teammate_reproduction": false,
+  "python": "3.13.7",
+  "node": "26.9.0",
+  "npm": "11.19.1",
+  "packages": {
+    "fastapi": "0.143.0",
+    "sqlalchemy": "2.1.4",
+    "asyncpg": "0.32.0",
+    "pytest": "9.1.1",
+    "pytest-asyncio": "1.4.0",
+    "httpx": "0.28.1",
+    "reportlab": "4.5.1",
+    "pypdf": "6.19.0",
+    "tzdata": "2026.5"
+  },
+  "databases": {
+    "first_acceptance": "ashakids_test_accept07",
+    "repeated_acceptance": "ashakids_test_accept07_repeat",
+    "regression": "ashakids_test_regress07",
+    "preserved_demo": "ashakids_test_compat17"
+  },
+  "postgresql": "17.6",
+  "host": "127.0.0.1",
+  "postgres_port": 6544,
+  "test_api_port": 8001,
+  "schema": {
+    "tables": 26,
+    "columns": 178,
+    "constraints": 92,
+    "indexes": 71,
+    "model_tables": 19,
+    "model_differences": 0,
+    "source_schema_sha256": "e7d4afe69409bba6f845a46326f3b85a83187ac0822bb63224422adcd6b7af6f",
+    "portable_adjustment": "Exactly one CREATE SCHEMA public changed to IF NOT EXISTS; no other schema transformation or shared reinspection."
+  },
+  "new_fixture_final_counts": {
+    "users": 6,
+    "patients": 1,
+    "appointments": 1,
+    "sessions": 1,
+    "reports": 1,
+    "conversations": 1,
+    "messages": 2
+  },
+  "preserved_demo_counts_before_and_after": {
+    "users": 5,
+    "patients": 2,
+    "appointments": 2,
+    "sessions": 1,
+    "reports": 1,
+    "conversations": 1,
+    "messages": 14
+  },
+  "preservation_limits": "Equal observed row counts and no clinical writes sent to demo; not a byte-for-byte snapshot. Synthetic authentication sessions created/revoked.",
+  "http": {
+    "first_responses": 92,
+    "final_responses": 92,
+    "repeat_same_cases": true,
+    "server_db_proof_in_final": true
+  },
+  "tests": {
+    "clean_clone_backend_passed": 115,
+    "final_with_guard_tests_passed": 119,
+    "backend_skipped": 25,
+    "backend_warnings": 19,
+    "skip_reasons": {
+      "Suite HTTP heredada deshabilitada; requiere API y BD descartables expl\u00edcitas.": 20,
+      "Integraci\u00f3n compartida deshabilitada: requiere autorizaci\u00f3n expl\u00edcita.": 5
+    },
+    "frontend_passed": 232,
+    "routing_passed": 25
+  },
+  "limits": "Same computer uses existing PG17.6 executable/cluster. Fresh Python and npm installs tested; does not establish a fresh OS/another person/hosting reproduction."
+}
