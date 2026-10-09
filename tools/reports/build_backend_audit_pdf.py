@@ -19,6 +19,7 @@ SOURCE = ROOT / "docs" / "auditoria-backend-2026-10-08.md"
 OUTPUT = ROOT / "output" / "pdf" / "Auditoria_Backend_AshaKids_2026-10-08.pdf"
 FONT_DIR = Path("C:/Windows/Fonts")
 REPORT_DATE = '08 OCT 2026'
+REPORT_TITLE = 'ASHAKids - Auditoría del backend'
 pdfmetrics.registerFont(TTFont("Audit", str(FONT_DIR / "arial.ttf")))
 pdfmetrics.registerFont(TTFont("AuditBold", str(FONT_DIR / "arialbd.ttf")))
 pdfmetrics.registerFontFamily("Audit", normal="Audit", bold="AuditBold", italic="Audit", boldItalic="AuditBold")
@@ -48,6 +49,8 @@ def table(lines):
     width = A4[0] - 88
     if count == 2:
         widths = [width * .32, width * .68]
+    elif count == 4 and rows[0][0] == "Criterio / máximo":
+        widths = [width * .28, width * .11, width * .11, width * .50]
     elif rows[0][0] == "Método y ruta":
         widths = [width * .46, width * .09, width * .45]
     elif rows[0][0] == "Prioridad":
@@ -120,7 +123,7 @@ def build():
             story.append(Paragraph(inline(line), STYLES["body"]))
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     doc = SimpleDocTemplate(str(OUTPUT), pagesize=A4, rightMargin=44, leftMargin=44,
-        topMargin=60, bottomMargin=52, title="ASHAKids - Auditoría del backend",
+        topMargin=60, bottomMargin=52, title=REPORT_TITLE,
         author="ASHAKids | Revisión técnica", allowSplitting=1)
     doc.build(story, onFirstPage=page, onLaterPages=page)
     print(str(OUTPUT))
@@ -131,6 +134,8 @@ if __name__ == "__main__":
     parser.add_argument('--source', type=Path, default=SOURCE)
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--date', default=REPORT_DATE)
+    parser.add_argument('--title', default=REPORT_TITLE)
     args = parser.parse_args()
     SOURCE, OUTPUT, REPORT_DATE = args.source.resolve(), args.output.resolve(), args.date
+    REPORT_TITLE = args.title
     build()

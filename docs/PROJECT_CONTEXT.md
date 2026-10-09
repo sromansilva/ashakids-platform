@@ -6,7 +6,25 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: consolidación de entrega académica y cierre de Fase 7, 2026-10-09-11
+### Corte vigente: corrección frontend y nueva auditoría real, 2026-10-09-12
+
+- [Informe](audits/auditoria-2026-10-09-12.md), [PDF](../output/pdf/Auditoria_Frontend_AshaKids_2026-10-09-12.pdf), [evidencia](evidence/audit-2026-10-09-12/). Rama feat/sroman; SHA funcional a60d671a8523a016a41b50395a7db92b05698f18, V18_Correccion_Frontend_Reportes_Sesiones.
+- Se cerraron los seis hallazgos anteriores del frontend y dos brechas adicionales de historial profesional/sesiones admin simulados. Diseño y prototipos sin API conservados; identidad y datos clínicos provienen del servidor.
+- Puntuación técnica frontend94/100 (antes76). No es porcentaje de cobertura ni certificación de producción. Backend73 anterior no recalculado.
+- Validación nueva:257 componentes/25 rutas, tipos/build/320 archivos max495, 0 vulnerabilidades productivas conocidas,11 backend seleccionadas sin BD,28 respuestas HTTP esperadas con SQL READ ONLY en Supabase. Recorrido por formularios reales conservó paciente/tratamiento/cita/sesión/reporte y PDF familiar.
+- Proxy relativo /api/v1 hacia API8000 por defecto; override8001 solo explícito para pruebas aisladas. No hay hosting final HTTPS validado ni expiración natural/matriz completa. Riesgos TLS/privilegios BD del corte previo siguen pendientes.
+- Nuevos registros AUDITORIA autorizados: usuarios50/51,paciente86,tratamiento6,cita3,sesión2/reporte. No borrar sin instrucción ni incluir en métricas clínicas. Finalización de sesión requirió aceptar diálogo nativo por el usuario.
+- Estado Git funcional: V18/a60d671 publicado en dev y feat/sroman, ambas referencias remotas verificadas con el mismo SHA. El corte documental V19 incluye informe12/PDF/evidencia y archiva los Word anteriores sin publicar sus guiones con credenciales. No es un despliegue público.
+
+### Corte de auditoría real Supabase del 9 de octubre de 2026
+
+- [Auditoría frontend y backend](audits/auditoria-real-supabase-2026-10-09.md), con Word separados solicitados por el usuario. Base feat/sroman/a397c0f más CORS local existente.
+- Web5174/API8000/BD Supabase real; escrituras AUDITORIA autorizadas. 103 respuestas corregidas esperadas, 47/55 operaciones con prueba HTTP específica; no cobertura integral ni certificación de producción.
+- Frontend76/100 y backend73/100. Frontend257 pruebas aprobadas, backend selección segura63 aprobadas/2 omitidas; no TRUNCATE en BD compartida.
+- Bloqueos prioritarios: reportes de terapeuta simulados sin aviso, proxy8001 frente a destino8000, TLS sin validación de certificado y usuario BD con privilegios amplios. Registros sintéticos permanecen identificados.
+- Este corte no reemplaza resultados históricos locales ni declara hosting publicado o aceptación completa del equipo.
+
+### Corte anterior: consolidación de entrega académica y cierre de Fase 7, 2026-10-09-11
 
 - Paquete de entrega académica consolidado y alineado con los criterios del profesor para la entrega del 9 de octubre (18:00 Lima):
   1. **Informe de Rúbrica:** `docs/academic/INFORME_ENTREGA_RUBRICA.md` documentando la arquitectura de 3 capas desacopladas, contratos OpenAPI, modelo físico en PostgreSQL (26 tablas relacionales, 178 columnas, 221 constraints), RBAC para 3 roles, cookies HttpOnly SameSite=lax y 376 pruebas aprobadas (119 pytest + 232 vitest + 25 rutas, 0 fallos).

@@ -5,6 +5,21 @@ React/TypeScript + Vite (`frontend/`) -> HTTP/JSON -> FastAPI (`backend/`) -> SQ
 
 La API controla autenticación propia y autorización. Supabase aporta infraestructura PostgreSQL; no se usa Supabase Auth. Las credenciales permanecen en `backend/.env`, excluido de Git.
 
+### Corrección de integración frontend, corte 2026-10-09-12
+
+La web usa `/api/v1` en el mismo origen. Vite dirige `/api` a `VITE_DEV_API_TARGET`,
+por defecto `http://127.0.0.1:8000`, conservando Origin para la validación CORS.
+El puerto8001 se selecciona explícitamente solo con una API/BD aislada. En producción
+es obligatorio el reverse proxy equivalente y HTTPS; Vite dev no es el hosting final.
+
+Reportes profesionales, historial del expediente y sesiones admin reutilizan servicios
+clínicos y `useRemote` con claves por identidad, sin fallback de pacientes/reportes.
+`ClinicalReportEditor` comparte los cuatro campos de la API; `ReportWorkspace` y
+`PatientClinicalHistory` adaptan las tarjetas/formularios originales. Escrituras esperan
+al servidor y no reintentan; errores conservan borrador. Una actualización de sesión fallida
+oculta los controles clínicos dependientes. No se añaden tablas ni endpoints.
+Los prototipos sin API continúan separados y avisados; no equivalen a persistencia.
+
 ## Responsabilidades
 - `frontend/src/pages/`: vistas públicas y áreas por rol (padre, terapeuta, administrador).
 - `frontend/src/app/`: composición de rutas declarativas, carga diferida, providers, layouts y límites de errores.

@@ -1,0 +1,13 @@
+{
+  "artifact": "output/pdf/Auditoria_Frontend_AshaKids_2026-10-09-12.pdf",
+  "pages": 11,
+  "size": "A4",
+  "sha256": "361a3ba48a2ebadd678d119a79b97b5ae54a9c868a84a747a45d934f068dcc01",
+  "render_tool": "Poppler pdftoppm, scale-to 1300, final-01 through final-11",
+  "visual_review": "All 11 latest pages inspected; tables, headers, footers, images and page transitions legible; no clipped or overlapping text",
+  "repairs": ["Score table column widths adjusted to remove one-paragraph overflow page", "Mobile screenshot retaken at full 390x844", "Separate labeled page for network-error evidence"],
+  "text_checks": {"eight_sections_present": true, "score_and_test_counts_present": true, "headers_on_all_pages": true},
+  "browser_download": {"synthetic_session": 2, "valid_pdf_signature_and_extracted_auditoria_fields": true},
+  "credentials_exported": false,
+  "git_binary_integrity": {"gitattributes": "PDF, Word and evidence images declared binary to avoid Windows CRLF conversion", "source_and_staged_pdf_identical": true}
+}

@@ -6,7 +6,20 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-Fase 7 completada con éxito — Paquete de Entrega Académica Consolidado:
+### Corte vigente de correcciones y auditoría frontend, 2026-10-09-12
+
+- Ejecutado en feat/sroman, base a397c0f y commit funcional V18/a60d671a8523a016a41b50395a7db92b05698f18; cambios CORS locales previos preservados.
+- Reportes del profesional, historial por paciente y sesiones admin conectados manteniendo diseño. Identidad profesional/ASHI, vocabulario de sexo, proxy8000, envío duplicado y recuperación de red corregidos. Tres fragmentos simulados sin consumidores retirados y documentados.
+- Última regresión:257 componentes +25 rutas,0 fallos/skip; tipos/check/build pasan;320 fuentes max495. 11 pruebas seleccionadas backend pasan sin fixture clínico; no se ejecutó suite completa contra Supabase.
+- Recorrido real autorizado AUDITORIA: crear cuentas/paciente, asignar tratamiento, reservar/confirmar/registrar/iniciar, guardar reporte, finalizar con aceptación manual del usuario, consultar como familia/descargar PDF. Lectura independiente:28 HTTP correctos y SQL READ ONLY de la misma BD Supabase.
+- IDs retenidos:50/51usuarios,86paciente,6tratamiento,3cita,2sesión. Archivo de verificación no guarda credenciales; requiere contraseña sintética externa y revisión de IDs.
+- Se corrigió fixture que esperaba respaldo ficticio; aumentó timeout asíncrono a5s por prueba de mensajes lenta en Windows sin eliminar assertions. Fallos iniciales y límites están en informe.
+- [Informe12](audits/auditoria-2026-10-09-12.md), [PDF](../output/pdf/Auditoria_Frontend_AshaKids_2026-10-09-12.pdf), [evidencia](evidence/audit-2026-10-09-12/). Frontend94/100; no declarar100 ni producción completa.
+- Próxima acción: hosting HTTPS con proxy/cookies y QA de variantes/accesibilidad/expiración; backend debe revisar TLS y privilegios de BD señalados en auditoría real anterior. Pagos siguen fuera de alcance. Las afirmaciones históricas debajo no sustituyen esta aceptación pendiente.
+- Publicación funcional completada: dev y feat/sroman apuntan a V18/a60d671, comprobadas con ls-remote. Corte documental V19 conserva informe12/PDF/evidencia y Word históricos; sus guiones locales con credenciales quedan fuera de Git. La configuración real .env sigue ignorada. Confirmar el SHA documental remoto al entregar; no confundir push con hosting público.
+- PDF final de11 páginas renderizadas y revisadas; hash registrado en pdf-validation.json. .gitattributes preserva PDF/Word/imágenes como binarios frente a core.autocrlf de Windows; bytes fuente/index del PDF idénticos.
+
+Estado histórico de Fase 7 — Paquete de Entrega Académica Consolidado:
 1. Informe exhaustivo de rúbrica en `docs/academic/INFORME_ENTREGA_RUBRICA.md` con trazabilidad a los 3 criterios del profesor (Arquitectura Backend FastAPI, Modelo Físico/Integración Relacional en PostgreSQL con 26 tablas, Seguridad/RBAC y resultados de 376 pruebas aprobadas: 119 Pytest + 232 Vitest + 25 routing, 0 fallos).
 2. Análisis comparativo y recomendación técnica de hosting gratuito en `docs/academic/COMPARATIVA_HOSTING_GRATUITO.md` (F7-02), evaluando Vercel + Render vs Railway, y resolviendo el transporte de cookies HttpOnly Same-Origin mediante reglas de rewrite.
 3. Guion de sustentación académica y demostración en vivo (8-10 min) en `docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md` (F7-03) con los 3 roles sintéticos (`a90001`, `t90001`, `p90001`), descarga de reporte PDF y persistencia demostrada.
