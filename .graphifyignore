@@ -12,3 +12,5 @@ frontend/src/assets/
 **/skills-lock.json
 **/.env*
 **/*.log
+tmp/
+output/

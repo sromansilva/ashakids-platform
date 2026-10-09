@@ -1,6 +1,17 @@
 import { useState } from "react";
-import { Calendar, ChevronLeft, ChevronRight, Video, Plus, X, Clock, AlertCircle, Check } from "lucide-react";
-import { B, View, Btn, Crd, Bdg, Av } from "@/components/shared";
+import type { AppointmentRequest } from "@/types/AppointmentRequest";
+import { Calendar, ChevronLeft, ChevronRight, Video, X, Clock, Check } from "lucide-react";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Bdg } from "@/components/common/Bdg";
+import { Av } from "@/components/common/Av";
+import { useAppointments } from "@/hooks/useAppointments";
+import { useWrite } from "@/hooks/useRemoteData";
+import { appointmentsService } from "@/services/clinicalService";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
+import { SessionActions } from "@/components/common/SessionActions";
 
 // ─── Calendar helpers ──────────────────────────────────────────────────────────
 const MONTHS_ES_SHORT = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
@@ -34,18 +45,23 @@ function childColor(name: string) {
   return CAL_COLORS[Math.abs(h) % CAL_COLORS.length];
 }
 
-const DEMO_TODAY = new Date(2026, 6, 30); // 30 Jul 2026 — date of first appointment
+const DEMO_TODAY = new Date();
 
 // ─── TerapeutaAgenda ──────────────────────────────────────────────────────────
 
-export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequestUpdate }: { go: (v: View) => void; requests?: AppointmentRequest[]; onRequestUpdate?: (id: number, status: "confirmada" | "rechazada") => void }) {
+export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: AppointmentRequest[]; onRequestUpdate?: (id: number, status: "confirmada" | "rechazada") => void }) {
+  const { query, appointments: incomingRequests } = useAppointments();
   const [agView, setAgView]       = useState<"dia" | "semana">("semana");
   const [selDate, setSelDate]     = useState<Date>(DEMO_TODAY);
   const [requestNotice, setRequestNotice] = useState("");
-  const [selectedEvent, setSelectedEvent] = useState<null | { patient: string; time: string; date: string; type: string }>(null);
+  const [selectedEvent, setSelectedEvent] = useState<null | { id: number; patient: string; time: string; date: string; type: string }>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason]       = useState("");
-  const [cancelledKeys, setCancelledKeys]     = useState<string[]>([]);
+  const update = useWrite(({ id, state }: { id: number; state: 'CONFIRMADA' | 'CANCELADA' }) => appointmentsService.state(id, state), () => {
+    setRequestNotice('Estado actualizado en el servidor.');
+    void query.refetch();
+    setShowCancelModal(false); setSelectedEvent(null); setCancelReason('');
+  });
 
   const pendingRequests  = incomingRequests.filter(r => r.status === "por confirmar");
   const confirmedApts    = incomingRequests.filter(r => r.status === "confirmada");
@@ -70,8 +86,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
   });
 
   // ── Appointment helpers ─────────────────────────────────────────────────────
-  function aptKey(apt: AppointmentRequest) { return `${apt.date}-${apt.child}`; }
-  function isCancelled(apt: AppointmentRequest) { return cancelledKeys.includes(aptKey(apt)); }
+  function isCancelled(apt: AppointmentRequest) { return apt.status === 'cancelada'; }
 
   function aptForSlot(day: Date, hour: number): AppointmentRequest | undefined {
     return confirmedApts.find(apt => {
@@ -93,6 +108,8 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
 
   return (
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <RemoteFeedback pending={query.isPending} error={query.error || update.error} retry={() => void query.refetch()} />
+      <p className="text-xs text-[#7C6F9A] mb-2">Horarios en America/Lima</p>
       {/* ── Top bar ── */}
       <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
         <div>
@@ -158,10 +175,10 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                     </span>
                   </div>
                   <Btn size="sm" variant="ghost" onClick={() => go("terapeuta/mensajes")}>Más información</Btn>
-                  <Btn size="sm" variant="outline" onClick={() => { onRequestUpdate?.(req.id, "rechazada"); setRequestNotice(`Solicitud de ${req.child} rechazada.`); }}>
+                  <Btn size="sm" variant="outline" disabled={update.isPending} onClick={() => { void update.submit({ id: req.id, state: 'CANCELADA' }); }}>
                     <X size={12} /> Rechazar
                   </Btn>
-                  <Btn size="sm" variant="primary" onClick={() => { onRequestUpdate?.(req.id, "confirmada"); setRequestNotice(`Solicitud aceptada. Avisamos a ${parentLabel}.`); }}>
+                  <Btn size="sm" variant="primary" disabled={update.isPending} onClick={() => { void update.submit({ id: req.id, state: 'CONFIRMADA' }); }}>
                     <Check size={12} /> Aceptar
                   </Btn>
                 </div>
@@ -189,7 +206,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                       style={{ borderColor: B.border }}
                       onClick={() => { setSelDate(wd); setAgView("dia"); }}
                     >
-                      <p className="text-xs font-medium" style={{ color: B.textLight }}>{DAY_NAMES_SHORT[wd.getDay()]}</p>
+                      <p className="text-xs font-medium" style={{ color: B.textMuted }}>{DAY_NAMES_SHORT[wd.getDay()]}</p>
                       <p className={`font-extrabold text-sm mt-0.5 w-7 h-7 rounded-full flex items-center justify-center mx-auto transition-all
                         ${today ? "text-white" : active ? "text-violet-700 bg-violet-100" : "text-[#1C1135]"}`}
                         style={today ? { background: B.violet } : {}}>
@@ -203,7 +220,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
               <div className="overflow-y-auto" style={{ maxHeight: 440 }}>
                 {hours.map((h, hi) => (
                   <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "64px repeat(7, 1fr)", borderColor: B.border, minHeight: 52 }}>
-                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: B.textLight }}>{h}</div>
+                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: B.textMuted }}>{h}</div>
                     {weekDays.map((wd, di) => {
                       const apt = aptForSlot(wd, hi + 8);
                       const col = apt ? childColor(apt.child) : "";
@@ -213,7 +230,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                             <div
                               className="rounded-xl px-2 py-1.5 cursor-pointer hover:brightness-95 transition-all"
                               style={{ background: `${col}20`, borderLeft: `3px solid ${col}` }}
-                              onClick={() => setSelectedEvent({ patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}
+                              onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}
                             >
                               <p className="text-[11px] font-extrabold truncate" style={{ color: col }}>{apt.child.split(" ")[0]}</p>
                               <p className="text-[10px] font-medium truncate" style={{ color: col + "aa" }}>{apt.time}</p>
@@ -255,10 +272,10 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-extrabold text-[#1C1135]">{apt.child}</p>
-                      <p className="text-xs text-[#7C6F9A] font-medium">{apt.time} · 45 min · {apt.type === "presencial" ? "Presencial" : "Virtual"}</p>
+                      <p className="text-xs text-[#7C6F9A] font-medium">{apt.time} · {apt.type === "presencial" ? "Presencial" : "Virtual"}</p>
                     </div>
                     <div className="flex gap-2">
-                      <Btn size="sm" variant="outline" onClick={() => setSelectedEvent({ patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}>
+                      <Btn size="sm" variant="outline" onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}>
                         Ver detalle
                       </Btn>
                       <Btn size="sm" variant="primary" onClick={() => go("session")}>
@@ -277,7 +294,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
       {selectedEvent && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
           <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedEvent(null)} />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E5F4]">
               <h3 className="font-extrabold text-[#1C1135]">Sesión programada</h3>
               <button onClick={() => setSelectedEvent(null)} className="p-1.5 rounded-xl hover:bg-gray-100"><X size={16} /></button>
@@ -292,6 +309,7 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                 </span>
               </div>
               <div className="flex flex-col gap-2">
+                <SessionActions appointmentId={selectedEvent.id} />
                 <button
                   onClick={() => { setSelectedEvent(null); go("session"); }}
                   className="w-full py-3 rounded-2xl font-extrabold text-white text-sm transition-all"
@@ -322,6 +340,8 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
             </div>
             <div className="p-6">
               <p className="text-sm text-[#7C6F9A] mb-3">Describe el motivo para cancelar la sesión con {selectedEvent.patient}.</p>
+              <p className="text-xs text-[#7C6F9A] mb-3">La API guarda la cancelación, pero todavía no almacena este motivo.</p>
+              <RemoteFeedback error={update.error} />
               <textarea
                 value={cancelReason}
                 onChange={e => setCancelReason(e.target.value)}
@@ -334,13 +354,9 @@ export function TerapeutaAgenda({ go, requests: incomingRequests = [], onRequest
                   Mantener
                 </button>
                 <button
-                  disabled={!cancelReason.trim()}
+                  disabled={!cancelReason.trim() || update.isPending}
                   onClick={() => {
-                    const key = `${selectedEvent.date}-${selectedEvent.patient}`;
-                    setCancelledKeys(prev => [...prev, key]);
-                    setShowCancelModal(false);
-                    setSelectedEvent(null);
-                    setCancelReason("");
+                    void update.submit({ id: selectedEvent.id, state: 'CANCELADA' });
                   }}
                   className="flex-1 py-2.5 rounded-2xl text-sm font-extrabold text-white bg-red-500 hover:bg-red-600 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >

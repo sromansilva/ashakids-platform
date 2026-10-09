@@ -1,0 +1,8 @@
+{
+  "audit": "AUDIT-2026-10-09-08",
+  "attempted_url": "http://127.0.0.1:5174/login",
+  "tool": "browser_subagent (open_browser_url)",
+  "limitation_type": "Driver manager download failure",
+  "details": "open_browser_url failed to initialize browser context due to 404 Not Found on playwright-1.57.0-win32_x64.zip from azureedge CDN.",
+  "user_rule_compliance": "Followed user instruction: no evasion by changing port, origin or tool. UI real acceptance remains open pending browser driver fix / manual verification on 5174."
+}

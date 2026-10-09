@@ -4,16 +4,12 @@
  * Identificador de acceso: codigo_usuario (VARCHAR(6)).
  */
 
-import React, { useState } from "react";
-import {
-  Check,
-  ChevronLeft,
-  Eye,
-  EyeOff,
-  Lock,
-  User as UserIcon,
-} from "lucide-react";
-import { B, IsotipoWhite, LoginIllustration, AshaKidsLogo } from "@/components/shared";
+import React, { useRef, useState } from "react";
+import { Check, ChevronLeft, Eye, EyeOff, Lock, User as UserIcon } from "lucide-react";
+import { B } from "@/theme/brand/B";
+import { IsotipoWhite } from "@/components/illustrations/IsotipoWhite";
+import { LoginIllustration } from "@/components/illustrations/LoginIllustration";
+import { AshaKidsLogo } from "@/components/illustrations/AshaKidsLogo";
 import { useAuth } from "@/hooks/useAuth";
 import { SemanticRole } from "@/types/auth";
 
@@ -28,15 +24,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onGoHome,
   onForgotPassword,
 }) => {
-  const { login, isLoading } = useAuth();
+  const { login } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const [codigoUsuario, setCodigoUsuario] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const submitting = useRef(false);
 
   const handleSubmit = async (e?: React.FormEvent, customCodigo?: string, customPass?: string) => {
     if (e) e.preventDefault();
+    if (submitting.current) return;
     setErrorMessage(null);
 
     const codigoToSend = (customCodigo || codigoUsuario).trim();
@@ -47,19 +46,23 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       return;
     }
 
+    submitting.current = true;
+    setIsLoading(true);
     try {
       const user = await login({ codigo_usuario: codigoToSend, password: passToSend });
       onSuccess(user.rol);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "Error al iniciar sesión.";
       setErrorMessage(msg);
+    } finally {
+      submitting.current = false;
+      setIsLoading(false);
     }
   };
 
   const handleQuickDemo = (demoCodigo: string) => {
     setCodigoUsuario(demoCodigo);
-    setPassword("12345");
-    handleSubmit(undefined, demoCodigo, "12345");
+    // Only prefill the identifier; authentication always requires a password.
   };
 
   return (
@@ -134,16 +137,17 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             {/* Campo Código de Usuario */}
             <div>
-              <label className="block text-sm font-extrabold text-[#1C1135] mb-1.5">
+              <label htmlFor="login-user-code" className="block text-sm font-extrabold text-[#1C1135] mb-1.5">
                 Código de usuario
               </label>
               <div className="relative">
                 <UserIcon size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                 <input
+                  id="login-user-code"
                   type="text"
                   value={codigoUsuario}
                   onChange={e => setCodigoUsuario(e.target.value)}
-                  placeholder="Ej. p00001, t00001, a00001"
+                  placeholder="Código de usuario"
                   disabled={isLoading}
                   maxLength={6}
                   className="w-full rounded-2xl border border-[#E8E5F4] bg-white pl-10 pr-4 py-3 text-sm font-medium focus:outline-none focus:border-violet-400 font-mono"
@@ -154,7 +158,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Campo Contraseña */}
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="text-sm font-extrabold text-[#1C1135]">Contraseña</label>
+                <label htmlFor="login-password" className="text-sm font-extrabold text-[#1C1135]">Contraseña</label>
                 {onForgotPassword && (
                   <button
                     type="button"
@@ -169,6 +173,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               <div className="relative">
                 <Lock size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                 <input
+                  id="login-password"
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={e => setPassword(e.target.value)}
@@ -219,7 +224,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </form>
 
           {/* Accesos rápidos de desarrollo (Usuarios de prueba oficiales) */}
-          <div className="mt-6 p-4 rounded-2xl border border-[#E8E5F4] bg-white shadow-sm">
+          {import.meta.env.DEV && <div className="mt-6 p-4 rounded-2xl border border-[#E8E5F4] bg-white shadow-sm">
             <p className="text-xs font-extrabold text-[#9E95B7] uppercase tracking-wider mb-2.5">
               Usuarios de desarrollo (Fase 3A)
             </p>
@@ -241,7 +246,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 </button>
               ))}
             </div>
-          </div>
+          </div>}
         </div>
       </div>
     </div>

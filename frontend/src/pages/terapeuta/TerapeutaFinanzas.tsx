@@ -1,5 +1,7 @@
 import { Star } from "lucide-react";
-import { B, Crd, Av } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { Crd } from "@/components/common/Crd";
+import { Av } from "@/components/common/Av";
 
 export function TerapeutaIngresos() {
   return <div />;

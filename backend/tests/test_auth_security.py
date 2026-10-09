@@ -9,7 +9,7 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-from app.core.config import settings
+from app.core.config import Settings
 from app.core.security import hash_password, verify_password
 
 
@@ -17,11 +17,14 @@ class TestConfig(unittest.TestCase):
     """Verifica que la configuración centralizada se cargue adecuadamente."""
 
     def test_settings_metadata(self):
-        self.assertEqual(settings.PROJECT_NAME, "ASHAKids API")
+        settings = Settings(_env_file=None)
+        self.assertEqual(settings.PROJECT_NAME, "Ashakids API")
         self.assertEqual(settings.VERSION, "0.1.0")
         self.assertEqual(settings.API_V1_PREFIX, "/api/v1")
 
     def test_supabase_env_loaded(self):
+        settings = Settings(_env_file=None, SUPABASE_URL="https://synthetic.example.invalid",
+                            SUPABASE_KEY="synthetic-key-not-a-real-credential")
         # Comprobar que las variables no están vacías sin imprimir secretos
         self.assertTrue(bool(settings.SUPABASE_URL), "SUPABASE_URL debe estar configurada en .env")
         self.assertTrue(settings.SUPABASE_URL.startswith("https://"), "SUPABASE_URL debe tener formato URL https")

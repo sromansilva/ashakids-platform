@@ -1,6 +1,9 @@
-import React from "react";
+
 import { Download } from "lucide-react";
-import { B, Btn, Crd, Av } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Av } from "@/components/common/Av";
 
 export function AdminFinanzas() {
   const monthlyIncome = [

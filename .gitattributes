@@ -1,0 +1,6 @@
+# Preserve document and evidence bytes on Windows clones with core.autocrlf.
+*.pdf binary
+*.docx binary
+*.png binary
+*.jpg binary
+*.jpeg binary

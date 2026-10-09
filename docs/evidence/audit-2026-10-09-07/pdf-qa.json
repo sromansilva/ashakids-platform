@@ -1,0 +1,59 @@
+{
+  "audit": "AUDIT-2026-10-09-07",
+  "pdf": "output/pdf/Auditoria_Nucleo_Integrado_AshaKids_2026-10-09-07.pdf",
+  "pages": 8,
+  "a4_points": [
+    595.2756,
+    841.8898
+  ],
+  "rendered_with": "Bundled Poppler pdftoppm PNG at 100dpi",
+  "visually_inspected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "visual_result": "Eight audit pages readable; headers, tables and body without clipping or overlap. Navy/teal reference presentation retained.",
+  "synthetic_samples": {
+    "pages_each": 1,
+    "final_sample_rendered_and_visually_inspected": true,
+    "matching_recorded_sha256": true
+  },
+  "text_checks": {
+    "numbered_sections": true,
+    "application_sha": true,
+    "verification_code_sha": true,
+    "repository_link": true
+  },
+  "evidence_consistency": {
+    "junit": {
+      "backend-tests.xml": {
+        "passed": 115,
+        "skipped": 25,
+        "failures": 0,
+        "errors": 0
+      },
+      "backend-tests-final.xml": {
+        "passed": 119,
+        "skipped": 25,
+        "failures": 0,
+        "errors": 0
+      },
+      "frontend-tests.xml": {
+        "passed": 232,
+        "skipped": 0,
+        "failures": 0,
+        "errors": 0
+      }
+    },
+    "journey_responses_each": 92,
+    "same_cases_repeated": true,
+    "final_server_database_session_proof": true,
+    "restoration_responses": 6
+  },
+  "limits": "PDF layout and recorded evidence consistency; no product UI acceptance, independent teammate reproduction or production certification."
+}

@@ -1,0 +1,168 @@
+{
+  "audit": "AUDIT-2026-10-09-07",
+  "application_sha": "e456294cd7d13aea41dc5d00940b84aa782acbad",
+  "verification_code_sha": "8578ca9cde56bac2ec04389a58ae282cc3fdc8e3",
+  "hash_scope": "Local raw bytes; line endings can differ after checkout. Manifest excludes itself. Targeted secret check included.",
+  "files": [
+    {
+      "path": "docs/acceptance/CORE_PDF_MESSAGES.md",
+      "bytes": 7317,
+      "sha256": "a4937d2e4319dba64cd3d0649f457a98ac612fbc41f49591132e5fadaba36ebf"
+    },
+    {
+      "path": "docs/audits/auditoria-2026-10-09-07.md",
+      "bytes": 15643,
+      "sha256": "43851b32b76c703b7dc482557f2e1fd293a2fa26f3ee8eb61cc9d594a1f214e8"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/attempts.json",
+      "bytes": 2693,
+      "sha256": "7ff7ddaf5361a9153f86b82f8075559bbd2b0d9012383e7b56dfead50af540b8"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-asgi-evidence.json",
+      "bytes": 5993,
+      "sha256": "b14a97c931b072d05dc6cd4cc368f32c7c12bd4a61c3c12aaad959e968b7aca9"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-install.txt",
+      "bytes": 13792,
+      "sha256": "1938f16bb665f68ea349f1691bc26bf567d23b6684f0d08007e9a81463bf62e7"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-start-first.txt",
+      "bytes": 406,
+      "sha256": "a20fcb7eb468ee5211ad1f29a51e059551d6abcf7c8631f4256288671be5fabd"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-tests-final.txt",
+      "bytes": 1057,
+      "sha256": "40955f1c5d97dc0348fb081571cdc5afa3b08b3dc5d349cd414a3961492a78dc"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-tests-final.xml",
+      "bytes": 29433,
+      "sha256": "5023017c6c5c0958f896e1980dcb5c31507bd6b99e0a6b13d199b25912034f83"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-tests.txt",
+      "bytes": 1094,
+      "sha256": "63b3799f26f48b221f8ae8c1a98e33acb72eca2e9ec015c91d0d108c1864cb5c"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/backend-tests.xml",
+      "bytes": 29443,
+      "sha256": "351793b225051e8dccc083157fc572b9bba708ac765325924fab1aee7f4e4fd3"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/browser-limitation.json",
+      "bytes": 845,
+      "sha256": "fd37b5be07f1b066ccf33fde7b94665dce1bc269b95ade295d98499468071f57"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/build.txt",
+      "bytes": 12977,
+      "sha256": "fbddfb98d493418da5b2bf66a4f87825c884ac8051a124b27819c582b05538cd"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/frontend-check.txt",
+      "bytes": 210,
+      "sha256": "30e1051fbc822ceb44823242543948c1ff529bbbcfc665a128dbe014bea3979e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/frontend-install.txt",
+      "bytes": 676,
+      "sha256": "fd2979164769a0cf0c6843394f4b29dc365a53a702df62760e7acdb0b21d6e34"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/frontend-tests.xml",
+      "bytes": 40518,
+      "sha256": "e77c1f68a1de2fdb00c1a34322d69863cb83249c83ab253a2153a53233cd66c8"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/http-delivery-first.json",
+      "bytes": 17416,
+      "sha256": "f43f6549c2ae601aef65d7fc0c551bcf5a04bddfc615012672acea740c12f7e1"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/http-delivery-journey.json",
+      "bytes": 17503,
+      "sha256": "9bd9a28cbdc7b521ea7f8a4f9ae66dcf6ee071b8cbb9ae2cf2b3473cd6143166"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/knowledge-check.txt",
+      "bytes": 27,
+      "sha256": "6fdbf5c49f03f501b04c24a287e3831587c59aa1f9ce3f158782685b550614d5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/pdf-qa.json",
+      "bytes": 1567,
+      "sha256": "5359e1da7f9a45fb1c0dbef361f1bb0ece0ed709ded539be76123588d90cf964"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/README.md",
+      "bytes": 4149,
+      "sha256": "27ed79ab0e7a0f7658ade263e39c50d4e1039b6b590390ca70236977ccd04d8e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/reporte-sesion-primera-corrida.pdf",
+      "bytes": 42813,
+      "sha256": "db1e002b0f69e080ea09eefef55a99563a0e0a81e60e5f9805e1cb773fa7fe36"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/reporte-sesion-sintetica.pdf",
+      "bytes": 42812,
+      "sha256": "6f4d9fc71bc0b10fb00990ef30950ce828ac1ed9d270c70efcb56702d386268e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/restoration-and-target-guard.json",
+      "bytes": 1086,
+      "sha256": "8d9dd327a727d1be452928de84184db3ecb43b3c20297ec2a293e3c33de6a8f2"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/routing-first.txt",
+      "bytes": 1038,
+      "sha256": "ea95234c79fddbc60f58b53a440c8eb987e84fb7ca735624b2016cc1d201b1e1"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/routing-tests.txt",
+      "bytes": 2816,
+      "sha256": "633335b35edc7ff946b35d9921b13af1121835298d8a03493625c6bc62574ee3"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/runtime-and-reproduction.json",
+      "bytes": 2744,
+      "sha256": "cb31d79927649c8a023e8bacb45cfd99bf857b1733b4978d246e2e592001f2a0"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/sanitized-secret-check.json",
+      "bytes": 279,
+      "sha256": "28d426f54e4e2733b745e609f95dc8223a8d395aa8523b567d83546559f8008a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/schema-local.json",
+      "bytes": 96874,
+      "sha256": "0328530968121e0ad80d7ec30806060fddc78c11deb60817763b80dc569b9f69"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/schema-restore-first.txt",
+      "bytes": 200,
+      "sha256": "68700ca5c619814392b646d213ea25b93d09568ec199cb7c72cf15813bdacf97"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/schema-restore.txt",
+      "bytes": 2554,
+      "sha256": "f2f668e09b64cbc09f9f2850226cf2a96e84968bede37f5f995db795c04f5bd7"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-07/typecheck.txt",
+      "bytes": 57,
+      "sha256": "25dcb26872276a1ee654f01903914f6e704d3607dd11d7a8240136bdf230dc92"
+    },
+    {
+      "path": "output/pdf/Auditoria_Nucleo_Integrado_AshaKids_2026-10-09-07.pdf",
+      "bytes": 94256,
+      "sha256": "ab91ef820578b40eaab6e1b11de80ac91cbd7b323bdd94a938e2d623ac20a930"
+    }
+  ]
+}

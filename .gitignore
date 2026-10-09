@@ -19,6 +19,8 @@ build/
 
 # Python
 .venv/
+.venv*/
+graphify-out/
 venv/
 ENV/
 env/
@@ -48,3 +50,6 @@ Thumbs.db
 .venv-graphify/
 graphify-out/
 .graphify_cache/
+
+# Temporary verification outputs; final reports are kept in output/ and docs/evidence/.
+/tmp/

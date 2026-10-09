@@ -21,7 +21,7 @@ router = APIRouter(prefix="/auth", tags=["Autenticación"])
 def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
     """Construye un UserResponse seguro compatible con el modelo Usuario."""
     # Rol semántico principal en mayúsculas
-    main_role = roles[0].upper() if roles else "PADRE"
+    main_role = next((r for r in ("ADMIN", "TERAPEUTA", "PADRE") if r in [v.upper() for v in roles]), "")
 
     return UserResponse(
         id_usuario=user.id_usuario,
@@ -44,7 +44,7 @@ def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
 async def login(
     req: LoginRequest,
     response: Response,
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db, scope="function"),
 ):
     auth_result = await authenticate_user(db, req.codigo_usuario, req.password)
     if not auth_result:
@@ -86,7 +86,7 @@ async def login(
 async def logout(
     response: Response,
     token: str = Depends(get_current_token),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db, scope="function"),
 ):
     if token:
         await revoke_session(db, token)

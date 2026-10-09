@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Lock, BarChart2, GitBranch, Layers, CheckCircle, X } from "lucide-react";
-import { B, View, Crd } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Crd } from "@/components/common/Crd";
 
 // ── Placeholder: Machine Learning ──────────────────────────────────────────────
 export function AdminML({ go: _go }: { go: (v: View) => void }) {
@@ -62,7 +64,7 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
             <h3 className="font-extrabold text-[#1C1135] text-lg">Evaluación Inicial ASHA</h3>
             <p className="text-xs text-[#9E95B7] font-medium mt-0.5">Modelo de orientación · v0.3-demo</p>
           </div>
-          <span className="text-xs font-black px-3 py-1.5 rounded-full" style={estadoColor["Validación"]}>En validación</span>
+          <span className="text-xs font-black px-3 py-1.5 rounded-full" style={{ background: estadoColor["Validación"].bg, color: estadoColor["Validación"].text }}>En validación</span>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-5">
           {[
@@ -177,7 +179,7 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
           {versions.map(v => (
             <div key={v.ver} className="flex items-center gap-3 rounded-xl p-3 border border-[#F0EEF9] flex-wrap min-w-0">
               <code className="text-xs font-black text-[#1C1135] bg-[#F5F3FF] px-2 py-1 rounded-lg">{v.ver}</code>
-              <span className="text-xs font-black px-2.5 py-1 rounded-full" style={estadoColor[v.estado]}>{v.estado}</span>
+              <span className="text-xs font-black px-2.5 py-1 rounded-full" style={{ background: estadoColor[v.estado].bg, color: estadoColor[v.estado].text }}>{v.estado}</span>
               <div className="flex-1 min-w-0">
                 <p className="text-xs text-[#7C6F9A] font-medium">{v.fecha} · {v.responsable}</p>
               </div>

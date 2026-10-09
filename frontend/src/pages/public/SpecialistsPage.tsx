@@ -3,8 +3,8 @@
  */
 
 import React from "react";
-import { View } from "@/components/shared";
-import { PublicEspecialistas } from "./Public";
+import { View } from "@/types/navigation";
+import { PublicEspecialistas } from "@/pages/public/Public/PublicEspecialistas";
 
 interface SpecialistsPageProps {
   go: (v: View) => void;

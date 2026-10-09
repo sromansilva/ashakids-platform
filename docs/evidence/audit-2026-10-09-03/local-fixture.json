@@ -1,0 +1,48 @@
+{
+  "audit": "2026-10-09-03",
+  "environment": "API8001 / PG17.6 local6544 ashakids_test_compat17",
+  "fixture": "Synthetic sibling with same given name, no treatment/session/report; first patient retains report02 plus future appointment.",
+  "patient_ids": [
+    1,
+    2
+  ],
+  "future_appointment_id": 2,
+  "verified_responses": 7,
+  "cases": [
+    {
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "pacientes",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "pacientes",
+      "status": 201
+    },
+    {
+      "method": "GET",
+      "path": "citas",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "pacientes/1/tratamientos",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "citas",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    }
+  ]
+}

@@ -23,7 +23,7 @@ router = APIRouter(prefix="/terapeutas", tags=["Terapeutas"])
 )
 async def get_terapeuta_me(
     current_data: Tuple[Usuario, List[str]] = Depends(require_terapeuta),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db, scope="function"),
 ):
     user, roles = current_data
 

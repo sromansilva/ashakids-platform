@@ -1,0 +1,28 @@
+{
+  "cut": "2026-10-09-12",
+  "date_timezone": "America/Lima",
+  "branch": "feat/sroman",
+  "application_sha": "a60d671a8523a016a41b50395a7db92b05698f18",
+  "evidence_kind": "Sanitized summary of commands observed in the task, not raw logs or coverage percentage",
+  "frontend": {
+    "routing": {"command": "npm run test:routing (npm test)", "passed": 25, "failed": 0, "skipped": 0},
+    "components": {"command": "npm run test:components (npm test)", "files": 13, "passed": 257, "failed": 0, "skipped": 0, "last_start_local": "2026-10-09 15:13:21", "duration_seconds": 18.83},
+    "typecheck": {"command": "npm run typecheck", "exit_code": 0},
+    "static_check": {"command": "npm run check:frontend", "files": 320, "max_physical_lines": 495, "largest_source": "src/pages/padre/MundoAshaIsla.tsx", "exit_code": 0},
+    "build": {"command": "npm run build", "vite": "6.4.4", "modules": 1887, "duration_seconds": 6.74, "exit_code": 0, "javascript_chunks": 140},
+    "bundles_kb": {"main": 293.79, "main_gzip": 92.91, "css": 84.49, "css_gzip": 15.16, "therapist_patients": 40.99, "therapist_patients_gzip": 10.44, "largest_lazy_page": 42.19},
+    "dependency_audit": {"command": "npm audit --omit=dev --json", "known_vulnerabilities": 0, "scope": "Production dependencies at this date only, not a pentest"},
+    "production_bundle_scan": {"development_login_banner_matches": 0, "supabase_host_or_database_key_matches": 0, "scope": "Specific pattern scan, not universal secret detection"}
+  },
+  "backend_selected": {"command": ".venv/Scripts/python.exe -m pytest tests/test_config_isolation.py tests/test_auth_security.py -q", "passed": 11, "failed": 0, "duration_seconds": 0.49, "database_writes": false, "full_suite_executed": false},
+  "live": {"readback_http_responses": 28, "expected_status_passed": 28, "failed": 0, "evidence": "live-readback.json", "clinical_writes": "Authorized synthetic browser records only", "sql_readback": "READ ONLY"},
+  "knowledge": {"command": "tools/knowledge/manage.py refresh and check", "nodes": 1888, "edges_after_clustering": 6211, "communities": 103, "status": "current", "warning": "12 files yielded no AST symbols; no LLM extraction"},
+  "warnings_and_limits": [
+    "Initial old interaction fixture expected removed fake patient fallback and was corrected to an assigned API fixture.",
+    "An existing messaging test timed out during full Windows suite; global async timeout increased to 5 seconds without dropping assertions. Final full suites passed.",
+    "Native session-finalization confirmation required the user to click Accept; the resulting state was verified.",
+    "Desktop Chromium and 390x844 viewport emulation only; no physical mobile/Safari/Firefox matrix.",
+    "No deployed HTTPS acceptance, stress test, pentest, natural session expiry or new backend schema audit.",
+    "CRLF conversion warnings only; git diff --check passed."
+  ]
+}

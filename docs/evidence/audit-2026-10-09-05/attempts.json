@@ -1,0 +1,16 @@
+{
+  "audit": "AUDIT-2026-10-09-05",
+  "attempts": [
+    {"operation": "dependency install", "initial": "sandbox could not reach package index", "resolution": "authorized registry install succeeded"},
+    {"operation": "backend PDF unit tests", "initial": "7 passed, 4 failed: tzdata unavailable; two pytest cache permission warnings", "resolution": "tzdata runtime dependency installed, final 11 passed with cache plugin disabled"},
+    {"operation": "frontend unit suite", "initial": "208 passed, 8 failed: Blob.text absent in jsdom and lazy route not yet ready", "resolution": "binary arrayBuffer and route waits; final 216 passed"},
+    {"operation": "frontend repeated suite", "initial": "duplicate React key for editor and PDF button", "resolution": "distinct PDF component key; suite repeated with 216 passed, no duplicate key warning"},
+    {"operation": "routing", "initial": "spawn EPERM in sandbox", "resolution": "authorized retry: 25 passed"},
+    {"operation": "real HTTP guard", "initial": "missing explicit isolated live flag rejected before requests", "resolution": "same local DB URLs and explicit isolated flag supplied"},
+    {"operation": "HTTP test expectations", "initial": "test assumed shorter historical marker and logout204", "resolution": "matched existing AUDIT-2026-10-09-02 fixture marker and logout200; final28responses + OpenAPI200"},
+    {"operation": "long PDF layout", "initial": "keepWithNext pushed whole long field to next page; five-page QA example", "resolution": "reserve heading/two lines with CondPageBreak; all four final pages inspected, no truncation"},
+    {"operation": "local API restart guard", "initial": "sandbox process enumeration denied; later executable-path guard rejected base-Python child before mutation", "resolution": "authorized process inspection confirmed venv command and base-Python child; exact command verified, only test8001 restarted"},
+    {"operation": "mobile screenshot", "initial": "fixed controls cover note text at390px", "resolution": "margin added to note/status; final recapture blocked by saved browser permission even after new user authorization; remains visually unverified"},
+    {"operation": "knowledge refresh", "initial": "Windows parallel extraction unavailable; 12 files without symbols", "resolution": "sequential local AST fallback; map current1788nodes"}
+  ]
+}

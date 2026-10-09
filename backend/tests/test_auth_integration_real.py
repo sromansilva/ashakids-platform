@@ -10,6 +10,7 @@ import hashlib
 from pathlib import Path
 import sys
 import unittest
+import os
 import httpx
 from sqlalchemy import select
 
@@ -18,7 +19,7 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.config import settings
-from app.core.database import init_db, async_engine, async_session_factory
+from app.core import database
 from app.main import app
 from app.models.auth import SesionAutenticacion, Usuario
 
@@ -27,13 +28,15 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
     """Pruebas de integración contra PostgreSQL real mediante DATABASE_URL y asyncpg."""
 
     async def asyncSetUp(self):
+        if os.getenv("ASHAKIDS_ALLOW_SHARED_DB_TESTS") != "1":
+            self.skipTest("Integración compartida deshabilitada: requiere autorización explícita.")
         if not settings.effective_database_url:
             self.skipTest(
                 "DATABASE_URL (o password/DB_PASSWORD) no está configurada en el entorno (.env). "
                 "Se omite la prueba de integración contra PostgreSQL real."
             )
-        init_db()
-        if async_session_factory is None:
+        database.init_db()
+        if database.async_session_factory is None:
             self.skipTest(
                 "El motor asíncrono hacia PostgreSQL no pudo inicializarse con DATABASE_URL. "
                 "Verifique la conectividad de red y las credenciales."
@@ -44,8 +47,8 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
     async def asyncTearDown(self):
         if hasattr(self, "client"):
             await self.client.aclose()
-        if async_engine:
-            await async_engine.dispose()
+        if database.async_engine:
+            await database.async_engine.dispose()
 
     async def test_01_login_inexistente_retorna_401(self):
         """1. Usuario inexistente: codigo_usuario = 'noexiste', password = '12345' -> HTTP 401."""
@@ -87,7 +90,7 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
 
         # 4. Verificar existencia del registro en la tabla sesiones_autenticacion en PostgreSQL real
         token_hash = hashlib.sha256(cookie_val.encode("utf-8")).hexdigest()
-        async with async_session_factory() as session:
+        async with database.async_session_factory() as session:
             stmt = select(SesionAutenticacion).where(SesionAutenticacion.token_hash == token_hash)
             result = await session.execute(stmt)
             db_session = result.scalar_one_or_none()
@@ -112,7 +115,7 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(logout_res.status_code, 200)
 
         # Verificar que la sesión quedó marcada como revocada en PostgreSQL
-        async with async_session_factory() as session:
+        async with database.async_session_factory() as session:
             stmt = select(SesionAutenticacion).where(SesionAutenticacion.token_hash == token_hash)
             result = await session.execute(stmt)
             revoked_session = result.scalar_one_or_none()
@@ -168,6 +171,7 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
             "/api/v1/auth/login",
             json={"codigo_usuario": "t00001", "password": "12345"},
         )
+        self.assertEqual(res_login_t.status_code, 200, "Login TERAPEUTA no verificado")
         if res_login_t.status_code == 200:
             cookie_t = res_login_t.cookies.get(settings.SESSION_COOKIE_NAME)
             res_t = await self.client.get(
@@ -189,6 +193,7 @@ class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):
             "/api/v1/auth/login",
             json={"codigo_usuario": "a00001", "password": "12345"},
         )
+        self.assertEqual(res_login_a.status_code, 200, "Login ADMIN no verificado")
         if res_login_a.status_code == 200:
             cookie_a = res_login_a.cookies.get(settings.SESSION_COOKIE_NAME)
             res_a = await self.client.get(

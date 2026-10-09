@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Shield } from "lucide-react";
-import { B } from "@/components/shared";
+import { B } from "@/theme/brand/B";
 
 // ─── Auditoría Operativa ──────────────────────────────────────────────────────
 
@@ -23,7 +23,7 @@ export function AdminAuditoria() {
 
   const tipoColor: Record<string, { bg: string; color: string; label: string }> = {
     acceso:    { bg: "#EDE9FE", color: "#7C3AED", label: "Acceso" },
-    cambio:    { bg: "#D1FAE5", color: "#059669" },
+    cambio:    { bg: "#D1FAE5", color: "#059669", label: "Cambio" },
     excepcion: { bg: "#FEF3C7", color: "#D97706", label: "Excepción" },
   };
 

@@ -1,12 +1,13 @@
 """Modelos SQLAlchemy 2.x correspondientes a Perfiles, Logros, PerfilLogros y Pacientes."""
 
 from datetime import date, datetime
+from decimal import Decimal
 from typing import List, Optional
 from sqlalchemy import (
     Boolean,
     Date,
     DateTime,
-    Float,
+    Numeric,
     ForeignKey,
     Integer,
     String,
@@ -47,15 +48,21 @@ class Paciente(Base):
     __tablename__ = "pacientes"
 
     id_paciente: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    id_tutor: Mapped[int] = mapped_column(Integer, nullable=False)
+    id_tutor: Mapped[int] = mapped_column(Integer, ForeignKey("tutores.id_tutor"), nullable=False)
     nombres_paciente: Mapped[str] = mapped_column(String(60), nullable=False)
     apellidos_paciente: Mapped[str] = mapped_column(String(80), nullable=False)
     fecha_nacimiento: Mapped[date] = mapped_column(Date, nullable=False)
     sexo: Mapped[str] = mapped_column(String(10), nullable=False)
+    avatar_nombre: Mapped[str] = mapped_column(
+        String(20), default="zorro", server_default="'zorro'::character varying", nullable=False
+    )
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     fecha_registro: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+
+    # Relación N:1 con Tutor
+    tutor: Mapped["Tutor"] = relationship("Tutor", foreign_keys=[id_tutor])
 
     # Relación 1:1 con Perfil
     perfil: Mapped[Optional["Perfil"]] = relationship(
@@ -71,7 +78,7 @@ class Perfil(Base):
     id_paciente: Mapped[int] = mapped_column(
         Integer, ForeignKey("pacientes.id_paciente"), unique=True, nullable=False
     )
-    progreso: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    progreso: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal('0.00'), nullable=False)
     racha_dias: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     objetivos_totales: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     objetivos_completados: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
@@ -97,8 +104,8 @@ class Logro(Base):
     id_logro: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     nombre_logro: Mapped[str] = mapped_column(String(100), nullable=False)
     experiencia_logro: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    requisito_logro: Mapped[str] = mapped_column(String(255), nullable=False)
-    icono_logro: Mapped[str] = mapped_column(String(100), nullable=False)
+    requisito_logro: Mapped[str] = mapped_column(Text, nullable=False)
+    icono_logro: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     # Relaciones
     perfil_logros: Mapped[List["PerfilLogro"]] = relationship(

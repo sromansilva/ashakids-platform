@@ -72,3 +72,60 @@ export interface AdminProfileResponse {
   user: User;
   perfil_admin: AdministradorData | null;
 }
+
+export interface CuentaItem {
+  id_usuario: number;
+  codigo_usuario: string;
+  email: string;
+  nombres: string;
+  apellidos: string;
+  rol: SemanticRole;
+  activo: boolean;
+  fecha_creacion: string;
+  tutor?: TutorData | null;
+  terapeuta?: TerapeutaData | null;
+}
+
+export interface CuentaListResponse {
+  items: CuentaItem[];
+  total: number;
+}
+
+export interface OperacionCuentaResponse {
+  message: string;
+  cuenta?: CuentaItem | null;
+}
+
+export interface CrearPadrePayload {
+  nombres: string;
+  apellidos: string;
+  email: string;
+  password: string;
+  parentesco?: string;
+  telefono?: string;
+  direccion?: string;
+}
+
+export interface CrearTerapeutaPayload {
+  nombres: string;
+  apellidos: string;
+  email: string;
+  password: string;
+  especialidad?: string;
+  anios_experiencia?: number;
+  idiomas?: string;
+  descripcion_profesional?: string;
+}
+
+export interface ActualizarCuentaPayload {
+  nombres?: string;
+  apellidos?: string;
+  email?: string;
+  parentesco?: string;
+  telefono?: string;
+  direccion?: string;
+  especialidad?: string;
+  anios_experiencia?: number;
+  idiomas?: string;
+  descripcion_profesional?: string;
+}

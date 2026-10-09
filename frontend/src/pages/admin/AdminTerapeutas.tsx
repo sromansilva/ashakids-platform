@@ -1,6 +1,12 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { UserPlus, X, Star, CheckCircle, FileText, Trash2, Eye } from "lucide-react";
-import { B, View, Btn, Crd, Bdg, Av, therapists } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Bdg } from "@/components/common/Bdg";
+import { Av } from "@/components/common/Av";
+import { therapists } from "@/mocks/demo";
 
 export function AdminTerapias() {
   return <AdminTerapeutas go={() => {}} />;

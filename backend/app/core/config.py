@@ -1,18 +1,19 @@
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Annotated, List, Optional, Union
 import urllib.parse
-from pydantic import field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+import json
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # Directorio base del backend para resolver .env de manera determinista
 BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class Settings(BaseSettings):
-    PROJECT_NAME: str = "ASHAKids API"
+    PROJECT_NAME: str = "Ashakids API"
     VERSION: str = "0.1.0"
     API_V1_PREFIX: str = "/api/v1"
-    PORT: int = 8000
+    PORT: int = Field(default=8000, ge=1, le=65535)
     ENVIRONMENT: str = "development"
 
     # Conexión directa a PostgreSQL mediante DATABASE_URL
@@ -33,12 +34,15 @@ class Settings(BaseSettings):
 
     # Configuración de Sesión y Cookies HttpOnly
     SESSION_COOKIE_NAME: str = "ashakids_session"
-    SESSION_EXPIRE_HOURS: int = 24
+    SESSION_EXPIRE_HOURS: int = Field(default=24, ge=1, le=168)
 
     # Orígenes CORS permitidos para comunicación con React + Vite
-    CORS_ORIGINS: List[str] = [
+    CORS_ORIGINS: Annotated[List[str], NoDecode] = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        # Vite selects the next free port when 5173 is already occupied.
+        "http://localhost:5174",
+        "http://127.0.0.1:5174",
         "http://localhost:3000",
     ]
 
@@ -76,14 +80,18 @@ class Settings(BaseSettings):
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:
         if isinstance(v, str) and not v.startswith("["):
             return [i.strip() for i in v.split(",") if i.strip()]
+        if isinstance(v, str):
+            return json.loads(v)
         elif isinstance(v, (list, str)):
             return v
-        return ["http://localhost:5173", "http://127.0.0.1:5173"]
+        return ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"]
 
     model_config = SettingsConfigDict(
         env_file=(BACKEND_DIR / ".env", ".env"),
         env_file_encoding="utf-8",
         extra="ignore",
+        # PORT es el puerto HTTP; port es un alias legado para PostgreSQL.
+        case_sensitive=True,
     )
 
 

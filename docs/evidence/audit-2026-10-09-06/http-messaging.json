@@ -1,0 +1,334 @@
+{
+  "audit": "AUDIT-2026-10-09-06",
+  "marker": "AUDIT-2026-10-09-06-75c05397",
+  "environment": "API8001/web5174/PG17.6 local6544 ashakids_test_compat17",
+  "conversation_id": 1,
+  "messages_created": 7,
+  "pagination_rows_seen": 14,
+  "no_duplicate_page_ids": true,
+  "read_after_relogin_equal": true,
+  "same_conversation_for_concurrent_open": true,
+  "responses": 53,
+  "cases": [
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "anonymous",
+      "method": "GET",
+      "path": "conversaciones",
+      "status": 401
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "conversaciones",
+      "status": 403
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "conversaciones",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "conversaciones",
+      "status": 403
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "conversaciones/1",
+      "status": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "status": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "conversaciones",
+      "status": 403
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "conversaciones/1",
+      "status": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "status": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 404
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "status": 403
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=101",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?before_id=0",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?before_id=2147483648",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/0/mensajes",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/2147483648/mensajes",
+      "status": 422
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "status": 201
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2&before_id=13",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2&before_id=11",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2&before_id=9",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2&before_id=7",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2&before_id=5",
+      "status": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=2&before_id=3",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones?limit=1",
+      "status": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "conversaciones",
+      "status": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "conversaciones",
+      "status": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/999999/mensajes",
+      "status": 404
+    }
+  ],
+  "openapi_status": 200,
+  "limits": "Synthetic messaging writes and authentication sessions only. No users/patients/treatments reset, DDL, Supabase, attachments or actual communications. Five auxiliary final logout calls are not included in the verified response count."
+}

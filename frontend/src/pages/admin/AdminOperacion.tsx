@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { ChevronRight, CheckCircle } from "lucide-react";
-import { B, View, Btn, Crd, Av } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { View } from "@/types/navigation";
+import { Btn } from "@/components/common/Btn";
+import { Crd } from "@/components/common/Crd";
+import { Av } from "@/components/common/Av";
 
 // ── Operación — Incidencias + Sesiones activas ─────────────────────────────────
-export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
+export function AdminOperacion({ go }: { go: (v: View) => void }) {
   const [tab, setTab] = useState<"incidencias" | "sesiones">("incidencias");
 
   type Incidencia = {
@@ -48,6 +52,11 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
         <span>⚠️</span> Datos simulados para demostración
       </div>
 
+      <div className="flex flex-wrap gap-2 mb-5" aria-label="Gestión clínica real">
+        <Btn size="sm" variant="secondary" onClick={() => go('admin/pacientes')}>Pacientes y tratamientos</Btn>
+        <Btn size="sm" variant="secondary" onClick={() => go('admin/citas')}>Agenda clínica</Btn>
+        <Btn size="sm" variant="secondary" onClick={() => go('admin/sesiones')}>Sesiones y reportes</Btn>
+      </div>
       <Crd className="overflow-hidden">
         {/* Tab pills */}
         <div className="flex gap-2 p-4 border-b border-[#E8E5F4]">

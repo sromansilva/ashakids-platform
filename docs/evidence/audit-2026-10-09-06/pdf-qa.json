@@ -1,0 +1,34 @@
+{
+  "audit": "AUDIT-2026-10-09-06",
+  "pdf": "output/pdf/Auditoria_Mensajeria_AshaKids_2026-10-09-06.pdf",
+  "pages": 8,
+  "a4_points": [
+    595.2756,
+    841.8898
+  ],
+  "rendered_with": "Bundled Poppler pdftoppm PNG at 100dpi",
+  "visually_inspected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "visual_result": "All eight pages inspected: readable headers, tables and body, no clipping, overlap or orphan pages. Navy/teal reference presentation maintained.",
+  "text_checks": {
+    "numbered_sections": true,
+    "audited_code_sha": true,
+    "repository_link": true
+  },
+  "evidence_consistency": {
+    "backend_tests": 36,
+    "frontend_tests": 232,
+    "http_responses": 53,
+    "openapi_status": 200,
+    "retained_synthetic_messages": 14
+  },
+  "limits": "Audit PDF layout QA only; does not verify product UI or replace pending real browser acceptance."
+}

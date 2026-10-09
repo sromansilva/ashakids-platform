@@ -1,4 +1,5 @@
-import { B, Crd } from "@/components/shared";
+import { B } from "@/theme/brand/B";
+import { Crd } from "@/components/common/Crd";
 
 export function TerapeutaAnaliticas() {
   const monthlyData = [

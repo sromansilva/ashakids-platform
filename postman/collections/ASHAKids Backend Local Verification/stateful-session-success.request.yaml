@@ -1,0 +1,41 @@
+$kind: http-request
+name: Stateful session transitions success
+order: 2000
+url: '{{base_url}}/api/v1/auth/login'
+method: POST
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "codigo_usuario": "{{therapist_code}}",
+      "password": "{{test_password}}"
+    }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      const base = pm.environment.get('base_url');
+      const sessionId = 1;
+      const api = '/api/v1/sesiones';
+      const body = (payload) => ({ mode: 'raw', raw: JSON.stringify(payload), options: { raw: { language: 'json' } } });
+      const check = (response, expected, label) => pm.test(label, () => pm.expect(response.code).to.eql(expected));
+      check(pm.response, 200, 'Fixture: login TERAPEUTA');
+      pm.sendRequest({ url: base + api + '/' + sessionId + '/iniciar', method: 'POST' }, (error, started) => {
+        pm.test('Fixture: iniciar sin error de red', () => pm.expect(error).to.eql(null));
+        check(started, 200, 'POST /sesiones/{key}/iniciar en horario');
+        pm.sendRequest({ url: base + api + '/' + sessionId + '/reporte', method: 'PUT', header: { 'Content-Type': 'application/json' }, body: body({ objetivos_trabajados: 'Reporte verificado por Postman' }) }, (reportError, report) => {
+          pm.test('Fixture: reporte sin error de red', () => pm.expect(reportError).to.eql(null));
+          check(report, 200, 'PUT /sesiones/{key}/reporte en sesión iniciada');
+          pm.sendRequest({ url: base + api + '/' + sessionId + '/cerrar', method: 'POST', header: { 'Content-Type': 'application/json' }, body: body({ asistencia: 'ASISTIO' }) }, (closeError, closed) => {
+            pm.test('Fixture: cierre sin error de red', () => pm.expect(closeError).to.eql(null));
+            check(closed, 200, 'POST /sesiones/{key}/cerrar iniciada');
+            pm.sendRequest({ url: base + api + '/' + sessionId + '/reporte', method: 'GET' }, (getError, fetched) => {
+              pm.test('Fixture: lectura sin error de red', () => pm.expect(getError).to.eql(null));
+              check(fetched, 200, 'GET /sesiones/{key}/reporte existente');
+            });
+          });
+        });
+      });
