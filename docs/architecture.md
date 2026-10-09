@@ -141,3 +141,26 @@ usa AbortSignal. ReportDownload gestiona estado/error y libera URL temporal; no 
 PDF en ReactQuery. SessionActions lo comparte entre agendas y Reportes familiar; una
 edición sin guardar no entra en la descarga. Informes mensuales no se inventan. La pantalla
 independiente /terapeuta/reportes sigue demo y no forma parte de esta exportación conectada.
+
+## Mensajería familiar autorizada (2026-10-09-06)
+
+ADR0007: MessagesCenter/MessageThread -> messagingService -> apiClient -> FastAPI
+/conversaciones -> services/mensajeria -> modelos de conversaciones y mensajes existentes.
+No DDL, Supabase Auth, canal externo ni credenciales en React. Conversación por tutor y
+terapeuta, compartida entre hijos; participantes por usuario/perfil. ADMIN solo no lee chats.
+
+Contactos por paciente activo/tratamiento ACTIVO/ambos usuarios activos. Abrir reutiliza pareja
+bajo bloqueo del tutor; enviar bloquea conversación, obtiene emisor de identidad y hace commit
+antes de responder201. Lectura histórica al participante, escritura solo chat abierto y relación
+activa. INTEGER positivo y texto1..4000 no vacío/NUL; extra fields prohibidos. Cursor descendente
+por ID, límite100 y limit+1; contactos con X-Total-Count. Sin leer todo historial en un solo GET.
+
+React mantiene consultas por identidad, oculta caché tras error de permisos y escapa texto.
+Actualizar recibe respuestas; no declara tiempo real ni leído. Borradores por chat en memoria;
+POST sin reintento automático, confirmación solo de respuesta válida, error conserva texto.
+Sin clave idempotente para envío ni UNIQUE de pareja en esquema: respuesta perdida puede
+requerir cotejar historial antes de reenviar; escritores externos no quedan garantizados por
+estos bloqueos. Datos clínicos/estado de asignación no se modifican por probar mensajes.
+
+Verificación API con PG local y jsdom; aceptación visual desktop/móvil pendiente. No cambios
+de hosting/retención/índices ni prueba de carga en este corte. Fuentes y PDF en auditoría06.

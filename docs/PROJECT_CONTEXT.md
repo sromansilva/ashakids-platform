@@ -6,7 +6,44 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: F5-01, exportación de reportes guardados, 2026-10-09-05
+### Corte vigente: F5-01, mensajes familia/profesional, 2026-10-09-06
+
+- Código V08_Mensajes_Familia_Terapeuta, 7fddd59d6cc6ec594c666c9c80ba184a88c9a91d,
+  desarrollado en dev sobre 1398e706121fea153fe9f7481d24983d9e49911a. El corte PDF anterior
+  está publicado: PR105 integrado en ese SHA (V07_Integracion_Reportes_PDF).
+  Documentación/evidencias nuevas en V09_Auditoria_Mensajeria; integración dev por PR/V10.
+  Consultar historial remoto para el SHA efectivo; no atribuir un merge futuro al corte auditado.
+- [Auditoría06](audits/auditoria-2026-10-09-06.md) y ADR0007: se reutilizan conversaciones/
+  mensajes existentes, sin DDL ni cambios de dependencias. Participantes por perfil de usuario;
+  ADMIN por sí solo no lee chats privados. Contactos por asignación activa, chat por familia/
+  profesional, sin duplicar por hijo. Historial accesible al participante tras finalizar relación;
+  enviar requiere chat abierto/asignación activa/usuarios habilitados.
+- Apertura de pareja serializada por tutor; envío bloquea conversación; commit antes del éxito.
+  Cursor de IDs para conversaciones/mensajes, límite100, INTEGER positivo; entrada de texto
+  1..4000 no vacía/NUL, sin campos de emisor/fecha/estado enviados por cliente.
+- PadreMensajes/TerapeutaMensajes usan MessagesCenter/MessageThread/messagingService y
+  cookie/API central. Sin respuestas ni contactos ficticios, llamadas/adjuntos/presencia/leído.
+  Actualización manual; borradores en memoria por chat y por identidad. No POST automático
+  ante error ni burbuja optimista. Respuesta inválida/red/5xx comunica incertidumbre y conserva
+  texto; actualizar antes de reenviar. ADMIN informa campañas pendientes sin envío simulado.
+- 232 componentes frontend (16 nuevos de mensajes), 36 unitarias backend (25 mensajes +11
+  PDF de regresión), 25 rutas; tipos/estructura/build correctos. No suite backend completa nueva.
+  HTTP final53 + OpenAPI; aperturas/envíos concurrentes, cursor y lectura idéntica tras relogin.
+  Dos corridas conservaron14 mensajes sintéticos (siete cada una) en conversación1; no reset.
+- API8001/web5174/PG17.6 local6544, ashakids_test_compat17; .venv313 Python3.13.7.
+  Login/logout modifica sesiones sintéticas; solo chats/mensajes nuevos, sin usuarios ni clínica
+  nueva, sin Supabase. Comparación del esquema02 es evidencia histórica, no repetida aquí.
+- Limitaciones: sin UNIQUE pareja ni clave idempotente de envío; escritores externos deben
+  respetar bloqueos/reglas. La revocación concurrente externa no tiene garantía atómica nueva.
+  Archivado/asignación finalizada probado en unidad con mocks, sin mutaciones clínicas reales.
+- Navegador sigue bloqueado por preferencia guardada previa; no se intentó eludirlo ni se
+  obtuvieron capturas06. Pruebas jsdom no certifican UI real desktop/móvil. Recaptura móvil
+  PDF05 también pendiente. Fase5 abierta para aceptación conjunta/reproducción por otro clon.
+- Siguiente: recorrido del núcleo con tres roles + PDF + mensajes, aceptación visual/errores,
+  incidencia01 y paquete de rúbrica. Recursos diferidos; juegos completos Mundo ASHA en MA.
+  No iniciar nuevas extensiones ni hosting antes de comprobar estabilidad del alcance elegido.
+
+### Corte anterior: F5-01, exportación de reportes guardados, 2026-10-09-05
 
 - Código: V05_Reportes_Exportacion_PDF, a8df56fc912db76a01092b60caa1efa220dcd85b,
   desarrollado en dev desde add1d4f. Informe/evidencias en V06_Auditoria_Reportes_PDF.

@@ -6,17 +6,49 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-F5-01/PDF implementado y verificado localmente. Código V05_Reportes_Exportacion_PDF,
-a8df56fc912db76a01092b60caa1efa220dcd85b; documentación V06_Auditoria_Reportes_PDF,
-auditoría2026-10-09-05 y ADR0006. Base dev/add1d4f; publicación por PR hacia dev, comprobar
-SHA de merge en historial remoto. Este registro no atribuye al código un PDF añadido después.
-216 frontend, 11 unitarias PDF/backend, 25 rutas, 28 respuestas HTTP + OpenAPI local;
-tipos/estructura/build correctos. No nueva suite backend completa ni pruebas de despliegue.
-Descarga física familiar comprobada; ajuste final de margen móvil sin recaptura por permiso
-de navegador rechazado. Mantener esta limitación hasta que alguien lo confirme visualmente.
-Fase5 sigue abierta: siguiente módulo mensajes autorizados familia/terapeuta. Recursos
-diferidos; Mundo ASHA permanece en MA-01, con contenido/criterios por revisar con el usuario.
-Incidencia01 y reproducción por otro integrante pendientes. Hosting tras estabilidad demostrada.
+F5-01/PDF + mensajes implementados y verificados localmente; aceptación de conjunto pendiente.
+Código de mensajes V08_Mensajes_Familia_Terapeuta, 7fddd59d6cc6ec594c666c9c80ba184a88c9a91d;
+documentación V09_Auditoria_Mensajeria, auditoría2026-10-09-06 y ADR0007. Base dev/1398e70,
+PDF previo integrado por PR105. Publicación de06 por PR hacia dev/V10_Integracion_Mensajeria:
+consultar historial/PR para SHA efectivo; no se declara un merge futuro como ejecutado.
+232 frontend,36 unitarias backend,25 rutas,53 HTTP + OpenAPI local; tipos/check/build correctos.
+Dos corridas HTTP dejan14 mensajes sintéticos persistentes en conversación1; sin reset/DDL.
+Navegador bloqueado por preferencia previa: no hay capturas nuevas ni E2E visual de mensajes.
+Confirmar desktop/móvil, recaptura PDF05 y reproducción por otro clon. Fase5 sigue abierta.
+Incidencia01 pendiente; recursos diferidos, juegos MA independientes y hosting tras estabilidad.
+
+### Relevo funcional: mensajes familia/profesional, 2026-10-09-06
+
+- Objetivo: intercambio privado y persistente con contactos realmente asignados. Backend:
+  api/v1,models,schemas,services/mensajeria.py y main.py; guion verify_messaging.py y25 unidades.
+  Frontend: messagingService, MessagesCenter/MessageThread, entradas de padre/terapeuta,
+  ADMIN sin campaña ficticia y16 pruebas nuevas. Convención V08/V09/V10 concreta por módulo.
+- Entorno: .venv313 Python3.13.7, API8001/web5174/PG17.6 local6544, ashakids_test_compat17.
+  Sin nueva dependencia; las tablas provienen de la réplica02. No usar Supabase para estas
+  escrituras; conservar fixtures y mensajes. El env habitual ignorado no se versiona.
+- Comprobaciones:36 unidades (25 mensajes +11 PDF rerun),232 componentes,25 rutas;
+  tipos/check/build; HTTP final53 + OpenAPI200, apertura concurrente misma pareja/envíos
+  concurrentes, historial cursor14 sin duplicados y lectura idéntica tras logout/login.
+  Estados cerrados/sin asignación son unidades con mocks; no nuevas mutaciones clínicas.
+- Fallo inicial:230 frontend,229 aprobadas/1 expectativa antigua demo; corregida. Rerun230;
+  después dos casos adicionales de respuesta POST inválida dan232 finales. Primer guion
+  HTTP47 + OpenAPI, siete mensajes; final53 crea otros siete. Intentos originales preservados.
+- Limitaciones: Actualizar manual, no leído/presencia/llamadas/adjuntos. Borradores solo memoria
+  por chat; POST sin retry ni clave idempotente. Respuesta perdida exige actualizar antes de
+  reenviar; UNIQUE pareja ausente, escritores externos requieren reglas equivalentes.
+  ADMIN solo no consulta chats; historial del participante sigue visible al terminar asignación.
+- Bloqueo: preferencia previa del navegador rechazó origen5174. No nuevo intento ni evasión
+  en06. No decir que mocks/build verificaron UI real. Mantener deuda de aceptación visual.
+- Publicación: revisar diff/secretos y referencias, push feat/piero-dev, PR hacia dev y merge
+  V10; sincronizar dev y piero-dev por fast-forward sin force-push. Estado concreto en PR/Git.
+- Próximo prompt: «Lee AGENTS.md, PROJECT_CONTEXT.md, IMPLEMENTATION_PLAN.md y este relevo.
+  Actualiza dev por fast-forward y confirma V10/PR de mensajería. Completa aceptación F5-01:
+  núcleo con ADMIN/PADRE/TERAPEUTA, reporte guardado/PDF y mensajes privados entre dos
+  participantes. Usa API8001/web5174/PG17.6 local6544 con datos sintéticos; no reset de demo.
+  Confirma revisión visual desktop/móvil y recaptura PDF cuando navegador permita; no eludas
+  una preferencia denegada. Reproduce en otro clon y revisa incidencia01; registra casos reales,
+  errores y pendientes. Entrega auditoría PDF/evidencia nueva y commit/push versionado en dev.
+  No ampliar fase6, pagos ni juegos completos MA antes de cerrar el alcance seleccionado».
 
 ### Relevo funcional: reportes guardados y descarga PDF, 2026-10-09-05
 
