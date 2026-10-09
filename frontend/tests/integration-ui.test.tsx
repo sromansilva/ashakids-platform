@@ -26,6 +26,25 @@ function mockApi(overrides?: (path: string, init: RequestInit) => Response | Pro
   });
 }
 
+it('Family reports distinguish persisted session data from demo metrics', async () => {
+  mockApi(); renderRoute('/padre/reportes', 'PADRE');
+  expect(await screen.findByText('Sin medición')).toBeInTheDocument();
+  expect(screen.getByText('Sin registro')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Progreso Mensual \(demo\)/ })).toBeInTheDocument();
+  expect(screen.queryByText('78%')).not.toBeInTheDocument();
+});
+
+it('Family cannot simulate professional confirmation of a pending appointment', async () => {
+  const now = new Date();
+  mockApi(path => path === '/citas' ? response([{ ...appointment,
+    estado_reserva: 'PENDIENTE', fecha_hora_inicio: now.toISOString(),
+    fecha_hora_fin: new Date(now.getTime() + 3600000).toISOString(),
+  }]) : undefined);
+  renderRoute('/padre/agenda', 'PADRE');
+  expect(await screen.findByText(/La confirmación corresponde al terapeuta asignado/)).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /Simular confirmación/ })).not.toBeInTheDocument();
+});
+
 it('Keeps the original admin patient table and opens the real treatment selector', async () => {
   mockApi(); renderRoute('/admin/pacientes', 'ADMIN');
   expect(await screen.findByText('Paciente Aislado')).toBeInTheDocument();

@@ -136,8 +136,7 @@ return (<div
           Reportes de sesiones
         </h1>
         <p className="text-sm text-[#7C6F9A] font-medium">
-          Historial de sesiones e informes mensuales de la Dra.
-          Ana Ruiz.
+          Historial de sesiones y reportes guardados por el profesional asignado.
         </p>
       </div>
 
@@ -145,8 +144,8 @@ return (<div
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
           { v: String(sessions.length), l: "Sesiones totales" },
-          { v: "78%", l: "Progreso general" },
-          { v: "4.9★", l: "Valoración terapeuta" },
+          { v: "Sin medición", l: "Progreso general" },
+          { v: "Sin registro", l: "Valoración terapeuta" },
         ].map((s) => (
           <div
             key={s.l}
@@ -170,7 +169,7 @@ return (<div
         {(
           [
             ["sesiones", "🎥 Sesiones"],
-            ["progreso", "📊 Progreso Mensual"],
+            ["progreso", "📊 Progreso Mensual (demo)"],
           ] as const
         ).map(([id, label]) => (
           <button

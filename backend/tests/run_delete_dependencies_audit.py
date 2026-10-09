@@ -14,10 +14,13 @@ import httpx
 from sqlalchemy import text
 from app.core.database import async_session_factory
 
-BASE_URL = "http://localhost:8000/api/v1"
+BASE_URL = ""  # Se asigna únicamente después de validar el entorno descartable.
 
 
 async def main():
+    from tests.live_environment import isolated_live_api
+    global BASE_URL
+    BASE_URL = isolated_live_api()
     print("=== INICIANDO AUDITORÍA DE SEGURIDAD PARA DELETE DE CUENTAS ===")
     async with httpx.AsyncClient(base_url=BASE_URL, timeout=30.0) as client:
         # 0. Login como admin a00001

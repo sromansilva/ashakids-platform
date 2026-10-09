@@ -21,11 +21,11 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                 ⚠️
               </div>
               <h2 className="font-extrabold text-center text-[#1C1135] text-lg mb-2">
-                Eliminar a {deleteChild.name}
+                Dar de baja a {deleteChild.name} {deleteChild.surname}
               </h2>
               <p className="text-sm text-center text-[#7C6F9A] font-medium mb-5">
-                Esta acción eliminará el perfil y todo el
-                historial asociado. No puede deshacerse.
+                El perfil dejará de aparecer entre tus hijos activos. Su historial
+                se conserva en el sistema. La reactivación requiere soporte del equipo.
               </p>
               <RemoteFeedback error={save.error} /><div className="flex gap-3">
                 <Btn
@@ -40,7 +40,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                   className="flex-1 justify-center"
                   disabled={save.isPending} onClick={() => void save.submit(undefined)}
                 >
-                  Eliminar
+                  Dar de baja
                 </Btn>
               </div>
             </div>

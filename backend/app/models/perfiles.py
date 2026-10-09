@@ -1,12 +1,13 @@
 """Modelos SQLAlchemy 2.x correspondientes a Perfiles, Logros, PerfilLogros y Pacientes."""
 
 from datetime import date, datetime
+from decimal import Decimal
 from typing import List, Optional
 from sqlalchemy import (
     Boolean,
     Date,
     DateTime,
-    Float,
+    Numeric,
     ForeignKey,
     Integer,
     String,
@@ -77,7 +78,7 @@ class Perfil(Base):
     id_paciente: Mapped[int] = mapped_column(
         Integer, ForeignKey("pacientes.id_paciente"), unique=True, nullable=False
     )
-    progreso: Mapped[float] = mapped_column(Float, default=0.0, nullable=False)
+    progreso: Mapped[Decimal] = mapped_column(Numeric(5, 2), default=Decimal('0.00'), nullable=False)
     racha_dias: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     objetivos_totales: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     objetivos_completados: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
@@ -103,8 +104,8 @@ class Logro(Base):
     id_logro: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     nombre_logro: Mapped[str] = mapped_column(String(100), nullable=False)
     experiencia_logro: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
-    requisito_logro: Mapped[str] = mapped_column(String(255), nullable=False)
-    icono_logro: Mapped[str] = mapped_column(String(100), nullable=False)
+    requisito_logro: Mapped[str] = mapped_column(Text, nullable=False)
+    icono_logro: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
 
     # Relaciones
     perfil_logros: Mapped[List["PerfilLogro"]] = relationship(

@@ -107,7 +107,7 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
             {waitingApts.map((apt) => (
               <div key={apt.id} className="rounded-2xl border border-orange-100 bg-orange-50/50 p-4">
                 <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}</p></div><Bdg color="orange">Por confirmar</Bdg></div>
-                <div className="mt-3 flex justify-end"><Btn size="sm" variant="secondary" onClick={() => { setApts(current => current.map(item => item.id === apt.id ? { ...item, status: "confirmada", paymentStatus: "pendiente" } : item)); setToast("Demo: la terapeuta confirmó la sesión. Ya está disponible en Pagos."); }}><Check size={12} /> Simular confirmación</Btn></div>
+                <p className="mt-3 text-xs font-medium text-orange-800">La confirmación corresponde al terapeuta asignado. El estado se actualizará desde el servidor.</p>
               </div>
             ))}
             {rejectedApts.map((apt) => (
