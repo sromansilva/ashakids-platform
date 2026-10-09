@@ -1,0 +1,437 @@
+{
+  "info": {
+    "_postman_id": "c1f7b029-4581-4284-822e-1d5750ce1511",
+    "name": "ASHAKids API — Colección Oficial (Autenticación y CRUD Cuentas)",
+    "description": "Colección completa para la API REST de ASHAKids Platform (FastAPI + Supabase PostgreSQL). Utiliza sesiones seguras persistidas en PostgreSQL con transporte mediante cookies HttpOnly (ashakids_session) o Bearer token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "codigo_admin",
+      "value": "a00001",
+      "type": "string"
+    },
+    {
+      "key": "codigo_padre",
+      "value": "p00001",
+      "type": "string"
+    },
+    {
+      "key": "codigo_terapeuta",
+      "value": "t00001",
+      "type": "string"
+    },
+    {
+      "key": "password",
+      "value": "12345",
+      "type": "string"
+    },
+    {
+      "key": "id_usuario",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Autenticación",
+      "item": [
+        {
+          "name": "Login Admin (a00001)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo_usuario\": \"{{codigo_admin}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como administrador del sistema. Fija la cookie HttpOnly ashakids_session."
+          }
+        },
+        {
+          "name": "Login Padre (p00001)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo_usuario\": \"{{codigo_padre}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como Padre/Familia."
+          }
+        },
+        {
+          "name": "Login Terapeuta (t00001)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"codigo_usuario\": \"{{codigo_terapeuta}}\",\n  \"password\": \"{{password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Inicia sesión como Especialista Terapeuta."
+          }
+        },
+        {
+          "name": "Consultar Identidad Actual (/auth/me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Obtiene los datos del usuario autenticado a partir de la cookie de sesión."
+          }
+        },
+        {
+          "name": "Cerrar Sesión (/auth/logout)",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Revoca la sesión activa en PostgreSQL y borra la cookie de sesión del cliente."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Perfiles por Rol",
+      "item": [
+        {
+          "name": "Perfil Admin (/admin/me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/me",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "me"]
+            },
+            "description": "Retorna datos del usuario y perfil de Administrador. Requiere rol ADMIN."
+          }
+        },
+        {
+          "name": "Perfil Padre (/padres/me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/padres/me",
+              "host": ["{{base_url}}"],
+              "path": ["padres", "me"]
+            },
+            "description": "Retorna datos del usuario y perfil de Tutor. Requiere rol PADRE."
+          }
+        },
+        {
+          "name": "Perfil Terapeuta (/terapeutas/me)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/terapeutas/me",
+              "host": ["{{base_url}}"],
+              "path": ["terapeutas", "me"]
+            },
+            "description": "Retorna datos del usuario y perfil de Terapeuta. Requiere rol TERAPEUTA."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Gestión de Cuentas (/admin/cuentas)",
+      "item": [
+        {
+          "name": "Listar Cuentas",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas?rol=&search=&activo=",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas"],
+              "query": [
+                {
+                  "key": "rol",
+                  "value": "",
+                  "description": "Opcional: PADRE, TERAPEUTA, ADMIN"
+                },
+                {
+                  "key": "search",
+                  "value": "",
+                  "description": "Opcional: término de búsqueda"
+                },
+                {
+                  "key": "activo",
+                  "value": "",
+                  "description": "Opcional: true o false"
+                }
+              ]
+            },
+            "description": "Lista cuentas de usuarios registradas en el sistema. Requiere rol ADMIN."
+          }
+        },
+        {
+          "name": "Obtener Detalle de Cuenta por ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/{{id_usuario}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "{{id_usuario}}"]
+            },
+            "description": "Consulta el detalle completo de un usuario y su perfil anidado."
+          }
+        },
+        {
+          "name": "Crear Padre/Tutor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Juan\",\n  \"apellidos\": \"Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"password\": \"PasswordSegura123!\",\n  \"parentesco\": \"Padre\",\n  \"telefono\": \"999888777\",\n  \"direccion\": \"Av. Las Flores 123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/padres",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "padres"]
+            },
+            "description": "Crea atómicamente el Usuario (código pXXXXX), rol PADRE, tabla TUTORES y audita INSERT."
+          }
+        },
+        {
+          "name": "Crear Terapeuta",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Ana\",\n  \"apellidos\": \"García\",\n  \"email\": \"ana.garcia@example.com\",\n  \"password\": \"PasswordSegura123!\",\n  \"especialidad\": \"Terapia de lenguaje\",\n  \"anios_experiencia\": 3,\n  \"idiomas\": \"Español, Quechua\",\n  \"descripcion_profesional\": \"Especialista en intervención temprana infantil.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/terapeutas",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "terapeutas"]
+            },
+            "description": "Crea atómicamente el Usuario (código tXXXXX), rol TERAPEUTA, tabla TERAPEUTAS y audita INSERT."
+          }
+        },
+        {
+          "name": "Editar Cuenta",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Juan Carlos\",\n  \"telefono\": \"987654321\",\n  \"direccion\": \"Calle Modificada 456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/{{id_usuario}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "{{id_usuario}}"]
+            },
+            "description": "Actualiza datos de usuario y perfil de tutor o terapeuta. Audita UPDATE."
+          }
+        },
+        {
+          "name": "Suspender Cuenta",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/{{id_usuario}}/suspender",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "{{id_usuario}}", "suspender"]
+            },
+            "description": "Pasa activo=false, revoca sesiones activas de inmediato y audita UPDATE."
+          }
+        },
+        {
+          "name": "Activar Cuenta",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/{{id_usuario}}/activar",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "{{id_usuario}}", "activar"]
+            },
+            "description": "Pasa activo=true permitiendo nuevos logins y audita UPDATE."
+          }
+        },
+        {
+          "name": "Eliminar Cuenta Permanentemente",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/{{id_usuario}}",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "{{id_usuario}}"]
+            },
+            "description": "Elimina físicamente la cuenta si no posee dependencias clínicas. Audita DELETE antes de eliminar. Responde 409 si existen datos relacionados."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Seguridad y Casos Límite",
+      "item": [
+        {
+          "name": "401 — Sin Sesión Activa",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas"]
+            },
+            "description": "Verifica que el endpoint administrativo rechace solicitudes no autenticadas con 401."
+          }
+        },
+        {
+          "name": "403 — Padre intentando Acceso Admin",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas"]
+            },
+            "description": "Con sesión de Padre (p00001), intenta acceder a /admin/cuentas. Debe responder 403 Forbidden."
+          }
+        },
+        {
+          "name": "404 — Cuenta Inexistente",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/999999",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "999999"]
+            },
+            "description": "Consulta un ID que no existe. Debe responder 404 Not Found."
+          }
+        },
+        {
+          "name": "409 — Admin suspendiéndose a sí mismo",
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/1/suspender",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "1", "suspender"]
+            },
+            "description": "El administrador autenticado intenta suspender su propio ID. Debe responder 409 Conflict."
+          }
+        },
+        {
+          "name": "409 — Email Duplicado",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"Prueba\",\n  \"apellidos\": \"Duplicado\",\n  \"email\": \"padre@ashakids.test\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/padres",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "padres"]
+            },
+            "description": "Intenta registrar un email ya existente. Debe responder 409 Conflict."
+          }
+        },
+        {
+          "name": "422 — Validación de Payload Inválido",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombres\": \"\",\n  \"email\": \"email-invalido\",\n  \"password\": \"123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/admin/cuentas/padres",
+              "host": ["{{base_url}}"],
+              "path": ["admin", "cuentas", "padres"]
+            },
+            "description": "Envía campos requeridos vacíos o email mal formateado. Debe responder 422 Unprocessable Entity."
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import type { ReportData } from "@/types/clinical";
 import { Btn } from "./Btn";
 import { RemoteFeedback } from "./RemoteFeedback";
+import { ReportDownload } from "./ReportDownload";
 const labels = { observaciones_iniciales: 'Observaciones iniciales', objetivos_trabajados: 'Objetivos trabajados', nivel_ayuda: 'Nivel de ayuda', proximos_pasos: 'Próximos pasos' } as const;
 function ReportEditor({ id, initial }: { id: number; initial: ReportData }) {
   const [form, setForm] = useState(initial);
@@ -36,11 +37,7 @@ export function SessionActions({ appointmentId }: { appointmentId: number }) {
     </div>{s.reporte_disponible && <RemoteFeedback pending={report.isPending} error={report.error} retry={() => void report.refetch()} />}
       {canEdit && (!s.reporte_disponible || report.isSuccess) && <ReportEditor key={id} id={id!} initial={report.data ?? { observaciones_iniciales: '', objetivos_trabajados: '', nivel_ayuda: '', proximos_pasos: '' }} />}
       {!canEdit && report.data && <dl className="space-y-2">{Object.entries(labels).map(([key, label]) => <div key={key}><dt className="font-bold text-sm">{label}</dt><dd className="text-sm whitespace-pre-wrap">{report.data[key as keyof ReportData] || 'No registrado'}</dd></div>)}</dl>}
-      {report.data && <Btn variant="outline" onClick={() => {
-        const lines = [`Sesión #${id}`, `Paciente: ${s.cita.paciente_nombre}`, `Profesional: ${s.cita.terapeuta_nombre}`, ...Object.entries(labels).map(([key, label]) => `${label}:\n${report.data![key as keyof ReportData] || 'No registrado'}`)];
-        const url = URL.createObjectURL(new Blob([lines.join('\n\n')], { type: 'text/plain;charset=utf-8' }));
-        const a = document.createElement('a'); a.href = url; a.download = `reporte-sesion-${id}.txt`; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
-      }}>Descargar reporte guardado</Btn>}
+      {report.isSuccess && !report.isFetching && s.reporte_disponible && <ReportDownload key={`pdf-${id}`} sessionId={id!} />}
     </>}
   </section>;
 }

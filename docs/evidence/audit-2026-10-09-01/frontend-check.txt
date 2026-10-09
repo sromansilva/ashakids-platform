@@ -1,0 +1,5 @@
+
+> ashakids-frontend@0.0.1 check:frontend
+> node scripts/check-frontend.mjs
+
+PASS: 302 files; maximum 495 lines (src/pages/padre/MundoAshaIsla.tsx); local imports, role boundaries and HTTP client checked.

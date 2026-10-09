@@ -1,0 +1,30 @@
+{
+  "audit": "AUDIT-2026-10-09-08",
+  "events": [
+    {
+      "phase": "Schema restoration",
+      "issue": "CREATE SCHEMA public already existed in fresh PostgreSQL DB",
+      "solution": "Replaced with CREATE SCHEMA IF NOT EXISTS public in portable schema"
+    },
+    {
+      "phase": "Schema restoration",
+      "issue": "\\restrict and \\unrestrict tags from pg_dump 18 caused psql exit in 18",
+      "solution": "Filtered \\restrict and \\unrestrict directives in portable schema"
+    },
+    {
+      "phase": "Backend test dependencies",
+      "issue": "Missing pytest in backend .venv",
+      "solution": "Installed requirements-dev.txt (ReportLab 4.5.1, tzdata 2026.5, pytest 9.1.1, pypdf 6.20.0)"
+    },
+    {
+      "phase": "Frontend dev server",
+      "issue": "npm run dev passed 5174 without --port flag",
+      "solution": "Ran npx vite --port 5174 --host 127.0.0.1"
+    },
+    {
+      "phase": "Browser UI execution",
+      "issue": "open_browser_url driver download failed (404 on azureedge)",
+      "solution": "Recorded limitation per user rules without evading ports/origins; flagged for user feedback"
+    }
+  ]
+}

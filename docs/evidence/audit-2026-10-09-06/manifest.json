@@ -1,0 +1,102 @@
+{
+  "audit": "AUDIT-2026-10-09-06",
+  "code_sha": "7fddd59d6cc6ec594c666c9c80ba184a88c9a91d",
+  "hash_scope": "Local raw bytes; line endings may differ after checkout in another operating system. Manifest excludes itself. Final secret check included.",
+  "files": [
+    {
+      "path": "docs/audits/auditoria-2026-10-09-06.md",
+      "bytes": 16440,
+      "sha256": "93a10ab8f3d05d782b6938f43466fa1ffde4baad97217f543a704a47b1192454"
+    },
+    {
+      "path": "docs/decisions/0007-mensajeria-familiar-autorizada.md",
+      "bytes": 3453,
+      "sha256": "772188d907c28e111050cd9bda79d656750f4b88faf6f3d3b1ebe637a7da1dff"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/attempts.json",
+      "bytes": 2068,
+      "sha256": "6390de879799c0dd290ec30ae14a1624405e030668cf2d556d502fae1cd468b8"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/backend-unit-tests.xml",
+      "bytes": 8561,
+      "sha256": "c647b0c500946367c56bced046328c89d2aff29aa6672ae90728e994a4f7b057"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/browser-limitation.json",
+      "bytes": 706,
+      "sha256": "b8adb13db345ea8562376eb5a6d3209e0245d1e4fda46094d28755e4d7aee959"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/build.txt",
+      "bytes": 12978,
+      "sha256": "73c52e8ab707b7c9e5bd7a7a6ae6d50d58919ef1eb480ac82ccb006f73cebeef"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/design-detector.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/frontend-check.txt",
+      "bytes": 210,
+      "sha256": "30e1051fbc822ceb44823242543948c1ff529bbbcfc665a128dbe014bea3979e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/frontend-first.xml",
+      "bytes": 40435,
+      "sha256": "431d4372e2f13b1955f4241ed1e23a106b739cdec972c7b36bf0b42dd76a78e0"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/frontend-tests.xml",
+      "bytes": 40524,
+      "sha256": "29649ca40b415e43309239bab3199adb13df3444535343794a22782f0412f51c"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/http-messaging-first.json",
+      "bytes": 6751,
+      "sha256": "e0aa55b903f5aed5b4237fa74b6602415cd79a09da00b5b56533733a8fc747d9"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/http-messaging.json",
+      "bytes": 7725,
+      "sha256": "712bd6b5ca8f209ca837616d1e34b1697a4599d62e01db0f14d4fa1f1465d7fb"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/knowledge-check.txt",
+      "bytes": 27,
+      "sha256": "6fdbf5c49f03f501b04c24a287e3831587c59aa1f9ce3f158782685b550614d5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/pdf-qa.json",
+      "bytes": 926,
+      "sha256": "2bd8373de8302a4d6c801cee076c18e578132e672d0f86395bc66cfa1d8847c8"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/README.md",
+      "bytes": 3832,
+      "sha256": "f0098fbbd82bdc09df45af549621becd818fe10675b1143c4dbc8ed492682f1a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/routing-tests.txt",
+      "bytes": 2818,
+      "sha256": "66a7219c01238de69b332cabe554be75d4b4bc2454078c5f162a3893517e914d"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/sanitized-secret-check.json",
+      "bytes": 279,
+      "sha256": "12f92a82f8869fe161bf9c9ed20f074bfabd9a7b9931a3da5a1cdc2272083178"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-06/typecheck.txt",
+      "bytes": 57,
+      "sha256": "25dcb26872276a1ee654f01903914f6e704d3607dd11d7a8240136bdf230dc92"
+    },
+    {
+      "path": "output/pdf/Auditoria_Mensajeria_AshaKids_2026-10-09-06.pdf",
+      "bytes": 95407,
+      "sha256": "db87f1751d8e3460f68ad868340cb86fcf566e5d883f7f7e76a27ed75e86a7bc"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 """Renderiza el informe Markdown de auditoría; no consulta DB ni contiene secretos."""
 from pathlib import Path
+import argparse
 import re
 from xml.sax.saxutils import escape
 
@@ -10,13 +11,14 @@ from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak,
+    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak, Image,
 )
 
 ROOT = Path(__file__).resolve().parents[2]
 SOURCE = ROOT / "docs" / "auditoria-backend-2026-10-08.md"
 OUTPUT = ROOT / "output" / "pdf" / "Auditoria_Backend_AshaKids_2026-10-08.pdf"
 FONT_DIR = Path("C:/Windows/Fonts")
+REPORT_DATE = '08 OCT 2026'
 pdfmetrics.registerFont(TTFont("Audit", str(FONT_DIR / "arial.ttf")))
 pdfmetrics.registerFont(TTFont("AuditBold", str(FONT_DIR / "arialbd.ttf")))
 pdfmetrics.registerFontFamily("Audit", normal="Audit", bold="AuditBold", italic="Audit", boldItalic="AuditBold")
@@ -33,6 +35,7 @@ STYLES = {
 
 
 def inline(text):
+    text = re.sub(r'\[([^\]]+)\]\(([^)]+)\)', r'\1 (\2)', text)
     text = escape(text)
     text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
     return text.replace("`", "")
@@ -49,8 +52,10 @@ def table(lines):
         widths = [width * .46, width * .09, width * .45]
     elif rows[0][0] == "Prioridad":
         widths = [width * .13, width * .37, width * .50]
-    else:
+    elif count == 3:
         widths = [width * .27, width * .29, width * .44]
+    else:
+        widths = [width / count] * count
     data = [[Paragraph(inline(cell), STYLES["th" if i == 0 else "cell"]) for cell in row] for i, row in enumerate(rows)]
     block = Table(data, colWidths=widths, repeatRows=1, hAlign="LEFT")
     block.setStyle(TableStyle([
@@ -73,7 +78,7 @@ def page(canvas, doc):
     canvas.setFillColor(GRAY)
     canvas.drawString(44, height-37, "ASHAKids  /  INGENIERÍA Y CALIDAD")
     canvas.setFont("Audit", 8)
-    canvas.drawRightString(width-44, height-37, "08 OCT 2026")
+    canvas.drawRightString(width-44, height-37, REPORT_DATE)
     canvas.setStrokeColor(colors.HexColor("#C9DADD"))
     canvas.line(44, 38, width-44, 38)
     canvas.drawString(44, 24, "Auditoría técnica | Datos sintéticos en pruebas | Sin secretos")
@@ -92,6 +97,15 @@ def build():
             continue
         if line == "<!-- pagebreak -->":
             story.append(PageBreak())
+        elif line.startswith('!['):
+            match = re.fullmatch(r'!\[([^\]]*)\]\(([^)]+)\)', line)
+            if not match:
+                raise ValueError(f'Invalid evidence image: {line}')
+            picture = Image(str((SOURCE.parent / match.group(2)).resolve()))
+            scale = min((A4[0] - 88) / picture.imageWidth, 550 / picture.imageHeight)
+            picture.drawWidth = picture.imageWidth * scale
+            picture.drawHeight = picture.imageHeight * scale
+            story.extend([picture, Spacer(1, 6), Paragraph(inline(match.group(1)), STYLES['body'])])
         elif line.startswith("# "):
             story.append(Paragraph(inline(line[2:]), STYLES["title"]))
         elif line.startswith("## "):
@@ -113,4 +127,10 @@ def build():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--source', type=Path, default=SOURCE)
+    parser.add_argument('--output', type=Path, default=OUTPUT)
+    parser.add_argument('--date', default=REPORT_DATE)
+    args = parser.parse_args()
+    SOURCE, OUTPUT, REPORT_DATE = args.source.resolve(), args.output.resolve(), args.date
     build()

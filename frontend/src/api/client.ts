@@ -4,8 +4,9 @@
  */
 
 const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL ||
-    (import.meta.env.DEV ? "http://localhost:8000/api/v1" : "/api/v1")).replace(/\/+$/, "");
+  (import.meta.env.MODE === "test"
+    ? "http://localhost:8000/api/v1"
+    : (import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || "/api/v1")).replace(/\/+$/, "");
 
 export class ApiError extends Error {
   status: number;
@@ -21,7 +22,7 @@ export class ApiError extends Error {
 
 export type QueryParams = Record<string, string | number | boolean | undefined | null>;
 export type Page<T> = { items: T[]; total: number };
-export type ApiOptions = RequestInit & { params?: QueryParams; paginated?: boolean };
+export type ApiOptions = RequestInit & { params?: QueryParams; paginated?: boolean; pdf?: boolean };
 let identityVersion = 0;
 export function invalidateIdentityRequests() { identityVersion++; }
 
@@ -30,7 +31,7 @@ async function request<T>(
   options: ApiOptions = {}
 ): Promise<T> {
   const version = identityVersion;
-  const { params, paginated, ...init } = options;
+  const { params, paginated, pdf, ...init } = options;
   const search = new URLSearchParams();
   Object.entries(params ?? {}).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") search.set(key, String(value));
@@ -41,7 +42,7 @@ async function request<T>(
 
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    Accept: "application/json",
+    Accept: pdf ? "application/pdf" : "application/json",
     ...options.headers,
   };
 
@@ -54,6 +55,17 @@ async function request<T>(
   try {
     const response = await fetch(`${url}${search.size ? `${url.includes("?") ? "&" : "?"}${search}` : ""}`, config);
     if (version !== identityVersion) throw new DOMException("Cuenta cambiada", "AbortError");
+
+    if (pdf && response.ok) {
+      if (response.headers.get('Content-Type')?.split(';')[0].trim().toLowerCase() !== 'application/pdf') {
+        throw new ApiError('El servidor no devolvió un PDF válido. Intenta descargarlo nuevamente.', 502);
+      }
+      const bytes = await response.arrayBuffer();
+      const signature = String.fromCharCode(...new Uint8Array(bytes).slice(0, 5));
+      if (version !== identityVersion || init.signal?.aborted) throw new DOMException("Cuenta cambiada o descarga cancelada", "AbortError");
+      if (signature !== '%PDF-') throw new ApiError('El archivo recibido no es un PDF válido.', 502);
+      return new Blob([bytes], { type: 'application/pdf' }) as T;
+    }
 
     if (response.status === 204) {
       return {} as T;
@@ -92,6 +104,8 @@ async function request<T>(
 }
 
 export const apiClient = {
+  pdf: (endpoint: string, signal?: AbortSignal) =>
+    request<Blob>(endpoint, { method: 'GET', signal, pdf: true }),
   get: <T>(endpoint: string, options?: ApiOptions) =>
     request<T>(endpoint, { ...options, method: "GET" }),
   page: <T>(endpoint: string, params?: QueryParams, signal?: AbortSignal) =>

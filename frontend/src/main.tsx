@@ -5,6 +5,6 @@ import "@/Index.css";
 
 createRoot(document.getElementById("root")!).render(
   <AppProviders>
-      <App />
+    <App />
   </AppProviders>
 );

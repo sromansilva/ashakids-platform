@@ -1,174 +1,41 @@
-import { usePadreConfig } from "@/pages/padre/settings/usePadreConfig";
-import { PadreConfigPrivacidad } from "@/pages/padre/settings/PadreConfigPrivacidad";
-import { PadreConfigShowAddChildModal } from "@/pages/padre/settings/PadreConfigShowAddChildModal";
-import { PadreConfigSeguridad } from "@/pages/padre/settings/PadreConfigSeguridad";
-import { PadreConfigShow2FA } from "@/pages/padre/settings/PadreConfigShow2FA";
-import { PadreConfigNotificaciones } from "@/pages/padre/settings/PadreConfigNotificaciones";
-import { PadreConfigCuenta } from "@/pages/padre/settings/PadreConfigCuenta";
-import { PadreConfigEditChild } from "@/pages/padre/settings/PadreConfigEditChild";
-import { PadreConfigHijos } from "@/pages/padre/settings/PadreConfigHijos";
-import { PadreConfigShowDownloadModal } from "@/pages/padre/settings/PadreConfigShowDownloadModal";
-import { PadreConfigShowDeleteAccount } from "@/pages/padre/settings/PadreConfigShowDeleteAccount";
-import { PadreConfigShowPwConfirmModal } from "@/pages/padre/settings/PadreConfigShowPwConfirmModal";
-import { PadreConfigShowPhotoModal } from "@/pages/padre/settings/PadreConfigShowPhotoModal";
-import { PadreConfigDeleteChild } from "@/pages/padre/settings/PadreConfigDeleteChild";
-import { X, CheckCircle } from "lucide-react";
-import { B } from "@/theme/brand/B";
+import { usePadreConfig } from "./usePadreConfig";
+import { useRoleProfile } from "@/hooks/useRoleProfile";
+import { PadreConfigHijos } from "./PadreConfigHijos";
+import { PadreConfigShowAddChildModal } from "./PadreConfigShowAddChildModal";
+import { PadreConfigEditChild } from "./PadreConfigEditChild";
+import { PadreConfigDeleteChild } from "./PadreConfigDeleteChild";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 import { Btn } from "@/components/common/Btn";
-import { Crd } from "@/components/common/Crd";
 
 export function PadreConfig(props: Parameters<typeof usePadreConfig>[0]) {
-const { onNameChange, configGo, padrePlan, tab, setTab, toast, setToast, showToast, nombre, setNombre, email, setEmail, tel, setTel, ciudad, setCiudad, showPhotoModal, setShowPhotoModal, selectedAvatar, setSelectedAvatar, userAvatarOptions, showPwConfirmModal, setShowPwConfirmModal, pwConfirmInput, setPwConfirmInput, childList, setChildList, showAddChildModal, setShowAddChildModal, showPlanUpgradeModal, setShowPlanUpgradeModal, editChild, setEditChild, deleteChild, setDeleteChild, newCN, setNewCN, newCA, setNewCA, newCS, setNewCS, newBirth, setNewBirth, newAvatar, setNewAvatar, avatarOptions, notifs, setNotifs, toggleN, consentsPriv, setConsentsPriv, toggleConsentsPriv, showRevokeOptional, setShowRevokeOptional, showDownloadModal, setShowDownloadModal, downloadSent, setDownloadSent, accountStatus, setAccountStatus, showDeactivateConfirm, setShowDeactivateConfirm, showReactivateFlow, setShowReactivateFlow, reactivateCode, setReactivateCode, pwCurrent, setPwCurrent, pwNew, setPwNew, pwConfirm, setPwConfirm, pwSaving, handleSavePassword, show2FA, setShow2FA, twoFADone, setTwoFADone, showDeleteAccount, setShowDeleteAccount, deleteConfirm, setDeleteConfirm, tabs } = usePadreConfig(props);
-return (
-    <div
-      className="p-4 sm:p-6 max-w-4xl"
-      style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}
-    >
-      {/* Toast */}
-      {toast && (
-        <div
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3.5 rounded-2xl shadow-2xl text-white text-sm font-bold"
-          style={{
-            background:
-              "linear-gradient(135deg,#059669,#0D9488)",
-          }}
-        >
-          <CheckCircle size={16} /> {toast}
-        </div>
-      )}
-
-      {/* Avatar picker modal */}
-      {showPhotoModal && (
-        <PadreConfigShowPhotoModal setShowPhotoModal={setShowPhotoModal} selectedAvatar={selectedAvatar} userAvatarOptions={userAvatarOptions} setSelectedAvatar={setSelectedAvatar} showToast={showToast} />
-      )}
-
-      {/* Password confirmation modal */}
-      {showPwConfirmModal && (
-        <PadreConfigShowPwConfirmModal setShowPwConfirmModal={setShowPwConfirmModal} setPwConfirmInput={setPwConfirmInput} pwConfirmInput={pwConfirmInput} onNameChange={onNameChange} nombre={nombre} showToast={showToast} />
-      )}
-
-      {/* Plan upgrade modal */}
-      {showPlanUpgradeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowPlanUpgradeModal(false)} />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E5F4]">
-              <h2 className="font-extrabold text-[#1C1135]">Añade más perfiles con el Plan Familia</h2>
-              <button onClick={() => setShowPlanUpgradeModal(false)} className="p-2 rounded-xl hover:bg-violet-50"><X size={18} /></button>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-[#7C6F9A] font-medium mb-5 leading-relaxed">
-                Tu Plan Exploración permite administrar un perfil infantil. Con el Plan Familia puedes añadir hijos ilimitados y acceder a más herramientas de acompañamiento.
-              </p>
-              <div className="rounded-2xl p-4 mb-5" style={{ background: B.violetLight }}>
-                <p className="text-xs font-extrabold text-violet-700 mb-3">✨ Plan Familia incluye:</p>
-                {["Hijos ilimitados", "Mundo ASHA completo", "Reportes completos", "Prioridad en agenda", "Todas las funcionalidades familiares disponibles"].map(f => (
-                  <div key={f} className="flex items-center gap-2 mb-2">
-                    <CheckCircle size={13} style={{ color: B.violet }} />
-                    <span className="text-xs font-medium text-[#7C6F9A]">{f}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="text-xs text-center font-medium mb-4" style={{ color: B.textMuted }}>Datos simulados para demostración · Precios: Por definir</p>
-              <Btn variant="cta" className="w-full justify-center" onClick={() => { setShowPlanUpgradeModal(false); if (configGo) configGo("public/planes"); }}>
-                Conocer Plan Familia
-              </Btn>
-              <button onClick={() => setShowPlanUpgradeModal(false)} className="w-full mt-2 text-xs font-bold text-[#9E95B7] py-2 hover:text-[#7C6F9A] transition-colors">
-                Ahora no
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Add child modal */}
-      {showAddChildModal && (
-        <PadreConfigShowAddChildModal setShowAddChildModal={setShowAddChildModal} setNewCN={setNewCN} setNewBirth={setNewBirth} setNewAvatar={setNewAvatar} newAvatar={newAvatar} avatarOptions={avatarOptions} newCN={newCN} newBirth={newBirth} setNewCA={setNewCA} newCA={newCA} setChildList={setChildList} showToast={showToast} />
-      )}
-
-      {/* Edit child modal */}
-      {editChild && (
-        <PadreConfigEditChild setEditChild={setEditChild} editChild={editChild} setChildList={setChildList} showToast={showToast} />
-      )}
-
-      {/* Delete child confirm */}
-      {deleteChild && (
-        <PadreConfigDeleteChild setDeleteChild={setDeleteChild} deleteChild={deleteChild} setChildList={setChildList} showToast={showToast} />
-      )}
-
-      {/* Download data modal */}
-      {showDownloadModal && (
-        <PadreConfigShowDownloadModal setShowDownloadModal={setShowDownloadModal} setDownloadSent={setDownloadSent} downloadSent={downloadSent} />
-      )}
-
-      {/* 2FA modal */}
-      {show2FA && (
-        <PadreConfigShow2FA setShow2FA={setShow2FA} setTwoFADone={setTwoFADone} twoFADone={twoFADone} showToast={showToast} />
-      )}
-
-      {/* Delete account confirm */}
-      {showDeleteAccount && (
-        <PadreConfigShowDeleteAccount setShowDeleteAccount={setShowDeleteAccount} setDeleteConfirm={setDeleteConfirm} deleteConfirm={deleteConfirm} showToast={showToast} />
-      )}
-
-      <div className="mb-6">
-        <h1 className="text-2xl font-black text-[#1C1135]">
-          Configuración
-        </h1>
-        <p className="text-sm text-[#7C6F9A] font-medium">
-          Gestiona tu cuenta y preferencias.
-        </p>
-      </div>
-
-      <div className="grid lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="flex lg:flex-col gap-2 flex-wrap lg:flex-nowrap">
-          {tabs.map((t) => (
-            <button
-              key={t.key}
-              onClick={() => setTab(t.key)}
-              className="flex items-center gap-2 px-3 py-2.5 rounded-2xl text-sm font-bold transition-all text-left"
-              style={{
-                background: tab === t.key ? B.violet : "white",
-                color: tab === t.key ? "white" : B.textMid,
-                border: `1.5px solid ${tab === t.key ? B.violet : B.border}`,
-              }}
-            >
-              <span>{t.icon}</span> {t.label}
-            </button>
-          ))}
-        </div>
-
-        <div className="lg:col-span-3">
-          <Crd className="p-6">
-            {/* ── Cuenta ── */}
-            {tab === "cuenta" && (
-              <PadreConfigCuenta setShowPhotoModal={setShowPhotoModal} selectedAvatar={selectedAvatar} nombre={nombre} setNombre={setNombre} email={email} setEmail={setEmail} tel={tel} setTel={setTel} ciudad={ciudad} setCiudad={setCiudad} showToast={showToast} setShowPwConfirmModal={setShowPwConfirmModal} />
-            )}
-
-            {/* ── Hijos ── */}
-            {tab === "hijos" && (
-              <PadreConfigHijos padrePlan={padrePlan} childList={childList} setShowPlanUpgradeModal={setShowPlanUpgradeModal} setShowAddChildModal={setShowAddChildModal} setEditChild={setEditChild} setDeleteChild={setDeleteChild} />
-            )}
-
-            {/* ── Notificaciones ── */}
-            {tab === "notificaciones" && (
-              <PadreConfigNotificaciones notifs={notifs} toggleN={toggleN} showToast={showToast} />
-            )}
-
-            {/* ── Privacidad ── */}
-            {tab === "privacidad" && (
-              <PadreConfigPrivacidad toggleConsentsPriv={toggleConsentsPriv} showToast={showToast} consentsPriv={consentsPriv} setConsentsPriv={setConsentsPriv} accountStatus={accountStatus} setShowDeactivateConfirm={setShowDeactivateConfirm} setShowReactivateFlow={setShowReactivateFlow} setShowDownloadModal={setShowDownloadModal} showDeactivateConfirm={showDeactivateConfirm} setAccountStatus={setAccountStatus} showReactivateFlow={showReactivateFlow} reactivateCode={reactivateCode} setReactivateCode={setReactivateCode} />
-            )}
-
-            {/* ── Seguridad ── */}
-            {tab === "seguridad" && (
-              <PadreConfigSeguridad pwCurrent={pwCurrent} setPwCurrent={setPwCurrent} pwNew={pwNew} setPwNew={setPwNew} pwConfirm={pwConfirm} setPwConfirm={setPwConfirm} setShow2FA={setShow2FA} setShowDeleteAccount={setShowDeleteAccount} showToast={showToast} handleSavePassword={handleSavePassword} pwSaving={pwSaving} />
-            )}
-          </Crd>
-        </div>
-      </div>
+  const state = usePadreConfig(props);
+  const profile = useRoleProfile();
+  const { tab, setTab, toast, childList, setShowAddChildModal, setEditChild, setDeleteChild, editChild, deleteChild } = state;
+  return <section className="p-4 sm:p-6 max-w-4xl text-[#1C1135]">
+    <h1 className="text-2xl font-black">Configuración</h1>
+    <p className="text-base text-[#4B4264] mt-2 mb-6">Consulta tu cuenta y gestiona los perfiles de tus hijos.</p>
+    {toast && <p role="status" className="bg-violet-50 rounded-2xl p-4 mb-4">{toast}</p>}
+    <nav aria-label="Secciones de configuración" className="flex flex-wrap gap-2 mb-6">
+      {state.tabs.map(t => <button key={t.key} onClick={() => setTab(t.key)} aria-pressed={tab === t.key} className="px-4 py-3 rounded-2xl font-bold border focus-visible:outline-violet-700" style={{background: tab === t.key ? "#6D28D9" : "white", color: tab === t.key ? "white" : "#4B4264", borderColor: "#E8E5F4"}}>{t.label}</button>)}
+    </nav>
+    <div className="bg-white border border-[#E8E5F4] rounded-2xl p-5">
+      {tab === "cuenta" && <>
+        <h2 className="text-xl font-extrabold mb-4">Datos de la cuenta</h2>
+        <RemoteFeedback pending={profile.isPending} error={profile.error} retry={() => void profile.refetch()} />
+        {!profile.isPending && !profile.error && profile.data?.user && <dl className="space-y-4">
+          <div><dt className="text-sm font-bold text-[#4B4264]">Nombre</dt><dd className="text-base break-words">{profile.data.user.nombres} {profile.data.user.apellidos}</dd></div>
+          <div><dt className="text-sm font-bold text-[#4B4264]">Correo</dt><dd className="text-base break-all">{profile.data.user.email}</dd></div>
+          <div><dt className="text-sm font-bold text-[#4B4264]">Código de usuario</dt><dd className="text-base break-all">{profile.data.user.codigo_usuario}</dd></div>
+        </dl>}
+        <p className="text-base mt-5 text-[#4B4264]">Para cambiar tus datos de cuenta, contacta a administración.</p>
+      </>}
+      {tab === "hijos" && <PadreConfigHijos padrePlan="familia" childList={childList} setShowPlanUpgradeModal={state.setShowPlanUpgradeModal} setShowAddChildModal={setShowAddChildModal} setEditChild={setEditChild} setDeleteChild={setDeleteChild} />}
+      {tab === "notificaciones" && <><h2 className="text-xl font-extrabold mb-3">Notificaciones</h2><p className="text-base text-[#4B4264] leading-relaxed">Las preferencias y el envío de avisos todavía no están disponibles. Consulta tu agenda y los reportes para conocer los registros actuales.</p><Btn className="mt-4" onClick={() => props.go?.("padre/agenda")}>Consultar agenda</Btn></>}
+      {tab === "privacidad" && <><h2 className="text-xl font-extrabold mb-3">Privacidad</h2><p className="text-base text-[#4B4264] leading-relaxed">No hay consentimientos registrados desde esta interfaz. La descarga de datos personales, eliminación y reactivación de cuentas están pendientes.</p><Btn className="mt-4" onClick={() => props.go?.("padre/consentimiento")}>Consultar estado de consentimientos</Btn></>}
+      {tab === "seguridad" && <><h2 className="text-xl font-extrabold mb-3">Seguridad de la cuenta</h2><p className="text-base text-[#4B4264] leading-relaxed">El cambio de contraseña se gestiona con administración. La recuperación por correo y la verificación en dos pasos todavía no están disponibles.</p></>}
     </div>
-  );
-
+    {state.showAddChildModal && <PadreConfigShowAddChildModal setShowAddChildModal={setShowAddChildModal} setNewCN={state.setNewCN} setNewCA={state.setNewCA} newCA={state.newCA} setNewBirth={state.setNewBirth} setNewAvatar={state.setNewAvatar} newAvatar={state.newAvatar} avatarOptions={state.avatarOptions} newCN={state.newCN} newBirth={state.newBirth} setChildList={state.setChildList} showToast={state.showToast} />}
+    {editChild && <PadreConfigEditChild editChild={editChild} setEditChild={setEditChild} setChildList={state.setChildList} showToast={state.showToast} />}
+    {deleteChild && <PadreConfigDeleteChild deleteChild={deleteChild} setDeleteChild={setDeleteChild} setChildList={state.setChildList} showToast={state.showToast} />}
+  </section>;
 }

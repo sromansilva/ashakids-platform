@@ -1,0 +1,593 @@
+{
+  "postgresql": "PostgreSQL 17.6 on x86_64-windows, compiled by msvc-19.44.35213, 64-bit",
+  "tables": [
+    "actividades",
+    "administradores",
+    "auditoria_cambios",
+    "conversaciones",
+    "evaluaciones_ia",
+    "expedientes",
+    "logros",
+    "mensaje_adjuntos",
+    "mensajes",
+    "mundos",
+    "niveles",
+    "objetivos",
+    "pacientes",
+    "perfil_logros",
+    "perfiles",
+    "reportes_sesion",
+    "reservas",
+    "resultados_nivel",
+    "roles",
+    "sesiones",
+    "sesiones_autenticacion",
+    "terapeutas",
+    "tratamientos",
+    "tutores",
+    "usuario_roles",
+    "usuarios"
+  ],
+  "constraints": [
+    {
+      "conname": "actividades_pkey",
+      "contype": "p",
+      "tabla": "actividades",
+      "regla": "PRIMARY KEY (id_actividad)"
+    },
+    {
+      "conname": "administradores_id_usuario_key",
+      "contype": "u",
+      "tabla": "administradores",
+      "regla": "UNIQUE (id_usuario)"
+    },
+    {
+      "conname": "administradores_pkey",
+      "contype": "p",
+      "tabla": "administradores",
+      "regla": "PRIMARY KEY (id_administrador)"
+    },
+    {
+      "conname": "auditoria_cambios_pkey",
+      "contype": "p",
+      "tabla": "auditoria_cambios",
+      "regla": "PRIMARY KEY (id_auditoria)"
+    },
+    {
+      "conname": "chk_logros_experiencia",
+      "contype": "c",
+      "tabla": "logros",
+      "regla": "CHECK ((experiencia_logro >= 0))"
+    },
+    {
+      "conname": "chk_mensaje_adjuntos_duracion",
+      "contype": "c",
+      "tabla": "mensaje_adjuntos",
+      "regla": "CHECK (((duracion_segundos IS NULL) OR (duracion_segundos >= 0)))"
+    },
+    {
+      "conname": "chk_mensaje_adjuntos_tamano",
+      "contype": "c",
+      "tabla": "mensaje_adjuntos",
+      "regla": "CHECK ((tamano_bytes >= 0))"
+    },
+    {
+      "conname": "chk_niveles_orden",
+      "contype": "c",
+      "tabla": "niveles",
+      "regla": "CHECK ((orden > 0))"
+    },
+    {
+      "conname": "chk_perfiles_actividades",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((actividades_desarrolladas_total >= 0))"
+    },
+    {
+      "conname": "chk_perfiles_experiencia",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((experiencia >= 0))"
+    },
+    {
+      "conname": "chk_perfiles_nivel",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((nivel >= 1))"
+    },
+    {
+      "conname": "chk_perfiles_objetivos_completados",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((objetivos_completados >= 0))"
+    },
+    {
+      "conname": "chk_perfiles_objetivos_totales",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((objetivos_totales >= 0))"
+    },
+    {
+      "conname": "chk_perfiles_progreso",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK (((progreso >= (0)::numeric) AND (progreso <= (100)::numeric)))"
+    },
+    {
+      "conname": "chk_perfiles_racha",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((racha_dias >= 0))"
+    },
+    {
+      "conname": "chk_perfiles_sesiones",
+      "contype": "c",
+      "tabla": "perfiles",
+      "regla": "CHECK ((sesiones_totales >= 0))"
+    },
+    {
+      "conname": "chk_reservas_fechas",
+      "contype": "c",
+      "tabla": "reservas",
+      "regla": "CHECK ((fecha_hora_fin > fecha_hora_inicio))"
+    },
+    {
+      "conname": "chk_resultados_estrellas",
+      "contype": "c",
+      "tabla": "resultados_nivel",
+      "regla": "CHECK (((estrellas_obtenidas IS NULL) OR (estrellas_obtenidas >= 0)))"
+    },
+    {
+      "conname": "chk_resultados_numero_intento",
+      "contype": "c",
+      "tabla": "resultados_nivel",
+      "regla": "CHECK ((numero_intento > 0))"
+    },
+    {
+      "conname": "chk_resultados_puntaje",
+      "contype": "c",
+      "tabla": "resultados_nivel",
+      "regla": "CHECK (((puntaje IS NULL) OR (puntaje >= 0)))"
+    },
+    {
+      "conname": "chk_sesiones_fechas",
+      "contype": "c",
+      "tabla": "sesiones",
+      "regla": "CHECK (((fecha_hora_fin_real IS NULL) OR (fecha_hora_inicio_real IS NULL) OR (fecha_hora_fin_real > fecha_hora_inicio_real)))"
+    },
+    {
+      "conname": "chk_terapeutas_experiencia",
+      "contype": "c",
+      "tabla": "terapeutas",
+      "regla": "CHECK (((anios_experiencia IS NULL) OR (anios_experiencia >= 0)))"
+    },
+    {
+      "conname": "chk_tratamientos_sesiones",
+      "contype": "c",
+      "tabla": "tratamientos",
+      "regla": "CHECK (((sesiones_recomendadas IS NULL) OR (sesiones_recomendadas >= 0)))"
+    },
+    {
+      "conname": "conversaciones_pkey",
+      "contype": "p",
+      "tabla": "conversaciones",
+      "regla": "PRIMARY KEY (id_conversacion)"
+    },
+    {
+      "conname": "evaluaciones_ia_pkey",
+      "contype": "p",
+      "tabla": "evaluaciones_ia",
+      "regla": "PRIMARY KEY (id_evaluacion_ia)"
+    },
+    {
+      "conname": "expedientes_id_paciente_key",
+      "contype": "u",
+      "tabla": "expedientes",
+      "regla": "UNIQUE (id_paciente)"
+    },
+    {
+      "conname": "expedientes_pkey",
+      "contype": "p",
+      "tabla": "expedientes",
+      "regla": "PRIMARY KEY (id_expediente)"
+    },
+    {
+      "conname": "fk_actividades_paciente",
+      "contype": "f",
+      "tabla": "actividades",
+      "regla": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_administradores_usuario",
+      "contype": "f",
+      "tabla": "administradores",
+      "regla": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_auditoria_usuario_actor",
+      "contype": "f",
+      "tabla": "auditoria_cambios",
+      "regla": "FOREIGN KEY (id_usuario_actor) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "conname": "fk_conversaciones_terapeuta",
+      "contype": "f",
+      "tabla": "conversaciones",
+      "regla": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "conname": "fk_conversaciones_tutor",
+      "contype": "f",
+      "tabla": "conversaciones",
+      "regla": "FOREIGN KEY (id_tutor) REFERENCES tutores(id_tutor) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_evaluaciones_ia_paciente",
+      "contype": "f",
+      "tabla": "evaluaciones_ia",
+      "regla": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_evaluaciones_ia_reporte",
+      "contype": "f",
+      "tabla": "evaluaciones_ia",
+      "regla": "FOREIGN KEY (id_reporte_sesion) REFERENCES reportes_sesion(id_reporte_sesion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_evaluaciones_ia_resultado",
+      "contype": "f",
+      "tabla": "evaluaciones_ia",
+      "regla": "FOREIGN KEY (id_resultado_nivel) REFERENCES resultados_nivel(id_resultado_nivel) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "conname": "fk_expedientes_paciente",
+      "contype": "f",
+      "tabla": "expedientes",
+      "regla": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_mensaje_adjuntos_mensaje",
+      "contype": "f",
+      "tabla": "mensaje_adjuntos",
+      "regla": "FOREIGN KEY (id_mensaje) REFERENCES mensajes(id_mensaje) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_mensajes_conversacion",
+      "contype": "f",
+      "tabla": "mensajes",
+      "regla": "FOREIGN KEY (id_conversacion) REFERENCES conversaciones(id_conversacion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_mensajes_usuario_emisor",
+      "contype": "f",
+      "tabla": "mensajes",
+      "regla": "FOREIGN KEY (id_usuario_emisor) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "conname": "fk_mundos_actividad",
+      "contype": "f",
+      "tabla": "mundos",
+      "regla": "FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_niveles_mundo",
+      "contype": "f",
+      "tabla": "niveles",
+      "regla": "FOREIGN KEY (id_mundo) REFERENCES mundos(id_mundo) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_objetivos_actividad",
+      "contype": "f",
+      "tabla": "objetivos",
+      "regla": "FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_pacientes_tutor",
+      "contype": "f",
+      "tabla": "pacientes",
+      "regla": "FOREIGN KEY (id_tutor) REFERENCES tutores(id_tutor) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_perfil_logros_logro",
+      "contype": "f",
+      "tabla": "perfil_logros",
+      "regla": "FOREIGN KEY (id_logro) REFERENCES logros(id_logro) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_perfil_logros_perfil",
+      "contype": "f",
+      "tabla": "perfil_logros",
+      "regla": "FOREIGN KEY (id_perfil) REFERENCES perfiles(id_perfil) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_perfiles_paciente",
+      "contype": "f",
+      "tabla": "perfiles",
+      "regla": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_reportes_sesion_sesion",
+      "contype": "f",
+      "tabla": "reportes_sesion",
+      "regla": "FOREIGN KEY (id_sesion) REFERENCES sesiones(id_sesion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_reservas_paciente",
+      "contype": "f",
+      "tabla": "reservas",
+      "regla": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_reservas_terapeuta",
+      "contype": "f",
+      "tabla": "reservas",
+      "regla": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_reservas_tratamiento",
+      "contype": "f",
+      "tabla": "reservas",
+      "regla": "FOREIGN KEY (id_tratamiento) REFERENCES tratamientos(id_tratamiento) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_resultados_nivel_nivel",
+      "contype": "f",
+      "tabla": "resultados_nivel",
+      "regla": "FOREIGN KEY (id_nivel) REFERENCES niveles(id_nivel) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_resultados_nivel_paciente",
+      "contype": "f",
+      "tabla": "resultados_nivel",
+      "regla": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_sesiones_auth_usuario",
+      "contype": "f",
+      "tabla": "sesiones_autenticacion",
+      "regla": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_sesiones_reserva",
+      "contype": "f",
+      "tabla": "sesiones",
+      "regla": "FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_terapeutas_usuario",
+      "contype": "f",
+      "tabla": "terapeutas",
+      "regla": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_tratamientos_expediente",
+      "contype": "f",
+      "tabla": "tratamientos",
+      "regla": "FOREIGN KEY (id_expediente) REFERENCES expedientes(id_expediente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_tratamientos_terapeuta",
+      "contype": "f",
+      "tabla": "tratamientos",
+      "regla": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_tutores_usuario",
+      "contype": "f",
+      "tabla": "tutores",
+      "regla": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "fk_usuario_roles_administrador",
+      "contype": "f",
+      "tabla": "usuario_roles",
+      "regla": "FOREIGN KEY (asignado_por) REFERENCES administradores(id_administrador) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "conname": "fk_usuario_roles_rol",
+      "contype": "f",
+      "tabla": "usuario_roles",
+      "regla": "FOREIGN KEY (id_rol) REFERENCES roles(id_rol) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "conname": "fk_usuario_roles_usuario",
+      "contype": "f",
+      "tabla": "usuario_roles",
+      "regla": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "conname": "logros_nombre_logro_key",
+      "contype": "u",
+      "tabla": "logros",
+      "regla": "UNIQUE (nombre_logro)"
+    },
+    {
+      "conname": "logros_pkey",
+      "contype": "p",
+      "tabla": "logros",
+      "regla": "PRIMARY KEY (id_logro)"
+    },
+    {
+      "conname": "mensaje_adjuntos_pkey",
+      "contype": "p",
+      "tabla": "mensaje_adjuntos",
+      "regla": "PRIMARY KEY (id_adjunto)"
+    },
+    {
+      "conname": "mensajes_pkey",
+      "contype": "p",
+      "tabla": "mensajes",
+      "regla": "PRIMARY KEY (id_mensaje)"
+    },
+    {
+      "conname": "mundos_pkey",
+      "contype": "p",
+      "tabla": "mundos",
+      "regla": "PRIMARY KEY (id_mundo)"
+    },
+    {
+      "conname": "niveles_pkey",
+      "contype": "p",
+      "tabla": "niveles",
+      "regla": "PRIMARY KEY (id_nivel)"
+    },
+    {
+      "conname": "objetivos_pkey",
+      "contype": "p",
+      "tabla": "objetivos",
+      "regla": "PRIMARY KEY (id_objetivo)"
+    },
+    {
+      "conname": "pacientes_pkey",
+      "contype": "p",
+      "tabla": "pacientes",
+      "regla": "PRIMARY KEY (id_paciente)"
+    },
+    {
+      "conname": "perfil_logros_pkey",
+      "contype": "p",
+      "tabla": "perfil_logros",
+      "regla": "PRIMARY KEY (id_perfil_logro)"
+    },
+    {
+      "conname": "perfiles_id_paciente_key",
+      "contype": "u",
+      "tabla": "perfiles",
+      "regla": "UNIQUE (id_paciente)"
+    },
+    {
+      "conname": "perfiles_pkey",
+      "contype": "p",
+      "tabla": "perfiles",
+      "regla": "PRIMARY KEY (id_perfil)"
+    },
+    {
+      "conname": "reportes_sesion_id_sesion_key",
+      "contype": "u",
+      "tabla": "reportes_sesion",
+      "regla": "UNIQUE (id_sesion)"
+    },
+    {
+      "conname": "reportes_sesion_pkey",
+      "contype": "p",
+      "tabla": "reportes_sesion",
+      "regla": "PRIMARY KEY (id_reporte_sesion)"
+    },
+    {
+      "conname": "reservas_pkey",
+      "contype": "p",
+      "tabla": "reservas",
+      "regla": "PRIMARY KEY (id_reserva)"
+    },
+    {
+      "conname": "resultados_nivel_pkey",
+      "contype": "p",
+      "tabla": "resultados_nivel",
+      "regla": "PRIMARY KEY (id_resultado_nivel)"
+    },
+    {
+      "conname": "roles_nombre_rol_key",
+      "contype": "u",
+      "tabla": "roles",
+      "regla": "UNIQUE (nombre_rol)"
+    },
+    {
+      "conname": "roles_pkey",
+      "contype": "p",
+      "tabla": "roles",
+      "regla": "PRIMARY KEY (id_rol)"
+    },
+    {
+      "conname": "sesiones_autenticacion_pkey",
+      "contype": "p",
+      "tabla": "sesiones_autenticacion",
+      "regla": "PRIMARY KEY (id_sesion_auth)"
+    },
+    {
+      "conname": "sesiones_id_reserva_key",
+      "contype": "u",
+      "tabla": "sesiones",
+      "regla": "UNIQUE (id_reserva)"
+    },
+    {
+      "conname": "sesiones_pkey",
+      "contype": "p",
+      "tabla": "sesiones",
+      "regla": "PRIMARY KEY (id_sesion)"
+    },
+    {
+      "conname": "terapeutas_id_usuario_key",
+      "contype": "u",
+      "tabla": "terapeutas",
+      "regla": "UNIQUE (id_usuario)"
+    },
+    {
+      "conname": "terapeutas_pkey",
+      "contype": "p",
+      "tabla": "terapeutas",
+      "regla": "PRIMARY KEY (id_terapeuta)"
+    },
+    {
+      "conname": "tratamientos_pkey",
+      "contype": "p",
+      "tabla": "tratamientos",
+      "regla": "PRIMARY KEY (id_tratamiento)"
+    },
+    {
+      "conname": "tutores_id_usuario_key",
+      "contype": "u",
+      "tabla": "tutores",
+      "regla": "UNIQUE (id_usuario)"
+    },
+    {
+      "conname": "tutores_pkey",
+      "contype": "p",
+      "tabla": "tutores",
+      "regla": "PRIMARY KEY (id_tutor)"
+    },
+    {
+      "conname": "uq_perfil_logro",
+      "contype": "u",
+      "tabla": "perfil_logros",
+      "regla": "UNIQUE (id_perfil, id_logro)"
+    },
+    {
+      "conname": "uq_usuario_rol",
+      "contype": "u",
+      "tabla": "usuario_roles",
+      "regla": "UNIQUE (id_usuario, id_rol)"
+    },
+    {
+      "conname": "usuario_roles_pkey",
+      "contype": "p",
+      "tabla": "usuario_roles",
+      "regla": "PRIMARY KEY (id_usuario_rol)"
+    },
+    {
+      "conname": "usuarios_codigo_usuario_key",
+      "contype": "u",
+      "tabla": "usuarios",
+      "regla": "UNIQUE (codigo_usuario)"
+    },
+    {
+      "conname": "usuarios_email_key",
+      "contype": "u",
+      "tabla": "usuarios",
+      "regla": "UNIQUE (email)"
+    },
+    {
+      "conname": "usuarios_pkey",
+      "contype": "p",
+      "tabla": "usuarios",
+      "regla": "PRIMARY KEY (id_usuario)"
+    }
+  ],
+  "counts": {
+    "usuarios": 5,
+    "pacientes": 1,
+    "tratamientos": 1,
+    "reservas": 1,
+    "sesiones": 1,
+    "reportes_sesion": 1
+  }
+}
