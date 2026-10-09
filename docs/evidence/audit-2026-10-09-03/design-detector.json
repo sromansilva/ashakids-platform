@@ -1,0 +1,22 @@
+[
+  {
+    "antipattern": "ai-color-palette",
+    "name": "AI color palette",
+    "description": "Purple/violet gradients and cyan-on-dark are the most recognizable tells of AI-generated UIs. A gradient in one of those hues is the tell on its own; flat neon ink on a dark ground is charged once a second tell hue joins it. Choose a distinctive, intentional palette.",
+    "severity": "warning",
+    "category": "slop",
+    "file": "C:\\Users\\piero\\Desktop\\ASHAKIDS\\frontend\\src\\components\\common\\FamilyTrackingPanel.tsx",
+    "line": 90,
+    "snippet": "text-violet-700 on heading"
+  },
+  {
+    "antipattern": "ai-color-palette",
+    "name": "AI color palette",
+    "description": "Purple/violet gradients and cyan-on-dark are the most recognizable tells of AI-generated UIs. A gradient in one of those hues is the tell on its own; flat neon ink on a dark ground is charged once a second tell hue joins it. Choose a distinctive, intentional palette.",
+    "severity": "warning",
+    "category": "slop",
+    "file": "C:\\Users\\piero\\Desktop\\ASHAKIDS\\frontend\\src\\components\\common\\FamilyTrackingPanel.tsx",
+    "line": 106,
+    "snippet": "text-violet-700 on heading"
+  }
+]

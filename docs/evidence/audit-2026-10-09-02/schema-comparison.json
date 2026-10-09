@@ -1,0 +1,59 @@
+{
+  "server_version_match": true,
+  "metadata": {
+    "tables": {
+      "shared_count": 26,
+      "local_count": 26,
+      "match": true,
+      "only_shared": [],
+      "only_local": []
+    },
+    "columns": {
+      "shared_count": 178,
+      "local_count": 178,
+      "match": true,
+      "only_shared": [],
+      "only_local": []
+    },
+    "constraints": {
+      "shared_count": 92,
+      "local_count": 92,
+      "match": true,
+      "only_shared": [],
+      "only_local": []
+    },
+    "indexes": {
+      "shared_count": 71,
+      "local_count": 71,
+      "match": true,
+      "only_shared": [],
+      "only_local": []
+    },
+    "policies": {
+      "shared_count": 0,
+      "local_count": 0,
+      "match": true,
+      "only_shared": [],
+      "only_local": []
+    }
+  },
+  "runtime_role_flags": {
+    "shared": {
+      "rolsuper": false,
+      "rolbypassrls": true,
+      "rolcreatedb": true,
+      "rolcreaterole": true
+    },
+    "local": {
+      "rolsuper": false,
+      "rolbypassrls": true,
+      "rolcreatedb": false,
+      "rolcreaterole": false
+    }
+  },
+  "ssl": {
+    "shared": true,
+    "local": false
+  },
+  "limits": "Same public structure/version; different infrastructure, privilege breadth and loopback TLS. No real rows copied."
+}

@@ -1,0 +1,24 @@
+{
+  "environment": "API8001/web5174/PG17.6 local6544; synthetic fixtures",
+  "kind": "manual browser observations, not automated E2E test count",
+  "viewports": [
+    "1366x900",
+    "390x844"
+  ],
+  "observations": [
+    "Family home and alternative tracking show persisted AUDIT02 report and authorized records.",
+    "World selector exposes only two own children by ID; second-child selection survives navigation/reload.",
+    "R proposal has eight levels requiring professional validation; progress is explicitly disconnected.",
+    "Worlds/progress entries have no invented stars, streak or assigned tasks.",
+    "Mobile children names/actions overlap fixed; final screenshot confirms separate rows.",
+    "Security/privacy/account flows explain pending capabilities and have no fake write forms.",
+    "Second child has no treatment/professional or reserve action; first child shows real local assignment.",
+    "Recovery has no email form/send action and returns to functional login.",
+    "Admin shows two active patients, five active accounts, one appointment today and no missing report.",
+    "Therapist shows one assigned patient, one appointment today and no missing report; reload preserves counts.",
+    "Other family world page is empty, without a fallback child or fictitious result.",
+    "Admin and worlds mobile document width is 390px without horizontal overflow in checked views.",
+    "Final desktop world screenshot is 1366x900; viewport override reset and family fixture restored."
+  ],
+  "limits": "Screenshots are visible scroll portions; no clinical mutations, new game or educational persistence."
+}

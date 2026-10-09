@@ -21,9 +21,27 @@ La API controla autenticación propia y autorización. Supabase aporta infraestr
 El login usa código de usuario y contraseña, verifica Argon2id y crea una sesión persistida. La cookie es HttpOnly. Los endpoints validan los roles PADRE, TERAPEUTA y ADMIN.
 
 ## Herramientas de conocimiento
+
+### Verificación descartable de fase 2 (2026-10-09)
+
+La auditoría 2026-10-09-01 ejecutó API local 8001, frontend 5174 y PostgreSQL 18 en 6543,
+con overrides de proceso, manteniendo el .env habitual. La migración explícita
+backend/scripts/migrations/001_paciente_avatar.sql alinea avatar_nombre con el modelo;
+el SQL inicial ya incluye el campo. No fue aplicada al servidor compartido ni se ejecuta al arrancar.
+Los scripts phase2_sandbox y phase2_verify_http son herramientas de fixtures, fuera del runtime.
+Las suites HTTP heredadas quedan deshabilitadas por defecto y exigen API/BD locales explícitas.
+Esto se añadió después de una ejecución inicial que alcanzó la API habitual; consultar el informe
+para el incidente y su revisión pendiente. No cambia el flujo de arquitectura existente.
 `tools/knowledge/` y `.agents/skills/graphify/` apoyan al equipo. Su entorno aislado `.venv-graphify/` y salidas `graphify-out/` son locales y regenerables. No se importan desde frontend o backend. El grafo describe estructura de código; no valida comportamiento ni sustituye pruebas o decisiones documentadas.
 
 ## Frontend modular — Tarea 1
+
+Actualización 2026-10-09-03: Centro Familiar y Mi Camino ASHA comparten FamilyTrackingPanel,
+useFamilyTracking y summarizeFamily. Consume contratos HTTP existentes y agrega por IDs;
+no usa niños de respaldo ni porcentajes clínicos inventados. Sesiones asistidas/reportes y
+hitos se derivan de registros. Selección por usuario en sessionStorage solo guarda ID validado
+contra pacientes autorizados; errores ocultan agregados cacheados. Decisión nueva: ADR 0004.
+Las entradas actuales ya no importan los fragmentos antiguos de demo de esas vistas.
 
 `App.tsx` únicamente exporta la composición del router. `AppProviders` monta BrowserRouter y AuthProvider; `AppRouter` declara los destinos; `RouteAccess` protege según sesión y rol; `PageFrame` selecciona el layout. `lazyPages` importa archivos de pantalla directamente, sin barrels que carguen roles completos.
 
@@ -71,3 +89,36 @@ Pruebas: `backend/requirements-dev.txt`, `pytest.ini`, fixtures de PostgreSQL lo
 con guardas por host/nombre de BD. No usar `.env` de Supabase para ejecutar pruebas de escritura.
 La suite heredada compartida requiere `ASHAKIDS_ALLOW_SHARED_DB_TESTS=1` y autorización explícita.
 Estados operativos, límites y decisiones: ADR 0003 e informe de auditoría.
+
+## Compatibilidad y entorno de verificación (2026-10-09-02)
+
+La lectura de Supabase observó PostgreSQL 17.6; esquema público 26 tablas, 178 columnas,
+92 restricciones y 71 índices. Se exportó solo estructura, se restauró en una BD local
+descartable y se verificó equivalencia de metadatos. No se copiaron filas ni se ejecutaron
+migraciones compartidas. Modelos alineados en token_hash, progreso decimal y campos de logros.
+
+El runtime compartido usa BYPASSRLS: autorización propia de FastAPI sigue siendo necesaria.
+La réplica usa un rol no superusuario con BYPASSRLS y sin CREATEDB/CREATEROLE. Las fixtures
+usan ASHAKIDS_TEST_ADMIN_DATABASE_URL opcional exclusivamente para reiniciar datos y
+secuencias; ASHAKIDS_TEST_DATABASE_URL se usa para las operaciones de la aplicación.
+Las dos URL deben tener mismo host/puerto/BD local ashakids_test_* y no admitir parámetros
+de redirección. No asignar la conexión propietaria a DATABASE_URL de la API.
+
+Esto describe el ensayo actual; no adopta todavía un proveedor de hosting ni certifica
+SSL, dominios o pooling futuros. Evidencia: auditoría 2026-10-09-02 y carpeta correspondiente.
+
+## Coherencia del núcleo y etapa educativa (2026-10-09-04)
+
+ADR0005: OperationalDashboard agrega por rol las listas autorizadas; solo ADMIN consulta
+cuentas. PadreRecorrido/PadreSeguimiento reutilizan seguimiento persistente; la vista de
+profesionales procede de tratamientos, y reserva mediante BookingDialog existente.
+Configuración conserva lectura de identidad/CRUD de hijos, sin límite de plan. Capacidades
+sin contrato y acceso público se explican sin éxitos ficticios; alta/credenciales por ADMIN.
+
+useSelectedFamilyPatient comparte selección por usuario/ID autorizado con seguimiento y
+Mundo ASHA. Catálogo learningWorlds es borrador de habilidades/niveles, no una prescripción.
+deriveWorldProgress acepta un contrato de lectura FUTURO con resultados ya validados y
+calcula prerrequisitos/repetición/conflictos/versiones. No existe endpoint ni escritura
+educativa en este corte. Nunca confiar en passed/verifiedBy enviados por la familia: el
+backend futuro deberá autorizar y evaluar. Ver MUNDO_ASHA_PLAN.md para la etapa independiente.
+Los prototipos no conceden progreso clínico ni educativo persistente.

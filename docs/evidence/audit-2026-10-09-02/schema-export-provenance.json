@@ -1,0 +1,11 @@
+{
+  "database_version": "17.6",
+  "pg_dump_version": "18.0",
+  "schema_only": true,
+  "schema": "public",
+  "no_owner": true,
+  "no_privileges": true,
+  "source_data_rows_exported": 0,
+  "contains_insert_or_copy": false,
+  "sha256": "e7d4afe69409bba6f845a46326f3b85a83187ac0822bb63224422adcd6b7af6f"
+}
