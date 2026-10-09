@@ -2,7 +2,9 @@
 
 Plazo confirmado: **2026-10-09 18:00 America/Lima**.
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base común: dev.
-La copia local continúa en piero-dev; no se cambió de rama ni se publicó este trabajo.
+El corte05 se desarrolló en dev, código V05_Reportes_Exportacion_PDF; evidencia/documentación
+V06_Auditoria_Reportes_PDF. Verificar PR/V07_Integracion_Reportes_PDF y SHA remoto antes
+de preparar la entrega. Los apartados históricos conservan su estado de publicación original.
 
 ## Requisitos recibidos del profesor
 

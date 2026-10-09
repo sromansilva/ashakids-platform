@@ -1,12 +1,46 @@
 # ASHAKids — Contexto maestro progresivo
 
-Actualización de alcance y coordinación: 2026-10-09. Base inspeccionada: commit 82f868f
-(rama local piero-dev, basada en dev). El usuario confirma dev como base compartida del equipo;
-no se ha vinculado el PDF a un SHA declarado por su autor.
+Actualización: 2026-10-09. Base compartida del equipo: dev. Corte vigente identificado abajo;
+los apartados anteriores conservan su entorno y SHA históricos. El PDF de referencia del
+8 de octubre no declara un SHA de auditoría de su autor.
 
 ## Entrada única del equipo
 
-### Corte vigente: fase 3, coherencia del núcleo, 2026-10-09-04
+### Corte vigente: F5-01, exportación de reportes guardados, 2026-10-09-05
+
+- Código: V05_Reportes_Exportacion_PDF, a8df56fc912db76a01092b60caa1efa220dcd85b,
+  desarrollado en dev desde add1d4f. Informe/evidencias en V06_Auditoria_Reportes_PDF.
+  Destino compartido dev mediante PR; comprobar publicación e integración en historial.
+- [Auditoría05](audits/auditoria-2026-10-09-05.md): GET /sesiones/{id}/reporte/pdf verifica
+  los mismos permisos que la lectura JSON. PDF generado en memoria con paciente/profesional
+  actuales, fecha/estado/asistencia y los cuatro campos guardados; sin notas privadas ni firma.
+- Descarga reutilizable en detalle de citas/sesiones de los tres roles y Reportes familiar.
+  El cliente central valida MIME/firma PDF, aborta por cambio de cuenta y comunica fallos;
+  exporta la versión guardada aunque el formulario tenga cambios sin guardar.
+- Reportes familiar usa sesiones reales e ID estable; informe mensual, métricas clínicas
+  y firma/matrícula inventados se retiraron. Progreso mensual queda explícitamente pendiente.
+  La pantalla independiente /terapeuta/reportes sigue siendo demostrativa.
+- 216 pruebas frontend (18 nuevas), 11 backend unitarias nuevas, 25 rutas; tipos/check/build
+  correctos. 28 respuestas HTTP reales + OpenAPI en API8001/PG17.6 local6544; PDF cotejado
+  con JSON y lectura posterior sin cambio del reporte. No suite backend completa nueva.
+- Navegador: descarga física familiar y capturas 1366/390 px verificadas antes del último
+  ajuste móvil. Se añadió margen al texto junto a botones flotantes; su recaptura fue
+  rechazada por permisos del navegador. Confirmación visual final móvil pendiente.
+- Fuentes Vera incluidas en ReportLab; tildes/ñ, nulos, markup literal y texto largo probados.
+  Caracteres no soportados (p. ej. ciertos emoji) devuelven 422 sin documento parcial.
+  Fechas sin zona conservan esa condición. No certificación clínica, firma digital o carga.
+- Dependencias nuevas: ReportLab y tzdata runtime; pypdf de desarrollo. Actualizar el entorno
+  con requirements-dev.txt/requirements.txt según uso. Runtime auditado .venv313 Python3.13.7,
+  ReportLab4.5.1, tzdata2026.5, pypdf6.19.0. Reiniciada únicamente API8001 de la réplica.
+- No tablas/migraciones/filas clínicas nuevas ni acceso a Supabase. Login/logout modifica
+  sesiones de las cuentas sintéticas existentes. No ejecutar prepare/pytest de integración
+  sobre la demo si se desea conservar sus fixtures de los cortes02/03.
+- Fase5 sigue abierta. Siguiente: mensajes autorizados familia/profesional, paginación,
+  persistencia y entrega honesta de errores. Recursos diferidos; Mundo ASHA sigue MA-01.
+  Incidencia01, reproducción por otro equipo y recaptura móvil pendientes; hosting después
+  de acreditar estabilidad del alcance seleccionado.
+
+### Corte anterior: fase 3, coherencia del núcleo, 2026-10-09-04
 
 - [Informe](audits/auditoria-2026-10-09-04.md): cierre de fase 3 para el núcleo mínimo,
   sin certificar todas las extensiones ni estabilidad de toda la plataforma.

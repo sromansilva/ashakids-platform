@@ -6,18 +6,43 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-Implementación: V01_Fase3, 9a6b06160c5210ec05bd3273ef516bba6989560d, rama piero-dev
-basada en dev. Documentación de aceptación: V02_AuditoriaFase3. Integración compartida por PR
-hacia dev; consultar SHA de merge en historial y comparar origin/dev con la rama del usuario.
-Fase 3 cerrada para coherencia del núcleo mínimo; otras extensiones siguen rotuladas como
-demostración/pending, sin certificar toda la web. Informe 2026-10-09-04 / ADR0005.
-198 componentes, 25 rutas, 35 respuestas HTTP + OpenAPI local; tipos/check/build correctos.
-Mundo ASHA es etapa propia: MUNDO_ASHA_PLAN.md, 4 mundos/24 niveles borrador, cálculo de
-progreso probado con intentos sintéticos; API educativa y juegos completos pendientes.
-Siguiente: F5-01, seleccionar mínimos de mensajes/documentos; MA-01 requiere revisión con
-usuario/profesional. Equipo revisa incidencia01 y reproduce el corte en otro entorno.
-El usuario exige commit/version/descripcion breve al cerrar fases, dev y sincronización
-obligatorios; no esperar señal de tokens. La palabra clave sigue para relevo anticipado.
+F5-01/PDF implementado y verificado localmente. Código V05_Reportes_Exportacion_PDF,
+a8df56fc912db76a01092b60caa1efa220dcd85b; documentación V06_Auditoria_Reportes_PDF,
+auditoría2026-10-09-05 y ADR0006. Base dev/add1d4f; publicación por PR hacia dev, comprobar
+SHA de merge en historial remoto. Este registro no atribuye al código un PDF añadido después.
+216 frontend, 11 unitarias PDF/backend, 25 rutas, 28 respuestas HTTP + OpenAPI local;
+tipos/estructura/build correctos. No nueva suite backend completa ni pruebas de despliegue.
+Descarga física familiar comprobada; ajuste final de margen móvil sin recaptura por permiso
+de navegador rechazado. Mantener esta limitación hasta que alguien lo confirme visualmente.
+Fase5 sigue abierta: siguiente módulo mensajes autorizados familia/terapeuta. Recursos
+diferidos; Mundo ASHA permanece en MA-01, con contenido/criterios por revisar con el usuario.
+Incidencia01 y reproducción por otro integrante pendientes. Hosting tras estabilidad demostrada.
+
+### Relevo funcional: reportes guardados y descarga PDF, 2026-10-09-05
+
+- Objetivo: descargar todos los campos compartidos guardados de una sesión autorizada.
+  Cambios: backend api/services/report_pdf y sesiones; cliente binario/clinicalService;
+  ReportDownload/SessionActions y Reportes familiar. No cambió el esquema ni la autorización.
+- Entorno: .venv313, API8001/web5174/PG17.6 local6544, ashakids_test_compat17;
+  pacientes/reportes sintéticos existentes. API8000/web5173 y Supabase no se auditaron.
+  Dependencias nuevas registradas en requirements(-dev).txt; instalar antes de arrancar otro clon.
+- Verificación: pytest limitado a test_report_pdf.py con dependencias simuladas; Vitest216;
+  routing25; tipos/check/build. verify_report_pdf.py coteja PDF/JSON, lectura posterior y
+  permisos propios/ajenos; requiere guardas de destino local. No ejecutar reset de fixtures.
+- Fallos iniciales corregidos: tzdata ausente en Windows, lectura Blob.text no disponible
+  en jsdom, espera de ruta lazy, claves React duplicadas y paginación que desplazaba campos
+  largos. Intentos y resultados previos preservados en evidence/audit-2026-10-09-05/.
+- Limitaciones: caracteres ajenos a Vera reciben 422; PDF es copia actual, sin historial
+  inmutable o firma digital. Mensuales y /terapeuta/reportes demo aún no son informes reales.
+- Comprobar dev/piero-dev/origin/feat/piero-dev después de integrar; no force-push.
+  Publicación concreta: historial Git/PR correspondiente a V07_Integracion_Reportes_PDF.
+- Próximo prompt: «Lee AGENTS.md, PROJECT_CONTEXT.md, IMPLEMENTATION_PLAN.md y este relevo.
+  Confirma dev actualizado y el corte05. Continúa F5-01 mensajes familia/terapeuta: investiga
+  contratos/tablas existentes, acuerda autorización por participantes y asignaciones, implementa
+  persistencia/paginación y estados de envío sin éxitos ficticios. Usa una BD local sintética
+  para escrituras; conserva esta demo. Entrega auditoría nueva con PDF/evidencia/contexto y
+  publica un avance coherente en dev con la siguiente versión concreta. No pagos; juegos
+  completos en etapa MA. Recaptura móvil del PDF e incidencia01 siguen pendientes».
 
 ### Relevo documental: convención de commits, 2026-10-09
 
@@ -42,9 +67,10 @@ obligatorios; no esperar señal de tokens. La palabra clave sigue para relevo an
 | F2-02 | Alinear API y frontend | Núcleo verificado localmente | Revisión asistida; equipo por asignar | SQL/avatar, estados y reportes comprobados |
 | F2-03 | Recorrido de tres roles | Verificado localmente; compartir/reproducir pendientes | Revisión asistida; otro integrante por asignar | PDF nuevo y 27 casos HTTP; incidencia inicial abierta |
 | F2-04 | Compatibilidad con BD y entorno de integración | Verificada en réplica local; reproducción del equipo pendiente | Revisión asistida; integrante por asignar | Corte 02: estructura PG 17.6, 0 diferencias de columnas tras corrección, 79 pruebas y 48 respuestas HTTP |
-| F3-01/02 | Seguimiento y coherencia del núcleo | Cerrada/verificada localmente para el núcleo mínimo | Revisión asistida; revisor del equipo por asignar | Corte04: 198 componentes/25 rutas, 35 HTTP + OpenAPI, paneles/seguimiento/configuración/asignaciones |\n| MA-00 | Base de Mundo ASHA por habilidades y niveles | Base verificada sin conexión educativa; etapa completa pendiente | Usuario/profesional/equipo | Catálogo draft-1, selección por ID, reglas puras; próxima MA-01 |
+| F3-01/02 | Seguimiento y coherencia del núcleo | Cerrada/verificada localmente para el núcleo mínimo | Revisión asistida; revisor del equipo por asignar | Corte04: 198 componentes/25 rutas, 35 HTTP + OpenAPI, paneles/seguimiento/configuración/asignaciones |
+| MA-00 | Base de Mundo ASHA por habilidades y niveles | Base verificada sin conexión educativa; etapa completa pendiente | Usuario/profesional/equipo | Catálogo draft-1, selección por ID, reglas puras; próxima MA-01 |
 | F4-01 | Desarrollo de pagos simulados | Retirada por observación del profesor | No asignar | Maqueta existente solamente; sin nuevos commits de pagos |
-| F5-01 | Seleccionar actividades/mensajes/PDF | Por confirmar | Coordinación, persona por asignar | Mínimos y aceptación acordados |
+| F5-01 | Reportes PDF y mensajes autorizados | PDF verificado localmente; mensajes pendientes | Revisión asistida; revisor del equipo por asignar | Corte05/ADR0006; siguiente persistencia/paginación de mensajes |
 | F6-01 | Seleccionar extensiones avanzadas | Por confirmar | Coordinación, persona por asignar | Decisión según rúbrica/tiempo |
 | F7-01 | Entrega reproducible | Pendiente | Equipo, personas por asignar | Guion y evidencia del alcance seleccionado |
 | F7-02 | Elegir hosting gratuito | Pendiente; después de estabilizar alcance | Coordinación/arquitectura, persona por asignar | Comparación oficial vigente, coste/límites, recomendación y alternativa |
