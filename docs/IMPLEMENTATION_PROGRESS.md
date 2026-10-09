@@ -6,18 +6,40 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
-F5-01 núcleo/PDF/mensajes aceptado por API/SQL y repetido en dos bases locales nuevas.
-Aplicación dev/e456294 (V10/PR106 integrado); guion V11,8578ca9cde56bac2ec04389a58ae282cc3fdc8e3.
-Clon limpio: instalación venv/npm nuevas;115 backend/25 skip/19 advertencias,232 frontend,
-25 rutas y tipos/check/build correctos. Final con guarda nueva:119 backend/25 skip/19 avisos.
-Dos recorridos de92 HTTP, no184 casos distintos; PDF y mensajes persistentes tras relogin.
-Auditoría07/V12 y guion docs/acceptance/CORE_PDF_MESSAGES.md; integración dev por PR/V13,
-consultar historial para SHA efectivo. API8001 restaurada en demo compat17; datos conservados.
-UI real sigue denegada por preferencia guardada5174 aun tras respuesta de acceso habilitado.
-Pendientes: retirar bloqueo en ajustes de sitios de Codex, aceptar desktop/móvil/recaptura PDF,
-reproducir por otro integrante y revisar impacto histórico01. No cerrar fase5 completa/hosting.
+Reproducción independiente completada en el entorno de HailQueso (PostgreSQL 18.4 en puerto 5433).
+Aplicación sobre dev/b3f84bd (V13/PR107 integrado). Bases locales nuevas creadas: ashakids_test_accept07_hq
+y ashakids_test_regress08. 119 pruebas backend aprobadas (25 omitidas, 19 avisos), 232 pruebas frontend
+de componentes y 25 de enrutamiento aprobadas. Guion verify_delivery_journey.py pasó las 92 respuestas HTTP
+completas, cotejando PDF binario y persistencia de mensajes tras logout/relogin.
+La aceptación en navegador real fue detenida por fallo de descarga del driver del gestor Playwright (404 CDN);
+se preservó el origen 5174 sin evasión. Fase 5 se mantiene abierta en la dimensión de aceptación visual real.
+Auditoría 08 y evidencias en docs/evidence/audit-2026-10-09-08/. Commit V14_Aceptacion_Nucleo_Reportes_Mensajes.
+Pendientes inmediatos: resolver driver del navegador o validación visual interactiva en sesión de usuario,
+y consolidar el paquete de entrega final con trazabilidad a rúbrica antes de las 18:00 Lima.
 
-### Relevo de aceptación del núcleo/PDF/mensajes, 2026-10-09-07
+### Relevo de aceptación del núcleo/PDF/mensajes en entorno independiente, 2026-10-09-08
+
+- Responsable: desarrollo asistido en el entorno independiente de HailQueso.
+- Base: dev/b3f84bd (V13_Integracion_Aceptacion_Nucleo).
+- Entorno probado: Windows, Node v22.15.0 / npm 10.9.2, Python 3.13.7 en backend/.venv, PostgreSQL 18.4 local en puerto 5433.
+  Bases nuevas descartables: ashakids_test_accept07_hq (recorrido de entrega) y ashakids_test_regress08 (regresión pytest).
+- Resultados verificados:
+  * Backend: 119 pruebas aprobadas, 25 omitidas (suites heredadas deshabilitadas), 19 advertencias. 0 fallos.
+  * Frontend: 232 pruebas Vitest y 25 de enrutamiento aprobadas; tsc --noEmit, check:frontend (318 archivos, máx. 495 líneas) y build exitosos.
+  * API y Entrega HTTP: 92 respuestas HTTP verificadas en http://127.0.0.1:8001/ con PostgreSQL local en puerto 5433. PDF generado (reporte-sesion-sintetica.pdf) verificado en texto y cabeceras. Mensajería privada probada con paginación de cursor y lectura tras relogin.
+  * Modelo físico: 26 tablas públicas, 178 columnas, 221 restricciones y 71 índices inspeccionados.
+- Limitaciones registradas:
+  * El agente de navegador browser_subagent reportó fallo al instalar el driver de Playwright (HTTP 404 de azureedge CDN para versión 1.57.0). Conforme a las instrucciones del usuario, no se cambiaron puertos ni se evadió la herramienta. La interacción visual real en 5174 queda pendiente sin falsear estados.
+  * Incidente 01 histórico: contenido y aislado localmente por guardas; el impacto histórico en Supabase requiere revisión de logs/baseline del equipo.
+- Archivos generados/actualizados:
+  * backend/scripts/verify_delivery_journey.py (soporte parametrizado para código de auditoría y entorno).
+  * docs/audits/auditoria-2026-10-09-08.md y output/pdf/Auditoria_Aceptacion_Nucleo_PDF_Mensajes_AshaKids_2026-10-09-08.pdf.
+  * docs/evidence/audit-2026-10-09-08/ (17 archivos de evidencia con manifest SHA-256).
+  * docs/PROJECT_CONTEXT.md, docs/IMPLEMENTATION_PLAN.md, docs/IMPLEMENTATION_PROGRESS.md, docs/audits/README.md.
+- Siguiente tarea:
+  * Consolidar paquete de entrega académica y trazabilidad a rúbrica antes de 18:00 Lima.
+
+### Relevo anterior de aceptación del núcleo/PDF/mensajes, 2026-10-09-07
 
 - Archivos: verify_delivery_journey.py, test_delivery_guard.py y inspect_schema_compatibility.py
   (incluye mensajería). No cambios de UI ni endpoints/arquitectura del producto. V11 código;

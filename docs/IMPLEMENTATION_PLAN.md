@@ -135,6 +135,14 @@ No invertir tiempo en API, tablas ni persistencia de pagos; no condicionar el n�
 ## Fase 5 — Actividades, comunicación y documentos
 
 Depende de fases 2/3. La fase 4 está retirada del alcance.
+**Corte08, reproducción independiente y aceptación conjunta:** recorrido completo reproducido
+en entorno de HailQueso (PostgreSQL 18.4 en puerto 5433). Dos BDs nuevas locales (`accept07_hq` y `regress08`).
+119 pruebas backend aprobadas (25 omitidas, 19 avisos), 232 pruebas frontend y 25 de enrutamiento aprobadas.
+Guion de 92 respuestas HTTP superado íntegramente. Binario PDF (`%PDF-`) verificado.
+Aceptación automatizada en navegador real detenida por fallo de descarga de driver en Playwright manager
+(404 en CDN de azureedge); no se evadieron puertos u orígenes. Fase 5 se mantiene abierta respecto
+a la validación visual en navegador real. Fuente/PDF/evidencia08 e informe AUDIT-2026-10-09-08.
+
 **Corte07, aceptación conjunta:** núcleo+PDF+mensajes comprobado por92 respuestas HTTP y
 repetido en dos BD nuevas del clon limpio. Instalaciones Python/npm reproducidas;115 backend
 del clon/119 final con guarda nueva,25 omitidas/19 avisos;232 frontend/25 rutas. API8001

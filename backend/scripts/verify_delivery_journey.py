@@ -35,16 +35,16 @@ async def confirm_api_database(engine, cookies):
         raise RuntimeError('La API no emitió la sesión en esta BD; se bloquea escritura clínica.')
 
 
-async def run(output):
+async def run(output, audit='AUDIT-2026-10-09-08', environment='Clon dev / API loopback8001 / PG18.4 local5433'):
     base = isolated_live_api()
     url = make_url(os.environ['ASHAKIDS_TEST_DATABASE_URL'])
-    if not (url.database or '').startswith('ashakids_test_accept07') or url.query:
-        raise RuntimeError('Este guion exige una nueva BD local ashakids_test_accept07*; no usar la demo.')
+    if not ((url.database or '').startswith('ashakids_test_accept07') or (url.database or '').startswith('ashakids_test_accept08')) or url.query:
+        raise RuntimeError('Este guion exige una nueva BD local ashakids_test_accept07* o accept08*; no usar la demo.')
     engine = create_async_engine(url)
     output.mkdir(parents=True, exist_ok=True)
     cases, clients = [], {}
-    result = {'audit':'AUDIT-2026-10-09-07', 'database':url.database,
-              'environment':'Clon dev limpio / API loopback8001 / PG17.6 local6544', 'success':False}
+    result = {'audit':audit, 'database':url.database,
+              'environment':environment, 'success':False}
     async def call(code, method, path, expected, **kwargs):
         started = perf_counter()
         response = await clients[code].request(method, path, **kwargs)
@@ -114,7 +114,7 @@ async def run(output):
                 fecha_hora_inicio=now-timedelta(minutes=5),fecha_hora_fin=now+timedelta(minutes=40)))
             assert changed.rowcount == 1
         await body('t90001','POST',f'sesiones/{sid}/iniciar',200)
-        report = {'observaciones_iniciales':'AUDIT-2026-10-09-07: niño, articulación y R. <texto literal>',
+        report = {'observaciones_iniciales':f'{audit}: niño, articulación y R. <texto literal>',
             'objetivos_trabajados':'Ejemplo sintético, sin evaluación clínica real.',
             'nivel_ayuda':'Dato de aceptación en PostgreSQL local.',
             'proximos_pasos':'Consultar reporte y conversar con profesional.'}
@@ -135,7 +135,7 @@ async def run(output):
                 text_pdf = '\n'.join(page.extract_text() or '' for page in PdfReader(BytesIO(pdf.content)).pages)
                 flat = ''.join(text_pdf.split())
                 assert all(''.join(value.split()) in flat for value in report.values())
-                assert 'PacienteAceptación07' in flat and 'AUDIT-2026-10-09-07' in text_pdf
+                assert 'PacienteAceptación07' in flat and audit in text_pdf
                 if code=='p90001':
                     (output/'reporte-sesion-sintetica.pdf').write_bytes(pdf.content)
                     result['sample_pdf_sha256']=hashlib.sha256(pdf.content).hexdigest()
@@ -196,4 +196,7 @@ async def run(output):
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output',type=Path,required=True)
-    asyncio.run(run(parser.parse_args().output))
+    parser.add_argument('--audit',type=str,default='AUDIT-2026-10-09-08')
+    parser.add_argument('--environment',type=str,default='Clon dev / API loopback8001 / PG18.4 local5433')
+    args = parser.parse_args()
+    asyncio.run(run(args.output, audit=args.audit, environment=args.environment))

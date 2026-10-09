@@ -6,7 +6,33 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: aceptación del núcleo/PDF/mensajes, 2026-10-09-07
+### Corte vigente: aceptación del núcleo/PDF/mensajes en entorno independiente, 2026-10-09-08
+
+- Aplicación reproducida: dev/b3f84bd828c2002c7f80466410251d9df155550c, V13 y PR107 efectivamente
+  integrados.
+- [Auditoría08](audits/auditoria-2026-10-09-08.md) y [evidencia](evidence/audit-2026-10-09-08/):
+  reproducción en máquina independiente (HailQueso), Node v22.15.0 / npm 10.9.2, Python 3.13.7,
+  PostgreSQL 18.4 local en puerto 5433.
+- Dos BDs nuevas locales: aceptación ashakids_test_accept07_hq y regresión ashakids_test_regress08.
+  Sin conexión a Supabase ni reutilización destructiva de la demo de Piero (ashakids_test_compat17).
+- Guion de entrega verify_delivery_journey.py pasó las 92 respuestas HTTP completas: gestión de cuentas,
+  suspensión y reactivación, alta de paciente, asignación de tratamiento, reserva, confirmación, ciclo
+  completo de sesión, reporte clínico en 4 campos estructurados, exportación y verificación de PDF (%PDF-),
+  y mensajería privada con contactos autorizados, aperturas concurrentes, cursor y persistencia tras relogin.
+- Suite de regresión pytest en ashakids_test_regress08: 119 pruebas aprobadas, 25 omitidas (suites heredadas
+  deshabilitadas), 19 advertencias. 0 fallos.
+- Frontend: 232 pruebas Vitest y 25 pruebas de enrutamiento aprobadas; tsc --noEmit, check:frontend (318
+  archivos, máx. 495 líneas) y build Vite de producción correctos (bundle 292.83 kB).
+- Estado del navegador: servidor Vite levantado en http://127.0.0.1:5174/ y API en http://127.0.0.1:8001/.
+  Al intentar la aceptación visual automatizada, browser_subagent reportó fallo en el gestor de Playwright
+  por error 404 al descargar el driver en azureedge CDN. Conforme a las instrucciones del usuario, no se
+  evadieron puertos ni orígenes. La aceptación visual en navegador real se documenta como pendiente sin falsos cierres.
+- Análisis de Incidente 01 histórico: documentado en la auditoría con sus tres capas de guardas vigentes;
+  impacto en Supabase compartido permanece abierto a la revisión de línea base y logs por el equipo.
+- Fase 5 se mantiene abierta en la dimensión de aceptación en navegador real. Siguiente paso: preparación del
+  paquete de entrega académica y rúbrica antes de las 18:00 Lima.
+
+### Corte anterior: aceptación del núcleo/PDF/mensajes, 2026-10-09-07
 
 - Aplicación reproducida: dev/e456294cd7d13aea41dc5d00940b84aa782acbad, V10 y PR106
   efectivamente integrados. Código de verificación V11_Verificacion_Nucleo_Reportes_Mensajes,
