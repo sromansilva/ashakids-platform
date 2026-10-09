@@ -2,26 +2,37 @@ import { useState } from "react";
 import { Eye, Search, Shield } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Crd } from "@/components/common/Crd";
+import { Btn } from "@/components/common/Btn";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
+import { useRemote } from "@/hooks/useRemoteData";
+import { patientsService, usersService } from "@/services/clinicalService";
+import { readAllPages } from "@/services/readAllPages";
+import type { Patient } from "@/types/clinical";
+import { PatientEditor } from "./PatientEditor";
 import { Av } from "@/components/common/Av";
 
 export function AdminPacientes() {
   const [search, setSearch] = useState("");
-  // Operational profiles only — no clinical records
-  const perfiles = [
-    { id: "PRF-001", initials: "M.G.", av: "MG", color: B.violet,  parent: "Laura Gómez",   therapist: "Dra. Ana Ruiz",       accountStatus: "activo",      consentimiento: "registrado",  vinculacion: "confirmada",  soporte: 0 },
-    { id: "PRF-002", initials: "V.L.", av: "VL", color: B.teal,    parent: "Rosa López",    therapist: "Dra. Ana Ruiz",       accountStatus: "activo",      consentimiento: "registrado",  vinculacion: "confirmada",  soporte: 0 },
-    { id: "PRF-003", initials: "B.R.", av: "BR", color: "#22C55E", parent: "Andrés Ríos",   therapist: "Dra. Ana Ruiz",       accountStatus: "alta próxima", consentimiento: "registrado", vinculacion: "confirmada",  soporte: 0 },
-    { id: "PRF-004", initials: "F.T.", av: "FT", color: B.orange,  parent: "Claudia Torres",therapist: "Lic. Carlos Mendoza", accountStatus: "nuevo",        consentimiento: "pendiente",   vinculacion: "en revisión", soporte: 1 },
-    { id: "PRF-005", initials: "S.V.", av: "SV", color: "#8B5CF6", parent: "Jorge Vargas",  therapist: "Dra. María Torres",   accountStatus: "activo",       consentimiento: "registrado",  vinculacion: "confirmada",  soporte: 0 },
-    { id: "PRF-006", initials: "C.P.", av: "CP", color: "#EC4899", parent: "Sofía Ponce",   therapist: "Lic. Pedro Sánchez",  accountStatus: "nuevo",        consentimiento: "pendiente",   vinculacion: "pendiente",   soporte: 0 },
-  ];
+  const [editing, setEditing] = useState<Patient | 'new' | null>(null);
+  const query = useRemote(['admin-patients'], s => readAllPages(offset => patientsService.list({ limit: 100, offset }, s), s));
+  const parents = useRemote(['all-tutors'], s => readAllPages(offset => usersService.list({ rol: 'PADRE', limit: 100, offset }, s), s));
+  const perfiles = (query.data ?? []).map(p => ({
+    raw: p, id: `PAC-${p.id_paciente}`, initials: `${p.nombres_paciente} ${p.apellidos_paciente}`,
+    av: `${p.nombres_paciente[0]}${p.apellidos_paciente[0]}`, color: B.violet,
+    parent: (() => { const u = parents.data?.find(u => u.id_tutor === p.id_tutor); return u ? `${u.nombres} ${u.apellidos}` : `Tutor #${p.id_tutor}`; })(),
+    therapist: 'Consultar detalle', accountStatus: p.activo ? 'activo' : 'inactivo',
+    consentimiento: 'Sin API', soporte: 0,
+  }));
   const filtered = perfiles.filter(p =>
-    p.id.toLowerCase().includes(search.toLowerCase()) ||
+    p.id.toLowerCase().includes(search.toLowerCase()) || p.initials.toLowerCase().includes(search.toLowerCase()) ||
     p.parent.toLowerCase().includes(search.toLowerCase()) ||
     p.therapist.toLowerCase().includes(search.toLowerCase())
   );
   return (
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+      <RemoteFeedback pending={query.isPending} error={query.error || parents.error} retry={() => { void query.refetch(); void parents.refetch(); }}/>
+      {editing && <PatientEditor patient={editing === 'new' ? undefined : editing} close={() => setEditing(null)}/>}
+      <Btn size="sm" onClick={() => setEditing('new')}>Registrar paciente</Btn>
       {/* Restriction notice */}
       <div className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-5 border" style={{ background: "#EFF6FF", borderColor: "#BFDBFE" }}>
         <Shield size={14} className="text-blue-500 flex-shrink-0" />
@@ -82,7 +93,7 @@ export function AdminPacientes() {
                       : <span className="text-xs text-[#9E95B7] font-medium">—</span>}
                   </td>
                   <td className="px-5 py-3.5">
-                    <button className="p-1.5 rounded-xl text-[#9E95B7] hover:text-violet-600 hover:bg-violet-50 transition-colors" title="Ver detalle operativo"><Eye size={14} /></button>
+                    <button onClick={() => setEditing(p.raw)} className="p-1.5 rounded-xl text-[#9E95B7] hover:text-violet-600 hover:bg-violet-50 transition-colors" title="Ver detalle operativo"><Eye size={14} /></button>
                   </td>
                 </tr>
               ))}

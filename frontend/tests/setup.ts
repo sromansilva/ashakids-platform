@@ -1,7 +1,13 @@
 import "@testing-library/jest-dom/vitest";
-import { afterEach, vi } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
+import { queryClient } from "@/app/providers/queryClient";
 import { cleanup } from "@testing-library/react";
-afterEach(() => { cleanup(); vi.restoreAllMocks(); });
+beforeEach(() => {
+  vi.stubGlobal("fetch", vi.fn().mockImplementation(() => Promise.resolve(new Response(JSON.stringify([]), {
+    headers: { "Content-Type": "application/json", "X-Total-Count": "0" },
+  }))));
+});
+afterEach(() => { cleanup(); queryClient.clear(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
 window.scrollTo = vi.fn();
 HTMLElement.prototype.scrollIntoView = vi.fn();
 window.matchMedia = vi.fn().mockImplementation(query => ({

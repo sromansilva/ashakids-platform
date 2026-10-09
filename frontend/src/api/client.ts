@@ -19,10 +19,22 @@ export class ApiError extends Error {
   }
 }
 
+export type QueryParams = Record<string, string | number | boolean | undefined | null>;
+export type Page<T> = { items: T[]; total: number };
+export type ApiOptions = RequestInit & { params?: QueryParams; paginated?: boolean };
+let identityVersion = 0;
+export function invalidateIdentityRequests() { identityVersion++; }
+
 async function request<T>(
   endpoint: string,
-  options: RequestInit = {}
+  options: ApiOptions = {}
 ): Promise<T> {
+  const version = identityVersion;
+  const { params, paginated, ...init } = options;
+  const search = new URLSearchParams();
+  Object.entries(params ?? {}).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") search.set(key, String(value));
+  });
   const url = endpoint.startsWith("http")
     ? endpoint
     : `${API_BASE_URL}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
@@ -34,13 +46,14 @@ async function request<T>(
   };
 
   const config: RequestInit = {
-    ...options,
+    ...init,
     headers,
     credentials: "include", // Permite transporte de cookies de sesión HttpOnly
   };
 
   try {
-    const response = await fetch(url, config);
+    const response = await fetch(`${url}${search.size ? `${url.includes("?") ? "&" : "?"}${search}` : ""}`, config);
+    if (version !== identityVersion) throw new DOMException("Cuenta cambiada", "AbortError");
 
     if (response.status === 204) {
       return {} as T;
@@ -49,6 +62,7 @@ async function request<T>(
     const contentType = response.headers.get("content-type");
     const isJson = contentType && contentType.includes("application/json");
     const data = isJson ? await response.json() : await response.text();
+    if (version !== identityVersion) throw new DOMException("Cuenta cambiada", "AbortError");
 
     if (!response.ok) {
       const detail =
@@ -63,9 +77,9 @@ async function request<T>(
       throw new ApiError(message, response.status, data);
     }
 
-    return data as T;
+    return (paginated ? { items: data, total: Number(response.headers.get("X-Total-Count") ?? data.length) } : data) as T;
   } catch (err) {
-    if (err instanceof ApiError) {
+    if (err instanceof ApiError || ((err instanceof Error || err instanceof DOMException) && err.name === "AbortError")) {
       throw err;
     }
     throw new ApiError(
@@ -78,8 +92,12 @@ async function request<T>(
 }
 
 export const apiClient = {
-  get: <T>(endpoint: string, options?: RequestInit) =>
+  get: <T>(endpoint: string, options?: ApiOptions) =>
     request<T>(endpoint, { ...options, method: "GET" }),
+  page: <T>(endpoint: string, params?: QueryParams, signal?: AbortSignal) =>
+    request<Page<T>>(endpoint, { method: "GET", params, signal, paginated: true }),
+  patch: <T>(endpoint: string, body: unknown, options?: ApiOptions) =>
+    request<T>(endpoint, { ...options, method: "PATCH", body: JSON.stringify(body) }),
 
   post: <T>(endpoint: string, body?: unknown, options?: RequestInit) =>
     request<T>(endpoint, {

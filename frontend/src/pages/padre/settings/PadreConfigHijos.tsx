@@ -3,10 +3,14 @@ import { Plus, Edit, Trash2 } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Btn } from "@/components/common/Btn";
 import { EmptyState } from "@/components/common/EmptyState";
+import { useFamilyPatients } from "@/hooks/useFamilyPatients";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 
 type Props = Pick<ReturnType<typeof usePadreConfig>, "padrePlan" | "childList" | "setShowPlanUpgradeModal" | "setShowAddChildModal" | "setEditChild" | "setDeleteChild">;
 export function PadreConfigHijos({ padrePlan, childList, setShowPlanUpgradeModal, setShowAddChildModal, setEditChild, setDeleteChild }: Props) {
+const { query } = useFamilyPatients();
 return (<div className="flex flex-col gap-5">
+                <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />
                 {padrePlan === "exploracion" && (
                   <div className="rounded-2xl p-4 flex items-start gap-3 border" style={{ background: B.warningLight, borderColor: B.warning + "40" }}>
                     <span className="text-lg flex-shrink-0">ℹ️</span>

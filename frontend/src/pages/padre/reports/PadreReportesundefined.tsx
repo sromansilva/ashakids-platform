@@ -1,6 +1,7 @@
 import type { usePadreReportes } from "@/pages/padre/reports/usePadreReportes";
 import { X, ChevronRight, Eye, Download, CheckCircle } from "lucide-react";
 import { B } from "@/theme/brand/B";
+import { SessionActions } from "@/components/common/SessionActions";
 import { Btn } from "@/components/common/Btn";
 
 type Props = Pick<ReturnType<typeof usePadreReportes>, "toast" | "selectedReport" | "setReportViewId" | "downloadReport" | "setTab" | "tab" | "sessions" | "setOpenSession" | "openSession" | "downloadPdf" | "showToast" | "reports">;
@@ -132,7 +133,7 @@ return (<div
 
       <div className="mb-6">
         <h1 className="text-2xl font-black text-[#1C1135]">
-          Reportes de Mateo
+          Reportes de sesiones
         </h1>
         <p className="text-sm text-[#7C6F9A] font-medium">
           Historial de sesiones e informes mensuales de la Dra.
@@ -143,7 +144,7 @@ return (<div
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3 mb-6">
         {[
-          { v: "24", l: "Sesiones totales" },
+          { v: String(sessions.length), l: "Sesiones totales" },
           { v: "78%", l: "Progreso general" },
           { v: "4.9★", l: "Valoración terapeuta" },
         ].map((s) => (
@@ -189,6 +190,7 @@ return (<div
       {/* Sesiones tab */}
       {tab === "sesiones" && (
         <div className="flex flex-col gap-3">
+          {sessions.length === 0 && <p className="text-sm text-[#7C6F9A]">No hay sesiones registradas.</p>}
           {sessions.map((s, i) => (
             <div
               key={s.id}
@@ -236,7 +238,7 @@ return (<div
                     {s.date} · {s.time}
                   </p>
                   <p className="text-xs text-[#7C6F9A] font-medium">
-                    {s.therapist}
+                    {s.patient ? `${s.patient} · ` : ""}{s.therapist}
                   </p>
                 </div>
                 <ChevronRight
@@ -252,57 +254,7 @@ return (<div
                 />
               </button>
               {openSession === i && (
-                <div className="px-4 pb-4 border-t border-[#E8E5F4]">
-                  <div className="mt-3 mb-3">
-                    <p className="text-xs font-black text-[#9E95B7] uppercase tracking-wider mb-2">
-                      Objetivos trabajados
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {s.goals.map((g) => (
-                        <span
-                          key={g}
-                          className="text-xs font-bold px-2.5 py-1 rounded-full"
-                          style={{
-                            background: B.violetLight,
-                            color: B.violet,
-                          }}
-                        >
-                          {g}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div
-                    className="rounded-2xl p-3 mb-3"
-                    style={{ background: B.bg }}
-                  >
-                    <p className="text-xs font-black text-[#9E95B7] uppercase tracking-wider mb-1">
-                      Notas clínicas
-                    </p>
-                    <p className="text-sm text-[#4B4264] font-medium leading-relaxed">
-                      {s.notes}
-                    </p>
-                  </div>
-                  <Btn
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      downloadPdf(`sesion-${s.id}.pdf`, `Sesion ${s.date}`, [
-                        `Fecha: ${s.date}  Hora: ${s.time}  Duracion: ${s.duration}`,
-                        `Terapeuta: ${s.therapist}`,
-                        `Modalidad: Virtual`,
-                        "", "Objetivos trabajados:",
-                        ...s.goals.map((g: string) => `  - ${g}`),
-                        "", "Notas clinicas:",
-                        `  ${s.notes}`,
-                        "", "ASHAKids - Plataforma de terapia infantil",
-                      ]);
-                      showToast("Descargando notas de sesión...");
-                    }}
-                  >
-                    <Download size={12} /> Descargar notas
-                  </Btn>
-                </div>
+                <div className="px-4 pb-4 border-t border-[#E8E5F4]"><SessionActions appointmentId={s.appointmentId}/></div>
               )}
             </div>
           ))}

@@ -8,6 +8,10 @@ import type { SemanticRole, User } from "@/types/auth";
 import AppRouter from "@/app/AppRouter";
 import { routePaths } from "@/app/routeManifest";
 import "@/Index.css";
+import { QueryClient, QueryClientProvider, onlineManager } from "@tanstack/react-query";
+// This legacy render harness must never contact the operational API.
+onlineManager.setOnline(false);
+const queryClient = new QueryClient();
 
 function Harness() {
   const [role, setRole] = useState<SemanticRole | null>("PADRE");
@@ -30,7 +34,7 @@ function Harness() {
       <AuthContext.Provider value={{ user, role, isAuthenticated: !!user, isLoading: false,
         login: async () => { throw new Error("El login real se comprueba fuera de este fixture"); },
         logout: async () => { setRole(null); }, refreshUser: async () => {},
-      }}><AppRouter /></AuthContext.Provider>
+      }}><QueryClientProvider client={queryClient}><AppRouter /></QueryClientProvider></AuthContext.Provider>
     </MemoryRouter>
   </>;
 }

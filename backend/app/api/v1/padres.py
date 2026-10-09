@@ -23,7 +23,7 @@ router = APIRouter(prefix="/padres", tags=["Padres"])
 )
 async def get_padre_me(
     current_data: Tuple[Usuario, List[str]] = Depends(require_padre),
-    db: AsyncSession = Depends(get_db),
+    db: AsyncSession = Depends(get_db, scope="function"),
 ):
     user, roles = current_data
 
