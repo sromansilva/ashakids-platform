@@ -18,7 +18,8 @@ La documentación de planificación no declara como realizadas funcionalidades p
 
 ## Fase 1 — Base y entorno reproducible
 
-Estado: base disponible con comprobaciones locales; reproducción por otra persona pendiente.
+Estado: base disponible; instalación en clon limpio comprobada en corte07 por mismo agente,
+con venv/npm nuevos y PostgreSQL existente. Reproducción por otra persona/máquina pendiente.
 - Seguir README, instalar dependencias, configurar .env ignorados y preparar Graphify.
 - Separar entorno habitual y PostgreSQL descartable de aceptación.
 - Registrar commit compartido y verificar arranque de frontend/API y readiness.
@@ -134,6 +135,14 @@ No invertir tiempo en API, tablas ni persistencia de pagos; no condicionar el n�
 ## Fase 5 — Actividades, comunicación y documentos
 
 Depende de fases 2/3. La fase 4 está retirada del alcance.
+**Corte07, aceptación conjunta:** núcleo+PDF+mensajes comprobado por92 respuestas HTTP y
+repetido en dos BD nuevas del clon limpio. Instalaciones Python/npm reproducidas;115 backend
+del clon/119 final con guarda nueva,25 omitidas/19 avisos;232 frontend/25 rutas. API8001
+restaurada en demo preservada. Fuente/PDF/evidencia07 y guion CORE_PDF_MESSAGES.md.
+F5-01 aceptado por API/SQL; fase5 sigue abierta por UI real/recaptura PDF/reproducción de
+otro integrante e impacto histórico01. Navegador aún deniega5174 por preferencia guardada;
+reiniciar servicios no modifica ese permiso. No ampliar fase6 ni seleccionar host todavía.
+
 **Corte06, F5-01/mensajes:** implementados en la misma arquitectura y tablas existentes,
 con participantes autorizados, contactos por asignación activa, historial persistente y cursor;
 sin DDL/Supabase. HTTP/manual Actualizar, sin realtime/llamadas/adjuntos/leído simulado.

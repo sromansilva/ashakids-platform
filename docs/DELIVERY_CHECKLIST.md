@@ -2,9 +2,9 @@
 
 Plazo confirmado: **2026-10-09 18:00 America/Lima**.
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base común: dev.
-El corte06 se desarrolló en dev, código V08_Mensajes_Familia_Terapeuta, 7fddd59;
-evidencia/documentación V09_Auditoria_Mensajeria. Verificar PR/V10_Integracion_Mensajeria y
-SHA remoto antes de preparar la entrega. El corte05 ya está integrado por PR105/1398e70.
+El corte07 reproduce aplicación dev/e456294 (PR106 integrado), guion V11/8578ca9 y
+evidencia V12_Auditoria_Nucleo_Integrado. Verificar PR/V13_Integracion_Aceptacion_Nucleo y
+SHA remoto antes de preparar la entrega. El corte05 está integrado por PR105/1398e70.
 Los apartados históricos conservan su estado de publicación original.
 
 ## Requisitos recibidos del profesor
@@ -89,3 +89,12 @@ rechazo de accesos ajenos, respuesta incierta y borradores conservados. Fuente/P
 en índice. No certificar UI visual nueva: navegador bloqueado, aceptación desktop/móvil y
 reproducción de núcleo+PDF+mensajes por otro clon pendientes. Incidencia01 sigue abierta.
 Mantener la lista de salida sin marcar hasta que el equipo confirme esas pruebas/entrega.
+
+## Aceptación conjunta — 2026-10-09-07
+
+Clon limpio/instalaciones nuevas:115 backend;119 finales con guarda de BD,25 omitidas/19
+advertencias;232 frontend/25 rutas;92 HTTP repetido en dos bases nuevas. Modelo local19
+tablas modeladas/0 diferencias. Se creó clínica sintética nueva solo allí; demo conservada.
+Guion, PDF y evidencia en índice. UI real aún denegada por permiso guardado5174; otro
+integrante/ordenador e impacto histórico01 pendientes. No marcar cierre/hosting/entrega
+de equipo solo por estos resultados positivos. Priorizar esos pendientes antes de ampliar.

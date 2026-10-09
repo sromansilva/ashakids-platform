@@ -6,7 +6,45 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Corte vigente: F5-01, mensajes familia/profesional, 2026-10-09-06
+### Corte vigente: aceptación del núcleo/PDF/mensajes, 2026-10-09-07
+
+- Aplicación reproducida: dev/e456294cd7d13aea41dc5d00940b84aa782acbad, V10 y PR106
+  efectivamente integrados. Código de verificación V11_Verificacion_Nucleo_Reportes_Mensajes,
+  8578ca9cde56bac2ec04389a58ae282cc3fdc8e3. Documento/evidencia V12, integración por PR/V13;
+  consultar historial para publicación efectiva, sin atribuir un merge futuro al SHA auditado.
+- [Auditoría07](audits/auditoria-2026-10-09-07.md) y [guion](acceptance/CORE_PDF_MESSAGES.md):
+  clon GitHub limpio, venv nuevo Python3.13.7/requisitos publicados y npm ci del lockfile;
+  Node26.9.0/npm11.19.1. Se reutilizó cluster PostgreSQL17.6 local6544 existente.
+  Mismo agente/ordenador; no comprobación de otro integrante/OS ni hosting.
+- Dos BD nuevas ashakids_test_accept07 y _repeat pasaron92 respuestas HTTP cada una:
+  administración de cuenta/revocación, paciente/asignación, reserva/confirmación/sesión/
+  reporte/PDF y mensajes privados. Misma secuencia repetida, no184 casos distintos.
+  Historial/reporte idénticos tras relogin; PDF cotejado y renderizado. Ajustes SQL de tiempo/
+  estado solo en nuevos IDs; tratamiento finalizado/chat archivado bloquean envío real403/409.
+- Suite completa en BD local regress07 separada: clon115 correctas/25 omitidas/19 advertencias;
+  final con cuatro unidades de guarda119/25/19. 20 suites heredadas HTTP y5 compartidas no
+  habilitadas. 232 componentes,25 rutas, tipos/check/build correctos; sin nuevas pruebas UI real.
+- Guion final comprueba hash de sesión emitida por API en BD declarada, activa y no vencida,
+  antes de clínica; destino divergente rechazado en prueba SQL real. No guarda tokens/hashes.
+  Login/logout sí modifica sesiones sintéticas. Guarda contiene el error de destino; impacto
+  histórico01 no restaurado/certificado, requiere logs/baseline del equipo.
+- Modelo físico nuevo inspeccionado READ ONLY:26 tablas/178 columnas/92 restricciones/71
+  índices;19 tablas modeladas,0 diferencias, incluida mensajería. SQL fuente de02 histórico,
+  sin filas reales; solo CREATE SCHEMA public hecho idempotente en copia local. Sin Supabase.
+- Demo compat17 conservada: mismos conteos5 usuarios/2 pacientes/2 citas/1 sesión/reporte/
+  chat/14 mensajes; no snapshot byte a byte. API8001 restaurada, seis respuestas correctas
+  y lectura de reporte02/historial14. API8000/5173 y otros servicios no se reiniciaron/auditaron.
+- Fallos registrados: public ya existente al restaurar; grant/seed antes de tablas; Node EPERM
+  y consulta procesos denegada/bind8001 ocupado. Correcciones acotadas y resultados preservados.
+  Instalación npm avisa dependencia obsoleta/install scripts sin allowScripts; build funcionó.
+- Navegador: tras respuesta del usuario indicando acceso habilitado, selección de pestaña5174
+  volvió a ser denegada por preferencia guardada. Inventario1/intento1,0 capturas; sin evasión.
+  Reiniciar API no cambia permisos. Ajustes de sitios de Codex deben retirar ese bloqueo.
+- F5-01 aceptado por API/SQL, fase5 abierta para UI desktop/móvil, recaptura PDF y reproducción
+  independiente. Siguiente: aceptación visual/equipo e incidencia01/paquete de rúbrica antes
+  de18:00 Lima. No fase6 nueva, pagos, juegos completos MA ni hosting antes de estabilidad.
+
+### Corte anterior: F5-01, mensajes familia/profesional, 2026-10-09-06
 
 - Código V08_Mensajes_Familia_Terapeuta, 7fddd59d6cc6ec594c666c9c80ba184a88c9a91d,
   desarrollado en dev sobre 1398e706121fea153fe9f7481d24983d9e49911a. El corte PDF anterior

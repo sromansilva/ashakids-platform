@@ -98,3 +98,10 @@ python tools/knowledge/manage.py refresh
 ```
 
 El entorno y mapa son regenerables y no se versionan. Graphify es tooling de desarrollo separado del frontend y backend.
+
+## Aceptación antes de la entrega
+
+[Guion de núcleo, PDF y mensajes](docs/acceptance/CORE_PDF_MESSAGES.md): instala requisitos
+de desarrollo en venv vacío y npm ci para reproducir el lockfile; separa la BD local nueva de
+aceptación, la de regresión y la demo conservada. No ejecutar fixtures de reset sobre Supabase.
+El corte07 repitió el recorrido real por HTTP/SQL; UI desktop/móvil y otro integrante pendientes.

@@ -1,0 +1,43 @@
+{
+  "audit": "AUDIT-2026-10-09-07",
+  "original_demo_restored": true,
+  "positive_same_database_check": true,
+  "wrong_database_rejected_before_clinical_writes": true,
+  "clinical_mutations_sent": 0,
+  "original_report_marker": "AUDIT-2026-10-09-02",
+  "original_messages": 14,
+  "responses": 6,
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/1/reporte",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/conversaciones/1/mensajes?limit=100",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "status": 200
+    }
+  ],
+  "limits": "Synthetic login/logout writes authentication sessions; clinical fields read only. Guard evidence is separate from 92-case acceptance journey."
+}
