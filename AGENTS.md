@@ -52,10 +52,19 @@
   Si no hubo commit/push, indicarlo: otro equipo no recibe los cambios solo por actualizar el chat.
 
 ## Commits e informe: observación del profesor
-- Usar mensajes de commit con versión y objetivo concreto: V01_LoginPage,
-  V02_IntegracionAPI_TOKEN son ejemplos de formato, no versiones obligatorias.
-  Antes de crear un commit revisar git log y continuar la secuencia vigente; no renumerar
-  ni reescribir commits publicados. Usar un commit por avance coherente y revisable.
+- Convención compartida para los commits del usuario, compañeros y agentes:
+  `VNN_Accion_Modulos`, con título corto que identifique el trabajo realmente realizado.
+  Referencias del usuario: `V01_Auditoria_Modulos_Front`, `V02_Revision_UX/UI`,
+  `V03_Auditoria_Actividades_Mensajes_Reportes`. Los números son ejemplos: antes de
+  crear un commit, revisar git log y continuar la secuencia publicada sin reiniciarla.
+- Nombrar la acción y los módulos afectados (por ejemplo, Seguimiento, Paneles,
+  Autenticacion, Mensajes o Reportes). Evitar títulos genéricos como `V01_Fase3`,
+  `V02_AuditoriaFase3` o `V03_IntegrarFase3`: el profesor debe entender el contenido
+  sin conocer las fases internas. Aplicar también a títulos de PR y commits de merge.
+- Añadir una descripción breve con los cambios concretos. No usar "Auditoria" o
+  "Revision_UX/UI" si ese trabajo no se realizó; no atribuir módulos sin cambios.
+  Usar un commit por avance coherente y revisable. No renumerar ni reescribir commits
+  publicados en dev; conservar sus SHA para los clones y evidencias del equipo.
 - El profesor excluye pagos del alcance: no implementar pasarelas, cobros, suscripciones
   ni facturación reales, ni abrir nuevas tareas o commits dedicados a pagos simulados.
   La simulación visual ya existente puede conservarse rotulada como demostración;

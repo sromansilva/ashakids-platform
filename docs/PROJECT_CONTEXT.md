@@ -32,6 +32,11 @@ no se ha vinculado el PDF a un SHA declarado por su autor.
 - Nueva regla del usuario: commit obligatorio corto con versión/objetivo y descripción
   breve al cerrar cada fase; publicar en dev y sincronizar su rama. No esperar la palabra
   clave. La señal de tokens bajos prepara un relevo anticipado incluso a mitad de fase.
+- Convención afinada por el usuario: `VNN_Accion_Modulos` para todo el equipo y agentes;
+  nombrar el trabajo y módulos concretos, sin títulos basados solo en fases. Consultar
+  AGENTS.md. Los commits V01..V03 ya publicados se conservan con sus SHA; PR #104
+  integrado en dev en 40d53875a1f87378e3651a68c101c2b7150af6da. Esta actualización
+  es documental, sin pruebas ni auditoría técnica nuevas.
 - Siguiente: F5-01, decidir mínimos de comunicación/documentos; MA-01 requiere revisión
   detenida de contenido/criterios con el usuario. Incidencia01 y reproducción del equipo
   pendientes; hosting solo se comparará después de demostrar estabilidad.

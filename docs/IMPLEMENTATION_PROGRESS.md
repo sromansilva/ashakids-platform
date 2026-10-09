@@ -19,6 +19,20 @@ usuario/profesional. Equipo revisa incidencia01 y reproduce el corte en otro ent
 El usuario exige commit/version/descripcion breve al cerrar fases, dev y sincronización
 obligatorios; no esperar señal de tokens. La palabra clave sigue para relevo anticipado.
 
+### Relevo documental: convención de commits, 2026-10-09
+
+- Usuario pide títulos que expliquen acción y módulos: `VNN_Accion_Modulos`.
+  Regla común para compañeros/agentes en AGENTS.md, incluidos PR y merge.
+  Continuar desde la secuencia publicada V03; no reiniciar en V01.
+- Se conservan V01_Fase3, V02_AuditoriaFase3 y V03_IntegrarFase3 publicados:
+  renombrarlos cambiaría sus SHA y exigiría reescribir dev compartida y referencias
+  de auditoría. El usuario permite conservarlos; nuevos títulos describen el contenido.
+- Base de esta actualización: dev, 40d53875a1f87378e3651a68c101c2b7150af6da,
+  integrado por PR #104 y previamente sincronizado con piero-dev/feat/piero-dev.
+- Archivos: AGENTS.md, PROJECT_CONTEXT.md y este relevo. Solo documentación;
+  no cambios funcionales, pruebas nuevas ni auditoría técnica nueva. Revisar diff,
+  comprobar mapa y publicar el ajuste. Siguiente implementación sigue siendo F5-01.
+
 ## Tablero inicial
 
 | ID | Tarea | Estado | Responsable | Cierre esperado |
