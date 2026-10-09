@@ -1,0 +1,523 @@
+{
+  "timestamp_utc": "2026-10-08T06:10:14.595265+00:00",
+  "database_mode": "read-only",
+  "operations": [
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/logout"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/padres/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/terapeutas/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/usuarios"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios/{key}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/usuarios/{key}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/pacientes/{key}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/pacientes/{key}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/tratamientos"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tratamientos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/citas"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas/{key}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/citas/{key}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/citas/{key}/estado"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/iniciar"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/cerrar"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}/reporte"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sesiones/{key}/reporte"
+    },
+    {
+      "method": "GET",
+      "path": "/"
+    },
+    {
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready"
+    }
+  ],
+  "models": [
+    {
+      "table": "usuarios",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "roles",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "usuario_roles",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "administradores",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "pacientes",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "tutores",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "terapeutas",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "perfiles",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "logros",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "perfil_logros",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "expedientes",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "tratamientos",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "reservas",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "sesiones",
+      "select_limit_zero": "OK"
+    },
+    {
+      "table": "reportes_sesion",
+      "select_limit_zero": "OK"
+    }
+  ],
+  "postgresql_version": "17.6",
+  "rls": [
+    {
+      "table": "usuarios",
+      "enabled": true
+    },
+    {
+      "table": "roles",
+      "enabled": true
+    },
+    {
+      "table": "administradores",
+      "enabled": true
+    },
+    {
+      "table": "usuario_roles",
+      "enabled": true
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "enabled": true
+    },
+    {
+      "table": "tutores",
+      "enabled": true
+    },
+    {
+      "table": "terapeutas",
+      "enabled": true
+    },
+    {
+      "table": "pacientes",
+      "enabled": true
+    },
+    {
+      "table": "perfiles",
+      "enabled": true
+    },
+    {
+      "table": "logros",
+      "enabled": true
+    },
+    {
+      "table": "perfil_logros",
+      "enabled": true
+    },
+    {
+      "table": "expedientes",
+      "enabled": true
+    },
+    {
+      "table": "tratamientos",
+      "enabled": true
+    },
+    {
+      "table": "reservas",
+      "enabled": true
+    },
+    {
+      "table": "sesiones",
+      "enabled": true
+    },
+    {
+      "table": "reportes_sesion",
+      "enabled": true
+    },
+    {
+      "table": "actividades",
+      "enabled": true
+    },
+    {
+      "table": "objetivos",
+      "enabled": true
+    },
+    {
+      "table": "mundos",
+      "enabled": true
+    },
+    {
+      "table": "niveles",
+      "enabled": true
+    },
+    {
+      "table": "resultados_nivel",
+      "enabled": true
+    },
+    {
+      "table": "evaluaciones_ia",
+      "enabled": true
+    },
+    {
+      "table": "conversaciones",
+      "enabled": true
+    },
+    {
+      "table": "mensajes",
+      "enabled": true
+    },
+    {
+      "table": "mensaje_adjuntos",
+      "enabled": true
+    },
+    {
+      "table": "auditoria_cambios",
+      "enabled": true
+    }
+  ],
+  "public_policy_count": 0,
+  "runtime_bypasses_rls": true,
+  "db_connectivity": "OK",
+  "live_http": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/health",
+      "status": 200
+    },
+    {
+      "path": "/health/ready",
+      "status": 200
+    },
+    {
+      "path": "/openapi.json",
+      "status": 200
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "status": 401
+    }
+  ],
+  "live_paths_match": true,
+  "python_files": [
+    {
+      "file": "backend/tests/test_auth_api.py",
+      "lines": 499
+    },
+    {
+      "file": "backend/tests/test_auth_integration_real.py",
+      "lines": 215
+    },
+    {
+      "file": "backend/scripts/create_test_users.py",
+      "lines": 214
+    },
+    {
+      "file": "backend/app/services/auth_service.py",
+      "lines": 176
+    },
+    {
+      "file": "backend/tests/test_clinical_api.py",
+      "lines": 156
+    },
+    {
+      "file": "backend/tests/test_models.py",
+      "lines": 149
+    },
+    {
+      "file": "backend/tests/test_clinical_edges.py",
+      "lines": 128
+    },
+    {
+      "file": "backend/app/schemas/clinica.py",
+      "lines": 126
+    },
+    {
+      "file": "backend/app/models/perfiles.py",
+      "lines": 125
+    },
+    {
+      "file": "backend/app/api/v1/auth.py",
+      "lines": 112
+    },
+    {
+      "file": "backend/app/models/auth.py",
+      "lines": 109
+    },
+    {
+      "file": "backend/app/main.py",
+      "lines": 95
+    },
+    {
+      "file": "backend/app/core/config.py",
+      "lines": 95
+    },
+    {
+      "file": "backend/app/core/database.py",
+      "lines": 93
+    },
+    {
+      "file": "backend/app/services/citas.py",
+      "lines": 91
+    },
+    {
+      "file": "backend/app/api/deps.py",
+      "lines": 80
+    },
+    {
+      "file": "backend/tests/conftest.py",
+      "lines": 80
+    },
+    {
+      "file": "backend/app/services/acceso.py",
+      "lines": 76
+    },
+    {
+      "file": "backend/app/services/usuarios.py",
+      "lines": 76
+    },
+    {
+      "file": "backend/scripts/audit_readonly.py",
+      "lines": 73
+    },
+    {
+      "file": "backend/app/services/sesiones.py",
+      "lines": 71
+    },
+    {
+      "file": "backend/app/models/clinica.py",
+      "lines": 68
+    },
+    {
+      "file": "backend/tests/test_auth_security.py",
+      "lines": 66
+    },
+    {
+      "file": "backend/app/services/pacientes.py",
+      "lines": 58
+    },
+    {
+      "file": "backend/app/schemas/perfiles.py",
+      "lines": 57
+    },
+    {
+      "file": "backend/app/core/security.py",
+      "lines": 52
+    },
+    {
+      "file": "backend/app/api/v1/sesiones.py",
+      "lines": 52
+    },
+    {
+      "file": "backend/app/api/v1/pacientes.py",
+      "lines": 50
+    },
+    {
+      "file": "backend/app/api/v1/terapeutas.py",
+      "lines": 48
+    },
+    {
+      "file": "backend/app/api/v1/padres.py",
+      "lines": 47
+    },
+    {
+      "file": "backend/app/api/v1/admin.py",
+      "lines": 44
+    },
+    {
+      "file": "backend/tests/clinical_helpers.py",
+      "lines": 44
+    },
+    {
+      "file": "backend/app/schemas/usuarios.py",
+      "lines": 40
+    },
+    {
+      "file": "backend/app/schemas/auth.py",
+      "lines": 36
+    },
+    {
+      "file": "backend/app/api/v1/citas.py",
+      "lines": 34
+    },
+    {
+      "file": "backend/app/api/v1/usuarios.py",
+      "lines": 32
+    },
+    {
+      "file": "backend/app/models/__init__.py",
+      "lines": 30
+    },
+    {
+      "file": "backend/app/schemas/__init__.py",
+      "lines": 29
+    },
+    {
+      "file": "backend/tests/test_config_isolation.py",
+      "lines": 22
+    },
+    {
+      "file": "backend/app/services/__init__.py",
+      "lines": 15
+    },
+    {
+      "file": "backend/app/api/contracts.py",
+      "lines": 11
+    },
+    {
+      "file": "backend/app/__init__.py",
+      "lines": 1
+    },
+    {
+      "file": "backend/app/api/__init__.py",
+      "lines": 1
+    },
+    {
+      "file": "backend/app/core/__init__.py",
+      "lines": 1
+    },
+    {
+      "file": "backend/app/api/v1/__init__.py",
+      "lines": 1
+    },
+    {
+      "file": "backend/tests/__init__.py",
+      "lines": 1
+    },
+    {
+      "file": "backend/scripts/__init__.py",
+      "lines": 1
+    }
+  ]
+}

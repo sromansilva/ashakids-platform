@@ -3,8 +3,8 @@ import { Trash2, Lock } from "lucide-react";
 import { Btn } from "@/components/common/Btn";
 import { Inp } from "@/components/common/Inp";
 
-type Props = Pick<ReturnType<typeof usePadreConfig>, "pwCurrent" | "setPwCurrent" | "pwNew" | "setPwNew" | "pwConfirm" | "setPwConfirm" | "setShow2FA" | "setShowDeleteAccount" | "showToast">;
-export function PadreConfigSeguridad({ pwCurrent, setPwCurrent, pwNew, setPwNew, pwConfirm, setPwConfirm, setShow2FA, setShowDeleteAccount, showToast }: Props) {
+type Props = Pick<ReturnType<typeof usePadreConfig>, "pwCurrent" | "setPwCurrent" | "pwNew" | "setPwNew" | "pwConfirm" | "setPwConfirm" | "setShow2FA" | "setShowDeleteAccount" | "showToast" | "pwSaving" | "handleSavePassword">;
+export function PadreConfigSeguridad({ pwCurrent, setPwCurrent, pwNew, setPwNew, pwConfirm, setPwConfirm, setShow2FA, setShowDeleteAccount, showToast: _showToast, pwSaving, handleSavePassword }: Props) {
 return (<div className="flex flex-col gap-5">
                 <h2 className="font-extrabold text-[#1C1135] text-lg">
                   Seguridad
@@ -92,18 +92,14 @@ return (<div className="flex flex-col gap-5">
                       !pwCurrent ||
                       !pwNew ||
                       !pwConfirm ||
-                      pwNew !== pwConfirm
+                      pwNew !== pwConfirm ||
+                      pwSaving
                     }
                     onClick={() => {
-                      setPwCurrent("");
-                      setPwNew("");
-                      setPwConfirm("");
-                      showToast(
-                        "Contraseña actualizada correctamente",
-                      );
+                      void handleSavePassword();
                     }}
                   >
-                    <Lock size={14} /> Cambiar contraseña
+                    <Lock size={14} /> {pwSaving ? "Guardando..." : "Cambiar contraseña"}
                   </Btn>
                 </div>
               </div>);

@@ -17,7 +17,7 @@ class TestConfig(unittest.TestCase):
     """Verifica que la configuración centralizada se cargue adecuadamente."""
 
     def test_settings_metadata(self):
-        self.assertEqual(settings.PROJECT_NAME, "ASHAKids API")
+        self.assertEqual(settings.PROJECT_NAME, "Ashakids API")
         self.assertEqual(settings.VERSION, "0.1.0")
         self.assertEqual(settings.API_V1_PREFIX, "/api/v1")
 

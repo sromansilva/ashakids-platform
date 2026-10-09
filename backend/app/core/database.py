@@ -10,6 +10,7 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.exc import IntegrityError, DBAPIError
 
 from app.core.config import settings
 
@@ -57,7 +58,7 @@ def init_db(database_url: Optional[str] = None) -> None:
     except Exception as e:
         async_engine = None
         async_session_factory = None
-        logger.error("Error al inicializar la conexión a PostgreSQL: %s", e)
+        logger.error("Error al inicializar PostgreSQL: %s", type(e).__name__)
 
 
 # Inicialización en la carga del módulo
@@ -81,6 +82,12 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         try:
             yield session
             await session.commit()
+        except IntegrityError:
+            await session.rollback()
+            raise HTTPException(409, "Conflicto de datos: registro duplicado o referencia inválida.") from None
+        except (DBAPIError, OSError, TimeoutError):
+            await session.rollback()
+            raise HTTPException(503, "Base de datos temporalmente no disponible.") from None
         except Exception:
             await session.rollback()
             raise

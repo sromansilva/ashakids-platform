@@ -1,0 +1,97 @@
+$kind: http-request
+name: Complete isolated API verification
+order: 1000
+url: '{{base_url}}/'
+method: GET
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      const base = pm.environment.get('base_url');
+      const password = pm.environment.get('test_password');
+      const code = { admin: pm.environment.get('admin_code'), parent: pm.environment.get('parent_code'), therapist: pm.environment.get('therapist_code') };
+      const api = '/api/v1';
+      let userId = 0, patientId = 0, treatmentId = 0, appointmentId = 0, sessionId = 0;
+      const initialStart = new Date(Date.now() + 30000), initialEnd = new Date(initialStart.getTime() + 30000);
+      const movedStart = new Date(initialEnd.getTime() + 30000), movedEnd = new Date(movedStart.getTime() + 30000);
+      const test = (res, expected, label) => pm.test(`${label} -> ${expected}`, () => pm.expect(res.code).to.eql(expected));
+      const json = (payload) => ({ mode: 'raw', raw: JSON.stringify(payload), options: { raw: { language: 'json' } } });
+      const login = (role) => ({ codigo_usuario: code[role], password });
+      const steps = [
+        { method: 'GET', path: '/health', expected: 200, label: 'GET /health' },
+        { method: 'GET', path: '/health/ready', expected: 200, label: 'GET /health/ready' },
+        { method: 'GET', path: '/openapi.json', expected: 200, label: 'GET /openapi.json', after: (r) => pm.test('OpenAPI publica 32 operaciones', () => pm.expect(Object.values(r.json().paths).reduce((n, item) => n + Object.keys(item).length, 0)).to.eql(32)) },
+        { method: 'GET', path: `${api}/auth/me`, expected: 401, label: 'GET /auth/me anónimo' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login ADMIN', body: () => login('admin') },
+        { method: 'GET', path: `${api}/auth/me`, expected: 200, label: 'GET /auth/me ADMIN' },
+        { method: 'GET', path: `${api}/admin/me`, expected: 200, label: 'GET /admin/me' },
+        { method: 'POST', path: `${api}/usuarios`, expected: 201, label: 'POST /usuarios', body: () => ({ nombres: 'Usuario', apellidos: 'Postman', email: 'usuario.postman@example.com', codigo_usuario: 'p90003', password: 'Nueva-Clave-Postman-2026', rol: 'PADRE' }), after: (r) => userId = r.json().id_usuario },
+        { method: 'GET', path: `${api}/usuarios?limit=20&offset=0`, expected: 200, label: 'GET /usuarios' },
+        { method: 'GET', path: () => `${api}/usuarios/${userId}`, expected: 200, label: 'GET /usuarios/{key}' },
+        { method: 'PATCH', path: () => `${api}/usuarios/${userId}`, expected: 200, label: 'PATCH /usuarios/{key}', body: () => ({ nombres: 'Usuario Editado' }) },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout ADMIN' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login PADRE', body: () => login('parent') },
+        { method: 'GET', path: `${api}/padres/me`, expected: 200, label: 'GET /padres/me' },
+        { method: 'POST', path: `${api}/pacientes`, expected: 201, label: 'POST /pacientes', body: () => ({ nombres_paciente: 'Paciente', apellidos_paciente: 'Postman', fecha_nacimiento: '2020-01-01', sexo: 'OTRO' }), after: (r) => patientId = r.json().id_paciente },
+        { method: 'GET', path: `${api}/pacientes?limit=20&offset=0`, expected: 200, label: 'GET /pacientes' },
+        { method: 'GET', path: () => `${api}/pacientes/${patientId}`, expected: 200, label: 'GET /pacientes/{key}' },
+        { method: 'PUT', path: () => `${api}/pacientes/${patientId}`, expected: 200, label: 'PUT /pacientes/{key}', body: () => ({ nombres_paciente: 'Paciente Editado', apellidos_paciente: 'Postman', fecha_nacimiento: '2020-01-01', sexo: 'OTRO' }) },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout PADRE' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login TERAPEUTA', body: () => login('therapist') },
+        { method: 'GET', path: `${api}/terapeutas/me`, expected: 200, label: 'GET /terapeutas/me' },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout TERAPEUTA' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login ADMIN para tratamiento', body: () => login('admin') },
+        { method: 'POST', path: `${api}/tratamientos`, expected: 201, label: 'POST /tratamientos', body: () => ({ id_paciente: patientId, id_terapeuta: 1, nombre_tratamiento: 'Plan Postman', sesiones_recomendadas: 4 }), after: (r) => treatmentId = r.json().id_tratamiento },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout ADMIN tratamiento' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login PADRE para cita', body: () => login('parent') },
+        { method: 'GET', path: () => `${api}/pacientes/${patientId}/tratamientos?limit=20&offset=0`, expected: 200, label: 'GET /pacientes/{key}/tratamientos' },
+        { method: 'POST', path: `${api}/citas`, expected: 201, label: 'POST /citas', body: () => ({ id_tratamiento: treatmentId, fecha_hora_inicio: initialStart.toISOString(), fecha_hora_fin: initialEnd.toISOString(), modalidad: 'VIRTUAL' }), after: (r) => appointmentId = r.json().id_reserva },
+        { method: 'GET', path: `${api}/citas?limit=20&offset=0`, expected: 200, label: 'GET /citas' },
+        { method: 'GET', path: () => `${api}/citas/${appointmentId}`, expected: 200, label: 'GET /citas/{key}' },
+        { method: 'PUT', path: () => `${api}/citas/${appointmentId}`, expected: 200, label: 'PUT /citas/{key}', body: () => ({ fecha_hora_inicio: movedStart.toISOString(), fecha_hora_fin: movedEnd.toISOString(), modalidad: 'VIRTUAL' }) },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout PADRE cita' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login TERAPEUTA para sesión', body: () => login('therapist') },
+        { method: 'PATCH', path: () => `${api}/citas/${appointmentId}/estado`, expected: 200, label: 'PATCH /citas/{key}/estado', body: () => ({ estado_reserva: 'CONFIRMADA' }) },
+        { method: 'POST', path: `${api}/sesiones`, expected: 201, label: 'POST /sesiones', body: () => ({ id_reserva: appointmentId }), after: (r) => sessionId = r.json().id_sesion },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout TERAPEUTA sesión' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login PADRE para consulta sesión', body: () => login('parent') },
+        { method: 'GET', path: `${api}/sesiones?limit=20&offset=0`, expected: 200, label: 'GET /sesiones' },
+        { method: 'GET', path: () => `${api}/sesiones/${sessionId}`, expected: 200, label: 'GET /sesiones/{key}' },
+        { method: 'GET', path: () => `${api}/sesiones/${sessionId}/reporte`, expected: 404, label: 'GET /sesiones/{key}/reporte sin reporte' },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout PADRE sesión' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login TERAPEUTA para transiciones', body: () => login('therapist') },
+        { method: 'POST', path: () => `${api}/sesiones/${sessionId}/iniciar`, expected: 409, label: 'POST /sesiones/{key}/iniciar antes del horario' },
+        { method: 'POST', path: () => `${api}/sesiones/${sessionId}/cerrar`, expected: 409, label: 'POST /sesiones/{key}/cerrar antes de iniciar', body: () => ({ asistencia: 'ASISTIO' }) },
+        { method: 'PUT', path: () => `${api}/sesiones/${sessionId}/reporte`, expected: 409, label: 'PUT /sesiones/{key}/reporte antes de inicio', body: () => ({ objetivos_trabajados: 'Prueba Postman' }) },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout TERAPEUTA transiciones' },
+
+        { method: 'POST', path: `${api}/auth/login`, expected: 200, label: 'POST /auth/login PADRE para baja', body: () => login('parent') },
+        { method: 'DELETE', path: () => `${api}/pacientes/${patientId}`, expected: 200, label: 'DELETE /pacientes/{key}' },
+        { method: 'POST', path: `${api}/auth/logout`, expected: 200, label: 'POST /auth/logout final' }
+      ];
+      const run = (index) => {
+        if (index === steps.length) {
+          pm.environment.set('postman_run_summary', '32 operaciones OpenAPI recorridas contra sandbox aislado.');
+          return;
+        }
+        const step = steps[index];
+        const path = typeof step.path === 'function' ? step.path() : step.path;
+        const payload = step.body ? step.body() : undefined;
+        pm.sendRequest({ url: `${base}${path}`, method: step.method, header: { 'Content-Type': 'application/json' }, body: payload ? json(payload) : undefined }, (error, response) => {
+          pm.test(`${step.label} sin error de red`, () => pm.expect(error).to.eql(null));
+          if (!response) return;
+          test(response, step.expected, step.label);
+          if (response.code === step.expected && step.after) step.after(response);
+          run(index + 1);
+        });
+      };
+      test(pm.response, 200, 'GET /');
+      run(0);

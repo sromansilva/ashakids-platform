@@ -1,3 +1,6 @@
+import { useAppointments } from "@/hooks/useAppointments";
+import { useWrite } from "@/hooks/useRemoteData";
+import { appointmentsService } from "@/services/clinicalService";
 import { useState } from "react";
 import { View } from "@/types/navigation";
 import { therapists } from "@/mocks/demo";
@@ -9,7 +12,9 @@ import { getDaysInMonth } from "@/pages/padre/Padre/getDaysInMonth";
 import { getFirstDayOfWeek } from "@/pages/padre/Padre/getFirstDayOfWeek";
 import { Apt } from "@/pages/padre/Padre/Apt";
 
-export function usePadreAgenda({ go, appointments: apts, onAppointmentsChange }: { go: (v: View) => void; appointments: Apt[]; onAppointmentsChange: React.Dispatch<React.SetStateAction<Apt[]>> }) {
+export function usePadreAgenda({ go, appointments: _apts, onAppointmentsChange }: { go: (v: View) => void; appointments: Apt[]; onAppointmentsChange: React.Dispatch<React.SetStateAction<Apt[]>> }) {
+const { query: appointmentsQuery, appointments: liveAppointments } = useAppointments();
+const apts = liveAppointments;
 const today = new Date();
 const [year, setYear]     = useState(today.getFullYear());
 const [month, setMonth]   = useState(today.getMonth());
@@ -51,11 +56,8 @@ const pendingCount = apts.filter(apt => apt.status === "por confirmar").length;
 const confirmedApts = selectedApts.filter((apt) => apt.status === "confirmada");
 const waitingApts = selectedApts.filter((apt) => apt.status === "por confirmar");
 const rejectedApts = selectedApts.filter((apt) => apt.status === "rechazada");
-const cancelApt = (id: number) => {
-    setApts(prev => prev.filter(a => a.id !== id));
-    setCancelId(null);
-    setToast("Cita cancelada correctamente");
-  };
+const cancel = useWrite((id: number) => appointmentsService.state(id, "CANCELADA"), () => { setCancelId(null); void appointmentsQuery.refetch(); setToast("Cita cancelada en el servidor"); });
+const cancelApt = (id: number) => { void cancel.submit(id); };
 const confirmNew = () => {
     const newApt: Apt = {
       id: Date.now(),
@@ -77,5 +79,5 @@ const confirmNew = () => {
     setToast("Solicitud enviada. Te avisaremos cuando sea aceptada.");
   };
 const bookSlots = ["08:00","09:00","10:00","10:30","11:00","12:00","14:00","15:00","15:30","16:00","17:00"];
-return { go, apts, onAppointmentsChange, today, year, setYear, month, setMonth, selDay, setSelDay, setApts, showNew, setShowNew, cancelId, setCancelId, toast, setToast, timelineSel, setTimelineSel, expandedReservationIds, setExpandedReservationIds, newStep, setNewStep, newTherapist, setNewTherapist, newDay, setNewDay, newTime, setNewTime, newChild, setNewChild, newModality, setNewModality, daysInMonth, firstDay, SHORT_MONTHS, aptDays, prevMonth, nextMonth, selectedApts, pendingCount, confirmedApts, waitingApts, rejectedApts, cancelApt, confirmNew, bookSlots };
+return { appointmentsQuery, cancel, go, apts, onAppointmentsChange, today, year, setYear, month, setMonth, selDay, setSelDay, setApts, showNew, setShowNew, cancelId, setCancelId, toast, setToast, timelineSel, setTimelineSel, expandedReservationIds, setExpandedReservationIds, newStep, setNewStep, newTherapist, setNewTherapist, newDay, setNewDay, newTime, setNewTime, newChild, setNewChild, newModality, setNewModality, daysInMonth, firstDay, SHORT_MONTHS, aptDays, prevMonth, nextMonth, selectedApts, pendingCount, confirmedApts, waitingApts, rejectedApts, cancelApt, confirmNew, bookSlots };
 }

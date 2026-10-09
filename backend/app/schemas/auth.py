@@ -1,13 +1,13 @@
 """Esquemas Pydantic para el subsistema de autenticación y usuarios."""
 
 from typing import List, Optional
-from pydantic import BaseModel, ConfigDict, EmailStr
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class LoginRequest(BaseModel):
     """Payload para solicitud de inicio de sesión mediante código de usuario único (VARCHAR(6))."""
-    codigo_usuario: str
-    password: str
+    codigo_usuario: str = Field(max_length=64)
+    password: str = Field(max_length=128)
 
 
 class UserResponse(BaseModel):

@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { View } from "@/types/navigation";
-import { kids } from "@/mocks/demo";
+import { useFamilyPatients } from "@/hooks/useFamilyPatients";
+import { useEffect } from "react";
+import { useRoleProfile } from "@/hooks/useRoleProfile";
+import { useAuth } from "@/hooks/useAuth";
+import { usersService } from "@/services/clinicalService";
 
 export function usePadreConfig({ onNameChange, padrePlan = "exploracion", go: configGo }: { onNameChange?: (n: string) => void; padrePlan?: "exploracion" | "familia"; go?: (v: View) => void }) {
 const [tab, setTab] = useState<
@@ -15,24 +19,34 @@ const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(""), 3000);
   };
-const [nombre, setNombre] = useState("Laura Gómez");
-const [email, setEmail] = useState("laura.gomez@email.com");
-const [tel, setTel] = useState("+1 (555) 987-6543");
-const [ciudad, setCiudad] = useState("Ciudad de México");
+const profile = useRoleProfile();
+const [nombre, setNombre] = useState("");
+const [email, setEmail] = useState("");
+const [tel, setTel] = useState("");
+const [ciudad, setCiudad] = useState("");
+useEffect(() => {
+  const data = profile.data;
+  if (!data?.user) return;
+  setNombre(data.user.nombres + " " + data.user.apellidos); setEmail(data.user.email);
+  if ("perfil_tutor" in data) {
+    setTel(data.perfil_tutor?.telefono ?? ""); setCiudad(data.perfil_tutor?.direccion ?? "");
+  }
+}, [profile.data]);
 const [showPhotoModal, setShowPhotoModal] = useState(false);
 const [selectedAvatar, setSelectedAvatar] = useState("👤");
 const userAvatarOptions = ["👤", "🦊", "🐻", "🐰", "🦁", "🐼", "🐨", "🐸", "🦋", "🌟", "🎭", "🌺"];
 const [showPwConfirmModal, setShowPwConfirmModal] = useState(false);
 const [pwConfirmInput, setPwConfirmInput] = useState("");
-const [childList, setChildList] = useState(kids);
+const { query: patientsQuery, children: childList } = useFamilyPatients();
+const setChildList = () => { void patientsQuery.refetch(); };
 const [showAddChildModal, setShowAddChildModal] =
     useState(false);
 const [showPlanUpgradeModal, setShowPlanUpgradeModal] = useState(false);
 const [editChild, setEditChild] = useState<
-    (typeof kids)[0] | null
+    (typeof childList)[0] | null
   >(null);
 const [deleteChild, setDeleteChild] = useState<
-    (typeof kids)[0] | null
+    (typeof childList)[0] | null
   >(null);
 const [newCN, setNewCN] = useState("");
 const [newCA, setNewCA] = useState("");
@@ -98,6 +112,37 @@ const [twoFADone, setTwoFADone] = useState(false);
 const [showDeleteAccount, setShowDeleteAccount] =
     useState(false);
 const [deleteConfirm, setDeleteConfirm] = useState("");
+const { user: authUser } = useAuth();
+const [pwSaving, setPwSaving] = useState(false);
+const handleSavePassword = async () => {
+  if (!pwCurrent) {
+    showToast("Ingresa tu contraseña actual.");
+    return;
+  }
+  if (!pwNew || pwNew.length < 8) {
+    showToast("La nueva contraseña debe tener al menos 8 caracteres.");
+    return;
+  }
+  if (pwNew !== pwConfirm) {
+    showToast("Las contraseñas no coinciden.");
+    return;
+  }
+  setPwSaving(true);
+  try {
+    const id = authUser?.id_usuario ?? profile.data?.user?.id_usuario;
+    if (id) {
+      await usersService.edit(id, { password: pwNew });
+    }
+    setPwCurrent("");
+    setPwNew("");
+    setPwConfirm("");
+    showToast("Contraseña actualizada. Ahora tienes el control exclusivo de tu cuenta.");
+  } catch (_err) {
+    showToast("Error al actualizar la contraseña. Revisa la conexión.");
+  } finally {
+    setPwSaving(false);
+  }
+};
 const tabs = [
     { key: "cuenta" as const, label: "Mi cuenta", icon: "👤" },
     { key: "hijos" as const, label: "Mis hijos", icon: "👧" },
@@ -117,5 +162,5 @@ const tabs = [
       icon: "🔐",
     },
   ];
-return { onNameChange, configGo, padrePlan, tab, setTab, toast, setToast, showToast, nombre, setNombre, email, setEmail, tel, setTel, ciudad, setCiudad, showPhotoModal, setShowPhotoModal, selectedAvatar, setSelectedAvatar, userAvatarOptions, showPwConfirmModal, setShowPwConfirmModal, pwConfirmInput, setPwConfirmInput, childList, setChildList, showAddChildModal, setShowAddChildModal, showPlanUpgradeModal, setShowPlanUpgradeModal, editChild, setEditChild, deleteChild, setDeleteChild, newCN, setNewCN, newCA, setNewCA, newCS, setNewCS, newBirth, setNewBirth, newAvatar, setNewAvatar, avatarOptions, notifs, setNotifs, toggleN, consentsPriv, setConsentsPriv, toggleConsentsPriv, showRevokeOptional, setShowRevokeOptional, showDownloadModal, setShowDownloadModal, downloadSent, setDownloadSent, accountStatus, setAccountStatus, showDeactivateConfirm, setShowDeactivateConfirm, showReactivateFlow, setShowReactivateFlow, reactivateCode, setReactivateCode, pwCurrent, setPwCurrent, pwNew, setPwNew, pwConfirm, setPwConfirm, show2FA, setShow2FA, twoFADone, setTwoFADone, showDeleteAccount, setShowDeleteAccount, deleteConfirm, setDeleteConfirm, tabs };
+return { onNameChange, configGo, padrePlan, tab, setTab, toast, setToast, showToast, nombre, setNombre, email, setEmail, tel, setTel, ciudad, setCiudad, showPhotoModal, setShowPhotoModal, selectedAvatar, setSelectedAvatar, userAvatarOptions, showPwConfirmModal, setShowPwConfirmModal, pwConfirmInput, setPwConfirmInput, childList, setChildList, showAddChildModal, setShowAddChildModal, showPlanUpgradeModal, setShowPlanUpgradeModal, editChild, setEditChild, deleteChild, setDeleteChild, newCN, setNewCN, newCA, setNewCA, newCS, setNewCS, newBirth, setNewBirth, newAvatar, setNewAvatar, avatarOptions, notifs, setNotifs, toggleN, consentsPriv, setConsentsPriv, toggleConsentsPriv, showRevokeOptional, setShowRevokeOptional, showDownloadModal, setShowDownloadModal, downloadSent, setDownloadSent, accountStatus, setAccountStatus, showDeactivateConfirm, setShowDeactivateConfirm, showReactivateFlow, setShowReactivateFlow, reactivateCode, setReactivateCode, pwCurrent, setPwCurrent, pwNew, setPwNew, pwConfirm, setPwConfirm, pwSaving, handleSavePassword, show2FA, setShow2FA, twoFADone, setTwoFADone, showDeleteAccount, setShowDeleteAccount, deleteConfirm, setDeleteConfirm, tabs };
 }

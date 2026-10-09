@@ -2,7 +2,11 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import { kids } from "@/mocks/demo";
 
-export function ChildPicker({ activeChild, setActiveChild }: { activeChild: number; setActiveChild: (i: number, changed: boolean) => void }) {
+export function ChildPicker({ activeChild, setActiveChild, childrenList = kids }: {
+  activeChild: number;
+  setActiveChild: (i: number, changed: boolean) => void;
+  childrenList?: Array<{ id: number; name: string; emoji: string }>;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -17,7 +21,8 @@ export function ChildPicker({ activeChild, setActiveChild }: { activeChild: numb
     return () => { document.removeEventListener("mousedown", handleOutside); document.removeEventListener("keydown", handleEsc); };
   }, [open]);
 
-  const current = kids[activeChild];
+  const list = childrenList.length > 0 ? childrenList : kids;
+  const current = list[activeChild] ?? list[0] ?? kids[0];
 
   return (
     <div ref={ref} className="relative flex-shrink-0">
@@ -44,7 +49,7 @@ export function ChildPicker({ activeChild, setActiveChild }: { activeChild: numb
           className="absolute left-0 top-full mt-2 bg-white rounded-2xl border border-[#E8E5F4] py-1.5 z-50 min-w-[160px]"
           style={{ boxShadow: "0 8px 32px rgba(124,58,237,0.13), 0 2px 8px rgba(0,0,0,0.07)", fontFamily: '"Nunito", system-ui, sans-serif' }}
         >
-          {kids.map((k, i) => (
+          {list.map((k, i) => (
             <button
               key={k.id}
               role="option"

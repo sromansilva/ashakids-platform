@@ -6,6 +6,8 @@ import { Btn } from "@/components/common/Btn";
 import { Crd } from "@/components/common/Crd";
 
 import { Inp } from "@/components/common/Inp";
+import { useAuth } from "@/hooks/useAuth";
+import { usersService } from "@/services/clinicalService";
 
 export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
   const [title, setTitle] = useState("");
@@ -64,6 +66,8 @@ export function TerapeutaConfig() {
   const [twoFaEnabled, setTwoFaEnabled] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [securityNotice, setSecurityNotice] = useState("");
+  const { user } = useAuth();
+  const [pwSaving, setPwSaving] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Perfil editable fields
@@ -388,17 +392,32 @@ export function TerapeutaConfig() {
                   <Btn variant="danger" size="sm" onClick={() => setConfirmDelete(true)}>Eliminar cuenta</Btn>
                 </div>
                 <div className="flex justify-end">
-                  <Btn variant="cta" onClick={() => {
+                  <Btn variant="cta" disabled={pwSaving} onClick={() => {
                     const errs: typeof pwErrors = {};
                     if (!pwActual) errs.actual = "Ingresa tu contraseña actual";
                     if (!pwNueva || pwNueva.length < 8) errs.nueva = "La contraseña debe tener al menos 8 caracteres";
                     if (pwNueva !== pwConfirm) errs.confirm = "Las contraseñas no coinciden";
                     if (Object.keys(errs).length > 0) { setPwErrors(errs); return; }
-                    setPwActual(""); setPwNueva(""); setPwConfirm("");
-                    setSecurityNotice("Contraseña actualizada correctamente");
-                    setTimeout(() => setSecurityNotice(""), 3500);
+                    setPwSaving(true);
+                    void (async () => {
+                      try {
+                        if (user?.id_usuario) {
+                          await usersService.edit(user.id_usuario, { password: pwNueva });
+                        }
+                        setPwActual(""); setPwNueva(""); setPwConfirm("");
+                        setSecurityNotice("Contraseña actualizada. Ahora tienes el control exclusivo de tu cuenta.");
+                        setTimeout(() => setSecurityNotice(""), 3500);
+                      } catch {
+                        setPwErrors({ confirm: "Error al actualizar la contraseña en el servidor." });
+                      } finally {
+                        setPwSaving(false);
+                      }
+                    })();
+                    return;
+
+
                   }}>
-                    Cambiar contraseña
+                    {pwSaving ? "Guardando..." : "Cambiar contraseña"}
                   </Btn>
                 </div>
               </div>

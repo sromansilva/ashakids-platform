@@ -8,6 +8,6 @@ export type AppointmentRequest = {
   date: string;
   time: string;
   type: "virtual" | "presencial";
-  status: "por confirmar" | "confirmada" | "cancelada" | "rechazada";
+  status: "por confirmar" | "confirmada" | "cancelada" | "rechazada" | "completada";
   paymentStatus?: "pendiente" | "pagada";
 };

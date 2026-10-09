@@ -1,8 +1,12 @@
+import { patientsService } from "@/services/clinicalService";
+import { useWrite } from "@/hooks/useRemoteData";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 import type { usePadreConfig } from "@/pages/padre/settings/usePadreConfig";
 import { Btn } from "@/components/common/Btn";
 
 type Props = Pick<ReturnType<typeof usePadreConfig>, "setDeleteChild" | "deleteChild" | "setChildList" | "showToast">;
 export function PadreConfigDeleteChild({ setDeleteChild, deleteChild, setChildList, showToast }: Props) {
+const save = useWrite(() => patientsService.deactivate(deleteChild!.id), () => { setChildList(); setDeleteChild(null); showToast("Paciente dado de baja; se conserva su historial"); });
 return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
@@ -23,7 +27,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                 Esta acción eliminará el perfil y todo el
                 historial asociado. No puede deshacerse.
               </p>
-              <div className="flex gap-3">
+              <RemoteFeedback error={save.error} /><div className="flex gap-3">
                 <Btn
                   variant="secondary"
                   className="flex-1 justify-center"
@@ -34,17 +38,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                 <Btn
                   variant="danger"
                   className="flex-1 justify-center"
-                  onClick={() => {
-                    setChildList((prev) =>
-                      prev.filter(
-                        (c) => c.id !== deleteChild!.id,
-                      ),
-                    );
-                    setDeleteChild(null);
-                    showToast(
-                      `Perfil de ${deleteChild!.name} eliminado`,
-                    );
-                  }}
+                  disabled={save.isPending} onClick={() => void save.submit(undefined)}
                 >
                   Eliminar
                 </Btn>

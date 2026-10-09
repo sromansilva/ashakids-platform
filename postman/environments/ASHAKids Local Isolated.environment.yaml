@@ -1,0 +1,14 @@
+name: ASHAKids Local Isolated
+values:
+  - key: base_url
+    value: 'http://localhost:8001'
+  - key: admin_code
+    value: a90001
+  - key: parent_code
+    value: p90001
+  - key: therapist_code
+    value: t90001
+  - key: test_password
+    value: Postman-Synthetic-Only-2026
+  - key: postman_run_summary
+    value: ''

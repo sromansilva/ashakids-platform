@@ -16,7 +16,7 @@ import { kids } from "@/mocks/demo";
 import { Ashi } from "@/components/illustrations/Ashi";
 
 export function PadreHome(props: Parameters<typeof usePadreHome>[0]) {
-const { go, onNotifsRead, padreUserName, padrePlan, extraNotifs, activeChild, setActiveChild, childLoading, setChildLoading, handleSetChild, searchVal, setSearchVal, showNotifs, setShowNotifs, notifsRead, setNotifsRead, showReprog, setShowReprog, showDetails, setShowDetails, showArticle, setShowArticle, showAddChild, setShowAddChild, newChildName, setNewChildName, newChildAge, setNewChildAge, addChildDone, setAddChildDone, homeToast, setHomeToast, staticNotifs, notifs, hasUnread, searchIndex, searchResults, child, recommendations, achievements, wellnessArticles, calDays, apptDays } = usePadreHome(props);
+const { go, onNotifsRead, padreUserName, padrePlan, extraNotifs, activeChild, setActiveChild, childLoading, setChildLoading, handleSetChild, searchVal, setSearchVal, showNotifs, setShowNotifs, notifsRead, setNotifsRead, showReprog, setShowReprog, showDetails, setShowDetails, showArticle, setShowArticle, showAddChild, setShowAddChild, newChildName, setNewChildName, newChildAge, setNewChildAge, addChildDone, setAddChildDone, homeToast, setHomeToast, staticNotifs, notifs, hasUnread, searchIndex, searchResults, child, childrenList, nextSessionAppt, recommendations, achievements, wellnessArticles, calDays, apptDays } = usePadreHome(props);
 return (
     <div
       style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}
@@ -37,7 +37,7 @@ return (
         </>
       )}
       {/* ─── Desktop Header ─── */}
-      <PadreHomeBuenosDias padreUserName={padreUserName} padrePlan={padrePlan} activeChild={activeChild} handleSetChild={handleSetChild} searchVal={searchVal} setSearchVal={setSearchVal} searchResults={searchResults} go={go} setShowNotifs={setShowNotifs} setNotifsRead={setNotifsRead} onNotifsRead={onNotifsRead} hasUnread={hasUnread} showNotifs={showNotifs} notifs={notifs} />
+      <PadreHomeBuenosDias padreUserName={padreUserName} padrePlan={padrePlan} activeChild={activeChild} handleSetChild={handleSetChild} searchVal={searchVal} setSearchVal={setSearchVal} searchResults={searchResults} go={go} setShowNotifs={setShowNotifs} setNotifsRead={setNotifsRead} onNotifsRead={onNotifsRead} hasUnread={hasUnread} showNotifs={showNotifs} notifs={notifs} childrenList={childrenList} />
 
       <div className="p-4 sm:p-6 max-w-7xl mx-auto">
         {/* ─── Hero Banner ─── */}
@@ -87,7 +87,7 @@ return (
         {/* ─── Mi Camino ASHA — Journey Stepper ─── */}
         <PadreHomeMiCaminoASHA go={go} />
 
-        <PadreHomeProximaSesion go={go} setShowReprog={setShowReprog} setShowDetails={setShowDetails} child={child} recommendations={recommendations} wellnessArticles={wellnessArticles} setShowArticle={setShowArticle} />
+        <PadreHomeProximaSesion go={go} setShowReprog={setShowReprog} setShowDetails={setShowDetails} child={child} recommendations={recommendations} wellnessArticles={wellnessArticles} setShowArticle={setShowArticle} nextSessionAppt={nextSessionAppt} />
 
         {/* ─── ASHI personalized recommendation ─── */}
         <div

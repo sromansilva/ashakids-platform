@@ -177,13 +177,13 @@ export function Sidebar({
         }
       : role === "terapeuta"
         ? {
-            name: "Dra. Ana Ruiz",
+            name: padreUserName,
             sub: "Terapeuta",
-            av: "AR",
+            av: padreUserName.slice(0, 2).toUpperCase(),
             color: B.teal,
           }
         : {
-            name: "Administrador",
+            name: padreUserName,
             sub: "Admin",
             av: "AD",
             color: B.orange,

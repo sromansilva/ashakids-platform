@@ -3,9 +3,13 @@ import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
 import { kids } from "@/mocks/demo";
 import { PadreNotif } from "@/types/PadreNotif";
+import { useFamilyPatients } from "@/hooks/useFamilyPatients";
+import { useAppointments } from "@/hooks/useAppointments";
 
 export function usePadreHome({ go, padreUserName = "Laura Gómez", padrePlan = "exploracion", extraNotifs = [], onNotifsRead }: { go: (v: View) => void; padreUserName?: string; padrePlan?: "exploracion" | "familia"; extraNotifs?: PadreNotif[]; onNotifsRead?: () => void }) {
-const [activeChild, setActiveChild] = useState(0);
+  const { children: familyKids, query: familyQuery } = useFamilyPatients();
+  const { appointments: familyAppts } = useAppointments();
+  const [activeChild, setActiveChild] = useState(0);
 const [childLoading, setChildLoading] = useState(false);
 const handleSetChild = (i: number, changed: boolean) => {
     if (changed) {
@@ -56,7 +60,12 @@ const searchResults =
             .includes(searchVal.toLowerCase()),
         )
       : [];
-const child = kids[activeChild];
+  const childrenList = familyKids.length > 0 ? familyKids : kids;
+  const child = childrenList[activeChild] ?? childrenList[0] ?? kids[0];
+  const nextSessionAppt = familyAppts.find(
+    (a) => (a.child.toLowerCase().includes(child.name.toLowerCase()) || child.name.toLowerCase().includes(a.child.toLowerCase())) &&
+      (a.status === "confirmada" || a.status === "por confirmar")
+  ) ?? familyAppts[0];
 const recommendations = [
     {
       world: "🌳",
@@ -149,5 +158,5 @@ const calDays: (number | null)[] = [
     31,
   ];
 const apptDays = [30, 2, 6];
-return { go, onNotifsRead, padreUserName, padrePlan, extraNotifs, activeChild, setActiveChild, childLoading, setChildLoading, handleSetChild, searchVal, setSearchVal, showNotifs, setShowNotifs, notifsRead, setNotifsRead, showReprog, setShowReprog, showDetails, setShowDetails, showArticle, setShowArticle, showAddChild, setShowAddChild, newChildName, setNewChildName, newChildAge, setNewChildAge, addChildDone, setAddChildDone, homeToast, setHomeToast, staticNotifs, notifs, hasUnread, searchIndex, searchResults, child, recommendations, achievements, wellnessArticles, calDays, apptDays };
+return { go, onNotifsRead, padreUserName, padrePlan, extraNotifs, activeChild, setActiveChild, childLoading, setChildLoading, handleSetChild, searchVal, setSearchVal, showNotifs, setShowNotifs, notifsRead, setNotifsRead, showReprog, setShowReprog, showDetails, setShowDetails, showArticle, setShowArticle, showAddChild, setShowAddChild, newChildName, setNewChildName, newChildAge, setNewChildAge, addChildDone, setAddChildDone, homeToast, setHomeToast, staticNotifs, notifs, hasUnread, searchIndex, searchResults, child, childrenList, nextSessionAppt, familyQuery, recommendations, achievements, wellnessArticles, calDays, apptDays };
 }
