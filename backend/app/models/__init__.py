@@ -1,3 +1,4 @@
+from app.models.auditoria import AuditoriaCambios
 from app.models.auth import (
     Administrador,
     Rol,
@@ -26,5 +27,6 @@ __all__ = [
     "PerfilLogro",
     "Tutor",
     "Terapeuta",
+    "AuditoriaCambios",
 ]
 
