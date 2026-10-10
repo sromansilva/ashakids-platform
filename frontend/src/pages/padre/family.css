@@ -1,0 +1,79 @@
+@media (min-width: 768px) {
+  .asha-family { background: radial-gradient(ellipse at 80% 0%,#ede9fe,transparent 54%),radial-gradient(ellipse at 30% 65%,#ffedd580,transparent 60%),#fafaf9 !important; color: #1c1135; }
+  .asha-family ::selection { background: #ddd6fe; color: #2d1b69; }
+  .asha-family :is(button,a,input,textarea,select):focus-visible { outline: 3px solid #5b21b6; outline-offset: 3px; }
+  .asha-family :is(input,textarea) { caret-color: #7c3aed; }
+  .asha-family :is(h1,h2) { letter-spacing: -.025em; text-wrap: balance; }
+  .asha-family h1 { font-size: 1.9rem; line-height: 1.25; }
+  .asha-family button { transition: background-color .18s,box-shadow .18s,color .18s; }
+  .asha-family button:disabled { cursor: not-allowed; }
+  .asha-family .family-sidebar { background: #ffffffb3 !important; backdrop-filter: blur(18px); border-right: 1px solid #e8e1f0; }
+  .asha-family .family-sidebar > div:first-child { padding: 30px 24px; }
+  .asha-family .family-sidebar nav { padding: 0 16px; gap: 5px; }
+  .asha-family .family-sidebar nav button { min-height: 46px; border-radius: 12px; padding: 12px; color: #615274; }
+  .asha-family .family-sidebar nav button[aria-current=page] { color: #fff; background: #6d28d9; box-shadow: 0 5px 14px #6d28d91a; }
+  .asha-family .family-sidebar nav button[aria-current=page] svg { color: #fff; }
+  .asha-family .family-sidebar nav button:not([aria-current]):hover { color: #5b21b6; background: #ede9fe80; }
+  .asha-family .family-sidebar > div:last-child { padding: 20px; border-top: 1px solid #e8e1f0; }
+  .family-toolbar { display: flex; align-items: center; justify-content: space-between; min-height: 74px; padding: 16px 36px; background: #ffffff80; backdrop-filter: blur(18px); border-bottom: 1px solid #e8e1f0; font-size: .87rem; font-weight: 800; }
+  .family-toolbar > p { color: #615274; }
+  .family-toolbar > span { text-align: right; }
+  .family-toolbar > span > span { display: block; color: #615274; font-size: .72rem; margin-top: 2px; }
+  .family-content { padding: 12px 88px 36px 12px; }
+  .family-content > :is(div,section) { max-width: 1220px; padding: 24px; }
+  .family-content .text-\[\#7C6F9A\],.family-content .text-\[\#9E95B7\],.family-content .text-\[\#C4BDD8\] { color: #615274; }
+  .family-content :is(input,select,textarea) { background: #fff; border-radius: 10px; min-height: 44px; }
+  .family-content :is(input,textarea)::placeholder { color: #756585; }
+  .family-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #ffffffbf; border-color: transparent; border-radius: 16px; box-shadow: 0 7px 24px #45247808,inset 0 1px 0 #fff; }
+  .family-content .fixed .bg-white { background: #fff; box-shadow: 0 22px 70px #1c113526; }
+  .asha-family:has([role=dialog]) :is(a[aria-label="Contactar a AshaKids por WhatsApp"],button[aria-label="Abrir asistente ASHI"]) { visibility: hidden; }
+  .family-heading { margin-bottom: 26px; }
+  .family-heading p { font-size: 1rem; max-width: 70ch; }
+  .family-child-picker { max-width: 420px; }
+  .family-child-picker select { border-color: #d6cceb; font-weight: 750; box-shadow: 0 3px 12px #45247805; }
+  .asha-family .family-summary { border-radius: 18px; padding: 28px 32px; background: radial-gradient(ellipse at 100% 0%,#fed7aa90,transparent 65%),#ffffffb3 !important; color: #1c1135; box-shadow: 0 10px 35px #45247809,inset 0 1px 0 #fff; }
+  .family-summary h2 { font-size: 1.55rem; }
+  .family-summary p { color: #615274; }
+  .family-summary button { min-height: 44px; border-radius: 12px; }
+  .family-summary button:first-child { background: #6d28d9 !important; border-color: transparent !important; color: white !important; }
+  .family-summary button:first-child:hover { background: #5b21b6 !important; }
+  .family-summary > div:last-child { padding: 12px 16px; }
+  .family-panel > section[aria-label="Primer paso de este niño"] { background: #ede9fe70; border-color: #ddd6fe; border-radius: 14px; padding: 24px; }
+  .family-plan { padding: 24px; background: #ffffffa6; border-radius: 16px; box-shadow: 0 7px 24px #45247807; }
+  .family-plan > div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px 20px; }
+  .family-plan > div > p { grid-column: 1; }
+  .family-plan > div > button { grid-column: 2; grid-row: 1 / 4; align-self: center; }
+  .family-stats { gap: 0; background: #ffffffa6; border-radius: 16px; padding: 8px; }
+  .family-stats > div { border: 0; border-radius: 0; box-shadow: none !important; background: transparent !important; padding: 18px; }
+  .family-stats > div + div { border-left: 1px solid #e8e1f0; }
+  .family-stats dd { font-variant-numeric: tabular-nums; }
+  .family-milestones { padding-block: 12px; }
+  .family-milestones ol { gap: 0; }
+  .family-milestones li { background: transparent; border: 0; border-radius: 0; padding: 18px 20px 12px 0; }
+  .family-milestones li + li { padding-left: 20px; border-left: 1px solid #e8e1f0; }
+  .family-milestones li p:last-child { font-size: .82rem; line-height: 1.6; }
+  .family-workspace { gap: 24px; }
+  .family-content .bg-white:has([aria-label="Último reporte"]),
+  .family-content section[aria-label="Reportes guardados"] .bg-white,
+  .family-content section[aria-label="Historial de sesiones"] .bg-white,
+  .family-content .bg-white:has(button[aria-controls^="session-detail-"]) { background: #fff; }
+  .family-workspace > div { padding: 26px; }
+  .family-worlds { background: transparent !important; }
+  .family-worlds > div { max-width: 1160px; }
+  .family-worlds > div > p[role=note] { background: #ffffffa6; border-radius: 12px; padding: 18px 22px; font-size: .9rem; line-height: 1.7; }
+  .family-world-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; border: 0; }
+  .family-world-list > li { padding: 26px; border: 0 !important; border-radius: 16px; background: radial-gradient(ellipse at 100% 0%,#ccfbf180,transparent 70%),#ffffffbf; box-shadow: 0 9px 28px #4524780a; display: flex; flex-direction: column; align-items: start; gap: 22px; transition: box-shadow .18s,background-color .18s; }
+  .family-world-list > li:nth-child(2n) { background: radial-gradient(ellipse at 100% 0%,#fed7aa80,transparent 70%),#ffffffbf; }
+  .family-world-list > li:hover { box-shadow: 0 14px 34px #45247815; }
+  .family-world-list h3 { max-width: 20ch; font-size: 1.35rem; }
+  .family-world-list > li > svg { color: #5b21b6; }
+  .family-world-list > li > button { margin-top: auto; min-height: 44px; }
+  .family-professionals { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; }
+  .family-professionals > li { margin-top: 0 !important; padding: 26px; }
+  .asha-family table th { color: #615274; }
+  .asha-family table td { padding-block: 16px; }
+  @supports not (backdrop-filter: blur(16px)) { .asha-family .family-sidebar,.family-toolbar { background: #fff !important; } }
+  @media (prefers-reduced-motion: reduce) { .asha-family * { animation: none !important; transition: none !important; } .asha-family button:active { transform: none !important; } }
+}
+.family-toolbar { display: none; }
+@media (min-width: 768px) { .family-toolbar { display: flex; } }

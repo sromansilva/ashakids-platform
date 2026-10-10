@@ -1,3 +1,8 @@
+# Continuidad V42
+
+Portal familiar web actualizado, lógica intacta. Usar último SHA remoto de dev/codex/2do-intento.
+Siguiente: terapeuta web UI y diagnóstico Render/BD; responsive diferido. Evidencia family-v42.
+
 # Punto de continuidad del equipo
 
 V40_Rediseno_Login_UI y V41_Rediseno_Admin_UI extienden la misma marca: lógica intacta.

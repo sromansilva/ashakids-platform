@@ -1,6 +1,6 @@
 import { FamilyAppointmentDetail } from "@/components/common/FamilyAppointmentDetail";
 import type { usePadreAgenda } from "@/pages/padre/Padre/usePadreAgenda";
-import { ChevronLeft, ChevronRight, Plus, Video, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Video, X, CalendarDays } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Btn } from "@/components/common/Btn";
 import { Crd } from "@/components/common/Crd";
@@ -46,10 +46,10 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-extrabold text-[#1C1135]">{MONTHS[month]} {year}</h3>
             <div className="flex gap-1">
-              <button onClick={prevMonth} className="p-1.5 hover:bg-violet-50 rounded-xl transition-colors">
+              <button onClick={prevMonth} aria-label="Mes anterior" className="p-1.5 hover:bg-violet-50 rounded-xl transition-colors">
                 <ChevronLeft size={15} className="text-[#7C6F9A]" />
               </button>
-              <button onClick={nextMonth} className="p-1.5 hover:bg-violet-50 rounded-xl transition-colors">
+              <button onClick={nextMonth} aria-label="Mes siguiente" className="p-1.5 hover:bg-violet-50 rounded-xl transition-colors">
                 <ChevronRight size={15} className="text-[#7C6F9A]" />
               </button>
             </div>
@@ -96,7 +96,7 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
           <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
             {selectedApts.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full py-8 text-center">
-                <div className="text-4xl mb-3">📅</div>
+                <CalendarDays size={36} className="text-violet-700 mb-3" aria-hidden="true"/>
                 <p className="font-extrabold text-[#1C1135] mb-1">Sin citas</p>
                 <p className="text-sm text-[#7C6F9A] font-medium mb-4">No hay citas para este período. ¿Quieres agendar una?</p>
                 <Btn size="sm" variant="cta" onClick={() => setShowNew(true)}><Plus size={13} /> Reservar cita</Btn>
@@ -104,7 +104,7 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
             )}
             {waitingApts.map((apt) => (
               <div key={apt.id} className="rounded-2xl border border-orange-100 bg-orange-50/50 p-4">
-                <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}</p></div><Bdg color="orange">Por confirmar</Bdg></div>
+                <div className="flex items-start justify-between gap-3"><div className="min-w-0"><p className="font-extrabold text-[#1C1135]">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium mt-1">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "Presencial" : "Virtual"}</p></div><Bdg color="orange">Por confirmar</Bdg></div>
                 <p className="mt-3 text-xs font-medium text-orange-800">La confirmación corresponde al terapeuta asignado. El estado se actualizará desde el servidor.</p>
               </div>
             ))}
@@ -114,7 +114,7 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
               return <div key={apt.id} className="rounded-2xl border border-[#E8E5F4] bg-white overflow-hidden transition-shadow hover:shadow-sm">
                 <button type="button" onClick={() => setExpandedReservationIds((current) => current.includes(apt.id) ? current.filter((id) => id !== apt.id) : [...current, apt.id])} aria-expanded={isExpanded} aria-controls={detailsId} className="w-full min-h-12 p-4 flex items-center gap-3 text-left hover:bg-[#FAFAF9] focus-visible:ring-2 focus-visible:ring-violet-500">
                   <Av initials={apt.therapist.split(" ").map((word) => word[0]).join("").slice(0, 2)} color={B.violet} size="sm" />
-                  <div className="min-w-0 flex-1"><p className="font-extrabold text-[#1C1135] truncate">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium truncate mt-0.5">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}</p></div>
+                  <div className="min-w-0 flex-1"><p className="font-extrabold text-[#1C1135] truncate">{apt.date} · {apt.time}</p><p className="text-xs text-[#7C6F9A] font-medium truncate mt-0.5">{apt.therapist} · {apt.child} · {apt.type === "presencial" ? "Presencial" : "Virtual"}</p></div>
                   <Bdg color={apt.status === "confirmada" ? "green" : apt.status === "completada" ? "teal" : "orange"}>{apt.status === "confirmada" ? "Confirmada" : apt.status === "completada" ? "Completada" : "Cancelada"}</Bdg><ChevronRight size={17} className={`shrink-0 text-[#7C6F9A] transition-transform ${isExpanded ? "rotate-90" : ""}`} />
                 </button>
                 {isExpanded && <div id={detailsId} className="border-t border-[#F5F3FF] px-4 pb-4 pt-3 animate-in fade-in slide-in-from-top-1 duration-200">

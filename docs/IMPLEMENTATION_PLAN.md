@@ -9,7 +9,8 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 V40 extiende diseño a login y V41 a administración: UI exclusivamente, evidencia login-v40/admin-v41.
 Acceso DEV solo local; publicación por sección en dev y codex/2do-intento.
 Prioridad actual del usuario: escritorio; responsive diferido para próximos cambios.
-Siguiente: padre/tutor y terapeuta UI, cada rol un commit, y diagnóstico de Render/BD tras cambios de esquema.
+V42 extiende UI web de padre/tutor, responsive diferido. Siguiente: terapeuta UI con commit propio
+y diagnóstico Render/BD tras cambios de esquema. Evidencia family-v42; sin adopción compartida de migraciones.
 
 Autorización posterior: publicar todo V33–V38 en dev, integración fast-forward sin conflictos.
 V39 actualiza continuidad documental; codex/2do-intento se sincroniza con dev.
