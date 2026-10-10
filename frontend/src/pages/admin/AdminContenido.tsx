@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { useState, type ReactNode } from "react";
+import { BookOpen, Gamepad2, MessageCircle, Music2, Plus, Puzzle, FileText, Edit, Trash2 } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Btn } from "@/components/common/Btn";
 import { Crd } from "@/components/common/Crd";
@@ -16,7 +16,7 @@ export function AdminContenido() {
     { title: "El viaje al mundo de los sonidos",  cat: "cuentos",      views: 0,    status: "borrador",  level: "2"   },
   ];
   const filtered = catFilter === "todos" ? contenido : contenido.filter(c => c.cat === catFilter);
-  const iconMap: Record<string, string> = { cuentos: "📖", canciones: "🎵", juegos: "🎮", trabalenguas: "💬", adivinanzas: "🧩" };
+  const iconMap: Record<string, ReactNode> = { cuentos: <BookOpen size={20}/>, canciones: <Music2 size={20}/>, juegos: <Gamepad2 size={20}/>, trabalenguas: <MessageCircle size={20}/>, adivinanzas: <Puzzle size={20}/> };
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
@@ -34,11 +34,11 @@ export function AdminContenido() {
         ))}
       </div>
       <Crd>
-        <div className="divide-y" style={{ borderColor: B.border }}>
+        <div className="admin-content-catalog divide-y" style={{ borderColor: B.border }}>
           {filtered.map((item, i) => (
-            <div key={i} className="p-4 flex items-center gap-4 hover:bg-[#F5F3FF] transition-colors">
+            <div key={i} className="admin-content-row p-4 flex items-center gap-4 hover:bg-[#F5F3FF] transition-colors">
               <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl flex-shrink-0" style={{ background: B.violetLight }}>
-                {iconMap[item.cat] || "📄"}
+                {iconMap[item.cat] || <FileText size={20}/>}
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-extrabold text-sm text-[#1C1135]">{item.title}</p>
@@ -50,8 +50,8 @@ export function AdminContenido() {
                 {item.status}
               </span>
               <div className="flex gap-1">
-                <button className="p-1.5 rounded-xl text-[#9E95B7] hover:text-violet-600 hover:bg-violet-50 transition-colors"><Edit size={13} /></button>
-                <button className="p-1.5 rounded-xl text-[#9E95B7] hover:text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={13} /></button>
+                <button aria-label={`Editar ${item.title}`} className="p-1.5 rounded-xl text-[#615274] hover:text-violet-600 hover:bg-violet-50 transition-colors"><Edit size={13} /></button>
+                <button aria-label={`Eliminar ${item.title}`} className="p-1.5 rounded-xl text-[#615274] hover:text-red-500 hover:bg-red-50 transition-colors"><Trash2 size={13} /></button>
               </div>
             </div>
           ))}

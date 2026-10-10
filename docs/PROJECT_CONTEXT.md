@@ -1,3 +1,20 @@
+## 2026-10-10 — V41 Rediseño de administración UI
+
+Base V40/7c8f1ee, rama codex/2do-intento; cierre independiente para publicar en dev y sincronizar
+la rama de trabajo sin reescribir commits. SHA y publicación efectiva: consultar Git.
+Shell ADMIN, panel, cuentas y presentación consistente de las ocho secciones de navegación.
+Marca Nunito/violeta/naranja/teal, cristal y luz contenidos; formularios opacos, foco visible,
+acciones accesibles e iconos Lucide. Datos, consultas, rutas, callbacks, autenticación y BD intactos.
+Pruebas nuevas: 281 componentes + 25 rutas; tipos, check340/máximo498 y build final3.45s/1897 módulos.
+Advertencias: DEP0205 heredado, argumento npm --run innecesario y 12 fuentes sin símbolos Graphify.
+Mapa actual2216 nodos/108 comunidades. Detector único: aviso de color corregido, sin repetición.
+Revisor inicial fix; veredicto ship acotado a dos fixes resueltos: ayuda móvil separada de las filas
+e iconografía ML consistente. Evidencia viewport/secciones en docs/evidence/admin-v41/; sin auditoría nueva.
+UI consultó únicamente datos sintéticos de QA, filtros, formulario sin enviar y menú; sin CRUD ni pruebas backend.
+El usuario prioriza escritorio para futuros cambios; responsive puede esperar. Siguiente trabajo autorizado:
+padre/tutor y terapeuta UI en commits separados, publicar dev y revisar error de conexión BD en Render.
+No adoptar migraciones compartidas sin inspección y comprobaciones del entorno desplegado.
+
 ## 2026-10-10 — V40 Rediseño de login UI
 
 Base V39/023e21b, codex/2do-intento. Login conserva autenticación, guard, handlers y prefills;

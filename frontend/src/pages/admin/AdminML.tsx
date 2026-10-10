@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Lock, BarChart2, GitBranch, Layers, CheckCircle, X } from "lucide-react";
+import { Lock, BarChart2, GitBranch, Layers, CheckCircle, X, TriangleAlert, FlaskConical, ClipboardList, FolderOpen, Scale, PenLine, Tag, Ban } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
 import { Crd } from "@/components/common/Crd";
@@ -41,7 +41,6 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
 
       {/* Page head */}
       <div className="mb-5">
-        <p className="text-xs font-black text-[#9E95B7] uppercase tracking-widest mb-0.5">Admin · Machine Learning</p>
         <h1 className="text-2xl font-black text-[#1C1135]">Machine Learning</h1>
         <p className="text-sm text-[#7C6F9A] font-medium">Gobernanza y validación de modelos · Ninguna acción automática</p>
       </div>
@@ -49,11 +48,11 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
       {/* Dual banner */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">
         <div className="flex-1 flex items-center gap-2.5 rounded-2xl px-4 py-3 border border-violet-300 bg-violet-50 text-sm font-bold text-violet-800">
-          <span className="text-lg">⚠️</span>
+          <TriangleAlert size={20} className="shrink-0" aria-hidden="true"/>
           <span><strong>Orientación no diagnóstica</strong> · Los modelos apoyan la evaluación inicial; no sustituyen el criterio clínico ni emiten diagnósticos ni tratamientos.</span>
         </div>
         <div className="flex items-center gap-2 rounded-2xl px-4 py-3 border border-amber-200 bg-amber-50 text-xs font-bold text-amber-700 whitespace-nowrap">
-          🔬 Datos simulados
+          <FlaskConical size={16} aria-hidden="true"/> Datos simulados
         </div>
       </div>
 
@@ -83,14 +82,14 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
         </div>
         <div className="flex flex-wrap gap-2">
           {([
-            ["ficha",    "Ver ficha del modelo",  "📋"],
-            ["dataset",  "Revisar dataset",        "🗂️"],
-            ["comparar", "Comparar versión",       "⚖️"],
-            ["decision", "Registrar decisión",     "✍️"],
-          ] as const).map(([key, label, icon]) => (
+            ["ficha",    "Ver ficha del modelo",  ClipboardList],
+            ["dataset",  "Revisar dataset",        FolderOpen],
+            ["comparar", "Comparar versión",       Scale],
+            ["decision", "Registrar decisión",     PenLine],
+          ] as const).map(([key, label, Icon]) => (
             <button key={key} onClick={() => setModal(key)}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-[#E8E5F4] bg-white text-xs font-bold text-[#7C6F9A] hover:bg-violet-50 hover:text-violet-700 transition-colors">
-              <span>{icon}</span> {label}
+              <Icon size={15} aria-hidden="true"/> {label}
             </button>
           ))}
         </div>
@@ -102,13 +101,13 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
           <h3 className="font-extrabold text-[#1C1135] mb-4 flex items-center gap-2"><Lock size={15}/> Gobernanza de datos</h3>
           <div className="flex flex-col gap-2.5">
             {[
-              { icon: "✅", label: "Consentimiento verificable",        detail: "Registrado por familia antes de cualquier uso de datos." },
-              { icon: "🔒", label: "Seudonimización",                   detail: "Ningún dato identificable llega al modelo." },
-              { icon: "🏷️", label: "Etiquetado profesional",           detail: "Supervisado por terapeutas certificados." },
-              { icon: "🚫", label: "Conversaciones ASHI excluidas",     detail: "Excluidas por defecto · requiere decisión explícita para inclusión." },
+              { icon: CheckCircle, label: "Consentimiento verificable",        detail: "Registrado por familia antes de cualquier uso de datos." },
+              { icon: Lock, label: "Seudonimización",                   detail: "Ningún dato identificable llega al modelo." },
+              { icon: Tag, label: "Etiquetado profesional",           detail: "Supervisado por terapeutas certificados." },
+              { icon: Ban, label: "Conversaciones ASHI excluidas",     detail: "Excluidas por defecto · requiere decisión explícita para inclusión." },
             ].map(g => (
               <div key={g.label} className="flex items-start gap-3 rounded-xl p-3 border border-[#F0EEF9]">
-                <span className="text-base mt-0.5">{g.icon}</span>
+                <g.icon size={17} className="mt-0.5 shrink-0 text-violet-700" aria-hidden="true"/>
                 <div>
                   <p className="text-sm font-bold text-[#1C1135]">{g.label}</p>
                   <p className="text-xs text-[#9E95B7] font-medium mt-0.5">{g.detail}</p>

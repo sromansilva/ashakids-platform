@@ -43,7 +43,6 @@ export function AdminOperacion({ go }: { go: (v: View) => void }) {
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
       <div className="mb-5">
-        <p className="text-xs font-black text-[#9E95B7] uppercase tracking-widest mb-1">Admin · Operación</p>
         <h1 className="text-2xl font-black text-[#1C1135]">Operación</h1>
         <p className="text-sm text-[#7C6F9A] font-medium mt-1">Incidencias reportadas y sesiones activas.</p>
       </div>

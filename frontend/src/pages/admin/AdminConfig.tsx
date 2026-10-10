@@ -1,15 +1,15 @@
 
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Database, Link, Settings, ShieldCheck, Users } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Crd } from "@/components/common/Crd";
 
 export function AdminConfig() {
   const sections = [
-    { title: "Parámetros del sistema",  icon: "⚙️", items: ["Logo y marca", "Colores corporativos", "Nombre de la plataforma"] },
-    { title: "Integraciones",           icon: "🔗", items: ["Zoom / videoconferencia", "Email (SendGrid)"] },
-    { title: "Seguridad",               icon: "🛡️", items: ["Autenticación 2FA", "Políticas de contraseñas", "Logs de acceso"] },
-    { title: "Roles y permisos",        icon: "👤", items: ["Definir roles", "Asignar permisos", "Auditoría de accesos"] },
-    { title: "Respaldos y datos",       icon: "💾", items: ["Backup automático", "Exportar datos", "Restaurar versión"] },
+    { title: "Parámetros del sistema",  icon: Settings, items: ["Logo y marca", "Colores corporativos", "Nombre de la plataforma"] },
+    { title: "Integraciones",           icon: Link, items: ["Zoom / videoconferencia", "Email (SendGrid)"] },
+    { title: "Seguridad",               icon: ShieldCheck, items: ["Autenticación 2FA", "Políticas de contraseñas", "Logs de acceso"] },
+    { title: "Roles y permisos",        icon: Users, items: ["Definir roles", "Asignar permisos", "Auditoría de accesos"] },
+    { title: "Respaldos y datos",       icon: Database, items: ["Backup automático", "Exportar datos", "Restaurar versión"] },
   ];
   return (
     <div className="p-4 sm:p-6 max-w-4xl mx-auto">
@@ -17,11 +17,11 @@ export function AdminConfig() {
         <h2 className="text-2xl font-black text-[#1C1135] mb-1">Configuración del sistema</h2>
         <p className="text-sm text-[#7C6F9A] font-medium">Parámetros globales de ASHAKids</p>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="admin-config-grid flex flex-col gap-4">
         {sections.map(s => (
           <Crd key={s.title} className="p-5">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">{s.icon}</span>
+              <s.icon size={23} strokeWidth={1.7} className="text-violet-700"/>
               <h4 className="font-extrabold text-[#1C1135]">{s.title}</h4>
             </div>
             <div className="flex flex-col gap-1">

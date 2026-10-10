@@ -1,5 +1,5 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { AudioLines, Search, ShieldCheck, ShieldOff, Users } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import type { TabRole } from "./AdminCuentas";
 
@@ -27,19 +27,19 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
   return (
     <>
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="admin-account-stats grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
-          { label: "Familias", value: famCount, icon: "👨‍👩‍👧‍👦", bg: B.violetLight, color: B.violet },
-          { label: "Terapeutas", value: terCount, icon: "👩‍⚕️", bg: "#F0FDFA", color: B.teal },
-          { label: "Total activas", value: activasCount, icon: "🔐", bg: "#FFFBEB", color: B.orange },
-          { label: "Suspendidas", value: suspCount, icon: "⛔", bg: "#FEF2F2", color: "#DC2626" },
+          { label: "Familias", value: famCount, icon: Users, bg: B.violetLight, color: B.violet },
+          { label: "Terapeutas", value: terCount, icon: AudioLines, bg: "#F0FDFA", color: B.teal },
+          { label: "Total activas", value: activasCount, icon: ShieldCheck, bg: "#FFFBEB", color: B.orange },
+          { label: "Suspendidas", value: suspCount, icon: ShieldOff, bg: "#FEF2F2", color: "#DC2626" },
         ].map((s) => (
           <div
             key={s.label}
             className="rounded-2xl p-4 flex items-center gap-3 border border-[#E8E5F4]/60 bg-white"
             style={{ background: s.bg }}
           >
-            <span className="text-2xl">{s.icon}</span>
+            <s.icon size={22} strokeWidth={1.7} style={{color:s.color}} aria-hidden="true"/>
             <div>
               <p className="text-xl font-black" style={{ color: s.color }}>
                 {s.value}
@@ -51,7 +51,7 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
       </div>
 
       {/* Tabs + Search */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
+      <div className="admin-account-filters flex flex-col sm:flex-row gap-3 mb-4">
         <div className="flex rounded-2xl border border-[#E8E5F4] bg-white overflow-hidden p-1 gap-1">
           {(["PADRE", "TERAPEUTA"] as TabRole[]).map((t) => (
             <button
@@ -64,13 +64,14 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
               }`}
               style={tab === t ? { background: `linear-gradient(135deg, ${B.violet}, ${B.violetDark})` } : {}}
             >
-              {t === "PADRE" ? "👨‍👩‍👧‍👦 Familias / Padres" : "👩‍⚕️ Terapeutas"}
+              {t === "PADRE" ? "Familias / Padres" : "Terapeutas"}
             </button>
           ))}
         </div>
         <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E5F4] rounded-2xl px-3 shadow-sm">
           <Search size={15} className="text-[#9E95B7]" />
           <input
+            aria-label="Buscar cuentas"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Buscar por código (ej. p00001), nombre o email…"

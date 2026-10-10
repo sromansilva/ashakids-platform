@@ -23,7 +23,7 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
   formatDate,
 }) => {
   return (
-    <div className="flex flex-col gap-2.5">
+    <div className="admin-account-list flex flex-col gap-2.5">
       {loading && (
         <div className="flex items-center justify-center py-16 gap-3 text-[#7C6F9A]">
           <Loader2 className="animate-spin text-violet-600" size={24} />
@@ -43,7 +43,7 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
           return (
             <div
               key={acc.id_usuario}
-              className="w-full bg-white border border-[#E8E5F4] rounded-2xl px-4 py-3.5 flex items-center gap-4 hover:border-violet-300 hover:shadow-sm transition-all"
+              className="admin-account-row w-full bg-white border border-[#E8E5F4] rounded-2xl px-4 py-3.5 flex items-center gap-4 hover:border-violet-300 hover:shadow-sm transition-all"
             >
               {/* Avatar */}
               <button
@@ -55,9 +55,10 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
               </button>
 
               {/* Información Principal */}
-              <div
+              <button
+                type="button"
                 onClick={() => openDetail(acc)}
-                className="flex-1 min-w-0 cursor-pointer text-left"
+                className="admin-account-person flex-1 min-w-0 cursor-pointer text-left"
               >
                 <div className="flex items-center gap-2">
                   <p className="font-extrabold text-sm text-[#1C1135] truncate hover:text-violet-700 transition-colors">
@@ -68,7 +69,7 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
                   </span>
                 </div>
                 <p className="text-xs text-[#9E95B7] font-medium truncate">{acc.email}</p>
-              </div>
+              </button>
 
               {/* Especialidad de terapeuta si existe */}
               {acc.rol === "TERAPEUTA" && acc.terapeuta?.especialidad && (
@@ -82,7 +83,7 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
 
               {/* Badge de estado Activo / Suspendido */}
               <span
-                className={`text-[10px] font-extrabold px-2.5 py-1 rounded-full flex-shrink-0 ${
+                className={`admin-account-status text-[10px] font-extrabold px-2.5 py-1 rounded-full flex-shrink-0 ${
                   acc.activo
                     ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                     : "bg-red-50 text-red-700 border border-red-200"
@@ -96,11 +97,11 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
               </p>
 
               {/* Acciones Rápidas */}
-              <div className="flex items-center gap-1">
+              <div className="admin-account-actions flex items-center gap-1">
                 <button
                   onClick={() => openEditar(acc)}
                   title="Editar cuenta"
-                  className="p-2 rounded-xl text-gray-500 hover:text-violet-700 hover:bg-violet-50 transition-colors"
+                  className="p-2 rounded-xl text-violet-700 hover:text-violet-800 hover:bg-violet-50 transition-colors"
                 >
                   <Pencil size={15} />
                 </button>

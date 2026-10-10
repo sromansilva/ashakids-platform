@@ -1,8 +1,11 @@
 # Punto de continuidad del equipo
 
-V40_Rediseno_Login_UI incorpora acceso visual de la misma marca: lógica intacta.
-Panel de pruebas solo DEV, ausente del build productivo. Publicación por sección en dev;
-admin UI sigue como siguiente commit separado. Evidencia docs/evidence/login-v40/.
+V40_Rediseno_Login_UI y V41_Rediseno_Admin_UI extienden la misma marca: lógica intacta.
+Panel de pruebas solo DEV, ausente del build productivo. Cada cierre se publica en dev
+y codex/2do-intento. Evidencia docs/evidence/login-v40/ y admin-v41/.
+Continuar desde el último SHA remoto de dev: ahora priorizar web de escritorio, padre/tutor
+y terapeuta en commits separados; responsive puede esperar. Revisar el error de conexión BD
+en Render después de inspeccionar configuración y migraciones; un push no confirma el despliegue.
 
 Equipo: **dev incorpora todo V33–V38**, desde la base V32/ebb8632 hasta V38/fbffd46.
 V39_Actualizacion_Documentacion_Equipo registra esta adopción; hagan fetch y usen el último

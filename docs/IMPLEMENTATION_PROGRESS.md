@@ -1,3 +1,24 @@
+## 2026-10-10 — V41 Rediseño de administración UI
+
+- Objetivo: extender la marca al espacio ADMIN sin modificar lógica. Base V40/7c8f1ee,
+  codex/2do-intento; integrar/publicar cierre en dev conservando SHA. Ver resultado efectivo en Git.
+- Archivos: DashLayout, Sidebar, OperationalDashboard, siete Admin*.tsx y admin.css;
+  contrato/comparación ADMIN*.md, evidencia admin-v41 y continuidad del equipo.
+- Pruebas: 281 componentes/18 archivos +25 rutas, Vitest22.71s antes del último bloque cosmético.
+  Tipos y build final3.45s/1897 módulos; check340/máximo498. DEP0205 y aviso npm --run innecesario.
+  Refresh/check2216 nodos/108 comunidades; 12 archivos sin símbolos, aviso conocido.
+- Detector una vez, salida1: color gris sobre violeta de acción de cuentas; corregido a violeta.
+  Revisor inicial fix; dos hallazgos resueltos en un bloque, veredicto ship limitado a ellos.
+  Franja móvil reservada para ayuda evita solapar Ver al desplazar; ML usa Lucide en acciones/gobernanza.
+- UI: ocho secciones de navegación desktop1280, panel/cuentas920, muestras móvil390; filtros de cuentas,
+  vacío, formulario arriba/abajo/cancelar/Escape y drawer. Capturas son viewport/secciones, no fullpage.
+  Dos capturas de formulario se sustituyeron por ubicación de rueda/estado anterior; evidencia final válida.
+- Entorno: localhost5175/API8002/PostgreSQL QA6544; ADMIN sintético existente a90001. Sin enviar formularios
+  ni crear/editar/suspender/eliminar cuentas. Sin cambios de backend, BD, hosting ni Supabase.
+- Siguiente solicitud del usuario: priorizar escritorio, responsive diferido; padre/tutor UI y terapeuta UI,
+  cada rol con commit/dev, y después diagnóstico del error de conexión BD en Render. No declarar adopción
+  compartida de migraciones ni despliegue exitoso por un push de código.
+
 ## 2026-10-10 — V40 Rediseño de login UI
 
 Base V39/023e21b, codex/2do-intento. Login conserva autenticación, guard, handlers y prefills;

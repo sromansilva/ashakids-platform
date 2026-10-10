@@ -8,6 +8,7 @@ import { MobileTopBar } from "@/components/common/MobileTopBar";
 import { Sidebar } from "@/app/layouts/Sidebar";
 import { AshhiFloat } from "@/components/assistant/AshhiFloat";
 import { useAuth } from '@/hooks/useAuth';
+import "@/pages/admin/admin.css";
 import { NotificationCenter } from '@/components/common/NotificationCenter';
 
 export function DashLayout({
@@ -43,7 +44,7 @@ export function DashLayout({
   }, [mob]);
   return (
     <div
-      className="flex h-screen overflow-hidden"
+      className={`flex h-screen overflow-hidden${role === "admin" ? " asha-admin" : ""}`}
       style={{
         background: B.bg,
         fontFamily: '"Nunito", system-ui, sans-serif',
@@ -90,9 +91,10 @@ export function DashLayout({
       )}
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
+        {role === 'admin' && <div className="admin-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
         <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />
         <div className="flex-1 overflow-y-auto flex min-h-0">
-          <div className="flex-1 min-w-0 overflow-x-hidden">
+          <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : ""}`}>
             {role === 'terapeuta' && <NotificationCenter key={user?.id_usuario} go={go}/>}
             {children}
           </div>
@@ -375,6 +377,7 @@ export function DashLayout({
           )}
         </div>
       </main>
+      {role === 'admin' && <div className="admin-support-rail">Ayuda y asistente</div>}
       <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />
     </div>
   );

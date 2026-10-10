@@ -357,7 +357,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+    <div className="admin-accounts p-4 sm:p-6 max-w-4xl mx-auto">
       {/* Notificación de éxito */}
       {successBanner && (
         <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl px-4 py-3 flex items-center justify-between text-sm font-bold shadow-sm">
@@ -385,16 +385,16 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="admin-page-heading flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black text-[#1C1135]">Gestión de Cuentas</h1>
             <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700">
-              FastAPI + PostgreSQL
+              Gestión de accesos
             </span>
           </div>
           <p className="text-sm text-[#7C6F9A] font-medium mt-1">
-            Sistema cerrado con control de acceso por roles, contraseñas Argon2id y auditoría centralizada.
+            Registra familias y terapeutas, consulta sus datos y administra el acceso.
           </p>
         </div>
         <div className="flex items-center gap-2">
