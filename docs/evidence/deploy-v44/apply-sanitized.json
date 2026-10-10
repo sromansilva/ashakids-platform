@@ -1,0 +1,98 @@
+{
+  "utc": "2026-10-10T17:56:20.079619+00:00",
+  "action": "apply",
+  "origin": "https://ashakids.onrender.com",
+  "preflight": {
+    "ddl_owner_verified": true,
+    "duplicate_casefold_codes": 0,
+    "missing_migrations": [
+      "002",
+      "003",
+      "004",
+      "005"
+    ],
+    "runtime_admin_flags": [
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "migrations": {
+    "002_activacion_cuentas.sql": "300931364cf575066774cc9968e23abec5c57420f562d6f90c4368158fe56018",
+    "003_agenda_introduccion.sql": "16eebb3a4d7549162d3baa9cc468542122285eba07286ac92a5d7c863f5cc550",
+    "004_planes_profesionales.sql": "77cc504f3534a55051d5874c965a57fb28ab0c94a786ffb77c28eba4be5f1849",
+    "005_notificaciones_profesionales.sql": "75c7d590d30e6b7fa9bf49007843077859d6b5f530046cd6cfa13c5dae2f23c2",
+    "006_runtime_flujo.sql": "01819551e691ed7d677c5ab8e81465cc5676b75bf7fc3bf0299e01fead07b4b7"
+  },
+  "existing_rows_preserved": true,
+  "old_acl_policies_preserved": true,
+  "old_table_count": 26,
+  "old_row_counts": {
+    "actividades": 0,
+    "administradores": 1,
+    "auditoria_cambios": 4,
+    "conversaciones": 0,
+    "evaluaciones_ia": 0,
+    "expedientes": 1,
+    "logros": 0,
+    "mensaje_adjuntos": 0,
+    "mensajes": 0,
+    "mundos": 0,
+    "niveles": 0,
+    "objetivos": 0,
+    "pacientes": 1,
+    "perfil_logros": 0,
+    "perfiles": 0,
+    "reportes_sesion": 0,
+    "reservas": 0,
+    "resultados_nivel": 0,
+    "roles": 3,
+    "sesiones": 0,
+    "sesiones_autenticacion": 17,
+    "terapeutas": 2,
+    "tratamientos": 1,
+    "tutores": 2,
+    "usuario_roles": 5,
+    "usuarios": 5
+  },
+  "runtime_new_tables": {
+    "turnos_semanales": {
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": true
+      },
+      "rls": true
+    },
+    "bloqueos_agenda": {
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": true
+      },
+      "rls": true
+    },
+    "preferencias_notificacion": {
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false
+      },
+      "rls": true
+    },
+    "notificaciones": {
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false
+      },
+      "rls": true
+    }
+  },
+  "runtime_schema_reads": "pass"
+}

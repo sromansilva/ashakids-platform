@@ -1,3 +1,47 @@
+## Estado operativo actual — 2026-10-10 / V44
+
+Fuente API/UI comprobada: V43/4d2f0725566021824d1b8c20bba6dd8c241e21a0.
+Servicio ashakids, URL https://ashakids.onrender.com, rama dev. Auto-Deploy activo
+observado en el panel; la receta Off inferior describe la preparación histórica.
+El cierre V44 se publica en dev/codex/2do-intento; consultar Git y live para SHA final.
+
+### Error503 del login y resolución
+
+El código V42 estaba live y readiness200, pero el esquema compartido carecía de002–005.
+La consulta de usuarios incluía password_change_required ausente; el manejador DBAPI
+devolvía el mensaje genérico de BD temporalmente no disponible. No era una prueba de
+contraseña incorrecta ni de falta de conectividad. Readiness solo ejecuta SELECT1.
+
+Se respaldó public con pg_dump custom134561bytes y se verificó hash/listado pg_restore.
+Backup/datos/credenciales privados en tmp/flow-adoption-v44/, ignorados; manifiesto
+sanitizado versionado, nunca publicar el dump. No se ensayó restauración compartida.
+Preflight: propietario válido, cero códigos duplicados por casefold, rol runtime restringido.
+002–006 aplicadas en transacción explícita con lock_timeout5s, statement_timeout30s
+y bloqueo asesor. Filas/ACL anteriores preservadas. No repetir estos archivos en este destino.
+
+006 concede SID a turnos/bloqueos, SIU a preferencias/avisos y USAGE a tres secuencias.
+RLS habilitada y12 políticas para runtime, sin permisos de acceso externo en tablas nuevas.
+Los contratos de permisos se reflejan en b02_role_inventory.py; ADR0018 explica el límite.
+Cada clon obtiene las credenciales runtime por el canal autorizado; nunca usar owner en API.
+
+23 modelos SELECT LIMIT0 y cero diferencias de metadatos observadas; TLS1.3.
+HTTPS ADMIN login/lectura/logout verificados,12 respuestas esperadas, cookie segura y
+panel cargado. Tutor/terapeuta requieren confirmar sus credenciales actuales: no se
+modificaron contraseñas para pruebas. No se realizó un recorrido clínico productivo.
+Cada profesional debe publicar disponibilidad; las tablas nuevas no inventan horarios.
+Planes anteriores conservan origenNULL; no fabricar introducciones o mundos asignados.
+
+NOTIFICATION_REMINDERS_ENABLED=true se guardó después de migrar y se verificó en panel,
+con despliegue V43live44.8s. No hay reconstrucción de eventos anteriores ni garantía
+de recordatorios mientras Render Free duerme. No se envió correo/SMS/push.
+Evidencias y advertencias en docs/evidence/deploy-v44/. Pruebas backend157PASS/75skip/
+19avisos; las integraciones omitidas no se ejecutaron en Supabase. Mapa2219/106 vigente.
+Antes de futuros despliegues, revisar migraciones/grants y SELECT LIMIT0 con runtime:
+un build exitoso o health200 no certifica compatibilidad de esquema.
+Revertir código conservando datos nuevos; restauración/borrado requieren operación separada.
+
+---
+
 # Despliegue de demostración AshaKids en Render
 
 Fecha: 2026-10-09. Repositorio: https://github.com/sromansilva/ashakids-platform .

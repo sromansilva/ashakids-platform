@@ -1,3 +1,35 @@
+## 2026-10-10 — V44 Actualización de BD y despliegue
+
+Base V43/4d2f0725566021824d1b8c20bba6dd8c241e21a0, codex/2do-intento; cierre en dev.
+Render tenía V42 actualizado pero PostgreSQL conservaba el esquema anterior: faltaban
+migraciones002–005, incluida usuarios.password_change_required, y el login fallaba503.
+Con autorización actual de dejar el flujo desplegado funcional, respaldo custom/public
+134561bytes verificado por hash y pg_restore--list, seguido de adopción002–006 atómica.
+Filas originales y ACL/políticas de26 tablas preservadas; sin cambios de cuentas,
+contraseñas, clínica o .env. No se restauró el backup en el servidor ni se crearon usuarios.
+006 extiende permisos mínimos del rol existente a cuatro tablas/tres secuencias;
+RLS habilitada/12 políticas, sin acceso anon/authenticated/service_role. ADR0018.
+23 modelos SELECT LIMIT0 y cero diferencias observadas, runtime TLS1.3. Esquema actualizado.
+Backend157PASS/75omitidas/19avisos6.06s; no fixtures destructivas ni integraciones compartidas.
+Graphify2219 nodos106comunidades vigente. Evidencia nueva operativa deploy-v44, sin auditoría nueva.
+HTTPS12respuestas ADMIN esperadas, login200, cookie Secure/HttpOnly/Lax, logout y me401;
+panel ADMIN cargado en navegador. Tutor/terapeuta aún sin verificar login actual:
+sus contraseñas no coinciden con las credenciales de ensayo; confirmación solicitada.
+Intentos iniciales: expectativa errónea de chat ADMIN200 (correcto403), tutor401;
+se corrigió alcance sin reintentar contraseñas ni modificarlas. Primer intento ADMIN
+interrumpido dejó una sesión nueva hasta expiración normal; posteriores HTTP cerraron sesión.
+Error de escaneo textual de PNG en V43: UnicodeDecodeError; revisión de diff sin binarios
+posterior dio cero coincidencias antes de publicar dev. Comandos con ruta duplicada/backend
+y nombres de archivo inexistentes corregidos sin mutaciones. Sin ocultar fallos.
+Render V43live50.1s; flag NOTIFICATION_REMINDERS_ENABLED=true guardado y despliegue44.8s
+confirmado. Auto-Deploy estaba activo y no se cambió; secretos/CA/runtime intactos.
+Disponibilidad nueva vacía: cada profesional publica sus turnos actuales para reservas;
+no fabricar horarios, sesiones de origen ni mundos en planes antiguos. Anticipación excluida.
+Pruebas del recorrido completo local V33–V37 son heredadas, no nuevos recorridos en producción.
+Revisión de todos los diseños responsive y detalles pendientes; no ampliar ahora módulos demo.
+Siguiente: confirmar ingreso tutor/terapeuta con credenciales vigentes y publicar horarios;
+pulir inconsistencias visuales en cortes separados. SHA publicado y live final consultables en Git/Render.
+
 ## 2026-10-10 — V43 Rediseño de terapeuta UI
 
 Base V42/cbf30c6; codex/2do-intento y publicación del cierre en dev, sin reescribir SHA.

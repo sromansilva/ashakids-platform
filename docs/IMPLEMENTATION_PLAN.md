@@ -6,6 +6,11 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+V44 adopta002–006 en BD compartida con respaldo, filas/ACL originales preservadas y runtime
+restringido. V43UI y flujo nuevo ya desplegados; ADMIN login confirmado. Tutor/terapeuta
+requieren sus credenciales vigentes para confirmar ingreso; turnos deben publicarse.
+Las menciones inferiores a migraciones exclusivamente locales son históricas. ADR0018.
+
 V43 completa diseño web de terapeuta, pruebas y revisión acotada: evidencia therapist-v43.
 Siguiente prioridad autorizada: actualizar BD compartida con respaldo y migraciones002–005,
 ACL runtime mínimo y verificación del flujo desplegado. Render V42 conecta a la BD pero

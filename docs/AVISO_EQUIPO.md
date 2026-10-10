@@ -1,3 +1,14 @@
+# Continuidad V44
+
+Flujo V33–V37 y diseño V38–V43 desplegados; BD compartida actualizada002–006 con respaldo.
+El error503 del login era el esquema antiguo; ADMIN ya ingresa y carga registros reales.
+Usar último SHA remoto dev/codex/2do-intento; comprobar live en Render.
+Tutor/terapeuta: confirmar sus credenciales actuales; no usar las contraseñas del sandbox.
+Publicar disponibilidad actual desde Configuración para habilitar reservas; no se fabricaron
+horarios ni datos clínicos. Recordatorios activados, sujetos a instancia Free en ejecución.
+Leer ADR0018 y docs/evidence/deploy-v44; no repetir migraciones, fixtures o restauraciones
+sobre esta BD. Responsive y detalles visuales quedan para siguientes cortes.
+
 # Continuidad V43
 
 Terapeuta web cerrado; usar último SHA de dev/codex/2do-intento. Responsive diferido.

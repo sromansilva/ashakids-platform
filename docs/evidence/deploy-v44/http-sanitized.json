@@ -1,0 +1,103 @@
+{
+  "utc": "2026-10-10T18:00:45.862352+00:00",
+  "origin": "https://ashakids.onrender.com",
+  "scope": "Existing seed accounts; login/logout and GET only; no clinical writes",
+  "cases": [
+    {
+      "role": "ADMIN",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "auth/me",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "pacientes",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "citas",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "sesiones",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "terapeutas",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "conversaciones",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "usuarios",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "admin/cuentas",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role": "ADMIN",
+      "method": "GET",
+      "path": "auth/me",
+      "status": 401,
+      "expected": 401
+    }
+  ],
+  "unverified_roles": [
+    "PADRE",
+    "TERAPEUTA"
+  ],
+  "cookies": {
+    "ADMIN": {
+      "secure": true,
+      "httponly": true,
+      "samesite_lax": true
+    }
+  },
+  "success": true
+}

@@ -1,3 +1,13 @@
+## Adopción compartida del flujo — 2026-10-10 / ADR0018
+
+Migraciones002–006 adoptadas explícitamente con respaldo, sin DDL al arrancar.
+Runtime conserva B02 y TLS: cuatro tablas nuevas con operaciones mínimas,12 políticas
+RLS y tres secuencias. FastAPI mantiene autorización por identidad/paciente; no Supabase Auth.
+Esquema23modelos compatible, filas/ACL anteriores conservadas. Render V43 y recordatorios
+activados; Auto-Deploy observado activo, distinto de receta histórica. Evidencia deploy-v44.
+Readiness sigue siendo conectividad, no certificación de esquema ni del flujo completo.
+Los apartados inferiores conservan estado histórico de implementación local/restauración V26.
+
 # Arquitectura de ASHAKids
 
 ## Flujo de datos

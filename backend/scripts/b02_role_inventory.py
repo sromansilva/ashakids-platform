@@ -27,6 +27,10 @@ PERMISSIONS = {
     "actividades": "SELECT",
     "resultados_nivel": "SELECT",
     "evaluaciones_ia": "SELECT",
+    "turnos_semanales": "SELECT INSERT DELETE",
+    "bloqueos_agenda": "SELECT INSERT DELETE",
+    "preferencias_notificacion": "SELECT INSERT UPDATE",
+    "notificaciones": "SELECT INSERT UPDATE",
 }
 SEQUENCES = """
 SELECT c.relname AS table_name,a.attname AS column_name,

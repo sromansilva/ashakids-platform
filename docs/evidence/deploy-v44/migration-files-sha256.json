@@ -1,0 +1,7 @@
+{
+  "002_activacion_cuentas.sql": "e7ca6cb0bec39aaf416028a42789a07fa82fef3a12f0bcc528c77107f04cb16a",
+  "003_agenda_introduccion.sql": "4c28228ed35b3a133191c5f9b703155a1fc7d42bf0321c134a3e7d781e2a6bb3",
+  "004_planes_profesionales.sql": "c2669b07ab888bf88b25d87210285c26935335c22d0fa6aa6b57922905ef9b65",
+  "005_notificaciones_profesionales.sql": "3df3d501e9644de653543e1ffe86de7e0acc2616c1bc845d647e7a7782d13d01",
+  "006_runtime_flujo.sql": "02242919bc91f3f6985843477e3899d1e84ec1c2d8f32bc808966dc038291d04"
+}

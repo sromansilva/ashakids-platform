@@ -1,0 +1,371 @@
+{
+  "captured_utc": "2026-10-10T17:42:51.539192+00:00",
+  "origin": "https://ashakids.onrender.com",
+  "mode": "READ ONLY",
+  "http": [
+    {
+      "path": "/health",
+      "status": 200,
+      "json": {
+        "status": "healthy",
+        "app": "Ashakids API",
+        "version": "0.1.0"
+      }
+    },
+    {
+      "path": "/health/ready",
+      "status": 200,
+      "json": {
+        "status": "ready",
+        "database": "reachable"
+      }
+    },
+    {
+      "path": "/api/v1/auth/me",
+      "status": 401,
+      "json": {
+        "detail": "No se encontr\u00f3 una sesi\u00f3n activa."
+      }
+    }
+  ],
+  "changelog_status": 200,
+  "current_user": "ashakids_runtime",
+  "tls": "TLSv1.3",
+  "columns": [
+    {
+      "table_name": "reservas",
+      "column_name": "id_reserva",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_paciente",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_terapeuta",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_tratamiento",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "fecha_hora_inicio",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "fecha_hora_fin",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "modalidad",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "localizacion",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "zoom_meeting_id",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "zoom_join_url",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "estado_reserva",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "fecha_creacion",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_tratamiento",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_expediente",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_terapeuta",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "nombre_tratamiento",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "descripcion",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "sesiones_recomendadas",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "estado_tratamiento",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "fecha_inicio",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "fecha_fin",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "observaciones_cierre",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "id_usuario",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "nombres",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "apellidos",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "codigo_usuario",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "email",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "password_hash",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "activo",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "fecha_creacion",
+      "is_nullable": "NO"
+    }
+  ],
+  "tables": [
+    {
+      "relname": "actividades",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "administradores",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": false
+    },
+    {
+      "relname": "auditoria_cambios",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": false
+    },
+    {
+      "relname": "conversaciones",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "evaluaciones_ia",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "expedientes",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "logros",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "mensaje_adjuntos",
+      "relrowsecurity": true,
+      "can_select": false,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "mensajes",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": false
+    },
+    {
+      "relname": "mundos",
+      "relrowsecurity": true,
+      "can_select": false,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "niveles",
+      "relrowsecurity": true,
+      "can_select": false,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "objetivos",
+      "relrowsecurity": true,
+      "can_select": false,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "pacientes",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "perfil_logros",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "perfiles",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "reportes_sesion",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "reservas",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "resultados_nivel",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "roles",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": false,
+      "can_update": false
+    },
+    {
+      "relname": "sesiones",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "sesiones_autenticacion",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "terapeutas",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "tratamientos",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "tutores",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    },
+    {
+      "relname": "usuario_roles",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": false
+    },
+    {
+      "relname": "usuarios",
+      "relrowsecurity": true,
+      "can_select": true,
+      "can_insert": true,
+      "can_update": true
+    }
+  ],
+  "db_connection": "success"
+}
