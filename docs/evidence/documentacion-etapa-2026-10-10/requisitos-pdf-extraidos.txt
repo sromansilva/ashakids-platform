@@ -1,0 +1,125 @@
+--- PAGINA 1 ---
+PASOS PARA LA RESOLUACION
+1. RESUMEN DEL PROYECTO
+1.1 NOMBRE DEL PROYECTO.
+1.2 DESCRIPCIÓN GENERAL.
+Actualizar la información del APF1 indicando:
+- Propósito del sistema.
+- Usuarios involucrados.
+- Funcionalidades principales.
+1.4 ESTADO ACTUAL DEL PROYECTO.
+Colocar en estado el porcentaje de avance que tienen de acuerdo a
+cada componente.
+Componente Estado
+Frontend
+Backend
+Base de
+datos
+Seguridad
+Pruebas
+Despliegue
+1.3 PROBLEMA IDENTIFICADO.
+1.4 SOLUCIÓN PROPUESTA.
+1.5 CRONOGRAMA
+2. RESUMEN DEL AVANCE DEL PROYECTO
+Explicar que el documento presenta el segundo avance del proyecto integrador,
+mostrando la evolución desde la planificación y diseño inicial hasta la
+implementación de una primera versión funcional.
+Debe incluir:
+- Contexto del proyecto.
+- Problema identificado.
+- Solución desarrollada.
+--- PAGINA 2 ---
+- Avances alcanzados en la Unidad II.
+3. LEVANTAMIENTO DE OBSERVACIONES APF1
+Esta sección debes demostrar la mejora respecto al primer avance, de las
+observaciones dadas en el feedback del primer avance.
+Ejemplo:
+- Mejorar arquitectura.
+- Completar requerimientos.
+- Ajustar prototipo.
+- Mejorar planificación(cronograma).
+4. ARQUITECTURA IMPLEMENTADA DEL SISTEMA
+4.1. ARQUITECTURA ACTUAL
+Presentar el diagrama:
+Usuario
+↓
+Frontend
+↓
+Backend
+↓
+Base de Datos
+4.2 TECNOLOGÍAS UTILIZADAS
+Capa Tecnología
+Frontend
+Backend
+Base de Datos
+Servidor / Cloud
+Control de
+versiones
+--- PAGINA 3 ---
+5. DESARROLLO BACKEND (Relacionado al Sprint 04)
+5.1 ARQUITECTURA DEL BACKEND
+Explicar:
+- Lenguaje utilizado.
+- Framework.
+- Estructura del proyecto.
+- Servicios implementados.
+5.2 FUNCIONALIDADES BACKEND IMPLEMENTADAS
+Colocar todas las funcionalidades de tu sistema, colocar una
+descripción y en estado coloca el porcentaje de avance que se
+tiene entres 0% a 100%:
+Funcionalidad Descripción Estado
+Login
+Registro
+Consultas
+5.3 EVIDENCIAS DEL BACKEND
+Incluir:
+- Endpoints.
+- Respuestas JSON.
+- Capturas del funcionamiento.
+6. IMPLEMENTACIÓN DE SEGURIDAD (Relacionado al Sprint 03 y Sprint
+04)
+6.1 MODELO FÍSICO IMPLEMENTADO
+Presentar:
+- Diagrama actualizado.
+- Relaciones entre tablas.
+6.2 TABLAS IMPLEMENTADAS
+Tabla:
+Tabla Descripción
+Nombre
+de tablas
+de tu BD
+--- PAGINA 4 ---
+6.4 OPERACIONES REALIZADAS
+Evidenciar:
+- Insert.
+- Update.
+- Delete.
+- Consultas.
+7. VALIDACIÓN DEL SISTEMA (semana 7)
+7.1 ACTIVOS DEL PROYECTO (El cuadro se realizó en la semana 7
+sesión 01)
+Activo Descripción Componente Importancia
+Asociado
+Credenciales de Usuarios y Módulo de Alta
+acceso contraseñas del autenticación
+sistema
+Datos de Nombre, DNI, Base de datos Alta
+alumnos correo, notas PostgreSQL
+7.2. CONTROL DE ACCESO
+ROL Descripción de Funcionalidad
+Permisos
+Administrador Permiso 01 – 100%
+descripción
+Permiso 02 – 50%
+descripción
+7.3 MATRIZ DE SEGURIDAD DEL PROYECTO
+Activo de Riesgo Ataque Posible Control de
+Informacion Identifcado Seguridad
+Credenciales de Robo de Exposición de Almacenamiento
+acceso credenciales datos con bcrypt (hash)
+--- PAGINA 5 ---
+8. EVIDENCIAS DEL PROYECTO
+9. CONCLUSIONES
+10. REFERENCIAS

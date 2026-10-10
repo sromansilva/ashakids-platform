@@ -1,3 +1,16 @@
+# Base actual V46 — flujo y documentación
+
+Leer DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md, GUIA_FLUJO_ESTADO_Y_PENDIENTES.md y
+REGISTRO_INCONSISTENCIAS_Y_CRITERIOS.md (12 fichas abiertas, con fuentes y aceptación), más
+AGENTS/contexto/progreso. Base funcional6204803/V45; la documentación nueva se publica
+como V46 en dev/codex/2do-intento; verificar SHA real en Git. PDFs en output/pdf.
+Usuario ya creó padre/terapeuta, publicó/consultó disponibilidad, reservó y vio enlace Zoom
+en Render. Siguiente: registrar/iniciar sesión, reporte, plan y cierreASISTIO, lectura familiar
+y segunda terapia. Zoom no mueve estados automáticamente. Plan nuevo conserva historial
+pero reemplaza mundos activos; no planes simultáneos/diagnóstico múltiple normalizado.
+No rehacer alta terapeuta ni migraciones adoptadas. No pagos/anticipación semanal.
+PIN4/WSP/ZoomAPI son backlog separado; prioridad UXweb, conservar contratos y autoría.
+
 # Confirmación V45
 
 V44 ya está Live en Render y ambas ramas sincronizadas. Usuario confirmó alta/acceso PADRE.

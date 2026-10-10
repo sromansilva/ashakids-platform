@@ -1,10 +1,20 @@
 # ASHAKids — Plan de implementación por fases
 
-Actualizado: 2026-10-09. Entrega confirmada: 2026-10-09 18:00 America/Lima. Personas por asignar.
+Actualizado: 2026-10-10. Entrega confirmada: 2026-10-09 18:00 America/Lima. Personas por asignar.
 Alcance: [contexto maestro](PROJECT_CONTEXT.md). Ejecución: [avance y relevos](IMPLEMENTATION_PROGRESS.md).
 La numeración es nueva y no equivale a las fases históricas de refactorización.
 
 ## Estado del nuevo flujo,2026-10-10
+
+V46 incorpora fuente técnica Avance2 y guía actual para equipo: DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md
+y GUIA_FLUJO_ESTADO_Y_PENDIENTES.md, con PDF exports. Usuario confirma ahora alta/acceso
+terapeuta y padre, disponibilidad, reserva y enlace Zoom en Render. Pendiente aceptación
+humana del tramo cierre/reporte/plan/continuidad, no alta terapeuta. Documentación sin nueva
+lógica/BD/usuarios; propuestas PIN4/WSP/Zoom/diagnósticos no implementadas. Catálogo actual
+30tablas207columnas41FK, contrato público69operaciones; evidencia por procedencia.
+Índice de avance documental tiene denominadores explícitos; no es porcentaje de certificación.
+REGISTRO_INCONSISTENCIAS_Y_CRITERIOS.md conserva 9 inconsistencias y 3 decisiones abiertas;
+usarlo para estandarizar mensajes, validaciones y contratos antes de futuros cambios.
 
 V45 registra V44Live/1fc19b3 y confirmación humana de creación/ingreso PADRE. Alta TERAPEUTA
 ya existe y su formulario se abrió en Render sin enviar; pendiente verificar alta/activación/

@@ -1,5 +1,11 @@
 # ASHAKids — Contexto maestro del flujo actualizado
 
+**Estado implementado vigente V46:** consultar [guía operativa](GUIA_FLUJO_ESTADO_Y_PENDIENTES.md)
+y [maestro técnico](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md). El contenido inferior conserva
+el acuerdo inicial V32 y evolución local; no es el inventario vigente de implementación.
+V44 adoptó el esquema compartido y V46 incorpora recorrido humano en Render hasta enlace
+Zoom. Anticipación semanal excluida. Propuestas iniciales no equivalen a funciones presentes.
+
 Fecha: 2026-10-10, America/Lima. Versión de flujo: 1.
 Cierre documental: `V32_Actualizacion_Documentacion_Equipo`; consultar SHA efectivo en Git.
 Repositorio: https://github.com/sromansilva/ashakids-platform .

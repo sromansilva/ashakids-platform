@@ -1,0 +1,18 @@
+[
+  {
+    "file": "Documentacion_Maestra_ASHAKids_V46.pdf",
+    "pages": 52,
+    "text_chars": 98249,
+    "geometry_flags": [],
+    "sha256": "fd7c83dff50820fa6b845b4fb5ab62de3b5a1021db9a42188956f9782176f20b",
+    "visual_review": "Todas las páginas inspeccionadas en hojas completas; revisión ampliada de cobertura, diagrama y pendientes, sin defectos observados."
+  },
+  {
+    "file": "Guia_Flujo_Equipo_ASHAKids_V46.pdf",
+    "pages": 13,
+    "text_chars": 30165,
+    "geometry_flags": [],
+    "sha256": "156d3cb8cfe8c535f7fbb51c5c4d999c30c6b45b4c43fc8c5661fe485360c6c6",
+    "visual_review": "Todas las páginas inspeccionadas en hojas completas; revisión ampliada de cobertura, diagrama y pendientes, sin defectos observados."
+  }
+]

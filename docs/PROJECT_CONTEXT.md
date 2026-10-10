@@ -1,3 +1,28 @@
+## Fuente de etapa y aceptación humana — V46 / 2026-10-10
+
+Solicitud posterior incorporada: REGISTRO_INCONSISTENCIAS_Y_CRITERIOS.md con doce fichas
+abiertas (nueve contradicciones y tres criterios pendientes), fuentes/líneas, prioridades
+y aceptación propuesta. Maestro§15 y guía§5 enlazan el registro; no correcciones funcionales.
+
+Maestro actualizado: DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md (requisitos de cinco páginas
+del Avance2, arquitectura, API, diccionario/relaciones, operaciones, seguridad y evidencia).
+Guía operativa: GUIA_FLUJO_ESTADO_Y_PENDIENTES.md (12pasos, estados, inventario100%/parcial/
+ausente, pendientes UX y límites). PDF exports en output/pdf, evidencia documental propia.
+Base examinada6204803/V45, codex/2do-intento/dev. Corte documental, no auditoría nueva.
+Usuario confirma alta/acceso padre y terapeuta, disponibilidad, reserva y enlace Zoom visible
+en Render; supera el pendiente V45. No creación ni clínica nueva por agente para documentar.
+Tramo cierre/reporte/plan/segunda reserva pendiente de aceptación humana en Render; código
+y pruebas locales heredadas describen su comportamiento. Zoom no cierra la sesión: manual.
+Plan/reporte permiten EN_CURSO; reservar terapia exige introducciónFINALIZADA/ASISTIO,
+reporte válido y planACTIVO. Mundos leen el plan activo antes del cierre si ya fue publicado.
+Plan nuevo finaliza anterior conservando historia, no biblioteca educativa acumulativa.
+Catálogo actual READONLY30tablas207columnas113pg_constraint41FK87índices70políticas,
+23ORM. OpenAPI público3.1.0/API0.1.0/69operaciones; health/ready200. No suites nuevas.
+Pendientes específicos: UI contraseña8/API12; PATCHpropia no verifica actual; reporte backend
+no bloqueaNO_ASISTIO como UI. PIN4, WSP/ZoomAPI, varios diagnósticos/material histórico son
+backlog de seguridad/integración/dominio, no cambios estéticos ni implementados. No pagos,
+no regla anticipación semanal; desktop primero. Siguiente: aceptar tramo final y pulir UX.
+
 ## Confirmación de despliegue y acceso — V45 / 2026-10-10
 
 Render V44/1fc19b36598cf96cbc89d36a85fb9ca6c062eda3 confirmado Live, deploy

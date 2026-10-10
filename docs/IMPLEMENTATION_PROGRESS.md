@@ -1,3 +1,35 @@
+## V46 — Documentación de flujo, BD y equipo / 2026-10-10
+
+Steering del usuario: registrar inconsistencias para unificar criterios. Incorporado
+REGISTRO_INCONSISTENCIAS_Y_CRITERIOS.md con12fichas (9inconsistencias,3criterios), fuentes/
+lineas y aceptación propuesta. Ninguna marcada resuelta; no pruebas ni fixes nuevos.
+
+Objetivo autorizado: dos fuentes detalladas de estado actual, una para estructurar Avance2
+y otra para equipo/agentes. No implementar propuestas UX/credenciales/integraciones.
+Rama codex/2do-intento; base62048038b70d2411234fb681284e327cf142d1b7/V45 en dev.
+Archivos: DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md, GUIA_FLUJO_ESTADO_Y_PENDIENTES.md,
+PDFsoutput/pdf, evidencia documentacion-etapa-2026-10-10, generador tools/reports y enlaces
+de continuidad. Cada requisito del PDF del usuario se mapea, sin inventar feedback/sprints.
+Usuario confirma recorrido Render hasta enlace Zoom; alta terapeuta ya aceptada por él.
+Código revisado aclara inicio/cierre manual, reporte/planEN_CURSO, gatingTERAPIA y reemplazo
+de material activo; múltiples diagnósticos/planes no implementados. Pendientes concretos
+de contraseña y NO_ASISTIO documentados; no se corrigió lógica en esta fase.
+Comprobaciones nuevas: cinco páginas PDF leídas/renderizadas; Graphifyquery/check;
+catálogo SQL SETTRANSACTIONREADONLY30tablas207columnas113constraints41FK87índices/
+70políticas/23ORM; GETopenapi/health/ready200,69operacionesAPI0.1.0/OpenAPI3.1.0.
+Sin leer filas clínicas, crear cuentas, sesiones o modificar credenciales/BD. TestsV33–V45
+son heredados y rotulados; no nueva corrida ni valoración académica.
+Incidencias: PDFmodulefaltante/encodingcp1252, rutas supuestas y bytescharcatálogo corregidos
+sin escrituras de negocio; detalle en evidenciaREADME. Generador PDF/revisión y validación
+documental registran resultados finales en pdf-validation/validation. Mapa refresh/check al
+incorporar herramienta de exportación; salidas locales sin versionar.
+Commit/push V46 y sincronización de dev se verifican al cerrar; consultar SHA en Git.
+Validación documental final: 19 enlaces locales, 30 tablas/207 columnas/113 restricciones/
+41 FK, 69 operaciones y 12 fichas, sin errores. PDFs: 52 y 13 páginas; todas inspeccionadas,
+con revisión ampliada de cobertura, diagrama y pendientes. Geometría sin incidencias.
+Siguiente acción: aceptar cierre→reporte→plan→familia→terapia con otro profesional en Render,
+con usuario autorizado; después mejoras UX separadas. PIN4/WSP/ZoomAPI quedan propuestas.
+
 ## Confirmación de despliegue y acceso — V45 / 2026-10-10
 
 Render V44/1fc19b36598cf96cbc89d36a85fb9ca6c062eda3 confirmado Live, deploy

@@ -1,5 +1,11 @@
 # ASHAKids — Entrega académica y evidencia
 
+Fuente documental actual V46 para el Avance2: [maestro de etapa](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md)
+y [guía de flujo/pendientes](GUIA_FLUJO_ESTADO_Y_PENDIENTES.md). Base6204803/V45, catálogo
+READONLY30tablas207columnas41FK y OpenAPI3.1.0/69operaciones. Estado humano en Render hasta
+reserva/enlace Zoom, cierre/plan/continuidad pendiente. Las cifras/checklists inferiores son
+históricas por corte; no usarlas como una auditoría o resultado nuevo ni como modelo actual.
+
 Plazo confirmado: **2026-10-09 18:00 America/Lima**.
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base común: dev.
 El corte07 reproduce aplicación dev/e456294 (PR106 integrado), guion V11/8578ca9 y
