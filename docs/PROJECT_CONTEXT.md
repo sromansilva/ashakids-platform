@@ -6,111 +6,14 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
-### Comparación del texto del equipo para el rol Padre - corte 2026-10-10-01
+### Punto vigente: plataforma restaurada al corte V26
 
-- Código V29/ae5875ba2173e1d656d058ea6918c63c21382456, piero-dev; flujo parcialmente
-  alineado. Informe/PDF/evidencia en audits/auditoria-2026-10-10-01.md y
-  evidence/audit-2026-10-10-01/. Sin implementación de diferencias ni despliegue.
-- Alta actual desde configuración usa POST /pacientes sin crear Perfil; /padres/hijos
-  sí lo crea. PERFILES no se actualiza al cerrar sesión y no alimenta contadores actuales.
-  Asignación de tratamiento solo ADMIN; texto la atribuye al terapeuta. Cita requiere
-  tratamiento NOT NULL y fin manual; falta contrato de primera consulta/duración45.
-- Reportes sin mes/filtro/modal; valoración conservada; próximo card admite pendientes.
-  Psicólogos muestra asignaciones, mensajes solo texto, Mundo ASHA prototipos sin progreso API.
-  Tablas educativas dependen de actividad por paciente; revisar antes de catálogo global.
-- Evidencia nueva:55 pruebas frontend con mocks;SQL READ ONLY solo metadatos26 tablas,
-  22 visibles; runtime sin SELECT en mundos/niveles/objetivos/mensaje_adjuntos. Ninguna fila
-  real, login como Sergei, creación de datos ni nueva prueba de escritura. PDF6 páginas QA.
-- Cierre documental V30_Auditoria_Flujo_Padre_Tablas por verificar en Git al entregar.
-  U0 terminada/U1.1 pendiente se conservan. Resolver decisiones del texto dentro de secuencia
-  visual, sin abrir módulos simultáneos ni activar IA/pagos o eliminar tablas sin uso UI.
-
-### Ejecución secuencial y primera parte visual U0 — V29
-
-- Una persona/asistente por vez. [Plan visual vigente](VISUAL_IMPLEMENTATION_PLAN.md) y
-  [estado único de continuación](VISUAL_IMPLEMENTATION_STATE.md) sustituyen el reparto
-  paralelo; sus bloques B0–B5 quedan como mapa histórico. Cada persona actualiza estado y
-  contexto, trabaja en su rama y publica únicamente una parte terminada/verificada.
-  Aviso de tokens a mitad de parte conserva diff/estado sin commit; otro clon necesita
-  transferencia explícita del diff pendiente, no solo un prompt.
-- Base V28 `e4e53e4ef9dc653d140f8358b8a0d44ca7dfa87c`, `piero-dev`, sincronizada al inicio
-  con dev/feat/piero-dev. Cierre identificable `V29_Correccion_Reportes_Accesibilidad_Acceso`;
-  resolver su SHA mediante Git y verificar referencias efectivas, sin autorreferencia.
-- U0: reportInput selecciona cuatro campos al iniciar formulario y serializar servicio;
-  conserva null y descarta IDs/fecha. Backend estricto sin cambios. Inp añade atributos
-  nativos, feedback asociado, campos 16 px, borde/ayuda legibles, ojo con nombre/estado,
-  control 44×44 y teclado. Login reutiliza Inp, anuncia errores, conserva borrador y evita
-  doble envío; retira Recordarme sin efecto y promesas de disponibilidad/progreso en tiempo real.
-- Verificación nueva: 25 rutas + 263 componentes, typecheck, check:frontend (323 archivos),
-  build, detector Impeccable sin hallazgos en tres entradas, mapa refresh/check. Render
-  sintético 1280×720, acceso 390×844 y 320×740, reporte 390×844; teclado y error/reintento.
-  [Evidencia y límites](evidence/visual-u0-v29/README.md). No cobertura visual de todos los
-  consumidores, SQL/HTTP real, autenticación real, hardware/micrófono o auditoría técnica nueva.
-- Siguiente U1.1: unificar tokens y Btn/Crd/Bdg/RemoteFeedback con catálogo aislado.
-  U1.2 navegación/diálogos y U1.3 muestras familiar/reserva/expediente siguen pendientes;
-  revisar muestras con usuario antes de ampliar composición. Juego y contrato educativo
-  permanecen pendientes. Sin cambios de BD, .env, registros AUDITORIA o despliegue.
-
-Los cortes siguientes son históricos; la entrada vigente de trabajo está arriba.
-
-### Sistema de diseño maestro y juego mínimo — corte documental V28
-
-- Base real de lectura V27 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`, `piero-dev`;
-  árbol limpio y origin/dev = origin/feat/piero-dev al iniciar. `fetch` y fast-forward
-  contra origin/dev sin cambios. Repositorio https://github.com/sromansilva/ashakids-platform .
-- [PRODUCT.md](../PRODUCT.md) registra verdad funcional; [DESIGN.md](../DESIGN.md) propone
-  sistema maestro ASHA/Ashi, Nunito/violeta, jerarquía, tokens, estados y accesibilidad.
-  Figma Make solo inspira criterios propios, según aclaración del usuario. Inspección
-  acotada de portada/acceso/familia/agenda/reserva/Mundo ASHA/preparación de Voz Aventura;
-  no todas las vistas ni aceptación visual de la app. Valores exactos contrastados en código.
-- [Plan paralelo](UX_UI_PARALLEL_PLAN.md): B0 único integrador de componentes/estilos/
-  navegación/contratos; B1 preparación; B2 consulta familiar; B3 atención/recomendación;
-  B4 mensajes; B5 primer juego/progreso. Rondas para dos, tres o más personas, nombres por
-  asignar y merges en serie. Publicar documentos no valida el rediseño ni inicia migraciones.
-- [Mundo ASHA](MUNDO_ASHA_PLAN.md): pájaro que sube con sonido y baja con silencio entre
-  troncos de altura variable es obligatorio. Prototipo reutilizable, todavía mariposa/tubos,
-  récord 28/intentos 2/Mateo ficticios. Preparación/calibración, ruido, permiso, controles
-  alternativos, pausa/reintento/salida y liberación de recursos especificados.
-- Máximo 45 s y perfiles son propuesta, no parámetros ya aceptados. API/entidades/permisos
-  pendientes; servidor emitirá seed/config y reproducirá entradas para derivar resultados,
-  sin confiar en puntajes de React. Esto valida reglas del juego, no voz humana/pronunciación
-  o mejoría clínica. Sin almacenar audio ni localStorage definitivo.
-- B3 usa `proximos_pasos` existente para texto; B2 lee reporte autorizado. Asociación formal
-  reporte–juego requiere MA-02: contrato/modelo/migración antes de API. B5 guarda por niño
-  y recupera en otro dispositivo; adulto/profesional autorizado consulta seguimiento separado.
-- Primera implementación sigue pendiente: F16-01 de reporte y F16-02/03 de accesibilidad;
-  luego tres muestras y validación visual. Este corte solo documentación; no tests runtime,
-  QA clínica, filas reales, cambios .env/BD ni despliegue. No pagos/IA/reconocimiento clínico.
-- [Notas y verificaciones](evidence/design-plan-v28/README.md), contexto y relevo actualizados;
-  preservar históricos. Cierre V28_Actualizacion_Documentacion_Diseno_Juegos; el SHA final
-  se identifica por Git para evitar una autorreferencia. Comprobar push efectivo en dev
-  y feat/piero-dev; el estado real se entrega con el cierre.
-
-La sección siguiente conserva el corte de planificación V27; la prioridad vigente está arriba.
-
-### Propuesta de trabajo paralelo por flujos y UX/UI
-
-- Plan documentado en [UX_UI_PARALLEL_PLAN.md](UX_UI_PARALLEL_PLAN.md), con inventario
-  estático de 96 rutas (incluye alias) en [UX_UI_ROUTE_MATRIX.md](UX_UI_ROUTE_MATRIX.md).
-  Base inspeccionada V26/a81e465aa02522366eb97250c38827d11ed4a0e4, piero-dev.
-- B0 integra sistema visual/acceso/archivos comunes; B1 administración y asignaciones;
-  B2 experiencia familiar; B3 agenda/atención/reportes en los tres roles; B4 mensajería;
-  B5 Mundo ASHA y extensión educativa. Dos personas trabajan en rondas A:B1→B3,
-  B:B2→B4; más integrantes permiten B3/B4 paralelos después de la base compartida.
-- La solicitud actual amplía la planificación hacia progreso educativo real, que todavía
-  no tiene API. Requiere contrato, revisión del contenido y un juego completo antes de
-  ampliar mundos. No declarar realizada esta extensión ni mezclarla con progreso clínico.
-- Propuesta: conservar identidad ASHA/violeta/Nunito, validar tres muestras y fijar
-  PRODUCT.md/DESIGN.md antes del rediseño. Primero corregir reporte existente y accesibilidad.
-- Limpieza propuesta de textos de arquitectura/pendientes y navegación de maquetas;
-  convertir America/Lima a «Horarios de Perú» sin cambiar zona/validación. Conservar
-  bloqueos útiles, consentimiento y la identificación honesta de demostraciones retenidas.
-- QA con nuevas familias sintéticas en entorno separado; no renombrar ni borrar registros
-  AUDITORIA anteriores. Variables de auditoría fuera del .env mínimo de runtime, manteniendo
-  configuración privada de pruebas aparte. Este cierre no modifica UI, .env ni BD.
-- Cierre documental previsto V27_Actualizacion_Documentacion_Equipo; comprobar SHA y
-  publicación efectiva en Git. Es una propuesta para validar, no una auditoría técnica nueva
-  ni implementación completa. Auto Deploy registrado Off; verificar panel antes de publicar imagen.
+- Base funcional y documental: `a81e465aa02522366eb97250c38827d11ed4a0e4`,
+  `V26_Auditoria_Frontend_Backend_HTTPS`. Las fuentes coinciden con ese corte.
+- Esquema compartido recuperado, con registros y permisos conservados. El contexto activo
+  vuelve a las auditorías16/17; no continuar planes posteriores a V26.
+- [Registro de recuperación y verificaciones](RESTORE_V26.md). Los 91/100 siguientes
+  corresponden a las auditorías originales; no son una puntuación nueva.
 
 ### Auditorías finales frontend y backend - cortes16 y17
 

@@ -1,0 +1,59 @@
+{
+  "environment": "configured-shared-database",
+  "action": "rollback",
+  "before": {
+    "tables": 26,
+    "permissions_sha256": "0a153dc70a0bc899bc60a93a4901cebabd020727d628d78d76143ea88cc6b94d",
+    "columns": [
+      [
+        "reservas",
+        "id_tratamiento",
+        "YES"
+      ],
+      [
+        "reservas",
+        "tipo_cita",
+        "NO"
+      ],
+      [
+        "tratamientos",
+        "id_sesion_origen",
+        "YES"
+      ]
+    ],
+    "counts": {
+      "usuarios": 5,
+      "pacientes": 1,
+      "reservas": 0,
+      "tratamientos": 1,
+      "sesiones": 0,
+      "reportes_sesion": 0
+    }
+  },
+  "after": {
+    "tables": 26,
+    "permissions_sha256": "0a153dc70a0bc899bc60a93a4901cebabd020727d628d78d76143ea88cc6b94d",
+    "columns": [
+      [
+        "reservas",
+        "id_tratamiento",
+        "NO"
+      ]
+    ],
+    "counts": {
+      "usuarios": 5,
+      "pacientes": 1,
+      "reservas": 0,
+      "tratamientos": 1,
+      "sesiones": 0,
+      "reportes_sesion": 0
+    }
+  },
+  "unsafe_counts": {
+    "induction_reservations": 0,
+    "origin_plans": 0
+  },
+  "counts_preserved": true,
+  "permissions_preserved": true,
+  "baseline_columns_restored": true
+}

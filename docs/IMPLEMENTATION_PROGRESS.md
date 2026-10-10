@@ -1,131 +1,18 @@
 # ASHAKids — Avance y relevos del equipo
 
-Actualizado: 2026-10-10. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).
+Actualizado: 2026-10-09. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).
 Este archivo se actualiza al cerrar una tarea y antes de cambiar de persona/asistente.
 No es un registro automático: quien termina debe guardar y compartir su actualización.
 
 ## Punto de continuación actual
 
-### Comparación funcional del flujo Padre - V30 documental
+### Recuperación de V26 — 2026-10-10
 
-- Lectura de texto del equipo frente a código V29 ae5875b, rama piero-dev. Preservada
-  preferencia previa de revisión visual local en AGENTS/estado. Informe:
-  docs/audits/auditoria-2026-10-10-01.md; PDF Flujo_Padre_Tablas en output/pdf;
-  evidencia docs/evidence/audit-2026-10-10-01/. Sin cambios runtime ni BD.
-- Confirmado:configuración crea paciente por API sin Perfil; API alterna sí crea Perfil;
-  cierre de sesión no sincroniza Perfil. Tratamiento solo ADMIN y obligatorio en reservas.
-  Diferencias documentadas por7 pantallas; adjuntos/niveles/catálogo sin API operativa.
-- Nuevo:55/55 tests seleccionados HTTP simulado; metadatos READ ONLY PG17.6 catálogo26/
-  visible22;sin SELECT runtime en4 tablas futuras;PDF6 páginas renderizadas e inspeccionadas.
-  No nuevo login,SQL de filas,escritura clínica,navegador,build o E2E. No reutilizar cifras previas.
-- Errores de comandos y reparaciones de paginación en README evidencia. Mapa vigente al
-  inicio; refresh/check final se verifican al cierre. No abrir módulo por este diagnóstico.
-- Siguiente acción U1.1 sigue igual. Antes de cambios funcionales acordar primera consulta,
-  autoridad de asignación,Perfil/conteos,mes/títulos,catálogo/asignación y adjuntos privados.
-  El informe no constituye aceptación de una migración ni implementación del texto completo.
-- Cierre V30_Auditoria_Flujo_Padre_Tablas:consultar SHA publicado en dev/feat/piero-dev;
-  estado efectivo en entrega. Sin force-push ni despliegue manual de Render.
-
-### Relevo U0 / V29 — corrección de reportes y accesibilidad de acceso
-
-- Continuar desde [VISUAL_IMPLEMENTATION_STATE.md](VISUAL_IMPLEMENTATION_STATE.md).
-  Plan secuencial U0–U8; siguiente tarea U1.1 tokens/primitivas. Una persona activa, rama
-  propia; commit solo al terminar parte verificable. AGENTS actualiza la regla de relevo:
-  a mitad de parte guardar contexto/diff, sin commit por tokens.
-- Base real V28 `e4e53e4ef9dc653d140f8358b8a0d44ca7dfa87c`, piero-dev, limpio/sincronizado.
-  Fuentes: ClinicalReportEditor, clinicalService, Inp, LoginPage, theme.css; regresiones
-  frontend-remediation, visual-u0 y providers; fixture visual-u0.html/tsx solo desarrollo.
-  Plan/estado, DESIGN/PRODUCT, contexto/relevo y regla del equipo actualizados juntos.
-- Alcance terminado: filtro de cuatro campos con Report completo, null preservado y
-  borrador ante 409/422; ojo semántico y objetivo44, campos16/ayudas14, contraste y foco,
-  alertas/pending/acceso conservado. Retirado Recordarme sin función y copy API/24-7/
-  mejores especialistas/progreso en tiempo real. Sin modificar autenticación ni backend.
-- Checks: 25 rutas + 263 componentes pasan; types, checker323/build pasan. Impeccable
-  devuelve [] para tres entradas; refresh local AST/no-label y check. Capturas/contraste y
-  resultados en docs/evidence/visual-u0-v29/. Fixtures sin backend ni pacientes reales.
-- Error corregido: primera suite completa 261/262 componentes, una prueba buscaba el
-  placeholder antiguo. Se cambió a getByLabelText y la suite completa pasó263 al añadir
-  también caso422. Parches rechazados por doble operación sobre Inp y contexto literal
-  providers distinto no cambiaron archivos; se reaplicaron con la fuente correcta.
-  Build advierte DEP0205 de Node; Graphify12 archivos sin símbolos (aviso de extractor).
-- Cierre `V29_Correccion_Reportes_Accesibilidad_Acceso`, SHA por git log y referencias.
-  Integración/publicación se verifica al cerrar, sin force-push; estado real del push en
-  entrega. CI remota no confirmada por este registro; push no despliega Render/manual.
-- U1–U8 pendientes, solo aplicación visual parcial. No auditoría técnica nueva, pruebas
-  reales de sesiones/BD, cuentas, migraciones, hardware/micrófono ni despliegue.
-
-El relevo V28 siguiente conserva historia; el estado único visual es la entrada vigente.
-
-### Relevo V28 — sistema maestro y planificación de Voz Aventura
-
-- Objetivo: actualizar planificación y crear PRODUCT/DESIGN antes de implementar UI/juego.
-  Base: `piero-dev`, V27 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`, árbol limpio;
-  remotas dev y feat/piero-dev iguales. Fetch + merge --ff-only origin/dev: sin cambios.
-- Entregables: PRODUCT.md, DESIGN.md, UX_UI_PARALLEL_PLAN, UX_UI_ROUTE_MATRIX,
-  MUNDO_ASHA_PLAN, IMPLEMENTATION_PLAN, PROJECT_CONTEXT, este relevo y notas de lectura
-  en docs/evidence/design-plan-v28/. Estado: documentación para validación; no rediseño,
-  juego funcional ni contratos/migraciones implementados. Arquitectura/ADR históricos conservados.
-- Figma es inspiración, no reproducción. Portada/acceso, Centro Familiar, agenda/primer
-  paso reserva, Mundo ASHA y preparación del juego inspeccionados; no todos los roles/vistas.
-  No micrófono ni datos reales en la referencia. Fuentes del repositorio contrastan los valores.
-- B3 recomienda en próximos pasos; B2 consulta; B5 juega/guarda por niño; profesional
-  autorizado ve seguimiento educativo separado. Modelo y rutas formales son propuestas
-  previas a migración, reutilización de tablas educativas por confirmar, sin puntajes confiados a React.
-- Voz Aventura: pájaro/troncos, límite 45 s propuesto, ruido/calibración, permiso/pausa/salida/
-  toque/teclado; quitar Mateo/28 s/intentos prefijados. Física a paso fijo y replay servidor,
-  idempotencia y resultados tras recarga/otro dispositivo. No audio ni validación de pronunciación.
-- Comprobaciones nuevas documentales: Graphify check/consulta, lectura de fuentes,
-  13 parejas de contraste calculadas, 76 enlaces locales existentes, fences/headings y JSON
-  correctos; diff --check sin errores, escaneo acotado de añadidos sin patrones de secretos,
-  alcance documental y remotas aún V27 antes del commit. Aviso LF→CRLF de Git, no fallo.
-  No refresh de fuentes runtime: no se modifican; check conserva mapa vigente.
-  Pruebas de auditorías16/17 heredadas, no reejecutadas; ninguna escritura/consulta de filas
-  en BD ni pruebas de integración, frontend build o despliegue atribuidos a este cierre.
-- Errores de trabajo: lecturas iniciales de rutas supuestas B.tsx/theme.css/sesiones.py y
-  actividades.py fallaron; resueltas con rg --files y rutas reales. Un parche documental
-  rechazado por contexto distinto, reaplicado sin pérdida. Web no abrió Figma: IAB sí;
-  changelog.md no legible por web por tipo MIME. No son fallos de aplicación.
-- Primer commit detenido por identidad Git ausente. Los cinco cierres anteriores usan
-  Piero Anticona y su correo noreply de GitHub; reintento con `git -c user.name=...
-  -c user.email=... commit`, solo para la invocación, sin configurar globalmente.
-  `gh` no está instalado en PATH; no atribuir una comprobación CI nueva mediante ese CLI.
-- Siguiente acción: validar propuesta y responsables. Primera tarea de código posterior,
-  ClinicalReportEditor.tsx/clinicalService.ts filtran cuatro campos de ReporteSalida al
-  iniciar y serializar; regresión y accesibilidad. Después muestras Centro Familiar/reserva/
-  expediente, y MA-02 contrato con equipo/profesional antes de migrar.
-- Cierre autorizado: V28_Actualizacion_Documentacion_Diseno_Juegos, commit con descripción,
-  dev y rama personal por fast-forward, sin force-push. El SHA final no se incrusta en su
-  propio contenido; resolver `git log -1`/referencias publicadas y consultar el cierre del chat.
-  Si el push falla, no tratar este relevo como compartido; registrar el bloqueo.
-- No autorización nueva de datos/piloto. AUDITORIA y registros previos se conservan;
-  limpieza de variables/runtime y copy sigue planificada. Sin pagos/IA.
-
-El relevo siguiente es histórico de V27; V28 es el punto vigente.
-
-### Plan de UX/UI y trabajo paralelo por flujos
-
-- Solicitud: repartir módulos entre dos o más personas, unificar diseño, limpiar textos
-  técnicos y preparar interacción ADMIN–familia–terapeuta con datos persistentes.
-- Base V26/a81e465aa02522366eb97250c38827d11ed4a0e4 en piero-dev; árbol limpio al comenzar.
-  Entorno local reparado en turno anterior: npm ci y Vite5174; frontend/CSS y health8000
-  respondieron200. No se repiten esas verificaciones ni se presentan como nueva auditoría.
-- Entregables: UX_UI_PARALLEL_PLAN.md y UX_UI_ROUTE_MATRIX.md; 96 rutas declaradas,
-  81 archivos de entrada lazy distintos en la composición, incluidos alias/prototipos.
-  Clasificación por capacidades es documental; cada acción requiere aceptación efectiva.
-- Plan B0 base/acceso; B1 administración; B2 familia; B3 atención/agenda; B4 mensajes;
-  B5 juegos/progreso educativo. Propiedad única de archivos compartidos y merges en serie.
-  Con dos integrantes: A B1→B3, B B2→B4; B5 después del circuito clínico y contrato propio.
-- Se leyeron contexto/plan/arquitectura, fuentes de rutas, servicios, BookingDialog,
-  PatientEditor, estados clínicos, componentes/tokens y MUNDO_ASHA_PLAN. Graphify check
-  vigente; consultas de símbolos usadas como mapa y contrastadas con fuentes. Sin consultas
-  de filas reales, nueva QA de navegador, modificación de aplicación, .env o BD.
-- Cierre previsto V27_Actualizacion_Documentacion_Equipo. Verificar commit/push real y
-  coincidencia de dev y rama remota personal en Git; esta nota no es evidencia de publicación.
-- Siguiente: validar reparto, corregir F16-01 y accesibilidad, acordar PRODUCT/DESIGN y
-  muestras Centro Familiar/reserva/expediente; integrar base antes de iniciar rediseños paralelos.
-- Límites: no borrar/renombrar AUDITORIA ni datos anteriores; no esconder métricas ficticias
-  como reales; no pagos/IA. B5 requiere API, evaluación e idempotencia, no localStorage como
-  persistencia clínica. No aplicar migraciones compartidas por publicar este plan.
+Base recuperada: `a81e465aa02522366eb97250c38827d11ed4a0e4`.
+Código y documentos restaurados; esquema compartido compatible, registros y permisos
+conservados. Las siguientes auditorías16/17 vuelven a ser la referencia vigente.
+No continuar tareas posteriores a V26. Comprobaciones y límites en [RESTORE_V26](RESTORE_V26.md).
+Cierre: `V31_Restauracion_Plataforma_V26`; verificar SHA y referencias mediante Git.
 
 ### Auditorías finales frontend y backend - cortes16 y17
 

@@ -2,13 +2,6 @@ import { apiClient, type QueryParams } from "@/api/client";
 import type { Account, AccountCreate, AccountEdit, Patient, PatientData, Treatment, TreatmentData,
   Appointment, AppointmentTime, Session, Report, ReportData } from "@/types/clinical";
 
-// A Report response also contains server metadata. Keep the strict input contract
-// even when a caller passes a complete Report response.
-export function reportInput(data: ReportData): ReportData {
-  const { observaciones_iniciales, objetivos_trabajados, nivel_ayuda, proximos_pasos } = data;
-  return { observaciones_iniciales, objetivos_trabajados, nivel_ayuda, proximos_pasos };
-}
-
 const resource = <T>(path: string) => ({
   list: (params?: QueryParams, signal?: AbortSignal) => apiClient.page<T>(path, params, signal),
   get: (id: number, signal?: AbortSignal) => apiClient.get<T>(`${path}/${id}`, { signal }),
@@ -41,5 +34,5 @@ export const sessionsService = {
   close: (id: number, asistencia: "ASISTIO" | "NO_ASISTIO") => apiClient.post<Session>(`/sesiones/${id}/cerrar`, { asistencia }),
   report: (id: number, signal?: AbortSignal) => apiClient.get<Report>(`/sesiones/${id}/reporte`, { signal }),
   reportPdf: (id: number, signal?: AbortSignal) => apiClient.pdf(`/sesiones/${id}/reporte/pdf`, signal),
-  saveReport: (id: number, data: ReportData) => apiClient.put<Report>(`/sesiones/${id}/reporte`, reportInput(data)),
+  saveReport: (id: number, data: ReportData) => apiClient.put<Report>(`/sesiones/${id}/reporte`, data),
 };
