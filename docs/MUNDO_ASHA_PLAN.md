@@ -1,5 +1,12 @@
 # Mundo ASHA - Etapa propia de juegos por habilidades y niveles
 
+**Alcance actualizado 2026-10-10:** consultar [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md).
+Áreas: fluidez/ritmo, habla y comprensión/expresión; uno o varios mundos asignados por terapeuta
+al niño. Primera entrega reducida reutiliza juegos y demuestra progresión/desbloqueo hasta
+completar mundo. Demo explícita o persistencia servidor inicial pendiente de precisión.
+Cuatro mundos/24 niveles y MA-01..MA-07 inferiores son antecedentes, no catálogo aprobado
+ni obligación de completar todo el contenido para el nuevo mínimo.
+
 Petición del usuario: 2026-10-09. Es una etapa extensa, independiente de las fases del núcleo.
 No renumerar las fases existentes ni dar por terminados los juegos por mostrar el catálogo.
 Este documento es la entrada progresiva del módulo; el contexto maestro enlaza aquí.

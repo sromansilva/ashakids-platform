@@ -6,6 +6,13 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Prioridad vigente después de las auditorías16 y17
 
+**Actualización documental 2026-10-10:** el nuevo [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md)
+define alcance posterior a restaurar V26: introducción por niño, disponibilidad, reserva automática,
+elección libre de terapeuta y plan profesional. Prioridad: contratos/recorrido real de tres roles,
+pulido de sus pantallas y juegos mínimos. Códigos de 6 caracteres A/P/T; DNI solo contraseña inicial con cambio
+obligatorio. Secuencia y aceptación en el maestro; fases inferiores conservan contexto histórico.
+No reactivar propuestas V27–V30 ni dar por implementado el nuevo flujo por este corte documental.
+
 La revisión final HTTPS entrega Word separados y PDF, frontend91/100 y backend91/100.
 No declara completas todas las extensiones de las siete fases. Las entradas de abajo
 conservan su fecha histórica; el hosting gratuito ya está operativo en V24.

@@ -1,6 +1,12 @@
 # Arquitectura de ASHAKids
 
 ## Flujo de datos
+
+Requisitos futuros del [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md), 2026-10-10: introducción
+por niño, profesional intercambiable y disponibilidad requieren revisar relaciones/autorización.
+Las opciones técnicas están pendientes de implementación/ADR; runtime y decisiones implementadas
+descritos abajo permanecen en V26 restaurado. No nueva decisión de arquitectura aplicada aquí.
+
 React/TypeScript + Vite (`frontend/`) -> HTTP/JSON -> FastAPI (`backend/`) -> SQLAlchemy asíncrono + asyncpg -> PostgreSQL gestionado en Supabase.
 
 La API controla autenticación propia y autorización. Supabase aporta infraestructura PostgreSQL; no se usa Supabase Auth. Las credenciales permanecen en `backend/.env`, excluido de Git.

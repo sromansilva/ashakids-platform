@@ -1,10 +1,38 @@
 # ASHAKids — Avance y relevos del equipo
 
-Actualizado: 2026-10-09. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).
+Actualizado: 2026-10-10. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).
 Este archivo se actualiza al cerrar una tarea y antes de cambiar de persona/asistente.
 No es un registro automático: quien termina debe guardar y compartir su actualización.
 
 ## Punto de continuación actual
+
+### Contexto del flujo actualizado — 2026-10-10
+
+- Objetivo: condensar nuevo flujo de los tres roles y estimar impacto en tablas desde V26.
+  Base piero-dev/da4e787e7e199f4457f053694f3b8c8fd0072c5b (V31), dev/remota personal
+  coincidentes y árbol limpio al iniciar. Cierre documental V32; consultar SHA real en Git.
+- Principal: docs/FLUJO_MAESTRO_ACTUALIZADO.md. Contexto, plan, Mundo ASHA y arquitectura
+  enlazan alcance nuevo sin cambio funcional ni reactivación de propuestas V27–V30.
+- Acordado: código institucional de 6 caracteres con inicial A/P/T y números; DNI solo contraseña inicial,
+  cambio obligatorio; introducción por niño; disponibilidad profesional; reserva automática;
+  elección libre de profesional; plan clínico y progresión educativa mínima reutilizable.
+- Revisado: modelos/contratos/servicios locales, SQL histórico 02 y recuperación heredada.
+  Sin consulta Supabase, migración, pruebas funcionales, cambio de runtime o escritura de datos.
+  Graphify check vigente; consultas de 1500 tokens truncadas y confirmadas en archivos. Cambios solo Markdown
+  no requieren refresh: manifiesto incluye fuentes de aplicación/tooling, no estos documentos.
+- Incidencias: referencia lock-race-conditions.md inexistente, reemplazada por fuentes disponibles;
+  primer parche rechazado por contexto architecture.md, sin cambios parciales; corregido.
+- Validación documental: 18 enlaces del maestro comprobados, sin marcadores de conflicto ni
+  patrones de credenciales detectados; git diff --check y knowledge check correctos.
+  No se ejecutan suites de aplicación por cambios solo documentales. Destino de publicación:
+  dev y feat/piero-dev; consultar refs/SHA efectivos en Git, no confundir con despliegue.
+- Primer commit detenido por falta de user.name/user.email en el clon. Reintento con identidad
+  de Piero ya publicada en V31, mediante git -c solo para ese comando, sin configuración global.
+- Pendientes: activación inicial compatible con regla definitiva de 12–128 caracteres y códigos anteriores;
+  horario exacto; cierre introductorio/transición; versiones del plan/acceso profesional;
+  enlace Zoom y demo frente a persistencia inicial de juegos. No fijar número de tablas nuevas.
+- Siguiente: equipo revisa maestro, cierra contrato mínimo y diseña migración/aceptación aislada.
+  La publicación documental comparte alcance; no implementa ni despliega el recorrido.
 
 ### Recuperación de V26 — 2026-10-10
 

@@ -6,6 +6,19 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Alcance nuevo acordado: flujo por tres roles — 2026-10-10
+
+- [Contexto maestro del flujo actualizado](FLUJO_MAESTRO_ACTUALIZADO.md): registro por asesor,
+  código institucional de 6 caracteres A/P/T, DNI solo como contraseña inicial y cambio obligatorio;
+  introducción por niño, reserva según disponibilidad, cualquier terapeuta y plan profesional.
+- Código sigue en V26 restaurado mediante V31/da4e787. El nuevo alcance no reactiva V27–V30
+  ni declara implementados sus requisitos. Prevalece sobre propuestas históricas contradictorias.
+- Impacto preliminar: reutilizar núcleo, ajustar reservas/planes/activación y permisos;
+  persistir disponibilidad y revisar relaciones educativas. Demo frente a persistencia inicial
+  de juegos, transición de niños existentes y extensiones pendientes de precisión.
+- Corte documental V32; sin migración, cambio de aplicación/BD, despliegue ni auditoría técnica
+  nueva. Siguiente: cerrar contratos y aceptación del recorrido mínimo de tres roles.
+
 ### Punto vigente: plataforma restaurada al corte V26
 
 - Base funcional y documental: `a81e465aa02522366eb97250c38827d11ed4a0e4`,
