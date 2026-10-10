@@ -84,7 +84,14 @@ describe('Reportes profesionales persistentes, sin rediseño', () => {
     finish(response(report)); await screen.findByText('Reporte guardado en el servidor.');
   });
   it('muestra desconexión y reintento sin recurrir a mocks', async () => {
-    mockApi(); vi.mocked(fetch).mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    mockApi(); const originalRead = vi.mocked(fetch).getMockImplementation()!;
+    let failed = false;
+    vi.mocked(fetch).mockImplementation((input, init) => {
+      if (!failed && new URL(String(input)).pathname.endsWith('/sesiones')) {
+        failed = true; return Promise.reject(new TypeError('Failed to fetch'));
+      }
+      return originalRead(input, init);
+    });
     renderRoute('/terapeuta/reportes', 'TERAPEUTA');
     expect(await screen.findByRole('alert')).toHaveTextContent('No hay conexión');
     fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
@@ -174,6 +181,7 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
   it('cuentas reales no reciben el aviso genérico y configuración distingue sus límites', () => {
     expect(capabilityNotice('/admin/cuentas')).toBeNull();
     expect(capabilityNotice('/terapeuta/config')).toContain('La disponibilidad se guarda al publicar');
+    expect(capabilityNotice('/terapeuta/config')).toContain('preferencias de notificaciones');
     expect(capabilityNotice('/mundo-asha/juegos')).toContain('prototipos');
   });
 });

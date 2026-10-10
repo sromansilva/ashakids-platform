@@ -15,6 +15,8 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     PORT: int = Field(default=8000, ge=1, le=65535)
     ENVIRONMENT: str = "development"
+    # Activar explícitamente solo después de adoptar la migración de notificaciones.
+    NOTIFICATION_REMINDERS_ENABLED: bool = False
 
     # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""

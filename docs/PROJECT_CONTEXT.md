@@ -1,3 +1,15 @@
+## Avance V37 — notificaciones profesionales (2026-10-10)
+
+Rama codex/2do-intento, base V36/583de51. Bandeja y preferencias reales por terapeuta:
+reservas, cancelaciones, cambios de cita, recordatorios y mensajes de familia autorizada.
+Migración005 agrega dos tablas, solo aplicada en PostgreSQL local. ADR0017.
+207 backend aprobadas/25 omitidas/19 avisos;281 componentes+25 rutas, tipos/check337/build.
+UI comprobó bandeja, lectura, guardado/recarga y supresión de aviso al desactivar categoría;
+reservas disparadoras por HTTP sintético. Preferencia restaurada true al acabar el ensayo.
+Recordatorios requieren proceso API activo y flag explícito tras adoptar005. No correo/push.
+Evidencia notifications-v37. Resto de campos demo y anticipación semanal siguen pendientes.
+Sin dev/feat/piero-dev ni Supabase compartido; no nueva auditoría académica.
+
 ## Avance V36 — paneles, mundos y reunión externa (2026-10-10)
 
 Rama codex/2do-intento, base V35/7faa666. Agenda familiar por niño, historial visible,

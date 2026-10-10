@@ -1,3 +1,4 @@
+import { NotificationPreferences } from '@/components/common/NotificationPreferences';
 import { useState, useRef, useEffect } from "react";
 import { Eye, EyeOff, Upload, CheckCircle, Check, X } from "lucide-react";
 import { B } from "@/theme/brand/B";
@@ -125,8 +126,7 @@ export function TerapeutaConfig() {
   ];
 
 
-  const [notifs, setNotifs] = useState({ nuevaCita: true, cancelacion: true, recordatorio: true, mensajes: true, reportes: false, marketing: false });
-  const toggleNotif = (k: keyof typeof notifs) => setNotifs(n => ({ ...n, [k]: !n[k] }));
+
 
   return (
     <div className="p-4 sm:p-6 max-w-4xl" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
@@ -262,36 +262,7 @@ export function TerapeutaConfig() {
             {tab === "disponibilidad" && <AvailabilityEditor />}
 
             {/* ── Notificaciones ── */}
-            {tab === "notificaciones" && (
-              <div className="flex flex-col gap-5">
-                <h2 className="font-extrabold text-[#1C1135] text-lg">Notificaciones</h2>
-                <div className="flex flex-col gap-3">
-                  {([
-                    { key: "nuevaCita",    label: "Nueva solicitud de cita",        desc: "Cuando un padre solicita una cita contigo"        },
-                    { key: "cancelacion",  label: "Cancelación de cita",         desc: "Cuando se cancela una sesión programada"        },
-                    { key: "recordatorio", label: "Recordatorios de sesión",     desc: "30 minutos antes de cada sesión"                },
-                    { key: "mensajes",     label: "Nuevos mensajes",             desc: "Cuando recibes un mensaje de una familia"       },
-                    { key: "reportes",     label: "Reportes listos",             desc: "Cuando ASHI genera un reporte automático"       },
-                    { key: "marketing",    label: "Novedades de la plataforma",  desc: "Actualizaciones y nuevas funcionalidades"       },
-                  ] as { key: keyof typeof notifs; label: string; desc: string }[]).map(n => (
-                    <div key={n.key} className="flex items-center justify-between p-4 rounded-2xl border border-[#E8E5F4]">
-                      <div>
-                        <p className="font-extrabold text-sm text-[#1C1135]">{n.label}</p>
-                        <p className="text-xs text-[#7C6F9A] font-medium">{n.desc}</p>
-                      </div>
-                      <button onClick={() => toggleNotif(n.key)}
-                        className="w-10 h-6 rounded-full flex items-center px-0.5 transition-all flex-shrink-0"
-                        style={{ background: notifs[n.key] ? B.violet : "#D1D5DB", justifyContent: notifs[n.key] ? "flex-end" : "flex-start" }}>
-                        <span className="w-5 h-5 bg-white rounded-full shadow-sm" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-                <div className="flex justify-end">
-                  <Btn variant="cta" onClick={save}>{saved ? <><CheckCircle size={14} /> Guardado</> : "Guardar preferencias"}</Btn>
-                </div>
-              </div>
-            )}
+            {tab === "notificaciones" && <NotificationPreferences/>}
 
             {/* ── Seguridad ── */}
             {tab === "seguridad" && (

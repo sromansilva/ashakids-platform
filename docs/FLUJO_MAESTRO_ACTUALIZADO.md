@@ -9,6 +9,10 @@ V31_Restauracion_Plataforma_V26. Contenido funcional recuperado de V26:
 
 ## Uso del documento
 
+Implementación posterior al corte documental original: V33–V36 muestran el núcleo local;
+V37 conecta notificaciones/preferencias del profesional. ADR0017 y migración005 solo local.
+Consultar PROJECT_CONTEXT y IMPLEMENTATION_PROGRESS para evidencia y límites actuales.
+
 Este es el alcance nuevo acordado después de la recuperación. No reactiva propuestas de
 V27–V30. Prevalece sobre descripciones históricas de flujo que lo contradigan; informes y
 resultados históricos conservan su fecha y alcance.

@@ -7,6 +7,7 @@ from app.models.clinica import Expediente, ReporteSesion, Reserva, Sesion, Trata
 from app.models.perfiles import Paciente, Terapeuta, Tutor
 from app.services.acceso import es_familia, exigir_profesional, obtener, paciente_visible, perfil_activo, roles_de
 from app.services.agenda import validar_turno
+from app.services.notificaciones import avisar_cita
 
 
 def citas_visibles(identity):
@@ -107,6 +108,7 @@ async def crear_cita(db, identity, data):
                   id_paciente=patient_id, id_terapeuta=therapist_id, estado_reserva="CONFIRMADA")
     db.add(row)
     await db.flush()
+    await avisar_cita(db, identity[0], row, 'NUEVA_CITA', clave=f'NUEVA_CITA:{row.id_reserva}')
     return row
 
 
@@ -116,6 +118,7 @@ async def cambiar_cita(db, identity, key, data, *, horario=False):
         raise HTTPException(409, "La cita ya está cerrada o tiene un estado no editable.")
     if await db.scalar(select(Sesion.id_sesion).where(Sesion.id_reserva == key)):
         raise HTTPException(409, "No se puede cambiar una cita con sesión registrada.")
+    previous = (row.fecha_hora_inicio, row.fecha_hora_fin, row.modalidad, row.estado_reserva)
     if horario:
         await validar_horario(db, row.id_paciente, row.id_terapeuta, data, key)
         for field, value in data.model_dump().items():
@@ -128,4 +131,8 @@ async def cambiar_cita(db, identity, key, data, *, horario=False):
                 raise HTTPException(409, "No se puede confirmar una cita pasada.")
         row.estado_reserva = data.estado_reserva
     await db.flush()
+    if horario and previous[:3] != (row.fecha_hora_inicio, row.fecha_hora_fin, row.modalidad):
+        await avisar_cita(db, identity[0], row, 'REPROGRAMACION')
+    elif not horario and previous[3] != row.estado_reserva and row.estado_reserva == 'CANCELADA':
+        await avisar_cita(db, identity[0], row, 'CANCELACION', clave=f'CANCELACION:{row.id_reserva}')
     return row

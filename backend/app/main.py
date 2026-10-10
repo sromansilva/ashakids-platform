@@ -1,6 +1,8 @@
 """Punto de entrada principal de la API de ASHAKids."""
 
 from contextlib import asynccontextmanager
+import asyncio
+from contextlib import suppress
 from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -13,14 +15,22 @@ from app.api.v1.padres import router as padres_router
 from app.api.v1.terapeutas import router as terapeutas_router
 from app.core.config import settings
 from app.core import database
-from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria
+from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones
+from app.services.recordatorios import ejecutar as ejecutar_recordatorios
 
 
 @asynccontextmanager
 async def lifespan(app):
-    yield
-    if database.async_engine is not None:
-        await database.async_engine.dispose()
+    worker = asyncio.create_task(ejecutar_recordatorios()) if settings.NOTIFICATION_REMINDERS_ENABLED else None
+    try:
+        yield
+    finally:
+        if worker:
+            worker.cancel()
+            with suppress(asyncio.CancelledError):
+                await worker
+        if database.async_engine is not None:
+            await database.async_engine.dispose()
 
 app = FastAPI(
     lifespan=lifespan,
@@ -66,7 +76,7 @@ app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(padres_router, prefix=settings.API_V1_PREFIX)
 app.include_router(terapeutas_router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin_router, prefix=settings.API_V1_PREFIX)
-for domain in (usuarios, pacientes, citas, sesiones, mensajeria):
+for domain in (usuarios, pacientes, citas, sesiones, mensajeria, notificaciones):
     app.include_router(domain.router, prefix=settings.API_V1_PREFIX)
 
 

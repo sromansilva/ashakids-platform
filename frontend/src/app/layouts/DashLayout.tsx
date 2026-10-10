@@ -8,6 +8,7 @@ import { MobileTopBar } from "@/components/common/MobileTopBar";
 import { Sidebar } from "@/app/layouts/Sidebar";
 import { AshhiFloat } from "@/components/assistant/AshhiFloat";
 import { useAuth } from '@/hooks/useAuth';
+import { NotificationCenter } from '@/components/common/NotificationCenter';
 
 export function DashLayout({
   role,
@@ -92,6 +93,7 @@ export function DashLayout({
         <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />
         <div className="flex-1 overflow-y-auto flex min-h-0">
           <div className="flex-1 min-w-0 overflow-x-hidden">
+            {role === 'terapeuta' && <NotificationCenter key={user?.id_usuario} go={go}/>}
             {children}
           </div>
 

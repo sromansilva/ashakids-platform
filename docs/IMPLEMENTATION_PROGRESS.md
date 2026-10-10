@@ -1,3 +1,26 @@
+## 2026-10-10 — V37 Notificaciones y preferencias profesionales
+
+- Objetivo: convertir primero los avisos/preferencias demostrativos en funcionales.
+  Base V36/583de51b241735538f0ade472cdb8b216cf2eb09; solo codex/2do-intento.
+- Fuentes: models/schemas/api/services notificaciones, worker recordatorios, citas,
+  mensajeria, main/config, migración005/db_creation y NotificationCenter/Preferences.
+  ADR0017 y evidencia notifications-v37. Avisos propios, transaccionales e idempotentes;
+  preferencias futuras, historial conservado, mensajes sin copiar contenido privado.
+- Verificación nueva:207 backend/25 omitidas/19 deprecaciones64.40s;281 componentes/18
+  archivos+25 rutas; tipos, check337/máximo498, build2.75s y tres tests después de CSS móvil.
+  Comandos/errores y alcance detallados en evidencia. No reutilizar cifras de V36 como nuevas.
+  Graphify refresh2212 nodos/101 comunidades y check antes del cierre; mapa no versionado.
+- Migración005 solo local: test V34 separada de QA persistente, PG17.6/6544 y mismo rol
+  runtime limitado; grants/políticas permisivos locales, no permisos exactos compartidos.
+  API8002 proceso30504/session71459, Vite5175; .env intacto. Worker activado solo en QA.
+- UI vio dos avisos reales, marcó uno leído, guardó nueva_cita=false y conservó al recargar.
+  Reserva HTTP R6 no produjo aviso; R5 sí con preferencia activa. Worker emitió recordatorio
+  R4. Switch restaurado true desde UI al terminar. Desktop/móvil inspeccionados.
+- No correo/push/backfill ni adopción compartida. Worker requiere API activa; default false.
+  Próximo trabajo: priorizar otros campos demo y versionar horario semanal con anticipación
+  si se acuerda esa regla. No declarar estas extensiones completas. Consultar Git para SHA
+  final/push V37; ningún avance de esta rama autoriza dev/feat/piero-dev ni Supabase.
+
 ## 2026-10-10 — V36 Paneles, agenda por niño, mundos y reunión externa
 
 - Base V35/7faa66682fc1b03d57b23aa96f196a35dddfcc31; solo codex/2do-intento.

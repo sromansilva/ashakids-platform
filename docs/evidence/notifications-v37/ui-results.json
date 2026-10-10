@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-10",
+  "environment": "QA sintetica local API8002/Vite5175",
+  "role": "TERAPEUTA",
+  "checks": [
+    {"action": "Abrir bandeja", "result": "NUEVA_CITA y RECORDATORIO visibles; dos sin leer"},
+    {"action": "Marcar cita como leida", "result": "Estado Leida y contador uno; persistencia comprobada por HTTP"},
+    {"action": "Guardar nueva_cita=false y recargar", "result": "Switch conserva false; reserva posterior por HTTP no genera aviso"},
+    {"action": "Restaurar nueva_cita=true", "result": "Preferencias guardadas desde UI; estado final preparado para avisos nuevos"},
+    {"action": "Revision responsive", "result": "Desktop1280x720 y movil390x844; controles finales separados de flotantes"}
+  ],
+  "limits": ["Reserva disparadora por HTTP, no UI", "Sin correo o push", "Sin adopcion compartida"]
+}

@@ -8,6 +8,7 @@ from app.models.perfiles import Paciente, Tutor, Terapeuta
 from app.models.mensajeria import Conversacion, Mensaje
 from app.schemas.mensajeria import ConversacionSalida
 from app.services.acceso import exigir, roles_de
+from app.services.notificaciones import emitir
 
 
 def participantes(identity):
@@ -122,4 +123,9 @@ async def enviar(db, identity, key, data):
     db.add(message)
     row.ultima_actividad = func.now()
     await db.flush()
+    if 'PADRE' in roles_de(identity):
+        target = await db.scalar(select(Terapeuta.id_usuario).where(Terapeuta.id_terapeuta == row.id_terapeuta))
+        await emitir(db, target, 'MENSAJE', 'Nuevo mensaje de una familia',
+                     f'{identity[0].nombres} {identity[0].apellidos} te envió un mensaje.',
+                     f'MENSAJE:{message.id_mensaje}', conversacion=key)
     return message

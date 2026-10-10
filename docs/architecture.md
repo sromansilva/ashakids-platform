@@ -2,6 +2,12 @@
 
 ## Flujo de datos
 
+V37 en codex/2do-intento: ADR0017 agrega bandeja/prefs por identidad TERAPEUTA mediante
+API propia, sin Supabase Auth. Dos tablas en migración005, eventos junto a cita/mensaje
+en la misma transacción y claves únicas. Recordatorios opcionales cada60s, consulta UI
+cada30s; exige proceso API activo. RLS habilitado, grants específicos por entorno pendientes
+de adopción. Sin DDL al iniciar, correos/push ni cambios de infraestructura compartida.
+
 V36 en codex/2do-intento: ADR0016 distingue asignación educativa persistida del avance
 demo por cuenta/niño/mundo en sessionStorage. Tres niveles por mundo no miden resultados
 clínicos ni escriben tablas educativas. Campo existente Reserva.zoom_join_url se modifica

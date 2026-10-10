@@ -11,6 +11,12 @@ ni migraciones/datos compartidos. Juegos: demostración rotulada primero, elecci
 
 ## Avance de registro y activación
 
+Extensión V37: bandeja/preferencias profesionales persistidas, migración005 local y ADR0017.
+Aceptación nueva: UI guardado/recarga/lectura, supresión por preferencia con reserva HTTP,
+recordatorio real del worker local, desktop/móvil; evidencia notifications-v37. Tests cubren
+restantes eventos y aislamiento. No correo/push ni migración compartida. La anticipación
+semanal y otros módulos demostrativos no forman parte del cierre de esta extensión.
+
 Migración propuesta: backend/scripts/migrations/002_activacion_cuentas.sql.
 En este clon solo se aplicó en BD nueva local ashakids_test_flujo_v33_20261010, puerto6544.
 Se restauró estructura histórica02 sin filas y se adaptó CREATE SCHEMA para public existente.
