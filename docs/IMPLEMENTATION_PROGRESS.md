@@ -1,10 +1,40 @@
 # ASHAKids — Avance y relevos del equipo
 
-Actualizado: 2026-10-09. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).
+Actualizado: 2026-10-10. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).
 Este archivo se actualiza al cerrar una tarea y antes de cambiar de persona/asistente.
 No es un registro automático: quien termina debe guardar y compartir su actualización.
 
 ## Punto de continuación actual
+
+### Relevo U0 / V29 — corrección de reportes y accesibilidad de acceso
+
+- Continuar desde [VISUAL_IMPLEMENTATION_STATE.md](VISUAL_IMPLEMENTATION_STATE.md).
+  Plan secuencial U0–U8; siguiente tarea U1.1 tokens/primitivas. Una persona activa, rama
+  propia; commit solo al terminar parte verificable. AGENTS actualiza la regla de relevo:
+  a mitad de parte guardar contexto/diff, sin commit por tokens.
+- Base real V28 `e4e53e4ef9dc653d140f8358b8a0d44ca7dfa87c`, piero-dev, limpio/sincronizado.
+  Fuentes: ClinicalReportEditor, clinicalService, Inp, LoginPage, theme.css; regresiones
+  frontend-remediation, visual-u0 y providers; fixture visual-u0.html/tsx solo desarrollo.
+  Plan/estado, DESIGN/PRODUCT, contexto/relevo y regla del equipo actualizados juntos.
+- Alcance terminado: filtro de cuatro campos con Report completo, null preservado y
+  borrador ante 409/422; ojo semántico y objetivo44, campos16/ayudas14, contraste y foco,
+  alertas/pending/acceso conservado. Retirado Recordarme sin función y copy API/24-7/
+  mejores especialistas/progreso en tiempo real. Sin modificar autenticación ni backend.
+- Checks: 25 rutas + 263 componentes pasan; types, checker323/build pasan. Impeccable
+  devuelve [] para tres entradas; refresh local AST/no-label y check. Capturas/contraste y
+  resultados en docs/evidence/visual-u0-v29/. Fixtures sin backend ni pacientes reales.
+- Error corregido: primera suite completa 261/262 componentes, una prueba buscaba el
+  placeholder antiguo. Se cambió a getByLabelText y la suite completa pasó263 al añadir
+  también caso422. Parches rechazados por doble operación sobre Inp y contexto literal
+  providers distinto no cambiaron archivos; se reaplicaron con la fuente correcta.
+  Build advierte DEP0205 de Node; Graphify12 archivos sin símbolos (aviso de extractor).
+- Cierre `V29_Correccion_Reportes_Accesibilidad_Acceso`, SHA por git log y referencias.
+  Integración/publicación se verifica al cerrar, sin force-push; estado real del push en
+  entrega. CI remota no confirmada por este registro; push no despliega Render/manual.
+- U1–U8 pendientes, solo aplicación visual parcial. No auditoría técnica nueva, pruebas
+  reales de sesiones/BD, cuentas, migraciones, hardware/micrófono ni despliegue.
+
+El relevo V28 siguiente conserva historia; el estado único visual es la entrada vigente.
 
 ### Relevo V28 — sistema maestro y planificación de Voz Aventura
 

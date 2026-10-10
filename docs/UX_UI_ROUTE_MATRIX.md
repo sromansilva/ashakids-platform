@@ -1,5 +1,10 @@
 # AshaKids — Matriz inicial de rutas y propiedad
 
+Actualización de ejecución 2026-10-10: [plan secuencial](VISUAL_IMPLEMENTATION_PLAN.md) y
+[estado único](VISUAL_IMPLEMENTATION_STATE.md) vigentes. B0–B5 representan alcance
+histórico, no personas trabajando en paralelo. U0 cubre Inp/acceso y editor de reporte;
+no declara revisión visual de todas las rutas consumidoras.
+
 Fecha: 2026-10-09. Base: V26 `a81e465aa02522366eb97250c38827d11ed4a0e4`, rama `piero-dev`.
 Repositorio: https://github.com/sromansilva/ashakids-platform .
 

@@ -1,29 +1,36 @@
-import { useId, useState } from "react";
+import { useId, useState, type ComponentPropsWithoutRef, type ReactNode } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
-export function Inp({ label, type = "text", placeholder, value, onChange, icon, hint, error }: {
-  label?: string; type?: string; placeholder?: string; value: string;
-  onChange: (v: string) => void; icon?: React.ReactNode; hint?: string; error?: string;
-}) {
+type InpProps = Omit<ComponentPropsWithoutRef<"input">, "value" | "onChange" | "size"> & {
+  label?: string; value: string; onChange: (value: string) => void;
+  icon?: ReactNode; hint?: string; error?: string;
+};
+
+export function Inp({ label, type = "text", value, onChange, icon, hint, error,
+  id: suppliedId, className = "", disabled, "aria-describedby": describedBy, ...props }: InpProps) {
   const [show, setShow] = useState(false);
-  const id = useId();
-  const t = type === "password" ? (show ? "text" : "password") : type;
+  const generatedId = useId();
+  const id = suppliedId ?? generatedId;
+  const feedback = error || hint;
+  const description = [describedBy, feedback ? `${id}-feedback` : undefined].filter(Boolean).join(" ") || undefined;
   return (
     <div className="flex flex-col gap-1.5">
-      {label && <label htmlFor={id} className="text-sm font-bold text-[#1C1135]">{label}</label>}
+      {label && <label htmlFor={id} className="text-sm font-bold text-[var(--foreground)]">{label}</label>}
       <div className="relative">
-        {icon && <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]">{icon}</div>}
-        <input id={id} aria-invalid={!!error} aria-describedby={hint || error ? `${id}-feedback` : undefined} type={t} placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)}
-          className={`w-full rounded-2xl border ${error ? "border-red-400" : "border-[#E8E5F4]"} bg-[#F5F3FF] px-4 py-3 text-sm text-[#1C1135] placeholder-[#9E95B7] focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-all font-medium ${icon ? "pl-11" : ""} ${type === "password" ? "pr-11" : ""}`} />
+        {icon && <div aria-hidden="true" className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[var(--text-secondary)]">{icon}</div>}
+        <input {...props} id={id} disabled={disabled} aria-invalid={error ? true : props["aria-invalid"]}
+          aria-describedby={description} type={type === "password" && show ? "text" : type}
+          value={value} onChange={e => onChange(e.target.value)}
+          className={`w-full min-h-12 rounded-2xl border ${error ? "border-[var(--error-text)]" : "border-[var(--control-border)]"} bg-[var(--input-background)] px-4 py-3 text-base text-[var(--foreground)] placeholder:text-[var(--text-secondary)] focus-visible:outline-2 focus-visible:outline-[var(--ring)] focus-visible:outline-offset-2 disabled:opacity-60 font-medium ${icon ? "pl-11" : ""} ${type === "password" ? "pr-14" : ""} ${className}`} />
         {type === "password" && (
-          <button type="button" onClick={() => setShow(s => !s)}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7] hover:text-violet-600">
-            {show ? <EyeOff size={16} /> : <Eye size={16} />}
+          <button type="button" disabled={disabled} onClick={() => setShow(s => !s)}
+            aria-label={show ? "Ocultar contraseña" : "Mostrar contraseña"} aria-pressed={show} aria-controls={id}
+            className="absolute right-1 top-1/2 -translate-y-1/2 flex min-h-11 min-w-11 items-center justify-center rounded-xl text-[var(--text-secondary)] hover:text-[var(--primary)] disabled:opacity-60">
+            {show ? <EyeOff aria-hidden="true" size={20} /> : <Eye aria-hidden="true" size={20} />}
           </button>
         )}
       </div>
-      {hint && !error && <p id={`${id}-feedback`} className="text-xs text-[#9E95B7] font-medium">{hint}</p>}
-      {error && <p id={`${id}-feedback`} className="text-xs text-red-500 font-medium">{error}</p>}
+      {feedback && <p id={`${id}-feedback`} className={`text-sm font-medium ${error ? "text-[var(--error-text)]" : "text-[var(--text-secondary)]"}`}>{feedback}</p>}
     </div>
   );
 }

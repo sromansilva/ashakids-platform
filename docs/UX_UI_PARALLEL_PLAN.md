@@ -1,5 +1,10 @@
 # AshaKids — Plan de producto y UX/UI por flujos
 
+**Histórico desde 2026-10-10.** Su reparto paralelo y la instrucción de no iniciar UI
+pertenecen al corte documental V28. La ejecución vigente es
+[secuencial](VISUAL_IMPLEMENTATION_PLAN.md), con [estado único](VISUAL_IMPLEMENTATION_STATE.md).
+Conservar B0–B5 como mapa de alcance y dependencias; no asignar trabajo paralelo.
+
 Fecha: 2026-10-09, America/Lima. Estado: propuesta para validar; implementación no iniciada.
 Repositorio: https://github.com/sromansilva/ashakids-platform .
 Base de lectura actual: `piero-dev`, V27, `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`.

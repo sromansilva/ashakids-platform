@@ -58,14 +58,32 @@ describe('Reportes profesionales persistentes, sin rediseño', () => {
     const write = calls.mock.calls.find(([, init]) => init?.method === 'PUT');
     expect(JSON.parse(String(write?.[1]?.body))).toEqual({ observaciones_iniciales: 'AUDITORIA edición', objetivos_trabajados: '', nivel_ayuda: '', proximos_pasos: '' });
   });
+  it('edita un reporte existente sin reenviar metadatos y conserva sus otros campos', async () => {
+    const expected = { observaciones_iniciales: 'AUDITORIA edición existente', objetivos_trabajados: report.objetivos_trabajados,
+      nivel_ayuda: report.nivel_ayuda, proximos_pasos: report.proximos_pasos };
+    const calls = mockApi((path, init) => {
+      if (path.endsWith('/reporte') && init.method === 'PUT') {
+        const body = JSON.parse(String(init.body));
+        // Simulate the backend's extra=forbid rather than accepting an invalid payload.
+        if (Object.keys(body).some(key => !Object.hasOwn(expected, key))) return response({ detail: 'Campos adicionales rechazados' }, 422);
+        return response({ ...report, ...body });
+      }
+    });
+    renderRoute('/terapeuta/reportes', 'TERAPEUTA'); await screen.findByDisplayValue('AUDITORIA guardada');
+    fireEvent.change(screen.getByLabelText('Observaciones iniciales'), { target: { value: expected.observaciones_iniciales } });
+    fireEvent.click(screen.getByRole('button', { name: 'Guardar reporte' }));
+    expect(await screen.findByText('Reporte guardado en el servidor.')).toBeInTheDocument();
+    const write = calls.mock.calls.find(([, init]) => init?.method === 'PUT');
+    expect(JSON.parse(String(write?.[1]?.body))).toEqual(expected);
+  });
   it('excluye sesiones programadas y con inasistencia del selector', async () => {
     mockApi(path => path === '/sesiones' ? response([{ ...session, reporte_disponible: false, asistencia: 'NO_ASISTIO' }, { ...session, id_sesion: 10, estado_sesion: 'PROGRAMADA', reporte_disponible: false }]) : undefined);
     renderRoute('/terapeuta/reportes', 'TERAPEUTA'); await screen.findByText(/No hay reportes guardados/);
     fireEvent.click(screen.getByRole('button', { name: 'Nuevo reporte' }));
     expect(screen.getAllByRole('option')).toHaveLength(1);
   });
-  it('conserva el borrador tras conflicto, sin mostrar guardado ficticio', async () => {
-    mockApi((path, init) => path.endsWith('/reporte') && init.method === 'PUT' ? response({ detail: 'Transición inválida' }, 409) : undefined);
+  it.each([409, 422])('conserva el borrador tras error %s, sin mostrar guardado ficticio', async status => {
+    mockApi((path, init) => path.endsWith('/reporte') && init.method === 'PUT' ? response({ detail: 'Transición inválida' }, status) : undefined);
     renderRoute('/terapeuta/reportes', 'TERAPEUTA'); await screen.findByDisplayValue('AUDITORIA guardada');
     fireEvent.change(screen.getByLabelText('Observaciones iniciales'), { target: { value: 'Borrador conservado' } });
     fireEvent.click(screen.getByRole('button', { name: 'Guardar reporte' }));

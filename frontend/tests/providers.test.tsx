@@ -27,8 +27,8 @@ it("A failed real-provider login keeps the form mounted and shows its network er
   vi.mocked(authService.login).mockRejectedValue(new Error("Servidor no disponible"));
   render(<AppProviders><AppRouter /></AppProviders>);
   const button = await screen.findByRole("button", { name: "Iniciar sesión" });
-  fireEvent.change(screen.getByPlaceholderText("Código de usuario"), { target: { value: "fixture" } });
-  fireEvent.change(screen.getByPlaceholderText("••••••••"), { target: { value: "test-only" } });
+  fireEvent.change(screen.getByLabelText("Código de usuario", { exact: true }), { target: { value: "fixture" } });
+  fireEvent.change(screen.getByLabelText("Contraseña", { exact: true }), { target: { value: "test-only" } });
   fireEvent.click(button);
   expect(await screen.findByText("Servidor no disponible")).toBeInTheDocument();
   expect(button).toBeInTheDocument();

@@ -1,5 +1,21 @@
 # ASHAKids: instrucciones compartidas para agentes
 
+## Trabajo secuencial y relevo visual (instrucción vigente, 2026-10-10)
+- Una persona/asistente activo por vez; ya no repartir implementación en paralelo.
+  Seguir `docs/VISUAL_IMPLEMENTATION_PLAN.md` y actualizar la entrada única
+  `docs/VISUAL_IMPLEMENTATION_STATE.md` al cerrar una parte o antes del relevo.
+- Trabajar en la rama personal y conservar avances existentes. Commit `VNN_Accion_Modulos`
+  con descripción breve únicamente al terminar una fase o parte coherente, verificada y
+  revisable del plan; después integrar/publicar en dev y sincronizar la rama personal.
+- La señal de tokens bajos, o un aviso anterior del usuario, pide documentar el avance.
+  Si la parte está incompleta, NO crear un commit solo por relevar ni publicarla como terminada.
+  Registrar cambios sin commit, fallos, comandos, entorno y siguiente acción. En el mismo
+  clon el siguiente compañero conserva esos archivos; otro clon necesita recibir el diff
+  sanitizado pendiente por un canal explícito, porque Git no comparte cambios sin commit.
+- Esta regla reemplaza la autorización anterior de commit/push anticipado a mitad de fase.
+  Conservar historial y no usar force-push. No abrir el siguiente módulo antes de cerrar
+  el actual; las subtareas definidas en el plan pueden cerrarse por separado.
+
 ## Cierre obligatorio de fases (instrucción del usuario, 2026-10-09)
 - Al finalizar cada fase, crear un commit con versión y objetivo corto, más una descripción
   breve; revisar la secuencia existente. Integrar/publicar en dev y verificar la sincronización
@@ -14,7 +30,8 @@
 - Si el usuario escribe "tokens bajos dejar todo listo para siguiente desarollador",
   priorizar el relevo antes de ampliar funciones: guardar avances, pendientes, errores,
   comandos/resultados y siguiente tarea en contexto/progreso, incluso a mitad de una fase.
-- La señal autoriza revisar e integrar ese avance en dev y hacer commit/push identificables.
+- La señal solicita relevo; la regla secuencial de 2026-10-10 determina si corresponde
+  commit/push: solo una parte coherente terminada, nunca avance incompleto por la señal.
   Comprobar rama/SHA, diff, secretos y referencias remotas; preservar trabajo existente,
   continuar la secuencia de versiones vigente y resolver conflictos sin force-push.
 - Entregar estado real del commit/push y un prompt de continuación con tarea, archivos,

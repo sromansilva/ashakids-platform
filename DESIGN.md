@@ -42,8 +42,12 @@ components:
 
 ## Overview
 
-Estado: sistema maestro propuesto para validación, corte documental V28. No se ha aplicado
-al frontend. Contexto funcional: [PRODUCT.md](PRODUCT.md). Base contrastada V27,
+Estado: sistema maestro iniciado en V28; aplicación parcial U0 del 2026-10-10 en Inp,
+LoginPage y campos de ClinicalReportEditor. Se aplicaron texto secundario, borde de control,
+error, tamaño de campo y control de contraseña accesible; restantes tokens/primitivas,
+composición, navegación y pantallas siguen pendientes. Ejecución
+[secuencial](docs/VISUAL_IMPLEMENTATION_PLAN.md) y [cobertura real](docs/VISUAL_IMPLEMENTATION_STATE.md).
+Contexto funcional: [PRODUCT.md](PRODUCT.md). Base contrastada V27,
 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`, `piero-dev`.
 Repositorio: https://github.com/sromansilva/ashakids-platform .
 

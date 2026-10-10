@@ -1,10 +1,38 @@
 # ASHAKids — Contexto maestro progresivo
 
-Actualización: 2026-10-09. Base compartida del equipo: dev. Corte vigente identificado abajo;
+Actualización: 2026-10-10. Base compartida del equipo: dev. Corte vigente identificado abajo;
 los apartados anteriores conservan su entorno y SHA históricos. El PDF de referencia del
 8 de octubre no declara un SHA de auditoría de su autor.
 
 ## Entrada única del equipo
+
+### Ejecución secuencial y primera parte visual U0 — V29
+
+- Una persona/asistente por vez. [Plan visual vigente](VISUAL_IMPLEMENTATION_PLAN.md) y
+  [estado único de continuación](VISUAL_IMPLEMENTATION_STATE.md) sustituyen el reparto
+  paralelo; sus bloques B0–B5 quedan como mapa histórico. Cada persona actualiza estado y
+  contexto, trabaja en su rama y publica únicamente una parte terminada/verificada.
+  Aviso de tokens a mitad de parte conserva diff/estado sin commit; otro clon necesita
+  transferencia explícita del diff pendiente, no solo un prompt.
+- Base V28 `e4e53e4ef9dc653d140f8358b8a0d44ca7dfa87c`, `piero-dev`, sincronizada al inicio
+  con dev/feat/piero-dev. Cierre identificable `V29_Correccion_Reportes_Accesibilidad_Acceso`;
+  resolver su SHA mediante Git y verificar referencias efectivas, sin autorreferencia.
+- U0: reportInput selecciona cuatro campos al iniciar formulario y serializar servicio;
+  conserva null y descarta IDs/fecha. Backend estricto sin cambios. Inp añade atributos
+  nativos, feedback asociado, campos 16 px, borde/ayuda legibles, ojo con nombre/estado,
+  control 44×44 y teclado. Login reutiliza Inp, anuncia errores, conserva borrador y evita
+  doble envío; retira Recordarme sin efecto y promesas de disponibilidad/progreso en tiempo real.
+- Verificación nueva: 25 rutas + 263 componentes, typecheck, check:frontend (323 archivos),
+  build, detector Impeccable sin hallazgos en tres entradas, mapa refresh/check. Render
+  sintético 1280×720, acceso 390×844 y 320×740, reporte 390×844; teclado y error/reintento.
+  [Evidencia y límites](evidence/visual-u0-v29/README.md). No cobertura visual de todos los
+  consumidores, SQL/HTTP real, autenticación real, hardware/micrófono o auditoría técnica nueva.
+- Siguiente U1.1: unificar tokens y Btn/Crd/Bdg/RemoteFeedback con catálogo aislado.
+  U1.2 navegación/diálogos y U1.3 muestras familiar/reserva/expediente siguen pendientes;
+  revisar muestras con usuario antes de ampliar composición. Juego y contrato educativo
+  permanecen pendientes. Sin cambios de BD, .env, registros AUDITORIA o despliegue.
+
+Los cortes siguientes son históricos; la entrada vigente de trabajo está arriba.
 
 ### Sistema de diseño maestro y juego mínimo — corte documental V28
 

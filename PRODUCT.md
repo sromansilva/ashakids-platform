@@ -5,7 +5,10 @@
 Registro de producto del corte documental V28, iniciado el 2026-10-09 (Lima).
 Base leída: `piero-dev`, V27, `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`.
 Repositorio: https://github.com/sromansilva/ashakids-platform .
-La especificación visual y educativa se entrega para validación; no está implementada.
+Actualización 2026-10-10: corrección de reporte existente y accesibilidad de campos/acceso
+implementadas en U0, con pruebas sintéticas. Sistema visual aplicado parcialmente;
+especificación educativa y cobertura restante pendientes. Seguir
+[estado visual](docs/VISUAL_IMPLEMENTATION_STATE.md).
 
 ## Platform
 
@@ -46,15 +49,16 @@ documentado es V24 con publicación manual. Un push documental no prueba otro de
 | Capacidad | Realidad del corte V27 y alcance siguiente |
 | --- | --- |
 | Cuentas, pacientes, tratamientos, citas y sesiones | Servicios conectados; conservar reglas de asignación, fechas y estados |
-| Reporte clínico y PDF | Cuatro campos editables: `observaciones_iniciales`, `objetivos_trabajados`, `nivel_ayuda`, `proximos_pasos`; edición de reporte existente pendiente de corregir |
+| Reporte clínico y PDF | Cuatro campos editables: `observaciones_iniciales`, `objetivos_trabajados`, `nivel_ayuda`, `proximos_pasos`; U0 descarta metadatos de salida al editar/enviar. Regresión sintética con reporte completo; no nueva aceptación HTTP/BD |
 | Seguimiento familiar | Derivado de datos autorizados; cantidades de sesiones no miden mejoría clínica |
 | Mensajes | Persistidos entre participantes; no prometer adjuntos, push, lectura confirmada ni acceso ADMIN a chats privados |
 | Recomendación textual | Reutilizar `proximos_pasos`; no existe una asociación formal publicada entre reporte y juego |
 | Mundo ASHA | Catálogo y prototipos; sin API de progreso educativo. Primera entrega obligatoria: pájaro que sube con sonido y baja con silencio, entre troncos de alturas variables |
 | Micrófono | Detección local de energía sonora; no reconocimiento de pronunciación, diagnóstico ni grabación/almacenamiento de audio |
 
-Pendientes: corrección F16-01 de reportes y F16-02/F16-03 de accesibilidad; contrato
-educativo, modelo/migración, permisos, idempotencia y aceptación de persistencia.
+U0 corrige F16-01 en formulario/servicio y aplica F16-02/F16-03 al acceso/Inp; la cobertura
+visual de todas las pantallas consumidoras sigue pendiente. Pendientes: base visual completa,
+contrato educativo, modelo/migración, permisos, idempotencia y aceptación de persistencia.
 IA, reconocimiento clínico de pronunciación, pagos y facturación quedan fuera del desarrollo.
 Videollamada, recuperación por correo y evaluación automática no son servicios completos.
 Conservar una explicación útil cuando una función incompleta permanezca visible.

@@ -1,10 +1,21 @@
 # ASHAKids — Plan de implementación por fases
 
-Actualizado: 2026-10-09. Entrega confirmada: 2026-10-09 18:00 America/Lima. Personas por asignar.
+Actualizado: 2026-10-10. Entrega académica histórica: 2026-10-09 18:00 America/Lima.
 Alcance: [contexto maestro](PROJECT_CONTEXT.md). Ejecución: [avance y relevos](IMPLEMENTATION_PROGRESS.md).
 La numeración es nueva y no equivale a las fases históricas de refactorización.
 
-## Prioridad vigente después de las auditorías16 y17
+## Orientación vigente: implementación visual secuencial
+
+Una persona/asistente por vez, en su rama personal. Seguir
+[VISUAL_IMPLEMENTATION_PLAN.md](VISUAL_IMPLEMENTATION_PLAN.md) y actualizar
+[VISUAL_IMPLEMENTATION_STATE.md](VISUAL_IMPLEMENTATION_STATE.md) en cada relevo.
+U0 cierra corrección de reportes y acceso/campos; siguiente parte U1.1 tokens/primitivas.
+Commit solo al terminar una parte coherente y verificada, con integración/push a dev y
+sincronización personal. Un aviso de tokens a mitad de parte guarda estado y diff sin commit.
+Los repartos paralelos siguientes son históricos; los bloques conservan utilidad como
+mapa de alcance, sin autorizar trabajo simultáneo ni reiniciar la implementación.
+
+## Prioridad histórica del corte V28 después de las auditorías16 y17
 
 ### Corte documental V28 — diseño maestro y primer juego
 
