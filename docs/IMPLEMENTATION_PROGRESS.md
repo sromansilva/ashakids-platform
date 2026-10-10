@@ -6,6 +6,26 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Comparación funcional del flujo Padre - V30 documental
+
+- Lectura de texto del equipo frente a código V29 ae5875b, rama piero-dev. Preservada
+  preferencia previa de revisión visual local en AGENTS/estado. Informe:
+  docs/audits/auditoria-2026-10-10-01.md; PDF Flujo_Padre_Tablas en output/pdf;
+  evidencia docs/evidence/audit-2026-10-10-01/. Sin cambios runtime ni BD.
+- Confirmado:configuración crea paciente por API sin Perfil; API alterna sí crea Perfil;
+  cierre de sesión no sincroniza Perfil. Tratamiento solo ADMIN y obligatorio en reservas.
+  Diferencias documentadas por7 pantallas; adjuntos/niveles/catálogo sin API operativa.
+- Nuevo:55/55 tests seleccionados HTTP simulado; metadatos READ ONLY PG17.6 catálogo26/
+  visible22;sin SELECT runtime en4 tablas futuras;PDF6 páginas renderizadas e inspeccionadas.
+  No nuevo login,SQL de filas,escritura clínica,navegador,build o E2E. No reutilizar cifras previas.
+- Errores de comandos y reparaciones de paginación en README evidencia. Mapa vigente al
+  inicio; refresh/check final se verifican al cierre. No abrir módulo por este diagnóstico.
+- Siguiente acción U1.1 sigue igual. Antes de cambios funcionales acordar primera consulta,
+  autoridad de asignación,Perfil/conteos,mes/títulos,catálogo/asignación y adjuntos privados.
+  El informe no constituye aceptación de una migración ni implementación del texto completo.
+- Cierre V30_Auditoria_Flujo_Padre_Tablas:consultar SHA publicado en dev/feat/piero-dev;
+  estado efectivo en entrega. Sin force-push ni despliegue manual de Render.
+
 ### Relevo U0 / V29 — corrección de reportes y accesibilidad de acceso
 
 - Continuar desde [VISUAL_IMPLEMENTATION_STATE.md](VISUAL_IMPLEMENTATION_STATE.md).

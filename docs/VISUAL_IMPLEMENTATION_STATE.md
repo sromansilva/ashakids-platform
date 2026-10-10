@@ -4,6 +4,19 @@ Actualización: 2026-10-10, America/Lima. Responsable actual: Piero + asistente 
 Repositorio: https://github.com/sromansilva/ashakids-platform .
 Plan: [secuencia vigente](VISUAL_IMPLEMENTATION_PLAN.md). Diseño: [DESIGN](../DESIGN.md).
 
+Preferencia vigente: abrir siempre la vista local al entregar cambios visuales.
+Acceso de producto: http://127.0.0.1:5174/login . Fixture aislado U0:
+http://127.0.0.1:5174/tests/visual-u0.html . Esta preferencia se añadió después del cierre
+V29 `ae5875ba2173e1d656d058ea6918c63c21382456`, publicado en dev/feat/piero-dev;
+el ajuste de instrucciones se conserva junto al cierre documental V30 de comparación del flujo.
+
+Comparación solicitada 2026-10-10-01, código V29/ae5875b: flujo Padre parcialmente alineado;
+[informe y diferencias](audits/auditoria-2026-10-10-01.md), evidencia READ ONLY/metadatos26
+tablas/22 visibles y55 tests simulados. Sin cambios visuales/funcionales ni nuevo módulo.
+PDF6 páginas inspeccionadas; decisiones de primera cita, alta/conteos Perfil, autoridad de
+asignación y catálogo educativo antes de implementar. Cierre documental V30; verificar SHA
+en dev/personal al entregar. U0/U1.1 conservan su estado y próxima acción exacta.
+
 ## Punto exacto de continuación
 
 - Etapa actual: **U0 terminada**, correcciones previas de reporte y acceso/campos.

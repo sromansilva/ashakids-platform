@@ -1,0 +1,7 @@
+RUN  v4.1.11 C:/Users/piero/Desktop/ASHAKIDS/frontend
+
+
+ Test Files  3 passed (3)
+      Tests  55 passed (55)
+   Start at  01:38:42
+   Duration  4.45s (transform 810ms, setup 496ms, import 677ms, tests 5.17s, environment 933ms)

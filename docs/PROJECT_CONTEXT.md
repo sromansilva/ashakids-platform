@@ -6,6 +6,25 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Comparación del texto del equipo para el rol Padre - corte 2026-10-10-01
+
+- Código V29/ae5875ba2173e1d656d058ea6918c63c21382456, piero-dev; flujo parcialmente
+  alineado. Informe/PDF/evidencia en audits/auditoria-2026-10-10-01.md y
+  evidence/audit-2026-10-10-01/. Sin implementación de diferencias ni despliegue.
+- Alta actual desde configuración usa POST /pacientes sin crear Perfil; /padres/hijos
+  sí lo crea. PERFILES no se actualiza al cerrar sesión y no alimenta contadores actuales.
+  Asignación de tratamiento solo ADMIN; texto la atribuye al terapeuta. Cita requiere
+  tratamiento NOT NULL y fin manual; falta contrato de primera consulta/duración45.
+- Reportes sin mes/filtro/modal; valoración conservada; próximo card admite pendientes.
+  Psicólogos muestra asignaciones, mensajes solo texto, Mundo ASHA prototipos sin progreso API.
+  Tablas educativas dependen de actividad por paciente; revisar antes de catálogo global.
+- Evidencia nueva:55 pruebas frontend con mocks;SQL READ ONLY solo metadatos26 tablas,
+  22 visibles; runtime sin SELECT en mundos/niveles/objetivos/mensaje_adjuntos. Ninguna fila
+  real, login como Sergei, creación de datos ni nueva prueba de escritura. PDF6 páginas QA.
+- Cierre documental V30_Auditoria_Flujo_Padre_Tablas por verificar en Git al entregar.
+  U0 terminada/U1.1 pendiente se conservan. Resolver decisiones del texto dentro de secuencia
+  visual, sin abrir módulos simultáneos ni activar IA/pagos o eliminar tablas sin uso UI.
+
 ### Ejecución secuencial y primera parte visual U0 — V29
 
 - Una persona/asistente por vez. [Plan visual vigente](VISUAL_IMPLEMENTATION_PLAN.md) y

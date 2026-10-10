@@ -1,6 +1,9 @@
 # ASHAKids: instrucciones compartidas para agentes
 
 ## Trabajo secuencial y relevo visual (instrucción vigente, 2026-10-10)
+- Mostrar siempre la aplicación en local al entregar cambios visuales: abrir la ruta
+  pertinente en el navegador de Codex, comprobar el servidor y dejar la vista disponible.
+  Usar localhost para la revisión; los fixtures sintéticos se identifican como pruebas.
 - Una persona/asistente activo por vez; ya no repartir implementación en paralelo.
   Seguir `docs/VISUAL_IMPLEMENTATION_PLAN.md` y actualizar la entrada única
   `docs/VISUAL_IMPLEMENTATION_STATE.md` al cerrar una parte o antes del relevo.

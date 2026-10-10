@@ -1,0 +1,1502 @@
+{
+  "captured_utc": "2026-10-10T06:38:24.606207+00:00",
+  "scope": "public schema metadata only; no data rows; no authentication",
+  "read_only": "on",
+  "version": "17.6",
+  "catalog_tables": [
+    {
+      "table_name": "actividades",
+      "can_select": true
+    },
+    {
+      "table_name": "administradores",
+      "can_select": true
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "can_select": true
+    },
+    {
+      "table_name": "conversaciones",
+      "can_select": true
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "can_select": true
+    },
+    {
+      "table_name": "expedientes",
+      "can_select": true
+    },
+    {
+      "table_name": "logros",
+      "can_select": true
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "can_select": false
+    },
+    {
+      "table_name": "mensajes",
+      "can_select": true
+    },
+    {
+      "table_name": "mundos",
+      "can_select": false
+    },
+    {
+      "table_name": "niveles",
+      "can_select": false
+    },
+    {
+      "table_name": "objetivos",
+      "can_select": false
+    },
+    {
+      "table_name": "pacientes",
+      "can_select": true
+    },
+    {
+      "table_name": "perfil_logros",
+      "can_select": true
+    },
+    {
+      "table_name": "perfiles",
+      "can_select": true
+    },
+    {
+      "table_name": "reportes_sesion",
+      "can_select": true
+    },
+    {
+      "table_name": "reservas",
+      "can_select": true
+    },
+    {
+      "table_name": "resultados_nivel",
+      "can_select": true
+    },
+    {
+      "table_name": "roles",
+      "can_select": true
+    },
+    {
+      "table_name": "sesiones",
+      "can_select": true
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "can_select": true
+    },
+    {
+      "table_name": "terapeutas",
+      "can_select": true
+    },
+    {
+      "table_name": "tratamientos",
+      "can_select": true
+    },
+    {
+      "table_name": "tutores",
+      "can_select": true
+    },
+    {
+      "table_name": "usuario_roles",
+      "can_select": true
+    },
+    {
+      "table_name": "usuarios",
+      "can_select": true
+    }
+  ],
+  "tables": [
+    {
+      "table_name": "actividades"
+    },
+    {
+      "table_name": "administradores"
+    },
+    {
+      "table_name": "auditoria_cambios"
+    },
+    {
+      "table_name": "conversaciones"
+    },
+    {
+      "table_name": "evaluaciones_ia"
+    },
+    {
+      "table_name": "expedientes"
+    },
+    {
+      "table_name": "logros"
+    },
+    {
+      "table_name": "mensajes"
+    },
+    {
+      "table_name": "pacientes"
+    },
+    {
+      "table_name": "perfil_logros"
+    },
+    {
+      "table_name": "perfiles"
+    },
+    {
+      "table_name": "reportes_sesion"
+    },
+    {
+      "table_name": "reservas"
+    },
+    {
+      "table_name": "resultados_nivel"
+    },
+    {
+      "table_name": "roles"
+    },
+    {
+      "table_name": "sesiones"
+    },
+    {
+      "table_name": "sesiones_autenticacion"
+    },
+    {
+      "table_name": "terapeutas"
+    },
+    {
+      "table_name": "tratamientos"
+    },
+    {
+      "table_name": "tutores"
+    },
+    {
+      "table_name": "usuario_roles"
+    },
+    {
+      "table_name": "usuarios"
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "actividades",
+      "column_name": "id_actividad",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "actividades",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "actividades",
+      "column_name": "nombre_actividad",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "actividades",
+      "column_name": "descripcion",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "actividades",
+      "column_name": "fecha_asignacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "actividades",
+      "column_name": "estado_actividad",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "administradores",
+      "column_name": "id_administrador",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "administradores",
+      "column_name": "id_usuario",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "administradores",
+      "column_name": "fecha_creacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "id_auditoria",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "id_usuario_actor",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "nombre_tabla",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "nombre_entidad",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "accion",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "datos_anteriores",
+      "data_type": "jsonb",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "datos_nuevos",
+      "data_type": "jsonb",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "fecha_evento",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "id_conversacion",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "id_tutor",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "id_terapeuta",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "estado",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "fecha_creacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "ultima_actividad",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "fecha_archivado",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "id_evaluacion_ia",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "id_reporte_sesion",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "id_resultado_nivel",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "resultado_json_ia",
+      "data_type": "jsonb",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "recomendaciones",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "estado_revision",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "fecha_evaluacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "id_expediente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "historial_clinico",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "diagnostico_inicial",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "fecha_apertura",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "fecha_actualizacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "logros",
+      "column_name": "id_logro",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "logros",
+      "column_name": "nombre_logro",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "logros",
+      "column_name": "experiencia_logro",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "logros",
+      "column_name": "requisito_logro",
+      "data_type": "text",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "logros",
+      "column_name": "icono_logro",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "id_mensaje",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "id_conversacion",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "id_usuario_emisor",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "texto_mensaje",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "fecha_envio",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "leido",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "id_tutor",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "nombres_paciente",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "apellidos_paciente",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "fecha_nacimiento",
+      "data_type": "date",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "sexo",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "activo",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "fecha_registro",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "avatar_nombre",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfil_logros",
+      "column_name": "id_perfil_logro",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfil_logros",
+      "column_name": "id_perfil",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfil_logros",
+      "column_name": "id_logro",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfil_logros",
+      "column_name": "fecha_obtencion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "id_perfil",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "progreso",
+      "data_type": "numeric",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "racha_dias",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "objetivos_totales",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "objetivos_completados",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "actividades_desarrolladas_total",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "sesiones_totales",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "fecha_ultima_sesion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "experiencia",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "nivel",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "id_reporte_sesion",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "id_sesion",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "observaciones_iniciales",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "objetivos_trabajados",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "nivel_ayuda",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "proximos_pasos",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "fecha_creacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_reserva",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_terapeuta",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_tratamiento",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "fecha_hora_inicio",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "fecha_hora_fin",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "modalidad",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "localizacion",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "zoom_meeting_id",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "zoom_join_url",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "estado_reserva",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "fecha_creacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "id_resultado_nivel",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "id_paciente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "id_nivel",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "numero_intento",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "puntaje",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "estrellas_obtenidas",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "detalle_resultados",
+      "data_type": "jsonb",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "fecha_realizacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "roles",
+      "column_name": "id_rol",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "roles",
+      "column_name": "nombre_rol",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "roles",
+      "column_name": "descripcion",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "roles",
+      "column_name": "fecha_creacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "id_sesion",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "id_reserva",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "fecha_hora_inicio_real",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "fecha_hora_fin_real",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "asistencia",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "estado_sesion",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "id_sesion_auth",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "id_usuario",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "token_hash",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "fecha_emision",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "fecha_expiracion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "ultima_actividad",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "mfa_verificado",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "revocado",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "fecha_cierre",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "id_terapeuta",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "id_usuario",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "especialidad",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "anios_experiencia",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "idiomas",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "descripcion_profesional",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_tratamiento",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_expediente",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_terapeuta",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "nombre_tratamiento",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "descripcion",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "sesiones_recomendadas",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "estado_tratamiento",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "fecha_inicio",
+      "data_type": "date",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "fecha_fin",
+      "data_type": "date",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "observaciones_cierre",
+      "data_type": "text",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "id_tutor",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "id_usuario",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "parentesco",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "telefono",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "direccion",
+      "data_type": "character varying",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "id_usuario_rol",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "id_usuario",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "id_rol",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "asignado_por",
+      "data_type": "integer",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "fecha_asignacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "activo",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "id_usuario",
+      "data_type": "integer",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "nombres",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "apellidos",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "codigo_usuario",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "email",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "password_hash",
+      "data_type": "character varying",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "activo",
+      "data_type": "boolean",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "fecha_creacion",
+      "data_type": "timestamp with time zone",
+      "is_nullable": "NO"
+    }
+  ],
+  "foreign_keys": [
+    {
+      "table_name": "actividades",
+      "conname": "fk_actividades_paciente",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "administradores",
+      "conname": "fk_administradores_usuario",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "conname": "fk_auditoria_usuario_actor",
+      "definition": "FOREIGN KEY (id_usuario_actor) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "conversaciones",
+      "conname": "fk_conversaciones_terapeuta",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "conversaciones",
+      "conname": "fk_conversaciones_tutor",
+      "definition": "FOREIGN KEY (id_tutor) REFERENCES tutores(id_tutor) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "conname": "fk_evaluaciones_ia_paciente",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "conname": "fk_evaluaciones_ia_reporte",
+      "definition": "FOREIGN KEY (id_reporte_sesion) REFERENCES reportes_sesion(id_reporte_sesion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "conname": "fk_evaluaciones_ia_resultado",
+      "definition": "FOREIGN KEY (id_resultado_nivel) REFERENCES resultados_nivel(id_resultado_nivel) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "expedientes",
+      "conname": "fk_expedientes_paciente",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "conname": "fk_mensaje_adjuntos_mensaje",
+      "definition": "FOREIGN KEY (id_mensaje) REFERENCES mensajes(id_mensaje) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "mensajes",
+      "conname": "fk_mensajes_conversacion",
+      "definition": "FOREIGN KEY (id_conversacion) REFERENCES conversaciones(id_conversacion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "mensajes",
+      "conname": "fk_mensajes_usuario_emisor",
+      "definition": "FOREIGN KEY (id_usuario_emisor) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "mundos",
+      "conname": "fk_mundos_actividad",
+      "definition": "FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "niveles",
+      "conname": "fk_niveles_mundo",
+      "definition": "FOREIGN KEY (id_mundo) REFERENCES mundos(id_mundo) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "objetivos",
+      "conname": "fk_objetivos_actividad",
+      "definition": "FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "pacientes",
+      "conname": "fk_pacientes_tutor",
+      "definition": "FOREIGN KEY (id_tutor) REFERENCES tutores(id_tutor) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "perfil_logros",
+      "conname": "fk_perfil_logros_logro",
+      "definition": "FOREIGN KEY (id_logro) REFERENCES logros(id_logro) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "perfil_logros",
+      "conname": "fk_perfil_logros_perfil",
+      "definition": "FOREIGN KEY (id_perfil) REFERENCES perfiles(id_perfil) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "perfiles",
+      "conname": "fk_perfiles_paciente",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "conname": "fk_reportes_sesion_sesion",
+      "definition": "FOREIGN KEY (id_sesion) REFERENCES sesiones(id_sesion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "reservas",
+      "conname": "fk_reservas_paciente",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "reservas",
+      "conname": "fk_reservas_terapeuta",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "reservas",
+      "conname": "fk_reservas_tratamiento",
+      "definition": "FOREIGN KEY (id_tratamiento) REFERENCES tratamientos(id_tratamiento) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "conname": "fk_resultados_nivel_nivel",
+      "definition": "FOREIGN KEY (id_nivel) REFERENCES niveles(id_nivel) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "conname": "fk_resultados_nivel_paciente",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "sesiones",
+      "conname": "fk_sesiones_reserva",
+      "definition": "FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "conname": "fk_sesiones_auth_usuario",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "terapeutas",
+      "conname": "fk_terapeutas_usuario",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "tratamientos",
+      "conname": "fk_tratamientos_expediente",
+      "definition": "FOREIGN KEY (id_expediente) REFERENCES expedientes(id_expediente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "tratamientos",
+      "conname": "fk_tratamientos_terapeuta",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "tutores",
+      "conname": "fk_tutores_usuario",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "usuario_roles",
+      "conname": "fk_usuario_roles_administrador",
+      "definition": "FOREIGN KEY (asignado_por) REFERENCES administradores(id_administrador) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "usuario_roles",
+      "conname": "fk_usuario_roles_rol",
+      "definition": "FOREIGN KEY (id_rol) REFERENCES roles(id_rol) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "usuario_roles",
+      "conname": "fk_usuario_roles_usuario",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    }
+  ],
+  "triggers": [],
+  "status": "OK",
+  "openapi_operations": [
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/logout"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/padres/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/padres/hijos"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/padres/hijos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/padres/hijos/{id_paciente}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/padres/hijos/{id_paciente}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/padres/hijos/{id_paciente}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/padres/hijos/{id_paciente}/inactivar"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/terapeutas/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/me"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/cuentas"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/cuentas/{id_usuario}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{id_usuario}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/admin/cuentas/{id_usuario}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/padres"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/terapeutas"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{id_usuario}/suspender"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{id_usuario}/activar"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/admin/cuentas/{id_usuario}/hijos"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/pacientes/{id_paciente}/reactivar"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/usuarios"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios/{key}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/usuarios/{key}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/pacientes/{key}"
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/pacientes/{key}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/tratamientos"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tratamientos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/citas"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas/{key}"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/citas/{key}"
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/citas/{key}/estado"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/iniciar"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/cerrar"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}/reporte"
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sesiones/{key}/reporte"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}/reporte/pdf"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/conversaciones/contactos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/conversaciones"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/conversaciones"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/conversaciones/{key}"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/conversaciones/{key}/mensajes"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/conversaciones/{key}/mensajes"
+    },
+    {
+      "method": "GET",
+      "path": "/"
+    },
+    {
+      "method": "GET",
+      "path": "/health"
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready"
+    }
+  ]
+}
