@@ -6,6 +6,31 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Plan de UX/UI y trabajo paralelo por flujos
+
+- Solicitud: repartir módulos entre dos o más personas, unificar diseño, limpiar textos
+  técnicos y preparar interacción ADMIN–familia–terapeuta con datos persistentes.
+- Base V26/a81e465aa02522366eb97250c38827d11ed4a0e4 en piero-dev; árbol limpio al comenzar.
+  Entorno local reparado en turno anterior: npm ci y Vite5174; frontend/CSS y health8000
+  respondieron200. No se repiten esas verificaciones ni se presentan como nueva auditoría.
+- Entregables: UX_UI_PARALLEL_PLAN.md y UX_UI_ROUTE_MATRIX.md; 96 rutas declaradas,
+  81 archivos de entrada lazy distintos en la composición, incluidos alias/prototipos.
+  Clasificación por capacidades es documental; cada acción requiere aceptación efectiva.
+- Plan B0 base/acceso; B1 administración; B2 familia; B3 atención/agenda; B4 mensajes;
+  B5 juegos/progreso educativo. Propiedad única de archivos compartidos y merges en serie.
+  Con dos integrantes: A B1→B3, B B2→B4; B5 después del circuito clínico y contrato propio.
+- Se leyeron contexto/plan/arquitectura, fuentes de rutas, servicios, BookingDialog,
+  PatientEditor, estados clínicos, componentes/tokens y MUNDO_ASHA_PLAN. Graphify check
+  vigente; consultas de símbolos usadas como mapa y contrastadas con fuentes. Sin consultas
+  de filas reales, nueva QA de navegador, modificación de aplicación, .env o BD.
+- Cierre previsto V27_Actualizacion_Documentacion_Equipo. Verificar commit/push real y
+  coincidencia de dev y rama remota personal en Git; esta nota no es evidencia de publicación.
+- Siguiente: validar reparto, corregir F16-01 y accesibilidad, acordar PRODUCT/DESIGN y
+  muestras Centro Familiar/reserva/expediente; integrar base antes de iniciar rediseños paralelos.
+- Límites: no borrar/renombrar AUDITORIA ni datos anteriores; no esconder métricas ficticias
+  como reales; no pagos/IA. B5 requiere API, evaluación e idempotencia, no localStorage como
+  persistencia clínica. No aplicar migraciones compartidas por publicar este plan.
+
 ### Auditorías finales frontend y backend - cortes16 y17
 
 - Dos Word separados y PDF académicos, seis páginas cada uno; fuentes docs/audits/ y

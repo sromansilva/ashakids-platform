@@ -6,13 +6,21 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Prioridad vigente después de las auditorías16 y17
 
+Propuesta vigente de organización: [plan UX/UI por flujos](UX_UI_PARALLEL_PLAN.md)
+y [matriz de las 96 rutas y sus fuentes](UX_UI_ROUTE_MATRIX.md). Conservar este plan
+histórico; la nueva etapa separa base visual, administración, familia, atención, mensajes
+y Mundo ASHA, con propiedad de archivos y rondas para dos o más personas.
+Está pendiente validar la propuesta y asignar responsables antes de implementar el diseño.
+
 La revisión final HTTPS entrega Word separados y PDF, frontend91/100 y backend91/100.
 No declara completas todas las extensiones de las siete fases. Las entradas de abajo
 conservan su fecha histórica; el hosting gratuito ya está operativo en V24.
 Orden validado:entregar auditorías; corregir guardado de reportes existentes y accesibilidad
 (editor/login); verificar; preparar propuesta visual y validarla antes de implementar UX/UI;
 aplicar por módulos y aceptar desktop/móvil. Separar cuatro campos editables de metadatos
-al enviar el reporte; mantener backend estricto. No ampliar pagos, IA, juegos o permisos.
+al enviar el reporte; mantener backend estricto. Pagos e IA quedan fuera. La petición
+posterior incorpora planificación del progreso educativo en B5; implementar solo después
+de acordar contenido, contratos, permisos y migraciones, sin dar por conectados los prototipos.
 
 ## Principios de implementación
 

@@ -6,6 +6,30 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Propuesta de trabajo paralelo por flujos y UX/UI
+
+- Plan documentado en [UX_UI_PARALLEL_PLAN.md](UX_UI_PARALLEL_PLAN.md), con inventario
+  estático de 96 rutas (incluye alias) en [UX_UI_ROUTE_MATRIX.md](UX_UI_ROUTE_MATRIX.md).
+  Base inspeccionada V26/a81e465aa02522366eb97250c38827d11ed4a0e4, piero-dev.
+- B0 integra sistema visual/acceso/archivos comunes; B1 administración y asignaciones;
+  B2 experiencia familiar; B3 agenda/atención/reportes en los tres roles; B4 mensajería;
+  B5 Mundo ASHA y extensión educativa. Dos personas trabajan en rondas A:B1→B3,
+  B:B2→B4; más integrantes permiten B3/B4 paralelos después de la base compartida.
+- La solicitud actual amplía la planificación hacia progreso educativo real, que todavía
+  no tiene API. Requiere contrato, revisión del contenido y un juego completo antes de
+  ampliar mundos. No declarar realizada esta extensión ni mezclarla con progreso clínico.
+- Propuesta: conservar identidad ASHA/violeta/Nunito, validar tres muestras y fijar
+  PRODUCT.md/DESIGN.md antes del rediseño. Primero corregir reporte existente y accesibilidad.
+- Limpieza propuesta de textos de arquitectura/pendientes y navegación de maquetas;
+  convertir America/Lima a «Horarios de Perú» sin cambiar zona/validación. Conservar
+  bloqueos útiles, consentimiento y la identificación honesta de demostraciones retenidas.
+- QA con nuevas familias sintéticas en entorno separado; no renombrar ni borrar registros
+  AUDITORIA anteriores. Variables de auditoría fuera del .env mínimo de runtime, manteniendo
+  configuración privada de pruebas aparte. Este cierre no modifica UI, .env ni BD.
+- Cierre documental previsto V27_Actualizacion_Documentacion_Equipo; comprobar SHA y
+  publicación efectiva en Git. Es una propuesta para validar, no una auditoría técnica nueva
+  ni implementación completa. Auto Deploy registrado Off; verificar panel antes de publicar imagen.
+
 ### Auditorías finales frontend y backend - cortes16 y17
 
 - Dos Word separados y PDF académicos, seis páginas cada uno; fuentes docs/audits/ y
