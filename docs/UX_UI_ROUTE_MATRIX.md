@@ -11,6 +11,14 @@ B0 integra todos los cambios de rutas/navegación. No editar esos archivos desde
 
 [Plan, flujo y condiciones de cierre](UX_UI_PARALLEL_PLAN.md).
 
+Actualización documental V28, lectura sobre V27 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`:
+sin cambios de rutas ni recuento nuevo. B3 redacta próximos pasos/recomendación; B2 muestra
+reporte/recomendación y B5 consume la asociación formal futura y guarda Voz Aventura.
+Un integrador mantiene rutas, estilos y contratos compartidos (`types/clinical.ts`,
+`clinicalService.ts` y futuros educativos); propietarios de pantallas solicitan esos cambios.
+El juego obligatorio es pájaro/troncos con progreso por niño, no los restantes prototipos.
+Consultar DESIGN/PRODUCT y contrato pendiente en MUNDO_ASHA_PLAN antes de implementar.
+
 | Bloque | Cantidad de rutas |
 | --- | ---: |
 | B0 | 20 |

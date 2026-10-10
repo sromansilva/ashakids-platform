@@ -6,6 +6,41 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Sistema de diseño maestro y juego mínimo — corte documental V28
+
+- Base real de lectura V27 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`, `piero-dev`;
+  árbol limpio y origin/dev = origin/feat/piero-dev al iniciar. `fetch` y fast-forward
+  contra origin/dev sin cambios. Repositorio https://github.com/sromansilva/ashakids-platform .
+- [PRODUCT.md](../PRODUCT.md) registra verdad funcional; [DESIGN.md](../DESIGN.md) propone
+  sistema maestro ASHA/Ashi, Nunito/violeta, jerarquía, tokens, estados y accesibilidad.
+  Figma Make solo inspira criterios propios, según aclaración del usuario. Inspección
+  acotada de portada/acceso/familia/agenda/reserva/Mundo ASHA/preparación de Voz Aventura;
+  no todas las vistas ni aceptación visual de la app. Valores exactos contrastados en código.
+- [Plan paralelo](UX_UI_PARALLEL_PLAN.md): B0 único integrador de componentes/estilos/
+  navegación/contratos; B1 preparación; B2 consulta familiar; B3 atención/recomendación;
+  B4 mensajes; B5 primer juego/progreso. Rondas para dos, tres o más personas, nombres por
+  asignar y merges en serie. Publicar documentos no valida el rediseño ni inicia migraciones.
+- [Mundo ASHA](MUNDO_ASHA_PLAN.md): pájaro que sube con sonido y baja con silencio entre
+  troncos de altura variable es obligatorio. Prototipo reutilizable, todavía mariposa/tubos,
+  récord 28/intentos 2/Mateo ficticios. Preparación/calibración, ruido, permiso, controles
+  alternativos, pausa/reintento/salida y liberación de recursos especificados.
+- Máximo 45 s y perfiles son propuesta, no parámetros ya aceptados. API/entidades/permisos
+  pendientes; servidor emitirá seed/config y reproducirá entradas para derivar resultados,
+  sin confiar en puntajes de React. Esto valida reglas del juego, no voz humana/pronunciación
+  o mejoría clínica. Sin almacenar audio ni localStorage definitivo.
+- B3 usa `proximos_pasos` existente para texto; B2 lee reporte autorizado. Asociación formal
+  reporte–juego requiere MA-02: contrato/modelo/migración antes de API. B5 guarda por niño
+  y recupera en otro dispositivo; adulto/profesional autorizado consulta seguimiento separado.
+- Primera implementación sigue pendiente: F16-01 de reporte y F16-02/03 de accesibilidad;
+  luego tres muestras y validación visual. Este corte solo documentación; no tests runtime,
+  QA clínica, filas reales, cambios .env/BD ni despliegue. No pagos/IA/reconocimiento clínico.
+- [Notas y verificaciones](evidence/design-plan-v28/README.md), contexto y relevo actualizados;
+  preservar históricos. Cierre V28_Actualizacion_Documentacion_Diseno_Juegos; el SHA final
+  se identifica por Git para evitar una autorreferencia. Comprobar push efectivo en dev
+  y feat/piero-dev; el estado real se entrega con el cierre.
+
+La sección siguiente conserva el corte de planificación V27; la prioridad vigente está arriba.
+
 ### Propuesta de trabajo paralelo por flujos y UX/UI
 
 - Plan documentado en [UX_UI_PARALLEL_PLAN.md](UX_UI_PARALLEL_PLAN.md), con inventario

@@ -6,6 +6,42 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Prioridad vigente después de las auditorías16 y17
 
+### Corte documental V28 — diseño maestro y primer juego
+
+Base revisada V27 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`, `piero-dev`, limpia y
+sincronizada con dev/feat/piero-dev al inicio. Repositorio:
+https://github.com/sromansilva/ashakids-platform .
+Entregables: [PRODUCT](../PRODUCT.md), [DESIGN](../DESIGN.md), plan paralelo B0–B5,
+matriz de propiedad y [Mundo ASHA](MUNDO_ASHA_PLAN.md) actualizados. Estado: propuesta
+documental terminada para validación; UI, juego y migraciones no iniciados en este corte.
+
+1. Validar sistema maestro inspirado en Figma y reparto nominal de personas; conservar
+   ASHA/Ashi y distinguir reglas observadas de mejoras de accesibilidad propuestas.
+2. Primera tarea de código posterior: F16-01 en ClinicalReportEditor/clinicalService
+   (solo cuatro campos, regresión con reporte completo); F16-02/03 en acceso/primitivas.
+   Verificar reporte existente, borrador ante error, teclado, nombres y contraste.
+3. B0 prepara tres muestras Centro Familiar/reserva/expediente y catálogo de componentes;
+   validación visual antes de rediseñar los bloques. Un dueño de estilos/navegación/contratos.
+4. B1 prepara atención; B3 registra reporte/recomendación en `proximos_pasos`; B2 consulta.
+   Asociación formal al juego requiere contrato/modelo/permisos MA-02 antes de modificar API.
+5. Mundo ASHA sí es obligatorio: primera entrega vertical pájaro Voz Aventura, sonido/silencio,
+   troncos variables, permisos/calibración/ruido, pausa/reintento/salida y toque/teclado.
+   MA-01/02 especificados para validar; MA-03/04 implementación y persistencia pendientes.
+   Máximo propuesto 45 s; servidor reproduce reglas e idempotencia, guarda por niño en
+   FastAPI/PostgreSQL; recarga/otro dispositivo recuperan resultados confirmados.
+6. Aceptar circuito B3→B2→B5 y lectura educativa autorizada por profesional, separada de
+   valoración clínica; ningún reconocimiento de pronunciación ni audio almacenado.
+
+Dos personas: A integrador/backend B0→B1→B3 y backend B5; B B2→B4→UI B5.
+Tres: A B0/B1/backend, B B2/B4, C B3→UI B5. Cuatro o más: D B4→UI B5;
+responsable backend único identificado y A único integrador/contratos. Merges seriales.
+Limpieza de copy/variables solo planificada: «Horarios de Perú» sin alterar lógica,
+QA sintético aparte del piloto; no modificar/borrar AUDITORIA ni datos anteriores.
+
+Esta prioridad actualiza el orden de planificación sin declarar corregidos los defectos.
+Las referencias históricas que difieren voz/extensiones no excluyen el control sonoro
+del primer juego ahora requerido. Resto de mundos/IA/pagos no amplía esta primera entrega.
+
 Propuesta vigente de organización: [plan UX/UI por flujos](UX_UI_PARALLEL_PLAN.md)
 y [matriz de las 96 rutas y sus fuentes](UX_UI_ROUTE_MATRIX.md). Conservar este plan
 histórico; la nueva etapa separa base visual, administración, familia, atención, mensajes
@@ -19,7 +55,7 @@ Orden validado:entregar auditorías; corregir guardado de reportes existentes y 
 (editor/login); verificar; preparar propuesta visual y validarla antes de implementar UX/UI;
 aplicar por módulos y aceptar desktop/móvil. Separar cuatro campos editables de metadatos
 al enviar el reporte; mantener backend estricto. Pagos e IA quedan fuera. La petición
-posterior incorpora planificación del progreso educativo en B5; implementar solo después
+posterior incorpora el primer juego obligatorio y planificación de progreso educativo en B5; implementar solo después
 de acordar contenido, contratos, permisos y migraciones, sin dar por conectados los prototipos.
 
 ## Principios de implementación

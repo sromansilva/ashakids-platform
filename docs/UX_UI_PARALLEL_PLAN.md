@@ -2,9 +2,16 @@
 
 Fecha: 2026-10-09, America/Lima. Estado: propuesta para validar; implementación no iniciada.
 Repositorio: https://github.com/sromansilva/ashakids-platform .
-Base inspeccionada: `piero-dev`, V26, `a81e465aa02522366eb97250c38827d11ed4a0e4`.
-Este documento es planificación a partir del código y las auditorías 16/17; no es una auditoría nueva.
+Base de lectura actual: `piero-dev`, V27, `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`.
+Corte documental V28: diseño maestro y primer juego especificados, pendientes de validación.
+Lectura de código e inspiración Figma acotada; auditorías 16/17 como evidencia histórica.
+No es una auditoría nueva ni implementación del rediseño.
 Inventario complementario: [rutas, fuentes y responsables](UX_UI_ROUTE_MATRIX.md).
+
+Referencias comunes: [PRODUCT.md](../PRODUCT.md) y [DESIGN.md](../DESIGN.md).
+Figma inspira criterios propios; no copiar maquetas, métricas o contratos aparentes.
+Primer juego obligatorio: pájaro de Voz Aventura, especificado en [Mundo ASHA](MUNDO_ASHA_PLAN.md).
+No implementar todavía UI, juego o migraciones. Este paquete se entrega para validación.
 
 ## Resultado que buscamos
 
@@ -49,13 +56,17 @@ flowchart LR
   D --> E[Profesional o ADMIN confirma]
   E --> F[Profesional registra e inicia sesión]
   F --> G[Profesional cierra sesión y guarda reporte]
-  G --> H[Familia consulta historial y descarga PDF]
+  G --> R[Profesional recomienda juego en próximos pasos]
+  R --> H[Familia consulta reporte y recomendación]
   B --> I[Familia y terapeuta intercambian mensajes]
-  H --> J[Práctica infantil y progreso educativo]
-  J --> K[Servidor guarda y evalúa intentos]
+  H --> J[Niño juega Voz Aventura acompañado]
+  J --> K[FastAPI valida reglas y guarda intento en PostgreSQL]
+  K --> L[Adulto y profesional autorizado consultan seguimiento educativo]
 ```
 
-Los dos últimos pasos requieren desarrollo; no son funcionalidad ya publicada.
+El tramo juego/seguimiento requiere desarrollo; no es funcionalidad ya publicada.
+La recomendación textual usa `proximos_pasos` existente. La asociación formal reporte–juego
+se propone en Mundo ASHA; no existe ese campo ni endpoint en el contrato actual.
 La gestión de la sesión clínica no equivale a conectar una videollamada.
 
 | Momento | Qué ve/hace el usuario | Fuente y regla |
@@ -81,12 +92,12 @@ su rama actual. Asignar nombres reales en el tablero antes de empezar.
 
 | Bloque | Flujo y objetivo | Propietario y límites de edición | Entrega verificable |
 | --- | --- | --- | --- |
-| B0 — Base común | Correcciones iniciales, sistema de diseño, navegación, acceso y web pública | Integrador único; `theme/`, `app/`, `pages/auth/`, `pages/public/`, primitivas comunes y archivos de integración | Componentes y dirección visual aprobados; login accesible; rutas y contratos estables |
+| B0 — Base común | Correcciones, sistema de diseño, navegación, acceso y web pública | Integrador único A; `theme/`, `app/`, `pages/auth/`, `pages/public/`, primitivas, DESIGN/PRODUCT y contratos compartidos | F16-01/02/03 corregidos/verificados; sistema y tres muestras aprobados antes de rediseñar; catálogo futuro |
 | B1 — Administración prepara atención | Cuentas, usuarios, pacientes, tratamientos y panel ADMIN | A; `pages/admin/` excepto `AdminCitas.tsx` y `AdminSesiones.tsx`; `UserEditor.tsx` y `PatientEditor.tsx` incluidos | Nueva cuenta → niño → tratamiento → visible para la familia y profesional correctos |
-| B2 — Experiencia familiar | Centro Familiar, Mi Camino, seguimiento, reportes de lectura, perfil/hijos y ayuda | B; `pages/padre/dashboard/`, `journey/`, `reports/`, `settings/`, `PadreAyuda.tsx`; `FamilyTrackingPanel.tsx`, hooks y servicio de seguimiento | Familia con/sin historial; cambio de hijo; próxima acción; PDF y selección sin cruces entre familias |
-| B3 — Atención y agenda | Profesionales asignados, reserva, agenda en tres roles, sesión, expediente y edición de reporte | A después de B1, o C; `pages/terapeuta/` excepto mensajes; `PadreAgenda*.tsx`, `usePadreAgenda.ts`, `PadrePsicologos.tsx` y su grupo de especialistas; `AdminCitas.tsx`, `AdminSesiones.tsx`; componentes clínicos compartidos | Reserva → confirmación → sesión → reporte editable → historial visible en B2 |
-| B4 — Comunicación | Mensajería entre familia y terapeuta | B después de B2, o D; `PadreMensajes.tsx`, `TerapeutaMensajes.tsx`, `MessagesCenter.tsx`, `MessageThread.tsx`, `messagingService.ts` y tipos de mensajería | Ambos roles leen el mismo hilo autorizado; borrador protegido ante errores; navegación móvil |
-| B5 — Mundo ASHA | Recursos infantiles, un juego completo y progreso persistente | C/D cuando estén disponibles, o segunda ronda A+B; directorios Mundo ASHA, `Sessions/MundoAshaHome.tsx`, `MundoAshaProgreso.tsx`, `learningWorlds.ts`; backend educativo con responsable único | Un juego y su avance sobreviven a recarga y otro dispositivo, con evaluación definida |
+| B2 — Experiencia familiar | Centro Familiar, Mi Camino, lectura de reportes/recomendación y seguimiento educativo, perfil/hijos y ayuda | B; `pages/padre/dashboard/`, `journey/`, `reports/`, `settings/`, `PadreAyuda.tsx`; `FamilyTrackingPanel.tsx`, hooks/servicio de seguimiento | Próximos pasos visibles; asociación formal tras contrato B3/B5; cambio de hijo, PDF y errores sin cruces |
+| B3 — Atención y agenda | Profesionales asignados, agenda en tres roles, sesión, expediente, reporte y recomendación | A después de B1, o C; `pages/terapeuta/` excepto mensajes; `PadreAgenda*.tsx`, `usePadreAgenda.ts`, `PadrePsicologos.tsx` y su grupo; `AdminCitas.tsx`, `AdminSesiones.tsx`; componentes clínicos | Reporte existente editable y recomendación visible en B2; seguimiento de B5 autorizado y separado de valoración clínica |
+| B4 — Comunicación | Mensajería entre familia y terapeuta | B después de B2, o D: `PadreMensajes.tsx`, `TerapeutaMensajes.tsx`, `MessagesCenter.tsx`, `MessageThread.tsx`; A integra servicio/tipos compartidos | Ambos roles leen el mismo hilo autorizado; borrador protegido ante errores; navegación móvil |
+| B5 — Mundo ASHA | Voz Aventura obligatoria: pájaro/troncos, controles accesibles y progreso | UI B con dos personas, C con tres o D con cuatro; Mundo ASHA, `Sessions/MundoAshaHome.tsx`, `MundoAshaProgreso.tsx`, `learningWorlds.ts`; backend A o mantenedor único designado | MA-01..04 y B3→B2→B5 aceptados; resultados por niño tras recarga/otro dispositivo, duplicados/permisos; sin almacenar audio |
 
 Las rutas `/session/*` de videollamada demostrativa corresponden a B3 para su revisión y
 retiro del recorrido clínico principal. Las pantallas de evaluación simulada se revisan en B2,
@@ -101,11 +112,18 @@ pero no se conectan como diagnóstico. El ADMIN de campañas pertenece a B1 y no
   `MobileTopBar`, `OperationalDashboard`, `theme.css`, `tailwind.css`, `fonts.css`, `B.tsx`.
 - B2: `FamilyTrackingPanel`, `useFamilyTracking`, `useFamilyPatients`,
   `useSelectedFamilyPatient`, `familyTracking.ts`. Sus consumidores piden cambios de interfaz a B2.
-- B3: `BookingDialog`, `SessionActions`, `ClinicalReportEditor`, `ReportDownload`,
-  `clinicalService.ts`, `types/clinical.ts`, `useAppointments`. B1/B2 reutilizan sus contratos congelados.
-- B4: centro/hilo/servicio/tipos de mensajes; el diseño debe llegar a ambos roles en un solo cambio.
+- B3: `BookingDialog`, `SessionActions`, `ClinicalReportEditor`, `ReportDownload`, `useAppointments`.
+  `clinicalService.ts` y `types/clinical.ts` quedan bajo integrador A por ser contratos compartidos;
+  B3 propone cambios y A integra. B1/B2 consumen interfaces congeladas.
+- B4: centro/hilo de mensajes y consumidores; el diseño llega a ambos roles en un solo cambio.
+  `messagingService.ts` y tipos de mensajes, como interfaces compartidas, los integra A
+  después de la propuesta B4. No cambiar el contrato desde ambos extremos.
 - Backend clínico/autenticación/BD: un mantenedor identificado. B5 puede añadir módulos
   educativos, pero routers/modelos compartidos, registro de API y migraciones se integran en serie.
+- Integrador A: responsable único de contratos entre bloques, OpenAPI y tipos/servicios
+  educativos futuros. Con dos/tres personas también mantiene backend; con equipo mayor
+  revisa integración de un mantenedor designado. No hay propiedad dual ni cambios de payload
+  por cuenta de B2/B3/B5. B2 mantiene selector de niño y consumidores solicitan cambios.
 - Cada bloque conserva sus pruebas propias. Routing, documentación maestra y decisiones
   de arquitectura las integra B0 al cierre; no reformatear carpetas ajenas ni cambiar contratos por cuenta propia.
 
@@ -135,8 +153,9 @@ No crear una estética distinta para cada integrante.
 | Adultos | Densidad moderada, fechas y estados claros, historial ordenado; evitar tarjetas decorativas repetidas y números sin utilidad |
 | Movimiento | Breve y con propósito; respetar reducción de movimiento; no confeti, sonidos o animaciones continuas en la gestión clínica |
 
-B0 crea `PRODUCT.md` con verdad del producto y `DESIGN.md` con reglas/tokens aprobados,
-además de un catálogo ejecutable de componentes fuera de la navegación de producción.
+B0 dispone de `PRODUCT.md` y `DESIGN.md` propuestos en V28; publicación documental
+no significa diseño aprobado. Después de validarlos prepara catálogo ejecutable fuera
+de navegación de producción y tres muestras representativas.
 La edad, capacidades de lectura y actividades infantiles se validan con equipo/profesional;
 no elegir una experiencia idéntica para todos los niños por conveniencia técnica.
 
@@ -195,15 +214,18 @@ El origen sintético de QA se conserva aunque la presentación ya no tenga banne
 ## 7. Extensión educativa: alcance separado y concreto
 
 Seguir [MUNDO_ASHA_PLAN.md](MUNDO_ASHA_PLAN.md), que conserva catálogo y decisiones pendientes.
-Primera entrega: un juego de respuestas objetivas, un mundo y pocos niveles completos,
-elegidos con el equipo/profesional. No empezar rediseñando todos los prototipos a la vez.
+Primera entrega obligatoria: Voz Aventura con pájaro/troncos, máximo propuesto 45 s,
+sonido para subir/silencio para bajar, toque/teclado y resultados por niño. No esperar a
+elegir otro juego ni a completar cuatro mundos. Revisar reglas/comodidad con profesional;
+no afirmar pronunciación correcta por volumen o supervivencia.
 
 1. Acordar actividad, público, instrucciones, ayudas y criterio observable de finalización.
 2. Inventariar tablas existentes de actividades/intentos/logros y reutilizar lo adecuado;
    acordar contrato antes de añadir esquema. Sin duplicar tablas ni SQL al arrancar.
 3. Definir API propuesta (no publicada): iniciar intento, guardar respuestas/finalizar y
    consultar progreso por niño; autorización por familia/profesional y versión del contenido.
-4. Servidor evalúa la respuesta objetiva, idempotencia y requisitos; nunca confiar en
+4. Servidor reproduce controles con seed/config propios, valida reglas, idempotencia
+   y permisos; nunca confiar en
    `passed`, puntos o `verifiedBy` enviados por React. Escrituras transaccionales.
 5. UI completa: explicación → actividad → resultado confirmado → próximo nivel/reintento.
 6. Probar recarga, cambio de dispositivo/usuario, envíos duplicados, error de red y niño ajeno.
@@ -222,13 +244,32 @@ restante espera a que este recorrido funcione; los informes conservan evidencia 
 | E1 — Base y correcciones | Integrador/B3 arreglan reporte y login; otros preparan bocetos de sus bloques | Regresión de reporte correcta; sistema común y muestras familia/reserva/profesional aprobados e integrados |
 | E2 — Primera ronda | Con dos personas: A en B1 y B en B2. Con más: C en B3 y D en B4, todos sobre la base E1 | Altas/asignaciones, lectura familiar y contratos compatibles |
 | E3 — Segunda ronda | Con dos: A en B3 y B en B4. Con más: B1/B2 revisan integración y C/D preparan B5 tras contrato educativo | Circuito administrativo–familia–terapeuta funciona de extremo a extremo |
-| E4 — Progreso educativo | Responsable backend de B5 + responsable UI de B5 con contrato acordado; resto verifica/reduce deuda de copy | Un juego con persistencia y reanudación, sin resultados inventados |
+| E4 — Progreso educativo | Backend B5 + UI B5 con contrato acordado; resto verifica/reduce deuda de copy | Juego, pausa/reanudación en ciclo activo e historial confirmado recuperable, sin resultados inventados |
 | E5 — Cierre y publicación | Merges en serie, regresión conjunta, revisión desktop/móvil y despliegue controlado | Aceptación real en `dev`; SHA desplegado registrado; pendientes explícitos |
 
 Web pública/acceso en B0 puede pulirse entre rondas por el integrador, después de congelar
 las primitivas. Si solo hay dos personas, no abrir seis ramas de diseño simultáneas.
 No se exige rehacer un módulo terminado para esperar a los juegos: entregar avances
 coherentes y revisables; no presentar una extensión diferida como completa.
+
+### Rondas concretas y dependencias
+
+| Equipo | Ronda 0/1 | Ronda 2 | Ronda 3 | Cierre |
+| --- | --- | --- | --- | --- |
+| Dos personas | A B0/correcciones/contratos; B revisa B2/contenido sin editar comunes | A B1; B B2 | A B3; B B4; A especifica backend B5 con B | A backend B5; B UI B5; revisión cruzada |
+| Tres personas | A B0/contratos; B prepara B2; C revisa B3 | A B1; B B2; C B3 | B B4; C UI B5; A backend B5 tras MA-02 | A integra; B/C aceptan ambos roles/segundo dispositivo |
+| Cuatro o más | A B0/contratos; B/C/D preparan B2/B3/B4 | A B1; B B2; C B3; D B4 | Mantenedor único backend B5; D UI B5; B/C enlace recomendación/seguimiento | A integra; resto verifica sin competir por archivos |
+
+A/B/C/D son plazas, nombres reales pendientes; no se crearon ramas ni se despacharon
+personas/agentes en este corte. A es integrador y mantenedor backend con dos/tres personas;
+con equipo mayor identificar mantenedor backend y carpetas antes de empezar, sin ampliar
+propiedad de contratos. Commits en ramas personales; revisión e integración a dev en serie.
+
+**Puerta B3→B2→B5:** B3 entrega reporte guardado/recomendación textual y B2 confirma
+lectura autorizada. Para asociación formal, A congela contrato/modelo/permisos MA-02;
+B3 crea/revoca recomendación, B2 lee, B5 consume y guarda progreso. Backend compatible
+se integra antes de consumidores; no mostrar asignación formal antes de recibirla por API.
+MA-03/04 permiten UI/backend paralelos después del contrato y cierran una entrega vertical.
 
 ## 9. Git, integración y despliegue
 
@@ -282,7 +323,7 @@ observados; no asignar una nota de usabilidad sin una evaluación efectiva.
 ## 11. Documentación que acompaña al desarrollo
 
 - Este plan y la matriz: mapa inicial por fuentes y responsabilidades; revisar tras mover rutas.
-- `PRODUCT.md`/`DESIGN.md`: contexto y sistema aprobados, escritos en E1 antes de expansión visual.
+- `PRODUCT.md`/`DESIGN.md`: propuesta V28 para validar; sistema común aprobado después en E1.
 - Brief por bloque: tarea principal, estados, contratos, archivos, componentes reutilizados,
   casos de aceptación y decisiones pendientes. Cada dueño mantiene solo su brief.
 - `docs/IMPLEMENTATION_PROGRESS.md`: relevo con rama/SHA, comandos/resultados, fallos y siguiente acción.
@@ -291,7 +332,10 @@ observados; no asignar una nota de usabilidad sin una evaluación efectiva.
 
 ## Siguiente acción concreta
 
-Validar responsables y esta división; empezar E1 con corrección de reportes/accesibilidad,
-definir la muestra del sistema común y preparar tres vistas representativas: Centro Familiar,
-reserva y expediente profesional. Una vez validadas, integrar B0 y abrir los bloques paralelos.
+Validar DESIGN/PRODUCT, reparto y mínimo Voz Aventura (reglas/contratos propuestos).
+Primera tarea de código posterior: `ClinicalReportEditor.tsx` y `clinicalService.ts` seleccionan
+solo cuatro campos; regresión con `ReporteSalida` completo, sin relajar `extra=forbid`.
+Corregir F16-02/03 en acceso/primitivas y verificar teclado/contraste. Después preparar
+muestras Centro Familiar/reserva/expediente para validar, integrar B0 y abrir rondas.
+MA-02 requiere revisión antes de migrar.
 La petición de planificación no declara ejecutada la limpieza de UI/variables/BD ni el rediseño.

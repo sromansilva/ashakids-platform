@@ -6,6 +6,52 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Relevo V28 — sistema maestro y planificación de Voz Aventura
+
+- Objetivo: actualizar planificación y crear PRODUCT/DESIGN antes de implementar UI/juego.
+  Base: `piero-dev`, V27 `f9df2bc30d56b643af6dd88ab90f6ffdfdbf0fa7`, árbol limpio;
+  remotas dev y feat/piero-dev iguales. Fetch + merge --ff-only origin/dev: sin cambios.
+- Entregables: PRODUCT.md, DESIGN.md, UX_UI_PARALLEL_PLAN, UX_UI_ROUTE_MATRIX,
+  MUNDO_ASHA_PLAN, IMPLEMENTATION_PLAN, PROJECT_CONTEXT, este relevo y notas de lectura
+  en docs/evidence/design-plan-v28/. Estado: documentación para validación; no rediseño,
+  juego funcional ni contratos/migraciones implementados. Arquitectura/ADR históricos conservados.
+- Figma es inspiración, no reproducción. Portada/acceso, Centro Familiar, agenda/primer
+  paso reserva, Mundo ASHA y preparación del juego inspeccionados; no todos los roles/vistas.
+  No micrófono ni datos reales en la referencia. Fuentes del repositorio contrastan los valores.
+- B3 recomienda en próximos pasos; B2 consulta; B5 juega/guarda por niño; profesional
+  autorizado ve seguimiento educativo separado. Modelo y rutas formales son propuestas
+  previas a migración, reutilización de tablas educativas por confirmar, sin puntajes confiados a React.
+- Voz Aventura: pájaro/troncos, límite 45 s propuesto, ruido/calibración, permiso/pausa/salida/
+  toque/teclado; quitar Mateo/28 s/intentos prefijados. Física a paso fijo y replay servidor,
+  idempotencia y resultados tras recarga/otro dispositivo. No audio ni validación de pronunciación.
+- Comprobaciones nuevas documentales: Graphify check/consulta, lectura de fuentes,
+  13 parejas de contraste calculadas, 76 enlaces locales existentes, fences/headings y JSON
+  correctos; diff --check sin errores, escaneo acotado de añadidos sin patrones de secretos,
+  alcance documental y remotas aún V27 antes del commit. Aviso LF→CRLF de Git, no fallo.
+  No refresh de fuentes runtime: no se modifican; check conserva mapa vigente.
+  Pruebas de auditorías16/17 heredadas, no reejecutadas; ninguna escritura/consulta de filas
+  en BD ni pruebas de integración, frontend build o despliegue atribuidos a este cierre.
+- Errores de trabajo: lecturas iniciales de rutas supuestas B.tsx/theme.css/sesiones.py y
+  actividades.py fallaron; resueltas con rg --files y rutas reales. Un parche documental
+  rechazado por contexto distinto, reaplicado sin pérdida. Web no abrió Figma: IAB sí;
+  changelog.md no legible por web por tipo MIME. No son fallos de aplicación.
+- Primer commit detenido por identidad Git ausente. Los cinco cierres anteriores usan
+  Piero Anticona y su correo noreply de GitHub; reintento con `git -c user.name=...
+  -c user.email=... commit`, solo para la invocación, sin configurar globalmente.
+  `gh` no está instalado en PATH; no atribuir una comprobación CI nueva mediante ese CLI.
+- Siguiente acción: validar propuesta y responsables. Primera tarea de código posterior,
+  ClinicalReportEditor.tsx/clinicalService.ts filtran cuatro campos de ReporteSalida al
+  iniciar y serializar; regresión y accesibilidad. Después muestras Centro Familiar/reserva/
+  expediente, y MA-02 contrato con equipo/profesional antes de migrar.
+- Cierre autorizado: V28_Actualizacion_Documentacion_Diseno_Juegos, commit con descripción,
+  dev y rama personal por fast-forward, sin force-push. El SHA final no se incrusta en su
+  propio contenido; resolver `git log -1`/referencias publicadas y consultar el cierre del chat.
+  Si el push falla, no tratar este relevo como compartido; registrar el bloqueo.
+- No autorización nueva de datos/piloto. AUDITORIA y registros previos se conservan;
+  limpieza de variables/runtime y copy sigue planificada. Sin pagos/IA.
+
+El relevo siguiente es histórico de V27; V28 es el punto vigente.
+
 ### Plan de UX/UI y trabajo paralelo por flujos
 
 - Solicitud: repartir módulos entre dos o más personas, unificar diseño, limpiar textos
