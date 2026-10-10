@@ -6,6 +6,9 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+V40 extiende diseño a login: UI exclusivamente, evidencia login-v40; acceso DEV solo local.
+Admin es siguiente sección autorizada, commit propio y publicación de cada cierre en dev.
+
 Autorización posterior: publicar todo V33–V38 en dev, integración fast-forward sin conflictos.
 V39 actualiza continuidad documental; codex/2do-intento se sincroniza con dev.
 Las restricciones de dev citadas en cortes inferiores son históricas. Supabase/hosting no

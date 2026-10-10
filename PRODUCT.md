@@ -17,8 +17,8 @@ React/TypeScript → HTTP/JSON → FastAPI → PostgreSQL con autenticación pro
 Núcleo local V33–V37 verificado; consultar docs/PROJECT_CONTEXT.md para límites.
 Juegos con progresión de demostración rotulada; pagos excluidos. El horario semanal
 con anticipación queda fuera del alcance por indicación del usuario del10 de octubre.
-El rediseño actual afecta solo UI/UX de la landing; cada rol se trabajará después
-con su propio commit. No modificar lógica, API, datos, autenticación ni rutas.
+La landing V38 está cerrada. El rediseño actual continúa en login y admin,
+cada módulo con su propio commit, exclusivamente UI/UX. No modificar lógica, API, datos, autenticación ni rutas.
 
 ## Brand Commitments
 Nombre/logo ASHAKids, paleta violeta/naranja/teal ya definida y tipografía Nunito.

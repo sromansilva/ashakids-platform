@@ -1,5 +1,9 @@
 # Punto de continuidad del equipo
 
+V40_Rediseno_Login_UI incorpora acceso visual de la misma marca: lógica intacta.
+Panel de pruebas solo DEV, ausente del build productivo. Publicación por sección en dev;
+admin UI sigue como siguiente commit separado. Evidencia docs/evidence/login-v40/.
+
 Equipo: **dev incorpora todo V33–V38**, desde la base V32/ebb8632 hasta V38/fbffd46.
 V39_Actualizacion_Documentacion_Equipo registra esta adopción; hagan fetch y usen el último
 SHA publicado de dev. codex/2do-intento se sincroniza con el mismo cierre.

@@ -1,3 +1,17 @@
+## 2026-10-10 — V40 Rediseño de login UI
+
+Base V39/023e21b, codex/2do-intento. Login conserva autenticación, guard, handlers y prefills;
+formulario cristal/luz, arte CSS de marca en escritorio, controles estándar accesibles.
+Dos fuentes LoginPage.tsx/login.css y contrato/comparación docs/design/LOGIN*.md.
+Pruebas nuevas:281 componentes/18 archivos+25 rutas16.35s, tipos/check339/máximo498,
+build4.37s/1896 módulos; DEP0205 heredado. Detector único[]/exit0. Revisor ship, sin fixes.
+UI escritorio1280/móvil390/panel920; error vacío, mostrar/ocultar y Recordarme comprobados.
+Cuenta ADMIN sintética existente inicia sesión y abre dashboard; sin crear cuentas ni datos.
+Producción excluye panel/códigos DEV, verificado en bundle. Captura del usuario era login
+productivo anterior: sin añadir accesos demo a producción. No hosting/Supabase/migraciones.
+Siguiente trabajo autorizado: admin UI, commit propio. Publicar cada cierre en dev y
+sincronizar codex/2do-intento; feat/piero-dev conserva corte anterior. Ver SHA/push en Git.
+
 ## Publicación en dev — 2026-10-10
 
 El usuario autorizó integrar todo el avance en dev. Integración local fast-forward desde
