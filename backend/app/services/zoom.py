@@ -65,17 +65,18 @@ async def _access_token() -> str:
     return access_token
 
 
-async def create_meeting(*, topic: str, start_time: datetime, duration_minutes: int = 45) -> ZoomMeeting | None:
+async def create_meeting(*, topic: str, start_time: datetime, duration_minutes: int | None = None) -> ZoomMeeting | None:
     """Crea una reunión solo cuando Zoom está habilitado; None conserva modo manual."""
     if not settings.ZOOM_ENABLED:
         return None
     access_token = await _access_token()
 
+    duration = duration_minutes or settings.ZOOM_MEETING_DURATION_MINUTES
     payload = json.dumps({
         "topic": topic,
         "type": 2,
         "start_time": start_time.astimezone(ZoneInfo("America/Lima")).isoformat(),
-        "duration": duration_minutes,
+        "duration": duration,
         "timezone": "America/Lima",
         "settings": {"waiting_room": True, "join_before_host": False},
     }).encode("utf-8")

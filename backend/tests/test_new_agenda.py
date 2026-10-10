@@ -5,6 +5,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import func, select
 from app.models.agenda import TurnoSemanal
 from app.models.clinica import Reserva
+from app.core.config import settings
 from tests.clinical_helpers import PATIENT, appointment_due, session_journey
 
 
@@ -39,7 +40,7 @@ async def test_introduction_without_fake_plan_and_independent_children(clinical)
     assert response.status_code == 201, response.text
     assert response.json()['estado_reserva'] == 'CONFIRMADA'
     assert response.json()['id_tratamiento'] is None
-    assert datetime.fromisoformat(response.json()['fecha_hora_fin']) - datetime.fromisoformat(response.json()['fecha_hora_inicio']) == timedelta(minutes=45)
+    assert datetime.fromisoformat(response.json()['fecha_hora_fin']) - datetime.fromisoformat(response.json()['fecha_hora_inicio']) == timedelta(minutes=settings.APPOINTMENT_DURATION_MINUTES)
     assert (await parent.get(f'/api/v1/pacientes/{first}/tratamientos')).json() == []
     assert (await parent.get(f'/api/v1/pacientes/{first}/recorrido')).json()['introduccion_pendiente'] == response.json()['id_reserva']
     assert (await parent.get(f'/api/v1/pacientes/{second}/recorrido')).json()['introduccion_pendiente'] is None

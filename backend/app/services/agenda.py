@@ -7,6 +7,7 @@ from app.models.auth import Usuario
 from app.models.clinica import Reserva
 from app.models.perfiles import Terapeuta
 from app.services.acceso import exigir_profesional, obtener, perfil_activo
+from app.core.config import settings
 
 LIMA = ZoneInfo("America/Lima")
 
@@ -21,7 +22,8 @@ async def disponibilidad(db, therapist):
     blocks = (await db.scalars(select(BloqueoAgenda).where(
         BloqueoAgenda.id_terapeuta == therapist).order_by(BloqueoAgenda.inicio))).all()
     return {"turnos": [{"dia": t.dia, "hora": t.hora} for t in turns],
-            "bloqueos": [{"inicio": b.inicio, "fin": b.fin} for b in blocks]}
+            "bloqueos": [{"inicio": b.inicio, "fin": b.fin} for b in blocks],
+            "duracion_minutos": settings.APPOINTMENT_DURATION_MINUTES}
 
 
 async def guardar(db, identity, therapist, data):
@@ -42,8 +44,9 @@ async def validar_turno(db, therapist, start, end):
     await disponibilidad(db, therapist)
     if local.date() > datetime.now(LIMA).date() + timedelta(days=90):
         raise HTTPException(422, "Seleccione una fecha dentro de los próximos 90 días.")
-    if local.minute or local.second or local.microsecond or end - start != timedelta(minutes=45):
-        raise HTTPException(422, "Seleccione un turno de 45 minutos con inicio a la hora exacta.")
+    duration = settings.APPOINTMENT_DURATION_MINUTES
+    if local.minute or local.second or local.microsecond or end - start != timedelta(minutes=duration):
+        raise HTTPException(422, f"Seleccione un turno de {duration} minutos con inicio a la hora exacta.")
     turn = await db.scalar(select(TurnoSemanal.id_turno).where(
         TurnoSemanal.id_terapeuta == therapist, TurnoSemanal.dia == local.weekday(),
         TurnoSemanal.hora == local.hour))
@@ -70,7 +73,7 @@ async def turnos_del_dia(db, therapist, day):
     result = []
     for hour in range(8, 18):
         begin = start.replace(hour=hour)
-        finish = begin + timedelta(minutes=45)
+        finish = begin + timedelta(minutes=settings.APPOINTMENT_DURATION_MINUTES)
         reason = None
         if begin <= datetime.now(timezone.utc):
             reason = "Horario pasado"

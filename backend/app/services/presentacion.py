@@ -33,7 +33,9 @@ async def citas(db, rows):
     return [CitaSalida.model_validate(r).model_copy(update={
         "paciente_nombre": patients.get(r.id_paciente),
         "terapeuta_nombre": therapists.get(r.id_terapeuta),
-        "id_sesion": sessions.get(r.id_reserva)}) for r in rows]
+        "id_sesion": sessions.get(r.id_reserva),
+        "zoom_origen": "AUTOMATICA" if r.zoom_meeting_id and r.zoom_join_url
+            else "MANUAL" if r.zoom_join_url else None}) for r in rows]
 
 
 async def tratamientos(db, rows):

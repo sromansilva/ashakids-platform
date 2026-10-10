@@ -10,6 +10,14 @@ Los apartados inferiores conservan estado histórico de implementación local/re
 
 # Arquitectura de ASHAKids
 
+## V49 — duración de agenda y origen del enlace Zoom
+
+La duración de la cita se comparte entre disponibilidad, reserva y Zoom: 40 minutos en
+desarrollo/pruebas para cuentas Basic y 45 minutos en producción institucional, con posibilidad
+de configurar ambos valores de forma explícita. `CitaSalida` expone `zoom_origen` para distinguir
+un enlace creado automáticamente de un respaldo manual; el frontend abre siempre el `join_url`
+devuelto por FastAPI. El enlace manual no reemplaza una reunión automática existente.
+
 ## V47 — consistencia clínica y reuniones Zoom
 
 El cierre P1 alinea la contraseña personal en 12–128 caracteres, verifica la contraseña actual

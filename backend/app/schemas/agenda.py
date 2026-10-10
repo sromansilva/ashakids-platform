@@ -22,6 +22,7 @@ class BloqueoDatos(Entrada):
 class DisponibilidadDatos(Entrada):
     turnos: list[TurnoDatos] = Field(max_length=60)
     bloqueos: list[BloqueoDatos] = Field(default_factory=list, max_length=60)
+    duracion_minutos: int | None = Field(default=None, ge=40, le=45)
 
     @model_validator(mode="after")
     def unicos(self):

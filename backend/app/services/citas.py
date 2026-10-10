@@ -5,6 +5,7 @@ from sqlalchemy import false, func, or_, select
 
 from app.models.clinica import Expediente, ReporteSesion, Reserva, Sesion, Tratamiento
 from app.models.perfiles import Paciente, Terapeuta, Tutor
+from app.core.config import settings
 from app.services.acceso import es_familia, exigir_profesional, obtener, paciente_visible, perfil_activo, roles_de
 from app.services.agenda import validar_turno
 from app.services.notificaciones import avisar_cita
@@ -116,7 +117,7 @@ async def crear_cita(db, identity, data):
             meeting = await create_meeting(
                 topic=f"ASHAKids · {data.tipo_cita.lower()} · cita {row.id_reserva}",
                 start_time=row.fecha_hora_inicio,
-                duration_minutes=45,
+                duration_minutes=settings.ZOOM_MEETING_DURATION_MINUTES,
             )
         except ZoomIntegrationError as exc:
             raise HTTPException(502, str(exc)) from None

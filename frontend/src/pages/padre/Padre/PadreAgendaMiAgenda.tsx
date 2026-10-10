@@ -200,7 +200,7 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
                   {timelineSel.time} · {timelineSel.therapist}
                 </p>
                 <p className="text-xs text-[#7C6F9A] font-medium truncate">
-                  {timelineSel.specialty} · 45 min · {timelineSel.date}
+                  {timelineSel.specialty} · {timelineSel.durationMinutes ? `${timelineSel.durationMinutes} min` : "Duración según agenda"} · {timelineSel.date}
                 </p>
               </div>
             </div>

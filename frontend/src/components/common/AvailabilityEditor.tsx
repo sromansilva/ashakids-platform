@@ -23,7 +23,7 @@ function Form({ id, initial }: { id: number; initial: Availability }) {
   };
   return <form className="space-y-5 text-[#1C1135]" onSubmit={e => { e.preventDefault(); void save.submit(undefined); }}>
     <h2 className="font-extrabold text-lg">Tu disponibilidad semanal</h2>
-    <p className="text-sm text-[#4B4264]">Selecciona las horas de inicio en Lima. Cada sesión dura 45 minutos. Las reservas confirmadas se conservan si cambias tu horario.</p>
+    <p className="text-sm text-[#4B4264]">Selecciona las horas de inicio en Lima. Cada sesión dura {initial.duracion_minutos ?? 40} minutos según el entorno. Las reservas confirmadas se conservan si cambias tu horario.</p>
     <fieldset disabled={save.isPending} className="space-y-4"><legend className="sr-only">Turnos semanales</legend>
       {days.map((day, dia) => <fieldset key={day} className="rounded-2xl border border-[#E8E5F4] p-3"><legend className="px-1 font-bold">{day}</legend><div className="grid grid-cols-3 sm:grid-cols-5 gap-2">{hours.map(hora => <label key={hora} className="flex min-h-11 items-center gap-2 rounded-lg px-2 bg-violet-50 text-violet-950"><input type="checkbox" checked={form.turnos.some(t => t.dia === dia && t.hora === hora)} onChange={() => toggle(dia, hora)} />{String(hora).padStart(2, '0')}:00</label>)}</div></fieldset>)}
       <section className="space-y-3" aria-label="Bloqueos de agenda"><h3 className="font-bold">Ausencias y bloqueos</h3>

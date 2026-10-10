@@ -2,6 +2,7 @@ from datetime import datetime, timedelta, timezone
 from sqlalchemy import update
 from app.models.clinica import Reserva, Expediente, Tratamiento
 from app.core import database
+from app.core.config import settings
 from zoneinfo import ZoneInfo
 
 PATIENT = {"nombres_paciente": "Paciente", "apellidos_paciente": "Sintético",
@@ -32,7 +33,7 @@ async def journey(clients):
     # La fixture reserva introducción real; el plan previo sirve solo a regresiones V26.
     payload = {"tipo_cita": "INTRODUCTORIA", "id_paciente": patient["id_paciente"], "id_terapeuta": 1,
                "fecha_hora_inicio": start.isoformat(),
-               "fecha_hora_fin": (start + timedelta(minutes=45)).isoformat(), "modalidad": "VIRTUAL"}
+               "fecha_hora_fin": (start + timedelta(minutes=settings.APPOINTMENT_DURATION_MINUTES)).isoformat(), "modalidad": "VIRTUAL"}
     response = await parent.post("/api/v1/citas", json=payload)
     assert response.status_code == 201, response.text
     assert response.json()["estado_reserva"] == "CONFIRMADA"

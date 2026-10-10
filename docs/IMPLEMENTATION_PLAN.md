@@ -6,6 +6,13 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+## V49 — duración Basic y contrato visible de Zoom / 2026-10-10
+
+La agenda, la reserva y la reunión Zoom comparten duración: 40 minutos en desarrollo/pruebas y
+45 minutos en producción institucional, con configuración explícita y validación de igualdad.
+`CitaSalida.zoom_origen` permite que PADRE, TERAPEUTA y ADMIN distingan enlace automático de
+respaldo manual. Las vistas abren el `zoom_join_url` real; no construyen IDs ni enlaces.
+
 ## V47 — cierre P1 e integración Zoom / 2026-10-10
 
 Implementación local preparada sobre `dev`: reglas de contraseña y cambio propio con verificación,

@@ -1,3 +1,16 @@
+## V49 — duración Basic y visualización del origen Zoom / 2026-10-10
+
+Se alinearon disponibilidad, validación de citas, slots y creación Zoom mediante duración
+configurable: 40 minutos por defecto en desarrollo/pruebas y 45 en producción. La respuesta
+de citas expone `zoom_origen` (`AUTOMATICA` o `MANUAL`); el enlace automático existente no puede
+ser reemplazado por el respaldo manual. Las vistas de familia, terapeuta y administración muestran
+el texto correspondiente y abren el `zoom_join_url` recibido.
+
+Pruebas finales: backend 161 aprobadas y 75 omitidas; frontend 281 aprobadas, typecheck y build
+correctos. El mapa de conocimiento fue refrescado y `check` está vigente. Sigue pendiente verificar
+el flujo real con una cuenta Zoom Basic y aplicar la migración 007 solo en una base aislada.
+No se modificó `.env`, la base compartida ni secretos.
+
 ## V47 — Documentación del sistema de componentes UI / 2026-10-10
 
 Objetivo: entregar la maqueta aprobada y una especificación textual implementable por IA.

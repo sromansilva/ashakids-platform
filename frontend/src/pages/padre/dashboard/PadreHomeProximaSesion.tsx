@@ -40,7 +40,7 @@ return (<div className="flex flex-col gap-5">
                   {[
                     ["📅", "Fecha", nextSessionAppt?.date ?? "30 Jul 2026"],
                     ["🕙", "Hora", nextSessionAppt?.time ?? "10:00 AM"],
-                    ["⏱️", "Duración", "45 min"],
+                    ["⏱️", "Duración", nextSessionAppt?.durationMinutes ? `${nextSessionAppt.durationMinutes} min` : "Según agenda"],
                     ["🎥", "Tipo", nextSessionAppt?.type === "virtual" ? "Virtual" : "Presencial"],
                   ].map(([icon, lbl, val]) => (
                     <div

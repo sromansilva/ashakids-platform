@@ -70,7 +70,7 @@ it('Books a confirmed therapy slot with a professional selected separately from 
   const requests = mockApi((path, init) => {
     if (path === '/terapeutas') return response([{ id_terapeuta: 4, nombres: 'Profesional', apellidos: 'Aislado', especialidad: null }]);
     if (path === '/pacientes/12/recorrido') return response({ introduccion_atendida: true, introduccion_pendiente: null, terapia_habilitada: true });
-    if (path === '/terapeutas/4/turnos') return response([{ inicio: start, fin: day + 'T10:45:00-05:00', disponible: true, motivo: null }, { inicio: day + 'T11:00:00-05:00', fin: day + 'T11:45:00-05:00', disponible: false, motivo: 'Ocupado' }]);
+    if (path === '/terapeutas/4/turnos') return response([{ inicio: start, fin: day + 'T10:40:00-05:00', disponible: true, motivo: null }, { inicio: day + 'T11:00:00-05:00', fin: day + 'T11:40:00-05:00', disponible: false, motivo: 'Ocupado' }]);
     if (path === '/citas' && init.method === 'POST') return response(appointment, 201);
   });
   renderRoute('/padre/agenda', 'PADRE');
@@ -81,6 +81,7 @@ it('Books a confirmed therapy slot with a professional selected separately from 
   await screen.findByRole('option', { name: 'Lenguaje' });
   fireEvent.change(screen.getByLabelText('Profesional'), { target: { value: '4' } });
   fireEvent.change(screen.getByLabelText('Día'), { target: { value: day } });
+  expect(await screen.findByText('Horario en Lima · 40 minutos')).toBeInTheDocument();
   expect(await screen.findByRole('button', { name: /11:00.*Ocupado/ })).toBeDisabled();
   expect(screen.queryByLabelText('Fecha y hora de fin')).not.toBeInTheDocument();
   fireEvent.click(await screen.findByRole('button', { name: /10:00.*Disponible/ }));
@@ -90,7 +91,7 @@ it('Books a confirmed therapy slot with a professional selected separately from 
   fireEvent.click(screen.getByRole('button', { name: 'Confirmar cita' }));
   await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   const call = requests.mock.calls.find(([, init]) => init?.method === 'POST');
-  expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ tipo_cita: 'TERAPIA', id_tratamiento: 5, id_paciente: 12, id_terapeuta: 4, fecha_hora_inicio: start, fecha_hora_fin: day + 'T10:45:00-05:00' });
+  expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ tipo_cita: 'TERAPIA', id_tratamiento: 5, id_paciente: 12, id_terapeuta: 4, fecha_hora_inicio: start, fecha_hora_fin: day + 'T10:40:00-05:00' });
 });
 
 it('Shows saved session report fields to the family without clinical mutation controls', async () => {

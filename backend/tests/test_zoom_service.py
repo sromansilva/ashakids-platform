@@ -21,7 +21,7 @@ async def test_zoom_disabled_keeps_manual_mode():
 
 
 @pytest.mark.asyncio
-async def test_zoom_creates_45_minute_lima_meeting_without_exposing_secret(monkeypatch):
+async def test_zoom_creates_configured_lima_meeting_without_exposing_secret(monkeypatch):
     values = {
         "ZOOM_ENABLED": True,
         "ZOOM_ACCOUNT_ID": "account",
@@ -51,7 +51,7 @@ async def test_zoom_creates_45_minute_lima_meeting_without_exposing_secret(monke
     assert meeting.join_url.startswith("https://zoom.us/")
     payload = json.loads(calls[1][1]["body"])
     assert payload["type"] == 2
-    assert payload["duration"] == 45
+    assert payload["duration"] == settings.ZOOM_MEETING_DURATION_MINUTES
     assert payload["timezone"] == "America/Lima"
     assert payload["settings"] == {"waiting_room": True, "join_before_host": False}
     assert "secret" not in repr(calls[1])

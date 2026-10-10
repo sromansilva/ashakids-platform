@@ -47,8 +47,9 @@ autoeliminación y solicitud de edición de perfil se presentan como no disponib
 envíos o cambios inexistentes.
 
 Se preparó Zoom Server-to-Server OAuth opcional para citas virtuales. `ZOOM_ENABLED=false` mantiene
-el enlace manual; cuando se habilite, `POST /api/v1/citas` crea una reunión de 45 minutos y guarda
-solo `zoom_meeting_id` y `zoom_join_url`. La migración `007_zoom_meetings.sql` amplía las columnas
+el enlace manual; cuando se habilite, `POST /api/v1/citas` crea una reunión con la duración de agenda
+(40 minutos en desarrollo/Basic, 45 en producción institucional) y guarda solo `zoom_meeting_id` y
+`zoom_join_url`. La migración `007_zoom_meetings.sql` amplía las columnas
 externas y debe probarse en una base aislada antes de adoptar el esquema compartido. Las credenciales
 Zoom son backend-only y siguen pendientes de configuración/validación con una cuenta técnica.
 
@@ -872,3 +873,10 @@ Informe de Tarea 1: `docs/tarea-1-frontend-informe.md`. Inventario de eliminacio
 2. Leer `docs/architecture.md` y las decisiones de `docs/decisions/`.
 3. Ejecutar `python tools/knowledge/manage.py setup` y consultar el mapa según `AGENTS.md`.
 4. Trabajar en una rama de funcionalidad, actualizar contexto y mapa después de cambios importantes y entregar mediante PR.
+## V49 — duración y visualización de Zoom / 2026-10-10
+
+La agenda, el contrato de cita y Zoom comparten duración configurable: desarrollo/pruebas usan
+40 minutos para el plan Basic y producción institucional 45 minutos. `CitaSalida` devuelve
+`zoom_origen` para distinguir enlaces creados automáticamente de respaldos profesionales. Las
+vistas PADRE, TERAPEUTA y ADMIN usan el `zoom_join_url` de la API y explican su procedencia; no
+construyen meeting IDs. La cuenta Zoom y la migración 007 siguen pendientes de prueba aislada.

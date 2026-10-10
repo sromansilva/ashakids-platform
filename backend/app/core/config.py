@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     ZOOM_CLIENT_SECRET: str = ""
     ZOOM_HOST_USER_ID: str = ""
     ZOOM_API_BASE_URL: str = "https://api.zoom.us/v2"
+    # La duración se comparte entre agenda, reservas y Zoom para no ofrecer
+    # un turno más largo que la reunión que puede alojar la cuenta.
+    APPOINTMENT_DURATION_MINUTES: Optional[int] = Field(default=None, ge=40, le=45)
+    ZOOM_MEETING_DURATION_MINUTES: Optional[int] = Field(default=None, ge=40, le=45)
 
     # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""
@@ -99,6 +103,17 @@ class Settings(BaseSettings):
                 raise ValueError("Producción exige BD y al menos un origen HTTPS.")
             if self.WEB_CONCURRENCY != 1:
                 raise ValueError("El limitador local de login exige WEB_CONCURRENCY=1.")
+        return self
+
+    @model_validator(mode="after")
+    def duration_guardrails(self):
+        default = 45 if self.is_production else 40
+        appointment = self.APPOINTMENT_DURATION_MINUTES or default
+        zoom = self.ZOOM_MEETING_DURATION_MINUTES or appointment
+        if appointment != zoom:
+            raise ValueError("APPOINTMENT_DURATION_MINUTES y ZOOM_MEETING_DURATION_MINUTES deben coincidir.")
+        self.APPOINTMENT_DURATION_MINUTES = appointment
+        self.ZOOM_MEETING_DURATION_MINUTES = zoom
         return self
 
     @property

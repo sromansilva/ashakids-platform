@@ -50,6 +50,13 @@ async def reunion(key: int, data: CitaReunion, db: DB, identity: Identity):
     await exigir_profesional(db, identity, row.id_terapeuta)
     if row.modalidad != 'VIRTUAL' or row.estado_reserva == 'CANCELADA':
         raise HTTPException(409, 'La reunión requiere una cita virtual no cancelada.')
+    if row.zoom_meeting_id and data.zoom_join_url != row.zoom_join_url:
+        raise HTTPException(409, 'La reunión automática ya está registrada; el enlace manual solo sirve como recuperación.')
     row.zoom_join_url = data.zoom_join_url
+    if data.zoom_join_url is None:
+        row.zoom_meeting_id = None
+    elif not row.zoom_meeting_id:
+        # El identificador nulo distingue un enlace manual de uno creado por Zoom.
+        row.zoom_meeting_id = None
     await db.flush()
     return (await presentacion.citas(db, [row]))[0]

@@ -3,6 +3,7 @@ from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator, HttpUrl
+from app.core.config import settings
 from app.schemas.reglas import Nombre, Apellido, Nacimiento, Sexo
 
 Id = Annotated[int, Field(gt=0)]
@@ -75,9 +76,10 @@ class CitaHorario(Entrada):
 
     @model_validator(mode="after")
     def intervalo_valido(self):
-        expected = self.fecha_hora_inicio + timedelta(minutes=45)
+        duration = settings.APPOINTMENT_DURATION_MINUTES
+        expected = self.fecha_hora_inicio + timedelta(minutes=duration)
         if self.fecha_hora_fin is not None and self.fecha_hora_fin != expected:
-            raise ValueError("La cita dura 45 minutos.")
+            raise ValueError(f"La cita dura {duration} minutos.")
         self.fecha_hora_fin = expected
         return self
 
@@ -105,6 +107,7 @@ class CitaEstado(Entrada):
 class CitaSalida(Salida):
     puede_editar: bool = False
     zoom_join_url: str | None = None
+    zoom_origen: Literal["AUTOMATICA", "MANUAL"] | None = None
     paciente_nombre: str | None = None
     terapeuta_nombre: str | None = None
     id_sesion: int | None = None

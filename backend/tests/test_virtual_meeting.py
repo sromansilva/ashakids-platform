@@ -13,8 +13,9 @@ async def test_meeting_owned_virtual_persisted_and_safe_url(clinical):
         assert (await clients['t90001'].put(path,json={'zoom_join_url':invalid})).status_code == 422
     response = await clients['t90001'].put(path,json={'zoom_join_url':link})
     assert response.status_code == 200, response.text
+    assert response.json()['zoom_origen'] == 'MANUAL'
     view = await clients['p90001'].get(f'/api/v1/citas/{key}')
-    assert view.json()['zoom_join_url'] == link and view.json()['puede_editar'] is False
+    assert view.json()['zoom_join_url'] == link and view.json()['zoom_origen'] == 'MANUAL' and view.json()['puede_editar'] is False
     assert (await clients['t90001'].get(f'/api/v1/citas/{key}')).json()['puede_editar']
     assert (await clients['t90001'].put(path,json={'zoom_join_url':None})).json()['zoom_join_url'] is None
     assert (await clients['p90001'].patch(f'/api/v1/citas/{key}/estado',json={'estado_reserva':'CANCELADA'})).status_code == 200
