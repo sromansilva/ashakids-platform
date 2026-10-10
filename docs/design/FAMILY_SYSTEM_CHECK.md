@@ -87,7 +87,8 @@ No se crearon usuarios, enviaron mensajes, reservaron citas ni guardaron cambios
 clínicos para esta comprobación visual. La lectura por HTTP no equivale a una nueva
 verificación del backend o de la base desplegada.
 
-Las capturas de viewport/sección están en `.impeccable/review/family/`.
+Las capturas de viewport/sección están en `.impeccable/review/family/`, con copia
+versionada en [evidencia V42](../evidence/family-v42/README.md).
 Se documentan nueve destinos a `1280px` y centro familiar/mundos a `920px`;
 el contenido principal tiene scroll dentro de un DIV. Se registraron selección
 Ana/Luis, aislamiento visible de sus datos, estados sin registros y acordeón de
@@ -97,16 +98,22 @@ del implementador y a la revisión independiente.
 
 | Comprobación reportada por el implementador | Resultado y límite |
 | --- | --- |
-| Vitest y rutas | `281` pruebas de componentes y `25` de rutas correctas. No se presentan como nuevas pruebas backend ni como repetición de cada recorrido UI. |
+| Vitest y rutas | `281` pruebas de componentes en `18` archivos y `25` de rutas correctas; `16.33s`. No se presentan como nuevas pruebas backend ni como repetición de cada recorrido UI. |
 | Typecheck y check de frontend | Correctos; check de `341` archivos, máximo `498` líneas. |
-| Build | Correcto: `1898` módulos, `2.71s`. La compilación no acredita todas las pantallas. |
-| Graphify | Refresh/check reportados con `2218` nodos y `110` comunidades. El check documental posterior al ajuste CSS indicó mapa obsoleto: requiere refresh/check final antes de entregar. |
+| Build | Inicial correcto: `1898` módulos, `2.71s`; final tras ajuste de reportes correcto, `1898` módulos, `4.13s`. La compilación no acredita todas las pantallas. |
+| Graphify | Refresh final reportado con `2218` nodos y `110` comunidades; check documental final confirmó mapa actualizado. Un check intermedio posterior al ajuste CSS lo detectó obsoleto y se resolvió con el refresco final. |
 | Detector Impeccable | Una ejecución con dos advertencias de violeta de marca. Se conserva la identidad por petición explícita; no se repite el detector ni se presenta como un fallo corregido. |
 
 La revisión independiente inicial pidió hacer opacos los reportes. El CSS incorpora
-blanco sólido para contenedores del último reporte, reportes guardados, historial
-y acordeones de reportes. La confirmación del arreglo y el refresco final del mapa
-siguen pendientes de registrar al momento de esta pasada documental.
+blanco sólido en el contenedor del último reporte, las tarjetas descendientes de
+las secciones de reportes guardados/historial y los contenedores de acordeones de
+reportes. Se corrigió la dirección de los selectores de historial para que el fondo
+alcanzara las tarjetas reales. El implementador comprobó fondo computado blanco
+y recapturó reportes y `journey-reports-desktop.png`. La revisión final emitió
+`disposition: ship`, con el hallazgo de opacidad resuelto y sin regresión del arreglo.
+Ese veredicto se limita a la corrección revisada y no certifica todos los recorridos.
+
+Se conserva el aviso de deprecación `DEP0205` de la ejecución de pruebas.
 
 ## Recursos, deuda y límites
 

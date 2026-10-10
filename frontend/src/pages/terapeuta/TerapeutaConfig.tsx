@@ -1,6 +1,6 @@
 import { NotificationPreferences } from '@/components/common/NotificationPreferences';
 import { useState, useRef, useEffect } from "react";
-import { Eye, EyeOff, Upload, CheckCircle, Check, X } from "lucide-react";
+import { Eye, EyeOff, Upload, CheckCircle, Check, X, UserRound, CalendarDays, Bell, ShieldCheck } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
 import { Btn } from "@/components/common/Btn";
@@ -118,11 +118,11 @@ export function TerapeutaConfig() {
 
   const save = () => { setSaved(true); setTimeout(() => setSaved(false), 2000); };
 
-  const tabs: { key: typeof tab; label: string; icon: string }[] = [
-    { key: "perfil",          label: "Perfil",          icon: "👤" },
-    { key: "disponibilidad",  label: "Disponibilidad",  icon: "🗓️" },
-    { key: "notificaciones",  label: "Notificaciones",  icon: "🔔" },
-    { key: "seguridad",       label: "Seguridad",       icon: "🔐" },
+  const tabs: { key: typeof tab; label: string; icon: typeof UserRound }[] = [
+    { key: "perfil",          label: "Perfil",          icon: UserRound },
+    { key: "disponibilidad",  label: "Disponibilidad",  icon: CalendarDays },
+    { key: "notificaciones",  label: "Notificaciones",  icon: Bell },
+    { key: "seguridad",       label: "Seguridad",       icon: ShieldCheck },
   ];
 
 
@@ -204,20 +204,20 @@ export function TerapeutaConfig() {
         <p className="text-sm text-[#7C6F9A] font-medium">Gestiona tu perfil, disponibilidad y preferencias.</p>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="professional-config-layout grid lg:grid-cols-4 gap-6">
         {/* Sidebar tabs */}
-        <div className="flex lg:flex-col gap-2 flex-wrap lg:flex-nowrap">
+        <div className="professional-config-nav flex lg:flex-col gap-2 flex-wrap lg:flex-nowrap">
           {tabs.map(t => (
             <button key={t.key} onClick={() => setTab(t.key)}
               className="flex items-center gap-2 px-3 py-2.5 rounded-2xl text-sm font-bold transition-all text-left"
               style={{ background: tab === t.key ? B.violet : "white", color: tab === t.key ? "white" : B.textMid, border: `1.5px solid ${tab === t.key ? B.violet : B.border}` }}>
-              <span>{t.icon}</span> {t.label}
+              <t.icon size={18} aria-hidden="true"/> {t.label}
             </button>
           ))}
         </div>
 
         {/* Content */}
-        <div className="lg:col-span-3">
+        <div className="professional-config-content lg:col-span-3">
           <Crd className="p-6">
 
             {/* ── Perfil ── */}

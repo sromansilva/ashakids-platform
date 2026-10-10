@@ -23,7 +23,6 @@ export function TerapeutaDatosActividad({ go }: { go: (v: View) => void }) {
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="rounded-3xl p-5 mb-5" style={{ background: "linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)" }}>
-          <p className="text-xs font-black text-violet-300 uppercase tracking-widest mb-1">Vista de terapeuta · Solo uso interno</p>
           <h1 className="text-2xl font-black text-white mb-1">Datos de actividad · Mundo ASHA</h1>
           <p className="text-sm text-violet-200 font-medium">Registros de participación pseudonimizados · No reemplaza la evaluación clínica</p>
         </div>

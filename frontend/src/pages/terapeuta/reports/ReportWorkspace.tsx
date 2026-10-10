@@ -15,7 +15,7 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
   }, [report.data, report.isSuccess, report.error]);
   const canEdit = !readOnly && session.puede_editar !== false && ['EN_CURSO', 'FINALIZADA'].includes(session.estado_sesion) && session.asistencia !== 'NO_ASISTIO';
   return <div className="space-y-5 p-6">
-    <div><p className="mb-2 text-xs font-bold uppercase tracking-wider text-violet-600">Información general</p><div className="grid gap-3 sm:grid-cols-3">{[
+    <div><p className="mb-2 text-xs font-bold uppercase tracking-wider text-violet-600">Información general</p><div className="professional-report-meta grid gap-3 sm:grid-cols-3">{[
       ['Paciente', session.cita.paciente_nombre], ['Fecha', new Date(session.cita.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima' })], ['Estado', session.estado_sesion],
     ].map(([label, value]) => <div key={label} className="rounded-xl p-3 bg-[#F5F3FF]"><p className="mb-1 text-xs font-medium text-[#9E95B7]">{label}</p><p className="text-sm font-extrabold text-[#1C1135]">{value}</p></div>)}</div></div>
     {session.reporte_disponible && <RemoteFeedback pending={report.isPending} error={report.error} retry={() => void report.refetch()}/>}

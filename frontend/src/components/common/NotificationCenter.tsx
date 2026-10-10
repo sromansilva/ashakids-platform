@@ -20,7 +20,7 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
   const all = useWrite(() => notificationsService.readAll());
   const count = query.data?.sin_leer ?? 0;
   const items = query.error ? [] : query.data?.items ?? [];
-  return <section className="px-4 sm:px-6 pt-3 text-[#1C1135]">
+  return <section className="professional-notifications px-4 sm:px-6 pt-3 text-[#1C1135]">
     <div className="flex justify-end"><button type="button" aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(v => !v)} className="min-h-11 px-3 flex items-center gap-2 rounded-xl font-bold text-sm hover:bg-violet-100 focus-visible:ring-2 focus-visible:ring-violet-700"><Bell size={18}/><span>Notificaciones</span>{query.error ? <span className="text-red-800">Sin conexión</span> : query.isPending ? <span>Cargando…</span> : <span className="tabular-nums">{count} sin leer</span>}<ChevronDown size={16} className={open ? 'rotate-180' : ''}/></button></div>
     {open && <div id={panelId} className="max-w-4xl ml-auto mt-3 p-4 sm:p-5 bg-white border border-[#E8E5F4] rounded-2xl" onKeyDown={e => {if(e.key==='Escape') {setOpen(false); document.querySelector<HTMLButtonElement>(`button[aria-controls="${panelId}"]`)?.focus();}}}>
       <div className="flex justify-between gap-4 flex-wrap items-center"><h2 className="text-xl font-extrabold">Tu bandeja de notificaciones</h2><Btn variant="outline" size="sm" onClick={() => go('terapeuta/config')}>Configurar avisos</Btn></div>

@@ -1,3 +1,9 @@
+# Continuidad V43
+
+Terapeuta web cerrado; usar último SHA de dev/codex/2do-intento. Responsive diferido.
+Siguiente: resolver esquema compartido antiguo mediante respaldo y adopción002–005;
+V42 está live pero el login falla por columnas ausentes, aunque readiness da200.
+
 # Continuidad V42
 
 Portal familiar web actualizado, lógica intacta. Usar último SHA remoto de dev/codex/2do-intento.

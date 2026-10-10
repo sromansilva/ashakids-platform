@@ -1,3 +1,29 @@
+## 2026-10-10 — V43 Rediseño de terapeuta UI
+
+Base V42/cbf30c6; codex/2do-intento y publicación del cierre en dev, sin reescribir SHA.
+Escritorio: shell profesional, resumen, pacientes, agenda, reportes y configuración con
+marca Nunito/violeta/naranja/teal. Cristal y luz contenidos; campos y reportes opacos.
+Iconos Lucide, foco visible y espacio reservado para ayuda. Responsive diferido.
+Datos, consultas, permisos, handlers y autenticación intactos; no cambios de backend/BD.
+Pruebas nuevas:281 componentes/18 archivos+25 rutas15.92s; tipos/check342/máximo498;
+build final4.53s/1899 módulos. Graphify2219 nodos106 comunidades/check vigente.
+Detector único: dos avisos de violeta heredado retenido por marca; DEP0205 heredado.
+UI: diez destinos profesionales1280, inicio/config/reportes920; detalle paciente/cita,
+vista previa reporte y bandeja. Cuenta sintética existente QA5175/API8002/PG6544.
+Sin CRUD clínico, reservas, mensajes ni cambios de preferencias. Datos de actividad,
+valoraciones e incidencias conservan sus rótulos demo. Anticipación semanal excluida.
+Revisor inicial fix por metadatos del reporte; auto-fit corregido, recaptura real920×811
+y1280×900, Resolved/Clear/ship limitado al defecto. Primera recaptura tenía tamaño erróneo
+por tab Render activo; se sustituyó tras comprobar dimensiones. Comparación/evidencias
+docs/design/THERAPIST_SYSTEM_CHECK.md y docs/evidence/therapist-v43/.
+Se incorpora cierre documental tardío de FAMILY_SYSTEM_CHECK sin alterar el commit V42.
+Incidencias de comandos: npm sin --prefix produjo ENOENT, corregido; espacio final en
+Reportes corregido. No nueva auditoría ni cobertura total por build.
+Siguiente: adopción autorizada de migraciones002–005 con respaldo/permisos runtime y
+verificación de Render. Diagnóstico actual: código V42 live, conexión TLS correcta y
+readiness200, pero esquema antiguo sin password_change_required provoca fallo del login.
+Publicar código no equivale a adoptar BD. Resultado efectivo de commit/push: consultar Git.
+
 ## 2026-10-10 — V42 Rediseño del portal familiar UI
 
 Base V41/5ca2713, rama codex/2do-intento; commit independiente y publicación en dev.

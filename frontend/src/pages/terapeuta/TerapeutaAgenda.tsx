@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { AppointmentRequest } from "@/types/AppointmentRequest";
-import { Calendar, ChevronLeft, ChevronRight, Video, X, Clock, Check } from "lucide-react";
+import { Calendar, ChevronLeft, ChevronRight, Video, X, Clock, Check, MapPin } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
 import { Btn } from "@/components/common/Btn";
@@ -189,7 +189,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                     <p className="text-xs text-[#7C6F9A]">{parentLabel} · {req.date} · {req.time}</p>
                     <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold"
                       style={req.type === "presencial" ? { background:"#F0FDFA", color:"#0D9488" } : { background:"#EDE9FE", color:"#7C3AED" }}>
-                      {req.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}
+                      {req.type === "presencial" ? "Presencial" : "Virtual"}
                     </span>
                   </div>
                   <Btn size="sm" variant="ghost" onClick={() => go("terapeuta/mensajes")}>Más información</Btn>
@@ -224,7 +224,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                       style={{ borderColor: B.border }}
                       onClick={() => { setSelDate(wd); setAgView("dia"); }}
                     >
-                      <p className="text-xs font-medium" style={{ color: B.textMuted }}>{DAY_NAMES_SHORT[wd.getDay()]}</p>
+                      <p className="text-xs font-medium" style={{ color: "#615274" }}>{DAY_NAMES_SHORT[wd.getDay()]}</p>
                       <p className={`font-extrabold text-sm mt-0.5 w-7 h-7 rounded-full flex items-center justify-center mx-auto transition-all
                         ${today ? "text-white" : active ? "text-violet-700 bg-violet-100" : "text-[#1C1135]"}`}
                         style={today ? { background: B.violet } : {}}>
@@ -238,7 +238,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
               <div className="overflow-y-auto" style={{ maxHeight: 440 }}>
                 {hours.map((h, hi) => (
                   <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "64px repeat(7, 1fr)", borderColor: B.border, minHeight: 52 }}>
-                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: B.textMuted }}>{h}</div>
+                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: "#615274" }}>{h}</div>
                     {weekDays.map((wd, di) => {
                       const apt = aptForSlot(wd, hi + 8);
                       const col = apt ? childColor(apt.child) : "";
@@ -247,11 +247,11 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                           {apt && (
                             <button type="button"
                               className="w-full text-left rounded-xl px-2 py-1.5 cursor-pointer hover:brightness-95 transition-all"
-                              style={{ background: `${col}20`, borderLeft: `3px solid ${col}` }}
+                              style={{ background: `${col}20`, border: `1px solid ${col}` }}
                               onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}
                             >
-                              <p className="text-[11px] font-extrabold truncate" style={{ color: col }}>{apt.child.split(" ")[0]}</p>
-                              <p className="text-[10px] font-medium truncate" style={{ color: col + "aa" }}>{apt.time}</p>
+                              <p className="text-[11px] font-extrabold truncate" style={{ color: "#4B4264" }}>{apt.child.split(" ")[0]}</p>
+                              <p className="text-[10px] font-medium truncate" style={{ color: "#4B4264" }}>{apt.time}</p>
                             </button>
                           )}
                         </div>
@@ -284,8 +284,8 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                   <div className="flex items-center gap-4">
                     <div className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0" style={{ background: `${col}20` }}>
                       {apt.type === "presencial"
-                        ? <span className="text-xl">📍</span>
-                        : <Video size={20} style={{ color: col }} />
+                        ? <MapPin size={20} aria-hidden="true"/>
+                        : <Video size={20} style={{ color: "#4B4264" }} />
                       }
                     </div>
                     <div className="flex-1 min-w-0">
@@ -323,7 +323,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                 <p className="text-sm text-[#7C6F9A] mt-0.5">{selectedEvent.date} · {selectedEvent.time}</p>
                 <span className="inline-block mt-1.5 text-[11px] font-extrabold px-2 py-0.5 rounded-full"
                   style={selectedEvent.type === "presencial" ? { background:"#F0FDFA", color:"#0D9488" } : { background:"#EDE9FE", color:"#7C3AED" }}>
-                  {selectedEvent.type === "presencial" ? "📍 Presencial" : "💻 Virtual"}
+                  {selectedEvent.type === "presencial" ? "Presencial" : "Virtual"}
                 </span>
               </div>
               <div className="flex flex-col gap-2">

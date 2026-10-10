@@ -6,6 +6,11 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+V43 completa diseño web de terapeuta, pruebas y revisión acotada: evidencia therapist-v43.
+Siguiente prioridad autorizada: actualizar BD compartida con respaldo y migraciones002–005,
+ACL runtime mínimo y verificación del flujo desplegado. Render V42 conecta a la BD pero
+su esquema antiguo impide el login; no declarar adopción ni despliegue funcional por push.
+
 V40 extiende diseño a login y V41 a administración: UI exclusivamente, evidencia login-v40/admin-v41.
 Acceso DEV solo local; publicación por sección en dev y codex/2do-intento.
 Prioridad actual del usuario: escritorio; responsive diferido para próximos cambios.

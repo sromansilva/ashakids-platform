@@ -10,6 +10,7 @@ import { AshhiFloat } from "@/components/assistant/AshhiFloat";
 import { useAuth } from '@/hooks/useAuth';
 import "@/pages/admin/admin.css";
 import "@/pages/padre/family.css";
+import "@/pages/terapeuta/therapist.css";
 import { NotificationCenter } from '@/components/common/NotificationCenter';
 
 export function DashLayout({
@@ -45,7 +46,7 @@ export function DashLayout({
   }, [mob]);
   return (
     <div
-      className={`flex h-screen overflow-hidden${role === "admin" ? " asha-admin" : role === "padre" ? " asha-family" : ""}`}
+      className={`flex h-screen overflow-hidden${role === "admin" ? " asha-admin" : role === "padre" ? " asha-family" : role === "terapeuta" ? " asha-professional" : ""}`}
       style={{
         background: B.bg,
         fontFamily: '"Nunito", system-ui, sans-serif',
@@ -94,9 +95,10 @@ export function DashLayout({
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {role === 'admin' && <div className="admin-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
         {role === 'padre' && <div className="family-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Familia / Tutor</span></span></div>}
+        {role === 'terapeuta' && <div className="professional-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Terapeuta</span></span></div>}
         <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />
         <div className="flex-1 overflow-y-auto flex min-h-0">
-          <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : ""}`}>
+          <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : role === "terapeuta" ? " professional-content" : ""}`}>
             {role === 'terapeuta' && <NotificationCenter key={user?.id_usuario} go={go}/>}
             {children}
           </div>

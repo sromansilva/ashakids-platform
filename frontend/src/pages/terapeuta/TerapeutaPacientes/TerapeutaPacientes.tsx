@@ -31,7 +31,7 @@ if (selected !== null && patientsList.some(p => p.id === selected)) {
           onClick={() => setSelected(null)}>
           <ChevronLeft size={16} /> Volver a pacientes
         </button>
-        <div className="rounded-3xl p-6 mb-5" style={{ background: `linear-gradient(135deg, ${p.color}18 0%, ${B.violetLight} 100%)`, border: `1px solid ${p.color}30` }}>
+        <div className="professional-patient-summary rounded-3xl p-6 mb-5" style={{ background: `linear-gradient(135deg, ${p.color}18 0%, ${B.violetLight} 100%)`, border: `1px solid ${p.color}30` }}>
           <div className="flex items-start gap-5 flex-wrap">
             <Av initials={p.av} color={p.color} size="lg" />
             <div className="flex-1 min-w-0">
