@@ -1,3 +1,14 @@
+## Avance V34 — agenda e introducción (2026-10-10)
+
+En codex/2do-intento, base V33 45ee5ab, disponibilidad semanal/bloqueos persistidos,
+directorio activo, introducción por niño sin plan, confirmación inmediata y calendario
+familiar con resumen. Migración003 solo local; ADR0014. Se conserva sesión separada.
+No integra dev/feat/piero-dev ni modifica Supabase. Plan profesional, permisos de
+continuidad entre terapeutas y demo de juegos siguen pendientes: no dar por terminado
+el flujo hasta demostrar todo el recorrido en la aplicación.
+Pruebas nuevas y límites: docs/evidence/flow-v34/README.md. Tests DB V34 separado de
+QA persistente ashakids_test_flujo_qa_20261010 (API8002/Vite5175).
+
 # ASHAKids — Contexto maestro progresivo
 
 Actualización: 2026-10-10. Base compartida del equipo: dev. Corte vigente identificado abajo;

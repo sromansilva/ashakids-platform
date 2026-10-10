@@ -11,6 +11,8 @@ import { usersService } from "@/services/clinicalService";
 import { useRoleProfile } from '@/hooks/useRoleProfile';
 import { RemoteFeedback } from '@/components/common/RemoteFeedback';
 
+import { AvailabilityEditor } from "@/components/common/AvailabilityEditor";
+
 export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
@@ -101,8 +103,6 @@ export function TerapeutaConfig() {
   const [showPwConfirm, setShowPwConfirm] = useState(false);
   const [pwErrors, setPwErrors] = useState<{ actual?: string; nueva?: string; confirm?: string }>({});
 
-  // Disponibilidad per-day durations
-  const [dayDurations, setDayDurations] = useState<string[]>(["45 min", "45 min", "45 min", "45 min", "45 min", "30 min", "30 min"]);
 
   const photoPresets = [
     { bg: B.teal,    label: "Esmeralda" },
@@ -124,9 +124,6 @@ export function TerapeutaConfig() {
     { key: "seguridad",       label: "Seguridad",       icon: "🔐" },
   ];
 
-  const days = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
-  const [activeDays, setActiveDays] = useState([true, true, true, true, true, false, false]);
-  const toggleDay = (i: number) => setActiveDays(d => d.map((v, j) => j === i ? !v : v));
 
   const [notifs, setNotifs] = useState({ nuevaCita: true, cancelacion: true, recordatorio: true, mensajes: true, reportes: false, marketing: false });
   const toggleNotif = (k: keyof typeof notifs) => setNotifs(n => ({ ...n, [k]: !n[k] }));
@@ -262,52 +259,7 @@ export function TerapeutaConfig() {
               </div>
             )}
 
-            {/* ── Disponibilidad ── */}
-            {tab === "disponibilidad" && (
-              <div className="flex flex-col gap-5">
-                <h2 className="font-extrabold text-[#1C1135] text-lg">Disponibilidad semanal</h2>
-                <div className="flex flex-col gap-3">
-                  {days.map((d, i) => (
-                    <div key={d} className="flex items-center gap-3 p-3 rounded-2xl flex-wrap" style={{ background: activeDays[i] ? B.violetLight : "#F5F5F5" }}>
-                      <button onClick={() => toggleDay(i)}
-                        className="w-10 h-6 rounded-full transition-all flex-shrink-0 flex items-center px-0.5"
-                        style={{ background: activeDays[i] ? B.violet : "#D1D5DB", justifyContent: activeDays[i] ? "flex-end" : "flex-start" }}>
-                        <span className="w-5 h-5 bg-white rounded-full shadow-sm" />
-                      </button>
-                      <span className="w-8 font-extrabold text-sm text-[#1C1135] flex-shrink-0">{d}</span>
-                      {activeDays[i] ? (
-                        <>
-                          <div className="flex items-center gap-2 flex-wrap">
-                            <select className="rounded-xl border border-[#E8E5F4] bg-white px-3 py-1.5 text-sm font-medium focus:outline-none" defaultValue="09:00">
-                              {["08:00","09:00","10:00"].map(t => <option key={t}>{t}</option>)}
-                            </select>
-                            <span className="text-xs font-bold text-[#9E95B7]">hasta</span>
-                            <select className="rounded-xl border border-[#E8E5F4] bg-white px-3 py-1.5 text-sm font-medium focus:outline-none" defaultValue="17:00">
-                              {["16:00","17:00","18:00","19:00"].map(t => <option key={t}>{t}</option>)}
-                            </select>
-                          </div>
-                          <div className="flex items-center gap-1.5 ml-auto">
-                            <span className="text-xs font-bold text-[#7C6F9A] whitespace-nowrap">Duración de sesión:</span>
-                            {["30 min", "45 min", "60 min"].map(dur => (
-                              <button key={dur} onClick={() => setDayDurations(prev => prev.map((v, j) => j === i ? dur : v))}
-                                className="px-2.5 py-1 rounded-xl text-xs font-bold border transition-all"
-                                style={{ borderColor: dayDurations[i] === dur ? B.violet : B.border, background: dayDurations[i] === dur ? B.violet : "white", color: dayDurations[i] === dur ? "white" : B.textMid }}>
-                                {dur}
-                              </button>
-                            ))}
-                          </div>
-                        </>
-                      ) : (
-                        <span className="text-sm text-[#9E95B7] font-medium">No disponible</span>
-                      )}
-                    </div>
-                  ))}
-                </div>
-                <div className="flex justify-end">
-                  <Btn variant="cta" onClick={save}>{saved ? <><CheckCircle size={14} /> Guardado</> : "Guardar disponibilidad"}</Btn>
-                </div>
-              </div>
-            )}
+            {tab === "disponibilidad" && <AvailabilityEditor />}
 
             {/* ── Notificaciones ── */}
             {tab === "notificaciones" && (

@@ -3,9 +3,10 @@ from datetime import datetime, timezone
 from fastapi import HTTPException
 from sqlalchemy import false, or_, select
 
-from app.models.clinica import Expediente, Reserva, Sesion, Tratamiento
+from app.models.clinica import Expediente, ReporteSesion, Reserva, Sesion, Tratamiento
 from app.models.perfiles import Paciente, Terapeuta, Tutor
 from app.services.acceso import es_familia, exigir_profesional, obtener, paciente_visible, perfil_activo, roles_de
+from app.services.agenda import validar_turno
 
 
 def citas_visibles(identity):
@@ -42,6 +43,7 @@ async def validar_horario(db, patient_id, therapist_id, data, excluded=None):
     if not patient.activo:
         raise HTTPException(409, "Paciente inactivo.")
     await perfil_activo(db, Terapeuta, therapist_id)
+    await validar_turno(db, therapist_id, data.fecha_hora_inicio, data.fecha_hora_fin)
     collision = select(Reserva.id_reserva).where(
         or_(Reserva.id_paciente == patient_id, Reserva.id_terapeuta == therapist_id),
         Reserva.estado_reserva != "CANCELADA",
@@ -54,17 +56,44 @@ async def validar_horario(db, patient_id, therapist_id, data, excluded=None):
         raise HTTPException(409, "El paciente o terapeuta ya tiene una cita en ese horario.")
 
 
+async def recorrido(db, identity, patient_id):
+    await paciente_visible(db, identity, patient_id)
+    completed = await db.scalar(select(Reserva.id_reserva).join(Sesion).join(ReporteSesion).where(
+        Reserva.id_paciente == patient_id, Reserva.tipo_cita == "INTRODUCTORIA",
+        Sesion.estado_sesion == "FINALIZADA", Sesion.asistencia == "ASISTIO",
+        or_(ReporteSesion.observaciones_iniciales != "", ReporteSesion.objetivos_trabajados != "",
+            ReporteSesion.proximos_pasos != "")).limit(1))
+    pending = await db.scalar(select(Reserva.id_reserva).where(Reserva.id_paciente == patient_id,
+        Reserva.tipo_cita == "INTRODUCTORIA", Reserva.estado_reserva.in_(["PENDIENTE", "CONFIRMADA"])).limit(1))
+    plan = await db.scalar(select(Tratamiento.id_tratamiento).join(Expediente).where(
+        Expediente.id_paciente == patient_id, Tratamiento.estado_tratamiento == "ACTIVO").limit(1))
+    return {"introduccion_atendida": completed is not None, "introduccion_pendiente": pending,
+            "terapia_habilitada": completed is not None and plan is not None}
+
+
 async def crear_cita(db, identity, data):
-    treatment = await obtener(db, Tratamiento, data.id_tratamiento)
-    record = await obtener(db, Expediente, treatment.id_expediente)
-    patient = await paciente_visible(db, identity, record.id_paciente)
+    patient_id, therapist_id = data.id_paciente, data.id_terapeuta
+    if data.tipo_cita == "TERAPIA":
+        treatment = await obtener(db, Tratamiento, data.id_tratamiento)
+        record = await obtener(db, Expediente, treatment.id_expediente)
+        await paciente_visible(db, identity, record.id_paciente)
+        if patient_id is not None and patient_id != record.id_paciente:
+            raise HTTPException(422, "El plan no pertenece a ese niño.")
+        patient_id = record.id_paciente
+        therapist_id = therapist_id or treatment.id_terapeuta
+    patient = await paciente_visible(db, identity, patient_id)
     if not await es_familia(db, identity, patient):
-        await exigir_profesional(db, identity, treatment.id_terapeuta)
-    if treatment.estado_tratamiento.upper() != "ACTIVO":
-        raise HTTPException(409, "Tratamiento no activo.")
-    await validar_horario(db, record.id_paciente, treatment.id_terapeuta, data)
-    row = Reserva(**data.model_dump(), id_paciente=record.id_paciente,
-                  id_terapeuta=treatment.id_terapeuta, estado_reserva="PENDIENTE")
+        await exigir_profesional(db, identity, therapist_id)
+    if data.tipo_cita == "TERAPIA" and treatment.estado_tratamiento.upper() != "ACTIVO":
+        raise HTTPException(409, "Plan no activo.")
+    await validar_horario(db, patient_id, therapist_id, data)
+    state = await recorrido(db, identity, patient_id)
+    if data.tipo_cita == "TERAPIA" and not state["terapia_habilitada"]:
+        raise HTTPException(409, "Complete la introducción de este niño con asistencia, reporte y plan antes de reservar terapia.")
+    if data.tipo_cita == "INTRODUCTORIA" and (state["introduccion_atendida"] or state["introduccion_pendiente"]):
+        raise HTTPException(409, "Este niño ya tiene una introducción atendida o reservada.")
+    row = Reserva(**data.model_dump(exclude={"id_paciente", "id_terapeuta"}),
+                  id_paciente=patient_id, id_terapeuta=therapist_id, estado_reserva="CONFIRMADA")
     db.add(row)
     await db.flush()
     return row
@@ -80,7 +109,7 @@ async def cambiar_cita(db, identity, key, data, *, horario=False):
         await validar_horario(db, row.id_paciente, row.id_terapeuta, data, key)
         for field, value in data.model_dump().items():
             setattr(row, field, value)
-        row.estado_reserva = "PENDIENTE"
+        row.estado_reserva = "CONFIRMADA"
     else:
         if data.estado_reserva == "CONFIRMADA":
             await exigir_profesional(db, identity, row.id_terapeuta)

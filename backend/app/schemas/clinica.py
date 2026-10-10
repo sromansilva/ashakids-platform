@@ -1,5 +1,5 @@
 """Contratos explícitos, fechas con zona horaria y límites de entrada."""
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
@@ -66,19 +66,33 @@ class TratamientoSalida(Salida):
 
 class CitaHorario(Entrada):
     fecha_hora_inicio: AwareDatetime
-    fecha_hora_fin: AwareDatetime
+    fecha_hora_fin: AwareDatetime | None = None
     modalidad: Literal["VIRTUAL", "PRESENCIAL"]
     localizacion: str | None = Field(default=None, max_length=255)
 
     @model_validator(mode="after")
     def intervalo_valido(self):
-        if self.fecha_hora_fin <= self.fecha_hora_inicio:
-            raise ValueError("El fin debe ser posterior al inicio.")
+        expected = self.fecha_hora_inicio + timedelta(minutes=45)
+        if self.fecha_hora_fin is not None and self.fecha_hora_fin != expected:
+            raise ValueError("La cita dura 45 minutos.")
+        self.fecha_hora_fin = expected
         return self
 
 
 class CitaCrear(CitaHorario):
-    id_tratamiento: Id
+    id_tratamiento: Id | None = None
+    id_paciente: Id | None = None
+    id_terapeuta: Id | None = None
+    tipo_cita: Literal["INTRODUCTORIA", "TERAPIA"] = "TERAPIA"
+
+    @model_validator(mode="after")
+    def destino(self):
+        if self.tipo_cita == "INTRODUCTORIA":
+            if self.id_tratamiento or not self.id_paciente or not self.id_terapeuta:
+                raise ValueError("La introducción requiere niño y terapeuta, sin tratamiento.")
+        elif not self.id_tratamiento:
+            raise ValueError("La terapia requiere un plan.")
+        return self
 
 
 class CitaEstado(Entrada):
@@ -92,7 +106,8 @@ class CitaSalida(Salida):
     id_reserva: int
     id_paciente: int
     id_terapeuta: int
-    id_tratamiento: int
+    id_tratamiento: int | None
+    tipo_cita: str
     fecha_hora_inicio: datetime
     fecha_hora_fin: datetime
     modalidad: str

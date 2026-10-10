@@ -1,0 +1,281 @@
+{
+  "exitstatus": 0,
+  "environment": "isolated-local-postgresql",
+  "requests": [
+    {
+      "method": "DELETE",
+      "path": "/api/v1/pacientes/{key}",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 401
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas/{key}",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/citas/{key}",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes",
+      "status": 422
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/recorrido",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/recorrido",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/tratamientos",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}/reporte",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/sesiones/{key}/reporte",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/terapeutas",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/terapeutas/{key}/disponibilidad",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/terapeutas/{key}/turnos",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/terapeutas/{key}/turnos",
+      "status": 422
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios",
+      "status": 403
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/usuarios/{key}",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/citas/{key}/estado",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/citas/{key}/estado",
+      "status": 403
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/usuarios/{key}",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/usuarios/{key}",
+      "status": 409
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/usuarios/{key}",
+      "status": 422
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/citas",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/citas",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/citas",
+      "status": 422
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes",
+      "status": 422
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/cerrar",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/cerrar",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/iniciar",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/iniciar",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/sesiones/{key}/iniciar",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/tratamientos",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/usuarios",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/usuarios",
+      "status": 409
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/citas/{key}",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/citas/{key}",
+      "status": 409
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/pacientes/{key}",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sesiones/{key}/reporte",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/sesiones/{key}/reporte",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/terapeutas/{key}/disponibilidad",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/terapeutas/{key}/disponibilidad",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/v1/terapeutas/{key}/disponibilidad",
+      "status": 422
+    }
+  ]
+}

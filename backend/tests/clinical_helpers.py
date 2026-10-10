@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import update
 from app.models.clinica import Reserva
+from zoneinfo import ZoneInfo
 
 PATIENT = {"nombres_paciente": "Paciente", "apellidos_paciente": "Sintético",
            "fecha_nacimiento": "2020-01-01", "sexo": "Otro"}
@@ -16,12 +17,19 @@ async def journey(clients):
         "nombre_tratamiento": "Plan de prueba"})
     assert response.status_code == 201, response.text
     treatment = response.json()
-    start = datetime.now(timezone.utc) + timedelta(days=1)
-    payload = {"id_tratamiento": treatment["id_tratamiento"],
+    start = (datetime.now(ZoneInfo("America/Lima")) + timedelta(days=1)).replace(hour=8, minute=0, second=0, microsecond=0)
+    if start.weekday() == 6:
+        start += timedelta(days=1)
+    published = await clients["t90001"].put("/api/v1/terapeutas/1/disponibilidad", json={
+        "turnos": [{"dia": day, "hora": hour} for day in range(6) for hour in range(8, 18)], "bloqueos": []})
+    assert published.status_code == 200, published.text
+    # La fixture reserva introducción real; el plan previo sirve solo a regresiones V26.
+    payload = {"tipo_cita": "INTRODUCTORIA", "id_paciente": patient["id_paciente"], "id_terapeuta": 1,
                "fecha_hora_inicio": start.isoformat(),
                "fecha_hora_fin": (start + timedelta(minutes=45)).isoformat(), "modalidad": "VIRTUAL"}
     response = await parent.post("/api/v1/citas", json=payload)
     assert response.status_code == 201, response.text
+    assert response.json()["estado_reserva"] == "CONFIRMADA"
     return patient, treatment, response.json(), payload
 
 

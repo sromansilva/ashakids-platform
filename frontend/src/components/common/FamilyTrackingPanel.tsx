@@ -1,3 +1,4 @@
+import { IntroductionStatus } from "./IntroductionStatus";
 import { useState } from "react";
 import { CalendarDays, CheckCircle2, Circle, FileText, RefreshCw, Users } from "lucide-react";
 import { useFamilyTracking } from "@/hooks/useFamilyTracking";
@@ -95,6 +96,7 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
           <div className="flex flex-wrap gap-3 mt-4"><Btn variant="outline" onClick={() => go(mode === "home" ? "padre/camino" : "padre/agenda")}>{mode === "home" ? "Ver Mi Camino ASHA" : "Ir a agenda"}</Btn><Btn variant="outline" onClick={() => go("padre/config")}>Gestionar hijos</Btn></div>
         </div><div className="hidden sm:block shrink-0"><Ashi size={88} mood="happy" /></div>
       </section>
+      <IntroductionStatus key={patient.id_paciente} patientId={patient.id_paciente} />
       <dl aria-label="Registros del hijo seleccionado" className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[{ label: "Sesiones realizadas", value: summary.attended.length }, { label: "Realizadas este mes", value: summary.thisMonth }, { label: "Reportes disponibles", value: summary.reportSessions.length }, { label: "Progreso clínico", value: "Sin medición" }].map(s =>
           <div key={s.label} className="rounded-2xl border border-[#E8E5F4] bg-white p-4"><dt className="text-sm text-[#4B4264]">{s.label}</dt><dd className={`font-black ${typeof s.value === "number" ? "text-xl" : "text-base"} text-[#1C1135] mt-2 break-words`}>{s.value}</dd></div>)}

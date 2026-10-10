@@ -1,3 +1,4 @@
+import { FamilyAppointmentDetail } from "@/components/common/FamilyAppointmentDetail";
 import type { usePadreAgenda } from "@/pages/padre/Padre/usePadreAgenda";
 import { Star, ChevronLeft, ChevronRight, Plus, X, Check, Video, Download, ArrowRight, MapPin } from "lucide-react";
 import { B } from "@/theme/brand/B";
@@ -138,25 +139,7 @@ return (<div className="p-4 sm:p-6 max-w-6xl mx-auto" style={{ fontFamily: '"Nun
                   <Bdg color="green">Confirmada</Bdg><ChevronRight size={17} className={`shrink-0 text-[#7C6F9A] transition-transform ${isExpanded ? "rotate-90" : ""}`} />
                 </button>
                 {isExpanded && <div id={detailsId} className="border-t border-[#F5F3FF] px-4 pb-4 pt-3 animate-in fade-in slide-in-from-top-1 duration-200">
-                  <div className="grid sm:grid-cols-2 gap-x-5 gap-y-2 text-sm text-[#7C6F9A] font-medium"><p><span className="font-bold text-[#1C1135]">Terapeuta:</span> {apt.therapist}</p><p><span className="font-bold text-[#1C1135]">Niño:</span> {apt.child}</p><p><span className="font-bold text-[#1C1135]">Fecha:</span> {apt.date}</p><p><span className="font-bold text-[#1C1135]">Hora y duración:</span> {apt.time} · 45 min</p><p><span className="font-bold text-[#1C1135]">Modalidad:</span> {apt.type === "presencial" ? "Presencial" : "Virtual"}</p><p><span className="font-bold text-[#1C1135]">Referencia:</span> ASHA-{String(apt.id).slice(-6)}</p></div>
-                  {apt.type === "presencial" && (
-                    <div className="mt-3 rounded-xl p-3 flex items-start gap-2 border border-teal-100" style={{background:"#F0FDFA"}}>
-                      <span className="text-base">📍</span>
-                      <div>
-                        <p className="text-sm font-extrabold text-[#1C1135]">Integrakids Perú</p>
-                        <p className="text-xs text-[#7C6F9A] font-medium">Jr. Ricardo Treneman 252, Chorrillos 15064</p>
-                        <a href="https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064" target="_blank" rel="noopener noreferrer" className="text-xs font-extrabold hover:underline" style={{color:"#0D9488"}}>Ver en Google Maps →</a>
-                      </div>
-                    </div>
-                  )}
-                  <div className="mt-4 flex justify-end gap-2">
-                    <Btn size="sm" variant="outline" onClick={() => setCancelId(apt.id)}><X size={12} /> Cancelar</Btn>
-                    <Btn size="sm" variant="ghost" onClick={() => downloadPdf(`notas-${String(apt.id).slice(-6)}.txt`, `Notas de sesión · ASHA-${String(apt.id).slice(-6)}`, [`Terapeuta: ${apt.therapist}`, `Niño: ${apt.child}`, `Fecha: ${apt.date}`, `Hora: ${apt.time} · 45 min`, `Modalidad: ${apt.type === "presencial" ? "Presencial" : "Virtual"}`, `Especialidad: ${apt.specialty}`])}><Download size={12} /> Descargar notas</Btn>
-                    {apt.type === "presencial"
-                      ? <Btn size="sm" variant="cta" onClick={() => window.open("https://maps.google.com/?q=Jr.+Ricardo+Treneman+252,+Chorrillos+15064","_blank")}><MapPin size={12} /> Cómo llegar</Btn>
-                      : <Btn size="sm" variant="cta" onClick={() => go("session")}><Video size={12} /> Unirse</Btn>
-                    }
-                  </div>
+                  <FamilyAppointmentDetail id={apt.id} cancel={() => setCancelId(apt.id)} />
                 </div>}
               </div>;
             })}

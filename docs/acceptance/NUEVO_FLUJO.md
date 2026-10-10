@@ -66,3 +66,15 @@ cierre introductorio, versiones de plan y vigencia profesional, sedes/enlaceZoom
 Cerrar decisiones técnicas del mínimo al implementar; no inventar introducciones de pacientes
 existentes ni declarar integraciónZoom por un botón. Pagos y extensiones de soporte/reseñas
 no condicionan el núcleo.
+
+## Continuación V34 — agenda
+
+Disponibilidad y bloqueos persistidos, directorio de profesionales activos, introducción
+sin tratamiento y reserva/reprogramación CONFIRMADA de45 minutos. Resumen previo al POST.
+Habilitación por niño con introducción atendida/reporte/plan. ADR0014 y evidencia flow-v34.
+Mínimo técnico anunciado: lunes–sábado08:00–17:00, Lima, horizonte90 días.
+Sesión separada, V26 no se migra a introducciones ficticias; planes y acceso clínico del
+segundo profesional se completan a continuación.
+Tests196 aprobadas/25 omitidas/19 warnings; frontend267+25 aprobadas; tipos/check/build.
+API de QA8002 ahora usa ashakids_test_flujo_qa_20261010. Tests automáticos usan
+ashakids_test_flujo_v34_20261010: no apuntarlos a la QA persistente.

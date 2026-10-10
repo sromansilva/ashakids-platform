@@ -1,3 +1,25 @@
+## 2026-10-10 — V34 Agenda, disponibilidad e introducción
+
+- Objetivo: adaptar reserva introductoria y terapia al flujo maestro; base V33 45ee5ab,
+  rama codex/2do-intento. Fase de agenda implementada; objetivo general sigue abierto.
+- Archivos: modelos/schemas/services agenda; citas/pacientes/terapeutas; migración003 y
+  db_creation; BookingDialog, AvailabilityEditor, IntroductionStatus, directorio familiar,
+  reporte editable; tests clínicos y UI. ADR0014 y evidencia flow-v34.
+- Verificación nueva:196 backend aprobadas,25 omitidas,19 advertencias; repetición
+  posterior relevante17 aprobadas;267 componentes+25 rutas, tipos/check326/build.
+- Incidencias: bootstrap roles con search_path vacío, npm script incorrecto y dos
+  expectativas frontend V26 actualizadas. QA sintético reiniciado accidentalmente por
+  repetición de tests: ahora hay DB QA separada. Sin pérdida de trabajo/datos compartidos.
+- Entorno: PostgreSQL local6544. Tests ashakids_test_flujo_v34_20261010; QA
+  ashakids_test_flujo_qa_20261010. API8002 y Vite5175. No ejecutar pytest sobre DB QA.
+- Siguiente: plan del terapeuta con sesión origen/áreas/mundos/versiones; contexto
+  clínico autorizado para quien reserva/atiende, solo autor modifica reporte; adaptar
+  paneles/juegos demo; comprobar recorrido de tres roles+dos niños+segundo terapeuta.
+- Incidencia Git: primer commit rechazado por identidad ausente; no hubo publicación
+  en ese intento. Reintento con identidad noreply V33 solo para ese comando.
+- Publicar solo codex/2do-intento; dev/feat/piero-dev requiere nueva autorización.
+  Consultar Git para SHA final de V34; el cierre se registra después del push.
+
 # ASHAKids — Avance y relevos del equipo
 
 Actualizado: 2026-10-10. [Contexto](PROJECT_CONTEXT.md) · [Plan](IMPLEMENTATION_PLAN.md).

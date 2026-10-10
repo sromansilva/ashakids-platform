@@ -9,7 +9,7 @@ const persisted = new Set([
 ]);
 export function capabilityNotice(path: string) {
   if (path === '/admin/reportes') return 'Indicadores operativos ilustrativos, no calculados desde la BD. Los reportes clínicos reales se consultan y descargan desde Sesiones. Pagos no están incluidos en el alcance.';
-  if (path === '/terapeuta/config') return 'Identidad y perfil consultados en el servidor. Foto, disponibilidad, notificaciones, 2FA y solicitudes son demostrativos; no se guardan en la API.';
+  if (path === '/terapeuta/config') return 'Tu perfil y disponibilidad se consultan en el servidor. La disponibilidad se guarda al publicar. Foto, notificaciones, 2FA y solicitudes siguen siendo demostrativas.';
   if (persisted.has(path) || path.startsWith("/register") || path === "/onboarding" || path === "/forgot-password" || path === "/padre/consentimiento") return null;
   if (path.startsWith("/mundo-asha") || path === "/padre/recompensas") return "Mundo ASHA está en preparación. Los juegos actuales son prototipos; sus resultados no guardan avance por hijo ni validan pronunciación.";
   if (path === "/session" || path.startsWith("/session/")) return "Demostración de sesión virtual. Esta vista no conecta una videollamada ni registra una sesión clínica. Consulta las sesiones y reportes desde la agenda.";

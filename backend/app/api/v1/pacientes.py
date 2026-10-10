@@ -7,6 +7,7 @@ from app.models.clinica import Expediente, Tratamiento
 from app.models.perfiles import Paciente, Terapeuta
 from app.schemas.clinica import PacienteCrear, PacienteDatos, PacienteSalida, TratamientoCrear, TratamientoSalida
 from app.services import pacientes as service
+from app.services.citas import recorrido
 from app.services.acceso import es_familia, paciente_visible, pacientes_visibles, roles_de
 
 router = APIRouter(tags=["Pacientes y tratamientos"])
@@ -32,6 +33,11 @@ async def crear(data: PacienteCrear, db: DB, identity: Identity):
 @router.get("/pacientes/{key}", response_model=PacienteSalida)
 async def detalle(key: int, db: DB, identity: Identity):
     return await paciente_visible(db, identity, key)
+
+
+@router.get("/pacientes/{key}/recorrido")
+async def estado_recorrido(key: int, db: DB, identity: Identity):
+    return await recorrido(db, identity, key)
 
 
 @router.put("/pacientes/{key}", response_model=PacienteSalida)

@@ -87,8 +87,8 @@ async def test_cita_conflict_and_transitions(clinical):
     assert (await clients["p90002"].get(f"/api/v1/citas/{key}")).status_code == 404
     assert (await clients["t90002"].get("/api/v1/citas")).json() == []
     assert (await therapist.patch(f"/api/v1/citas/{key}/estado", json={"estado_reserva": "CONFIRMADA"})).status_code == 200
-    schedule = {k: v for k, v in payload.items() if k != "id_tratamiento"}
-    assert (await parent.put(f"/api/v1/citas/{key}", json=schedule)).json()["estado_reserva"] == "PENDIENTE"
+    schedule = {k: v for k, v in payload.items() if k not in {"id_tratamiento", "id_paciente", "id_terapeuta", "tipo_cita"}}
+    assert (await parent.put(f"/api/v1/citas/{key}", json=schedule)).json()["estado_reserva"] == "CONFIRMADA"
     assert (await parent.patch(f"/api/v1/citas/{key}/estado", json={"estado_reserva": "CANCELADA"})).status_code == 200
     assert (await parent.put(f"/api/v1/citas/{key}", json=schedule)).status_code == 409
     assert (await parent.post("/api/v1/citas", json=payload)).status_code == 201

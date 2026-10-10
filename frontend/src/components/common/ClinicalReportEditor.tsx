@@ -15,7 +15,11 @@ export const emptyReport: ReportData = {
 export function ClinicalReportEditor({ id, initial, onSaved }: {
   id: number; initial: ReportData; onSaved?: () => void;
 }) {
-  const [form, setForm] = useState(initial);
+  const [form, setForm] = useState<ReportData>(() => ({
+    observaciones_iniciales: initial.observaciones_iniciales,
+    objetivos_trabajados: initial.objetivos_trabajados,
+    nivel_ayuda: initial.nivel_ayuda, proximos_pasos: initial.proximos_pasos,
+  }));
   const formId = useId();
   const [dirty, setDirty] = useState(false);
   const save = useWrite(() => sessionsService.saveReport(id, form), () => { setDirty(false); onSaved?.(); });

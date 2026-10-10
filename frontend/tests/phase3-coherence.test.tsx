@@ -17,6 +17,7 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
     if (options.pending) return new Promise<Response>(() => {});
     if (options.error) return response({ detail: "Panel no disponible" }, 503);
     const path = new URL(String(input), "http://localhost").pathname.replace(/^\/api\/v1/, "");
+    if (path === "/terapeutas") return response([{ id_terapeuta: 1, nombres: "Profesional", apellidos: "Uno", especialidad: "Lenguaje" }]);
     if (path === "/pacientes") return response(options.children ?? [child, sibling]);
     if (path === "/citas") return response([future, completed.cita, { ...future, id_reserva: 3, estado_reserva: "CANCELADA" }, { ...future, id_reserva: 4, fecha_hora_fin: "2020-01-01T00:00:00Z" }]);
     if (path === "/sesiones") return response([completed, { ...completed, id_sesion: 2, asistencia: "NO_ASISTIO" }]);
@@ -76,14 +77,12 @@ it("A failed patient create keeps form values and never announces success", asyn
   expect(screen.getByLabelText("Nombres")).toHaveValue("Hijo sintético");
   expect(screen.queryByText("Hijo registrado en el servidor")).not.toBeInTheDocument();
 });
-it("Family professionals are treatment assignments, not a mock directory", async () => {
+it("Family directory displays active professionals before a treatment is assigned", async () => {
   api(); renderRoute("/padre/psicologos", "PADRE");
-  await screen.findByText("Tratamiento autorizado");
-  expect(screen.getByRole("button", { name: /^Reservar cita$/ })).toBeInTheDocument();
+  await screen.findByRole('heading', { name: 'Profesional Uno' });
+  expect(screen.getByRole("button", { name: 'Ver horarios y reservar' })).toBeInTheDocument();
   expect(screen.queryByText(/Dra. Ana Ruiz|Solicitud enviada|Pago/)).not.toBeInTheDocument();
-  fireEvent.change(screen.getByRole("combobox", { name: "Hijo o hija" }), { target: { value: "2" } });
-  await screen.findByText(/Este hijo todavía no tiene un tratamiento asignado/);
-  expect(screen.queryByRole("button", { name: /^Reservar cita$/ })).not.toBeInTheDocument();
+  expect(screen.queryByText('Tratamiento autorizado')).not.toBeInTheDocument();
 });
 it.each(["/padre/recorrido", "/padre/seguimiento"])("%s reuses the persisted tracking model", async path => {
   api(); renderRoute(path, "PADRE");

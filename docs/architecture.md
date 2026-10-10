@@ -2,6 +2,12 @@
 
 ## Flujo de datos
 
+Avance V34 en codex/2do-intento: ADR0014 agrega turnos semanales y bloqueos persistidos,
+Reserva introductoria con plan nullable y confirmación inmediata. Directorio y calendario
+consultan API; la habilitación de terapia verifica asistencia introductoria/reporte/plan
+por niño. Migración003 solo local, posterior a002; revisar RLS/grants antes de adopción.
+
+
 Avance2026-10-10 en codex/2do-intento: ADR0013 añade activación obligatoria de cuentas
 nuevas y alta familiar transaccional. /auth/me admite identidad pendiente; todas las
 dependencias de negocio exigen contraseña definitiva. React presenta activación antes de

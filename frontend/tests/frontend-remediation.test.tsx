@@ -173,7 +173,7 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
   });
   it('cuentas reales no reciben el aviso genérico y configuración distingue sus límites', () => {
     expect(capabilityNotice('/admin/cuentas')).toBeNull();
-    expect(capabilityNotice('/terapeuta/config')).toContain('Identidad y perfil');
+    expect(capabilityNotice('/terapeuta/config')).toContain('La disponibilidad se guarda al publicar');
     expect(capabilityNotice('/mundo-asha/juegos')).toContain('prototipos');
   });
 });
