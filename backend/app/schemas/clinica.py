@@ -50,6 +50,9 @@ class TratamientoCrear(Entrada):
 
 
 class TratamientoSalida(Salida):
+    id_sesion_origen: int | None = None
+    area: str | None = None
+    mundos_asignados: list[str] = Field(default_factory=list)
     id_paciente: int | None = None
     paciente_nombre: str | None = None
     terapeuta_nombre: str | None = None
@@ -125,6 +128,7 @@ class SesionCerrar(Entrada):
 
 
 class SesionSalida(Salida):
+    puede_editar: bool = False
     cita: CitaSalida | None = None
     reporte_disponible: bool = False
     id_sesion: int
@@ -146,3 +150,18 @@ class ReporteSalida(ReporteDatos, Salida):
     id_reporte_sesion: int
     id_sesion: int
     fecha_creacion: datetime
+
+
+class PlanCrear(Entrada):
+    nombre_tratamiento: str = Field(min_length=1, max_length=100)
+    descripcion: Nota | None = None
+    area: Literal["FLUIDEZ", "HABLA", "LENGUAJE"]
+    mundos_asignados: list[Literal["FLUIDEZ", "HABLA", "LENGUAJE"]] = Field(min_length=1, max_length=3)
+    sesiones_recomendadas: int = Field(ge=1, le=31)
+
+    @field_validator("mundos_asignados")
+    @classmethod
+    def sin_repeticiones(cls, value):
+        if len(set(value)) != len(value):
+            raise ValueError("Seleccione mundos distintos.")
+        return value

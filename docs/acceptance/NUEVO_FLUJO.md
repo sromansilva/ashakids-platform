@@ -78,3 +78,17 @@ segundo profesional se completan a continuación.
 Tests196 aprobadas/25 omitidas/19 warnings; frontend267+25 aprobadas; tipos/check/build.
 API de QA8002 ahora usa ashakids_test_flujo_qa_20261010. Tests automáticos usan
 ashakids_test_flujo_v34_20261010: no apuntarlos a la QA persistente.
+
+## V35: planes e historial autorizado (implementado localmente)
+
+- Profesional de atención iniciada/con reporte publica plan con área, mundos y sesiones
+  recomendadas; asesor no prescribe. Origen único, autor real y versiones conservadas.
+- Segundo terapeuta con cita futura/atención accede al contexto de ese niño, reporte/PDF
+  y versiones. Reporte ajeno no editable. Cancelar única cita futura revoca lectura clínica.
+- Introducción ASISTIO+reporte+plan profesional habilita terapia del niño; plan V26 sin
+  origen no sustituye introducción real. Hermano independiente y juegos no condicionantes.
+- Verificado SQL/API en DB local:199 pruebas backend y3 casos nuevos frontend. UI guardó
+  reporte/plan de Ana. Cierre/reingreso completo en navegador todavía pendiente por aviso
+  native IAB; confirmación de cierre trasladada a app para repetir. Evidencia flow-v35.
+- No declarar completo el maestro: faltan paneles, enlace externo y demo educativa V36,
+  además de demostración visual de tres roles, dos niños y continuidad profesional.

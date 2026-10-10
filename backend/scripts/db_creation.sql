@@ -130,6 +130,9 @@ CREATE TABLE public.tratamientos (
     fecha_inicio DATE,
     fecha_fin DATE,
     observaciones_cierre TEXT,
+    id_sesion_origen INTEGER UNIQUE,
+    area VARCHAR(20),
+    mundos_asignados JSONB NOT NULL DEFAULT '[]'::jsonb,
     CONSTRAINT fk_tratamientos_expediente
         FOREIGN KEY (id_expediente) REFERENCES public.expedientes(id_expediente)
         ON UPDATE CASCADE ON DELETE CASCADE,
@@ -526,3 +529,14 @@ CREATE TABLE public.bloqueos_agenda (
 CREATE INDEX bloqueos_terapeuta_inicio_idx ON public.bloqueos_agenda(id_terapeuta, inicio);
 ALTER TABLE public.turnos_semanales ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.bloqueos_agenda ENABLE ROW LEVEL SECURITY;
+
+-- Planes profesionales: FK diferida en orden DDL para evitar el ciclo plan/reserva/sesión.
+ALTER TABLE public.tratamientos ADD CONSTRAINT fk_plan_sesion_origen
+  FOREIGN KEY (id_sesion_origen) REFERENCES public.sesiones(id_sesion);
+ALTER TABLE public.tratamientos ADD CONSTRAINT ck_plan_profesional CHECK (id_sesion_origen IS NULL OR (
+  area IS NOT NULL AND area IN ('FLUIDEZ','HABLA','LENGUAJE') AND
+  sesiones_recomendadas IS NOT NULL AND sesiones_recomendadas BETWEEN 1 AND 31 AND
+  jsonb_typeof(mundos_asignados) = 'array' AND jsonb_array_length(mundos_asignados) BETWEEN 1 AND 3 AND
+  mundos_asignados <@ '["FLUIDEZ","HABLA","LENGUAJE"]'::jsonb));
+CREATE UNIQUE INDEX uq_plan_profesional_activo ON public.tratamientos(id_expediente)
+  WHERE estado_tratamiento = 'ACTIVO' AND id_sesion_origen IS NOT NULL;

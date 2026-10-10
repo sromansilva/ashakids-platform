@@ -23,7 +23,7 @@ async def crear_sesion(db, identity, data):
 
 async def sesion_visible(db, identity, key, *, escritura=False):
     row = await obtener(db, Sesion, key, lock=escritura)
-    cita = await cita_visible(db, identity, row.id_reserva)
+    cita = await cita_visible(db, identity, row.id_reserva, contexto=not escritura)
     if escritura:
         await exigir_profesional(db, identity, cita.id_terapeuta)
     return row, cita

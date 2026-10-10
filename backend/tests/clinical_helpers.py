@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import update
-from app.models.clinica import Reserva
+from app.models.clinica import Reserva, Expediente, Tratamiento
+from app.core import database
 from zoneinfo import ZoneInfo
 
 PATIENT = {"nombres_paciente": "Paciente", "apellidos_paciente": "Sintético",
@@ -12,11 +13,16 @@ async def journey(clients):
     response = await parent.post("/api/v1/pacientes", json=PATIENT)
     assert response.status_code == 201, response.text
     patient = response.json()
-    response = await admin.post("/api/v1/tratamientos", json={
-        "id_paciente": patient["id_paciente"], "id_terapeuta": 1,
-        "nombre_tratamiento": "Plan de prueba"})
-    assert response.status_code == 201, response.text
-    treatment = response.json()
+    # Datos V26 heredados SOLO en la fixture SQL local, sin prescripción del asesor.
+    async with database.async_session_factory.begin() as db:
+        record = Expediente(id_paciente=patient["id_paciente"])
+        db.add(record)
+        await db.flush()
+        old = Tratamiento(id_expediente=record.id_expediente, id_terapeuta=1,
+                          nombre_tratamiento="Plan de prueba", estado_tratamiento="ACTIVO")
+        db.add(old)
+        await db.flush()
+        treatment = {"id_tratamiento": old.id_tratamiento}
     start = (datetime.now(ZoneInfo("America/Lima")) + timedelta(days=1)).replace(hour=8, minute=0, second=0, microsecond=0)
     if start.weekday() == 6:
         start += timedelta(days=1)

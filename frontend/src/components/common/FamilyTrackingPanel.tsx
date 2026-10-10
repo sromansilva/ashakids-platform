@@ -1,3 +1,4 @@
+import { areaLabels } from "./SessionPlan";
 import { IntroductionStatus } from "./IntroductionStatus";
 import { useState } from "react";
 import { CalendarDays, CheckCircle2, Circle, FileText, RefreshCw, Users } from "lucide-react";
@@ -112,9 +113,9 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
           <Crd className="p-5 sm:p-6"><ReportSummary data={data} /><Btn variant="outline" className="mt-4" onClick={() => go("padre/reportes")}><FileText size={16} aria-hidden="true" /> Ver reportes de la familia</Btn></Crd>
         </div>
       </>}
-      {mode === "journey" && tab === "Tratamientos" && <section className="space-y-3"><h2 className="text-lg font-extrabold text-[#1C1135]">Tratamientos asignados</h2>
-        {!data.treatments.length && <p className="text-[#4B4264]">Todavía no hay un tratamiento asignado para este hijo.</p>}
-        {data.treatments.map(t => <Crd key={t.id_tratamiento} className="p-5 space-y-2"><h3 className="font-bold text-[#1C1135] break-words">{t.nombre_tratamiento}</h3><p className="text-[#4B4264] break-words">{t.terapeuta_nombre} · {t.estado_tratamiento}</p>{t.descripcion && <p className="text-[#4B4264] whitespace-pre-wrap break-words">{t.descripcion}</p>}{t.sesiones_recomendadas != null && <p className="text-sm text-[#4B4264]">Sesiones recomendadas: {t.sesiones_recomendadas}</p>}</Crd>)}
+      {mode === "journey" && tab === "Tratamientos" && <section className="space-y-3"><h2 className="text-lg font-extrabold text-[#1C1135]">Planes de trabajo</h2>
+        {!data.treatments.length && <p className="text-[#4B4264]">Todavía no hay un plan publicado para este hijo. Primero completa su introducción.</p>}
+        {data.treatments.map(t => <Crd key={t.id_tratamiento} className="p-5 space-y-2"><h3 className="font-bold text-[#1C1135] break-words">{t.nombre_tratamiento}</h3><p className="text-[#4B4264] break-words">{t.terapeuta_nombre} · {t.estado_tratamiento}</p>{t.descripcion && <p className="text-[#4B4264] whitespace-pre-wrap break-words">{t.descripcion}</p>}<p className="text-sm text-[#4B4264]">{t.area ? areaLabels[t.area] : "Plan anterior al nuevo flujo"} · Mes: {t.fecha_inicio ?? "Sin fecha"}{t.id_sesion_origen ? ` · Origen: sesión #${t.id_sesion_origen}` : ""}</p>{!!t.mundos_asignados?.length && <p className="text-sm text-[#4B4264]">Mundos: {t.mundos_asignados.map(w => areaLabels[w]).join(", ")}</p>}{t.sesiones_recomendadas != null && <p className="text-sm text-[#4B4264]">Sesiones recomendadas: {t.sesiones_recomendadas}</p>}</Crd>)}
       </section>}
       {mode === "journey" && (tab === "Sesiones" || tab === "Reportes") && <History key={`${patient.id_paciente}:${tab}`} data={data} reportsOnly={tab === "Reportes"} />}
       <p className="text-sm text-[#4B4264]">El número de sesiones no mide la mejoría clínica. Las recomendaciones para casa aparecen en el reporte del profesional.</p>

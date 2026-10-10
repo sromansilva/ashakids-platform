@@ -40,19 +40,5 @@ async def editar_paciente(db, identity, key, data=None):
 
 
 async def crear_tratamiento(db, identity, data):
-    # Asignar un profesional a una familia concede acceso: administración solamente.
     exigir(identity, "ADMIN")
-    patient = await obtener(db, Paciente, data.id_paciente, lock=True)
-    if not patient.activo:
-        raise HTTPException(409, "Paciente inactivo.")
-    await perfil_activo(db, Terapeuta, data.id_terapeuta)
-    record = await db.scalar(select(Expediente).where(Expediente.id_paciente == patient.id_paciente))
-    if record is None:
-        record = Expediente(id_paciente=patient.id_paciente)
-        db.add(record)
-        await db.flush()
-    row = Tratamiento(**data.model_dump(exclude={"id_paciente"}),
-                      id_expediente=record.id_expediente, estado_tratamiento="ACTIVO")
-    db.add(row)
-    await db.flush()
-    return row
+    raise HTTPException(410, "El profesional define el plan desde una sesión atendida con reporte.")

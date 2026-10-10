@@ -24,7 +24,14 @@ def citas_visibles(identity):
     return select(Reserva).where(or_(*clauses) if clauses else false())
 
 
-async def cita_visible(db, identity, key, *, lock=False):
+async def cita_visible(db, identity, key, *, lock=False, contexto=False):
+    if contexto:
+        own = await db.scalar(citas_visibles(identity).where(Reserva.id_reserva == key))
+        if own is not None:
+            return own
+        row = await obtener(db, Reserva, key)
+        await paciente_visible(db, identity, row.id_paciente)
+        return row
     stmt = citas_visibles(identity).where(Reserva.id_reserva == key)
     if lock:
         stmt = stmt.with_for_update().execution_options(populate_existing=True)
@@ -66,7 +73,8 @@ async def recorrido(db, identity, patient_id):
     pending = await db.scalar(select(Reserva.id_reserva).where(Reserva.id_paciente == patient_id,
         Reserva.tipo_cita == "INTRODUCTORIA", Reserva.estado_reserva.in_(["PENDIENTE", "CONFIRMADA"])).limit(1))
     plan = await db.scalar(select(Tratamiento.id_tratamiento).join(Expediente).where(
-        Expediente.id_paciente == patient_id, Tratamiento.estado_tratamiento == "ACTIVO").limit(1))
+        Expediente.id_paciente == patient_id, Tratamiento.estado_tratamiento == "ACTIVO",
+        Tratamiento.id_sesion_origen.is_not(None)).limit(1))
     return {"introduccion_atendida": completed is not None, "introduccion_pendiente": pending,
             "terapia_habilitada": completed is not None and plan is not None}
 
@@ -84,9 +92,12 @@ async def crear_cita(db, identity, data):
     patient = await paciente_visible(db, identity, patient_id)
     if not await es_familia(db, identity, patient):
         await exigir_profesional(db, identity, therapist_id)
-    if data.tipo_cita == "TERAPIA" and treatment.estado_tratamiento.upper() != "ACTIVO":
-        raise HTTPException(409, "Plan no activo.")
     await validar_horario(db, patient_id, therapist_id, data)
+    if data.tipo_cita == "TERAPIA":
+        # El bloqueo del niño serializa con la publicación/reemplazo de su plan.
+        treatment = await obtener(db, Tratamiento, data.id_tratamiento, lock=True)
+        if treatment.estado_tratamiento.upper() != "ACTIVO" or treatment.id_sesion_origen is None:
+            raise HTTPException(409, "Seleccione el plan profesional vigente del nuevo flujo.")
     state = await recorrido(db, identity, patient_id)
     if data.tipo_cita == "TERAPIA" and not state["terapia_habilitada"]:
         raise HTTPException(409, "Complete la introducción de este niño con asistencia, reporte y plan antes de reservar terapia.")

@@ -2,6 +2,7 @@
 from datetime import date, datetime
 
 from sqlalchemy import DateTime, ForeignKey, String, Text, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -29,6 +30,9 @@ class Tratamiento(Base):
     fecha_inicio: Mapped[date | None]
     fecha_fin: Mapped[date | None]
     observaciones_cierre: Mapped[str | None] = mapped_column(Text)
+    id_sesion_origen: Mapped[int | None] = mapped_column(ForeignKey("sesiones.id_sesion"), unique=True)
+    area: Mapped[str | None] = mapped_column(String(20))
+    mundos_asignados: Mapped[list[str]] = mapped_column(JSONB, default=list, server_default="[]")
 
 
 class Reserva(Base):

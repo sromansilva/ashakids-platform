@@ -141,7 +141,7 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
     expect(screen.getByRole('note')).toHaveTextContent('Prototipo ilustrativo');
     fireEvent.click(screen.getByRole('button', { name: /^Sesiones$/ }));
     expect(await screen.findByRole('button', { name: /Sesión #9/ })).toBeInTheDocument();
-    expect(calls.mock.calls.some(([url]) => String(url).includes('id_paciente=12'))).toBe(true);
+    expect(calls.mock.calls.some(([url]) => String(url).includes('paciente=12') && String(url).includes('contexto=true'))).toBe(true);
     expect(screen.queryByText('28 Jul 2026')).not.toBeInTheDocument();
   });
   it.each([['M', 'Masculino'], ['F', 'Femenino'], ['OTRO', 'Otro'], ['Otro', 'Otro'], ['Masculino', 'Masculino'], ['Femenino', 'Femenino'], ['desconocido', ''], ['', '']])('normaliza %s sin asignar un sexo distinto', (input, expected) => expect(normalizePatientSex(input)).toBe(expected));

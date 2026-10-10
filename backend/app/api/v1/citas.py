@@ -24,7 +24,7 @@ async def crear(data: CitaCrear, db: DB, identity: Identity):
 
 @router.get("/{key}", response_model=CitaSalida)
 async def detalle(key: int, db: DB, identity: Identity):
-    return (await presentacion.citas(db, [await service.cita_visible(db, identity, key)]))[0]
+    return (await presentacion.citas(db, [await service.cita_visible(db, identity, key, contexto=True)]))[0]
 
 
 @router.put("/{key}", response_model=CitaSalida)

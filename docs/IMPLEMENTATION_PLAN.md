@@ -4,6 +4,15 @@ Actualizado: 2026-10-09. Entrega confirmada: 2026-10-09 18:00 America/Lima. Pers
 Alcance: [contexto maestro](PROJECT_CONTEXT.md). Ejecución: [avance y relevos](IMPLEMENTATION_PROGRESS.md).
 La numeración es nueva y no equivale a las fases históricas de refactorización.
 
+## Estado del nuevo flujo,2026-10-10
+
+V33 registro/activación, V34 agenda/introducción y V35 planes/historial implementados
+solo en codex/2do-intento y PostgreSQL local. Profesional define plan desde atención;
+asignación administrativa anterior solo referencia histórica. Siguiente V36 paneles,
+enlace externo y demo educativa, después aceptación completa UI/PDF/reingreso. No
+integrar dev/feat/piero-dev ni Supabase sin aprobación posterior. Extensiones diferidas
+no se declaran terminadas para cerrar una fase.
+
 ## Prioridad vigente después de las auditorías16 y17
 
 **Actualización documental 2026-10-10:** el nuevo [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md)

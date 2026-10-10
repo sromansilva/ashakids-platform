@@ -13,7 +13,7 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
   useEffect(() => {
     if (report.isSuccess && !report.error) setInitialForm(current => current ?? report.data);
   }, [report.data, report.isSuccess, report.error]);
-  const canEdit = !readOnly && ['EN_CURSO', 'FINALIZADA'].includes(session.estado_sesion) && session.asistencia !== 'NO_ASISTIO';
+  const canEdit = !readOnly && session.puede_editar !== false && ['EN_CURSO', 'FINALIZADA'].includes(session.estado_sesion) && session.asistencia !== 'NO_ASISTIO';
   return <div className="space-y-5 p-6">
     <div><p className="mb-2 text-xs font-bold uppercase tracking-wider text-violet-600">Información general</p><div className="grid gap-3 sm:grid-cols-3">{[
       ['Paciente', session.cita.paciente_nombre], ['Fecha', new Date(session.cita.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima' })], ['Estado', session.estado_sesion],

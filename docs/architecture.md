@@ -2,6 +2,13 @@
 
 ## Flujo de datos
 
+V35 en codex/2do-intento: ADR0015 versiona Tratamiento desde Sesion con área y mundos
+JSONB acotados. No utiliza las tablas educativas legadas para almacenar progreso demo.
+Autorización clínica por vínculo de cita/atención; lectura de contexto explicitada por
+paciente, listas profesionales generales conservan ámbito propio. Solo autor publica plan.
+Migración004 añade columnas/índices sin políticas/grants ni cambio de datos V26.
+
+
 Avance V34 en codex/2do-intento: ADR0014 agrega turnos semanales y bloqueos persistidos,
 Reserva introductoria con plan nullable y confirmación inmediata. Directorio y calendario
 consultan API; la habilitación de terapia verifica asistencia introductoria/reporte/plan

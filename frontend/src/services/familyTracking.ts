@@ -16,10 +16,10 @@ export function summarizeFamily(patient: Patient, appointments: Appointment[], s
   const reportSessions = ownSessions.filter(s => s.reporte_disponible);
   const milestones = [
     { title: "Perfil del hijo", done: true, detail: "Perfil registrado" },
-    { title: "Tratamiento", done: treatments.length > 0, detail: treatments.length ? "Asignación registrada" : "Sin tratamiento asignado" },
-    { title: "Cita", done: ownAppointments.some(a => a.estado_reserva !== "CANCELADA"), detail: "Reserva no cancelada" },
-    { title: "Sesión realizada", done: attended.length > 0, detail: "Finalizada con asistencia" },
+    { title: "Introducción", done: attended.some(s => s.cita.tipo_cita === "INTRODUCTORIA"), detail: "Introducción finalizada con asistencia" },
     { title: "Reporte", done: reportSessions.length > 0, detail: "Disponible para la familia" },
+    { title: "Plan profesional", done: treatments.some(t => !!t.id_sesion_origen), detail: "Plan publicado desde una atención" },
+    { title: "Terapia", done: ownAppointments.some(a => a.tipo_cita === "TERAPIA" && a.estado_reserva !== "CANCELADA"), detail: "Sesión de terapia reservada" },
   ];
   return { appointments: ownAppointments, sessions: ownSessions, attended,
     thisMonth: attended.filter(s => month(Date.parse(s.fecha_hora_inicio_real ?? s.cita.fecha_hora_inicio)) === month(now)).length,

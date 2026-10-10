@@ -1,9 +1,9 @@
 """Autorización por recurso: el rol por sí solo no habilita datos de otra familia."""
 from fastapi import HTTPException
-from sqlalchemy import false, or_, select
+from sqlalchemy import false, or_, select, and_, func
 
 from app.models.auth import Usuario
-from app.models.clinica import Expediente, Tratamiento
+from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion
 from app.models.perfiles import Paciente, Terapeuta, Tutor
 
 
@@ -37,8 +37,15 @@ def pacientes_visibles(identity):
         clauses.append(Paciente.id_tutor.in_(select(Tutor.id_tutor).where(Tutor.id_usuario == user.id_usuario)))
     if "TERAPEUTA" in roles:
         assigned = (select(Expediente.id_paciente).join(Tratamiento)
-                    .join(Terapeuta).where(Terapeuta.id_usuario == user.id_usuario))
+                    .join(Terapeuta).where(Terapeuta.id_usuario == user.id_usuario,
+                                           Tratamiento.id_sesion_origen.is_(None)))
         clauses.append(Paciente.id_paciente.in_(assigned))
+        linked = (select(Reserva.id_paciente).join(Terapeuta).outerjoin(Sesion).where(
+            Terapeuta.id_usuario == user.id_usuario, or_(
+                and_(Reserva.estado_reserva == "CONFIRMADA", Reserva.fecha_hora_fin >= func.now()),
+                Sesion.estado_sesion == "EN_CURSO",
+                and_(Sesion.estado_sesion == "FINALIZADA", Sesion.asistencia == "ASISTIO"))))
+        clauses.append(Paciente.id_paciente.in_(linked))
     return select(Paciente).where(or_(*clauses) if clauses else false())
 
 

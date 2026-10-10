@@ -104,6 +104,12 @@ async def test_introduction_gate_requires_attendance_report_and_plan(clinical):
     assert (await therapist.post(f"/api/v1/sesiones/{session['id_sesion']}/cerrar", json={'asistencia': 'ASISTIO'})).status_code == 200
     assert (await parent.get(f'/api/v1/pacientes/{key}/recorrido')).json()['terapia_habilitada'] is False
     assert (await therapist.put(f"/api/v1/sesiones/{session['id_sesion']}/reporte", json={'objetivos_trabajados': 'Atención sintética'})).status_code == 200
+    assert (await parent.get(f'/api/v1/pacientes/{key}/recorrido')).json()['terapia_habilitada'] is False
+    plan = await therapist.post(f"/api/v1/sesiones/{session['id_sesion']}/plan", json={
+        'nombre_tratamiento': 'Lenguaje sintético', 'area': 'LENGUAJE',
+        'mundos_asignados': ['LENGUAJE'], 'sesiones_recomendadas': 4})
+    assert plan.status_code == 201, plan.text
+    therapy['id_tratamiento'] = plan.json()['id_tratamiento']
     assert (await parent.get(f'/api/v1/pacientes/{key}/recorrido')).json()['terapia_habilitada'] is True
     assert (await parent.post('/api/v1/citas', json=therapy)).status_code == 201
     assert (await clients['p90002'].get(f'/api/v1/pacientes/{key}/recorrido')).status_code == 404

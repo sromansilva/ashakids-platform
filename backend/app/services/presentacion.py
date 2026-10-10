@@ -5,6 +5,7 @@ from app.models.perfiles import Paciente, Terapeuta, Tutor
 from app.models.clinica import Expediente, Reserva, Sesion, ReporteSesion
 from app.schemas.clinica import CitaSalida, SesionSalida, TratamientoSalida
 from app.schemas.usuarios import UsuarioSalida
+from app.services.acceso import roles_de
 
 
 async def pagina(db, stmt, response, limit, offset):
@@ -47,7 +48,7 @@ async def tratamientos(db, rows):
         "terapeuta_nombre": therapists.get(r.id_terapeuta)}) for r in rows]
 
 
-async def sesiones(db, rows):
+async def sesiones(db, rows, identity):
     if not rows:
         return []
     appointments = await citas(db, (await db.scalars(select(Reserva).where(
@@ -55,8 +56,11 @@ async def sesiones(db, rows):
     by_id = {r.id_reserva: r for r in appointments}
     reports = set((await db.scalars(select(ReporteSesion.id_sesion).where(
         ReporteSesion.id_sesion.in_([r.id_sesion for r in rows])))).all())
+    own = set((await db.scalars(select(Terapeuta.id_terapeuta).where(
+        Terapeuta.id_usuario == identity[0].id_usuario))).all())
     return [SesionSalida.model_validate(r).model_copy(update={
-        "cita": by_id[r.id_reserva], "reporte_disponible": r.id_sesion in reports}) for r in rows]
+        "cita": by_id[r.id_reserva], "reporte_disponible": r.id_sesion in reports,
+        "puede_editar": "ADMIN" in roles_de(identity) or by_id[r.id_reserva].id_terapeuta in own}) for r in rows]
 
 
 async def usuarios(db, rows):

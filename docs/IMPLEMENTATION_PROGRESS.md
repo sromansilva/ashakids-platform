@@ -1,3 +1,31 @@
+## 2026-10-10 — V35 Planes profesionales e historial
+
+- Base V34/84078ae, codex/2do-intento. Sesión origen/área/mundos/sesiones recomendadas,
+  una publicación por atención, una versión profesional vigente y anteriores conservadas.
+  POST legado /tratamientos devuelve410 a ADMIN y403 a otros; UI asesor solo consulta.
+- Permisos: cita futura confirmada, sesión en curso o atención ASISTIO permiten preparar
+  el contexto del niño. Cancelar única cita futura revoca vínculo; atención propia conserva
+  lectura mientras cuenta activa. Reporte ajeno/PDF solo lectura, autor de sesión modifica.
+  Mensajes usa el mismo vínculo, conserva lectura de conversaciones archivadas.
+- Archivo principal services/planes.py; migración004; SessionPlan y permisos API
+  puede_editar; corregido filtro paciente/contexto de PatientClinicalHistory. ADR0015.
+- PostgreSQL local6544: misma DB test V34 con004 y QA separada con004. Tests nunca en QA.
+  API8002 proceso3552/session55369; Vite5175 sigue funcionando. Sin .env editado/Supabase.
+- Backend199 aprobadas,25 omitidas,19 deprecaciones;31 clínicas previas+3 nuevas. Frontend
+  270 casos UI finales aprobados; tipos/check328/build2.56s correctos.
+  Repetición relevante8 backend y knowledge check correctos antes del commit. No nueva auditoría académica.
+- UI t90001 creó/inició sesión1 de Ana, guardó4 campos y publicó plan1 Lenguaje/Habla.
+  Horario sintético se movió solo en QA a9oct08:00 para probar atención ya vencida.
+  Reporte/plan comprobados en AX. Confirmación nativa de Finalizar congeló IAB tab2;
+  recuperar con aviso al usuario, tab3 comparte sesión. Reemplazada por confirmación inline.
+  No afirmar cierre visual hasta repetir. API/SQL cierre y persistencia sí están probados.
+- Incidencias: un parche sin coincidencia fue rechazado sin cambios; expectativa frontend
+  id_paciente ignorada se corrigió a paciente/contexto; npm check inexistente corregido a
+  check:frontend. Identidad Git solo por comando, continuar versión publicada.
+- Siguiente V36: conectar panel/analíticas propios, mundos demo por niño/asignación,
+  enlace Zoom externo acordado y validación UI de continuidad/dos niños/reingreso/PDF.
+  Pendientes V26 requieren transición, sin inventar introducciones. Sin dev/feat/piero-dev.
+
 ## 2026-10-10 — V34 Agenda, disponibilidad e introducción
 
 - Objetivo: adaptar reserva introductoria y terapia al flujo maestro; base V33 45ee5ab,

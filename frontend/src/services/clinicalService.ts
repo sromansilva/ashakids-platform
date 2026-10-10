@@ -1,6 +1,6 @@
 import { apiClient, type QueryParams } from "@/api/client";
 import type { Account, AccountCreate, AccountEdit, Patient, PatientData, Treatment, TreatmentData,
-  Appointment, AppointmentTime, Session, Report, ReportData, Professional, Availability, AvailableSlot, JourneyState } from "@/types/clinical";
+  Appointment, AppointmentTime, Session, Report, ReportData, Professional, Availability, AvailableSlot, JourneyState, PlanData } from "@/types/clinical";
 
 const resource = <T>(path: string) => ({
   list: (params?: QueryParams, signal?: AbortSignal) => apiClient.page<T>(path, params, signal),
@@ -29,6 +29,8 @@ export const appointmentsService = {
   state: (id: number, estado_reserva: "CONFIRMADA" | "CANCELADA") => apiClient.patch<Appointment>(`/citas/${id}/estado`, { estado_reserva }),
 };
 export const sessionsService = {
+  plan: (id: number, signal?: AbortSignal) => apiClient.get<Treatment | null>(`/sesiones/${id}/plan`, { signal }),
+  publishPlan: (id: number, data: PlanData) => apiClient.post<Treatment>(`/sesiones/${id}/plan`, data),
   ...resource<Session>("/sesiones"),
   create: (id_reserva: number) => apiClient.post<Session>("/sesiones", { id_reserva }),
   start: (id: number) => apiClient.post<Session>(`/sesiones/${id}/iniciar`),

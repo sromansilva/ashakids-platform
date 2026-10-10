@@ -3,7 +3,7 @@ from fastapi import HTTPException
 from sqlalchemy import and_, or_, select, func
 from sqlalchemy.orm import aliased
 from app.models.auth import Usuario
-from app.models.clinica import Expediente, Tratamiento
+from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion
 from app.models.perfiles import Paciente, Tutor, Terapeuta
 from app.models.mensajeria import Conversacion, Mensaje
 from app.schemas.mensajeria import ConversacionSalida
@@ -23,17 +23,23 @@ def participantes(identity):
 
 def asignaciones():
     parent, professional = aliased(Usuario), aliased(Usuario)
+    linked = select(Reserva.id_reserva).outerjoin(Sesion).where(
+        Reserva.id_paciente == Paciente.id_paciente, Reserva.id_terapeuta == Terapeuta.id_terapeuta,
+        or_(and_(Reserva.estado_reserva == 'CONFIRMADA', Reserva.fecha_hora_fin >= func.now()),
+            Sesion.estado_sesion == 'EN_CURSO',
+            and_(Sesion.estado_sesion == 'FINALIZADA', Sesion.asistencia == 'ASISTIO'))
+    ).correlate(Paciente, Terapeuta).exists()
     return (select(Tutor.id_tutor, Terapeuta.id_terapeuta,
                    (parent.nombres + ' ' + parent.apellidos).label('tutor_nombre'),
                    (professional.nombres + ' ' + professional.apellidos).label('terapeuta_nombre'))
             .select_from(Tutor).join(Paciente, Paciente.id_tutor == Tutor.id_tutor)
-            .join(Expediente, Expediente.id_paciente == Paciente.id_paciente)
-            .join(Tratamiento, Tratamiento.id_expediente == Expediente.id_expediente)
-            .join(Terapeuta, Terapeuta.id_terapeuta == Tratamiento.id_terapeuta)
+            .outerjoin(Expediente, Expediente.id_paciente == Paciente.id_paciente)
+            .outerjoin(Tratamiento, Tratamiento.id_expediente == Expediente.id_expediente)
+            .join(Terapeuta, or_(linked, and_(Terapeuta.id_terapeuta == Tratamiento.id_terapeuta,
+                Tratamiento.id_sesion_origen.is_(None), func.upper(Tratamiento.estado_tratamiento) == 'ACTIVO')))
             .join(parent, parent.id_usuario == Tutor.id_usuario)
             .join(professional, professional.id_usuario == Terapeuta.id_usuario)
-            .where(Paciente.activo.is_(True), parent.activo.is_(True), professional.activo.is_(True),
-                   func.upper(Tratamiento.estado_tratamiento) == 'ACTIVO'))
+            .where(Paciente.activo.is_(True), parent.activo.is_(True), professional.activo.is_(True)))
 
 
 def contactos(identity):

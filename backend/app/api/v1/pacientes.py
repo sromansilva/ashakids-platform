@@ -52,10 +52,8 @@ async def desactivar(key: int, db: DB, identity: Identity):
 
 @router.get("/pacientes/{key}/tratamientos", response_model=list[TratamientoSalida])
 async def tratamientos(key: int, db: DB, identity: Identity, response: Response, limit: Limit = 20, offset: Offset = 0):
-    patient = await paciente_visible(db, identity, key)
+    await paciente_visible(db, identity, key)
     stmt = select(Tratamiento).join(Expediente).where(Expediente.id_paciente == key)
-    if "ADMIN" not in roles_de(identity) and not await es_familia(db, identity, patient):
-        stmt = stmt.join(Terapeuta).where(Terapeuta.id_usuario == identity[0].id_usuario)
     rows = await presentacion.pagina(db, stmt.order_by(Tratamiento.id_tratamiento), response, limit, offset)
     return await presentacion.tratamientos(db, rows)
 

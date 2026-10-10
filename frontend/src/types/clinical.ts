@@ -13,6 +13,7 @@ export interface TreatmentData {
   descripcion?: string | null; sesiones_recomendadas?: number | null; fecha_inicio?: string | null;
 }
 export interface Treatment extends TreatmentData {
+  id_sesion_origen?: number | null; area?: WorldArea | null; mundos_asignados?: WorldArea[];
   id_tratamiento: number; id_expediente: number; estado_tratamiento: string;
   paciente_nombre: string; terapeuta_nombre: string; fecha_fin: string | null;
 }
@@ -24,6 +25,7 @@ export interface Appointment extends AppointmentTime {
   estado_reserva: "PENDIENTE" | "CONFIRMADA" | "CANCELADA" | "COMPLETADA"; fecha_creacion: string;
 }
 export interface Session {
+  puede_editar?: boolean;
   id_sesion: number; id_reserva: number; cita: Appointment; reporte_disponible: boolean;
   fecha_hora_inicio_real: string | null; fecha_hora_fin_real: string | null;
   asistencia: "ASISTIO" | "NO_ASISTIO" | null; estado_sesion: "PROGRAMADA" | "EN_CURSO" | "FINALIZADA";
@@ -37,3 +39,5 @@ export interface Professional { id_terapeuta: number; nombres: string; apellidos
 export interface Availability { turnos: { dia: number; hora: number }[]; bloqueos: { inicio: string; fin: string }[] }
 export interface AvailableSlot { inicio: string; fin: string; disponible: boolean; motivo: string | null }
 export interface JourneyState { introduccion_atendida: boolean; introduccion_pendiente: number | null; terapia_habilitada: boolean }
+export type WorldArea = 'FLUIDEZ' | 'HABLA' | 'LENGUAJE';
+export interface PlanData { nombre_tratamiento: string; descripcion: string | null; area: WorldArea; mundos_asignados: WorldArea[]; sesiones_recomendadas: number }

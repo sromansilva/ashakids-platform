@@ -1,3 +1,15 @@
+## Avance V35 — planes e historial (2026-10-10)
+
+Rama codex/2do-intento, base V34/84078ae. Plan mensual del profesional desde sesión
+iniciada/con reporte, origen y mundos persistidos, versiones inmutables; asesor no
+prescribe. Contexto de lectura por cita futura/atención, edición por autor y relación
+legada V26 conservada explícitamente. ADR0015/migración004 únicamente local.
+199 backend aprobadas,25 omitidas,19 avisos;270 UI finales; tipos/check328/build.
+UI real guardó reporte y plan de Ana; cierre visual detenido por confirmación nativa
+IAB (no por API), sustituida por confirmación dentro de la app y pendiente de repetir.
+Sigue pendiente mostrar todo el flujo, paneles, enlace externo y juegos demo. No cierre
+del objetivo general ni adopción en Supabase/dev. Evidencia flow-v35.
+
 ## Avance V34 — agenda e introducción (2026-10-10)
 
 En codex/2do-intento, base V33 45ee5ab, disponibilidad semanal/bloqueos persistidos,
