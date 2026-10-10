@@ -116,16 +116,15 @@ it("Dashboard failure hides aggregates and can be retried", async () => {
   api(); fireEvent.click(screen.getByRole("button", { name: "Reintentar panel" }));
   await screen.findByText("Profesional Uno · CONFIRMADA");
 });
-it("Mundo ASHA uses the selected child ID and exposes proposals rather than fabricated mastery", async () => {
+it("Mundo ASHA consulta el plan del hijo seleccionado y no inventa asignación", async () => {
   api(); renderRoute("/mundo-asha", "PADRE");
   const select = await screen.findByRole("combobox", { name: "Hijo o hija" });
   fireEvent.change(select, { target: { value: "2" } });
-  expect(await screen.findByText("Avance educativo de Alex Dos: sin seguimiento conectado.")).toBeInTheDocument();
-  fireEvent.click(screen.getAllByRole("button", { name: /Ver propuesta de niveles/ })[1]);
-  await screen.findByRole("heading", { name: "Aventura de la R" });
-  expect(screen.getAllByText(/En preparación · Requiere revisión profesional/)).toHaveLength(8);
-  expect(screen.queryByText(/47|Racha|Asignada por tu terapeuta|Mateo/)).not.toBeInTheDocument();
-  expect(vi.mocked(fetch).mock.calls.every(([url]) => String(url).includes("/pacientes"))).toBe(true);
+  expect(await screen.findByRole('heading',{name:'Mundos pendientes para Alex'})).toBeInTheDocument();
+  expect(select).toHaveValue('2');
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes('/pacientes/2/tratamientos'))).toBe(true);
+  expect(screen.queryByRole('button',{name:/Jugar nivel/})).not.toBeInTheDocument();
+  expect(screen.queryByText(/Racha|Mateo/)).not.toBeInTheDocument();
 });
 it("Mundo ASHA has an honest empty family state", async () => {
   api({ children: [] }); renderRoute("/mundo-asha", "PADRE");

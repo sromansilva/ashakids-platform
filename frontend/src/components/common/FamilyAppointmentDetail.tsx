@@ -15,7 +15,7 @@ export function FamilyAppointmentDetail({ id, cancel }: { id: number; cancel: ()
     <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />
     {a && <><p className="font-bold text-[#1C1135]">{a.tipo_cita === 'INTRODUCTORIA' ? 'Consulta introductoria' : 'Sesión de terapia'} · {a.estado_reserva}</p>
       <p>{a.paciente_nombre} · {a.terapeuta_nombre}</p><p>{familyDate(a.fecha_hora_inicio)} · {familyTime(a.fecha_hora_inicio)}–{familyTime(a.fecha_hora_fin)} (Lima)</p>
-      <p>{a.modalidad === 'PRESENCIAL' ? a.localizacion || 'Coordina la dirección con el centro antes de asistir.' : 'Consulta con tu terapeuta el enlace de la reunión virtual.'}</p>
+      <p>{a.modalidad === 'PRESENCIAL' ? a.localizacion || 'Coordina la dirección con el centro antes de asistir.' : a.zoom_join_url ? 'El enlace compartido está en Reunión virtual.' : 'Consulta con tu terapeuta el enlace de la reunión virtual.'}</p>
       {['PENDIENTE', 'CONFIRMADA'].includes(a.estado_reserva) && !a.id_sesion && <div className="flex gap-2 flex-wrap"><Btn variant="outline" onClick={() => setReschedule(true)}>Reprogramar cita</Btn><Btn variant="outline" onClick={cancel}>Cancelar cita</Btn></div>}
       <SessionActions appointmentId={id} />
       {reschedule && <BookingDialog appointment={a} close={() => setReschedule(false)} />}

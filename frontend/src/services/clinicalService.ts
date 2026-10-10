@@ -23,6 +23,7 @@ export const treatmentsService = {
   create: (data: TreatmentData) => apiClient.post<Treatment>("/tratamientos", data),
 };
 export const appointmentsService = {
+  meeting: (id: number, zoom_join_url: string | null) => apiClient.put<Appointment>(`/citas/${id}/reunion`, { zoom_join_url }),
   ...resource<Appointment>("/citas"),
   create: (data: Omit<AppointmentTime, 'fecha_hora_fin'> & { fecha_hora_fin?: string; id_tratamiento?: number | null; id_paciente?: number; id_terapeuta?: number; tipo_cita?: 'INTRODUCTORIA' | 'TERAPIA' }) => apiClient.post<Appointment>("/citas", data),
   reschedule: (id: number, data: AppointmentTime) => apiClient.put<Appointment>(`/citas/${id}`, data),

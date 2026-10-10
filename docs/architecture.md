@@ -2,6 +2,12 @@
 
 ## Flujo de datos
 
+V36 en codex/2do-intento: ADR0016 distingue asignación educativa persistida del avance
+demo por cuenta/niño/mundo en sessionStorage. Tres niveles por mundo no miden resultados
+clínicos ni escriben tablas educativas. Campo existente Reserva.zoom_join_url se modifica
+mediante API propia con permisos y URL HTTPS Zoom validada; reunión y asistencia separadas.
+Paneles/analíticas derivan registros propios; no añade infraestructura ni migraciones.
+
 V35 en codex/2do-intento: ADR0015 versiona Tratamiento desde Sesion con área y mundos
 JSONB acotados. No utiliza las tablas educativas legadas para almacenar progreso demo.
 Autorización clínica por vínculo de cita/atención; lectura de contexto explicitada por

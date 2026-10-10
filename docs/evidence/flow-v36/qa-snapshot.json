@@ -1,0 +1,23 @@
+{
+  "environment": "isolated-local-qa",
+  "patient": 1,
+  "report_session": 1,
+  "report_fields_saved": [
+    "observaciones_iniciales",
+    "objetivos_trabajados",
+    "nivel_ayuda",
+    "proximos_pasos",
+    "id_reporte_sesion",
+    "id_sesion",
+    "fecha_creacion"
+  ],
+  "plan_ids": [
+    1
+  ],
+  "journey": {
+    "introduccion_atendida": false,
+    "introduccion_pendiente": 1,
+    "terapia_habilitada": false
+  },
+  "pdf_status": 200
+}

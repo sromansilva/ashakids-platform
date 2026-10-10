@@ -37,6 +37,10 @@ pasarelas, cobros, facturación ni desarrollo de pagos simulados.
 
 ## Registro, credenciales y rol Administrador / asesor
 
+Aclaración del usuario,2026-10-10: el asesor es una persona con acceso **ADMIN**.
+Usa el rol administrador existente para el registro y la orientación de este flujo;
+no se introduce un rol técnico adicional.
+
 1. Atiende a la familia en el establecimiento o por sus canales de atención.
 2. Registra al padre y uno o varios hijos a su cargo. Cantidad de hijos organiza el formulario;
    corresponde a los niños registrados, sin contador manual separado.

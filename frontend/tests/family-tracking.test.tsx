@@ -102,7 +102,7 @@ it("Keeps server failures visible and retries a read", async () => {
 it("Journey shows real treatments and sessions in its sections", async () => {
   api(); renderRoute("/padre/camino", "PADRE");
   await screen.findByText("Recomendación persistente");
-  fireEvent.click(screen.getByRole("button", { name: /^Tratamientos$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Planes$/ }));
   expect(await screen.findByText("Plan persistente")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: /^Sesiones$/ }));
   expect(await screen.findByText(/Sesión #1 ·/)).toBeInTheDocument();

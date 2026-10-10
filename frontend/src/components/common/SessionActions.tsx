@@ -7,6 +7,7 @@ import { ClinicalReportEditor, reportLabels as labels, emptyReport } from './Cli
 import { Btn } from "./Btn";
 import { RemoteFeedback } from "./RemoteFeedback";
 import { ReportDownload } from "./ReportDownload";
+import { VirtualMeeting } from "./VirtualMeeting";
 import { SessionPlan } from "./SessionPlan";
 export function SessionActions({ appointmentId }: { appointmentId: number }) {
   const [closing, setClosing] = useState<'ASISTIO' | 'NO_ASISTIO' | null>(null);
@@ -26,7 +27,8 @@ export function SessionActions({ appointmentId }: { appointmentId: number }) {
   const canEdit = ownsSession && !!s && ['EN_CURSO', 'FINALIZADA'].includes(s.estado_sesion) && s.asistencia !== 'NO_ASISTIO';
   return <section className="mt-4 border-t border-[#E8E5F4] pt-4 space-y-3"><h3 className="font-extrabold text-[#1C1135]">Sesión y reporte clínico</h3>
     <RemoteFeedback pending={appointment.isPending || (!!id && session.isPending)} error={appointment.error || session.error || create.error || start.error || close.error} retry={() => { void appointment.refetch(); if (id) void session.refetch(); }} />
-    {!id && appointment.isSuccess && <><p className="text-sm text-[#7C6F9A]">Sin sesión registrada.</p>{professional && <Btn disabled={busy || appointment.data.estado_reserva !== 'CONFIRMADA'} onClick={() => void create.submit(undefined)}>Registrar sesión</Btn>}</>}
+    {appointment.data && !appointment.error && <VirtualMeeting key={appointmentId} appointment={appointment.data} professional={professional}/> }
+    {!id && appointment.isSuccess && <><p className="text-sm text-[#7C6F9A]">Sin sesión registrada.</p>{professional && appointment.data.puede_editar !== false && <Btn disabled={busy || appointment.data.estado_reserva !== 'CONFIRMADA'} onClick={() => void create.submit(undefined)}>Registrar sesión</Btn>}</>}
     {s && <><p className="text-sm font-bold">Sesión #{id} · {s.estado_sesion} · {s.asistencia ?? 'Asistencia pendiente'}</p><div className="flex gap-2 flex-wrap">
       {ownsSession && s.estado_sesion === 'PROGRAMADA' && <><Btn disabled={busy || now < Date.parse(s.cita.fecha_hora_inicio)} onClick={() => void start.submit(undefined)}>Iniciar sesión clínica</Btn><Btn variant="outline" disabled={busy || now < Date.parse(s.cita.fecha_hora_fin)} onClick={() => setClosing('NO_ASISTIO')}>Registrar inasistencia</Btn></>}
       {ownsSession && s.estado_sesion === 'EN_CURSO' && <Btn disabled={busy} onClick={() => setClosing('ASISTIO')}>Finalizar sesión</Btn>}

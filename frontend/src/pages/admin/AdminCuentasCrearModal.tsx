@@ -75,7 +75,7 @@ export function AdminCuentasCrearModal({
           </button>
         </div>
 
-        <form onSubmit={e => { e.preventDefault(); if (!submitting) onCrear(); }} className="px-6 py-5 flex flex-col gap-3.5">
+        <form autoComplete="off" onSubmit={e => { e.preventDefault(); if (!submitting) onCrear(); }} className="px-6 py-5 flex flex-col gap-3.5">
           {errorBanner && (
             <div role="alert" className="bg-red-50 text-red-800 border border-red-200 text-xs font-bold p-3 rounded-xl flex items-center gap-2">
               <AlertTriangle size={15} className="text-red-600 flex-shrink-0" />
@@ -88,7 +88,7 @@ export function AdminCuentasCrearModal({
             <div>
               <label htmlFor="account-names" className="block text-xs font-extrabold text-slate-700 mb-1">Nombres *</label>
               <input
-                id="account-names" required maxLength={60} disabled={submitting}
+                id="account-names" autoComplete="given-name" required maxLength={60} disabled={submitting}
                 value={tab === "PADRE" ? formPadre.nombres : formTerapeuta.nombres}
                 onChange={(e) =>
                   tab === "PADRE"
@@ -146,7 +146,7 @@ export function AdminCuentasCrearModal({
               pattern="[0-9]{8}"
               minLength={8}
               maxLength={8}
-              autoComplete="off"
+              autoComplete="new-password"
               value={tab === "PADRE" ? formPadre.password : formTerapeuta.password}
               onChange={(e) =>
                 tab === "PADRE"

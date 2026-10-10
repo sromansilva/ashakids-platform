@@ -6,10 +6,12 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+V36 paneles/agenda por niño, enlace externo y mundos demo implementados y mostrados
+en navegador local con dos niños y continuidad profesional. Evidencia flow-v36 y ADR0016.
 V33 registro/activación, V34 agenda/introducción y V35 planes/historial implementados
 solo en codex/2do-intento y PostgreSQL local. Profesional define plan desde atención;
-asignación administrativa anterior solo referencia histórica. Siguiente V36 paneles,
-enlace externo y demo educativa, después aceptación completa UI/PDF/reingreso. No
+asignación administrativa anterior solo referencia histórica. Núcleo demostrado en
+desktop/móvil, PDF, reingreso y demo completa; nueva contraseña enviada solo por API. No
 integrar dev/feat/piero-dev ni Supabase sin aprobación posterior. Extensiones diferidas
 no se declaran terminadas para cerrar una fase.
 
@@ -36,7 +38,8 @@ Conservar React -> HTTP/JSON -> FastAPI -> SQLAlchemy/asyncpg -> PostgreSQL.
 Frontend: vistas/hooks -> services -> api/client.ts. Backend: api/schemas -> services -> models/core.
 Autenticación propia, autorización por recurso y transacciones antes de responder éxito.
 No conectar React a PostgreSQL ni introducir Supabase Auth. La tabla reservas se expone como citas.
-ADMIN asigna tratamiento; familia consulta sus hijos; profesional consulta sus asignados.
+En el flujo vigente, asesor ADMIN registra familias; el profesional publica planes desde
+sus atenciones. Familia consulta sus hijos y profesional consulta el contexto autorizado.
 
 Reutilizar primero los contratos existentes. Para cambiar tablas, acordar contrato y migración
 con backend; no ejecutar DDL al arrancar. Seguir architecture.md y ADR 0002/0003.

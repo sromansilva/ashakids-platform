@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
 import { appointmentsService, patientsService, sessionsService, treatmentsService, usersService } from '@/services/clinicalService';
 import { apiClient, invalidateIdentityRequests } from '@/api/client';
@@ -74,9 +74,10 @@ it('Books a confirmed therapy slot with a professional selected separately from 
     if (path === '/citas' && init.method === 'POST') return response(appointment, 201);
   });
   renderRoute('/padre/agenda', 'PADRE');
-  fireEvent.click((await screen.findAllByRole('button', { name: /Solicitar cita/ }))[0]);
-  await screen.findByRole('option', { name: 'Paciente Aislado' });
-  fireEvent.change(screen.getByLabelText('Hijo o hija'), { target: { value: '12' } });
+  fireEvent.click((await screen.findAllByRole('button', { name: /Reservar cita/ }))[0]);
+  const booking = within(screen.getByRole('dialog'));
+  await booking.findByRole('option', { name: 'Paciente Aislado' });
+  fireEvent.change(booking.getByLabelText('Hijo o hija'), { target: { value: '12' } });
   await screen.findByRole('option', { name: 'Lenguaje' });
   fireEvent.change(screen.getByLabelText('Profesional'), { target: { value: '4' } });
   fireEvent.change(screen.getByLabelText('Día'), { target: { value: day } });

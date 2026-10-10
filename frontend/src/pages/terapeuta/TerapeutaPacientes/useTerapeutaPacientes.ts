@@ -18,9 +18,9 @@ export function useTerapeutaPacientes({ go }: { go: (v: View) => void }) {
     name: `${p.nombres_paciente} ${p.apellidos_paciente}`,
     age: Math.max(0, Math.floor((Date.now() - Date.parse(p.fecha_nacimiento)) / 31557600000)),
     parent: (p as { tutor_nombre?: string }).tutor_nombre ?? "Tutor registrado",
-    sessions: sessions.error || !sessions.data ? 'No disponible' : sessions.data.filter(s => s.cita.id_paciente === p.id_paciente).length,
+    sessions: sessions.error || !sessions.data ? 'No disponible' : sessions.data.filter(s => s.cita.id_paciente === p.id_paciente && s.estado_sesion === "FINALIZADA" && s.asistencia === "ASISTIO").length,
     progress: 0,
-    dx: "Paciente asignado",
+    dx: "Contexto clínico autorizado",
     nextSession: appointments.error || !appointments.data ? 'No disponible' : (() => {
       const next = appointments.data.filter(a => a.id_paciente === p.id_paciente && ['PENDIENTE', 'CONFIRMADA'].includes(a.estado_reserva) && Date.parse(a.fecha_hora_inicio) >= Date.now()).sort((a, b) => Date.parse(a.fecha_hora_inicio) - Date.parse(b.fecha_hora_inicio))[0];
       return next ? new Date(next.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima' }) : 'Por programar';

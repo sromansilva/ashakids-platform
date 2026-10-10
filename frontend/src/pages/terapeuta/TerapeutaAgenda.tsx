@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 import type { AppointmentRequest } from "@/types/AppointmentRequest";
 import { Calendar, ChevronLeft, ChevronRight, Video, X, Clock, Check } from "lucide-react";
 import { B } from "@/theme/brand/B";
@@ -57,6 +57,24 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
   const [selectedEvent, setSelectedEvent] = useState<null | { id: number; patient: string; time: string; date: string; type: string }>(null);
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason]       = useState("");
+  const detailDialog = useRef<HTMLDivElement>(null);
+  const cancelDialog = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!selectedEvent) return;
+    const previous = document.activeElement as HTMLElement | null;
+    (showCancelModal ? cancelDialog : detailDialog).current?.querySelector<HTMLElement>('button')?.focus();
+    return () => previous?.focus();
+  }, [selectedEvent?.id, showCancelModal]);
+  function dialogKeys(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key === 'Escape') { if (showCancelModal) setShowCancelModal(false); else setSelectedEvent(null); return; }
+    if (event.key !== 'Tab') return;
+    const controls = Array.from(event.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href]'));
+    const first = controls[0], last = controls[controls.length - 1];
+    if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+    else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+  }
+  const selectedAppointment = query.error ? undefined : query.data?.find(a => a.id_reserva === selectedEvent?.id);
+  const canCancel = !!selectedAppointment && ['PENDIENTE','CONFIRMADA'].includes(selectedAppointment.estado_reserva) && !selectedAppointment.id_sesion;
   const update = useWrite(({ id, state }: { id: number; state: 'CONFIRMADA' | 'CANCELADA' }) => appointmentsService.state(id, state), () => {
     setRequestNotice('Estado actualizado en el servidor.');
     void query.refetch();
@@ -64,7 +82,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
   });
 
   const pendingRequests  = incomingRequests.filter(r => r.status === "por confirmar");
-  const confirmedApts    = incomingRequests.filter(r => r.status === "confirmada");
+  const confirmedApts    = incomingRequests.filter(r => ["confirmada", "completada"].includes(r.status));
 
   const hours = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00"];
 
@@ -154,8 +172,8 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
         <Crd className="p-4 mb-5 border-2 border-orange-100" style={{ background: "#FFFBEB" }}>
           <div className="flex items-center justify-between gap-3 mb-3">
             <div>
-              <h3 className="font-extrabold text-[#1C1135]">Solicitudes de cita</h3>
-              <p className="text-xs text-[#7C6F9A] font-medium">Revisa y confirma las solicitudes de los representantes.</p>
+              <h3 className="font-extrabold text-[#1C1135]">Citas pendientes del flujo anterior</h3>
+              <p className="text-xs text-[#7C6F9A] font-medium">Estas citas anteriores requieren confirmación. Las reservas nuevas se confirman al guardar.</p>
             </div>
             <Bdg color="orange">{pendingRequests.length} pendientes</Bdg>
           </div>
@@ -227,14 +245,14 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                       return (
                         <div key={di} className="relative border-r last:border-0 p-1" style={{ borderColor: B.border }}>
                           {apt && (
-                            <div
-                              className="rounded-xl px-2 py-1.5 cursor-pointer hover:brightness-95 transition-all"
+                            <button type="button"
+                              className="w-full text-left rounded-xl px-2 py-1.5 cursor-pointer hover:brightness-95 transition-all"
                               style={{ background: `${col}20`, borderLeft: `3px solid ${col}` }}
                               onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}
                             >
                               <p className="text-[11px] font-extrabold truncate" style={{ color: col }}>{apt.child.split(" ")[0]}</p>
                               <p className="text-[10px] font-medium truncate" style={{ color: col + "aa" }}>{apt.time}</p>
-                            </div>
+                            </button>
                           )}
                         </div>
                       );
@@ -278,7 +296,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                       <Btn size="sm" variant="outline" onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}>
                         Ver detalle
                       </Btn>
-                      <Btn size="sm" variant="primary" onClick={() => go("session")}>
+                      <Btn size="sm" variant="primary" onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}>
                         <Video size={12} /> Entrar
                       </Btn>
                     </div>
@@ -292,12 +310,12 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
 
       {/* ── Event detail modal ── */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setSelectedEvent(null)} />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+          <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedEvent(null)} />
+          <div ref={detailDialog} role="dialog" aria-modal="true" aria-label="Detalle de la atención" onKeyDown={showCancelModal ? undefined : dialogKeys} className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E5F4]">
-              <h3 className="font-extrabold text-[#1C1135]">Sesión programada</h3>
-              <button onClick={() => setSelectedEvent(null)} className="p-1.5 rounded-xl hover:bg-gray-100"><X size={16} /></button>
+              <h3 className="font-extrabold text-[#1C1135]">Detalle de la atención</h3>
+              <button onClick={() => setSelectedEvent(null)} aria-label="Cerrar detalle" className="p-1.5 rounded-xl hover:bg-gray-100"><X size={16} /></button>
             </div>
             <div className="p-6">
               <div className="rounded-2xl p-4 mb-5" style={{ background: "#F5F0FF" }}>
@@ -310,19 +328,12 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
               </div>
               <div className="flex flex-col gap-2">
                 <SessionActions appointmentId={selectedEvent.id} />
-                <button
-                  onClick={() => { setSelectedEvent(null); go("session"); }}
-                  className="w-full py-3 rounded-2xl font-extrabold text-white text-sm transition-all"
-                  style={{ background: "#7C3AED" }}
-                >
-                  Ir a reunión
-                </button>
-                <button
+                {canCancel && <button
                   onClick={() => setShowCancelModal(true)}
                   className="w-full py-3 rounded-2xl font-extrabold text-sm border-2 border-red-200 text-red-600 hover:bg-red-50 transition-all"
                 >
                   Cancelar sesión
-                </button>
+                </button>}
               </div>
             </div>
           </div>
@@ -330,13 +341,13 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
       )}
 
       {/* ── Cancel modal ── */}
-      {showCancelModal && selectedEvent && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+      {showCancelModal && selectedEvent && canCancel && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-          <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
+          <div ref={cancelDialog} role="dialog" aria-modal="true" aria-label="Cancelar cita" onKeyDown={dialogKeys} className="relative bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E5F4]">
               <h3 className="font-extrabold text-[#1C1135]">Motivo de cancelación</h3>
-              <button onClick={() => setShowCancelModal(false)} className="p-1.5 rounded-xl hover:bg-gray-100"><X size={16} /></button>
+              <button onClick={() => setShowCancelModal(false)} aria-label="Cerrar detalle" className="p-1.5 rounded-xl hover:bg-gray-100"><X size={16} /></button>
             </div>
             <div className="p-6">
               <p className="text-sm text-[#7C6F9A] mb-3">Describe el motivo para cancelar la sesión con {selectedEvent.patient}.</p>

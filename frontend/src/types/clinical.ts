@@ -19,6 +19,7 @@ export interface Treatment extends TreatmentData {
 }
 export interface AppointmentTime { fecha_hora_inicio: string; fecha_hora_fin: string; modalidad: "VIRTUAL" | "PRESENCIAL"; localizacion: string | null }
 export interface Appointment extends AppointmentTime {
+  puede_editar?: boolean; zoom_join_url?: string | null;
   id_reserva: number; id_paciente: number; id_terapeuta: number; id_tratamiento: number | null;
   tipo_cita?: "INTRODUCTORIA" | "TERAPIA";
   paciente_nombre: string; terapeuta_nombre: string; id_sesion: number | null;

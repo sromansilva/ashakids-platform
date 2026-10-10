@@ -3,7 +3,7 @@ import { useTerapeutaPacientes } from "@/pages/terapeuta/TerapeutaPacientes/useT
 import { TerapeutaPacientesObjetivos } from "@/pages/terapeuta/TerapeutaPacientes/TerapeutaPacientesObjetivos";
 import { PatientClinicalHistory } from './PatientClinicalHistory';
 import { RemoteFeedback } from '@/components/common/RemoteFeedback';
-import { ChevronLeft, Video, Eye, Edit, UserPlus } from "lucide-react";
+import { ChevronLeft, Video, Eye, Edit } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Btn } from "@/components/common/Btn";
 import { Crd } from "@/components/common/Crd";
@@ -75,50 +75,11 @@ if (selected !== null && patientsList.some(p => p.id === selected)) {
         </div>
 
         {/* Tab content */}
-        {!['sesiones', 'reportes'].includes(expTab) && <p role="note" className="mb-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">Prototipo ilustrativo: progreso, evolución, objetivos, actividades y notas no proceden del expediente clínico ni se guardan en el servidor. Las pestañas Sesiones y Reportes contienen registros reales.</p>}
-        {expTab === "resumen" && (
-          <div className="grid sm:grid-cols-2 gap-5">
-            <Crd className="p-5">
-              <h4 className="font-extrabold text-[#1C1135] mb-4">Progreso por área</h4>
-              {[
-                { label: "Comunicación", val: 82 },
-                { label: "Lenguaje",     val: p.progress },
-                { label: "Motricidad",   val: 65 },
-                { label: "Atención",     val: 70 },
-              ].map(area => (
-                <div key={area.label} className="mb-3">
-                  <div className="flex justify-between text-xs mb-1">
-                    <span className="text-[#7C6F9A] font-medium">{area.label}</span>
-                    <span className="font-extrabold text-[#1C1135]">{area.val}%</span>
-                  </div>
-                  <div className="h-2 rounded-full" style={{ background: B.violetLight }}>
-                    <div className="h-full rounded-full transition-all" style={{ width: `${area.val}%`, backgroundColor: p.color }} />
-                  </div>
-                </div>
-              ))}
-            </Crd>
-            <Crd className="p-5">
-              <h4 className="font-extrabold text-[#1C1135] mb-4">Última nota del terapeuta</h4>
-              <div className="rounded-2xl p-4 mb-4" style={{ background: B.violetLight }}>
-                <p className="text-sm text-[#1C1135] leading-relaxed font-medium">{p.nota}</p>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full ml-2 inline-block mt-1"
-                  style={{ background: "#F5F0FF", color: "#7C3AED" }}>
-                  Resumen compartido
-                </span>
-                <p className="text-xs text-[#9E95B7] mt-2 font-medium">— Dra. Ana Ruiz · 28 Jul 2026</p>
-              </div>
-              <Btn variant="secondary" size="sm"><Edit size={12} /> Editar nota</Btn>
-            </Crd>
-          </div>
-        )}
+        {!['resumen', 'sesiones', 'reportes'].includes(expTab) && <p role="note" className="mb-4 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">Prototipo ilustrativo: progreso, evolución, objetivos, actividades y notas no proceden del expediente clínico ni se guardan en el servidor. Las pestañas Sesiones y Reportes contienen registros reales.</p>}
+        {expTab === "resumen" && <div className="space-y-3"><h3 className="font-extrabold text-lg">Reportes y planes del paciente</h3><p className="text-sm text-[#4B4264]">Consulta el reporte y el plan de cada atención. La pestaña Sesiones permite preparar o continuar tu próxima atención.</p><PatientClinicalHistory patientId={p.id} reportsOnly/></div>}
 
-        {expTab === "sesiones" && (
-          <PatientClinicalHistory key={p.id} patientId={p.id} />
-        )}
-
-        {expTab === "objetivos" && (
-          <TerapeutaPacientesObjetivos setShowAddObj={setShowAddObj} objectives={objectives} setObjectives={setObjectives} showAddObj={showAddObj} newObj={newObj} setNewObj={setNewObj} />
-        )}
+        {expTab === "sesiones" && <PatientClinicalHistory key={p.id} patientId={p.id} />}
+        {expTab === "objetivos" && <TerapeutaPacientesObjetivos setShowAddObj={setShowAddObj} objectives={objectives} setObjectives={setObjectives} showAddObj={showAddObj} newObj={newObj} setNewObj={setNewObj} />}
 
         {expTab === "historial" && (
           <div>
@@ -211,11 +172,10 @@ if (selected !== null && patientsList.some(p => p.id === selected)) {
         </div>
         <div className="flex items-center gap-3">
           <Inp placeholder="Buscar paciente…" value={search} onChange={v => setSearch(v)} />
-          <Btn variant="primary" size="sm"><UserPlus size={13} /> Nuevo paciente</Btn>
         </div>
       </div>
       <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />
-      {query.isSuccess && !query.error && !filtered.length && <Crd className="p-5 text-sm text-[#7C6F9A]">Sin pacientes asignados que coincidan con la búsqueda.</Crd>}
+      {query.isSuccess && !query.error && !filtered.length && <Crd className="p-5 text-sm text-[#7C6F9A]">Sin pacientes autorizados que coincidan con la búsqueda.</Crd>}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {filtered.map((p, i) => (
           <Crd key={p.name} className="overflow-hidden">

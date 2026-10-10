@@ -1,13 +1,20 @@
 # Punto de continuidad del equipo
 
-Continuamos en `codex/2do-intento`, desde `V35_Implementacion_Planes_Historial`.
-Usen el último SHA publicado de esa rama; `dev` todavía conserva V32.
+Equipo: continuamos en `codex/2do-intento`. El punto de partida fue vuestro commit
+`V32/ebb8632`; los avances llegan a `V36_Adaptacion_Paneles_MundoASHA`.
+Hagan fetch y usen el último SHA publicado de esa rama; `dev` todavía conserva V32.
+
+El asesor es una persona con acceso **ADMIN**, como aclaró el usuario; se usa el rol
+administrador existente para este flujo, sin crear otro rol técnico.
 
 Está listo el registro familiar, la activación obligatoria, la disponibilidad y
-la reserva introductoria por niño, el plan profesional y el historial autorizado. La maqueta se está adaptando al nuevo flujo
-a nuestro estilo. Queda adaptar paneles, el enlace externo de reunión y los juegos de demostración,
-y comprobar visualmente el recorrido completo con dos niños y otro terapeuta.
+la reserva introductoria por niño, el plan profesional y el historial autorizado.
+La maqueta ya conecta paneles, agenda por niño, enlace externo y juegos demo al nuevo
+flujo, a nuestro estilo. El núcleo se mostró funcionando localmente con dos niños,
+otro terapeuta, cierre de atención, reingreso, PDF y práctica hasta completar/repetir
+un mundo. Asignación profesional guardada; progreso del juego solo demo en la pestaña.
 
 No migrar ni probar escrituras en Supabase. Consultar `IMPLEMENTATION_PROGRESS.md`,
 `FLUJO_MAESTRO_ACTUALIZADO.md` y `acceptance/NUEVO_FLUJO.md` antes de continuar.
-El trabajo termina cuando el nuevo flujo sea visible y funcione de principio a fin.
+Siguiente paso del equipo: reproducir este corte y coordinar su adopción. Integrar
+en dev/piero-dev o migrar la BD compartida requiere nueva autorización.

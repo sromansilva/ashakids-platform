@@ -1,3 +1,45 @@
+## 2026-10-10 — V36 Paneles, agenda por niño, mundos y reunión externa
+
+- Base V35/7faa66682fc1b03d57b23aa96f196a35dddfcc31; solo codex/2do-intento.
+  Núcleo local mostrado y verificado; publicación no autoriza dev/piero-dev ni Supabase.
+- Mundos asignados por plan persistido, tres niveles demo por mundo, pistas/quiz/secuencia,
+  desbloqueo/repetición/final, sessionStorage por cuenta/niño/mundo. Sin métricas clínicas,
+  escritura educativa ni persistencia entre dispositivos. Catálogo anterior queda prototipo.
+- Paneles cuentan citas futuras, ASISTIO y EN_CURSO; analíticas filtra mes/año Lima.
+  Agenda familiar comparte selección del niño, limpia detalle al cambiar y conserva historial.
+  Resumen del profesional usa reportes/planes reales; asesor registra desde Cuentas.
+- PUT /citas/{id}/reunion usa campo existente, HTTPS Zoom validado y propiedad profesional;
+  familia solo consulta. Enlace externo sin crear reunión ni marcar asistencia. ADR0016.
+- Fuentes principales DemoWorldPlayer/demoWorlds/MundoAshaHome, OperationalDashboard,
+  VirtualMeeting, agendas, SessionActions, analíticas y citas/schema; no DDL.
+- Verificación:201 backend/25 omitidas/19 deprecaciones en54.76s;278 componentes/17 archivos
+  y25 rutas finales, tipos/check333/build3.03s. Tests exclusivamente DB local test V34.
+  Graphify2148 nodos/112 comunidades, refresh/check correctos antes del cierre.
+  PDF real local y PDF de segunda atención descargado desde UI renderizados/inspeccionados.
+- API8002 proceso30188/session29117; Vite5175; QA ashakids_test_flujo_qa_20261010,
+  tests ashakids_test_flujo_v34_20261010, PG17.6/6544. No tocar .env/Supabase.
+  API CORS solo proceso admite127.0.0.1:5175 ylocalhost:5175 para intento de recuperar UI.
+- Bloqueo anterior del navegador recuperado en la continuación. Primera introducción Ana
+  se cerró por HTTP: evidencia anterior conservada. Segundo profesional abrió ese reporte
+  de solo lectura, registró/inició sesión2, guardó reporte2 y cerró FINALIZADA/ASISTIO
+  mediante la confirmación de la app; plan1 del autor inicial permanece vigente.
+- Familia reservó por UI R4 con profesional2, reingresó y vio ambos reportes y PDF real.
+  Luis conserva introducción propia pendiente y ningún plan; cambiar hijo no mezcla datos.
+  Lenguaje completado3/3, error/reintento/desbloqueo/repetición y recarga/reingreso de
+  pestaña comprobados. Enlace Zoom R4 guardado por profesional, lectura familiar sin editor.
+  Asesor ADMIN abrió alta institucional. Autocompletado de login invadía formulario nuevo;
+  atributos de nombre/contraseña corregidos y reapertura verificada con campos vacíos.
+  Capturas1280x720/390x844 en flow-v36. Alta/activación heredadas V33; cambio de clave API.
+- Incidencias corregidas: expectativas de maqueta anterior, selector agenda/modal duplicado,
+  selector definition múltiple, importación X omitida; tipos finales correctos. Harness QA
+  abortó seguro por nombre/parámetro/403 vs404; varias entradas agotaron limitador429.
+  No desactivar límites ni ejecutar tests en QA para recuperarlo.
+- Siguiente tarea del equipo: fetch de codex/2do-intento, reproducir el corte y coordinar
+  adopción en otros clones. dev/feat/piero-dev y BD compartida requieren nueva aprobación.
+  Núcleo local concluido; extensiones/pagos/progreso educativo servidor siguen diferidos.
+- Aviso compartible docs/AVISO_EQUIPO.md. Consultar Git para SHA final V36 y verificar push;
+  aún no atribuir este corte a dev ni al hosting. No nueva auditoría técnica académica.
+
 ## 2026-10-10 — V35 Planes profesionales e historial
 
 - Base V34/84078ae, codex/2do-intento. Sesión origen/área/mundos/sesiones recomendadas,

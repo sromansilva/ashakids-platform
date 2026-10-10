@@ -1,3 +1,21 @@
+## Avance V36 — paneles, mundos y reunión externa (2026-10-10)
+
+Rama codex/2do-intento, base V35/7faa666. Agenda familiar por niño, historial visible,
+paneles/analíticas con atenciones reales, enlace Zoom externo persistido y mundos asignados
+con tres niveles demo por mundo: completar/desbloquear/repetir. ADR0016, sin migración.
+Asesor es persona con acceso ADMIN, aclaración explícita del usuario; usa el rol existente.
+201 backend aprobadas/25 omitidas/19 deprecaciones;278 componentes+25 rutas, tipos,
+check333/build correctos. Evidencia flow-v36; no auditoría académica nueva.
+Núcleo mostrado en navegador local: familia con dos niños independientes, reserva de
+terapia con otro profesional, historial ajeno de solo lectura, atención propia cerrada
+FINALIZADA/ASISTIO mediante confirmación dentro de la app, reingreso, PDF descargado y
+Lenguaje demo completado/repetido3/3. Revisadas vistas desktop1280x720/móvil390x844.
+Cierre de primera introducción Ana fue HTTP; segunda atención sí se cerró en UI.
+Alta/guarda de activación UI heredadas V33; envío de nueva contraseña solo por API.
+El bloqueo anterior del navegador se recuperó. Núcleo local concluido, sin certificar
+todas las pantallas, extensiones diferidas, llamada Zoom ni adopción compartida.
+Publicar avances solo en esa rama; dev/feat/piero-dev siguen V32/ebb8632 y Supabase V26.
+
 ## Avance V35 — planes e historial (2026-10-10)
 
 Rama codex/2do-intento, base V34/84078ae. Plan mensual del profesional desde sesión

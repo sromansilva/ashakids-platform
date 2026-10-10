@@ -131,14 +131,14 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
   });
   it('un terapeuta sin asignaciones no recibe pacientes demostrativos', async () => {
     mockApi(); renderRoute('/terapeuta/pacientes', 'TERAPEUTA');
-    expect(await screen.findByText(/Sin pacientes asignados/)).toBeInTheDocument();
+    expect(await screen.findByText(/Sin pacientes autorizados/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Abrir expediente' })).not.toBeInTheDocument();
   });
   it('el expediente consulta sesiones por el identificador real, nunca por el índice', async () => {
     const calls = mockApi(path => path === '/pacientes' ? response([{ id_paciente: 12, nombres_paciente: 'AUDITORIA', apellidos_paciente: 'Paciente', fecha_nacimiento: '2020-01-01', activo: true }]) : undefined);
     renderRoute('/terapeuta/pacientes', 'TERAPEUTA');
     fireEvent.click(await screen.findByRole('button', { name: 'Abrir expediente' }));
-    expect(screen.getByRole('note')).toHaveTextContent('Prototipo ilustrativo');
+    expect(screen.getByText(/Consulta el reporte y el plan de cada atención/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /^Sesiones$/ }));
     expect(await screen.findByRole('button', { name: /Sesión #9/ })).toBeInTheDocument();
     expect(calls.mock.calls.some(([url]) => String(url).includes('paciente=12') && String(url).includes('contexto=true'))).toBe(true);

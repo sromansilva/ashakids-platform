@@ -2,7 +2,7 @@
 from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator, HttpUrl
 from app.schemas.reglas import Nombre, Apellido, Nacimiento, Sexo
 
 Id = Annotated[int, Field(gt=0)]
@@ -103,6 +103,8 @@ class CitaEstado(Entrada):
 
 
 class CitaSalida(Salida):
+    puede_editar: bool = False
+    zoom_join_url: str | None = None
     paciente_nombre: str | None = None
     terapeuta_nombre: str | None = None
     id_sesion: int | None = None
@@ -165,3 +167,18 @@ class PlanCrear(Entrada):
         if len(set(value)) != len(value):
             raise ValueError("Seleccione mundos distintos.")
         return value
+
+
+class CitaReunion(Entrada):
+    zoom_join_url: str | None = Field(default=None, max_length=255)
+
+    @field_validator('zoom_join_url')
+    @classmethod
+    def enlace_externo(cls, value):
+        if value is None:
+            return None
+        url = HttpUrl(value)
+        host = url.host or ''
+        if url.scheme != 'https' or url.username or url.password or url.port not in {None, 443} or not (host == 'zoom.us' or host.endswith('.zoom.us')):
+            raise ValueError('Use un enlace HTTPS de Zoom sin credenciales en la URL.')
+        return str(url)

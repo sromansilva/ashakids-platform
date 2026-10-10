@@ -14,7 +14,7 @@ import { SessionActions } from "./SessionActions";
 
 type Tracking = ReturnType<typeof useFamilyTracking>;
 const labels = { observaciones_iniciales: "Observaciones iniciales", objetivos_trabajados: "Objetivos trabajados", nivel_ayuda: "Nivel de ayuda", proximos_pasos: "Próximos pasos" } as const;
-const tabs = ["Resumen", "Tratamientos", "Sesiones", "Reportes"] as const;
+const tabs = ["Resumen", "Planes", "Sesiones", "Reportes"] as const;
 
 function ReadError({ error, retry }: { error: unknown; retry: () => void }) {
   return <div role="alert" className="rounded-2xl bg-red-50 text-red-800 p-4 space-y-3">
@@ -98,6 +98,7 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
         </div><div className="hidden sm:block shrink-0"><Ashi size={88} mood="happy" /></div>
       </section>
       <IntroductionStatus key={patient.id_paciente} patientId={patient.id_paciente} />
+      {mode === 'home' && data.treatments.some(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen) && <section className="space-y-3"><h2 className="text-lg font-extrabold">Plan vigente</h2>{data.treatments.filter(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen).map(t => <div key={t.id_tratamiento} className="text-[#4B4264] space-y-2"><p className="font-bold">{t.nombre_tratamiento} · {t.terapeuta_nombre}</p><p>{t.area && areaLabels[t.area]} · {t.sesiones_recomendadas} sesiones recomendadas · Mes: {t.fecha_inicio}</p><p>Mundos: {t.mundos_asignados?.map(w => areaLabels[w]).join(', ')}</p><Btn variant="outline" onClick={() => go('mundo-asha')}>Practicar en Mundo ASHA</Btn></div>)}</section>}
       <dl aria-label="Registros del hijo seleccionado" className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[{ label: "Sesiones realizadas", value: summary.attended.length }, { label: "Realizadas este mes", value: summary.thisMonth }, { label: "Reportes disponibles", value: summary.reportSessions.length }, { label: "Progreso clínico", value: "Sin medición" }].map(s =>
           <div key={s.label} className="rounded-2xl border border-[#E8E5F4] bg-white p-4"><dt className="text-sm text-[#4B4264]">{s.label}</dt><dd className={`font-black ${typeof s.value === "number" ? "text-xl" : "text-base"} text-[#1C1135] mt-2 break-words`}>{s.value}</dd></div>)}
@@ -113,13 +114,13 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
           <Crd className="p-5 sm:p-6"><ReportSummary data={data} /><Btn variant="outline" className="mt-4" onClick={() => go("padre/reportes")}><FileText size={16} aria-hidden="true" /> Ver reportes de la familia</Btn></Crd>
         </div>
       </>}
-      {mode === "journey" && tab === "Tratamientos" && <section className="space-y-3"><h2 className="text-lg font-extrabold text-[#1C1135]">Planes de trabajo</h2>
+      {mode === "journey" && tab === "Planes" && <section className="space-y-3"><h2 className="text-lg font-extrabold text-[#1C1135]">Planes de trabajo</h2>
         {!data.treatments.length && <p className="text-[#4B4264]">Todavía no hay un plan publicado para este hijo. Primero completa su introducción.</p>}
         {data.treatments.map(t => <Crd key={t.id_tratamiento} className="p-5 space-y-2"><h3 className="font-bold text-[#1C1135] break-words">{t.nombre_tratamiento}</h3><p className="text-[#4B4264] break-words">{t.terapeuta_nombre} · {t.estado_tratamiento}</p>{t.descripcion && <p className="text-[#4B4264] whitespace-pre-wrap break-words">{t.descripcion}</p>}<p className="text-sm text-[#4B4264]">{t.area ? areaLabels[t.area] : "Plan anterior al nuevo flujo"} · Mes: {t.fecha_inicio ?? "Sin fecha"}{t.id_sesion_origen ? ` · Origen: sesión #${t.id_sesion_origen}` : ""}</p>{!!t.mundos_asignados?.length && <p className="text-sm text-[#4B4264]">Mundos: {t.mundos_asignados.map(w => areaLabels[w]).join(", ")}</p>}{t.sesiones_recomendadas != null && <p className="text-sm text-[#4B4264]">Sesiones recomendadas: {t.sesiones_recomendadas}</p>}</Crd>)}
       </section>}
       {mode === "journey" && (tab === "Sesiones" || tab === "Reportes") && <History key={`${patient.id_paciente}:${tab}`} data={data} reportsOnly={tab === "Reportes"} />}
       <p className="text-sm text-[#4B4264]">El número de sesiones no mide la mejoría clínica. Las recomendaciones para casa aparecen en el reporte del profesional.</p>
-      <aside className="border-t border-[#E8E5F4] pt-4 flex flex-wrap items-center gap-3"><p className="text-sm text-[#4B4264]">Mundo ASHA contiene actividades educativas de demostración; no indica actividades asignadas.</p><Btn variant="ghost" onClick={() => go("mundo-asha")}>Explorar demostración</Btn></aside>
+      <aside className="border-t border-[#E8E5F4] pt-4 flex flex-wrap items-center gap-3"><p className="text-sm text-[#4B4264]">Mundo ASHA ofrece niveles de demostración en los mundos asignados por el profesional. El avance del juego no mide mejoría clínica.</p><Btn variant="ghost" onClick={() => go("mundo-asha")}>Explorar demostración</Btn></aside>
     </>}
   </div>;
 }

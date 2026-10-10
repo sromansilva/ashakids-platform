@@ -50,7 +50,11 @@ operada en navegador. Capturas sanitizadas en docs/evidence/flow-v33/. Primer in
 no sincronizaba estado; se añadieron eventos input/change y regresión de conservar fecha al
 añadir hijo. Segunda alta guardada correctamente. No cubre todas las pantallas.
 
-## Recorrido aún por implementar y aceptar
+## Recorrido del núcleo y alcance de aceptación
+
+Estado V36: núcleo implementado y demostrado en navegador local, con límites por caso
+registrados abajo. Juegos son demo rotulada y enlace Zoom es externo. Las pruebas jsdom/API
+y los ensayos visuales tienen alcances diferentes; no se certifican todas las pantallas.
 
 1. Asesor registra padre/dos hijos; familia cambia contraseña inicial.
 2. Cada hijo requiere introducción propia; terapeuta publica disponibilidad semanal y bloqueos.
@@ -92,3 +96,24 @@ ashakids_test_flujo_v34_20261010: no apuntarlos a la QA persistente.
   native IAB; confirmación de cierre trasladada a app para repetir. Evidencia flow-v35.
 - No declarar completo el maestro: faltan paneles, enlace externo y demo educativa V36,
   además de demostración visual de tres roles, dos niños y continuidad profesional.
+
+## V36: paneles, agenda y demo (implementación local verificada)
+
+- Paneles y analíticas usan datos autorizados; agenda por niño conserva historial, detalle
+  real y reserva confirmada. Sesiones EN_CURSO separadas de citas futuras.
+- Tres mundos del plan, tres niveles cada uno: completar/desbloquear/repetir/final; demo
+  por niño/cuenta/pestaña, sin evolución clínica ni resultados educativos en servidor.
+- Enlace Zoom persistido para cita virtual, compartido por profesional propio/ADMIN,
+  lectura familiar y externa. No se abrió una llamada ni se afirma integración automática.
+-201 backend aprobadas/25 omitidas/19 avisos;278 componentes+25 rutas, tipos/check/build.
+  PDF local real renderizado e inspeccionado. Evidencia flow-v36 y ADR0016.
+- Navegador recuperado: tres roles, Ana/Luis independientes, reserva UI con profesional2,
+  lectura de reporte ajeno sin editor, reporte propio y cierre inline de segunda atención
+  FINALIZADA/ASISTIO, reingreso familiar, PDF descargado, enlace persistido y demo3/3/repetir.
+  Vistas1280x720 y390x844 inspeccionadas; capturas y casos en flow-v36/ui-results.json.
+- Alta familiar y guarda de activación UI son evidencia heredada V33; envío/cambio de clave
+  verificado por API local, sin introducir nueva credencial en navegador. Disponibilidad,
+  bloqueos y reprogramación UI heredados V34; plan inicial creado desde UI V35.
+  Primera introducción cerrada por HTTP; segunda atención sí cerrada por UI V36.
+- Núcleo local concluido. Reproducir por otro integrante y adopción compartida pendientes;
+  no se ejecutaron migraciones/escrituras Supabase ni integración dev/feat/piero-dev.
