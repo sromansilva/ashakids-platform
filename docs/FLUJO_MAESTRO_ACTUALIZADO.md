@@ -11,6 +11,8 @@ V31_Restauracion_Plataforma_V26. Contenido funcional recuperado de V26:
 
 Implementación posterior al corte documental original: V33–V36 muestran el núcleo local;
 V37 conecta notificaciones/preferencias del profesional. ADR0017 y migración005 solo local.
+V38 cambia solo UI/UX de landing, sin alterar este recorrido. El usuario excluye la regla
+de anticipación para cambiar horario semanal; se mantiene disponibilidad/bloqueos actuales.
 Consultar PROJECT_CONTEXT y IMPLEMENTATION_PROGRESS para evidencia y límites actuales.
 
 Este es el alcance nuevo acordado después de la recuperación. No reactiva propuestas de

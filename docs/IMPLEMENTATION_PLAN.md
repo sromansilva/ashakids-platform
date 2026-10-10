@@ -6,9 +6,13 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+V38 rediseña únicamente la landing: glass/luz difuminada, arte CSS y microinteracciones.
+Construcción directa y evidencia landing-v38; siguientes roles por separado, un commit por rol.
+El usuario excluye la regla de anticipación semanal; disponibilidad actual se conserva.
+
 V37 extiende el núcleo con notificaciones profesionales y preferencias persistidas;
 ADR0017/migración005 únicamente local, evidencia notifications-v37. Esta primera mejora
-no declara funcionales los demás campos demostrativos ni el cambio semanal anticipado.
+no declara funcionales los demás campos demostrativos. La anticipación fue excluida después.
 
 V36 paneles/agenda por niño, enlace externo y mundos demo implementados y mostrados
 en navegador local con dos niños y continuidad profesional. Evidencia flow-v36 y ADR0016.

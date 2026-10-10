@@ -1,3 +1,21 @@
+## Avance V38 — rediseño visual de landing (2026-10-10)
+
+Rama codex/2do-intento, base V37/4fba7e9ff18e24248072118f553bbb96243367eb.
+Landing con paleta Nunito/violeta/naranja/teal, tarjetas glass, luces difuminadas,
+arte tipográfico CSS y microinteracciones breves. Construcción directa elegida por el usuario.
+Cambian seis módulos de presentación y CSS encapsulado; useLanding, rutas, API y BD intactos.
+281 componentes/18 archivos +25 rutas, tipos/check338/máximo498 y build final2.55s correctos;
+DEP0205 heredado. Graphify2213 nodos/108 comunidades, mapa actualizado. Sin tests backend nuevos.
+Hero inspeccionado en1280/751/390/334px; secciones desktop/móvil, FAQ ratón/Enter y CTA con
+sesión sintética activa. Ver evidencia landing-v38 y contrato docs/design/LANDING.md.
+Revisor cerró los dos fixes originales (ancho móvil y reduced-motion): ship acotado a ellos.
+Reduced-motion/hover revisados en fuente, sin emular preferencia del SO. No certificar toda la app.
+Newsletter sin envío, textos heredados sobre pagos/Zoom y directorio demo quedan deuda existente.
+Decisión vigente del usuario: cambiar horario semanal con anticipación queda fuera del alcance;
+no es una extensión pendiente. La disponibilidad actual se conserva.
+Siguiente: rediseñar cada rol por separado, un commit por rol. Sin Supabase/dev/feat/piero-dev,
+sin auditoría académica nueva ni despliegue. Consultar Git para SHA publicado V38.
+
 ## Avance V37 — notificaciones profesionales (2026-10-10)
 
 Rama codex/2do-intento, base V36/583de51. Bandeja y preferencias reales por terapeuta:

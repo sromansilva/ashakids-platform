@@ -15,7 +15,8 @@ Extensión V37: bandeja/preferencias profesionales persistidas, migración005 lo
 Aceptación nueva: UI guardado/recarga/lectura, supresión por preferencia con reserva HTTP,
 recordatorio real del worker local, desktop/móvil; evidencia notifications-v37. Tests cubren
 restantes eventos y aislamiento. No correo/push ni migración compartida. La anticipación
-semanal y otros módulos demostrativos no forman parte del cierre de esta extensión.
+semanal fue excluida por el usuario después de V37. Otros módulos demostrativos siguen pendientes.
+V38 modifica solo la presentación de landing; evidencia landing-v38, sin nuevas reglas del flujo.
 
 Migración propuesta: backend/scripts/migrations/002_activacion_cuentas.sql.
 En este clon solo se aplicó en BD nueva local ashakids_test_flujo_v33_20261010, puerto6544.

@@ -1,3 +1,28 @@
+## 2026-10-10 — V38 Rediseño de landing UI
+
+- Objetivo: presentación llamativa, cristal/luz difuminada y microinteracciones con la marca
+  existente, sin modificar comportamiento. Base V37/4fba7e9; solo codex/2do-intento.
+- Archivos: seis módulos en frontend/src/pages/public/landing y landing.css; PRODUCT.md,
+  DESIGN.md, .impeccable/config.json/design.json, contrato docs/design/LANDING.md y evidencia.
+  Hook useLanding y componentes públicos compartidos sin cambios. Sin ADR/decisión arquitectónica.
+- Comprobaciones nuevas:281 componentes/18 archivos +25 rutas; tipos, check338/máximo498;
+  build inicial2.65s y final2.55s tras CSS. DEP0205 heredado. Detector único []/exit0.
+  Knowledge refresh2213 nodos/108 comunidades y check;12 archivos sin símbolos, aviso conocido.
+- Visual: hero1280/751/390/334, secciones desktop/móvil, FAQ abre por ratón/cierra Enter;
+  CTA conserva guard y redirige a /terapeuta con sesión t90002 activa. Sin logout/escrituras BD.
+  Dos fixes en un bloque: minmax(0,1fr) para ancho móvil y hover sin desplazamiento en
+  reduced-motion. Revisor final ship limitado al cierre de ambos. No emulación SO/hover runtime.
+- Capturas viewport/secciones, no fullpage: scroll vive en un DIV externo. Dos capturas
+  finales se repitieron porque conservaban desplazamiento FAQ; reemplazadas por hero completo.
+  Consulta inicial usó nombres inexistentes FLUJO_MASTER/PublicNav: corregidos sin cambios.
+- API8002/Vite5175/QA sintética existentes sin cambios; sin tests backend, migraciones ni
+  Supabase. Newsletter y afirmaciones heredadas permanecen pendientes de revisión funcional.
+- Documentación de diseño YAML/JSON validada;8 secciones/24 colores/8 componentes;
+  colores tonales auxiliares no se incorporan al CSS. Logo heredado, sin raster nuevo.
+- Próxima tarea: rol elegido por el usuario, cada rol en commit separado; no ampliar lógica.
+  Horario semanal con anticipación excluido por decisión del usuario. Revisar Git para SHA
+  final/push V38; publicación de esta rama no autoriza integrar dev/feat/piero-dev.
+
 ## 2026-10-10 — V37 Notificaciones y preferencias profesionales
 
 - Objetivo: convertir primero los avisos/preferencias demostrativos en funcionales.
