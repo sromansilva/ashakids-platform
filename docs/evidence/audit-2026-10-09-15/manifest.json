@@ -1,0 +1,24 @@
+{
+  "algorithm": "SHA256",
+  "normalization": "PDF/PNG raw bytes; text CRLF normalized to LF for Git/Windows clones",
+  "scope": "Evidence, editable audit, ADR0012 and final four-page PDF; no secrets",
+  "files": {
+    "docs/audits/auditoria-2026-10-09-15.md": "052379b80d00b2b6fb5d772237bf501f819c0c5614430edeaf71e500128532ec",
+    "docs/decisions/0012-compatibilidad-scram-pooler-render.md": "890132912e881a9b44e6491f0ad00c86dfe611870320705c9a2fe0bf0c9e4af9",
+    "docs/evidence/audit-2026-10-09-15/ci-v24.json": "f4665ba24db4687ef198e4657b8f5e95e9060068145049b47a146681b6cd78af",
+    "docs/evidence/audit-2026-10-09-15/https-journey.json": "3c9922d5f8350ba9a4b5f16dfc6005e77cee8d7cd0e2a901d6495c50f90548d0",
+    "docs/evidence/audit-2026-10-09-15/https-smoke.json": "4eb7cb2ce7610ac2085b3f30e6e394b6a9bb3bcc017775133b50fe06a0c04861",
+    "docs/evidence/audit-2026-10-09-15/persistence.json": "674cd3f0cda5f496cad568ad6b4732c48dbb5d0ba9c662f022ed877c36dfff78",
+    "docs/evidence/audit-2026-10-09-15/pooler-challenge.json": "d6a0c950e67bd1d080d8b0ec84397bcd69ebc0dc177747f75bfab3e59f86829f",
+    "docs/evidence/audit-2026-10-09-15/pooler-tls.json": "e75620a474748e6e26984a28dde4c1af1dd9a97d2ae801357ddebabfb20c4d61",
+    "docs/evidence/audit-2026-10-09-15/README.md": "991421dd226fa4d5e1d7c7f7d6ca4ebc97059ca9d13dc29c812a04d0938673cb",
+    "docs/evidence/audit-2026-10-09-15/render-live.png": "9dbc3959c4d65427431a8014e5ace4506224fbb238fe119b3cd7d1ddbd942078",
+    "docs/evidence/audit-2026-10-09-15/render-startup.txt": "754648fd81a709fa3b7e45f8adaefea648b49a30a6eba0081c363124b816094c",
+    "docs/evidence/audit-2026-10-09-15/reporte-sintetico.pdf": "abc033cb9e70c56115550d0a453920a39497a734e1b43681f2a05e4b313e733a",
+    "docs/evidence/audit-2026-10-09-15/scram-preservation.json": "df3b32867819e4f1bf4f62124d8bf7b325670968b7205cf55d3cfe3e1febd51f",
+    "docs/evidence/audit-2026-10-09-15/verify-journey.py": "1572acc9a695a05f27c4043cc5d1cc4fbae5bfdd915aa7bea98da968e4054c74",
+    "docs/evidence/audit-2026-10-09-15/verify-persistence.py": "aff181e77e43b95473a8630753a7d20a5989606b6fddd9b9cc492a62f095e917",
+    "docs/evidence/audit-2026-10-09-15/verify-smoke.py": "1187330acfae890e826c6bb341a9cd9ffd84e0a9afa0f0b2feb20061d33b4f7a",
+    "output/pdf/Auditoria_Despliegue_AshaKids_2026-10-09-15.pdf": "ea143560556b5782feece783311d6af17f1398aa1b00972fc2699cccac1f80dc"
+  }
+}

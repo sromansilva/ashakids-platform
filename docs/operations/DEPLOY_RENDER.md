@@ -2,7 +2,7 @@
 
 Fecha: 2026-10-09. Repositorio: https://github.com/sromansilva/ashakids-platform .
 Preparación en piero-dev desde V23/f7bc5ecbca68eb0d21895bcc7a19ff34fecacd0b.
-Publicación funcional HTTPS pendiente; esta guía no certifica un despliegue.
+Publicado y aceptado el2026-10-09: https://ashakids.onrender.com. Imagen dev/V24/62905fc0480fffd21fb6b2d969592700608d64bb. Ver corte15 para evidencia nueva.
 
 ## Elección
 
@@ -42,7 +42,7 @@ sistema, omitir DB_SSL_CA_FILE usando el formulario manual de Web Service.
 | DATABASE_URL | URI privada del pooler de sesión usando ashakids_runtime |
 | CORS_ORIGINS | Opcional: origen(s) HTTPS final(es), sin rutas/comodines |
 | PUBLIC_ORIGIN | Opcional: origen HTTPS del dominio propio |
-| FORWARDED_ALLOW_IPS | Inicial127.0.0.1,::1; después ingreso confirmado de Render |
+| FORWARDED_ALLOW_IPS | 127.0.0.1,::1; login/escrituras reales aceptados con este valor |
 | DB_SSL_CA_FILE | Omitir para CA pública del sistema, o /etc/secrets/prod-ca.crt |
 | DB_SSL_LEGACY_CA | false; true solo con CA2021 explícita que lo requiera |
 
@@ -72,12 +72,24 @@ prod-ca.crt y DB_SSL_CA_FILE=/etc/secrets/prod-ca.crt. No desactivar TLS/hostnam
 
 ### Proxy HTTPS
 
-Primer deploy permite GET/health y HTML. Proxy sin confiar: escrituras HTTP internas403;
-login aún no aceptado. Revisar logs de GET /health para identificar el peer y confirmar
-con Render IPs/rangos del ingreso; configurar FORWARDED_ALLOW_IPS y redesplegar.
-No usar '*', redes /0, IPs de salida ni deducir una subred completa de una IP.
-Si cambia el peer, repetir verificación. Listener accesible solo detrás del ingreso.
-Este punto permanece pendiente hasta verificar transporte y cliente en el hosting real.
+En el despliegue actual,127.0.0.1,::1 bastó para reconocer HTTPS y aceptar login/escrituras.
+No ampliar por observar una IP privada en logs ni deducir redes enteras; no usar '*',
+redes /0 ni IPs de salida. Si cambia el ingreso y aparecen403 de transporte, verificar
+de nuevo el peer/arquitectura con Render antes de modificar confianza.
+
+### Configuración efectiva y SCRAM
+
+Servicio ashakids/srv-db4penqjnfac7382hjhg, Free Virginia, Auto Deploy Off.
+CA oficial Supabase2021 en prod-ca.crt; DB_SSL_CA_FILE=/etc/secrets/prod-ca.crt y
+DB_SSL_LEGACY_CA=true por formato keyUsage antiguo; CERT_REQUIRED/hostname intactos.
+Pooler sesión5432 oficial aws-1-us-east-1.pooler.supabase.com; usuario del rol runtime
+con sufijo de proyecto. No copiar aquí la URI completa ni enviar .env/ADMIN/owner.
+
+Supavisor2.9.10 rechazaba el verificador32768 anunciando4096. Tras autorización,
+solo ashakids_runtime se recalculó a4096 con la misma contraseña aleatoria. Permisos,
+RLS y roles anteriores iguales. No MD5 ni TLS inseguro. ADR0012 detalla el menor coste
+offline y seguimiento; verificar compatibilidad antes de subir iteraciones nuevamente.
+La conexión directa local no fue modificada; su DNS no era accesible en esta red.
 
 ## Aceptación en URL final
 
@@ -108,7 +120,7 @@ Node DEP0205. Sandbox bloqueó temporales pytest y esbuild; repetidos con acceso
 4 fallos de rutas Windows/dotfile se corrigieron antes del resultado final. Smoke ASGI
 con el dist real y origen HTTPS sintético:11 respuestas esperadas, sin consultas BD ni
 sesiones de login. Graphify refresh/check vigente. Docker no instalado: construcción
-Linux pendiente. No nueva suite de componentes ni E2E hosting.
+Linux verificado posteriormente en Render (build57.9s, Live). Esta regresión de V24 es evidencia heredada; el corte15 añade101 respuestas HTTPS,8 smoke y lectura SQL, sin nueva suite de componentes ni E2E visual exhaustivo.
 
 Auto Deploy Off; reversión desde Render al deploy previo cuando exista. No revertir datos,
 roles o .env por fallos de imagen. Primera publicación no tiene deploy anterior aún.

@@ -6,6 +6,37 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Despliegue Render HTTPS - corte2026-10-09-15
+
+- URL pública https://ashakids.onrender.com; servicio ashakids/srv-db4penqjnfac7382hjhg,
+  Free, Virginia, dev, Docker, un worker, Auto Deploy Off. Imagen V24/62905fc0480fffd21fb6b2d969592700608d64bb,
+  deploy dep-db4peo2jnfac7382hl20, buildLinux57.9s y estado Live observados.
+- Pooler oficial sesión5432 y ashakids_runtime. CA2021 Secret File, CERT_REQUIRED y
+  hostname; TLS1.3 real. No .env local/contraseña aleatoria cambiada ni claves propietarias
+  enviadas a Render. FORWARDED_ALLOW_IPS sigue127.0.0.1,::1; escrituras HTTPS aceptadas.
+- Autorización expresa del responsable: SCRAM32768->4096 únicamente del rol nuevo
+  para Supavisor2.9.10, conservar permisos/contraseña, guardar secreto y publicar gratis.
+  Snapshots de atributos, ACL, propietarios, RLS y membresías idénticos. ADR0012.
+  Menor coste offline asumido; recuperar coste mayor cuando pooler lo soporte y se pruebe.
+- Nueva cohorte AUDITORIA_RENDER_20261010_014323 (UTC10oct; Lima9oct):101 respuestas
+  HTTPS esperadas,0fallos;10 cookies Secure/HttpOnly/Lax; origen externo403. Concurrencia
+  con sesiones auth distintas: reserva/sesión201+409, inicio/cierre200+409, reporte completo,
+  chat único.8 smoke públicas adicionales. No prueba de carga ni QA visual exhaustiva.
+- SQL READ ONLY posterior:6usuarios,2pacientes activos,2tratamientos,2reservas,
+  2sesiones FINALIZADA,1reporte completo,2mensajes,0sesiones auth nuevas sin revocar.
+  IDs72..77/95,96/15,16/12,13/11,12/chat6. Conservar/excluir de métricas; no borrar.
+  ADMIN inicial usado solo local ASGI para crear nuevo seed; su secreto no salió a Render.
+- CI V24:dos jobs graph aprobados (runs38002334489/38002334516); no son pruebas clínicas.
+  Regresión138 pruebas/19avisos/tipos/build de V24 heredada, no reejecutada en corte15.
+  Fallos iniciales CA/autenticación/pooler resueltos; DNS directo IPv6 no accesible aquí.
+- [Informe15](audits/auditoria-2026-10-09-15.md), [PDF15](../output/pdf/Auditoria_Despliegue_AshaKids_2026-10-09-15.pdf),
+  evidencia sanitizada docs/evidence/audit-2026-10-09-15/. Cierre previsto V25; cotejar SHA
+  efectivo en Git. Auto Deploy Off conserva imagen V24 aunque se publique documentación.
+- Siguiente: abrir URL antes de demo (despertar50s o más), usar cuentas habituales;
+  actualizar imagen manualmente solo ante cambios funcionales. Backup/restauración,
+  expiración natural, carga y rotación de cuentas anteriores siguen fuera de este ensayo.
+  No pagos, TRUNCATE, DELETE físicos ni modificaciones de datos clínicos previos.
+
 ### Preparación de deploy gratuito Render - V24
 
 2026-10-09. Rama piero-dev; base V23/f7bc5ecbca68eb0d21895bcc7a19ff34fecacd0b.

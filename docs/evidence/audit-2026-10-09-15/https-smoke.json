@@ -1,0 +1,60 @@
+{
+  "origin": "https://ashakids.onrender.com",
+  "checks": [
+    {
+      "method": "GET",
+      "path": "/health",
+      "status": 200,
+      "content_type": "application/json",
+      "cache_control": null
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready",
+      "status": 200,
+      "content_type": "application/json",
+      "cache_control": null
+    },
+    {
+      "method": "GET",
+      "path": "/",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/login",
+      "status": 200,
+      "content_type": "text/html; charset=utf-8",
+      "cache_control": "no-cache"
+    },
+    {
+      "method": "GET",
+      "path": "/assets/AUDITORIA-missing.js",
+      "status": 404,
+      "content_type": "application/json",
+      "cache_control": null
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/AUDITORIA-missing",
+      "status": 404,
+      "content_type": "application/json",
+      "cache_control": "no-store"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "status": 401,
+      "content_type": "application/json",
+      "cache_control": "no-store"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "HTTPS transport; invalid empty body; no credentials or login session",
+      "status": 422
+    }
+  ]
+}

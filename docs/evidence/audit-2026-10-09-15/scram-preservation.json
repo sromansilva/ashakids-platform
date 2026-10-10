@@ -1,0 +1,76 @@
+{
+  "role": "ashakids_runtime",
+  "change": "SCRAM iterations only; same random password",
+  "success": true,
+  "previous_iterations": 32768,
+  "iterations": 4096,
+  "security_snapshot_preserved": true,
+  "before": {
+    "roles": {
+      "count": 29,
+      "sha256": "5519c88f2d42cb83d07a6c27a0d65ac16afdc0d17c334a4b5f704b220621a1c8"
+    },
+    "memberships": {
+      "count": 19,
+      "sha256": "5448588f62d386936dc93321d001bbe3aec88b6ace7b8c77f9097dd0e63b7852"
+    },
+    "objects": {
+      "count": 52,
+      "sha256": "f8f935f2e24650d2df3e9ffc93f728effe57d2ea4ecdb7505349a564fdd6e32b"
+    },
+    "object_acl": {
+      "count": 1144,
+      "sha256": "273fcac3c22b92a027c1adea66b96e10a103833cb4923a8fc214093c66448d95"
+    },
+    "namespace_acl": {
+      "count": 274,
+      "sha256": "9e6a572c4247ba0e3154d1c4435aa2e4b169b527cf110d88d8069e11762061a8"
+    },
+    "database_acl": {
+      "count": 17,
+      "sha256": "57d58212ff94948b9744d85f737f94f26afd7ed4fa18f68254792293ec192b33"
+    },
+    "policies_existing": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "runtime_flags": "c91c1a4e7bbbb5142ba6d579fac43c2337ce6a1f956a94b29a3b445a2169ad55",
+    "all_policies": "1b0eb4a7d77b2e2e2d6dc18988eee47f44dfd0a0e06cc0326f708d91cfc574a0",
+    "all_acl": "16b29cfa131cdf4e7e77f774cb127f5498e67d652b4254931ac87ccf26648cb6",
+    "all_memberships": "9c8e07f43e5a2dcd3c3f59aa10ccd2835b231a420b3285178f7f4967222b612f"
+  },
+  "after": {
+    "roles": {
+      "count": 29,
+      "sha256": "5519c88f2d42cb83d07a6c27a0d65ac16afdc0d17c334a4b5f704b220621a1c8"
+    },
+    "memberships": {
+      "count": 19,
+      "sha256": "5448588f62d386936dc93321d001bbe3aec88b6ace7b8c77f9097dd0e63b7852"
+    },
+    "objects": {
+      "count": 52,
+      "sha256": "f8f935f2e24650d2df3e9ffc93f728effe57d2ea4ecdb7505349a564fdd6e32b"
+    },
+    "object_acl": {
+      "count": 1144,
+      "sha256": "273fcac3c22b92a027c1adea66b96e10a103833cb4923a8fc214093c66448d95"
+    },
+    "namespace_acl": {
+      "count": 274,
+      "sha256": "9e6a572c4247ba0e3154d1c4435aa2e4b169b527cf110d88d8069e11762061a8"
+    },
+    "database_acl": {
+      "count": 17,
+      "sha256": "57d58212ff94948b9744d85f737f94f26afd7ed4fa18f68254792293ec192b33"
+    },
+    "policies_existing": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "runtime_flags": "c91c1a4e7bbbb5142ba6d579fac43c2337ce6a1f956a94b29a3b445a2169ad55",
+    "all_policies": "1b0eb4a7d77b2e2e2d6dc18988eee47f44dfd0a0e06cc0326f708d91cfc574a0",
+    "all_acl": "16b29cfa131cdf4e7e77f774cb127f5498e67d652b4254931ac87ccf26648cb6",
+    "all_memberships": "9c8e07f43e5a2dcd3c3f59aa10ccd2835b231a420b3285178f7f4967222b612f"
+  }
+}

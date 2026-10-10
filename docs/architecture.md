@@ -233,3 +233,14 @@ Render.yaml apunta a dev, Free y deploy manual; hosted_start exige producción, 
 worker y proxies explícitos sin '*' ni redes /0. Origen por CORS_ORIGINS/PUBLIC_ORIGIN
 o RENDER_EXTERNAL_URL. Supabase mantiene runtime B02, pooler sesión5432 por verificar
 en Render. Cuenta, secretos, ingreso/CA y aceptación HTTPS pendientes; sin DDL al arranque.
+
+## Hosting HTTPS publicado - corte15 / ADR0012
+
+Render Free Virginia sirve React y FastAPI bajo https://ashakids.onrender.com desde
+dev/V24/62905fc0480fffd21fb6b2d969592700608d64bb. Pooler sesión5432 IPv4 con runtime
+B02, CA2021 explícita, TLS verificado. Imagen Linux construida, readiness y recorrido
+HTTP real aceptados. Cookies Secure/HttpOnly/Lax; proxy confiable solo loopback bastó.
+ADR0012 registra la excepción SCRAM4096 del rol nuevo por Supavisor2.9.10 con menor
+coste offline autorizado; sin cambios de contraseña ni permisos. No Supabase Auth,
+nueva BD o DDL al arranque. Suspensión gratuita y límite de un worker siguen vigentes.
+Los apartados anteriores describen sus cortes históricos; hosting ya no está pendiente.

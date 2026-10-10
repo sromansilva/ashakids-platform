@@ -1,0 +1,16 @@
+{
+  "source_sha": "62905fc0480fffd21fb6b2d969592700608d64bb",
+  "runs": [
+    {
+      "id": 38002334489,
+      "job": "graph",
+      "conclusion": "success"
+    },
+    {
+      "id": 38002334516,
+      "job": "graph",
+      "conclusion": "success"
+    }
+  ],
+  "scope": "AST generation/freshness only; not clinical or frontend tests"
+}

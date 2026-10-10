@@ -21,7 +21,9 @@ from scripts.b02_role_inventory import ROLE, PERMISSIONS, SEQUENCES, identifier,
 
 def scram_verifier(password):
     salt=secrets.token_bytes(16)
-    iterations=32768
+    # Supavisor 2.9.10/2.9.13 anuncia 4096 aunque el catálogo tenga otro valor.
+    # Mantener SCRAM y contraseña aleatoria; no volver a MD5 para compatibilidad.
+    iterations=4096
     salted=hashlib.pbkdf2_hmac('sha256',password.encode(),salt,iterations)
     client=hmac.digest(salted,b'Client Key','sha256')
     stored=hashlib.sha256(client).digest()

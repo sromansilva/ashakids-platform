@@ -50,3 +50,10 @@ Render. No se declara URL pública, aceptación HTTPS ni recuperación de backup
 - [Entorno Render](https://render.com/docs/environment-variables).
 - [Supabase IPv4/IPv6](https://supabase.com/docs/guides/troubleshooting/supabase--your-network-ipv4-and-ipv6-compatibility-cHe3BP).
 - [Proxy Uvicorn](https://uvicorn.dev/settings/#http).
+
+## Verificación posterior - 2026-10-09, corte15
+
+Publicado https://ashakids.onrender.com, Free Virginia desde dev/V24/62905fc.
+Build Linux57.9s, Live,8 smoke y101 respuestas HTTPS con nueva cohorte aprobados.
+Loopback bastó sin ampliar FORWARDED_ALLOW_IPS. Pooler con runtime/TLS verificado,
+CA2021 y ajuste SCRAM autorizado en ADR0012. Recuperación/carga siguen no ensayadas.
