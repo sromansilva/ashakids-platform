@@ -1,13 +1,14 @@
 from datetime import datetime, timezone
 
 from fastapi import HTTPException
-from sqlalchemy import false, or_, select
+from sqlalchemy import false, func, or_, select
 
 from app.models.clinica import Expediente, ReporteSesion, Reserva, Sesion, Tratamiento
 from app.models.perfiles import Paciente, Terapeuta, Tutor
 from app.services.acceso import es_familia, exigir_profesional, obtener, paciente_visible, perfil_activo, roles_de
 from app.services.agenda import validar_turno
 from app.services.notificaciones import avisar_cita
+from app.services.zoom import ZoomIntegrationError, create_meeting, delete_meeting
 
 
 def citas_visibles(identity):
@@ -69,8 +70,9 @@ async def recorrido(db, identity, patient_id):
     completed = await db.scalar(select(Reserva.id_reserva).join(Sesion).join(ReporteSesion).where(
         Reserva.id_paciente == patient_id, Reserva.tipo_cita == "INTRODUCTORIA",
         Sesion.estado_sesion == "FINALIZADA", Sesion.asistencia == "ASISTIO",
-        or_(ReporteSesion.observaciones_iniciales != "", ReporteSesion.objetivos_trabajados != "",
-            ReporteSesion.proximos_pasos != "")).limit(1))
+        or_(func.length(func.trim(func.coalesce(ReporteSesion.observaciones_iniciales, ""))) > 0,
+            func.length(func.trim(func.coalesce(ReporteSesion.objetivos_trabajados, ""))) > 0,
+            func.length(func.trim(func.coalesce(ReporteSesion.proximos_pasos, ""))) > 0)).limit(1))
     pending = await db.scalar(select(Reserva.id_reserva).where(Reserva.id_paciente == patient_id,
         Reserva.tipo_cita == "INTRODUCTORIA", Reserva.estado_reserva.in_(["PENDIENTE", "CONFIRMADA"])).limit(1))
     plan = await db.scalar(select(Tratamiento.id_tratamiento).join(Expediente).where(
@@ -108,7 +110,30 @@ async def crear_cita(db, identity, data):
                   id_paciente=patient_id, id_terapeuta=therapist_id, estado_reserva="CONFIRMADA")
     db.add(row)
     await db.flush()
-    await avisar_cita(db, identity[0], row, 'NUEVA_CITA', clave=f'NUEVA_CITA:{row.id_reserva}')
+    meeting = None
+    if row.modalidad == "VIRTUAL":
+        try:
+            meeting = await create_meeting(
+                topic=f"ASHAKids · {data.tipo_cita.lower()} · cita {row.id_reserva}",
+                start_time=row.fecha_hora_inicio,
+                duration_minutes=45,
+            )
+        except ZoomIntegrationError as exc:
+            raise HTTPException(502, str(exc)) from None
+    try:
+        if meeting is not None:
+            row.zoom_meeting_id = meeting.meeting_id
+            row.zoom_join_url = meeting.join_url
+            await db.flush()
+        await avisar_cita(db, identity[0], row, 'NUEVA_CITA', clave=f'NUEVA_CITA:{row.id_reserva}')
+    except Exception:
+        if meeting is not None:
+            try:
+                await delete_meeting(meeting.meeting_id, meeting.access_token)
+            except ZoomIntegrationError:
+                # La transacción local se revierte; no ocultar el error original.
+                pass
+        raise
     return row
 
 

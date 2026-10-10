@@ -68,7 +68,6 @@ export function TerapeutaConfig() {
   const [uploadedImg, setUploadedImg] = useState<string | null>(null);
   const [show2faModal, setShow2faModal] = useState(false);
   const [twoFaEmail, setTwoFaEmail] = useState("");
-  const [twoFaEnabled, setTwoFaEnabled] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [securityNotice, setSecurityNotice] = useState("");
   const { user } = useAuth();
@@ -132,8 +131,8 @@ export function TerapeutaConfig() {
     <div className="p-4 sm:p-6 max-w-4xl" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
 
       {securityNotice && <div className="fixed right-4 top-5 z-[70] flex max-w-sm items-center gap-2 rounded-2xl bg-emerald-600 px-4 py-3 text-sm font-bold text-white shadow-xl"><CheckCircle size={18} />{securityNotice}</div>}
-      {show2faModal && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setShow2faModal(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><button onClick={() => setShow2faModal(false)} className="absolute right-4 top-4 rounded-xl p-2 text-[#7C6F9A] hover:bg-[#F5F3FF]"><X size={18} /></button><div className="mb-5 pr-8"><p className="text-xs font-bold uppercase tracking-wider text-violet-600">Seguridad</p><h3 className="mt-1 text-xl font-black text-[#1C1135]">Activar autenticación en dos pasos</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Te enviaremos una confirmación al correo indicado antes de activar 2FA.</p></div><Inp label="Correo de confirmación" type="email" value={twoFaEmail} onChange={(e) => setTwoFaEmail(e)} /><div className="mt-6 flex justify-end gap-3"><Btn variant="outline" onClick={() => setShow2faModal(false)}>Cancelar</Btn><Btn variant="cta" onClick={() => { setTwoFaEnabled(true); setShow2faModal(false); setSecurityNotice(`2FA activado. Confirmación enviada a ${twoFaEmail}.`); window.setTimeout(() => setSecurityNotice(""), 3500); }}><Check size={14} /> Confirmar activación</Btn></div></div></div>}
-      {confirmDelete && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setConfirmDelete(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600"><X size={22} /></div><h3 className="text-xl font-black text-[#1C1135]">¿Eliminar esta cuenta?</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Esta acción elimina el acceso y no se puede deshacer. Revisa tus reportes y pagos antes de continuar.</p><div className="mt-6 flex justify-end gap-3"><Btn variant="outline" onClick={() => setConfirmDelete(false)}>Cancelar</Btn><Btn variant="danger" onClick={() => { setConfirmDelete(false); setSecurityNotice("Solicitud de eliminación recibida. Te contactaremos para verificarla."); window.setTimeout(() => setSecurityNotice(""), 3500); }}>Confirmar eliminación</Btn></div></div></div>}
+      {show2faModal && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setShow2faModal(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><button onClick={() => setShow2faModal(false)} className="absolute right-4 top-4 rounded-xl p-2 text-[#7C6F9A] hover:bg-[#F5F3FF]"><X size={18} /></button><div className="mb-5 pr-8"><p className="text-xs font-bold uppercase tracking-wider text-violet-600">Seguridad</p><h3 className="mt-1 text-xl font-black text-[#1C1135]">Autenticación en dos pasos</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Esta función todavía no está disponible. No se envió ningún correo ni se activó MFA.</p></div><Inp label="Correo de confirmación" type="email" value={twoFaEmail} onChange={(e) => setTwoFaEmail(e)} /><div className="mt-6 flex justify-end gap-3"><Btn variant="outline" onClick={() => setShow2faModal(false)}>Cerrar</Btn></div></div></div>}
+      {confirmDelete && <div className="fixed inset-0 z-[60] flex items-center justify-center p-4"><button className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" onClick={() => setConfirmDelete(false)} aria-label="Cerrar" /><div className="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"><div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600"><X size={22} /></div><h3 className="text-xl font-black text-[#1C1135]">Eliminar cuenta</h3><p className="mt-2 text-sm font-medium leading-relaxed text-[#7C6F9A]">Esta solicitud todavía no está disponible. No se eliminó la cuenta ni se envió ninguna solicitud.</p><div className="mt-6 flex justify-end"><Btn variant="outline" onClick={() => setConfirmDelete(false)}>Cerrar</Btn></div></div></div>}
 
       {/* ── Modal selector de foto ── */}
       {showPhotoModal && (
@@ -252,8 +251,8 @@ export function TerapeutaConfig() {
                     rows={3} value={perfilBio} onChange={e => setPerfilBio(e.target.value)} />
                 </div>
                 <div className="flex justify-end">
-                  <Btn variant="cta" onClick={() => { setSecurityNotice("Solicitud enviada al administrador"); setTimeout(() => setSecurityNotice(""), 3500); }}>
-                    {saved ? <><CheckCircle size={14} /> Enviado</> : "Solicitar cambio de datos"}
+                  <Btn variant="cta" onClick={() => { setSecurityNotice("Esta solicitud todavía no está disponible. No se envió ningún cambio al administrador."); setTimeout(() => setSecurityNotice(""), 3500); }}>
+                    Solicitud no disponible
                   </Btn>
                 </div>
               </div>
@@ -276,6 +275,7 @@ export function TerapeutaConfig() {
                         type={showPwActual ? "text" : "password"}
                         value={pwActual}
                         onChange={e => { setPwActual(e.target.value); setPwErrors(er => ({ ...er, actual: undefined })); }}
+                        maxLength={128}
                         placeholder="Ingresa tu contraseña actual"
                         className={`w-full rounded-2xl border px-4 py-3 pr-12 text-sm font-medium outline-none bg-[#F5F3FF] focus:border-violet-400 ${pwErrors.actual ? "border-red-400" : "border-[#E8E5F4]"}`}
                       />
@@ -292,7 +292,9 @@ export function TerapeutaConfig() {
                         type={showPwNueva ? "text" : "password"}
                         value={pwNueva}
                         onChange={e => { setPwNueva(e.target.value); setPwErrors(er => ({ ...er, nueva: undefined })); }}
-                        placeholder="Mínimo 8 caracteres"
+                        minLength={12}
+                        maxLength={128}
+                        placeholder="12–128 caracteres"
                         className={`w-full rounded-2xl border px-4 py-3 pr-12 text-sm font-medium outline-none bg-[#F5F3FF] focus:border-violet-400 ${pwErrors.nueva ? "border-red-400" : "border-[#E8E5F4]"}`}
                       />
                       <button type="button" onClick={() => setShowPwNueva(v => !v)} className="absolute right-2 top-1/2 -translate-y-1/2 rounded-xl p-2 text-[#7C6F9A] hover:bg-white">
@@ -308,6 +310,8 @@ export function TerapeutaConfig() {
                         type={showPwConfirm ? "text" : "password"}
                         value={pwConfirm}
                         onChange={e => { setPwConfirm(e.target.value); setPwErrors(er => ({ ...er, confirm: undefined })); }}
+                        minLength={12}
+                        maxLength={128}
                         placeholder="Repite la nueva contraseña"
                         className={`w-full rounded-2xl border px-4 py-3 pr-12 text-sm font-medium outline-none bg-[#F5F3FF] focus:border-violet-400 ${pwErrors.confirm ? "border-red-400" : "border-[#E8E5F4]"}`}
                       />
@@ -321,7 +325,7 @@ export function TerapeutaConfig() {
                 <div className="rounded-2xl p-4 border border-[#E8E5F4]">
                   <p className="font-extrabold text-sm text-[#1C1135] mb-1">Autenticación en dos pasos</p>
                   <p className="text-xs text-[#7C6F9A] font-medium mb-3">Añade una capa extra de seguridad a tu cuenta</p>
-                  <Btn variant="secondary" size="sm" onClick={() => setShow2faModal(true)}>{twoFaEnabled ? <><CheckCircle size={14} /> 2FA activado</> : "Activar 2FA"}</Btn>
+                  <Btn variant="secondary" size="sm" onClick={() => setShow2faModal(true)}>Activar 2FA</Btn>
                 </div>
                 <div className="rounded-2xl p-4" style={{ background: "#FEF2F2", border: "1px solid #FECACA" }}>
                   <p className="font-extrabold text-sm text-red-700 mb-1">Zona de peligro</p>
@@ -332,14 +336,14 @@ export function TerapeutaConfig() {
                   <Btn variant="cta" disabled={pwSaving} onClick={() => {
                     const errs: typeof pwErrors = {};
                     if (!pwActual) errs.actual = "Ingresa tu contraseña actual";
-                    if (!pwNueva || pwNueva.length < 8) errs.nueva = "La contraseña debe tener al menos 8 caracteres";
+                    if (!pwNueva || pwNueva.length < 12 || pwNueva.length > 128) errs.nueva = "La contraseña debe tener entre 12 y 128 caracteres";
                     if (pwNueva !== pwConfirm) errs.confirm = "Las contraseñas no coinciden";
                     if (Object.keys(errs).length > 0) { setPwErrors(errs); return; }
                     setPwSaving(true);
                     void (async () => {
                       try {
                         if (user?.id_usuario) {
-                          await usersService.edit(user.id_usuario, { password: pwNueva });
+                          await usersService.edit(user.id_usuario, { current_password: pwActual, password: pwNueva });
                         }
                         setPwActual(""); setPwNueva(""); setPwConfirm("");
                         setSecurityNotice("Contraseña actualizada. Ahora tienes el control exclusivo de tu cuenta.");

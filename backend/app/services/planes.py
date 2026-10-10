@@ -28,7 +28,9 @@ async def publicar(db, identity, key, data):
     if session.estado_sesion not in {"EN_CURSO", "FINALIZADA"} or session.asistencia == "NO_ASISTIO":
         raise HTTPException(409, "El plan requiere una atención iniciada, sin inasistencia.")
     report = await db.scalar(select(ReporteSesion).where(ReporteSesion.id_sesion == key))
-    if not report or not any((report.observaciones_iniciales, report.objetivos_trabajados, report.proximos_pasos)):
+    if not report or not any((value and value.strip() for value in (
+        report.observaciones_iniciales, report.objetivos_trabajados, report.proximos_pasos
+    ))):
         raise HTTPException(409, "Guarde primero el reporte de esta atención.")
     if await db.scalar(select(Tratamiento.id_tratamiento).where(Tratamiento.id_sesion_origen == key)):
         raise HTTPException(409, "Esta sesión ya publicó un plan. Conserve esta versión y revise el plan en otra atención.")

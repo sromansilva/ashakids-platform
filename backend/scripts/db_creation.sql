@@ -153,8 +153,8 @@ CREATE TABLE public.reservas (
     fecha_hora_fin TIMESTAMPTZ NOT NULL,
     modalidad VARCHAR(10) NOT NULL,
     localizacion VARCHAR(255),
-    zoom_meeting_id VARCHAR(8),
-    zoom_join_url VARCHAR(255),
+    zoom_meeting_id VARCHAR(64),
+    zoom_join_url VARCHAR(2048),
     estado_reserva VARCHAR(20) NOT NULL,
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT fk_reservas_paciente

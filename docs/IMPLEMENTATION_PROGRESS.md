@@ -23,6 +23,25 @@ global. El primer cambio de ramas no integró novedades porque aún no existía 
 Cierre: commit V47 documental, integración/publicación en dev y rama propia; verificar SHA
 con Git. Próxima acción: implementar galería siguiendo guía sin alterar negocio/API/BD.
 
+## V47 — cierre P1 e integración Zoom / 2026-10-10
+
+Base `bb7d166` en `dev`; cambios locales sin publicar. Se alinearon contraseñas personales a
+12–128 caracteres y el PATCH propio exige `current_password`; ADMIN puede cambiar otra cuenta sin
+esa contraseña y se revocan sesiones. El backend bloquea reportes con `NO_ASISTIO` y planes sin
+observaciones, objetivos o próximos pasos con contenido; la UI refleja esos límites y deja como no
+disponibles 2FA, autoeliminación y solicitud de edición de perfil.
+
+Las citas virtuales usan Zoom Server-to-Server OAuth cuando `ZOOM_ENABLED=true`, guardan el ID y
+enlace de participante, y devuelven error controlado sin confirmar si Zoom falla. Se añadió limpieza
+compensatoria para fallos locales posteriores y el enlace manual HTTPS sigue restringido a ADMIN o al
+terapeuta asignado. `007_zoom_meetings.sql` amplía las columnas a `VARCHAR(64)`/`VARCHAR(2048)` con
+comprobaciones; no se ejecutó sobre ninguna base compartida.
+
+Validación: backend `157 passed, 75 skipped`; frontend `281 passed`; `npm run typecheck`, `npm run build`,
+`compileall`, `knowledge refresh` y `knowledge check` correctos. No se versionaron secretos, `backend/.env`,
+certificados locales ni salidas de auditoría del usuario. Siguiente: configurar y probar una cuenta Zoom
+técnica en una base aislada, aplicar 007 con respaldo, y ejecutar aceptación manual autorizada antes de Render.
+
 ## V46 — Documentación de flujo, BD y equipo / 2026-10-10
 
 Steering del usuario: registrar inconsistencias para unificar criterios. Incorporado

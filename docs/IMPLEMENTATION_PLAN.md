@@ -6,6 +6,18 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+## V47 — cierre P1 e integración Zoom / 2026-10-10
+
+Implementación local preparada sobre `dev`: reglas de contraseña y cambio propio con verificación,
+guardas de reportes/planes, mensajes honestos para funciones simuladas y creación opcional de
+reuniones Zoom en `POST /api/v1/citas`. La migración `backend/scripts/migrations/007_zoom_meetings.sql`
+queda sin ejecutar, con respaldo y verificación indicados para una base aislada. Las credenciales
+Zoom permanecen pendientes y `ZOOM_ENABLED=false` conserva el enlace manual autorizado.
+
+Validación ejecutada: backend `157 passed, 75 skipped`; frontend `281 passed`; typecheck, build,
+compilación Python y knowledge map `check` correctos. No se tocó `.env`, la base compartida ni se
+publicó la rama.
+
 V46 incorpora fuente técnica Avance2 y guía actual para equipo: DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md
 y GUIA_FLUJO_ESTADO_Y_PENDIENTES.md, con PDF exports. Usuario confirma ahora alta/acceso
 terapeuta y padre, disponibilidad, reserva y enlace Zoom en Render. Pendiente aceptación

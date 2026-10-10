@@ -170,7 +170,7 @@ class PlanCrear(Entrada):
 
 
 class CitaReunion(Entrada):
-    zoom_join_url: str | None = Field(default=None, max_length=255)
+    zoom_join_url: str | None = Field(default=None, max_length=2048)
 
     @field_validator('zoom_join_url')
     @classmethod

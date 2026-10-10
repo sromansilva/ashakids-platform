@@ -46,8 +46,8 @@ class Reserva(Base):
     fecha_hora_fin: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     modalidad: Mapped[str] = mapped_column(String(10))
     localizacion: Mapped[str | None] = mapped_column(String(255))
-    zoom_meeting_id: Mapped[str | None] = mapped_column(String(8))
-    zoom_join_url: Mapped[str | None] = mapped_column(String(255))
+    zoom_meeting_id: Mapped[str | None] = mapped_column(String(64))
+    zoom_join_url: Mapped[str | None] = mapped_column(String(2048))
     estado_reserva: Mapped[str] = mapped_column(String(20))
     fecha_creacion: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 

@@ -37,6 +37,21 @@ no bloqueaNO_ASISTIO como UI. PIN4, WSP/ZoomAPI, varios diagnósticos/material h
 backlog de seguridad/integración/dominio, no cambios estéticos ni implementados. No pagos,
 no regla anticipación semanal; desktop primero. Siguiente: aceptar tramo final y pulir UX.
 
+## Implementación local posterior a V46
+
+Se alinearon los formularios de cambio de contraseña con la regla vigente de 12–128 caracteres
+y el PATCH propio exige `current_password`; ADMIN conserva el cambio administrativo sin esa
+verificación. El backend rechaza reportes de sesiones `NO_ASISTIO` y la publicación de planes
+requiere contenido clínico útil, no solo la existencia de un registro vacío. Las acciones de 2FA,
+autoeliminación y solicitud de edición de perfil se presentan como no disponibles, sin afirmar
+envíos o cambios inexistentes.
+
+Se preparó Zoom Server-to-Server OAuth opcional para citas virtuales. `ZOOM_ENABLED=false` mantiene
+el enlace manual; cuando se habilite, `POST /api/v1/citas` crea una reunión de 45 minutos y guarda
+solo `zoom_meeting_id` y `zoom_join_url`. La migración `007_zoom_meetings.sql` amplía las columnas
+externas y debe probarse en una base aislada antes de adoptar el esquema compartido. Las credenciales
+Zoom son backend-only y siguen pendientes de configuración/validación con una cuenta técnica.
+
 ## Confirmación de despliegue y acceso — V45 / 2026-10-10
 
 Render V44/1fc19b36598cf96cbc89d36a85fb9ca6c062eda3 confirmado Live, deploy

@@ -57,7 +57,11 @@ it("Family settings expose both siblings without a plan restriction and describe
 });
 it("Settings security, privacy and notification tabs do not fake writes", async () => {
   api(); renderRoute("/padre/config", "PADRE");
-  for (const name of ["Seguridad", "Privacidad", "Notificaciones"]) {
+  fireEvent.click(await screen.findByRole("button", { name: /^Seguridad$/ }));
+  expect(await screen.findByLabelText("Nueva contraseña")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Cambiar contraseña" })).toBeInTheDocument();
+  expect(screen.queryByText(/Contraseña actualizada/)).not.toBeInTheDocument();
+  for (const name of ["Privacidad", "Notificaciones"]) {
     fireEvent.click(await screen.findByRole("button", { name: new RegExp(`^${name}$`) }));
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Guardar|Eliminar cuenta|Activar 2FA/ })).not.toBeInTheDocument();

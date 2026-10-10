@@ -19,6 +19,7 @@ class UsuarioEditar(Entrada):
     email: EmailStr | None = Field(default=None, max_length=150)
     activo: bool | None = None
     password: Password | None = None
+    current_password: str | None = Field(default=None, min_length=1, max_length=128)
 
     @model_validator(mode="after")
     def sin_nulos(self):

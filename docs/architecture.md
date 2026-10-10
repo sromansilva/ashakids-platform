@@ -10,6 +10,19 @@ Los apartados inferiores conservan estado histórico de implementación local/re
 
 # Arquitectura de ASHAKids
 
+## V47 — consistencia clínica y reuniones Zoom
+
+El cierre P1 alinea la contraseña personal en 12–128 caracteres, verifica la contraseña actual
+en el cambio propio y revoca sesiones. Reportes de inasistencia no se guardan y un plan exige
+observaciones, objetivos o próximos pasos con contenido real. Las acciones de 2FA, autoeliminación
+y solicitud de edición de perfil permanecen marcadas como no disponibles porque no tienen contrato
+persistente.
+
+V46 añade una integración opcional de reuniones Zoom desde FastAPI mediante Server-to-Server OAuth.
+Solo las citas virtuales llaman al proveedor; el frontend recibe el enlace de participante y el
+enlace manual queda como recuperación autorizada. `ZOOM_ENABLED=false` mantiene el modo manual y
+las credenciales nunca se incluyen en frontend, respuestas o repositorio. Véase ADR0019.
+
 ## Flujo de datos
 
 V37 en codex/2do-intento: ADR0017 agrega bandeja/prefs por identidad TERAPEUTA mediante

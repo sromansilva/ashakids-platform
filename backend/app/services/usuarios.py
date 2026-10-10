@@ -5,7 +5,7 @@ from sqlalchemy import func, select, update
 from sqlalchemy.orm import selectinload
 from starlette.concurrency import run_in_threadpool
 
-from app.core.security import hash_password
+from app.core.security import hash_password, verify_password
 from app.models.auth import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
 from app.models.perfiles import Terapeuta, Tutor
 from app.schemas.usuarios import UsuarioSalida
@@ -63,6 +63,7 @@ async def editar_usuario(db, identity, key, data):
         raise HTTPException(403, "No tiene permisos para modificar este usuario.")
     row = await obtener(db, Usuario, key, lock=True)
     values = data.model_dump(exclude_unset=True)
+    current_password = values.pop("current_password", None)
     if not is_admin:
         if "activo" in values:
             raise HTTPException(403, "Solo los administradores pueden cambiar el estado de la cuenta.")
@@ -72,6 +73,9 @@ async def editar_usuario(db, identity, key, data):
         await email_disponible(db, str(values["email"]), key)
         values["email"] = str(values["email"]).lower()
     if "password" in values:
+        if is_self:
+            if not current_password or not await run_in_threadpool(verify_password, current_password, row.password_hash):
+                raise HTTPException(403, "La contraseña actual no es válida.")
         row.password_hash = await run_in_threadpool(hash_password, values.pop("password"))
     for field, value in values.items():
         setattr(row, field, value)

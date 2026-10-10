@@ -27,7 +27,7 @@ async function open(options: { readonly?: boolean; published?: boolean; fail?: b
 }
 it('publica desde una sesión real sin enviar autor ni paciente controlables por el formulario', async () => {
   const calls = await open();
-  fireEvent.click(await screen.findByRole('button',{name:'Definir plan mensual'}));
+  fireEvent.click(await screen.findByRole('button',{name:'Definir plan de trabajo'}));
   fireEvent.change(screen.getByLabelText('Nombre del plan'),{target:{value:'Plan de Ana'}});
   fireEvent.click(screen.getByRole('button',{name:'Publicar plan'}));
   expect(await screen.findByText('Plan de Ana · ACTIVO')).toBeInTheDocument();
@@ -37,7 +37,7 @@ it('publica desde una sesión real sin enviar autor ni paciente controlables por
 });
 it('conserva el borrador si el servidor rechaza la publicación', async () => {
   await open({fail:true});
-  fireEvent.click(await screen.findByRole('button',{name:'Definir plan mensual'}));
+  fireEvent.click(await screen.findByRole('button',{name:'Definir plan de trabajo'}));
   fireEvent.change(screen.getByLabelText('Nombre del plan'),{target:{value:'Borrador de Ana'}});
   fireEvent.click(screen.getByRole('button',{name:'Publicar plan'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('Conflicto del servidor');
@@ -47,6 +47,6 @@ it('presenta plan y reporte ajenos en lectura según permiso de la API', async (
   await open({readonly:true,published:true});
   expect(await screen.findByText('Plan de Ana · ACTIVO')).toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Guardar reporte'})).not.toBeInTheDocument();
-  expect(screen.queryByRole('button',{name:'Definir plan mensual'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'Definir plan de trabajo'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Finalizar sesión'})).not.toBeInTheDocument();
 });

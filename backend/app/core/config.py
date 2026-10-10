@@ -18,6 +18,14 @@ class Settings(BaseSettings):
     # Activar explícitamente solo después de adoptar la migración de notificaciones.
     NOTIFICATION_REMINDERS_ENABLED: bool = False
 
+    # Zoom Server-to-Server OAuth. Disabled by default so local/manual links remain usable.
+    ZOOM_ENABLED: bool = False
+    ZOOM_ACCOUNT_ID: str = ""
+    ZOOM_CLIENT_ID: str = ""
+    ZOOM_CLIENT_SECRET: str = ""
+    ZOOM_HOST_USER_ID: str = ""
+    ZOOM_API_BASE_URL: str = "https://api.zoom.us/v2"
+
     # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""
     DB_SSL_CA_FILE: Optional[str] = None
