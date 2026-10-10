@@ -2,6 +2,7 @@
 
 from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field
+from app.schemas.reglas import Password
 
 
 class LoginRequest(BaseModel):
@@ -20,6 +21,7 @@ class UserResponse(BaseModel):
     rol: str
     roles: List[str] = []
     activo: bool = True
+    password_change_required: bool = False
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -34,3 +36,9 @@ class MessageResponse(BaseModel):
     """Respuesta genérica de éxito o confirmación."""
     message: str
     success: bool = True
+
+
+class ActivationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    current_password: str = Field(min_length=1, max_length=128)
+    new_password: Password

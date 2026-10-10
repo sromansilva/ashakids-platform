@@ -32,6 +32,7 @@ import { AdminCuentasEditarModal } from "./AdminCuentasEditarModal";
 import { AdminCuentasDetalleModal } from "./AdminCuentasDetalleModal";
 import { AdminCuentasTable } from "./AdminCuentasTable";
 import { AdminCuentasStats } from "./AdminCuentasStats";
+import { emptyChild } from "./FamilyChildrenFields";
 
 // ─── Tipos Locales y Mapeos ────────────────────────────────────────────────────────
 
@@ -94,6 +95,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     email: "",
     password: "",
     parentesco: "Padre",
+    hijos: [emptyChild()],
     telefono: "",
     direccion: "",
   });
@@ -177,6 +179,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       email: "",
       password: "",
       parentesco: "Padre",
+      hijos: [emptyChild()],
       telefono: "",
       direccion: "",
     });
@@ -231,13 +234,15 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     setErrorBanner(null);
     try {
       if (tab === "PADRE") {
-        const res = await adminService.crearPadre(formPadre);
-        showToast(res.message);
+        const res = await adminService.registrarFamilia(formPadre);
+        setSuccessBanner(res.message);
       } else {
         const res = await adminService.crearTerapeuta(formTerapeuta);
-        showToast(res.message);
+        setSuccessBanner(res.message + " Debe cambiar su contraseña inicial al ingresar.");
       }
       setModal(null);
+      setFormPadre(f => ({ ...f, password: "" }));
+      setFormTerapeuta(f => ({ ...f, password: "" }));
       await cargarCuentas();
     } catch (err: unknown) {
       const msg = err instanceof ApiError ? err.message : "Error al crear la cuenta.";

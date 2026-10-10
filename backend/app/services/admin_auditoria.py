@@ -26,6 +26,9 @@ SENSITIVE_KEYS = {
     "token_hash",
     "raw_token",
     "cookie",
+    "dni",
+    "current_password",
+    "new_password",
 }
 
 

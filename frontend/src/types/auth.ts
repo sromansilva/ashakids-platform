@@ -13,6 +13,7 @@ export interface User {
   rol: SemanticRole;
   roles: SemanticRole[];
   activo: boolean;
+  password_change_required?: boolean;
 }
 
 export interface LoginCredentials {
@@ -104,6 +105,14 @@ export interface CrearPadrePayload {
   parentesco?: string;
   telefono?: string;
   direccion?: string;
+  hijos?: RegistroHijo[];
+}
+
+export interface RegistroHijo {
+  nombres_paciente: string;
+  apellidos_paciente: string;
+  fecha_nacimiento: string;
+  sexo: string;
 }
 
 export interface CrearTerapeutaPayload {

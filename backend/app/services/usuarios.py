@@ -43,7 +43,8 @@ async def crear_usuario(db, identity, data):
     values = data.model_dump(exclude={"password", "rol"})
     values["email"] = str(data.email).lower()
     values["codigo_usuario"] = data.codigo_usuario.lower()
-    row = Usuario(**values, password_hash=await run_in_threadpool(hash_password, data.password))
+    row = Usuario(**values, password_hash=await run_in_threadpool(hash_password, data.password),
+                  password_change_required=True)
     db.add(row)
     await db.flush()
     actor = await db.scalar(select(Administrador.id_administrador).where(

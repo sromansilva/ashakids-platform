@@ -6,6 +6,23 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Nuevo flujo en desarrollo — 2026-10-10
+
+- Usuario autorizó comenzar en codex/2do-intento desde V32/ebb8632. Cierre esperado:
+  flujo maestro visible y operativo en la app, adaptando la maqueta actual a nuestro estilo.
+  No integrar dev/piero-dev ni migrar/escribir en BD compartida sin aprobación.
+- Primer avance: registro de padre e hijos en una transacción, activación obligatoria en
+  API/UI, revocación/rotación de sesiones y compatibilidad de códigos. ADR0013.
+- Pruebas nuevas en PostgreSQL17.6 local6544, BD NUEVA ashakids_test_flujo_v33_20261010:
+  191 backend aprobadas,25 omitidas,19 deprecaciones; incluye9 casos nuevos con SQL real.
+  Frontend257 previas+10 nuevas de activación; tipos/check/build correctos en sus rondas.
+  UI y cierre Git se registrarán en el relevo; no auditoría técnica nueva ni despliegue.
+- Juegos: usuario eligió **demostración rotulada primero**. No atribuirle persistencia
+  entre dispositivos ni usar progreso demo como evolución clínica. Pagos fuera de la web.
+- Resto del flujo sigue pendiente: introducción independiente, disponibilidad/reserva45min,
+  terapeuta intercambiable, plan/reportes y mundos mínimos. No declarar tarea completa
+  por cerrar este primer avance. Ver maestro y acceptance/NUEVO_FLUJO.md.
+
 ### Alcance nuevo acordado: flujo por tres roles — 2026-10-10
 
 - [Contexto maestro del flujo actualizado](FLUJO_MAESTRO_ACTUALIZADO.md): registro por asesor,

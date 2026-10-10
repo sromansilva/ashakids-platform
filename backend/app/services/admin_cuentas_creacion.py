@@ -7,6 +7,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import func, select, update, text
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
+from starlette.concurrency import run_in_threadpool
 
 from app.core.security import hash_password
 from app.models.auditoria import AuditoriaCambios
@@ -26,15 +27,17 @@ async def generar_codigo_usuario(db: AsyncSession, prefijo: str) -> str:
     if prefijo not in ("p", "t", "a"):
         raise ValueError("Prefijo inválido para código de usuario.")
 
-    # Buscar todos los códigos existentes con el prefijo
-    stmt = select(Usuario.codigo_usuario).where(Usuario.codigo_usuario.like(f"{prefijo}%"))
+    # Serializar hasta el commit por rol; incluir códigos anteriores en ambas cajas.
+    await db.execute(text("SELECT pg_advisory_xact_lock(:namespace, :role)"),
+                     {"namespace": 20261010, "role": ord(prefijo)})
+    stmt = select(Usuario.codigo_usuario).where(func.lower(Usuario.codigo_usuario).like(f"{prefijo}%"))
     result = await db.execute(stmt)
     codigos = result.scalars().all()
 
     max_num = 0
     pattern = re.compile(rf"^{prefijo}(\d{{5}})$")
     for cod in codigos:
-        match = pattern.match(cod)
+        match = pattern.match(cod.lower())
         if match:
             num = int(match.group(1))
             if num > max_num:
@@ -42,9 +45,11 @@ async def generar_codigo_usuario(db: AsyncSession, prefijo: str) -> str:
 
     siguiente = max_num + 1
     while True:
-        candidato = f"{prefijo}{siguiente:05d}"
+        if siguiente > 99999:
+            raise HTTPException(409, "No quedan códigos disponibles para este rol.")
+        candidato = f"{prefijo.upper()}{siguiente:05d}"
         # Verificar colisión
-        chk_stmt = select(Usuario.id_usuario).where(Usuario.codigo_usuario == candidato)
+        chk_stmt = select(Usuario.id_usuario).where(func.upper(Usuario.codigo_usuario) == candidato)
         chk_res = await db.execute(chk_stmt)
         if chk_res.scalar_one_or_none() is None:
             return candidato
@@ -68,7 +73,7 @@ async def crear_padre(
         )
 
     codigo = await generar_codigo_usuario(db, "p")
-    pwd_hash = hash_password(req.password)
+    pwd_hash = await run_in_threadpool(hash_password, req.password)
 
     user = Usuario(
         nombres=req.nombres.strip(),
@@ -76,6 +81,7 @@ async def crear_padre(
         codigo_usuario=codigo,
         email=clean_email,
         password_hash=pwd_hash,
+        password_change_required=True,
         activo=True,
     )
     db.add(user)
@@ -149,7 +155,7 @@ async def crear_terapeuta(
         )
 
     codigo = await generar_codigo_usuario(db, "t")
-    pwd_hash = hash_password(req.password)
+    pwd_hash = await run_in_threadpool(hash_password, req.password)
 
     user = Usuario(
         nombres=req.nombres.strip(),
@@ -157,6 +163,7 @@ async def crear_terapeuta(
         codigo_usuario=codigo,
         email=clean_email,
         password_hash=pwd_hash,
+        password_change_required=True,
         activo=True,
     )
     db.add(user)

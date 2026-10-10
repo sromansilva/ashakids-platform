@@ -4,12 +4,13 @@ from typing import List, Tuple
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_token, get_current_user
+from app.api.deps import get_current_token, get_session_user
 from app.core.config import settings
 from app.core.database import get_db
 from app.core.login_limiter import limit_login
 from app.models.auth import Usuario
-from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, UserResponse
+from app.schemas.auth import ActivationRequest, AuthResponse, LoginRequest, MessageResponse, UserResponse
+from app.services.activacion import activate_account
 from app.services.auth_service import (
     authenticate_user,
     create_user_session,
@@ -33,6 +34,7 @@ def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
         rol=main_role,
         roles=[r.upper() for r in roles],
         activo=user.activo,
+        password_change_required=getattr(user, "password_change_required", False) is True,
     )
 
 
@@ -112,7 +114,25 @@ async def logout(
     description="Retorna el perfil y roles reales del usuario correspondientes a la sesión activa en PostgreSQL.",
 )
 async def get_me(
-    current_data: Tuple[Usuario, List[str]] = Depends(get_current_user),
+    current_data: Tuple[Usuario, List[str]] = Depends(get_session_user),
 ):
     user, roles = current_data
     return build_user_response(user, roles)
+
+
+@router.post("/activate", response_model=AuthResponse, summary="Cambiar contraseña inicial")
+async def activate(
+    req: ActivationRequest,
+    response: Response,
+    request: Request,
+    identity: tuple = Depends(get_session_user),
+    db: AsyncSession = Depends(get_db, scope="function"),
+):
+    limit_login(request, "activate:" + identity[0].codigo_usuario)
+    user, roles, token = await activate_account(db, identity, req)
+    response.set_cookie(
+        key=settings.SESSION_COOKIE_NAME, value=token, httponly=True,
+        secure=settings.is_production, samesite="lax", path="/",
+        max_age=settings.SESSION_EXPIRE_HOURS * 3600,
+    )
+    return AuthResponse(user=build_user_response(user, roles), message="Contraseña actualizada. Cuenta activada.")

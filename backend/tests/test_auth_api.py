@@ -62,8 +62,8 @@ class FakeAsyncSession:
         params = stmt.compile().params
 
         if entity is Usuario:
-            codigo = next((v for k, v in params.items() if "codigo_usuario" in k), None)
-            user = self.users.get(codigo)
+            codigo = next((v for k, v in params.items() if "codigo_usuario" in k or "upper" in k), None)
+            user = next((u for c, u in self.users.items() if c.upper() == str(codigo).upper()), None)
             if user and not user.activo:
                 return MockScalarResult(None)
             return MockScalarResult(user)

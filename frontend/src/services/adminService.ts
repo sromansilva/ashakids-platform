@@ -15,6 +15,12 @@ import {
 import { HijoListResponse, OperacionHijoResponse } from "@/types/pacientes";
 
 export const adminService = {
+  async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
+    const { password, hijos, ...adulto } = payload;
+    return apiClient.post<OperacionCuentaResponse>("/admin/familias", {
+      ...adulto, dni: password, hijos: hijos ?? [],
+    });
+  },
   /**
    * Consulta el perfil del administrador autenticado (GET /api/v1/admin/me).
    * Requiere sesión activa y rol ADMIN.

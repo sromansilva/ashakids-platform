@@ -27,7 +27,7 @@ async def get_current_token(
     return None
 
 
-async def get_current_user(
+async def get_session_user(
     token: Optional[str] = Depends(get_current_token),
     db: AsyncSession = Depends(get_db, scope="function"),
 ) -> Tuple[Usuario, List[str]]:
@@ -50,6 +50,14 @@ async def get_current_user(
             headers={"WWW-Authenticate": "Cookie"},
         )
 
+    return auth_data
+
+
+async def get_current_user(
+    auth_data: Tuple[Usuario, List[str]] = Depends(get_session_user),
+) -> Tuple[Usuario, List[str]]:
+    if getattr(auth_data[0], "password_change_required", False) is True:
+        raise HTTPException(403, "Debe cambiar su contraseña inicial antes de continuar.")
     return auth_data
 
 

@@ -2,6 +2,12 @@
 
 ## Flujo de datos
 
+Avance2026-10-10 en codex/2do-intento: ADR0013 añade activación obligatoria de cuentas
+nuevas y alta familiar transaccional. /auth/me admite identidad pendiente; todas las
+dependencias de negocio exigen contraseña definitiva. React presenta activación antes de
+cualquier ruta, con cambio real y sesión rotada. Migración002 solo ensayada localmente;
+el runtime compartido sigueV26 y exige adopción coordinada antes de actualizarse.
+
 Requisitos futuros del [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md), 2026-10-10: introducción
 por niño, profesional intercambiable y disponibilidad requieren revisar relaciones/autorización.
 Las opciones técnicas están pendientes de implementación/ADR; runtime y decisiones implementadas

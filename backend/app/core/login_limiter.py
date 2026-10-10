@@ -23,7 +23,7 @@ class LoginLimiter:
 
     def check(self, ip: str, code: str):
         now = self.clock()
-        digest = blake2b(code.strip().encode(), digest_size=16).hexdigest()
+        digest = blake2b(code.strip().upper().encode(), digest_size=16).hexdigest()
         keys = (("ip", ip), ("pair", ip, digest))
         limits = (self.config.LOGIN_IP_LIMIT, self.config.LOGIN_PAIR_LIMIT)
         with self.lock:

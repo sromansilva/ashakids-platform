@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { AlertTriangle, Loader2, Mail, X } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { CrearPadrePayload, CrearTerapeutaPayload } from "@/types/auth";
 import { TabRole } from "./AdminCuentas";
+import { FamilyChildrenFields } from "./FamilyChildrenFields";
 
 interface AdminCuentasCrearModalProps {
   isOpen: boolean;
@@ -29,21 +30,44 @@ export function AdminCuentasCrearModal({
   onClose,
   onCrear,
 }: AdminCuentasCrearModalProps) {
+  const dialog = useRef<HTMLDivElement>(null);
+  const closeRef = useRef(onClose);
+  const busyRef = useRef(submitting);
+  closeRef.current = onClose;
+  busyRef.current = submitting;
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement as HTMLElement | null;
+    dialog.current?.querySelector<HTMLElement>("input")?.focus();
+    function keyboard(event: KeyboardEvent) {
+      if (event.key === "Escape" && !busyRef.current) closeRef.current();
+      if (event.key !== "Tab") return;
+      const controls = dialog.current?.querySelectorAll<HTMLElement>("button:not(:disabled), input:not(:disabled), select:not(:disabled)");
+      if (!controls?.length) return;
+      const first = controls[0], last = controls[controls.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    }
+    document.addEventListener("keydown", keyboard);
+    return () => { document.removeEventListener("keydown", keyboard); previous?.focus(); };
+  }, [isOpen]);
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh] border border-[#E8E5F4]">
+      <div ref={dialog} role="dialog" aria-modal="true" aria-labelledby="create-account-title" className="bg-white rounded-3xl w-full max-w-md shadow-2xl overflow-y-auto max-h-[90vh] border border-[#E8E5F4]">
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-[#E8E5F4]">
           <div>
-            <h2 className="font-black text-lg text-[#1C1135]">
+            <h2 id="create-account-title" className="font-black text-lg text-[#1C1135]">
               {tab === "PADRE" ? "Nueva cuenta de Padre / Familia" : "Nueva cuenta de Terapeuta"}
             </h2>
             <p className="text-xs text-[#7C6F9A] font-medium mt-0.5">
-              El código de 6 caracteres ({tab === "PADRE" ? "pXXXXX" : "tXXXXX"}) se generará automáticamente.
+              El código de 6 caracteres ({tab === "PADRE" ? "P00001" : "T00001"}) se generará automáticamente.
             </p>
           </div>
           <button
+            aria-label="Cerrar formulario"
+            disabled={submitting}
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-xl text-[#9E95B7] hover:bg-[#F5F3FF] transition-colors"
           >
@@ -51,9 +75,9 @@ export function AdminCuentasCrearModal({
           </button>
         </div>
 
-        <div className="px-6 py-5 flex flex-col gap-3.5">
+        <form onSubmit={e => { e.preventDefault(); if (!submitting) onCrear(); }} className="px-6 py-5 flex flex-col gap-3.5">
           {errorBanner && (
-            <div className="bg-red-50 text-red-800 border border-red-200 text-xs font-bold p-3 rounded-xl flex items-center gap-2">
+            <div role="alert" className="bg-red-50 text-red-800 border border-red-200 text-xs font-bold p-3 rounded-xl flex items-center gap-2">
               <AlertTriangle size={15} className="text-red-600 flex-shrink-0" />
               <span>{errorBanner}</span>
             </div>
@@ -62,8 +86,9 @@ export function AdminCuentasCrearModal({
           {/* Nombres y Apellidos */}
           <div className="grid grid-cols-2 gap-2.5">
             <div>
-              <label className="block text-xs font-extrabold text-[#7C6F9A] mb-1">Nombres *</label>
+              <label htmlFor="account-names" className="block text-xs font-extrabold text-slate-700 mb-1">Nombres *</label>
               <input
+                id="account-names" required maxLength={60} disabled={submitting}
                 value={tab === "PADRE" ? formPadre.nombres : formTerapeuta.nombres}
                 onChange={(e) =>
                   tab === "PADRE"
@@ -75,8 +100,9 @@ export function AdminCuentasCrearModal({
               />
             </div>
             <div>
-              <label className="block text-xs font-extrabold text-[#7C6F9A] mb-1">Apellidos *</label>
+              <label htmlFor="account-surnames" className="block text-xs font-extrabold text-slate-700 mb-1">Apellidos *</label>
               <input
+                id="account-surnames" required maxLength={80} disabled={submitting}
                 value={tab === "PADRE" ? formPadre.apellidos : formTerapeuta.apellidos}
                 onChange={(e) =>
                   tab === "PADRE"
@@ -91,8 +117,9 @@ export function AdminCuentasCrearModal({
 
           {/* Email */}
           <div>
-            <label className="block text-xs font-extrabold text-[#7C6F9A] mb-1">Correo electrónico *</label>
+            <label htmlFor="account-email" className="block text-xs font-extrabold text-slate-700 mb-1">Correo electrónico *</label>
             <input
+              id="account-email" required maxLength={150} disabled={submitting}
               type="email"
               value={tab === "PADRE" ? formPadre.email : formTerapeuta.email}
               onChange={(e) =>
@@ -107,20 +134,29 @@ export function AdminCuentasCrearModal({
 
           {/* Contraseña Inicial */}
           <div>
-            <label className="block text-xs font-extrabold text-[#7C6F9A] mb-1">
-              Contraseña inicial (Argon2id) *
+            <label htmlFor="account-dni" className="block text-xs font-extrabold text-slate-700 mb-1">
+              DNI — contraseña inicial *
             </label>
             <input
               type="password"
+              id="account-dni" disabled={submitting}
+              aria-label="DNI — contraseña inicial"
+              required
+              inputMode="numeric"
+              pattern="[0-9]{8}"
+              minLength={8}
+              maxLength={8}
+              autoComplete="off"
               value={tab === "PADRE" ? formPadre.password : formTerapeuta.password}
               onChange={(e) =>
                 tab === "PADRE"
                   ? setFormPadre((f) => ({ ...f, password: e.target.value }))
                   : setFormTerapeuta((f) => ({ ...f, password: e.target.value }))
               }
-              placeholder="Mínimo 6 caracteres"
+              placeholder="8 dígitos"
               className="w-full border border-[#E8E5F4] rounded-2xl px-3.5 py-2.5 text-sm font-medium text-[#1C1135] outline-none focus:border-violet-500"
             />
+            <p className="mt-2 text-sm text-slate-700">Se usará solo para el primer ingreso. El usuario deberá crear su contraseña personal antes de continuar.</p>
           </div>
 
           {/* Campos específicos Padre */}
@@ -200,8 +236,10 @@ export function AdminCuentasCrearModal({
             </>
           )}
 
+          {tab === "PADRE" && <FamilyChildrenFields children={formPadre.hijos ?? []} disabled={submitting} onChange={hijos => setFormPadre(f => ({ ...f, hijos }))} />}
           <div className="flex gap-2 pt-2">
             <button
+              type="button"
               onClick={onClose}
               disabled={submitting}
               className="flex-1 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-extrabold text-[#7C6F9A] hover:bg-[#F5F3FF] transition-colors"
@@ -209,7 +247,7 @@ export function AdminCuentasCrearModal({
               Cancelar
             </button>
             <button
-              onClick={onCrear}
+              type="submit"
               disabled={
                 submitting ||
                 (tab === "PADRE"
@@ -227,7 +265,7 @@ export function AdminCuentasCrearModal({
               Crear cuenta
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

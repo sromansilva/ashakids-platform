@@ -20,6 +20,8 @@ from app.schemas.admin import (
 from app.schemas.pacientes import HijoListResponse, OperacionHijoResponse
 from app.schemas.perfiles import AdminProfileResponse, AdministradorData
 from app.services import pacientes_service
+from app.schemas.familias import FamiliaCrear, FamiliaCreada
+from app.services.familias import registrar_familia
 from app.services.admin_service import (
     activar_cuenta,
     actualizar_cuenta,
@@ -32,6 +34,16 @@ from app.services.admin_service import (
 )
 
 router = APIRouter(prefix="/admin", tags=["Administración"])
+
+
+@router.post("/familias", response_model=FamiliaCreada, status_code=201,
+             summary="Registrar padre e hijos")
+async def post_familia(
+    req: FamiliaCrear,
+    identity: tuple = Depends(require_admin),
+    db: AsyncSession = Depends(get_db, scope="function"),
+):
+    return await registrar_familia(db, identity, req)
 
 
 @router.get(

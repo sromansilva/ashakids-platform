@@ -6,6 +6,37 @@ No es un registro automático: quien termina debe guardar y compartir su actuali
 
 ## Punto de continuación actual
 
+### Registro familiar y activación — 2026-10-10, avance V33
+
+- Objetivo autorizado tras EMPECEMOS: adaptar maqueta/código al maestro hasta mostrar y
+  verificar el recorrido completo. Trabajo exclusivo codex/2do-intento desde V32/ebb8632.
+  Este avance no cierra el flujo entero. Integración dev/piero-dev exige aprobación posterior.
+- Registro padre+hijos transaccional, DNI solo hash inicial, obligación persistente, guardas
+  API/rutas directas y rotación/revocación de sesiones. Códigos compatibles sin distinguir
+  caja, generación concurrente, índice único. ADR0013, migración002, formularios reales.
+- SQL solo en BD NUEVA local PG17.6/6544 ashakids_test_flujo_v33_20261010, runtime local
+  no superuser y propietario separado para fixture. Sin acceso/escrituras/migración Supabase.
+  No .env habitual editado, despliegue ni integración en otras ramas. Entorno API8002/web5175.
+- Backend191 aprobadas/25 omitidas/19 avisos con SQL local habilitado; frontend267 aprobadas
+  (10 nuevas UI/cliente, incluida fecha al añadir hijo),25 rutas; tipos/check323/build correctos.
+  No nueva auditoría ni calificación. Evidencia docs/evidence/flow-v33/.
+- UI real: asesor ingresó, creó familia P90003 con dos hijos, obtuvo confirmación; ingreso
+  de familia presenta activación antes del panel. Activación se inspeccionó en1280x720 y
+ 390x844 efectivos; envío/cambio de clave probado por API SQL, no operado en navegador.
+- Fallos corregidos: fake SQL sin comparación de caja, email .invalid, limitador en suite,
+  URL/CA remota heredadas en procesos locales. Primer ensayo de fechas reveló evento input
+  sin cambio de estado; onInput/onChange y nueva alta de dos hijos correctos. Parche rechazado
+  sin cambios parciales y timeout inicial de inventario navegador; reentrada correcta.
+- Juegos: usuario eligió demostración rotulada primero. Plan educativo persistido se
+  implementará aparte del progreso demo. Pagos fuera; soporte/reseñas/Zoom automático no son
+  condiciones del mínimo. Contratos antiguos de altas con password larga conservan activación;
+  pantalla alternativa Usuarios aún requiere adaptación al alta institucional.
+- Siguiente: disponibilidad semanal/bloqueos, introducción independiente por niño, reserva
+  automática45min y profesional separado del plan; cerrar criterios solicitados al usuario.
+  Después plan/reporte/historial/PDF, continuidad con segundo terapeuta y juegos mínimos.
+- V33 cierra este avance de registro/activación, no el flujo entero. Commit/push únicamente
+  codex/2do-intento; comprobar SHA efectivo en Git. dev/feat/piero-dev siguenV32.
+
 ### Contexto del flujo actualizado — 2026-10-10
 
 - Objetivo: condensar nuevo flujo de los tres roles y estimar impacto en tablas desde V26.

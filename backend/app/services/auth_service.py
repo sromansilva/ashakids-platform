@@ -10,7 +10,7 @@ import logging
 import secrets
 from typing import List, Optional, Tuple
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from starlette.concurrency import run_in_threadpool
@@ -49,7 +49,8 @@ async def authenticate_user(
         .options(
             selectinload(Usuario.roles_asignados).selectinload(UsuarioRol.rol)
         )
-        .where(Usuario.codigo_usuario == clean_codigo, Usuario.activo == True)
+        .where(func.upper(Usuario.codigo_usuario) == clean_codigo.upper(), Usuario.activo == True)
+        .with_for_update()
     )
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
@@ -141,8 +142,6 @@ async def get_user_by_session(
 
     # Actualizar marca de última actividad
     sesion.ultima_actividad = now
-    await db.flush()
-
     roles = [
         ur.rol.nombre_rol
         for ur in sesion.usuario.roles_asignados

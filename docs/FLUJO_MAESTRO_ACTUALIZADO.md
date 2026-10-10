@@ -156,8 +156,13 @@ clínico completo ni reconocimiento automático de pronunciación. Cuentos, canc
 trabalenguas y juegos pueden ser tipos de contenido de esas áreas; no sustituyen las tres
 categorías acordadas como si fueran cinco mundos definitivos.
 
+**Decisión posterior,2026-10-10:** el usuario eligió demostración rotulada primero. La entrega
+mínima usa progreso educativo de demostración y no alimenta analítica clínica; persistencia
+servidor del progreso se difiere. El resto de las precisiones de niveles/criterios sigue abierto.
+
+Antecedente de la precisión:
 La petición inicial incluye progreso guardado por niño; la aclaración posterior acepta simular
-la progresión, pero no precisa persistencia de esa entrega. **Pendiente:** demo explícita o
+la progresión, pero entonces no precisó persistencia de esa entrega. En esa fecha estaba pendiente demo explícita o
 persistencia servidor acotada. Demo se rotula y no alimenta analítica clínica. Persistencia real
 conserva progreso al recargar/reingresar y aísla niños/cuentas. Almacenamiento local no demuestra
 continuidad entre dispositivos. Cantidad de niveles, criterios de finalización, rachas/insignias
