@@ -37,7 +37,7 @@ compensatoria para fallos locales posteriores y el enlace manual HTTPS sigue res
 terapeuta asignado. `007_zoom_meetings.sql` amplía las columnas a `VARCHAR(64)`/`VARCHAR(2048)` con
 comprobaciones; no se ejecutó sobre ninguna base compartida.
 
-Validación: backend `157 passed, 75 skipped`; frontend `281 passed`; `npm run typecheck`, `npm run build`,
+Validación: backend `159 passed, 75 skipped`; frontend `281 passed`; `npm run typecheck`, `npm run build`,
 `compileall`, `knowledge refresh` y `knowledge check` correctos. No se versionaron secretos, `backend/.env`,
 certificados locales ni salidas de auditoría del usuario. Siguiente: configurar y probar una cuenta Zoom
 técnica en una base aislada, aplicar 007 con respaldo, y ejecutar aceptación manual autorizada antes de Render.

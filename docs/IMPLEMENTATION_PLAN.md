@@ -14,7 +14,7 @@ reuniones Zoom en `POST /api/v1/citas`. La migración `backend/scripts/migration
 queda sin ejecutar, con respaldo y verificación indicados para una base aislada. Las credenciales
 Zoom permanecen pendientes y `ZOOM_ENABLED=false` conserva el enlace manual autorizado.
 
-Validación ejecutada: backend `157 passed, 75 skipped`; frontend `281 passed`; typecheck, build,
+Validación ejecutada: backend `159 passed, 75 skipped`; frontend `281 passed`; typecheck, build,
 compilación Python y knowledge map `check` correctos. No se tocó `.env`, la base compartida ni se
 publicó la rama.
 
