@@ -1,3 +1,17 @@
+## Especificación de componentes UI — V47 / 2026-10-10
+
+Nuevo paquete de diseño aprobado como dirección visual: [guía Markdown](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md)
+y [lámina PNG](design/ashakids-ui-kit-v1/ASHAKIDS_UI_KIT.png). Tokens, CSS copiable,
+componentes, estados, accesibilidad, contratos de interacción y mapa de adaptación.
+Violeta/verde agua/naranja, Nunito, botones con relieve y cristal suave; Ashi robot LED.
+Es especificación futura, no adopción en runtime: DESIGN.md raíz sigue describiendo V38.
+Los recursos transparentes del robot, eventos y migración de pantallas quedan pendientes.
+Ashi.tsx actual es oso SVG; AshhiFloat ya existe y debe adaptarse sin duplicar el dock.
+Verificación nueva: CSS PostCSS120reglas/55variables,13pares texto>=4.5:1/borde>=3:1,
+enlaces/fences y hash PNG1024x1536 idéntico al aprobado. No render ni pruebas funcionales
+nuevas; no API/BD/credenciales modificadas. Siguiente: galería aislada y comparación visual
+antes de migrar componentes. Base consultada bb7d166/V46, codex/2do-intento y dev.
+
 ## Fuente de etapa y aceptación humana — V46 / 2026-10-10
 
 Solicitud posterior incorporada: REGISTRO_INCONSISTENCIAS_Y_CRITERIOS.md con doce fichas

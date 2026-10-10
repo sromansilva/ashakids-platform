@@ -1,3 +1,28 @@
+## V47 — Documentación del sistema de componentes UI / 2026-10-10
+
+Objetivo: entregar la maqueta aprobada y una especificación textual implementable por IA.
+Base: codex/2do-intento y dev, bb7d166df4a7201267d9cc88ad6861a137a49f8a/V46;
+working tree inicialmente limpio, referencias remotas coincidentes tras fetch.
+Entregables: docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md y ASHAKIDS_UI_KIT.png.
+La imagen aprobada se copió sin modificación; PNG1024x1536, SHA256
+de88da159b984152f6d7fa5157ea615d1b97761bb5645ea1647b5384d1b211a4.
+Guía: tokens, CSS completo scoped, HTML, variantes/estados, semántica, movimiento,
+responsive propuesto y mapeo a Btn/Inp/Crd/Bdg/Ashi/AshhiFloat mediante fuentes leídas.
+Graphify check vigente; query1500 devuelve relaciones truncadas, se confirmaron archivos
+concretos. No fuentes runtime cambiadas: no refresh necesario para este corte documental.
+Verificación nueva: PostCSS parseó1bloque/120reglas/55variables, sin tokens indefinidos
+excepto parámetro de progreso con fallback documentado. Trece contrastes de texto sólido
+>=4.5:1 y borde de campo4.20:1; enlaces locales/fences/hash correctos. git diff --check.
+Sin fallos de estos checks; no pruebas funcionales, render de UI ni auditoría técnica nueva.
+No se reemplazó DESIGN.md raíz ni se declaró migración; describe todavía V38.
+Pendiente: assets robot con alpha real, galería aislada, eventos y adopción gradual con
+capturas/pruebas. Ashi existente es oso SVG; no inventar fidelidad usando emoji o CSS.
+Incidencia de cierre: primer commit rechazado por identidad Git ausente. Se reutiliza para
+el comando la identidad noreply de los cinco commits anteriores, sin cambiar configuración
+global. El primer cambio de ramas no integró novedades porque aún no existía el commit.
+Cierre: commit V47 documental, integración/publicación en dev y rama propia; verificar SHA
+con Git. Próxima acción: implementar galería siguiendo guía sin alterar negocio/API/BD.
+
 ## V46 — Documentación de flujo, BD y equipo / 2026-10-10
 
 Steering del usuario: registrar inconsistencias para unificar criterios. Incorporado
