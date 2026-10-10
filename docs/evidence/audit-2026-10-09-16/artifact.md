@@ -1,0 +1,14 @@
+# Contrato de documentos de auditoría
+Referencias retenidas e inventario SHA256: template-inventory.json. Ambos originales se conservan byte a byte. Frontend 5 páginas; backend 7, todas inspeccionadas en reference-front/back PNG. Render canónico no disponible por falta de LibreOffice; conversión Word COM de solo lectura y Poppler usada como alternativa documentada.
+
+## Sistema conservado
+Una sección vertical Letter 21.59 x 27.94 cm; márgenes superior/inferior 1.778 cm y laterales 1.905 cm; encabezado/pie a 1.27 cm. Word similar a los anteriores solicitados; PDF académico independiente A4 turquesa según README. Sin columnas ni primera página diferente. Calibri normal 11 pt, negro, espacio posterior 7 pt. Title 25 pt azul oscuro, espacio posterior 15; Heading 1 15 pt negro; Heading 2 13 negro. Sin bandas/cajas nuevas. Encabezado fecha 9 octubre 2026 y pie PAGE conservados. Tablas con cabecera gris claro, bordes D9D9D9 y filas suaves alternadas; tamaño de cuerpo 10 pt; cabecera repetida; sin alturas fijas, columnas proporcionales a contenido y padding 70 twips.
+
+## Mapa de slots
+word/document.xml/w:body, excluyendo w:sectPr: cuerpo completo editable porque nueva auditoría. Reescribir título, metadatos, puntuación, matrices, hallazgos y ocho secciones; no trasladar cifras ni fallos históricos como nuevos. Permite clonar párrafos Normal, Title, Heading 1 y tablas del cuerpo para los datos nuevos. Imágenes anteriores son reemplazables/eliminables y no aparecen en el documento nuevo; evidencia nueva puede añadirse con relación nueva. Capacidad orientativa 5-7 páginas, ampliable sin reducir tipo ni recortar tablas. Saltos manuales separan bloques coherentes; no usar páginas de tablas extensas si el inventario JSON basta.
+
+## Preservación y actualización
+w:sectPr, word/styles.xml, numbering, tema, encabezados/pies y sus relaciones, customXml y partes opacas son preserve-only, restauradas byte a byte tras autoría python-docx. Permitidas modificaciones document.xml, core.xml metadatos, settings.xml updateFields, relaciones de imágenes nuevas y Content_Types si necesario. Los PAGE se evalúan en Word al exportar; updateFields true para abrir. Nuevas auditorías comparten fecha del encabezado. La referencia tiene Title navy; se conserva como autoridad visual solicitada, desviación intencional frente a regla genérica de títulos negros. PDF usa el generador académico existente.
+
+## Gates
+Validar SHA de originales e inventario de partes preserve-only, geometría y estilos. Intentar render_docx.py y registrar limitación; exportar copias sin guardar con Word y renderizar PNG de TODAS las páginas finales. Inspeccionar sin recortes, superposición, páginas vacías ni encabezados huérfanos; numeración correcta. Comparar visualmente chrome y patrones con referencia; cambios de contenido/paginación permitidos en cuerpo. Buscar texto histórico/credenciales y datos reales antes de publicar.

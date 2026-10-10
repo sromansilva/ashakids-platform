@@ -1,0 +1,326 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/login",
+    "recorded": 15,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/logout",
+    "recorded": 16,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me",
+    "recorded": 8,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/me",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/hijos",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/padres/hijos",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/hijos/{id_paciente}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/padres/hijos/{id_paciente}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/padres/hijos/{id_paciente}",
+    "recorded": 0,
+    "positive": false
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/padres/hijos/{id_paciente}/inactivar",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/terapeutas/me",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/me",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas/{id_usuario}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/admin/cuentas/{id_usuario}",
+    "recorded": 0,
+    "positive": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/admin/cuentas/padres",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/admin/cuentas/terapeutas",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/suspender",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/activar",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/hijos",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/pacientes/{id_paciente}/reactivar",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/usuarios",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/usuarios",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/usuarios/{key}",
+    "recorded": 5,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/usuarios/{key}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/pacientes",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes/{key}",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/pacientes/{key}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/pacientes/{key}",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes/{key}/tratamientos",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/tratamientos",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/citas",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/citas",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/citas/{key}",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/citas/{key}",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/citas/{key}/estado",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones/{key}/iniciar",
+    "recorded": 4,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones/{key}/cerrar",
+    "recorded": 6,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}/reporte",
+    "recorded": 6,
+    "positive": true
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/sesiones/{key}/reporte",
+    "recorded": 5,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}/reporte/pdf",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/contactos",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/conversaciones",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/{key}",
+    "recorded": 4,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/{key}/mensajes",
+    "recorded": 2,
+    "positive": true
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/conversaciones/{key}/mensajes",
+    "recorded": 3,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/health",
+    "recorded": 1,
+    "positive": true
+  },
+  {
+    "method": "GET",
+    "path": "/health/ready",
+    "recorded": 1,
+    "positive": true
+  }
+]

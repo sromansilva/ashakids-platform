@@ -1,0 +1,274 @@
+[
+  {
+    "kind": "Frontend",
+    "path": "C:\\Users\\piero\\Desktop\\ASHAKIDS\\output\\auditoria-real-2026-10-09\\Auditoria_Frontend_AshaKids.docx",
+    "sha256": "2ad2da140fe7bf6e4996e3d41677858e35dd33d53f47883263d812075d1017f8",
+    "pages": 5,
+    "section_count": 1,
+    "parts": [
+      {
+        "part": "[Content_Types].xml",
+        "size": 2148,
+        "sha256": "4da393691eba08c88ea3318c862326b98b84af6207772038d5210a976425bec6",
+        "scope": "editable"
+      },
+      {
+        "part": "_rels/.rels",
+        "size": 590,
+        "sha256": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/document.xml",
+        "size": 81702,
+        "sha256": "3fdc4d4b7961df503de05c9b33acb9cab86b82a627c972867e81a54ec940f92b",
+        "scope": "editable"
+      },
+      {
+        "part": "word/_rels/document.xml.rels",
+        "size": 1747,
+        "sha256": "03469fb12eec6f5861dbe953fc2c7402e31c2b3eeb6757f56d3720da179e151e",
+        "scope": "editable"
+      },
+      {
+        "part": "word/footnotes.xml",
+        "size": 3158,
+        "sha256": "4b6a7aef74ade02ab63181cee4d5ace450d025b45ae6fb17097f618eeabf2b59",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/endnotes.xml",
+        "size": 3152,
+        "sha256": "b9713134a7d0f97be2aa05b553509f1d8b8d960b484dc369a47838fb04d87d4f",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/header1.xml",
+        "size": 2989,
+        "sha256": "df64a3cc893c55507a52476f3abd13b90d97618fb7f273360301c064384bec41",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/footer1.xml",
+        "size": 3089,
+        "sha256": "443959a2871b407b264bf2a0963e327a9e295840ddc6859313a016deedd5f108",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/media/image1.png",
+        "size": 99510,
+        "sha256": "564f2e2c4d23a18f8d25b6785118dfae794c2ed44869e480306362560b31d9b0",
+        "scope": "editable"
+      },
+      {
+        "part": "word/theme/theme1.xml",
+        "size": 7643,
+        "sha256": "b2295d3198893d2c03f5e584c749a15751b798aefdcd9bee2889f13903d68cb2",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/settings.xml",
+        "size": 3614,
+        "sha256": "14c81814652fa3af04ea242f1062b2069c47e8be64fb2f8e6b7c9b23282d9909",
+        "scope": "editable"
+      },
+      {
+        "part": "customXml/item1.xml",
+        "size": 260,
+        "sha256": "fd38bf9d14299ec0909557ff8b08b38816a6860d488f11a7c53dc63eb13ee44f",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "customXml/itemProps1.xml",
+        "size": 341,
+        "sha256": "4c998dc0bc6eb6f38ecc20856255fff6891d5b6345a7260698c53063da4bc5f2",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/numbering.xml",
+        "size": 7503,
+        "sha256": "e27904f13cdede71f5f0ceb2a38dc3036fa8ff7852dd550584e785bc0e9f82dc",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/styles.xml",
+        "size": 345197,
+        "sha256": "a0068f5a867035bec211a28b484623f6a5f6896ec1c7637cc29d02087e2c87a4",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/webSettings.xml",
+        "size": 1046,
+        "sha256": "ee07406206c299bd15efc79295c9a223911089ff30b81b89c17dd93064d33d58",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/fontTable.xml",
+        "size": 2929,
+        "sha256": "80afe49c53877d33b6047ff8675986a50411b025dc09721369b573151c58ab63",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "docProps/core.xml",
+        "size": 824,
+        "sha256": "42c00ff7256ee5ec116a46b5e371c3827c045226b2fc0aa80f08a831a8e9bab5",
+        "scope": "editable"
+      },
+      {
+        "part": "docProps/app.xml",
+        "size": 1043,
+        "sha256": "fd9f62e573baeee6976a7c84c4a6367e4988f7ed45637503f72627372a6489cd",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "customXml/_rels/item1.xml.rels",
+        "size": 296,
+        "sha256": "80482f86e196171d66001e0e74d1900408a3aaf2463e54005d251b5f2db9a0b0",
+        "scope": "preserve-only"
+      }
+    ],
+    "geometry_cm": {
+      "page_width": 21.59,
+      "page_height": 27.94,
+      "top_margin": 1.778,
+      "bottom_margin": 1.778,
+      "left_margin": 1.905,
+      "right_margin": 1.905,
+      "header_distance": 1.27,
+      "footer_distance": 1.27
+    }
+  },
+  {
+    "kind": "Backend",
+    "path": "C:\\Users\\piero\\Desktop\\ASHAKIDS\\output\\auditoria-real-2026-10-09\\Auditoria_Backend_AshaKids.docx",
+    "sha256": "06861189f6e800643739d550eb228a2f9e474fd27223575ca3a5c936890ace87",
+    "pages": 7,
+    "section_count": 1,
+    "parts": [
+      {
+        "part": "[Content_Types].xml",
+        "size": 2097,
+        "sha256": "129acef717c8a427fcea9127175c6e4c8bb980710299dcfbbdd7ebc106a1f2c7",
+        "scope": "editable"
+      },
+      {
+        "part": "_rels/.rels",
+        "size": 590,
+        "sha256": "e19238d7a71fa7a2490776252686f70e2de6238c87cd509b5e3a3cc07c2ea4df",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/document.xml",
+        "size": 136561,
+        "sha256": "bec65cf57fabd24a32739b02a8ade32513bce206949bff6e5e276720bf267294",
+        "scope": "editable"
+      },
+      {
+        "part": "word/_rels/document.xml.rels",
+        "size": 1614,
+        "sha256": "32a198ede26c7c2c56610626dbb9f196e778dfd92f1ad766cf1791d4738c9c05",
+        "scope": "editable"
+      },
+      {
+        "part": "word/footnotes.xml",
+        "size": 3158,
+        "sha256": "cd0aba78637c9408160bc2d75e7aaeaf62a5295db300671f28533d8886446456",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/endnotes.xml",
+        "size": 3152,
+        "sha256": "85b9a3a53addb1d69ddc44885ba1ec541e1628fb2a045d791bfd6f56378378ac",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/header1.xml",
+        "size": 2989,
+        "sha256": "ce122ee8df55b4f9e3a65b87b9b64447a6fd7a404420bdcec7474fd96db4f20b",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/footer1.xml",
+        "size": 3089,
+        "sha256": "7cd61316ac06c81b80bc0099c539799c70674c3c3f411ae0d39ef1220a4bf6a7",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/theme/theme1.xml",
+        "size": 7643,
+        "sha256": "b2295d3198893d2c03f5e584c749a15751b798aefdcd9bee2889f13903d68cb2",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/settings.xml",
+        "size": 3614,
+        "sha256": "f066fff85dee508613705b8bca9bfb751de93e18359f6ad1f677b268beb8a049",
+        "scope": "editable"
+      },
+      {
+        "part": "customXml/item1.xml",
+        "size": 260,
+        "sha256": "fd38bf9d14299ec0909557ff8b08b38816a6860d488f11a7c53dc63eb13ee44f",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "customXml/itemProps1.xml",
+        "size": 341,
+        "sha256": "4c998dc0bc6eb6f38ecc20856255fff6891d5b6345a7260698c53063da4bc5f2",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/numbering.xml",
+        "size": 7500,
+        "sha256": "521a45244a87d43ed832e435dcbde11bd21ba8f4828c283c2e2a638cccd6aa42",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/styles.xml",
+        "size": 345197,
+        "sha256": "a0068f5a867035bec211a28b484623f6a5f6896ec1c7637cc29d02087e2c87a4",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/webSettings.xml",
+        "size": 1046,
+        "sha256": "ee07406206c299bd15efc79295c9a223911089ff30b81b89c17dd93064d33d58",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "word/fontTable.xml",
+        "size": 2929,
+        "sha256": "80afe49c53877d33b6047ff8675986a50411b025dc09721369b573151c58ab63",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "docProps/core.xml",
+        "size": 824,
+        "sha256": "42c00ff7256ee5ec116a46b5e371c3827c045226b2fc0aa80f08a831a8e9bab5",
+        "scope": "editable"
+      },
+      {
+        "part": "docProps/app.xml",
+        "size": 1045,
+        "sha256": "b1aea60f6a782d645299bd0732ef65012713a5523210d4d6f981598ebace5f7a",
+        "scope": "preserve-only"
+      },
+      {
+        "part": "customXml/_rels/item1.xml.rels",
+        "size": 296,
+        "sha256": "80482f86e196171d66001e0e74d1900408a3aaf2463e54005d251b5f2db9a0b0",
+        "scope": "preserve-only"
+      }
+    ],
+    "geometry_cm": {
+      "page_width": 21.59,
+      "page_height": 27.94,
+      "top_margin": 1.778,
+      "bottom_margin": 1.778,
+      "left_margin": 1.905,
+      "right_margin": 1.905,
+      "header_distance": 1.27,
+      "footer_distance": 1.27
+    }
+  }
+]

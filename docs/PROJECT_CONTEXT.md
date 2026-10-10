@@ -6,6 +6,46 @@ los apartados anteriores conservan su entorno y SHA históricos. El PDF de refer
 
 ## Entrada única del equipo
 
+### Auditorías finales frontend y backend - cortes16 y17
+
+- Dos Word separados y PDF académicos, seis páginas cada uno; fuentes docs/audits/ y
+  evidencia sanitizada por corte. Puntajes técnicos propios:frontend91/100, backend91/100.
+  No son notas del profesor ni certificaciones. Ejecución9oct21:14-21:33 Lima.
+- Base auditada piero-dev V25/7fb36680e0c5856036bcf1de69263366247e9126, igual a dev y
+  origin/feat/piero-dev al iniciar. Hosting continúa V24/62905fc, Auto Deploy Off.
+  Cierre V26_Auditoria_Frontend_Backend_HTTPS:informes/harness/render Word, sin cambios app/BD.
+  Comprobar publicación y SHA efectivo en Git; no atribuir una imagen nueva a este cierre.
+- Resultados nuevos:257 componentes+25 rutas/tipos/check320 archivos/build6.78s;
+  npm audit productivo0 vulnerabilidades. Backend138 unidades/19 deprecaciones;144 HTTPS
+  finales esperados (101+29+14),52/54 contratos positivos;2 DELETE físicos omitidos.
+  Hosting excluye raíz JSON local en OpenAPI, por eso54 y no55 del inventario anterior.
+- TLS1.3 CERT_REQUIRED/hostname, ACL/RLS y modelo READ ONLY:26 tablas,154 columnas
+  visibles al runtime,92 restricciones,71 índices,19 modelos sin diferencias;58 políticas.
+  Concurrencia y revocación repetidas. Ajuste SCRAM se cita como evidencia heredada de15.
+- Cohorte nueva AUDITORIA17_20261010_021551:usuarios78..83,pacientes97/98,
+  tratamientos17/18,citas14/15,sesiones13/14,chat7. SQL final:1 reporte completo,3 mensajes
+  (tercero UI),0 auth nuevas sin revocar. Sin modificación de datos anteriores/borrado físico.
+- UI tres roles IAB1280x720; admin filtrado antes de capturar. Sesión familiar previa
+  cerrada con autorización adicional expresa. Sin nueva aceptación móvil:override390x844
+  no cambió tamaño efectivo y se restableció. No atribuir esa limitación al producto.
+- F16-01 P1:editar reporte existente envía3 metadatos de lectura, backend422; conserva
+  reporte previo y formulario. ReportWorkspace:14/SessionActions:32 -> editor:18 ->
+  clinicalService:37. Separar4 campos al iniciar/serializar y añadir regresión con objeto real;
+  no relajar extra=forbid. F16-02 contraste2.575:1 en etiquetas12px; F16-03 botón ojo sin
+  nombre15x15 y Recordarme div sin semántica/estado sin uso. Son pendientes, no corregidos.
+- Orden validado por usuario:entregar auditorías -> corregir reporte/accesibilidad -> verificar
+  -> propuesta visual para validación -> implementación UX/UI por módulos. No rediseñar todavía.
+  Restauración/carga/TTL natural/rotación anterior pendientes. Pagos excluidos.
+- Fallos de entorno:spawnEPERM Vitest/Vite;tmpfixturesWinError5 pytest; reruns correctos.
+  Harness:SyntaxError,Accept HTML omitido y serialización bytes corregidos antes del cómputo.
+  Word render_docx.py sin LibreOffice/perfiltemp; Word COM read-only+Poppler como alternativa,
+  todas las páginas inspeccionadas y cierre backend huérfano reparado. No afirmar éxito canónico.
+- [Word frontend](../output/auditoria-final-2026-10-09/Auditoria_Frontend_AshaKids_2026-10-09-16.docx),
+  [Word backend](../output/auditoria-final-2026-10-09/Auditoria_Backend_AshaKids_2026-10-09-17.docx).
+  Informes audits/auditoria-2026-10-09-16.md y17.md. Reproducción:commands.md de cada corte,
+  harness sanitizado solo evidencia; no reutilizar cohortes cerradas como pruebas nuevas.
+  No ejecutar pytest general/phase2_sandbox en Supabase:fixtures destructivas.
+
 ### Despliegue Render HTTPS - corte2026-10-09-15
 
 - URL pública https://ashakids.onrender.com; servicio ashakids/srv-db4penqjnfac7382hjhg,

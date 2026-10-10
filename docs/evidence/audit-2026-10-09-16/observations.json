@@ -1,0 +1,41 @@
+{
+  "scope": "IAB browser 1280x720; three new audit roles, no new mobile capture",
+  "marker": "AUDITORIA17_20261010_021551",
+  "report_edit": "Failed twice: Extra inputs are not permitted; reload retains original; independent API 422 confirms 3 metadata keys",
+  "message_ui": "Created third message in conversation7; professional confirmed after role switch",
+  "admin": "New accounts filtered before screenshot",
+  "contrast": {
+    "foreground": "#9E95B7",
+    "background": "#F5F3FF",
+    "ratio": 2.575,
+    "font_px": 12,
+    "component": "ReportWorkspace.tsx:20"
+  },
+  "login": {
+    "password_button_accessible_name": false,
+    "password_button_size": [
+      15,
+      15
+    ],
+    "remember_semantic_input": false,
+    "remember_used_in_request": false
+  },
+  "viewport_attempt": {
+    "requested": [
+      390,
+      844
+    ],
+    "actual": [
+      1280,
+      720
+    ],
+    "result": "Environment override ineffective even after reload; reset before finishing"
+  },
+  "overflow_desktop": {
+    "login": false,
+    "admin": false,
+    "mundo": false,
+    "report_editor": false
+  },
+  "auth_cleanup": "SQL independently confirms0 new unrevoked auth sessions"
+}

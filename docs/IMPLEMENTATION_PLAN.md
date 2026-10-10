@@ -4,6 +4,16 @@ Actualizado: 2026-10-09. Entrega confirmada: 2026-10-09 18:00 America/Lima. Pers
 Alcance: [contexto maestro](PROJECT_CONTEXT.md). Ejecución: [avance y relevos](IMPLEMENTATION_PROGRESS.md).
 La numeración es nueva y no equivale a las fases históricas de refactorización.
 
+## Prioridad vigente después de las auditorías16 y17
+
+La revisión final HTTPS entrega Word separados y PDF, frontend91/100 y backend91/100.
+No declara completas todas las extensiones de las siete fases. Las entradas de abajo
+conservan su fecha histórica; el hosting gratuito ya está operativo en V24.
+Orden validado:entregar auditorías; corregir guardado de reportes existentes y accesibilidad
+(editor/login); verificar; preparar propuesta visual y validarla antes de implementar UX/UI;
+aplicar por módulos y aceptar desktop/móvil. Separar cuatro campos editables de metadatos
+al enviar el reporte; mantener backend estricto. No ampliar pagos, IA, juegos o permisos.
+
 ## Principios de implementación
 
 Conservar React -> HTTP/JSON -> FastAPI -> SQLAlchemy/asyncpg -> PostgreSQL.
