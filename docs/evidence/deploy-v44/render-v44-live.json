@@ -1,0 +1,11 @@
+{
+  "origin": "https://ashakids.onrender.com",
+  "verified_source_sha": "1fc19b36598cf96cbc89d36a85fb9ca6c062eda3",
+  "deploy_id": "dep-db57tms9v7es738s1aa0",
+  "status": "Live",
+  "trigger": "Auto-Deploy",
+  "duration_seconds": 48.2,
+  "evidence_source": "Render Dashboard UI",
+  "parent_access": "Human confirmed creation and login",
+  "therapist_registration": "Empty form visible; submission and login unverified"
+}

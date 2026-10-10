@@ -6,6 +6,10 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+V45 registra V44Live/1fc19b3 y confirmación humana de creación/ingreso PADRE. Alta TERAPEUTA
+ya existe y su formulario se abrió en Render sin enviar; pendiente verificar alta/activación/
+ingreso, no implementar otra pantalla. Cierre documental, evidencia deploy-v44.
+
 V44 adopta002–006 en BD compartida con respaldo, filas/ACL originales preservadas y runtime
 restringido. V43UI y flujo nuevo ya desplegados; ADMIN login confirmado. Tutor/terapeuta
 requieren sus credenciales vigentes para confirmar ingreso; turnos deben publicarse.

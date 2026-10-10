@@ -1,3 +1,11 @@
+# Confirmación V45
+
+V44 ya está Live en Render y ambas ramas sincronizadas. Usuario confirmó alta/acceso PADRE.
+Alta terapeuta YA existe: Cuentas → pestaña Terapeutas → Nueva cuenta. DNI inicial,
+código generado y cambio obligatorio de contraseña. El agente abrió el formulario sin enviar.
+Queda verificar alta/activación/ingreso terapeuta; no implementar un formulario duplicado.
+Disponibilidad debe publicarse desde Configuración. V45 es documentación, sin lógica nueva.
+
 # Continuidad V44
 
 Flujo V33–V37 y diseño V38–V43 desplegados; BD compartida actualizada002–006 con respaldo.

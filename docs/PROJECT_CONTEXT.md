@@ -1,3 +1,23 @@
+## Confirmación de despliegue y acceso — V45 / 2026-10-10
+
+Render V44/1fc19b36598cf96cbc89d36a85fb9ca6c062eda3 confirmado Live, deploy
+dep-db57tms9v7es738s1aa0, Auto-Deploy48.2s. dev/codex/2do-intento sincronizados.
+12 respuestas ADMIN HTTPS repetidas después de ese despliegue, correctas; cookie
+segura y revocación verificadas. No se ampliaron lógica, datos ni UI en este cierre.
+El usuario confirmó crear un padre desde ADMIN e ingresar correctamente en Render;
+esto es confirmación humana, no una nueva creación ni prueba automatizada del agente.
+Se aclaró el supuesto pendiente de alta terapeuta: ya existe en Cuentas → pestaña
+Terapeutas → Nueva cuenta. Formulario vacío abierto en producción, código automático,
+DNI inicial y cambio obligatorio; fuente confirma POST/admin/cuentas/terapeutas.
+No se envió ese formulario ni se creó una cuenta para probar. Queda verificar su alta,
+activación e ingreso con credenciales vigentes; no afirmar que falta implementar el alta.
+Imagen recortada al diálogo para excluir datos privados del listado: therapist-create-form.png.
+Fuentes verificadas: AdminCuentas.tsx/handleCrear, AdminCuentasCrearModal.tsx,
+adminService.ts y backend/app/services/admin_cuentas_creacion.py/crear_terapeuta.
+V45 solo documenta aceptación, ubicación de la función y evidencia final de V44.
+Siguiente: alta/activación terapeuta por ADMIN, publicar horarios y probar el recorrido
+con cuentas autorizadas; después pulir inconsistencias visuales y responsive diferido.
+
 ## 2026-10-10 — V44 Actualización de BD y despliegue
 
 Base V43/4d2f0725566021824d1b8c20bba6dd8c241e21a0, codex/2do-intento; cierre en dev.
