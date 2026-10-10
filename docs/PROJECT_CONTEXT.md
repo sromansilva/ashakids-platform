@@ -1,3 +1,16 @@
+## Publicación en dev — 2026-10-10
+
+El usuario autorizó integrar todo el avance en dev. Integración local fast-forward desde
+V32/ebb8632d3023338b1d19721122504092a58db2f6 hasta V38/fbffd46cbe4c8b38e46606e4d9df0f98272d8263:
+V33–V38 conservan sus SHA, sin conflictos ni force-push. V39 actualiza solo continuidad documental.
+Esta autorización reemplaza la restricción anterior de publicar exclusivamente codex/2do-intento.
+Se publican dev y el mismo cierre en codex/2do-intento; verificar SHA remoto con Git.
+Revisados árbol limpio inicial, referencias remotas, diff de193 archivos y patrones de secretos
+sin hallazgos. Knowledge check actualizado. Evidencia técnica heredada de V37/V38: no nuevas
+pruebas funcionales ni auditoría; integración conserva exactamente las fuentes ya verificadas.
+Supabase/migraciones reales y hosting no se modifican. feat/piero-dev permanece en V32.
+Siguiente: rediseño de roles uno por uno, sin ampliar lógica, un commit por rol.
+
 ## Avance V38 — rediseño visual de landing (2026-10-10)
 
 Rama codex/2do-intento, base V37/4fba7e9ff18e24248072118f553bbb96243367eb.

@@ -6,6 +6,11 @@ La numeración es nueva y no equivale a las fases históricas de refactorizació
 
 ## Estado del nuevo flujo,2026-10-10
 
+Autorización posterior: publicar todo V33–V38 en dev, integración fast-forward sin conflictos.
+V39 actualiza continuidad documental; codex/2do-intento se sincroniza con dev.
+Las restricciones de dev citadas en cortes inferiores son históricas. Supabase/hosting no
+cambian; feat/piero-dev permanece V32. Evidencia heredada por corte, sin pruebas nuevas.
+
 V38 rediseña únicamente la landing: glass/luz difuminada, arte CSS y microinteracciones.
 Construcción directa y evidencia landing-v38; siguientes roles por separado, un commit por rol.
 El usuario excluye la regla de anticipación semanal; disponibilidad actual se conserva.

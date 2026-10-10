@@ -1,17 +1,20 @@
 # Punto de continuidad del equipo
 
-Equipo: continuamos en `codex/2do-intento`, desde vuestra base V32/ebb8632.
-El corte nuevo es `V38_Rediseno_Landing_UI`: hagan fetch y usen su SHA publicado.
-V38 pule solo la landing: paleta de marca, glass, luz difuminada, arte «hola» y
-microinteracciones. Sin cambios de lógica ni BD; después sigue cada rol en un commit separado.
+Equipo: **dev incorpora todo V33–V38**, desde la base V32/ebb8632 hasta V38/fbffd46.
+V39_Actualizacion_Documentacion_Equipo registra esta adopción; hagan fetch y usen el último
+SHA publicado de dev. codex/2do-intento se sincroniza con el mismo cierre.
+Los commits originales se conservan, sin conflictos ni force-push.
 
-El núcleo local V33–V36 y notificaciones/preferencias V37 conservan su estado probado.
-Asesor es una persona con acceso ADMIN. Juegos rotulados demo, progreso solo en pestaña.
-Migraciones003–005 ensayadas únicamente en PostgreSQL local, no en Supabase compartido.
-La regla de modificar horario semanal con anticipación quedó fuera del alcance.
-Avatar/calificación y conexiones educativas no se declaran implementados por este cambio visual.
+Incluye registro/activación familiar, agenda e introducción por niño, planes e historial,
+paneles, enlace externo, mundos demo, notificaciones/preferencias y el rediseño de landing.
+Asesor es una persona con acceso ADMIN; juegos con progreso demo en la pestaña.
+La regla de anticipación semanal fue excluida. Avatar/calificación y conexiones educativas
+no se declaran implementados por el cambio visual. Newsletter conserva envío pendiente.
 
-Antes de continuar lean PROJECT_CONTEXT.md, IMPLEMENTATION_PROGRESS.md,
-FLUJO_MAESTRO_ACTUALIZADO.md y DESIGN.md. Evidencia visual: docs/evidence/landing-v38/.
-Newsletter/afirmaciones heredadas de la landing requieren revisión funcional aparte.
-Publicación solo en esta rama; dev/feat/piero-dev y adopción compartida requieren autorización.
+La integración es de código/documentación: Supabase y hosting no se modificaron.
+Migraciones002–005 siguen ensayadas únicamente en PostgreSQL local; revisar adopción antes
+de apuntar una API al esquema compartido. No ejecutar fixtures destructivas en BD compartida.
+Evidencia heredada por corte en docs/evidence/; no se realizó otra auditoría/prueba funcional.
+
+Leer PROJECT_CONTEXT.md, IMPLEMENTATION_PROGRESS.md, FLUJO_MAESTRO_ACTUALIZADO.md y DESIGN.md.
+Siguiente: cada rol se rediseña por separado, un commit por rol. feat/piero-dev conserva V32.
