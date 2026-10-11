@@ -1,5 +1,7 @@
 ## V72 - Reforma del terapeuta y opiniones de sesiones / 2026-10-11
 
+Publicación confirmada: `738028ce2408403fb2a27ae4b0459ed1c8995a81`, push atómico normal a dev y feat/piero-dev, ambas refs verificadas y dev local sincronizado. V70/V71 preservados. Árbol limpio al cierre funcional. GitHub sin contexts/ejecuciones disponibles; Render OpenAPI todavía sin rutas nuevas al comprobar, sin certificar despliegue. PostgreSQL de prueba local detenido. Este resultado se registra en cierre documental V73, sin pruebas funcionales nuevas.
+
 Objetivo: limpiar panel/prototipos, mejorar chat/horario para escritorio y hacer persistentes las valoraciones desde agenda histórica. Rama feat/piero-dev; base inicial V69/980a3eb, cierre conserva V70 mapa y V71 preview del equipo sin conflictos. Fuentes: PageFrame/capacidades, dashboard, mensajes, disponibilidad, configuración/pacientes/analíticas/valoraciones terapeuta, SessionReview/SessionActions, API/modelo/esquema/servicio valoraciones, migración011 y pruebas. ADR0024, diseño y evidencia de cierre añadidos.
 
 PASS: typecheck/check368máximo500/build,25rutas/304componentes22archivos;29backendunit/modelos y1SQL/HTTP en PostgreSQL17 local descartable. Chrome1536×1024 con API sintética:11capturas, cero errores JS/overflow. Detector[]. Dos rondas: radio de estrellas/matriz corregidos; expectativas antiguas y carrera de pantalla corregidas. Sin QA móvil; responsive diferido. No opiniones/usuarios/pacientes de prueba compartidos, correo/Zoom/login real.

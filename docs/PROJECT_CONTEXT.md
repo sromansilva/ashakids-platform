@@ -1,5 +1,7 @@
 ## V72 - Panel terapeuta y valoraciones persistentes / 2026-10-11
 
+V72 publicado y verificado en dev/feat/piero-dev: `738028ce2408403fb2a27ae4b0459ed1c8995a81`; dev local sincronizado, V70/V71 conservados. Cierre documental V73 registra resultado. CI no confirmado (sin contexts/ejecuciones disponibles) y Render todavía sin rutas de valoraciones en OpenAPI al comprobar: despliegue pendiente de confirmar.
+
 Reforma de escritorio: inicio sin accesos repetidos, chat con lista/burbujas/compositor, horario compacto con selección por día y publicación explícita. Perfil real informativo; contraseña, notificaciones y disponibilidad siguen persistentes. Se retiran 2FA, autoeliminación, banners amarillos y pestañas clínicas simuladas; datos sin fuente muestran Próximamente. Sesiones/reportes autorizados conservados.
 
 La familia puede calificar después una sesión FINALIZADA/ASISTIO desde su fecha de agenda:1–5estrellas y comentario opcional. Terapeuta ve opiniones reales, media y distribución calculadas. Migración011 adoptada con respaldo privado verificado, RLS/SELECT/INSERT runtime;32tablas previas conservadas y cero registros de prueba compartidos. ADR[0024](decisions/0024-valoraciones-sesion-atendida.md).

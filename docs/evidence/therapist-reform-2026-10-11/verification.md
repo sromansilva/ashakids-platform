@@ -1,5 +1,7 @@
 # V72 — reforma del terapeuta y valoraciones
 
+Cierre efectivo: commit `738028ce2408403fb2a27ae4b0459ed1c8995a81`, push atómico normal a `dev` y `feat/piero-dev`. `ls-remote` confirmó ambas refs y `dev` local se sincronizó por avance seguro. Sin cambios locales pendientes al comprobar. Se conservan V70 y V71 como ancestros. GitHub devolvió cero contexts/statuses y cero ejecuciones Actions para ese SHA; no certifica CI. Render respondió OpenAPI pero aún no anunciaba las rutas de valoraciones en la consulta posterior al push: despliegue pendiente de confirmar. PostgreSQL descartable local detenido; preview Vite :5178 conservado.
+
 Repositorio: https://github.com/sromansilva/ashakids-platform . Fecha: 2026-10-11, America/Lima. Rama feat/piero-dev. Base inicial V69/980a3eb42ee3b433709db77482ef50fa5436163f; cierre sobre V71/b9e92cd (SHA completo consultable en Git). V70/900aa5e conserva el mapa del equipo; V71 sólo modifica su arnés de preview. El SHA efectivo de V72 se consulta en Git, sin confundir commit con despliegue.
 
 ## Alcance
