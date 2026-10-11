@@ -1,3 +1,32 @@
+## V53 — continuidad visual de landing completa, relevo local / 2026-10-10
+
+Objetivo: extender la estructura visual aprobada del hero a toda la landing.
+Rama `codex/landing-publica`, base d8eb10e/V52; fetch confirma origin/dev a6eda9f.
+Commit local V53, SHA consultable en Git. Sin push/merge hacia dev; dev local396efda
+sin cambios. `.gitignore` previo fuera del commit. No nueva decisión de arquitectura.
+
+Fuentes: Landing y cuatro componentes inferiores; nueva landing-continuity.css.
+Paso a paso ilustrado, terapias en tarjeta destacada, equipo con iniciales originales,
+ejemplos ficticios cálidos, FAQ con Ashi, newsletter y pie con proporciones coherentes.
+Reutiliza PNG V52 con loading lazy, sin generación nueva. Estilos sólo `.asha-landing`.
+Reserva margen derecho para dock; no duplicación de asistente ni integración nueva.
+Contenido, controles, estados, rutas y hooks preservados; Btn/Crd/paneles intactos.
+
+Verificación: typecheck PASS; check frontend346/máximo498 PASS; build1906 PASS;
+25rutas PASS (aviso experimental Type Stripping de Node). Browser Chrome API401
+interceptada:1536/1440/1280, mismo contenido/nombres/estados/enlaces que V52;
+assets cargan, sin overflow ni botones<44px,5FAQ y5destinos, newsletter sigue sin envío,
+Demo/Escape/foco/únicoWSP, anclaFAQ y reduced-motion; cero errores runtime.
+Capturas completas y de seis secciones en docs/evidence/landing-v53. Inspección visual
+ajustó proporciones/márgenes del dock y restableció input vacío en capturas.
+Graphify query1500 truncada40/99 (confirmada en código), refresh2292nodos95comunidades,
+check vigente;12fuentes sin símbolos. Diff/secretos revisados antes de commit.
+
+Límites: responsive diferido por usuario; sin prueba nueva de paneles/BD/IA/voz/envíos.
+281componentes V52 históricos, no repetidos. Preview Vite127.0.0.1:5176 permanece activo.
+Siguiente: revisión humana de toda la página local; mantener restricción de publicación.
+Para publicar después, actualizar referencias y verificar nuevamente sin force-push.
+
 ## V52 — Ashi y composición desktop, relevo local / 2026-10-10
 
 Objetivo: incorporar todo el pendiente visual de escritorio, incluida mascota, según

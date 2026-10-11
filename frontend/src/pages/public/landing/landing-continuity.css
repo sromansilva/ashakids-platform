@@ -1,0 +1,105 @@
+/* The approved hero's materials and scale continue through the public landing. */
+.asha-landing .landing-step-illustration { display: block; width: 180px; height: 160px; object-fit: contain; margin: -24px auto 16px; }
+.asha-landing .landing-service-art img { width: 100%; height: 100%; object-fit: contain; }
+.asha-landing .landing-service-speech { position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 5px; padding: 12px; border-radius: 20px 20px 20px 4px; background: #ffffffeb; color: var(--asha-teal); box-shadow: 0 8px 20px #0f766e12; }
+.asha-landing .landing-team-heading,.asha-landing .landing-stories-heading { display: flex; align-items: center; gap: 24px; }
+.asha-landing .landing-team-heading > img { width: 180px; height: 160px; object-fit: contain; }
+.asha-landing .landing-stories-heading > img { width: 190px; height: 190px; object-fit: contain; }
+.asha-landing .landing-faq-illustration { position: relative; width: 270px; height: 210px; margin-top: 28px; display: grid; place-items: center; border-radius: 50%; background: radial-gradient(ellipse,#ede9fe,transparent 70%); }
+.asha-landing .landing-faq-illustration img { width: 230px; height: 180px; object-fit: contain; transform: rotate(-8deg); }
+.asha-landing .landing-faq-illustration > span { position: absolute; top: 0; right: 4px; width: 64px; height: 64px; display: grid; place-items: center; background: #fff; border-radius: 24px 24px 24px 4px; color: var(--asha-orange); font-size: 40px; font-weight: 900; box-shadow: 0 8px 24px #7c3aed12; transform: rotate(8deg); }
+.asha-landing .landing-newsletter-copy { display: flex; align-items: center; gap: 18px; }
+.asha-landing .landing-newsletter-copy > img { width: 160px; height: 170px; object-fit: contain; flex-shrink: 0; transform: rotate(-7deg); }
+@media (min-width: 1024px) {
+  .asha-landing .landing-section .landing-container { width: min(1316px,calc(100% - 192px)); margin-left: max(56px,calc((100% - 1368px)/2)); margin-right: 136px; }
+  .asha-landing .landing-section { padding-block: 84px; }
+  .asha-landing .landing-section h2 { font-size: clamp(40px,3.15vw,48px); line-height: 1.12; letter-spacing: -.035em; }
+  .asha-landing .landing-section h3 { font-size: 27px; font-weight: 900; letter-spacing: -.035em; }
+  .asha-landing .landing-section p { font-size: 18px; line-height: 1.6; }
+  .asha-landing.asha-ui .landing-section .asha-btn { min-height: 52px; padding-inline: 26px; font-size: 18px; border-radius: 16px; }
+  .asha-landing .landing-steps { background: linear-gradient(180deg,#faf9ff,#f6f2ff); border-radius: 0; padding-top: 46px; }
+  .asha-landing .landing-steps h2 br { display: none; }
+  .asha-landing .landing-steps h2 span::before { content: ' '; }
+  .asha-landing .landing-step-list { margin-top: 44px; gap: 28px; }
+  .asha-landing .landing-step-list li { position: relative; padding: 28px 32px 36px; background: #ffffffdb; border: 1px solid white; border-radius: 28px; box-shadow: inset 0 2px 0 white,0 12px 32px #7056b80a; text-align: center; }
+  .asha-landing .landing-step-list li:not(:last-child)::after { content: ''; position: absolute; top: 48%; right: -21px; width: 12px; height: 12px; border-top: 3px solid #bda1e8; border-right: 3px solid #bda1e8; transform: rotate(45deg); z-index: 1; }
+  .asha-landing .landing-step-marker { margin-bottom: 0; align-items: flex-start; }
+  .asha-landing .landing-step-marker > svg { width: 48px; height: 48px; padding: 12px; border-radius: 16px; }
+  .asha-landing .landing-step-marker > span { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: #f1ebfc; color: var(--asha-primary-dark); font-size: 17px; }
+  .asha-landing .landing-step-list p { margin-top: 12px; max-width: 32ch; margin-inline: auto; }
+  .asha-landing .landing-services { background: #fffefd; border-radius: 0; }
+  .asha-landing .landing-service-layout { grid-template-columns: .8fr 1.2fr; gap: 60px; }
+  .asha-landing .landing-services .landing-section-heading { position: relative; padding-left: 20px; }
+  .asha-landing .landing-services .landing-section-heading::before { content: ''; position: absolute; width: 8px; height: 44px; left: 0; top: 5px; border-radius: 8px; background: var(--asha-orange); transform: rotate(-14deg); }
+  .asha-landing.asha-ui .landing-service-card { grid-template-columns: 200px 1fr; gap: 28px; padding: 36px; border: 1px solid #ffffffeb; border-radius: 32px; background: linear-gradient(130deg,#f7f2ff,#edfbf9); box-shadow: inset 0 2px 0 white,0 14px 40px #62508310; }
+  .asha-landing .landing-service-art { width: 200px; height: 240px; background: transparent; border-radius: 0; }
+  .asha-landing .landing-service-copy p { font-size: 17px; margin: 16px 0 28px; }
+  .asha-landing .landing-team { background: linear-gradient(180deg,#f9f7ff,#faf9ff); border-radius: 50% 50% 0 0 / 28px 28px 0 0; }
+  .asha-landing .landing-heading-row { margin-bottom: 40px; }
+  .asha-landing .landing-team-grid { gap: 28px; }
+  .asha-landing.asha-ui .landing-therapist { border: 1px solid white; border-radius: 28px; box-shadow: 0 12px 32px #62448e0c; }
+  .asha-landing .landing-therapist-portrait { height: 180px; background: linear-gradient(145deg,#f0e8ff,#e6dcfa); }
+  .asha-landing .landing-therapist-1 .landing-therapist-portrait { background: linear-gradient(145deg,#e6f8f5,#d3f0ea); }
+  .asha-landing .landing-therapist-2 .landing-therapist-portrait { background: linear-gradient(145deg,#fff3e4,#ffe5cb); }
+  .asha-landing .landing-therapist-portrait::before,.asha-landing .landing-therapist-portrait::after { content: ''; position: absolute; width: 18px; height: 36px; border-radius: 70%; background: #ffffff80; top: 24px; left: 15%; transform: rotate(-35deg); }
+  .asha-landing .landing-therapist-portrait::after { width: 12px; height: 24px; left: auto; right: 16%; top: auto; bottom: 32px; transform: rotate(35deg); }
+  .asha-landing .landing-therapist-portrait > span { width: 112px; height: 112px; font-size: 35px; border: 5px solid #ffffffab; background: #ffffffe6; box-shadow: 0 8px 22px #62448e12; }
+  .asha-landing .landing-portrait-orbit { width: 280px; height: 280px; }
+  .asha-landing .landing-therapist-info { padding: 30px; }
+  .asha-landing .landing-therapist-info > p { font-size: 17px; }
+  .asha-landing .landing-tags { gap: 8px; min-height: 36px; margin-block: 18px 24px; }
+  .asha-landing .landing-tags li { font-size: 14px; padding: 6px 12px; }
+  .asha-landing .landing-therapist-info .asha-btn { width: 100%; }
+  .asha-landing .landing-stories { background: linear-gradient(180deg,#fffefd,#fff8f0); }
+  .asha-landing .landing-stories-heading { justify-content: center; margin-bottom: 40px; }
+  .asha-landing .landing-stories .landing-section-heading p { font-size: 16px; padding: 8px 18px; border-radius: 18px; background: #fff1e4; color: #794821; margin-top: 20px; }
+  .asha-landing .landing-story-grid { gap: 28px; margin-top: 0; }
+  .asha-landing .landing-story { display: flex; flex-direction: column; padding: 32px; border-radius: 28px; border: 1px solid white; box-shadow: 0 12px 32px #9b6b400a; background: #ffffffd9; }
+  .asha-landing .landing-story > svg { width: 42px; height: 42px; }
+  .asha-landing .landing-story blockquote { font-size: 18px; line-height: 1.65; margin: 20px 0 28px; flex: 1; }
+  .asha-landing .landing-story figcaption { border-top: 1px solid #ede4f4; padding-top: 20px; gap: 14px; }
+  .asha-landing .landing-story-avatar { width: 52px; height: 52px; font-size: 17px; box-shadow: inset 0 -3px 0 #00000012; }
+  .asha-landing .landing-story figcaption strong { font-size: 18px; }
+  .asha-landing .landing-story figcaption > span > span { font-size: 15px; }
+  .asha-landing .landing-faq { background: #fffefd; }
+  .asha-landing .landing-faq-layout { grid-template-columns: .65fr 1.35fr; align-items: start; gap: 64px; }
+  .asha-landing .landing-faq .landing-section-heading { padding-left: 32px; }
+  .asha-landing .landing-faq-list { gap: 16px; }
+  .asha-landing .landing-faq-item { border-radius: 20px; border-color: #e9dff7; box-shadow: 0 5px 16px #63448006; }
+  .asha-landing .landing-faq-item button { font-size: 19px; padding: 24px 28px; min-height: 76px; }
+  .asha-landing .landing-faq-item button > svg { width: 32px; height: 32px; background: #f0e8fc; border-radius: 50%; padding: 6px; }
+  .asha-landing .landing-faq-item.is-open { background: #fbf8ff; }
+  .asha-landing .landing-faq-answer { padding: 0 28px 26px; }
+  .asha-landing .landing-newsletter { background: #fffefd; padding-top: 10px; padding-bottom: 88px; }
+  .asha-landing .landing-newsletter-panel { grid-template-columns: 1.2fr 1fr; gap: 56px; padding: 48px; background: linear-gradient(125deg,#f0e7ff,#f7f2ff 65%,#e8faf7); border: 2px solid white; border-radius: 32px; box-shadow: 0 16px 48px #654b9b10,inset 0 2px 0 #fff; }
+  .asha-landing .landing-newsletter-panel h2 { font-size: 34px; color: var(--asha-primary-dark); }
+  .asha-landing .landing-newsletter-panel p { font-size: 17px; margin-top: 16px; }
+  .asha-landing .landing-newsletter-controls { padding: 26px; border: 1px solid white; border-radius: 24px; background: #ffffffc9; box-shadow: 0 8px 24px #62448e08; }
+  .asha-landing .landing-newsletter-controls label { font-size: 17px; margin-bottom: 14px; }
+  .asha-landing .landing-email-row { min-height: 54px; }
+  .asha-landing .landing-newsletter-controls > p { font-size: 14px; margin-top: 14px; }
+  .asha-landing > footer { position: relative; border-radius: 48px 48px 0 0; background-image: radial-gradient(ellipse at 5% 0,#6d35b0,transparent 60%); }
+  .asha-landing > footer > div:first-child { max-width: 1416px; padding: 64px 24px 48px; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 56px; }
+  .asha-landing > footer > div:first-child > div:first-child > div { gap: 12px; }
+  .asha-landing > footer > div:first-child > div:first-child > div > span { font-size: 32px; font-weight: 900; letter-spacing: -1px; }
+  .asha-landing > footer img { width: 48px; height: 48px; }
+  .asha-landing > footer > div:first-child > div > p { font-size: 18px; }
+  .asha-landing > footer > div:first-child > div:first-child > p { font-size: 16px; max-width: 32ch; }
+  .asha-landing > footer button { font-size: 16px; }
+  .asha-landing > footer > div:last-child { max-width: 1368px; padding-block: 24px; font-size: 14px; }
+}
+@media (min-width: 1024px) and (max-width: 1350px) {
+  .asha-landing .landing-service-layout { gap: 32px; }
+  .asha-landing.asha-ui .landing-service-card { grid-template-columns: 140px 1fr; padding: 26px; gap: 18px; }
+  .asha-landing .landing-service-art { width: 140px; height: 200px; }
+  .asha-landing .landing-therapist-info { padding: 24px; }
+  .asha-landing .landing-newsletter-panel { padding: 32px; gap: 28px; }
+  .asha-landing .landing-newsletter-copy > img { width: 110px; height: 140px; }
+  .asha-landing .landing-newsletter-panel h2 { font-size: 29px; }
+  .asha-landing .landing-team-heading > img { width: 140px; }
+}
+@media (max-width: 1023px) {
+  .asha-landing .landing-team-heading,.asha-landing .landing-stories-heading,.asha-landing .landing-newsletter-copy { flex-wrap: wrap; }
+  .asha-landing .landing-service-art { width: 180px; height: 200px; background: transparent; }
+  .asha-landing .landing-step-illustration { margin-top: 0; }
+}

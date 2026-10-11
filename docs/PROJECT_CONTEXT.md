@@ -1,3 +1,22 @@
+## V53 — continuidad visual de toda la landing, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, base d8eb10e/V52. `origin/dev` continúa en a6eda9f;
+no cambios remotos nuevos ni push. Dev local396efda y `.gitignore` del usuario intactos.
+El estilo aprobado del hero se extiende a pasos, terapias, equipo, ejemplos, FAQ,
+newsletter y pie, con escala común, cristal suave, ilustraciones V52 y margen del dock.
+Los perfiles conservan iniciales y datos; las ilustraciones son decorativas, no fotos.
+Se preservan todos los textos, nombres de controles, enlaces y estados deshabilitados,
+incluidos avisos ficticios/Demo. Sin cambios de hooks, rutas, Btn/Crd, paneles o API/BD.
+
+Checks nuevos: tipos, check346/máximo498, build1906,25rutas y Chrome desktop
+1536/1440/1280. Comparación de palabras/controles/enlaces contra V52; imágenes cargan,
+sin overflow/controles<44px;5FAQ,5destinos, newsletter sin envío, dock único/Demo/Escape,
+foco y reduced-motion, cero errores JS. Graphify refresh2292/check vigente.
+No repetición de281pruebas de componentes V52 ni backend/servicios externos.
+[Capturas y alcance](evidence/landing-v53/verification.md). Preview127.0.0.1:5176 activo.
+Siguiente: revisión humana del diseño completo local; responsive sigue diferido.
+No publicar ni integrar hacia dev hasta autorización explícita.
+
 ## V52 — Ashi y composición de referencia, sólo local / 2026-10-10
 
 Rama `codex/landing-publica`, avance anterior5dacd55 (V51 landing local). Incluye además
