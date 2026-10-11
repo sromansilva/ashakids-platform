@@ -1,3 +1,11 @@
+## V71 - Relevo de vista previa aislada de Mundo ASHA / 2026-10-11
+
+V70 `900aa5e598dd90a39c00f94f4ec9878c4b83ebce` publicado con push atómico a dev y feat/piero-dev; ls-remote y ramas locales confirman coincidencia. Sin force-push. GitHub devuelve statuses vacíos, sin confirmación de CI/deploy. El trabajo concurrente de otros módulos sigue fuera de estos commits.
+
+Archivos V71: tests/world-map-harness.tsx y verify-browser.cjs, contexto/relevo/evidencia. La vista previa DEV usa respuestas sintéticas locales por defecto, rotula los datos Demo y rechaza escrituras. El verificador usa ?verify=1 con intercepción externa. Chrome en :5177: mapa de cinco mundos, modal, intento rechazado localmente y cero solicitudes a API PASS. No se vuelven a atribuir 13 tests/build como ejecuciones nuevas de este pequeño cambio exclusivo del fixture. Graphify refresh/check de cierre. Sin cambios a fuentes de producción, backend o BD.
+
+Cierre V71 con commit identificable y push normal a ambas ramas; verificar SHA/ref real al terminar. Preview aislado de escritorio en http://127.0.0.1:5177/tests/world-map-harness.html. Siguiente: revisión humana del diseño; responsive diferido y juegos finales pendientes.
+
 ## V70 - Relevo del mapa web de Mundo ASHA / 2026-10-11
 
 Objetivo: mapa de cinco mundos con fondo acorde a las ilustraciones existentes, hover, ruta de niveles cuadrados y juego en modal. Rama feat/piero-dev, base 980a3eb42ee3b433709db77482ef50fa5436163f/V69. Se avanzó inicialmente a origin/dev con ff-only, sin conflictos ni eliminación de cambios locales ajenos.

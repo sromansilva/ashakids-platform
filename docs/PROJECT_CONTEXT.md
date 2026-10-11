@@ -1,3 +1,9 @@
+## V71 - Vista previa aislada de Mundo ASHA / 2026-10-11
+
+V70 publicado mediante push atómico normal: `dev` y `feat/piero-dev` verificados en `900aa5e598dd90a39c00f94f4ec9878c4b83ebce`, y ramas locales sincronizadas. La consulta GitHub devolvió cero statuses; no acredita CI/despliegue. Cambios ajenos conservados sin publicar.
+
+La vista previa DEV de diseño ahora sirve datos sintéticos localmente, rechaza guardados con explicación y muestra un aviso; sólo `?verify=1` habilita las peticiones interceptadas del arnés. Chrome: cinco mundos, modal y rechazo local del intento PASS, cero requests a API. Sin cambios de runtime de producción. Responsive sigue diferido.
+
 ## V70 - Mapa web de Mundo ASHA / 2026-10-11
 
 Cinco mundos sobre un fondo de archipiélago acorde a las ilustraciones existentes de landing, hover/foco y estado pendiente de asignación. Cada mundo abre una ruta de tres niveles cuadrados; cada nivel abre la actividad vigente en un dialog accesible. Intentos/UUID, premios, contenido, permisos por niño y API conservados. Fondo ImageGen de 1536 × 1024 servido como WebP de 215 KB; PNG original y cinco ilustraciones previas conservados.

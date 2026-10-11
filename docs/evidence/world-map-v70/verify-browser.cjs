@@ -39,7 +39,7 @@ function initial(id=901) {
     });
     for(const width of [1536,1440,1280]) {
       await page.setViewportSize({width,height:1024});
-      await page.goto(`${preview}/tests/world-map-harness.html`);
+      await page.goto(`${preview}/tests/world-map-harness.html?verify=1`);
       await page.locator('.asha-world-map').waitFor();
       await page.evaluate(()=>document.fonts.ready);
       await page.locator('.asha-island-art').first().evaluate(img=>img.decode());

@@ -35,3 +35,9 @@ Fondo original `frontend/public/illustrations/asha-map-v70.png`, derivado servid
 Capturas principales de entrega: [mapa](publish-tree/map-1536.png), [niveles](publish-tree/levels-lenguaje-1536.png), [juego](publish-tree/game-lenguaje-1536.png). Otros mundos, estados, layouts y requests en [browser-results.json](publish-tree/browser-results.json). Resultados iniciales de la copia de trabajo conservados en el directorio superior y no confundidos con el árbol de publicación.
 
 Publicación: registrar resultado real de commit/push/CI y coincidencia de refs en el cierre; este documento por sí solo no acredita un deploy. Cambios ajenos del equipo excluidos del commit y conservados localmente.
+
+## Publicación V70 y ajuste del fixture V71
+
+V70 publicado: `900aa5e598dd90a39c00f94f4ec9878c4b83ebce`. Push atómico normal hacia `dev` y `feat/piero-dev` exitoso, ambas refs remotas verificadas con ls-remote y ramas locales sincronizadas. GitHub combined status devuelve `statuses: []`, sin confirmación de CI/deploy.
+
+V71 aísla la vista previa manual DEV: respuestas sintéticas locales, aviso Demo y rechazo local de POST. Sólo el verificador abre `?verify=1`, manteniendo su intercepción externa. Chrome :5177 comprobó cinco mundos, modal, rechazo del intento y **cero requests a API**. No cambia ninguna fuente de producción ni requiere repetir build/tests de esas fuentes. Graphify refresh/check del fixture al cierre; advertencia de 15 archivos sin símbolos. No se acredita ejecución nueva del conjunto V70 ni responsive.
