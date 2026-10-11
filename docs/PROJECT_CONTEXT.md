@@ -1,3 +1,11 @@
+## Publicación verificada V90 / cierre documental V91 — 2026-10-11
+
+Commit funcional y auditoría publicados: 9a928604e07bb8eef1206a14b60a50581d6bd13e, V90_Habilitar_Domingos_Agenda_Recorrido_Web. Push atómico a dev y feat/piero-dev; git ls-remote devolvió ese mismo SHA para ambas ramas. Árbol limpio tras publicación. Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+CI Knowledge map V90 aprobado en [dev](https://github.com/sromansilva/ashakids-platform/actions/runs/38146649063) y [feat/piero-dev](https://github.com/sromansilva/ashakids-platform/actions/runs/38146649012). Este CI comprueba el mapa, no Zoom/correo ni el recorrido clínico completo. PDF de auditoría renderizado e inspeccionado: siete páginas, sin recortes ni encabezados huérfanos; evidencia pdf-qa.json. Pruebas/evidencia/limitaciones se describen en el corte V90 inferior y en el informe; no son ejecuciones nuevas de este cierre documental.
+
+V91 registra el SHA y publicación efectiva, sin cambiar aplicación, BD ni pruebas. Se integra/publica también en dev/feat/piero-dev, conservando V90. Siguiente tarea: aceptación operativa con el guion web en cohorte autorizada, sin reutilizar contraseñas DNI; priorizar REC01/REC02/REC06. Disponibilidad del domingo exige selección/publicación del terapeuta. No se confirma despliegue HTTP remoto.
+
 ## Cierre V90 — recorrido web y disponibilidad dominical / 2026-10-11
 
 Revisión sobre feat/piero-dev, base bd8c17d79eb81b098535179f021e3b0adbfdfd11/V89. Repositorio: https://github.com/sromansilva/ashakids-platform . Corte [2026-10-11-01](audits/auditoria-2026-10-11-01.md), [guion de exposición](acceptance/GUION_RECORRIDO_BASE_WEB.md) y [operación dominical](operations/DISPONIBILIDAD_DOMINGO.md). Prioridad escritorio; sin estudio responsive.
