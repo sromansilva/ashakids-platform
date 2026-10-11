@@ -149,3 +149,8 @@ profesional. Sin flechas, enlaces ni rutas; aria-expanded y caras aria-hidden al
 Giro420ms, sin transición con reduced-motion; reverso sólido para lectura.
 FAQ reemplaza paquetes por acompañamiento del lenguaje; párrafo de mundos retirado
 por petición expresa. Estilos limitados a landing-refinements.css.
+
+## V85 — especialistas informativos
+
+Las tres tarjetas de especialistas de la landing muestran únicamente información;
+se retira Agendar y el salto a login. La reserva se conserva en el dashboard.

@@ -1,3 +1,7 @@
+## V85 - Especialistas informativos en landing / 2026-10-11
+
+Rama feat/piero-dev; base V84/6e7dd7ea9dd7f8efdc3cbb4cbab6dddceae6e10f, dev y rama de usuario previamente sincronizadas. Se eliminan Agendar y su navegación a login de las tres tarjetas de especialistas; componente sin prop go ni imports de botón/flecha. Dashboard/reservas no modificados. PASS typecheck, check:frontend370/máximo495, cuatro interactions existentes y detector[]. IAB1480×811: tres tarjetas, cero botones en la sección; captura en docs/evidence/landing-v85. Graphify refresh/check AST local, quince fuentes sin símbolos. No build/suite completa/backend/login/BD/correo nuevos; no auditoría académica. Cierre V85/publicación normal autorizada a dev/feat/piero-dev; SHA/resultado efectivos en refs Git. Siguiente: revisión visual del usuario. CI/deploy no certificados.
+
 ## V84 - Tarjetas interactivas y contenido de landing / 2026-10-11
 
 Rama feat/piero-dev, base V83/adf45198a1636f1f8a8d67ab6519266e1bae757c; V83 publicado y refs locales/remotas dev/feat/piero-dev verificadas. Mundo ASHA usa glass v1.1 (blanco84%, blur14px, borde violeta12%) y cinco invitaciones distintas; se retira el párrafo señalado, conservando catálogo, niveles y acceso autorizado. FAQ sustituye paquetes/factura por acompañamiento del lenguaje. Audiencias ahora voltean al pulsar, Enter o Espacio: frente con imagen/título; reverso informativo sobre el terapeuta, sin flechas ni navegación. Estado accesible por aria-expanded/aria-hidden y movimiento reducido declarado.
