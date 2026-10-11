@@ -995,3 +995,28 @@ evidencia docs/evidence/audit-2026-10-09-03/.
 - Próxima acción: decidir mínimos F5-01; para juegos, MA-01 con revisión detenida antes de
   implementar contenido. No ejecutar pytest/prepare sobre la demo que debe conservarse.
 
+
+## Relevo V50 — juegos persistentes, 2026-10-10
+
+- Repositorio: https://github.com/sromansilva/ashakids-platform . Rama codex/2do-intento;
+  base integrada origin/dev 396efda (V49). Continuar secuencia V50, conservar commits V48/V49.
+- API juegos/catalogo y pacientes/{key}/juegos[/mundo/intentos]; modelos/schemas/servicios
+  juegos*, catálogo versionado y migración008. UI learningGames, MundoAshaHome,
+  DemoWorldPlayer, SessionPlan, PublicMundo e Insignias/Perfil. Se elimina demoWorlds.
+- BD compartida:008 adoptada, cinco medallas; respaldo pg_dump/pg_restore list verificado,
+  filas previas conservadas, rol runtime/RLS comprobados. Backup/credenciales privados en tmp
+  ignorado. No se ejecutaron fixtures sobre BD compartida ni se crearon pacientes reales.
+- PostgreSQL17 local aislado ashakids_test_games_v50:16 pruebas backend pasaron (juegos,
+  planes, agenda y modelos). Migración incremental también probada en BD local independiente.
+- Frontend:281/281 componentes; typecheck/build/check:frontend correctos. Advertencia Node
+  module.register deprecado. Primer pase falló por cinco mocks/expectativas del flujo anterior
+  y un cierre JSX en PublicMundo; corregidos. Backend combinado inicialmente alcanzó429
+  por fixtures de login repetidas; repetido con límites1000IP/100par solo en proceso de tests.
+  Un valor1000para par fue rechazado por configuración antes de ejecutar; corregido a100.
+- Skill Impeccable: conserva UI básica, sin nuevo diseño. Detector objetivo MundoAshaHome: [].
+- Este es un cambio funcional con verificación, no una auditoría nueva ni una validación clínica.
+- Publicación: registrar commit/SHA y sincronización dev/rama propia al cierre en el informe
+  del chat. Render tiene despliegue manual; no equiparar push con despliegue HTTPS.
+- Próximo: juegos más llamativos y revisión profesional. ML/reporte mensual no implementados;
+  resultados_nivel JSON dispone de respuesta, aciertos, tiempo, ayudas y versión para análisis
+  futuro. Definir etiquetas antes de afirmar eficacia de mundos o emociones.

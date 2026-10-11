@@ -160,8 +160,8 @@ class ReporteSalida(ReporteDatos, Salida):
 class PlanCrear(Entrada):
     nombre_tratamiento: str = Field(min_length=1, max_length=100)
     descripcion: Nota | None = None
-    area: Literal["FLUIDEZ", "HABLA", "LENGUAJE"]
-    mundos_asignados: list[Literal["FLUIDEZ", "HABLA", "LENGUAJE"]] = Field(min_length=1, max_length=3)
+    area: Literal["FLUIDEZ", "HABLA", "LENGUAJE", "VOZ", "OROFACIAL"]
+    mundos_asignados: list[Literal["FLUIDEZ", "HABLA", "LENGUAJE", "VOZ", "OROFACIAL"]] = Field(min_length=1, max_length=5)
     sesiones_recomendadas: int = Field(ge=1, le=31)
 
     @field_validator("mundos_asignados")

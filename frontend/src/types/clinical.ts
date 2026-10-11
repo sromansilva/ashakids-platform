@@ -40,5 +40,5 @@ export interface Professional { id_terapeuta: number; nombres: string; apellidos
 export interface Availability { turnos: { dia: number; hora: number }[]; bloqueos: { inicio: string; fin: string }[]; duracion_minutos?: number }
 export interface AvailableSlot { inicio: string; fin: string; disponible: boolean; motivo: string | null }
 export interface JourneyState { introduccion_atendida: boolean; introduccion_pendiente: number | null; terapia_habilitada: boolean }
-export type WorldArea = 'FLUIDEZ' | 'HABLA' | 'LENGUAJE';
+export type WorldArea = 'FLUIDEZ' | 'HABLA' | 'LENGUAJE' | 'VOZ' | 'OROFACIAL';
 export interface PlanData { nombre_tratamiento: string; descripcion: string | null; area: WorldArea; mundos_asignados: WorldArea[]; sesiones_recomendadas: number }

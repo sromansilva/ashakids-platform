@@ -1,3 +1,29 @@
+## V50 — cinco mundos básicos persistentes / 2026-10-10
+
+Catálogo `basica-1`: HABLA (Taller de los Sonidos), LENGUAJE (La Isla de las Palabras),
+FLUIDEZ (Ritmo de las Palabras), VOZ (El Estudio de la Voz) y OROFACIAL (Laboratorio de
+los Gestos). Cada mundo tiene tres actividades básicas de selección/orden, con acceso
+libre a sus niveles. El profesional asigna uno o varios de los cinco mundos en el plan.
+Saltar al nivel 3 no completa los anteriores. El diseño definitivo sigue pendiente.
+
+El backend valida respuestas y guarda intentos correctos/incorrectos por niño, mundo,
+nivel y versión. Cada primer nivel correcto otorga 100 XP; completar los tres entrega
+una medalla y 100 XP adicionales una sola vez. Nivel del perfil = 1 + XP // 200.
+Reintentar una petición con el mismo UUID no duplica filas ni premios. La UI consulta
+el servidor al recargar/cambiar de hijo; Insignias y Perfil muestran estos contadores.
+
+Se reutilizan actividades, objetivos, mundos, niveles, resultados_nivel, perfiles,
+logros y perfil_logros. Migración 008 aplicada a la BD compartida con respaldo privado
+verificado y comparación de filas previas: conservadas; cinco medallas de catálogo
+nuevas. No se insertaron pacientes ni intentos reales para probar. Evidencia saneada:
+[adopción](evidence/games-v50/database-adoption.json), [verificación](evidence/games-v50/verification.md).
+ADR [0020](decisions/0020-juegos-basicos-persistentes.md). Sin conexión React/PostgreSQL.
+
+Los datos son simulación, no evaluación clínica ni inferencia de emociones. Quedan
+pendientes juegos finales, revisión profesional de contenidos, modelo ML/dataset con
+etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
+Los catálogos draft-1 y demos históricos no representan este flujo persistente.
+
 ## Especificación de componentes UI — V47 / 2026-10-10
 
 Nuevo paquete de diseño aprobado como dirección visual: [guía Markdown](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md)

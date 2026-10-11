@@ -19,6 +19,7 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
     const path = new URL(String(input), "http://localhost").pathname.replace(/^\/api\/v1/, "");
     if (path === "/terapeutas") return response([{ id_terapeuta: 1, nombres: "Profesional", apellidos: "Uno", especialidad: "Lenguaje" }]);
     if (path === "/pacientes") return response(options.children ?? [child, sibling]);
+    if (/^\/pacientes\/\d+\/juegos$/.test(path)) return response({ id_paciente: Number(path.split('/')[2]), mundos: [], experiencia: 0, nivel: 1, medallas: [], intentos_totales: 0, experiencia_siguiente_nivel: 200 });
     if (path === "/citas") return response([future, completed.cita, { ...future, id_reserva: 3, estado_reserva: "CANCELADA" }, { ...future, id_reserva: 4, fecha_hora_fin: "2020-01-01T00:00:00Z" }]);
     if (path === "/sesiones") return response([completed, { ...completed, id_sesion: 2, asistencia: "NO_ASISTIO" }]);
     if (path === "/pacientes/1/tratamientos") return response([{ id_tratamiento: 1, id_paciente: 1, nombre_tratamiento: "Tratamiento autorizado", terapeuta_nombre: "Profesional Uno", estado_tratamiento: "ACTIVO" }]);
@@ -126,7 +127,7 @@ it("Mundo ASHA consulta el plan del hijo seleccionado y no inventa asignación",
   fireEvent.change(select, { target: { value: "2" } });
   expect(await screen.findByRole('heading',{name:'Mundos pendientes para Alex'})).toBeInTheDocument();
   expect(select).toHaveValue('2');
-  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes('/pacientes/2/tratamientos'))).toBe(true);
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes('/pacientes/2/juegos'))).toBe(true);
   expect(screen.queryByRole('button',{name:/Jugar nivel/})).not.toBeInTheDocument();
   expect(screen.queryByText(/Racha|Mateo/)).not.toBeInTheDocument();
 });
@@ -135,10 +136,15 @@ it("Mundo ASHA has an honest empty family state", async () => {
   await screen.findByText(/Aún no tienes hijos registrados/);
   expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
 });
-it.each(["/mundo-asha/academia", "/mundo-asha/retos", "/mundo-asha/insignias", "/mundo-asha/perfil"])("%s does not claim verified rewards or completed levels", async path => {
+it.each(["/mundo-asha/academia", "/mundo-asha/retos"])("%s remains pending", async path => {
   renderRoute(path, "PADRE");
-  await screen.findByText(/El progreso educativo por hijo todavía no está conectado/);
+  await screen.findByText(/Esta sección está pendiente/);
   expect(screen.queryByText(/Mateo|47|80%|60%|100%/)).not.toBeInTheDocument();
+});
+it.each(["/mundo-asha/insignias", "/mundo-asha/perfil"])("%s displays persisted profile counters", async path => {
+  api(); renderRoute(path, "PADRE");
+  await screen.findByText(/Nivel 1 · 0 XP · 0 medallas · 0 intentos/);
+  expect(screen.queryByText(/Mateo|80%|60%|100%/)).not.toBeInTheDocument();
 });
 
 const world = LEARNING_WORLDS[0];

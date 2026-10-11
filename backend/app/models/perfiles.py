@@ -102,6 +102,7 @@ class Logro(Base):
     __tablename__ = "logros"
 
     id_logro: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    codigo_juego: Mapped[Optional[str]] = mapped_column(String(40), unique=True, nullable=True)
     nombre_logro: Mapped[str] = mapped_column(String(100), nullable=False)
     experiencia_logro: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
     requisito_logro: Mapped[str] = mapped_column(Text, nullable=False)

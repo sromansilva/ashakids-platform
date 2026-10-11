@@ -6,7 +6,7 @@ import type { PlanData, Session, WorldArea } from '@/types/clinical';
 import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 
-export const areaLabels: Record<WorldArea, string> = { FLUIDEZ: 'Fluidez y ritmo', HABLA: 'Habla y articulación', LENGUAJE: 'Comprensión y expresión' };
+export const areaLabels: Record<WorldArea, string> = { FLUIDEZ: 'Fluidez y ritmo', HABLA: 'Habla y articulación', LENGUAJE: 'Comprensión y expresión', VOZ: 'Voz', OROFACIAL: 'Motricidad orofacial' };
 export function SessionPlan({ session }: { session: Session }) {
   const { role } = useAuth();
   const query = useRemote(['session-plan', session.id_sesion], signal => sessionsService.plan(session.id_sesion, signal));
