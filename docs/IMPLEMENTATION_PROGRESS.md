@@ -1,3 +1,39 @@
+## V51 — rediseño de landing pública, relevo local / 2026-10-10
+
+Objetivo: acercar la presentación pública a la imagen adjunta/kitv1 preservando V50.
+Fetch actualizó origin/dev de396efda a5dd572cb37a679d5e8674a0cf1910426d925a1f9.
+Rama nueva `codex/landing-publica` desde ese SHA; V51 sólo local, SHA consultable en Git.
+Dev local permanece396efda, origin/dev baseV50. No push/merge por instrucción actual
+del usuario; no afirmar recepción de cambios por el equipo. `.gitignore` previo excluido.
+
+Fuentes: Landing y componentes visuales, landing.css/nuevo landing-kit.css, PublicNav
+condicional para landing. Documentación: DESIGN, contexto, este relevo y evidenciaV51.
+Contenido/hooks/datos, Btn/Crd, rutas, paneles y backend/BD intactos. Pasos redistribuidos
+tras hero; violeta/relieve/cristal/fondos cálidos, lectura accesible y menú hasta1023px.
+Ashi aprobado no tiene asset integrable: letras decorativas conservadas, no oso/emoji
+ni robot nuevo. Ilustraciones del resto de la referencia pendientes. No flotante duplicado.
+
+Checks nuevos:25rutas+281componentes/18archivos; tipos/check343máximo498/build1903.
+Browser Chrome headless con API/v1 interceptada401:6anchos320–1920,sin overflow/controles
+<44px;18destinos,5FAQ clic/Enter,newsletter sin envío, menú móvil y reduced-motion/foco.
+Texto visible comparado contra línea base, mismos rótulos/destinos, cero errores runtime.
+Capturas completas y viewport en docs/evidence/landing-v51; detalles verification.md.
+Graphify setup/query1500/refresh2285nodos108comunidades/check;12archivos sin símbolos,
+query truncada40/580. PostCSS205reglas, todos los selectores encapsulados en landing.
+No nueva auditoría técnica ni backend, clínica, Zoom, IA/correo/WhatsApp certificados.
+
+Incidencias corregidas: Python alias sin acceso; permisos Git/fetch; npm perdió flags
+del preview; Chromium default ausente (Chrome instalado); filtro API demasiado amplio;
+build sandbox EPERM repetido fuera; refresh sandbox detenido trasAST, repetido fuera;
+comprobador CSS dividía comas de:is, falso positivo corregido con selectores PostCSS;
+captura fullPage no incluía scroll de#root, recapturada
+con expansión temporal; menú fotografiado durante animación, corregido. Sin secretos.
+
+Siguiente desarrollador: revisar commit V51/codex/landing-publica y capturas contra referencia;
+mantener `.gitignore` del usuario sin incluirlo. Integrar Ashi sólo con recurso aprobado.
+Antes de publicar, obtener aprobación, actualizar remotos y volver a revisar diferencias
+con dev; no force-push. No corregir texto/negocio ni ejecutar fixtures/BD en un corte visual.
+
 ## V49 — duración Basic y visualización del origen Zoom / 2026-10-10
 
 Se alinearon disponibilidad, validación de citas, slots y creación Zoom mediante duración

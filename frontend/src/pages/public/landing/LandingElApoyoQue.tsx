@@ -6,12 +6,13 @@ export function LandingElApoyoQue({ go }: Props) {
   return <section className="landing-hero">
     <div className="landing-container landing-hero-layout">
       <div className="landing-hero-copy">
+        <p className="landing-purpose">Plataforma de apoyo para terapia de lenguaje infantil</p>
         <h1>El apoyo que<br/>tu hijo necesita,<br/><span>en un solo lugar</span></h1>
         <p className="landing-intro">Conecta con terapeutas certificados, agenda sesiones virtuales y acompaña el desarrollo de tu hijo desde cualquier lugar.</p>
-        <Btn size="lg" variant="cta" onClick={() => go('login')} className="landing-primary">Iniciar sesión <ArrowRight size={19}/></Btn>
-        <p className="landing-purpose">Plataforma de apoyo para terapia de lenguaje infantil</p>
+        <Btn size="lg" variant="cta" onClick={() => go('login')} className="asha-btn asha-btn--lg landing-primary">Iniciar sesión <ArrowRight size={19}/></Btn>
       </div>
-      <div className="landing-language-art" aria-hidden="true">
+      {/* Reserved visual space: the approved Ashi robot asset is not available yet. */}
+      <div className="landing-language-art" aria-hidden="true" data-ashi-asset="pending">
         <div className="landing-art-orbit"/>
         <div className="landing-letter landing-letter-h">h</div><div className="landing-letter landing-letter-o">o</div>
         <div className="landing-letter landing-letter-l">l</div><div className="landing-letter landing-letter-a">a</div>

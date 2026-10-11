@@ -1,3 +1,26 @@
+## V51 — rediseño local de landing pública / 2026-10-10
+
+Rama `codex/landing-publica` creada desde el último `origin/dev`,
+`5dd572cb37a679d5e8674a0cf1910426d925a1f9`/V50. Commit local del rediseño;
+no integración ni push a dev ni a otra rama, pendientes de aprobación del usuario.
+El dev local previo permanece en396efda; `.gitignore` previo se conserva fuera del commit.
+
+Landing adopta tokens del kitv1 sólo en `.asha-landing.asha-ui`: Nunito, violeta,
+relieve inferior, blanco cálido, tarjetas de cristal y presentación responsive.
+Los pasos siguen al hero; servicios/equipo/ejemplos/FAQ/newsletter/pie conservan textos,
+controles y destinos. PublicNav sólo cambia presentación con `cur=landing`;
+Btn/Crd/paneles/contratos/API/BD no cambian. DESIGN.md describe la adopción real.
+No asset aprobado del robot Ashi ni ilustraciones separadas de la referencia;
+espacio decorativo de letras existente explícitamente pendiente. Dock privado intacto.
+
+Verificación nueva:281componentes/18archivos,25rutas,tipos/check343/build1903módulos.
+Chrome con API interceptada:6anchos320–1920px, contenido/18destinos,5FAQ, menú,
+foco y movimiento reducido; sin overflow ni botones visibles<44px de alto.
+Capturas/comparación y límites en [evidencia](evidence/landing-v51/verification.md).
+Graphify setup/query/refresh/check al cierre, mapa no versionado.
+No auditoría técnica nueva, backend ni integraciones externas verificadas.
+Siguiente: revisión humana del corte local y recursos Ashi; sólo publicar tras aprobación.
+
 ## V50 — cinco mundos básicos persistentes / 2026-10-10
 
 Catálogo `basica-1`: HABLA (Taller de los Sonidos), LENGUAJE (La Isla de las Palabras),

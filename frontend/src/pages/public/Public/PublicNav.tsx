@@ -20,9 +20,9 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
     <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur md:border-b md:border-[#E8E5F4]">
       <MobileTopBar title={mobileTitle} onMenu={() => setMob((value) => !value)} menuOpen={mob} />
       <div className="hidden md:flex max-w-7xl mx-auto px-4 sm:px-6 items-center justify-between h-16">
-        <button onClick={() => go("landing")} className="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border border-transparent hover:border-[#E8E5F4] hover:shadow-sm transition-all">
+        <button onClick={() => go("landing")} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border border-transparent hover:border-[#E8E5F4] hover:shadow-sm transition-all ${cur === 'landing' ? 'landing-brand' : ''}`}>
           <Isotipo size={32} />
-          <span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span>
+          {cur === 'landing' ? <span className="landing-wordmark"><span>Asha</span><span>Kids</span></span> : <span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span>}
         </button>
         <div className="hidden md:flex items-center gap-1">
           {links.map(l => (
@@ -33,7 +33,7 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
           ))}
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <Btn variant="cta" size="sm" onClick={() => go("login")}>Iniciar sesión</Btn>
+          <Btn variant="cta" size="sm" className={cur === 'landing' ? 'asha-btn asha-btn--outline' : ''} onClick={() => go("login")}>Iniciar sesión</Btn>
         </div>
 
       </div>
@@ -44,7 +44,7 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
             <nav className="flex-1 min-h-0 overflow-y-auto px-3 py-2 flex flex-col gap-0.5">
               {links.map(l => <button key={l.view} onClick={() => { go(l.view); setMob(false); }} className={`w-full flex items-center px-3.5 py-2.5 rounded-2xl text-left text-sm font-bold transition-all ${cur === l.view ? "bg-violet-700 text-white shadow-sm shadow-violet-200" : "text-[#7C6F9A] hover:bg-violet-50 hover:text-violet-700"}`}>{l.label}</button>)}
             </nav>
-            <div className="shrink-0 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"><Btn variant="cta" className="w-full justify-center" onClick={() => { go("login"); setMob(false); }}>Iniciar sesión</Btn></div>
+            <div className="shrink-0 px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))]"><Btn variant="cta" className={`w-full justify-center ${cur === 'landing' ? 'asha-btn' : ''}`} onClick={() => { go("login"); setMob(false); }}>Iniciar sesión</Btn></div>
           </aside>
           <button type="button" aria-label="Cerrar menú" onClick={() => setMob(false)} className="flex-1" />
         </div>
