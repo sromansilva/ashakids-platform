@@ -84,7 +84,7 @@ def table(lines):
     t.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,0),VIOLET),('VALIGN',(0,0),(-1,-1),'TOP'),('LEFTPADDING',(0,0),(-1,-1),7),('RIGHTPADDING',(0,0),(-1,-1),7),('TOPPADDING',(0,0),(-1,-1),pad),('BOTTOMPADDING',(0,0),(-1,-1),pad),('ROWBACKGROUNDS',(0,1),(-1,-1),[colors.white,colors.HexColor('#F8F7FB')]),('LINEBELOW',(0,0),(-1,-1),.3,colors.HexColor('#E8E5F4'))]))
     return t
 
-def render(source,output,title):
+def render(source,output,title,footer='ASHAKids | V46 | 10 octubre 2026 | Fuente documental'):
     lines=source.read_text(encoding='utf-8').splitlines();story=[];i=0
     while i<len(lines):
         line=lines[i].strip()
@@ -110,7 +110,7 @@ def render(source,output,title):
     def page(c,doc):
         c.saveState();c.setStrokeColor(colors.HexColor('#E8E5F4'));c.line(50,42,A4[0]-50,42)
         c.setFillColor(colors.HexColor('#615274'));c.setFont('Stage',7.5)
-        c.drawString(50,28,'ASHAKids | V46 | 10 octubre 2026 | Fuente documental')
+        c.drawString(50,28,footer)
         c.drawRightString(A4[0]-50,28,f'{doc.page}')
         if doc.page>1:c.drawString(50,A4[1]-28,title)
         c.restoreState()
@@ -118,6 +118,12 @@ def render(source,output,title):
     doc.build(story,onFirstPage=page,onLaterPages=page)
 
 if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--master-only',action='store_true')
+    parser.add_argument('--footer',default='ASHAKids | V46 | 10 octubre 2026 | Fuente documental')
+    args=parser.parse_args()
     files=[('DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md','Documentacion_Maestra_ASHAKids_V46.pdf','Documentación maestra - etapa funcional'),('GUIA_FLUJO_ESTADO_Y_PENDIENTES.md','Guia_Flujo_Equipo_ASHAKids_V46.pdf','Flujo actual y base del equipo')]
     for source,filename,title in files:
-        render(ROOT/'docs'/source,OUT/filename,title);print(filename)
+        if args.master_only and source!='DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md':continue
+        render(ROOT/'docs'/source,OUT/filename,title,args.footer);print(filename)

@@ -1,4 +1,276 @@
-# ASHAKids — documentación maestra de la etapa funcional
+# ASHAKids - documentación maestra actualizada
+
+**Corte documental V74 · 11 de octubre de 2026 · America/Lima.** Estado del código y documentación hasta V73. Se conserva el nombre Documentacion_Maestra_ASHAKids_V46.pdf solicitado; V46 identifica el archivo original, no el estado actual ni la versión de API.
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Rama examinada: `feat/piero-dev`. SHA base: `09afec8911c3a043343df0c14db1967f15a24960` (V73). Tras fetch, `dev`, `origin/dev` y `origin/feat/piero-dev` coinciden con esa base. El commit de esta actualización se identifica en Git como V74; su SHA se verifica al publicar. API: `0.1.0`.
+
+Esta actualización documental incorpora todos los avances publicados posteriores a V46 y conserva el diccionario y los antecedentes originales como referencia histórica. No constituye una auditoría técnica nueva, prueba clínica, nueva adopción de migraciones ni certificación de producción. Prevalece el corte vigente que sigue cuando contradice un apartado histórico. Los porcentajes, 30 tablas/207 columnas/41 FK y 69 operaciones de V46 no son cifras actuales verificadas.
+
+## A. Estado actual y lectura del documento
+
+| Área | Estado implementado hasta V73 | Límites y aceptación pendiente |
+| --- | --- | --- |
+| Arquitectura | React/TypeScript/Vite -> HTTP/JSON -> FastAPI -> SQLAlchemy/asyncpg -> PostgreSQL alojado en Supabase; Render sirve web/API | No acceso React/BD, Supabase Auth ni transporte WebSocket |
+| Autenticación | Tres roles; altas institucionales, activación por enlace, contraseñas 12-128, cambio propio con contraseña actual, sesiones/cookies y revocación | MFA y recuperación autoservicio integral no acreditadas |
+| Núcleo clínico | Familia, pacientes, turnos, reservas, sesiones, reportes PDF y planes/versiones persistentes | Aceptación humana completa de cierre/reporte/plan/continuidad en Render sigue pendiente de evidencia |
+| Educación | Cinco mundos y tres niveles por mundo; intentos, XP, medallas y perfil persistentes | Actividades básicas de simulación; juegos finales, revisión profesional y ML pendientes |
+| Mensajes | Texto y un adjunto por envío, descarga autorizada y visualización de medios | Sin antivirus/transcodificación ni entrega instantánea entre navegadores |
+| Administración | Diseño integrado, filtros de citas, limpieza de sesiones, auditoría real e incidencias | Contenido/ML y fuentes ausentes muestran Próximamente |
+| Terapeuta | Inicio, chat y horario reformados; perfil informativo, sesiones/reportes y valoraciones reales | QA V72 de escritorio; responsive y moderación de opiniones pendientes |
+| Familia | Agenda histórica con calificación de sesión atendida y selección de ocho avatares persistentes | No login infantil independiente; autorización por familia conserva vigencia |
+| Integraciones | Zoom S2S opcional con respaldo manual; Gmail API y boletín con confirmación/baja | Configuración no acredita OAuth, recepción de correos o reuniones reales exitosas |
+| Despliegue | Render HTTPS existente; configuración autoDeployTrigger commit en dev | Push no acredita CI/Live; V72 no anunciaba valoraciones en el OpenAPI observado entonces |
+
+No se recalculan porcentajes de avance: los índices de V46 tienen criterios ya superados y no permiten medir este corte sin acordar nuevos denominadores. Fecha académica original: 09/10/2026 a las 18:00 America/Lima; este corte es posterior y no acredita una nueva fecha de entrega. Pagos reales y nuevas simulaciones dedicadas quedan fuera de alcance.
+
+## B. Cambios publicados desde la documentación original
+
+| Avance | Cambios concretos | Fuente principal |
+| --- | --- | --- |
+| V47-V49 | Consistencia de contraseñas, guardas clínicas, Zoom opcional, duración compartida 40/45 minutos y origen del enlace visible | PROJECT_CONTEXT.md; architecture.md; servicios citas/Zoom |
+| V50 | Catálogo basica-1, intentos y premios persistentes; migración 008 y ADR 0020 | evidence/games-v50/verification.md |
+| V51-V62 (landing) | Ashi e ilustraciones, cinco mundos públicos, navegación por anclas, modal accesible, retorno seguro al mundo elegido, WebP, footer, favicon y login; integración en dev | evidence/landing-v56/verification.md; evidence/landing-v59/verification.md; evidence/landing-v60/verification.md; evidence/integration-v62/verification.md |
+| V52, V65-V66 (mensajes) | Adjuntos transaccionales, BYTEA, UUID/SHA256, visualización y descarga protegida; integración/publicación | evidence/attachments-v52/verification.md; ADR 0021 |
+| V52-V58 y V53 de correo | Gmail API, boletín, emails de marca, enlace público de creación de contraseña, configuración Render y permisos runtime del boletín | PROJECT_CONTEXT.md V58; evidence/gmail-render-v58/; ADR 0022 activación |
+| V54-V59 (ADMIN) | Retiro de terapeutas ficticios, consulta de auditoría persistida, incidencias, simplificación de operación y configuración | evidence/admin-incidents-v59/verification.md; ADR 0023 |
+| V63-V68 | Filtro/limpieza de citas y sesiones administrativas; rediseño visual ADMIN e integración conservando módulos del equipo | evidence/integration-v68/verification.md; historial Git |
+| V69 | avatar_nombre y ocho avatares de pacientes en configuración familiar | frontend/src/config/avatars.ts; configuración familiar |
+| V70-V71 | Archipiélago de cinco mundos, tres niveles cuadrados y actividad en dialog; preview DEV sintético sin peticiones API | evidence/world-map-v70/verification.md |
+| V72-V73 | Reforma terapeuta, opiniones persistentes de sesiones atendidas, migración 011/ADR 0024 y cierre documental/publicación | evidence/therapist-reform-2026-10-11/verification.md |
+
+El historial contiene números repetidos por desarrollos concurrentes (por ejemplo V52/V53/V59). Las versiones no son una secuencia única de releases: usar SHA y título para identificar el avance. Se preservan todos los commits publicados.
+
+## C. Flujo operativo vigente y reglas
+
+ADMIN registra cuentas/familia y pacientes. El adulto recibe un enlace para crear contraseña; el alta no envía una contraseña inicial por Gmail. El profesional publica disponibilidad explícitamente; seleccionar horarios es un borrador hasta publicar. La familia reserva una introducción, accede al enlace Zoom y el profesional registra/inicia la atención. El cierre, reporte útil y plan vigente habilitan la continuidad terapéutica; cada profesional conserva autoría y el nuevo plan reemplaza al activo preservando historial.
+
+V47 rechaza reportes de sesiones NO_ASISTIO y no permite publicar planes a partir de un reporte vacío. La familia consulta reportes y mundos asignados desde sus espacios autorizados. Puede continuar con otro profesional cuando cumple las reglas del núcleo; ADMIN no sustituye al autor terapeuta del plan.
+
+Cada mundo basica-1 admite sus tres niveles sin exigir completar los anteriores. El backend valida la respuesta y registra el intento por paciente/mundo/nivel/versión. Primer acierto por nivel: 100 XP. Completar los tres niveles: medalla y 100 XP adicionales una sola vez. Nivel de perfil = 1 + XP // 200. Reintentos con igual UUID no duplican filas ni premios. Recarga/cambio de hijo consulta estado servidor. La interfaz V70 conserva estas reglas; su preview V71 es una demostración aislada y rechaza guardados.
+
+Después de una sesión FINALIZADA y ASISTIO, el PADRE autorizado puede calificar desde la fecha de agenda histórica: 1-5 estrellas y comentario opcional de hasta 1000 caracteres, sin límite de antigüedad. Una opinión por sesión; reintento idéntico devuelve la existente y otro contenido genera conflicto. No hay edición ni borrado. Terapeuta consulta opiniones reales, media y distribución; el listado no incluye información del niño.
+
+Configuración familiar ofrece oso, zorro, conejo, panda, león, koala, tortuga y búho. El valor persiste en PACIENTES.avatar_nombre. El niño sigue siendo un paciente dependiente de un tutor, no una cuenta autónoma.
+
+La landing usa perfiles públicos de ejemplo rotulados; Agendar conduce a login. Solicitar cuenta muestra instrucciones porque no hay autorregistro general. Catálogo público revela metadatos/niveles, sin ejercicios privados; el resumen familiar sólo entrega mundos asignados. Noindex se conserva en los cortes documentados de landing.
+
+## D. Contrato API y datos actualizados
+
+El OpenAPI generado localmente desde `app.main.app.openapi()` contiene **87 operaciones** (GET/POST/PUT/PATCH/DELETE), sin arrancar lifespan, conectar la BD ni ejecutar casos funcionales. Inventario completo actual en el apartado siguiente. Esta cifra describe el código V73, no el contrato Live de Render.
+
+| Ampliación del contrato | Regla |
+| --- | --- |
+| POST /api/v1/auth/create-password y resend-activation | Enlace de alta firmado; expiración 24 h; sólo cuentas pendientes; no crea sesión |
+| GET /api/v1/juegos/catalogo | Catálogo público sin contenido privado |
+| GET /api/v1/pacientes/{key}/juegos | Resumen autorizado del paciente |
+| POST /api/v1/pacientes/{key}/juegos/{world}/intentos | Validación servidor y UUID de reintento |
+| POST /api/v1/conversaciones/{key}/mensajes/adjunto | Multipart con archivo, clave_envio UUID y texto opcional |
+| GET /api/v1/conversaciones/{key}/adjuntos/{attachment} | Descarga protegida por participantes, sin URL pública |
+| GET /api/v1/admin/auditoria | ADMIN, hasta 100 eventos; sin serializar valores anteriores/nuevos |
+| POST /api/v1/newsletter/suscripciones; GET confirmar/baja | Consentimiento, doble confirmación, tokens hasheados y baja |
+| POST /api/v1/incidencias; GET/PATCH /api/v1/admin/incidencias | Envío familia/profesional; lectura y resolución ADMIN |
+| GET/POST /api/v1/sesiones/{key}/valoracion; GET /api/v1/valoraciones | Autorización por reserva/familia; listado profesional/ADMIN |
+
+El catálogo físico completo de V46 queda conservado como histórico en §8. No se realizó una consulta nueva al catálogo compartido. La evidencia heredada de adopción V72 registra 32 tablas previas conservadas y la nueva valoraciones_sesion (33 tras esa adopción); no se recalculan columnas, índices, restricciones, políticas ni FK actuales.
+
+| Cambio de modelo posterior a V46 | Campos y relaciones confirmados en código/migración |
+| --- | --- |
+| Zoom, migración 007 | Identificador externo/enlace de reunión y origen en contrato de cita; no enlaces inventados por frontend |
+| Juegos, 008 | Reutiliza actividades/objetivos/mundos/niveles/resultados_nivel/perfiles/logros/perfil_logros; idempotencia y premios persistentes |
+| mensaje_adjuntos, 009_mensaje_adjuntos.sql | BYTEA nullable, UUID de envío único y SHA256; mensaje/archivo en una transacción; historial sólo carga metadatos |
+| suscripciones_boletin, 009_newsletter_subscriptions.sql | 11 campos: ID, correo único, estado, hashes/expiración, consentimiento, confirmación, baja, creación/actualización; estados PENDIENTE/ACTIVA/BAJA |
+| incidencias, 010 | ID; FK usuario nullable con SET NULL; UUID envío único; rol, tipo, título120, descripción600, estado NUEVA/LEIDA/RESUELTA, fecha |
+| valoraciones_sesion, 011 | ID; FK sesión única; FK usuario; calificación CHECK 1-5; comentario1000 nullable; fecha timestamptz |
+
+Hay dos archivos con prefijo 009, y el SQL del boletín conserva una etiqueta interna V008. Identificar migraciones por nombre completo/objetivo y adopción documentada, no ejecutar automáticamente por número. Esta revisión no renumera ni aplica SQL.
+
+Nuevas relaciones: usuarios 1:N incidencias (autor nullable); sesiones 1:0..1 valoraciones_sesion; usuarios 1:N valoraciones_sesion. Boletín usa correo y no exige cuenta clínica. Las relaciones originales están en §8.2 histórico; el nuevo esquema no debe representarse sólo con aquel diagrama.
+
+## E. Seguridad, integraciones y límites operativos
+
+Se mantienen Argon2id, cookies HttpOnly/Secure/Lax de producción, validación de origen/HTTPS, roles, autorización por recurso y rol runtime SQL restringido. Activación por correo: firma HMAC vinculada a usuario/expiración/propósito/correo y hash privado; token de fragmento retirado de la barra; cambio/revocación transaccionales. No incluir secretos, cookies, correos personales o URLs privadas en evidencias.
+
+Adjuntos: JPG/PNG/GIF/WebP, MP3/WAV/OGG, MP4/WebM, PDF/TXT; un archivo de máximo 10 MB y 20 envíos/hora por emisor. Nuevo envío requiere vínculo vigente/chat abierto. Descarga privada no-store/nosniff/CSP sandbox; medios se cargan al pulsar Ver archivo y se revoca el blob al salir. Validación por extensión/cabecera no acredita integridad total ni protección antivirus. PostgreSQL BYTEA evita depender del disco efímero de Render; almacenamiento privado externo es evolución futura, no implementación presente.
+
+Gmail usa OAuth del servidor. V58 documenta configuración de ocho variables/origen y permisos SELECT/INSERT/UPDATE/USAGE del boletín con RLS; DELETE denegado y filas conservadas. No se envió correo ni creó una suscripción real en aquel cierre. Confirmación, baja, bienvenida y entrega real necesitan aceptación humana. El diseño de correos se integró después, sin acreditar recepción.
+
+Zoom automático es opcional; deshabilitado conserva enlace manual. Agenda/reunión comparten configuración: 40 minutos desarrollo/Basic y 45 producción institucional compatible. zoom_origen distingue enlace automático/manual. Configuración de credenciales en Render no demuestra autorización OAuth o creación efectiva; conservar evidencia separada del recorrido humano V46 hasta enlace Zoom.
+
+Valoraciones: bloqueo de sesión y UNIQUE contra concurrencia; runtime SELECT/INSERT, sin UPDATE/DELETE ni permisos públicos según adopción heredada V72. Si falta tabla en otro entorno, responde 503/Próximamente. Incidencias usan UUID y validación de sesión; auditoría sólo muestra operaciones instrumentadas, no cada clic.
+
+No WebSockets/EventSource/realtime. React Query invalida consultas locales tras escritura; notificaciones hacen polling cada 30 segundos. Otros navegadores necesitan refetch/recarga/Actualizar. Un worker y limitadores en memoria mantienen restricciones de escala. Copias verificadas por listado no equivalen a restauración ensayada.
+
+## F. Evidencias, verificaciones y pendientes
+
+| Corte heredado | Resultado documentado | Alcance real |
+| --- | --- | --- |
+| V56 landing | 25 rutas, 283 componentes, siete unidades/ASGI; tipos/check/build; Chrome 320-1536 | API interceptada salvo catálogo local; no BD/correo/Zoom real |
+| V60 login | Diez pruebas de acceso/providers/destino, tipos/check/build; Chrome 320-1536 | Formulario con respuestas interceptadas; no login real |
+| V62 integración | 25 rutas, 288 componentes; 14 unidades correo/activación/incidencias y siete de mundos | Prueba SQL incidencias omitida; no nueva adopción BD |
+| V68 ADMIN | 25 rutas, 293 componentes, nueve unidades correo/boletín; tipos/check/build; 12 rutas navegador | API interceptada; escritorio y vistas 390/1024; no todas las pantallas |
+| V70 mapa | 13 pruebas focalizadas, 25 rutas; tipos/check/build; Chrome 1280/1440/1536 | Intentos sintéticos; responsive diferido |
+| V71 preview | Cinco mundos/modal/rechazo de guardado; cero peticiones API | Sólo fixture DEV, no nueva suite funcional |
+| V72 terapeuta | 25 rutas, 304 componentes/22 archivos; 29 unidades backend y un escenario SQL/HTTP; 11 capturas Chrome1536x1024 | PostgreSQL17 local descartable, API de navegador sintética; sin QA móvil ni clínica compartida |
+
+Los resultados anteriores son **evidencia heredada**, no pruebas ejecutadas otra vez en V74. No sumarlos como una suite única. Evidencia nueva de esta actualización: estado Git/fetch/refs, lectura focalizada de fuentes, Graphify check/query, generación del contrato local, validación de contenido y render/inspección del PDF. El wrapper Graphify no admite --budget: se usó query con su presupuesto predeterminado de 1500 tokens después del error inicial.
+
+Prioridades para continuar:
+
+- Confirmar el SHA Live de Render y rutas de valoraciones; verificar CI sin interpretar ausencia de statuses como éxito.
+- Aceptar con el equipo el recorrido de cierre/reporte/plan, lectura familiar y segunda reserva; correo/boletín/Zoom con autorización y datos apropiados.
+- QA responsive vigente de mundos y terapeuta; la evidencia móvil de cortes anteriores no certifica V70/V72.
+- Revisar contenidos educativos con un profesional y desarrollar juegos finales; ML/dataset y certificado mensual siguen pendientes.
+- Decidir moderación/edición de opiniones, fuentes de módulos Próximamente y transporte de eventos si se amplía alcance.
+- Ensayar recuperación/restauración, carga sostenida y reproducción por otro integrante antes de declarar aceptación integral.
+
+## G. Antecedentes conservados y mantenimiento
+
+La documentación original que sigue conserva los requisitos del Avance2, ejemplos, inventario API V46, diccionario de 30 tablas y evidencia previa. Todos sus encabezados de estado, porcentajes, estadísticas y pendientes deben leerse como corte V46. En particular, las afirmaciones de progreso sólo local, Zoom ausente y correo exclusivamente interno quedaron superadas por los avances anteriores. No reutilizar aquellas cifras como mediciones del 11/10/2026.
+
+Fuentes vigentes: docs/PROJECT_CONTEXT.md, docs/IMPLEMENTATION_PROGRESS.md, docs/architecture.md, docs/DELIVERY_CHECKLIST.md, ADR 0020/0021/0022/0023/0024 y evidencia por corte. Índice de auditorías: docs/audits/README.md. Esta síntesis documental conserva auditorías anteriores; no crea una nueva auditoría ni modifica sus resultados.
+
+## H. Inventario API local vigente (V73)
+
+Generado sin ejecutar endpoints ni conectar PostgreSQL. Incluye rutas del sistema.
+
+| Método | Ruta | Resumen |
+| --- | --- | --- |
+| POST | /api/v1/auth/create-password | Create Password |
+| POST | /api/v1/auth/resend-activation | Resend Password Link |
+| POST | /api/v1/auth/login | Iniciar sesión |
+| POST | /api/v1/auth/logout | Cerrar sesión |
+| GET | /api/v1/auth/me | Obtener usuario actual |
+| POST | /api/v1/auth/activate | Cambiar contraseña inicial |
+| GET | /api/v1/padres/me | Obtener perfil del padre autenticado |
+| GET | /api/v1/padres/hijos | Listar hijos activos del tutor autenticado |
+| POST | /api/v1/padres/hijos | Crear un nuevo hijo |
+| GET | /api/v1/padres/hijos/{id_paciente} | Consultar detalle de un hijo autorizado |
+| PATCH | /api/v1/padres/hijos/{id_paciente} | Editar datos del hijo |
+| DELETE | /api/v1/padres/hijos/{id_paciente} | Eliminar hijo físicamente (solo sin dependencias) |
+| PATCH | /api/v1/padres/hijos/{id_paciente}/inactivar | Inactivar hijo lógicamente |
+| GET | /api/v1/terapeutas | Directorio |
+| GET | /api/v1/terapeutas/{key}/disponibilidad | Disponibilidad |
+| PUT | /api/v1/terapeutas/{key}/disponibilidad | Publicar |
+| GET | /api/v1/terapeutas/{key}/turnos | Turnos |
+| GET | /api/v1/terapeutas/me | Obtener perfil del terapeuta autenticado |
+| GET | /api/v1/admin/auditoria | Listar eventos administrativos de auditoría |
+| POST | /api/v1/admin/familias | Registrar padre e hijos |
+| GET | /api/v1/admin/me | Obtener perfil del administrador autenticado |
+| GET | /api/v1/admin/cuentas | Listar cuentas de usuarios |
+| GET | /api/v1/admin/cuentas/{id_usuario} | Obtener detalle de cuenta |
+| PATCH | /api/v1/admin/cuentas/{id_usuario} | Editar cuenta de usuario |
+| DELETE | /api/v1/admin/cuentas/{id_usuario} | Eliminar cuenta de usuario |
+| POST | /api/v1/admin/cuentas/padres | Crear cuenta de Padre/Tutor |
+| POST | /api/v1/admin/cuentas/terapeutas | Crear cuenta de Terapeuta |
+| PATCH | /api/v1/admin/cuentas/{id_usuario}/suspender | Suspender cuenta de usuario |
+| PATCH | /api/v1/admin/cuentas/{id_usuario}/activar | Activar cuenta de usuario |
+| GET | /api/v1/admin/cuentas/{id_usuario}/hijos | Listar hijos de una cuenta de padre (activos e inactivos) |
+| PATCH | /api/v1/admin/pacientes/{id_paciente}/reactivar | Reactivar paciente infantil |
+| GET | /api/v1/usuarios | Listar |
+| POST | /api/v1/usuarios | Crear |
+| GET | /api/v1/usuarios/{key} | Detalle |
+| PATCH | /api/v1/usuarios/{key} | Editar |
+| GET | /api/v1/pacientes | Listar |
+| POST | /api/v1/pacientes | Crear |
+| GET | /api/v1/pacientes/{key} | Detalle |
+| PUT | /api/v1/pacientes/{key} | Editar |
+| DELETE | /api/v1/pacientes/{key} | Desactivar sin borrar historial |
+| GET | /api/v1/pacientes/{key}/recorrido | Estado Recorrido |
+| GET | /api/v1/pacientes/{key}/tratamientos | Tratamientos |
+| POST | /api/v1/tratamientos | Asignar Tratamiento |
+| GET | /api/v1/citas | Listar |
+| POST | /api/v1/citas | Crear |
+| GET | /api/v1/citas/{key} | Detalle |
+| PUT | /api/v1/citas/{key} | Reprogramar |
+| PATCH | /api/v1/citas/{key}/estado | Estado |
+| PUT | /api/v1/citas/{key}/reunion | Reunion |
+| GET | /api/v1/sesiones | Listar |
+| POST | /api/v1/sesiones | Crear |
+| GET | /api/v1/sesiones/{key} | Detalle |
+| POST | /api/v1/sesiones/{key}/iniciar | Iniciar |
+| POST | /api/v1/sesiones/{key}/cerrar | Cerrar |
+| GET | /api/v1/sesiones/{key}/reporte | Reporte |
+| PUT | /api/v1/sesiones/{key}/reporte | Guardar Reporte |
+| GET | /api/v1/sesiones/{key}/reporte/pdf | Descargar Reporte |
+| GET | /api/v1/sesiones/{key}/plan | Plan |
+| POST | /api/v1/sesiones/{key}/plan | Publicar Plan |
+| GET | /api/v1/conversaciones/contactos | Contactos |
+| GET | /api/v1/conversaciones | Listar |
+| POST | /api/v1/conversaciones | Abrir |
+| GET | /api/v1/conversaciones/{key} | Detalle |
+| GET | /api/v1/conversaciones/{key}/mensajes | Mensajes |
+| POST | /api/v1/conversaciones/{key}/mensajes | Enviar |
+| GET | /api/v1/notificaciones/preferencias | Preferencias |
+| PUT | /api/v1/notificaciones/preferencias | Guardar |
+| GET | /api/v1/notificaciones | Bandeja |
+| POST | /api/v1/notificaciones/leidas | Leer Todas |
+| PATCH | /api/v1/notificaciones/{key}/leida | Leer |
+| GET | /api/v1/juegos/catalogo | Mundos |
+| GET | /api/v1/pacientes/{key}/juegos | Progreso |
+| POST | /api/v1/pacientes/{key}/juegos/{world}/intentos | Intento |
+| POST | /api/v1/newsletter/suscripciones | Create Subscription |
+| GET | /api/v1/newsletter/confirmar | Confirm Subscription |
+| GET | /api/v1/newsletter/baja | Unsubscribe Subscription |
+| POST | /api/v1/conversaciones/{key}/mensajes/adjunto | Enviar |
+| GET | /api/v1/conversaciones/{key}/adjuntos/{attachment} | Descargar |
+| POST | /api/v1/incidencias | Crear Incidencia |
+| GET | /api/v1/admin/incidencias | Listar Incidencias |
+| PATCH | /api/v1/admin/incidencias/{id_incidencia} | Actualizar Incidencia |
+| GET | /api/v1/sesiones/{key}/valoracion | Leer |
+| POST | /api/v1/sesiones/{key}/valoracion | Crear |
+| GET | /api/v1/valoraciones | Listar |
+| GET | / | Read Root |
+| GET | /health | Health Check |
+| GET | /health/ready | Readiness |
+
+## I. Historial publicado posterior a V46
+
+Registro Git del corte base; los números repetidos se conservan.
+
+| SHA | Título publicado |
+| --- | --- |
+| 09afec8 | V73_Actualizacion_Documentacion_Equipo |
+| 738028c | V72_Reformar_Panel_Terapeuta_Valoraciones |
+| b9e92cd | V71_Aislar_Preview_Mundo_ASHA |
+| 900aa5e | V70_Redisenar_Mapa_Mundo_ASHA |
+| 980a3eb | V69_Gestion_Avatares_Pacientes |
+| 250defc | V68_Integrar_Diseno_Administrador |
+| 5312b27 | V67_Redisenar_Panel_Administrador |
+| 61e6a39 | V53_Refinar_Diseno_Correos_ASHAKids |
+| 924f4ee | V66_Integrar_Adjuntos_Correos |
+| d31860a | V65_Publicar_Adjuntos_Mensajes |
+| 9184689 | V53_Disenar_Correos_ASHAKids |
+| 8d2ace2 | V64_Integrar_Citas_Sesiones_Admin |
+| 3e10d5b | V63_Filtrar_Citas_Limpiar_Sesiones_Admin |
+| fb471a3 | V62_Integrar_Landing_Incidencias |
+| 92fa967 | V61_Integrar_Landing_Acceso_Correo |
+| 7e958c8 | V59_Reformar_Incidencias_Panel_Admin |
+| 018dc42 | V60_Redisenar_Inicio_Sesion |
+| 47a5470 | V59_Ajustar_Terapeutas_Footer_Logo |
+| 498df42 | V58_Documentacion_Gmail_Boletin_Render |
+| d579a40 | V53_Activar_autodeploy_Render_Gmail |
+| 4740ffe | V56_Integracion_Landing_Mundo_ASHA |
+| 718df77 | V57_Documentacion_Correo_Render |
+| 66754c5 | V56_Activacion_Contrasena_Correo |
+| 796fc28 | V55_Ilustraciones_Landing_Mundo_ASHA |
+| 64cbb35 | V55_Conectar_Auditoria_Admin |
+| ca9e1b3 | V54_Eliminar_Terapeutas_Demo_Admin |
+| efe46a7 | V53_Ajustar_Documentacion_Gmail |
+| d5017d5 | V52_Integrar_Dev_Juegos_Zoom |
+| 0d1e285 | V53_Continuidad_Visual_Landing |
+| 901c377 | V52_Correo_Gmail_Boletin |
+| d8eb10e | V52_Rediseno_Ashi_Landing |
+| 5dacd55 | V51_Rediseno_Landing_Publica |
+| a6eda9f | V51_Documentacion_Configuracion_Zoom |
+| 5dd572c | V50_Persistencia_Mundos_Juegos |
+| 396efda | V49_Duracion_Visualizacion_Zoom |
+| 14ef7ac | V48_Correccion_Documentacion_Pruebas |
+| 415df3e | V47_Cierre_Consistencia_Zoom |
+| 8f98c24 | V47_Documentacion_Sistema_Componentes_UI |
+
+## Archivo histórico V46 - referencia original
+
+### Documento original del 10 de octubre de 2026
 
 **Corte documental V46 · 10 de octubre de 2026 · America/Lima.** Fuente para redactar el Avance del Proyecto Final 2 y para consultar el sistema; no es el informe académico entregable ni una auditoría técnica nueva.
 

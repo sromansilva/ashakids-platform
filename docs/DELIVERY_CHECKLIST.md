@@ -1,3 +1,5 @@
+Actualización documental vigente V74 (11/10/2026): [maestro](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md), base V73/09afec8; contrato local 87 operaciones. Los conteos V46 inferiores son históricos. Evidencia nueva sólo documental/PDF; no auditoría ni aceptación integral nueva.
+
 # ASHAKids — Entrega académica y evidencia
 
 Fuente documental actual V46 para el Avance2: [maestro de etapa](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md)

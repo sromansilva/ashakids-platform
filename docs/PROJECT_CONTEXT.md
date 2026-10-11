@@ -1,3 +1,9 @@
+## V74 - Actualización de documentación maestra / 2026-10-11
+
+Base V73/09afec8911c3a043343df0c14db1967f15a24960, feat/piero-dev; fetch confirma dev y rama de usuario sincronizadas. Maestro/PDF actualizados con avances V47-V73, estado de módulos, flujo, ampliaciones de datos, contrato local de 87 operaciones, seguridad, integraciones, evidencia heredada y pendientes. Nombre PDF V46 conservado; antecedentes originales rotulados históricos. Exportador permite generar sólo maestro y pie de corte vigente. Evidencia: docs/evidence/documentacion-maestra-2026-10-11.
+
+Revisión documental, no nueva auditoría ni pruebas funcionales/BD/correo/Zoom. Comprobaciones: Git/Graphify, contrato local sin lifespan, PDF renderizado e inspeccionado. Cierre V74/publicación normal a dev y feat/piero-dev; SHA real consultable en Git. Siguiente: confirmar Live/CI y aceptación humana del recorrido completo; responsive V70/V72 y juegos finales pendientes.
+
 ## V72 - Panel terapeuta y valoraciones persistentes / 2026-10-11
 
 V72 publicado y verificado en dev/feat/piero-dev: `738028ce2408403fb2a27ae4b0459ed1c8995a81`; dev local sincronizado, V70/V71 conservados. Cierre documental V73 registra resultado. CI no confirmado (sin contexts/ejecuciones disponibles) y Render todavía sin rutas de valoraciones en OpenAPI al comprobar: despliegue pendiente de confirmar.
