@@ -29,6 +29,6 @@ export function TerapeutaAnaliticas() {
     ].map(([label,count]) => <div key={label} className="py-4"><dt className="font-bold text-[#4B4264]">{label}</dt><dd className="text-3xl font-black tabular-nums mt-2">{count}</dd></div>)}</dl>
     <section><h2 className="text-lg font-extrabold mb-4">Sesiones atendidas por mes · {year}</h2><ol className="space-y-3">{months.map(m => <li key={m.month} className="grid grid-cols-[6rem_1fr_2rem] gap-4 items-center text-sm"><span className="capitalize font-bold">{m.label}</span><div aria-hidden="true" className="h-3 bg-violet-100 rounded-full overflow-hidden"><div className="h-full bg-violet-700 rounded-full" style={{width:`${m.count/max*100}%`}}/></div><span className="tabular-nums font-bold">{m.count}</span></li>)}</ol></section>
     {!selected.length && <p>No hay sesiones registradas en este periodo.</p>}
-    <p className="text-sm text-[#4B4264]">Los conteos corresponden a tus atenciones autorizadas. Objetivos alcanzados y evolución clínica siguen sin una medición conectada; los juegos demo no alimentan estas cifras.</p></>}
+    <dl className="flex gap-8 flex-wrap pt-4 border-t border-[#E8E5F4]">{['Objetivos alcanzados','Evolución clínica'].map(label => <div key={label}><dt className="text-sm font-bold text-[#4B4264]">{label}</dt><dd className="text-sm mt-1 text-[#4B4264]">Próximamente</dd></div>)}</dl></>}
   </section>;
 }

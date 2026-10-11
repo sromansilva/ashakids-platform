@@ -1,3 +1,11 @@
+## V72 - Panel terapeuta y valoraciones persistentes / 2026-10-11
+
+Reforma de escritorio: inicio sin accesos repetidos, chat con lista/burbujas/compositor, horario compacto con selección por día y publicación explícita. Perfil real informativo; contraseña, notificaciones y disponibilidad siguen persistentes. Se retiran 2FA, autoeliminación, banners amarillos y pestañas clínicas simuladas; datos sin fuente muestran Próximamente. Sesiones/reportes autorizados conservados.
+
+La familia puede calificar después una sesión FINALIZADA/ASISTIO desde su fecha de agenda:1–5estrellas y comentario opcional. Terapeuta ve opiniones reales, media y distribución calculadas. Migración011 adoptada con respaldo privado verificado, RLS/SELECT/INSERT runtime;32tablas previas conservadas y cero registros de prueba compartidos. ADR[0024](decisions/0024-valoraciones-sesion-atendida.md).
+
+PASS: tipos/check/build,25rutas,304componentes/22archivos,29unidades backend y un escenario SQL/HTTP local. Chrome1536×1024:once capturas, sin errores JS/overflow. [Evidencia](evidence/therapist-reform-2026-10-11/verification.md). Responsive diferido. Sin WebSockets: invalidación local y polling de notificaciones; Actualizar conservado. Base V71/b9e92cd; cierre/publicación normal V72 en dev y feat/piero-dev. No nueva auditoría/PDF.
+
 ## V71 - Vista previa aislada de Mundo ASHA / 2026-10-11
 
 V70 publicado mediante push atómico normal: `dev` y `feat/piero-dev` verificados en `900aa5e598dd90a39c00f94f4ec9878c4b83ebce`, y ramas locales sincronizadas. La consulta GitHub devolvió cero statuses; no acredita CI/despliegue. Cambios ajenos conservados sin publicar.

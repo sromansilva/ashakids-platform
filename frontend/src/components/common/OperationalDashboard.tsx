@@ -37,7 +37,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
       <Btn variant="outline" onClick={reload} disabled={queries.some(q => q.isFetching)}>Actualizar panel</Btn>
       {admin && <div className="admin-welcome-art" aria-hidden="true"><PublicIllustration src="/illustrations/ashi-hero-v1.png" alt="" sizes="240px" /></div>}
     </header>
-    <nav aria-label="Acciones del panel" className="operational-actions flex gap-3 flex-wrap mb-7">{actions.map(([label, view],index) => { const Icon = (admin ? actionIcons : [Users, CalendarDays, FileText])[index]; return <Btn key={view} variant="secondary" onClick={() => go(view)}>{<Icon size={19} aria-hidden="true"/>}{label}</Btn>; })}</nav>
+    {admin && <nav aria-label="Acciones del panel" className="operational-actions flex gap-3 flex-wrap mb-7">{actions.map(([label, view],index) => { const Icon = actionIcons[index]; return <Btn key={view} variant="secondary" onClick={() => go(view)}><Icon size={19} aria-hidden="true"/>{label}</Btn>; })}</nav>}
     {error ? <div role="alert" className="rounded-2xl bg-red-50 p-5"><p className="font-bold">No pudimos actualizar los registros.</p><p className="mt-2">{error.message}</p><Btn onClick={reload} className="mt-3">Reintentar panel</Btn></div> : pending ? <p role="status">Cargando registros del panel…</p> : <>
       <dl aria-label="Resumen de registros" className="operational-stats grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-7">{stats.map(([label, count]) => <div key={label} className="bg-white border border-[#E8E5F4] rounded-2xl p-5"><dt className="text-sm text-[#4B4264] font-bold">{label}</dt><dd className="text-3xl font-black mt-3 tabular-nums">{count}</dd></div>)}</dl>
       <div className="operational-workspace"><section className="operational-current">
@@ -47,7 +47,6 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
       <h2 className="text-xl font-extrabold mb-3">Próximas citas</h2>
       {upcoming.length ? <ul className="space-y-3">{upcoming.slice(0, 5).map(a => <li key={a.id_reserva} className="p-4 bg-white border border-[#E8E5F4] rounded-2xl flex items-start justify-between gap-4 flex-wrap"><div><p className="font-extrabold break-words">{a.paciente_nombre}</p><p className="text-base text-[#4B4264] mt-1">{familyDate(a.fecha_hora_inicio)} · {familyTime(a.fecha_hora_inicio)} · {a.modalidad}</p><p className="text-sm mt-1">{a.terapeuta_nombre} · {a.estado_reserva}</p></div><Btn variant="outline" onClick={() => go(admin ? "admin/citas" : "terapeuta/agenda")}>Ver en agenda</Btn></li>)}</ul> : <p className="text-base text-[#4B4264]">No hay próximas citas registradas.</p>}
       </section></div>
-      <p className="operational-note text-sm text-[#4B4264] mt-6">Los conteos reflejan registros autorizados. No miden evolución clínica, disponibilidad del servicio ni mensajes pendientes.</p>
     </>}
   </section>;
 }

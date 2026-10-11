@@ -1,0 +1,55 @@
+.messages-center,.availability-editor { color:#1c1135; }
+.messages-center ::selection,.availability-editor ::selection { background:#ddd6fe; color:#2d1b69; }
+.messages-center :is(input,textarea),.availability-editor input { caret-color:#6d28d9; }
+.messages-center :is(button,input,textarea):focus-visible,.availability-editor :is(button,input):focus-visible { outline:3px solid #5b21b6; outline-offset:3px; }
+.messages-workspace { min-height:610px; }
+.messages-workspace > aside { background:#faf9fd; padding:20px; }
+.messages-workspace > section { display:flex; flex-direction:column; }
+.messages-workspace > section.hidden { display:none; }
+.message-welcome { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:50px 16px; }
+.message-welcome-icon { width:76px; height:76px; display:grid; place-items:center; background:#ede9fe; color:#6d28d9; border-radius:20px; margin-bottom:22px; }
+.message-welcome h2 { font-size:1.25rem; font-weight:900; }
+.message-welcome p { max-width:38ch; color:#4b4264; margin-top:12px; line-height:1.6; }
+.message-welcome > span { font-size:.875rem; color:#615274; margin-top:24px; }
+.message-thread-heading { border-bottom:1px solid #e8e5f4; padding-bottom:16px; }
+.message-history { flex:1; min-height:150px; max-height:46vh; padding:12px; background:#faf9fd; border-radius:12px; scrollbar-width:thin; scrollbar-color:#c4b5d5 transparent; }
+.message-bubble { width:fit-content; max-width:88%; padding:12px 16px; border-radius:14px; overflow-wrap:anywhere; }
+.message-bubble.is-own { margin-left:auto; background:#ede9fe; border-bottom-right-radius:4px; }
+.message-bubble.is-received { margin-right:auto; background:#fff; border:1px solid #e8e5f4; border-bottom-left-radius:4px; }
+.message-bubble time { font-size:.75rem; display:block; margin-top:8px; }
+.message-composer { padding-top:14px; border-top:1px solid #e8e5f4; }
+.message-composer > p { font-size:.75rem; line-height:1.6; }
+.message-composer textarea { resize:vertical; min-height:80px; }
+.availability-meta { display:flex; flex-wrap:wrap; gap:10px 18px; margin-top:16px; font-size:.8125rem; color:#4b4264; }
+.availability-meta span { display:flex; align-items:center; gap:6px; }
+.availability-week { border:1px solid #e8e5f4; border-radius:14px; overflow:hidden; }
+.availability-editor { container-type:inline-size; }
+.availability-day { padding:18px; }
+.availability-day + .availability-day { border-top:1px solid #e8e5f4; }
+.availability-day-heading { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; }
+.availability-day-heading h3 { font-size:1rem; font-weight:800; }
+.availability-day-heading p { color:#615274; font-size:.75rem; margin-top:2px; }
+.availability-day-toggle { font-size:.75rem; font-weight:800; min-height:44px; padding:8px; color:#5b21b6; border-radius:8px; }
+.availability-day-toggle:hover { background:#ede9fe; }
+.availability-slots { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+.availability-slot { position:relative; cursor:pointer; }
+.availability-slot input { position:absolute; opacity:0; width:100%; height:100%; }
+.availability-slot > span { display:flex; justify-content:center; align-items:center; gap:6px; min-height:44px; border:1px solid #d8d2e6; border-radius:9px; color:#615274; font-size:.875rem; font-weight:700; font-variant-numeric:tabular-nums; transition:background-color .18s,color .18s; }
+.availability-slot svg { visibility:hidden; }
+.availability-slot.is-selected > span { background:#ede9fe; border-color:#c4b5fd; color:#4c1d95; }
+.availability-slot.is-selected svg { visibility:visible; }
+.availability-slot:hover > span { border-color:#7c3aed; }
+.availability-slot:has(input:focus-visible) > span { outline:3px solid #5b21b6; outline-offset:2px; }
+.availability-slot:has(input:disabled) { cursor:not-allowed; opacity:.65; }
+@container(min-width:760px) {
+  .availability-day { display:grid; grid-template-columns:115px minmax(0,1fr); gap:14px; align-items:center; padding:14px 18px; }
+  .availability-day-heading { display:block; margin-bottom:0; }
+  .availability-day-toggle { padding:6px 0; }
+  .availability-slots { grid-template-columns:repeat(10,minmax(0,1fr)); gap:6px; }
+  .availability-slot > span { font-size:.75rem; gap:3px; }
+  .availability-slot svg { width:12px; }
+}
+@media(min-width:768px) { .messages-workspace > section.hidden { display:flex; } }
+@media(max-width:767px) { .messages-workspace { min-height:450px; } .messages-workspace > aside { border-right:none; } .messages-center { padding-bottom:100px; } .message-bubble { max-width:95%; } }
+@media(max-width:480px) { .availability-slots { grid-template-columns:repeat(3,minmax(0,1fr)); } .availability-day { padding:14px 10px; } .availability-slot > span { gap:4px; } }
+@media(prefers-reduced-motion:reduce) { .availability-slot > span { transition:none; } }

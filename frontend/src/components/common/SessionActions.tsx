@@ -9,6 +9,7 @@ import { RemoteFeedback } from "./RemoteFeedback";
 import { ReportDownload } from "./ReportDownload";
 import { VirtualMeeting } from "./VirtualMeeting";
 import { SessionPlan } from "./SessionPlan";
+import { SessionReview } from './SessionReview';
 export function SessionActions({ appointmentId }: { appointmentId: number }) {
   const [closing, setClosing] = useState<'ASISTIO' | 'NO_ASISTIO' | null>(null);
   const [now, setNow] = useState(Date.now);
@@ -37,6 +38,7 @@ export function SessionActions({ appointmentId }: { appointmentId: number }) {
       {canEdit && (!s.reporte_disponible || (report.isSuccess && !report.error)) && <ClinicalReportEditor key={id} id={id!} initial={report.data ?? emptyReport} />}
       {!canEdit && report.data && !report.error && <dl className="space-y-2">{Object.entries(labels).map(([key, label]) => <div key={key}><dt className="font-bold text-sm">{label}</dt><dd className="text-sm whitespace-pre-wrap">{report.data[key as keyof ReportData] || 'No registrado'}</dd></div>)}</dl>}
       <SessionPlan session={s} />
+      {role === 'PADRE' && s.estado_sesion === 'FINALIZADA' && s.asistencia === 'ASISTIO' && <SessionReview key={s.id_sesion} id={s.id_sesion} therapist={s.cita.terapeuta_nombre}/>}
       {report.isSuccess && !report.isFetching && s.reporte_disponible && <ReportDownload key={`pdf-${id}`} sessionId={id!} />}
     </>}
   </section>;

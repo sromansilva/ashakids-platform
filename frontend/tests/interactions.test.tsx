@@ -18,15 +18,15 @@ it("A therapist can open every section of an assigned patient record", async () 
   renderRoute("/terapeuta/pacientes", "TERAPEUTA"); await loaded();
   fireEvent.click(await screen.findByRole("button", { name: "Abrir expediente" }));
   healthy();
-  for (const name of ["Evolución", "Sesiones", "Objetivos", "Actividades", "Reportes", "Notas", "Resumen"]) {
+  for (const name of ["Sesiones", "Reportes", "Resumen"]) {
     fireEvent.click(within(screen.getByRole("main")).getByRole("button", { name: new RegExp(`^${name}$`) })); healthy();
   }
+  for (const name of ['Evolución','Objetivos','Actividades','Notas']) expect(within(screen.getByRole('main')).queryByRole('button', {name})).not.toBeInTheDocument();
 });
-it("Therapist profile input uses the shared string-value contract", async () => {
+it("Therapist profile fields remain read only until editing is supported", async () => {
   renderRoute("/terapeuta/config", "TERAPEUTA"); await loaded();
-  const input = screen.getAllByRole("textbox")[0];
-  fireEvent.change(input, { target: { value: "Nombre actualizado" } });
-  expect(input).toHaveValue("Nombre actualizado"); healthy();
+  const input = await screen.findByLabelText('Nombre completo');
+  expect(input).toHaveAttribute('readonly'); healthy();
 });
 it("Public specialist links stay in the landing section", async () => {
   renderRoute("/", null); await loaded();

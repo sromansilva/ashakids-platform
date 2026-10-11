@@ -1,3 +1,13 @@
+## V72 - Reforma del terapeuta y opiniones de sesiones / 2026-10-11
+
+Objetivo: limpiar panel/prototipos, mejorar chat/horario para escritorio y hacer persistentes las valoraciones desde agenda histórica. Rama feat/piero-dev; base inicial V69/980a3eb, cierre conserva V70 mapa y V71 preview del equipo sin conflictos. Fuentes: PageFrame/capacidades, dashboard, mensajes, disponibilidad, configuración/pacientes/analíticas/valoraciones terapeuta, SessionReview/SessionActions, API/modelo/esquema/servicio valoraciones, migración011 y pruebas. ADR0024, diseño y evidencia de cierre añadidos.
+
+PASS: typecheck/check368máximo500/build,25rutas/304componentes22archivos;29backendunit/modelos y1SQL/HTTP en PostgreSQL17 local descartable. Chrome1536×1024 con API sintética:11capturas, cero errores JS/overflow. Detector[]. Dos rondas: radio de estrellas/matriz corregidos; expectativas antiguas y carrera de pantalla corregidas. Sin QA móvil; responsive diferido. No opiniones/usuarios/pacientes de prueba compartidos, correo/Zoom/login real.
+
+Migración011 adoptada explícitamente:backup privado559032bytes verificado,32tablas previas sin alteración de filas, RLS y grants SELECT/INSERT sin UPDATE/DELETE ni acceso público. Metadatos sanitizados en [evidencia](evidence/therapist-reform-2026-10-11/verification.md); credenciales/respaldo en tmp ignorado. Fallback Próximamente si otro entorno carece de tabla.
+
+No transporte WebSocket; Actualizar permanece y notificaciones usan polling30s. Estimación y requisitos en evidencia. Siguiente: aceptación humana del panel publicado; fuentes de Próximamente, moderación de opiniones y responsive pendientes. Cierre con commit V72, publicar normal dev/feat/piero-dev y confirmar SHAs/CI reales. No declarar deploy por push. No auditoría académica nueva.
+
 ## V71 - Relevo de vista previa aislada de Mundo ASHA / 2026-10-11
 
 V70 `900aa5e598dd90a39c00f94f4ec9878c4b83ebce` publicado con push atómico a dev y feat/piero-dev; ls-remote y ramas locales confirman coincidencia. Sin force-push. GitHub devuelve statuses vacíos, sin confirmación de CI/deploy. El trabajo concurrente de otros módulos sigue fuera de estos commits.

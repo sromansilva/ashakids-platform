@@ -138,12 +138,13 @@ it("Mundo ASHA has an honest empty family state", async () => {
 });
 it.each(["/mundo-asha/academia", "/mundo-asha/retos"])("%s remains pending", async path => {
   renderRoute(path, "PADRE");
-  await screen.findByText(/Esta sección está pendiente/);
+  await screen.findByRole('heading', { name: 'Próximamente' });
   expect(screen.queryByText(/Mateo|47|80%|60%|100%/)).not.toBeInTheDocument();
 });
 it.each(["/mundo-asha/insignias", "/mundo-asha/perfil"])("%s displays persisted profile counters", async path => {
   api(); renderRoute(path, "PADRE");
-  await screen.findByText(/Nivel 1 · 0 XP · 0 medallas · 0 intentos/);
+  await screen.findByText(/Nivel 1 · 0 XP · 0 medallas/);
+  expect(screen.getByText(/0 intentos/)).toBeInTheDocument();
   expect(screen.queryByText(/Mateo|80%|60%|100%/)).not.toBeInTheDocument();
 });
 

@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-11T07:14:48.347677+00:00",
+  "migration": "011_valoraciones_sesion.sql",
+  "success": true,
+  "backup": {
+    "bytes": 559032,
+    "sha256": "9b39cf80201e5d227a3aafa15e75117d1c90b9bf30d5bb8e72f9a3bcac812545",
+    "archive_list_verified": true
+  },
+  "existing_tables_preserved": 32,
+  "existing_rows_preserved": true,
+  "audit_table_exists": true,
+  "rls": true,
+  "grants": {
+    "SELECT": true,
+    "INSERT": true,
+    "UPDATE": false,
+    "DELETE": false
+  },
+  "public_roles_denied": true,
+  "sequence_usage": true,
+  "policies": [
+    {
+      "policyname": "valoraciones_runtime_insert",
+      "cmd": "INSERT",
+      "roles": "{ashakids_runtime}"
+    },
+    {
+      "policyname": "valoraciones_runtime_select",
+      "cmd": "SELECT",
+      "roles": "{ashakids_runtime}"
+    }
+  ],
+  "runtime_plans_without_dml": true
+}

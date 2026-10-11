@@ -363,6 +363,20 @@ pendientes juegos finales, revisión profesional de contenidos, modelo ML/datase
 etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
 Los catálogos draft-1 y demos históricos no representan este flujo persistente.
 
+## V72 — valoraciones de sesiones atendidas / 2026-10-11
+
+FastAPI GET/POST /sesiones/{key}/valoracion y GET /valoraciones. Escritura PADRE
+de su familia, sólo FINALIZADA/ASISTIO, sin límite de antigüedad; lectura autorizada
+por reserva y listado TERAPEUTA/ADMIN. Una opinión por sesión, rating1–5/comentario1000,
+bloqueo de sesión, reintento idéntico y conflicto para segundo contenido. Sin edición
+ni borrado; listado devuelve autor/fecha, no datos del niño. UI desde agenda histórica.
+
+Migración011 explícita con UNIQUE/FK/CHECK, RLS y SELECT/INSERT runtime sin permisos
+públicos; autorización de dominio en backend. Ausencia de tabla:503/Próximamente.
+Adoptada con respaldo privado y32tablas anteriores conservadas; pruebas SQL sólo locales.
+ADR[0024](decisions/0024-valoraciones-sesion-atendida.md). Sin SupabaseAuth ni realtime;
+HTTP/JSON e invalidación local de consultas conservados, polling notificaciones30s.
+
 ## V52 — adjuntos persistentes en mensajes / 2026-10-10
 
 PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar

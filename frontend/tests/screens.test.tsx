@@ -11,7 +11,7 @@ describe("Every declared destination renders", () => {
     await waitFor(() => expect(screen.queryByText("Cargando pantalla…")).not.toBeInTheDocument(), { timeout: 5000 });
     expect(screen.queryByText("No pudimos cargar esta pantalla")).not.toBeInTheDocument();
     expect(screen.queryByText("Página no encontrada")).not.toBeInTheDocument();
-    expect(view.container.textContent?.length).toBeGreaterThan(0);
+    await waitFor(() => expect(view.container.textContent?.length).toBeGreaterThan(0));
   });
   it("Mundo ASHA uses the family destination for PADRE", async () => {
     renderRoute("/mundo-asha", "PADRE");

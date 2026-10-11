@@ -1,0 +1,262 @@
+{
+  "errors": [],
+  "layouts": [
+    {
+      "name": "dashboard-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Inicio\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nPanel del terapeuta\n\nHola, Profesional de prueba. Consulta tu agenda y las atenciones registradas.\n\nActualizar panel\nPacientes atendidos\n1\nCitas por comenzar hoy\n0\nReportes por registrar\n1\nSesión en curso\n\nNo tienes sesiones en curso.\n\nPróximas citas\n\nNo hay próximas citas registradas.",
+      "smallControls": []
+    },
+    {
+      "name": "messages-empty-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Mensajes\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nMensajes\n\nUn espacio para conversar y compartir con las familias.\n\nConversaciones\nActualizar lista\nFamilia de prueba\nAsignación activa\nIniciar conversación\nConversar con Otra familia de prueba\nConecta con las familias\n\nSelecciona una conversación o inicia una con una asignación activa.\n\nLos mensajes y archivos se guardan en tu conversación.",
+      "smallControls": []
+    },
+    {
+      "name": "messages-thread-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Mensajes\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nMensajes\n\nUn espacio para conversar y compartir con las familias.\n\nConversaciones\nActualizar lista\nFamilia de prueba\nAsignación activa\nIniciar conversación\nConversar con Otra familia de prueba\nFamilia de prueba\n\nConversación con asignación activa · Hora de Lima\n\nActualizar conversación\n\nFamilia de prueba\n\nHola, ¿podemos revisar las actividades de la próxima sesión?\n\n11/10/26, 10:00 a. m. (Lima)\n\nTú\n\nSí, lo revisaremos juntos en nuestra próxima atención.\n\n11/10/26, 10:01 a. m. (Lima)\nEscribir mensaje\n\n0/4000 caracteres. Un archivo por mensaje, hasta 10 MB: JPG, PNG, GIF, WebP, MP3, WAV, OGG, MP4, WebM, PDF o TXT.\n\nAdjuntar archivo\nEnviar mensaje",
+      "smallControls": []
+    },
+    {
+      "name": "profile-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Configuración\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nConfiguración\n\nGestiona tu disponibilidad, notificaciones y seguridad.\n\nPerfil\nDisponibilidad\nNotificaciones\nSeguridad\nInformación del perfil\nPd\n\nProfesional de prueba\n\nNombre completo\nCorreo electrónico\nEspecialidad principal\nAños de experiencia\nIdiomas\nSobre mí\n\nPerfil sintético para verificar la presentación.\n\nPara corregir los datos registrados, contacta con la administración del centro.\n\nFoto de perfil\nPróximamente\nTeléfono\nPróximamente\nCédula profesional\nPróximamente",
+      "smallControls": []
+    },
+    {
+      "name": "availability-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Configuración\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nConfiguración\n\nGestiona tu disponibilidad, notificaciones y seguridad.\n\nPerfil\nDisponibilidad\nNotificaciones\nSeguridad\nTu disponibilidad semanal\n\nElige los horarios en los que puedes atender.\n\nHora de Lima\n45 minutos por sesión\n34 turnos por semana\nTurnos semanales\nLunes\nLunes\n\n10 turnos\n\nDesmarcar día\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\nMartes\nMartes\n\n6 turnos\n\nSeleccionar día\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\nMiércoles\nMiércoles\n\n6 turnos\n\nSeleccionar día\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\nJueves\nJueves\n\n6 turnos\n\nSeleccionar día\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\nViernes\nViernes\n\n6 turnos\n\nSeleccionar día\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\nSábado\nSábado\n\nSin atención\n\nSeleccionar día\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\nAusencias y bloqueos\n\nNo hay bloqueos en esta edición. La última configuración publicada se conserva hasta publicar.\n\nInicio del bloqueo\nFin del bloqueo\nAñadir bloqueo\n\nCambios pendientes de publicar.\n\nLas reservas confirmadas se conservan si cambias tu horario.\n\nPublicar disponibilidad",
+      "smallControls": []
+    },
+    {
+      "name": "security-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Configuración\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nConfiguración\n\nGestiona tu disponibilidad, notificaciones y seguridad.\n\nPerfil\nDisponibilidad\nNotificaciones\nSeguridad\nSeguridad de la cuenta\nContraseña actual\nNueva contraseña\nConfirmar contraseña\nCambiar contraseña",
+      "smallControls": []
+    },
+    {
+      "name": "patient-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Pacientes\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nVolver a pacientes\nPD\nPaciente de prueba\n\n8 años · Activo\n\nSesión\nSesiones atendidas\n1\nProgreso\nPróximamente\nPróxima sesión\nPor programar\nResumen\nSesiones\nReportes\nReportes y planes del paciente\n\nConsulta el reporte y el plan de cada atención.\n\nSin reportes guardados. Registra el reporte desde la sesión clínica.",
+      "smallControls": []
+    },
+    {
+      "name": "reviews-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Valoraciones\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nValoraciones\n\nOpiniones de familias sobre sus sesiones contigo.\n\nActualizar valoraciones\n\nCalificación media\n\n4.0 / 5\n\n1 valoraciones\n\n5 ★\n0\n4 ★\n1\n3 ★\n0\n2 ★\n0\n1 ★\n0\n\nFamilia de prueba\n\nSesión del 11/10/2026\n\n4 de 5\n\nGracias por la atención y la explicación a la familia.\n\nValoración del 11/10/2026",
+      "smallControls": []
+    },
+    {
+      "name": "activity-empty-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Datos de actividad\n\nProfesional de prueba\nTerapeuta\nNotificaciones\n0 sin leer\nDatos de actividad\nPróximamente\n\nEste apartado estará disponible en una próxima actualización.",
+      "smallControls": []
+    },
+    {
+      "name": "family-review-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Agenda\n\nProfesional de prueba\nFamilia / Tutor\nHijo o hija\nPaciente de prueba\nMi Agenda\n\nOctubre · 2026\n\nReservar cita\nOctubre 2026\nL\nM\nX\nJ\nV\nS\nD\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\nCita agendada\nHoy\nCitas del 11 de Octubre (1)\nVer todas\nPd\n\n11 Oct 2026 · 08:00\n\nProfesional de prueba · Paciente de prueba · Presencial\n\nCompletada\n\nSesión de terapia · COMPLETADA\n\nPaciente de prueba · Profesional de prueba\n\n11/10/2026 · 08:00 a. m.–08:45 a. m. (Lima)\n\nCoordina la dirección con el centro antes de asistir.\n\nSesión y reporte clínico\n\nSesión #3 · FINALIZADA · ASISTIO\n\nActualizar estado\nPlan de trabajo\n\nEsta sesión no publicó un plan. Un reporte puede conservar el plan vigente.\n\nTu valoración de Profesional de prueba\n\nPuedes dejar tu opinión ahora o volver a este día en la agenda cuando quieras.\n\nCalificación\n1\n2\n3\n4\n5\nComentario (opcional)\n\nTu terapeuta verá tu nombre, calificación y comentario. Evita incluir información clínica o personal de tu hijo.\n\nEnviar valoración\nLínea de tiempo\n\n11 de Octubre 2026 · 1 cita\n\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\n18:00\n\n08:00\n\nprueba",
+      "smallControls": [
+        "Reservar cita",
+        "",
+        "",
+        "Ver todas",
+        "Actualizar estado",
+        "Enviar valoración"
+      ]
+    },
+    {
+      "name": "family-review-saved-1536",
+      "width": 1536,
+      "overflow": false,
+      "text": "Agenda\n\nProfesional de prueba\nFamilia / Tutor\nHijo o hija\nPaciente de prueba\nMi Agenda\n\nOctubre · 2026\n\nReservar cita\nOctubre 2026\nL\nM\nX\nJ\nV\nS\nD\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\nCita agendada\nHoy\nCitas del 11 de Octubre (1)\nVer todas\nPd\n\n11 Oct 2026 · 08:00\n\nProfesional de prueba · Paciente de prueba · Presencial\n\nCompletada\n\nSesión de terapia · COMPLETADA\n\nPaciente de prueba · Profesional de prueba\n\n11/10/2026 · 08:00 a. m.–08:45 a. m. (Lima)\n\nCoordina la dirección con el centro antes de asistir.\n\nSesión y reporte clínico\n\nSesión #3 · FINALIZADA · ASISTIO\n\nActualizar estado\nPlan de trabajo\n\nEsta sesión no publicó un plan. Un reporte puede conservar el plan vigente.\n\nTu valoración de Profesional de prueba\n\nCalificaste esta sesión con 4 de 5 estrellas.\n\nGracias por la atención\n\nGracias por compartir tu experiencia.\n\nLínea de tiempo\n\n11 de Octubre 2026 · 1 cita\n\n08:00\n09:00\n10:00\n11:00\n12:00\n13:00\n14:00\n15:00\n16:00\n17:00\n18:00\n\n08:00\n\nprueba",
+      "smallControls": [
+        "Reservar cita",
+        "",
+        "",
+        "Ver todas",
+        "Actualizar estado"
+      ]
+    }
+  ],
+  "requests": [
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/notificaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/pacientes",
+      "method": "GET"
+    },
+    {
+      "path": "/citas",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones",
+      "method": "GET"
+    },
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/notificaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/conversaciones/contactos",
+      "method": "GET"
+    },
+    {
+      "path": "/conversaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/conversaciones/12",
+      "method": "GET"
+    },
+    {
+      "path": "/conversaciones/12/mensajes",
+      "method": "GET"
+    },
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/notificaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/terapeutas/me",
+      "method": "GET"
+    },
+    {
+      "path": "/terapeutas/2/disponibilidad",
+      "method": "GET"
+    },
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/notificaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/pacientes",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones",
+      "method": "GET"
+    },
+    {
+      "path": "/citas",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones",
+      "method": "GET"
+    },
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/notificaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/valoraciones",
+      "method": "GET"
+    },
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/notificaciones",
+      "method": "GET"
+    },
+    {
+      "path": "/auth/me",
+      "method": "GET"
+    },
+    {
+      "path": "/padres/hijos",
+      "method": "GET"
+    },
+    {
+      "path": "/citas",
+      "method": "GET"
+    },
+    {
+      "path": "/pacientes",
+      "method": "GET"
+    },
+    {
+      "path": "/citas/1",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3/valoracion",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3/valoracion",
+      "method": "POST"
+    },
+    {
+      "path": "/citas",
+      "method": "GET"
+    },
+    {
+      "path": "/pacientes",
+      "method": "GET"
+    },
+    {
+      "path": "/citas/1",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3/plan",
+      "method": "GET"
+    },
+    {
+      "path": "/sesiones/3/valoracion",
+      "method": "GET"
+    }
+  ],
+  "environment": "Intercepted API; synthetic fixtures; desktop only"
+}

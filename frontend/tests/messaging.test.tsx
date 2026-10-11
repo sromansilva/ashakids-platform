@@ -79,7 +79,7 @@ it('explains an empty assignment list without fallback chats', async () => {
 });
 
 it('opens only a server-supplied contact with participant ids', async () => {
-  const requests=api();
+  const requests=api((path, method) => path === '/conversaciones' && method === 'GET' ? response({ items: [], next_before_id: null }) : undefined);
   renderRoute('/padre/mensajes', 'PADRE');
   fireEvent.click(await screen.findByRole('button', { name: 'Conversar con Profesional sintético' }));
   await screen.findByText(message.texto_mensaje);
@@ -170,7 +170,7 @@ it('does not invent a name for a removed historical sender', async () => {
 });
 
 it('administrator sees pending campaigns without fake counts or private chats', async () => {
-  const requests=api();renderRoute('/admin/mensajes','ADMIN');await screen.findByText('Comunicaciones administrativas');
+  const requests=api();renderRoute('/admin/mensajes','ADMIN');await screen.findByRole('heading', {name:'Próximamente'});
   expect(screen.queryByText('342')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Nueva campaña'})).not.toBeInTheDocument();
   expect(requests.mock.calls.some(([input])=>String(input).includes('/conversaciones'))).toBe(false);
 });
@@ -190,7 +190,7 @@ it('does not clear a draft or claim success for an invalid successful response',
 });
 
 it('rejects an open response for a different participant pair', async () => {
-  api((path,method)=>path==='/conversaciones'&&method==='POST'?response({...conversation,id_tutor:99}):undefined);
+  api((path,method)=>path==='/conversaciones' ? method==='POST' ? response({...conversation,id_tutor:99}) : response({items:[],next_before_id:null}) : undefined);
   renderRoute('/padre/mensajes','PADRE');fireEvent.click(await screen.findByRole('button',{name:'Conversar con Profesional sintético'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('no confirmó una conversación válida');
   expect(screen.queryByLabelText('Escribir mensaje')).not.toBeInTheDocument();
