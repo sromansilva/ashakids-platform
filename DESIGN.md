@@ -1,5 +1,13 @@
 # ASHAKids: landing integrada V56
 
+## Mundo ASHA: mapa web, corte world-map-v70
+
+El módulo familiar extiende la identidad de ASHAKids con un mapa de cinco mundos,
+fondo de archipiélago y los cinco PNG de landing mediante sus WebP existentes.
+Hover/foco, rutas de niveles cuadrados y juego en dialog; permisos y progreso preservados.
+Detalles y alcance en [diseño de Mundo ASHA](docs/design/mundo-asha-web.md).
+Escritorio verificado; responsive diferido por el usuario. No reemplaza los estilos de landing.
+
 Repositorio: https://github.com/sromansilva/ashakids-platform .
 Rama local `codex/landing-publica`, incluye `origin/dev` ca9e1b3 (V54).
 Sin push ni cambios en la rama dev local, pendiente de aprobación.

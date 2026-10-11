@@ -1,3 +1,11 @@
+## V70 - Mapa web de Mundo ASHA / 2026-10-11
+
+Cinco mundos sobre un fondo de archipiélago acorde a las ilustraciones existentes de landing, hover/foco y estado pendiente de asignación. Cada mundo abre una ruta de tres niveles cuadrados; cada nivel abre la actividad vigente en un dialog accesible. Intentos/UUID, premios, contenido, permisos por niño y API conservados. Fondo ImageGen de 1536 × 1024 servido como WebP de 215 KB; PNG original y cinco ilustraciones previas conservados.
+
+Escritorio: tipos, check:frontend, build, 13 pruebas focalizadas y 25 rutas PASS. Chrome 1536/1440/1280: cinco mapas de niveles y modales, hover, teclado/Escape/foco, guardado sintético, niño sin asignaciones, error/reintento y reduced-motion PASS. La copia aislada de publicación también pasa; cero errores JS. Evidencia en [world-map-v70](evidence/world-map-v70/verification.md). No se ejecutaron BD, usuarios, login, correo o intentos reales. Responsive diferido expresamente; juegos finales y revisión profesional de contenido pendientes. No nueva decisión de arquitectura ni auditoría académica.
+
+Base 980a3eb/V69; rama feat/piero-dev. Cierre con commit versionado y publicación normal a dev y rama de usuario según autorización; confirmar resultados reales de refs/CI en el relevo. Cambios ajenos de terapeuta/valoraciones/mensajes excluidos y preservados.
+
 ## V69 - Gestión y actualización de avatares de pacientes / 2026-10-11
 
 Persistencia del campo nativo `PACIENTES.avatar_nombre` y catálogo visual interactivo de 8 avatares infantiles (`oso`, `zorro`, `conejo`, `panda`, `leon`, `koala`, `tortuga`, `buho`) en `/padre/config`. Imágenes JPG alojadas en `frontend/public/avatar_paciente/` y alineadas con esquemas clínicos del backend.

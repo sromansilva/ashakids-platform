@@ -1,3 +1,15 @@
+## V70 - Relevo del mapa web de Mundo ASHA / 2026-10-11
+
+Objetivo: mapa de cinco mundos con fondo acorde a las ilustraciones existentes, hover, ruta de niveles cuadrados y juego en modal. Rama feat/piero-dev, base 980a3eb42ee3b433709db77482ef50fa5436163f/V69. Se avanzó inicialmente a origin/dev con ff-only, sin conflictos ni eliminación de cambios locales ajenos.
+
+Fuentes: MundoAshaHome, DemoWorldPlayer, WorldMap, WorldGameDialog, worldArt y world-map.css. Se conserva el contrato learningGames y la validación en servidor. Los cinco mundos son visibles; sólo se abren los asignados. Tres niveles libres, cierres sin premio y guardado protegido. PNG del fondo y WebP de 215 KB; cinco assets previos conservados. PRODUCT.md y brief scoped registran hechos/encargo.
+
+Verificación nueva: tipos/check/build en copia aislada del árbol de entrega (366 fuentes/1921 módulos); 13 pruebas focalizadas y 25 rutas PASS. Chrome 1536/1440/1280 PASS, cinco rutas y modales, hover, Enter/Tab/Escape/foco, guardado y nivel 3 primero, child isolation, pendiente de asignación, errores/reintento, reduced-motion. Cero errores JS. Sólo fixtures/intercepción de API; sin escrituras/usuarios/login reales. Primera inspección detectó foco que escapaba al chrome del navegador y altura excesiva; corregidos y confirmados. Aviso Node DEP0205 y CRLF, sin fallo. Graphify refresh/check de cierre ejecutados; consultar resultado de cierre y no inferir vigencia de fuentes concurrentes.
+
+[Evidencia, comandos, incidencias y capturas del árbol de publicación](evidence/world-map-v70/verification.md). No auditoría técnica académica nueva ni PDF requerido para este ajuste de diseño. Responsive diferido por petición explícita. Juegos finales y revisión profesional pendientes, sin declarar esa extensión completa. Preview de trabajo :5176; fixture aislado :5177.
+
+Cierre autorizado: commit con objetivo concreto, revisar diff/secretos/remotos, publicar en dev y feat/piero-dev sin force. SHA/resultado real se registra después de publicar; el texto previo no sustituye el push. Mantener cambios ajenos del equipo fuera del commit. Siguiente: revisión humana de escritorio; responsive sólo cuando se retome ese alcance. No aplicar migraciones ni ampliar juegos o backend.
+
 ## V69 - Gestión y actualización de avatares de pacientes / 2026-10-11
 
 Configuración y persistencia del campo nativo `PACIENTES.avatar_nombre` en la vista `/padre/config` (apartado Mis hijos).

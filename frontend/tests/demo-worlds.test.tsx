@@ -1,5 +1,5 @@
 import { beforeEach, it, expect, vi } from 'vitest';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
 import type { GameProgress } from '@/services/learningGames';
 
@@ -11,7 +11,12 @@ function initial(): GameProgress {
       levels:[1,2,3].map(number=>({number,title:`Actividad ${number}`,prompt:'Elige gato',choices:['Gato','Perro'],sequence:false}))}))};
 }
 let progress: GameProgress;
-beforeEach(()=>{sessionStorage.clear();progress=initial();});
+beforeEach(()=>{
+  sessionStorage.clear();progress=initial();
+  // JSDOM has no native top-layer dialog behavior; Chrome verifies it separately.
+  Object.defineProperty(HTMLDialogElement.prototype,'showModal',{configurable:true,value:function(this: HTMLDialogElement){this.setAttribute('open','');}});
+  Object.defineProperty(HTMLDialogElement.prototype,'close',{configurable:true,value:function(this: HTMLDialogElement){this.removeAttribute('open');}});
+});
 const reply=(data:unknown,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json','X-Total-Count':'1'}});
 function api(failOnce=false) {
   let failed=false;
@@ -78,4 +83,23 @@ it('rechaza el mundo solicitado para un niño sin asignación',async()=>{
   renderRoute('/mundo-asha?world=HABLA','PADRE');
   expect(await screen.findByText(/Este mundo no está habilitado/)).toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Jugar nivel 1'})).not.toBeInTheDocument();
+});
+it('muestra los cinco mundos y distingue los que aún no están asignados',async()=>{
+  api();progress.mundos[1].asignado=false;
+  renderRoute('/mundo-asha','PADRE');
+  const map=await screen.findByRole('list',{name:'Los cinco mundos de ASHA'});
+  expect(within(map).getAllByRole('button')).toHaveLength(5);
+  expect(within(map).getByRole('button',{name:'Sin asignar: La Isla de las Palabras'})).toBeDisabled();
+  expect(within(map).getByRole('button',{name:'Abrir Taller de los Sonidos'})).toBeEnabled();
+});
+it('abre el juego en modal y cerrar no guarda ni completa el nivel',async()=>{
+  const fetch=api();await open();
+  fireEvent.click(screen.getByRole('button',{name:'Jugar nivel 2'}));
+  const dialog=screen.getByRole('dialog',{name:'Nivel 2: Actividad 2'});
+  expect(within(dialog).getByRole('button',{name:'Comprobar y guardar'})).toBeDisabled();
+  fireEvent.click(within(dialog).getByRole('button',{name:'Gato'}));
+  fireEvent.click(within(dialog).getByRole('button',{name:'Cerrar juego'}));
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  expect(screen.getByRole('button',{name:'Jugar nivel 2'})).toBeEnabled();
+  expect(fetch.mock.calls.filter(([path])=>String(path).endsWith('/intentos'))).toHaveLength(0);
 });

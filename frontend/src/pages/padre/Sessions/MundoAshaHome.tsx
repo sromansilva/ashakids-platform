@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AudioLines, ChevronRight, MessageCircle, Mic, Music2, Smile } from 'lucide-react';
+import { Award, Sparkles } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { View } from '@/types/navigation';
 import { Btn } from '@/components/common/Btn';
@@ -11,9 +11,9 @@ import { useRemote } from '@/hooks/useRemoteData';
 import { learningGames, type GameProgress } from '@/services/learningGames';
 import type { WorldArea } from '@/types/clinical';
 import { DemoWorldPlayer } from './DemoWorldPlayer';
-import { Ashi } from './Ashi';
+import { WorldMap } from './WorldMap';
+import './world-map.css';
 
-const worldIcons = { FLUIDEZ: Music2, HABLA: AudioLines, LENGUAJE: MessageCircle, VOZ: Mic, OROFACIAL: Smile };
 export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'exploracion' | 'familia' }) {
   const { user, role } = useAuth();
   const { patients, children, patient, selectPatient } = useSelectedFamilyPatient();
@@ -24,20 +24,25 @@ export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'e
   const [search, setSearch] = useSearchParams();
   const requested = search.get('world');
   const [worldId, setWorldId] = useState<WorldArea | null>(null);
-  const worlds = progress.data?.mundos.filter(w => w.asignado) ?? [];
-  const world = worlds.find(w => w.id === (worldId ?? requested));
+  const worlds = progress.data?.mundos ?? [];
+  const world = worlds.find(w => w.asignado && w.id === (worldId ?? requested));
   function saved(value: GameProgress) { queryClient.setQueryData([user?.id_usuario, 'game-progress', value.id_paciente], value); }
-  return <section className="family-worlds min-h-screen p-4 sm:p-6 text-[#1C1135] bg-[#F5F3FF]" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}><div className="max-w-5xl mx-auto pb-12 space-y-6">
-    <header className="flex items-center gap-4"><Ashi size={64} mood="wave"/><div><h1 className="text-3xl font-black">Mundo ASHA</h1><p className="text-base text-[#4B4264] mt-2">Cinco mundos con actividades básicas y niveles de acceso libre.</p></div></header>
-    <p role="note" className="text-base leading-relaxed text-[#4B4264]">Los intentos, experiencia y medallas se guardan por niño. El avance corresponde a actividades de simulación; no acredita progreso clínico. Los juegos definitivos se incorporarán después.</p>
-    {!family ? <><p>Ingresa como familia para practicar en los mundos asignados a cada niño.</p><Btn onClick={() => go('login')}>Ingresar</Btn><RemoteFeedback pending={catalog.isPending} error={catalog.error} retry={() => void catalog.refetch()}/><ul className="space-y-3">{catalog.data?.map(w => <li key={w.id}><h2 className="text-lg font-bold">{w.name}</h2><p>{w.description} · {w.levels.length} niveles básicos.</p></li>)}</ul></> : <>
+  return <section className="asha-worlds"><div className="asha-worlds-inner">
+    <header className="asha-worlds-header"><div><h1>Mundo ASHA</h1><p>Una pequeña aventura en cada nivel.</p></div><span className="asha-worlds-badge"><Sparkles size={18} aria-hidden="true"/> Cinco mundos por descubrir</span></header>
+    {!family ? <><p>Ingresa como familia para practicar en los mundos asignados a cada niño.</p><Btn onClick={() => go('login')}>Ingresar</Btn><RemoteFeedback pending={catalog.isPending} error={catalog.error} retry={() => void catalog.refetch()}/><ul>{catalog.data?.map(w => <li key={w.id}><h2>{w.name}</h2><p>{w.description} · {w.levels.length} niveles básicos.</p></li>)}</ul></> : <>
       <RemoteFeedback pending={patients.isPending || (!!patient && progress.isPending)} error={patients.error || progress.error} retry={() => { void patients.refetch(); if (patient) void progress.refetch(); }}/>
-      {requested && progress.isSuccess && !progress.error && !world && <p role="status">Este mundo no está habilitado para el niño seleccionado. Puedes elegir otro niño o consultar los mundos asignados por su terapeuta.</p>}
-      {patient && <div><label className="block font-bold mb-2" htmlFor="learning-child">Hijo o hija</label><select id="learning-child" className="w-full sm:max-w-md rounded-xl border border-[#C4BAE0] bg-white px-4 py-3 text-base" value={patient.id_paciente} onChange={e => { selectPatient(Number(e.target.value)); setWorldId(null); setSearch({}); }}>{children.map(p => <option key={p.id_paciente} value={p.id_paciente}>{p.nombres_paciente} {p.apellidos_paciente}</option>)}</select></div>}
-      {progress.data && !progress.error && <p className="font-bold">Nivel {progress.data.nivel} · {progress.data.experiencia} XP · {progress.data.medallas.length} medallas · {progress.data.intentos_totales} intentos. Próximo nivel: {progress.data.experiencia_siguiente_nivel} XP.</p>}
-      {!patients.error && !progress.error && progress.isSuccess && patient && (world ? <DemoWorldPlayer key={`${user?.id_usuario}:${patient.id_paciente}:${world.id}`} world={world} patientId={patient.id_paciente} onSaved={saved} back={() => { setWorldId(null); setSearch({}); }}/> : worlds.length ? <section aria-label="Mundos asignados"><h2 className="text-xl font-extrabold mb-3">Mundos de {patient.nombres_paciente}</h2><ul className="family-world-list divide-y divide-[#E8E5F4]">{worlds.map(w => { const Icon = worldIcons[w.id]; return <li key={w.id} className="py-5 flex flex-wrap justify-between items-center gap-4"><Icon size={36} strokeWidth={1.6} aria-hidden="true"/><div><h3 className="text-xl font-extrabold">{w.name}</h3><p className="text-base text-[#4B4264] mt-2">{w.description}</p><p className="text-sm mt-2 font-bold">{w.completados.length}/{w.levels.length} niveles · {w.intentos} intentos{w.medalla ? ' · Medalla obtenida' : ''}</p></div><Btn onClick={() => setWorldId(w.id)}>Abrir {w.name} <ChevronRight size={16}/></Btn></li>; })}</ul></section> : <div className="space-y-3"><h2 className="text-xl font-bold">Mundos pendientes para {patient.nombres_paciente}</h2><p>El profesional puede asignar los cinco mundos desde el plan de este niño.</p><Btn onClick={() => go('padre/camino')}>Ver el recorrido de mi hijo</Btn></div>)}
-      {progress.data?.medallas.length ? <section><h2 className="text-xl font-bold">Medallas del perfil</h2><ul className="space-y-2 mt-3">{progress.data.medallas.map(m => <li key={m.codigo}>{m.nombre} · {new Date(m.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}</li>)}</ul></section> : null}
+      {patient && <div className="asha-explorer-bar"><div className="asha-explorer-child"><label htmlFor="learning-child">Hijo o hija</label><select id="learning-child" value={patient.id_paciente} onChange={e => { selectPatient(Number(e.target.value)); setWorldId(null); setSearch({}); }}>{children.map(p => <option key={p.id_paciente} value={p.id_paciente}>{p.nombres_paciente} {p.apellidos_paciente}</option>)}</select></div>
+        {progress.data && !progress.error && <div className="asha-explorer-progress"><p className="asha-explorer-score">Nivel {progress.data.nivel} · {progress.data.experiencia} XP · {progress.data.medallas.length} medallas</p><progress aria-label="Experiencia para el próximo nivel" max={200} value={progress.data.experiencia % 200}/><p>{progress.data.intentos_totales} intentos · Próximo nivel: {progress.data.experiencia_siguiente_nivel} XP.</p></div>}
+      </div>}
+      {requested && progress.isSuccess && !progress.error && !world && <p role="status" className="asha-world-notice">Este mundo no está habilitado para el niño seleccionado. Puedes elegir otro niño o consultar los mundos asignados por su terapeuta.</p>}
+      {!patients.error && !progress.error && progress.isSuccess && patient && (world ? <DemoWorldPlayer key={`${user?.id_usuario}:${patient.id_paciente}:${world.id}`} world={world} patientId={patient.id_paciente} onSaved={saved} back={() => { setWorldId(null); setSearch({}); }}/> : <section aria-label="Mundos asignados">
+        <div className="asha-map-heading"><div><h2>Elige tu mundo, {patient.nombres_paciente}</h2><p>Explora una isla para ver sus niveles.</p></div><span>Mapa de aventuras</span></div>
+        <WorldMap worlds={worlds} onOpen={setWorldId}/>
+        {!worlds.some(w => w.asignado) ? <div className="asha-world-notice"><h2>Mundos pendientes para {patient.nombres_paciente}</h2><p>El profesional puede asignar los cinco mundos desde el plan de este niño.</p><Btn onClick={() => go('padre/camino')}>Ver el recorrido de mi hijo</Btn></div> : worlds.some(w => !w.asignado) && <p className="asha-map-help">Los mundos pendientes se habilitan cuando el terapeuta los asigna en el plan de tu hijo.</p>}
+      </section>)}
+      {progress.data?.medallas.length ? <section className="asha-world-medals"><h2><Award size={22} aria-hidden="true"/> Medallas del perfil</h2><ul>{progress.data.medallas.map(m => <li key={m.codigo}>{m.nombre} · {new Date(m.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}</li>)}</ul></section> : null}
       {patients.isSuccess && children.length === 0 && <p>Aún no tienes hijos registrados.</p>}
     </>}
+    <p role="note" className="asha-map-help">Actividades básicas de simulación. Los intentos, experiencia y medallas se guardan por niño; no acreditan progreso clínico. Los juegos definitivos se incorporarán después.</p>
   </div></section>;
 }
