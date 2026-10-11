@@ -52,6 +52,8 @@
 .admin-toolbar > span > span { display: block; color: #615274; font-size: .72rem; font-weight: 650; margin-top: 2px; }
 .admin-content { padding: 14px 8px 32px; }
 .admin-content > :is(div,section):not([role=note]) { max-width: 1200px; padding: 24px 28px; }
+.admin-content:has(> .admin-accounts) { padding-top: 0; }
+.admin-content > .admin-accounts { padding-top: 12px; }
 .admin-content > [role=note] { margin: 10px 28px 0; border-radius: 10px; padding: 12px 16px; }
 .admin-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #fff; border-radius: 24px; border-color: #e8e1f0; box-shadow: 0 7px 24px #45247807,inset 0 1px 0 #fff; }
 .admin-content .bg-white:is(.rounded-2xl,.rounded-3xl):has(.bg-white.rounded-2xl) { box-shadow: none; }

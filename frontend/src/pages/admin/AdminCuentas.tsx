@@ -382,9 +382,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black text-[#1C1135]">Gestión de Cuentas</h1>
-            <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700">
-              Gestión de accesos
-            </span>
           </div>
           <p className="text-sm text-[#7C6F9A] font-medium mt-1">
             Registra familias y terapeutas, consulta sus datos y administra el acceso.

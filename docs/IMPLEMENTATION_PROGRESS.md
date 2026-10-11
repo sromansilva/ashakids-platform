@@ -1,3 +1,7 @@
+## V87 — Cabecera compacta de Gestión de Cuentas / 2026-10-11
+
+Base V86/35c2fa4, feat/piero-dev. Se retira la etiqueta Gestión de accesos y reduce el espacio superior de cuentas en escritorio de38px combinados a12px; ajuste limitado a admin-accounts, sin cambios de formularios ni acceso. Typecheck PASS, detector[], diff--check y Graphify refresh/check. Sin nueva compilación o pruebas backend/BD. Verificación visual autenticada pendiente: navegador disponible en login; no se inició sesión ni se crearon usuarios. Cierre con publicación normal a feat/piero-dev y dev; SHA/refs efectivos consultables en Git. Siguiente: revisión del usuario dentro de admin.
+
 ## V86 — Glass y microinteracciones de landing y login / 2026-10-11
 
 Base V85/5e331d85175f5f41094ffea58a777ac41f8c2a16, rama feat/piero-dev. Fetch confirma dev y origin/feat/piero-dev en la misma base, sin divergencias ni conflictos. Se consolida el avance visual: glass visible (blanco74%, borde violeta20%, blur18px) en tarjetas/navbar de landing y panel/barra de login; ejemplos familiares blanco80%. Fondos lavanda/agua/naranja, campos blancos y fallback móvil sólido. Hero y botones con tipografía menor. Microinteracciones breves de navbar, flechas, FAQ y tarjetas, con reduced-motion. Retirados textos de apoyo de especialistas y aviso de ejemplos señalados.
