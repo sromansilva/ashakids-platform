@@ -43,6 +43,13 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+SECURITY_HEADERS = {
+    "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; media-src 'self' blob:",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Frame-Options": "DENY",
+    "Permissions-Policy": "camera=(), geolocation=(self), microphone=(self)",
+}
+
 
 @app.middleware("http")
 async def check_origin(request: Request, call_next):
@@ -60,6 +67,9 @@ async def check_origin(request: Request, call_next):
     if request.url.path.startswith(settings.API_V1_PREFIX):
         response.headers["Cache-Control"] = "no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers.update(SECURITY_HEADERS)
+    if settings.is_production and request.url.scheme == "https":
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
 # Configuración de CORS estricta (no usar origins=['*'] con allow_credentials=True)
