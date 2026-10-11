@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-11T01:04:01.035820+00:00",
+  "migration": "008_juegos_basicos.sql",
+  "success": true,
+  "backup": {
+    "bytes": 163220,
+    "sha256": "6375cc787fc48c432e3d40eff3b9493034171f3ae4ca436d6f9b9f36de3a6538",
+    "archive_list_verified": true
+  },
+  "existing_rows_preserved": true,
+  "tables": 30,
+  "medals": 5,
+  "runtime_reads_and_rls": "pass"
+}

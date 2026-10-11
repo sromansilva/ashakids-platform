@@ -27,4 +27,3 @@ Luego redeploya, crea una cuenta de prueba y verifica el estado `correo_bienveni
 mostrar la contraseña. Para el boletín confirma y usa el enlace de baja desde un buzón de
 prueba. Si Gmail queda deshabilitado, las altas conservan la cuenta con estado
 `NO_CONFIGURADO` y el boletín muestra que el servicio aún no está configurado.
-

@@ -995,9 +995,9 @@ evidencia docs/evidence/audit-2026-10-09-03/.
 - Próxima acción: decidir mínimos F5-01; para juegos, MA-01 con revisión detenida antes de
   implementar contenido. No ejecutar pytest/prepare sobre la demo que debe conservarse.
 
-## V50 — correo Gmail y boletín con doble confirmación / 2026-10-10
+## V52 — correo Gmail y boletín con doble confirmación / 2026-10-10
 
-Implementación local sobre `dev` a partir de `396efda` (V49). Se añadió Gmail API
+Implementación local sobre `dev` a partir de `a6eda9f` (V51). Se añadió Gmail API
 server-side OAuth opcional, con alcance documentado `gmail.send`, refresh token solo en
 entorno y estados de bienvenida `ENVIADO`, `PENDIENTE` y `NO_CONFIGURADO` en las cuatro
 rutas de alta ADMIN. El commit se ejecuta antes del envío y el mensaje no llega a JSON,
@@ -1020,3 +1020,46 @@ un buzón sintético antes de activar Gmail en producción.
 
 
 
+
+## Relevo V50 — juegos persistentes, 2026-10-10
+
+- Repositorio: https://github.com/sromansilva/ashakids-platform . Rama codex/2do-intento;
+  base integrada origin/dev 396efda (V49). Continuar secuencia V50, conservar commits V48/V49.
+- API juegos/catalogo y pacientes/{key}/juegos[/mundo/intentos]; modelos/schemas/servicios
+  juegos*, catálogo versionado y migración008. UI learningGames, MundoAshaHome,
+  DemoWorldPlayer, SessionPlan, PublicMundo e Insignias/Perfil. Se elimina demoWorlds.
+- BD compartida:008 adoptada, cinco medallas; respaldo pg_dump/pg_restore list verificado,
+  filas previas conservadas, rol runtime/RLS comprobados. Backup/credenciales privados en tmp
+  ignorado. No se ejecutaron fixtures sobre BD compartida ni se crearon pacientes reales.
+- PostgreSQL17 local aislado ashakids_test_games_v50:16 pruebas backend pasaron (juegos,
+  planes, agenda y modelos). Migración incremental también probada en BD local independiente.
+- Frontend:281/281 componentes; typecheck/build/check:frontend correctos. Advertencia Node
+  module.register deprecado. Primer pase falló por cinco mocks/expectativas del flujo anterior
+  y un cierre JSX en PublicMundo; corregidos. Backend combinado inicialmente alcanzó429
+  por fixtures de login repetidas; repetido con límites1000IP/100par solo en proceso de tests.
+  Un valor1000para par fue rechazado por configuración antes de ejecutar; corregido a100.
+- Skill Impeccable: conserva UI básica, sin nuevo diseño. Detector objetivo MundoAshaHome: [].
+- Este es un cambio funcional con verificación, no una auditoría nueva ni una validación clínica.
+- Publicación: registrar commit/SHA y sincronización dev/rama propia al cierre en el informe
+  del chat. Render tiene despliegue manual; no equiparar push con despliegue HTTPS.
+- Próximo: juegos más llamativos y revisión profesional. ML/reporte mensual no implementados;
+  resultados_nivel JSON dispone de respuesta, aciertos, tiempo, ayudas y versión para análisis
+  futuro. Definir etiquetas antes de afirmar eficacia de mundos o emociones.
+
+## V51 — configuración privada de Zoom / 2026-10-10
+
+Objetivo: guardar las seis variables proporcionadas en Render para activar Zoom automático.
+Base limpia codex/2do-intento, HEAD/origin/dev/origin/codex/2do-intento iguales a
+5dd572cb37a679d5e8674a0cf1910426d925a1f9 tras git fetch origin; repositorio
+https://github.com/sromansilva/ashakids-platform. Guía consultada: DEPLOY_RENDER_ZOOM.md
+del escritorio. Cambios externos: seis variables ZOOM_* guardadas en ashakids, sin alterar
+otros valores ni crear segunda instancia. Save, rebuild, and deploy confirmó Live
+dep-db5em4flot8c73emqo2g /34,6s; código V50. Readiness HTTPS 200, ready/database reachable.
+Persistencia comprobada al volver a Environment; captura con secretos ocultos en
+docs/evidence/zoom-render-v51/environment.jpg. Archivos: contexto, relevo y evidencia.
+No cambios de fuentes, BD ni .env; sin suites nuevas o auditoría nueva. Knowledge check
+vigente y diff revisado antes del cierre documental. No errores de despliegue observados.
+Siguiente: aceptación humana de nueva reserva virtual (AUTOMATICA/enlace Zoom) y revisar
+licencia/duración: sin overrides producción usa 45; Basic requiere ambos valores en 40.
+No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
+integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.

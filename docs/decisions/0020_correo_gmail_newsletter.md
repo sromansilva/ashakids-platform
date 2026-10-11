@@ -26,4 +26,3 @@ bajo volumen.
   base compartida antes de conceder permisos al rol runtime.
 - OAuth en estado de pruebas puede emitir refresh tokens de corta duración; producción debe
   publicar el consentimiento y restringir el cliente.
-

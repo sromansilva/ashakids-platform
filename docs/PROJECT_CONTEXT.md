@@ -1,6 +1,32 @@
+## V50 — cinco mundos básicos persistentes / 2026-10-10
+
+Catálogo `basica-1`: HABLA (Taller de los Sonidos), LENGUAJE (La Isla de las Palabras),
+FLUIDEZ (Ritmo de las Palabras), VOZ (El Estudio de la Voz) y OROFACIAL (Laboratorio de
+los Gestos). Cada mundo tiene tres actividades básicas de selección/orden, con acceso
+libre a sus niveles. El profesional asigna uno o varios de los cinco mundos en el plan.
+Saltar al nivel 3 no completa los anteriores. El diseño definitivo sigue pendiente.
+
+El backend valida respuestas y guarda intentos correctos/incorrectos por niño, mundo,
+nivel y versión. Cada primer nivel correcto otorga 100 XP; completar los tres entrega
+una medalla y 100 XP adicionales una sola vez. Nivel del perfil = 1 + XP // 200.
+Reintentar una petición con el mismo UUID no duplica filas ni premios. La UI consulta
+el servidor al recargar/cambiar de hijo; Insignias y Perfil muestran estos contadores.
+
+Se reutilizan actividades, objetivos, mundos, niveles, resultados_nivel, perfiles,
+logros y perfil_logros. Migración 008 aplicada a la BD compartida con respaldo privado
+verificado y comparación de filas previas: conservadas; cinco medallas de catálogo
+nuevas. No se insertaron pacientes ni intentos reales para probar. Evidencia saneada:
+[adopción](evidence/games-v50/database-adoption.json), [verificación](evidence/games-v50/verification.md).
+ADR [0020](decisions/0020-juegos-basicos-persistentes.md). Sin conexión React/PostgreSQL.
+
+Los datos son simulación, no evaluación clínica ni inferencia de emociones. Quedan
+pendientes juegos finales, revisión profesional de contenidos, modelo ML/dataset con
+etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
+Los catálogos draft-1 y demos históricos no representan este flujo persistente.
+
 ## Especificación de componentes UI — V47 / 2026-10-10
 
-## V50 — correo de bienvenida y boletín
+## V52 — correo de bienvenida y boletín
 
 Se implementó Gmail API server-side OAuth opcional. Las cuatro rutas de alta devuelven
 `correo_bienvenida` (`ENVIADO`, `PENDIENTE` o `NO_CONFIGURADO`) después de confirmar el
@@ -893,3 +919,15 @@ La agenda, el contrato de cita y Zoom comparten duración configurable: desarrol
 vistas PADRE, TERAPEUTA y ADMIN usan el `zoom_join_url` de la API y explican su procedencia; no
 construyen meeting IDs. La cuenta Zoom y la migración 007 siguen pendientes de prueba aislada.
 
+## V51 — configuración de Zoom en Render / 2026-10-10
+
+Las seis variables ZOOM_ENABLED, ZOOM_ACCOUNT_ID, ZOOM_CLIENT_ID, ZOOM_CLIENT_SECRET,
+ZOOM_HOST_USER_ID y ZOOM_API_BASE_URL se guardaron privadamente en el servicio ashakids.
+ZOOM_ENABLED=true; API base https://api.zoom.us/v2. No se versionaron credenciales.
+Render confirmó Live para dep-db5em4flot8c73emqo2g (34,6s), código dev/V50
+5dd572cb37a679d5e8674a0cf1910426d925a1f9. GET /health/ready respondió 200,
+status ready/database reachable. Evidencia: [Environment](evidence/zoom-render-v51/environment.jpg).
+No se crearon citas, usuarios ni reuniones para probar: falta aceptación de una reserva
+virtual con zoom_origen AUTOMATICA y enlace real. Duraciones existentes conservadas;
+sin overrides, producción usa 45 minutos; Zoom Basic requiere configurar ambas a 40.
+Registro operativo, no auditoría técnica nueva ni prueba de permisos OAuth de Zoom.
