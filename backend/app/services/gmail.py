@@ -109,38 +109,55 @@ def _email_shell(*, preheader: str, eyebrow: str, heading: str, intro: str,
     <meta name="color-scheme" content="light">
     <title>{escape(heading)}</title>
   </head>
-  <body style="margin:0;padding:0;background:#f5f3fb;color:#241b3d;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
+  <body style="margin:0;padding:0;background:#f4f1fb;color:#241b3d;font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
     <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">{escape(preheader)}</div>
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f5f3fb;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f1fb;">
       <tr>
-        <td align="center" style="padding:28px 14px 40px;">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:620px;background:#ffffff;border-radius:22px;overflow:hidden;">
+        <td align="center" style="padding:30px 14px 44px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:660px;background:#ffffff;border-radius:28px;overflow:hidden;box-shadow:0 12px 35px rgba(58,35,122,.10);">
             <tr>
-              <td style="height:7px;background:#ff7918;font-size:0;line-height:0;">&nbsp;</td>
+              <td style="height:8px;background:#ff7918;font-size:0;line-height:0;">&nbsp;</td>
             </tr>
             <tr>
-              <td style="padding:24px 34px;background:#30206f;">
+              <td style="padding:22px 34px 20px;background:#ffffff;border-bottom:1px solid #eee9f8;">
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
                   <tr>
-                    <td style="font-size:20px;line-height:24px;font-weight:700;color:#ffffff;">
-                      <span style="display:inline-block;width:30px;height:30px;margin-right:8px;border-radius:50%;background:#ff7918;color:#ffffff;text-align:center;line-height:30px;font-size:16px;font-weight:700;vertical-align:middle;">A</span>
-                      ASHAKids
+                    <td style="font-size:22px;line-height:28px;font-weight:800;color:#241b3d;">
+                      <span style="color:#7438dc;">ASHA</span><span style="color:#ff7918;">Kids</span><span style="margin-left:4px;color:#ff7918;font-size:17px;vertical-align:top;">✦</span>
                     </td>
-                    <td align="right" style="font-size:12px;line-height:18px;color:#ddd5f7;">Terapia que acompaña</td>
+                    <td align="right" style="font-size:12px;line-height:18px;color:#119ca3;font-weight:700;">Terapia que acompaña</td>
                   </tr>
                 </table>
               </td>
             </tr>
             <tr>
-              <td style="padding:38px 34px 30px;">
-                <p style="margin:0 0 12px;color:#7041c4;font-size:12px;line-height:18px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;">{escape(eyebrow)}</p>
-                <h1 style="margin:0 0 16px;color:#241b3d;font-size:30px;line-height:36px;font-weight:800;">{escape(heading)}</h1>
-                <p style="margin:0 0 24px;color:#5f5872;font-size:16px;line-height:25px;">{escape(intro)}</p>
-                {content}
-                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 0;">
+              <td style="padding:28px 28px 30px;background:#ffffff;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f7f2ff" style="background:#f7f2ff;background:linear-gradient(135deg,#f7f2ff 0%,#fff7ef 100%);border:1px solid #eadffb;border-radius:24px;">
                   <tr>
-                    <td align="center" bgcolor="#ff7918" style="border-radius:12px;">
-                      <a href="{safe_button_url}" style="display:inline-block;padding:15px 24px;border:1px solid #ff7918;border-radius:12px;color:#241b3d;font-size:15px;line-height:20px;font-weight:700;text-decoration:none;">{escape(button_label)} &nbsp;→</a>
+                    <td style="padding:30px 28px 26px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td>
+                            <p style="margin:0 0 12px;color:#7041c4;font-size:12px;line-height:18px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;">{escape(eyebrow)}</p>
+                            <h1 style="margin:0 0 16px;color:#241b3d;font-size:31px;line-height:36px;font-weight:800;">{escape(heading)}</h1>
+                            <p style="margin:0;color:#5f5872;font-size:16px;line-height:25px;">{escape(intro)}</p>
+                          </td>
+                          <td width="58" align="right" valign="top" style="padding-left:10px;">
+                            <span style="display:inline-block;width:42px;height:42px;border-radius:50%;background:#ff7918;color:#ffffff;text-align:center;line-height:42px;font-size:22px;font-weight:800;">✦</span>
+                            <br><span style="display:inline-block;margin-top:8px;color:#12a8ac;font-size:18px;line-height:18px;">● ●</span>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:20px;">
+                  <tr><td>{content}</td></tr>
+                </table>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:26px 0 0;">
+                  <tr>
+                    <td align="center" bgcolor="#7438dc" style="border-radius:13px;border-bottom:4px solid #ff7918;">
+                      <a href="{safe_button_url}" style="display:inline-block;padding:15px 25px;border:1px solid #7438dc;border-radius:13px;color:#ffffff;font-size:15px;line-height:20px;font-weight:800;text-decoration:none;">{escape(button_label)} &nbsp;→</a>
                     </td>
                   </tr>
                 </table>
@@ -148,9 +165,9 @@ def _email_shell(*, preheader: str, eyebrow: str, heading: str, intro: str,
               </td>
             </tr>
             <tr>
-              <td style="padding:22px 34px 26px;background:#faf9fd;border-top:1px solid #eeeaf6;">
+              <td style="padding:24px 34px 28px;background:#fbfaff;border-top:1px solid #eeeaf6;">
                 <p style="margin:0 0 8px;color:#5f5872;font-size:12px;line-height:18px;">{escape(footer_note)}</p>
-                <p style="margin:0;color:#938ca2;font-size:11px;line-height:17px;">ASHAKids · Este mensaje fue enviado automáticamente. Por favor, no respondas a este correo.</p>
+                <p style="margin:0;color:#938ca2;font-size:11px;line-height:17px;">ASHAKids · Cada palabra cuenta. Este mensaje fue enviado automáticamente.</p>
               </td>
             </tr>
           </table>
@@ -192,12 +209,27 @@ async def send_welcome_email(*, to: str, name: str, role: str, code: str,
                f'<tr><td style="padding:0 16px 14px;color:#817a91;font-size:12px;line-height:18px;">PERFIL</td>'
                f'<td align="right" style="padding:0 16px 14px;color:#30206f;font-size:14px;line-height:18px;font-weight:700;">{escape(role)}</td></tr>'
                '</table>')
+    next_steps = ('<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:18px;">'
+                  '<tr>'
+                  '<td width="33%" valign="top" style="padding:12px 8px 12px 0;">'
+                  '<span style="display:inline-block;width:25px;height:25px;border-radius:50%;background:#12a8ac;color:#ffffff;text-align:center;line-height:25px;font-size:12px;font-weight:800;">1</span>'
+                  '<p style="margin:8px 0 0;color:#30206f;font-size:12px;line-height:17px;font-weight:700;">Crea tu contraseña</p>'
+                  '</td>'
+                  '<td width="33%" valign="top" style="padding:12px 8px;">'
+                  '<span style="display:inline-block;width:25px;height:25px;border-radius:50%;background:#7438dc;color:#ffffff;text-align:center;line-height:25px;font-size:12px;font-weight:800;">2</span>'
+                  '<p style="margin:8px 0 0;color:#30206f;font-size:12px;line-height:17px;font-weight:700;">Inicia sesión</p>'
+                  '</td>'
+                  '<td width="33%" valign="top" style="padding:12px 0 12px 8px;">'
+                  '<span style="display:inline-block;width:25px;height:25px;border-radius:50%;background:#ff7918;color:#ffffff;text-align:center;line-height:25px;font-size:12px;font-weight:800;">3</span>'
+                  '<p style="margin:8px 0 0;color:#30206f;font-size:12px;line-height:17px;font-weight:700;">Comienza tu camino</p>'
+                  '</td>'
+                  '</tr></table>')
     html = _email_shell(
         preheader="Tu cuenta ASHAKids está lista. Crea tu contraseña para comenzar.",
         eyebrow="Bienvenido a ASHAKids",
         heading="Tu cuenta ya está lista",
         intro=f"Hola {name}, creamos tu acceso como {role}. Solo falta elegir una contraseña personal para comenzar.",
-        content=(details + '<p style="margin:20px 0 0;color:#5f5872;font-size:14px;line-height:22px;">'
+        content=(details + next_steps + '<p style="margin:20px 0 0;color:#5f5872;font-size:14px;line-height:22px;">'
                  'Por seguridad, este enlace es de un solo uso y vence en 24 horas.</p>'),
         button_label="Crear mi contraseña",
         button_url=activation_url,
@@ -222,10 +254,14 @@ async def send_newsletter_confirmation(*, to: str, confirmation_url: str,
         eyebrow="Boletín semanal · Gratis",
         heading="Consejos para acompañar cada avance",
         intro="Gracias por querer recibir ideas sencillas y novedades de ASHAKids directamente en tu correo.",
-        content=('<div style="margin:0;background:#f8f5ff;border:1px solid #e9e1fb;border-radius:14px;padding:18px 20px;">'
+        content=('<div style="margin:0;background:#f8f5ff;border:1px solid #e9e1fb;border-radius:16px;padding:20px 20px 18px;">'
                  '<p style="margin:0 0 10px;color:#30206f;font-size:15px;line-height:22px;font-weight:700;">¿Qué recibirás?</p>'
                  '<p style="margin:0;color:#5f5872;font-size:14px;line-height:22px;">Ejercicios, recomendaciones de nuestros especialistas y recursos para acompañar el desarrollo de tu hijo en casa.</p>'
-                 '</div>'
+                 '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">'
+                 '<tr><td width="33%" style="color:#119ca3;font-size:11px;line-height:16px;font-weight:800;">✦ IDEAS</td>'
+                 '<td width="33%" style="color:#7438dc;font-size:11px;line-height:16px;font-weight:800;">✦ RECURSOS</td>'
+                 '<td width="33%" style="color:#ff7918;font-size:11px;line-height:16px;font-weight:800;">✦ ACOMPAÑAMIENTO</td></tr>'
+                 '</table></div>'
                  f'<p style="margin:20px 0 0;color:#5f5872;font-size:13px;line-height:20px;">'
                  f'¿No solicitaste esta suscripción? Puedes <a href="{escape(unsubscribe_url, quote=True)}" style="color:#5b2bbf;text-decoration:underline;">darte de baja aquí</a>.</p>'),
         button_label="Confirmar mi suscripción",
