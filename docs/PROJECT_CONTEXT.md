@@ -1,3 +1,11 @@
+## V93 — formulario guiado de reportes / 2026-10-11
+
+Observaciones iniciales, objetivos trabajados y próximos pasos incorporan plantillas editables mediante `Usar plantilla` en campos vacíos. Nombre del paciente tomado de la sesión; hallazgos, evaluación/actividad, objetivos, recursos y mundo requieren completar los datos de la atención. No se insertan ni guardan notas automáticamente. El formulario bloquea el envío si quedan marcadores de la plantilla, anuncia los campos pendientes y enfoca el primero.
+
+Nivel de ayuda usa cinco opciones descriptivas de intensidad, con radios nativos y explicación: Sin ayuda, Ayuda mínima, Ayuda moderada, Ayuda alta y Ayuda total. No selección automática; texto histórico conservado hasta elegir una opción. Es una clasificación descriptiva de la UI, no una escala clínica validada. Mismo editor en Reportes y acciones de sesión/admin; guarda los cuatro campos HTTP existentes. Describir un mundo no asigna acceso: se conserva el plan profesional existente. Sin cambios de arquitectura, BD o generación PDF.
+
+Inicio `92a5ece`/V92 en `feat/piero-dev`, base de cierre `b1f2e2e` tras incorporar por fast-forward el commit de QA del equipo, conservado sin renumerar. Cierre `V93_Guiar_Formulario_Reportes`. Validación y límites en IMPLEMENTATION_PROGRESS.md; revisión visual aislada1274/375px y teclado con datos ficticios. Sin sesión clínica real ni despliegue remoto certificado. Repositorio: https://github.com/sromansilva/ashakids-platform . V92 publicado en dev/feat/piero-dev, ambas referencias verificadas en `92a5ecebe2486c4d9e2406d79d3c04ad1fc61ded`; CI Knowledge map aprobado en ambas ramas. Es evidencia del cierre anterior, no pruebas nuevas de V93.
+
 ## V92 — ubicación automática en reservas / 2026-10-11
 
 El formulario familiar de reserva/reprogramación elimina la localización editable. Presencial muestra y envía `Jr. Ricardo Treneman 252, Chorrillos 15064`; Virtual muestra y envía `La reunión será mediante Zoom.`. El dato se deriva de la modalidad, cambia inmediatamente y se conserva en el resumen y en el contrato HTTP existente `localizacion`. No cambia la creación del enlace Zoom ni modifica reservas históricas o la BD directamente.
