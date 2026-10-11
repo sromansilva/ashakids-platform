@@ -1064,3 +1064,16 @@ licencia/duración: sin overrides producción usa 45; Basic requiere ambos valor
 No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
 integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.
 
+
+## Relevo V54 — eliminar Terapeutas demo de ADMIN, 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base local a6eda9f,
+codex/2do-intento; remoto dev efe46a7/V53 revisado antes de integración.
+Se retiran AdminTerapeutas.tsx y referencias de Sidebar, AppRouter, lazyPages,
+routeManifest, routeTitles y navigation. Cuentas conserva la gestión real.
+25 pruebas de rutas pasaron; typecheck y build (1902 módulos) correctos. Aviso
+Node DEP0205 heredado; detector Sidebar sin hallazgos; diff sin espacios inválidos.
+Cambios previos de adjuntos preservados fuera de este commit; no publicar ese trabajo
+como parte de la retirada. Sin auditoría técnica nueva, PDF ni pruebas sobre BD.
+Publicar cierre en dev y sincronizar codex/2do-intento; SHA efectivo consultable en Git.
+Siguiente: comprobar despliegue/aceptación humana y continuar el trabajo previo de adjuntos.

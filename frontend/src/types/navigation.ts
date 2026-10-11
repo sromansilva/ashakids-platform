@@ -9,7 +9,7 @@ export type View =
   | "terapeuta/reportes" | "terapeuta/analiticas" | "terapeuta/ingresos"
   | "terapeuta/valoraciones" | "terapeuta/config" | "terapeuta/datos-actividad"
   | "terapeuta/incidencias"
-  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/terapeutas" | "admin/operacion" | "admin/pagos"
+  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/operacion" | "admin/pagos"
   | "admin/contenido" | "admin/ml" | "admin/auditoria" | "admin/config"
   | "admin/reportes" | "admin/usuarios" | "admin/pacientes" | "admin/citas" | "admin/sesiones"
   | "admin/analiticas" | "admin/mensajes" | "admin/moderacion" | "admin/solicitudes" | "admin/core"

@@ -931,3 +931,11 @@ No se crearon citas, usuarios ni reuniones para probar: falta aceptación de una
 virtual con zoom_origen AUTOMATICA y enlace real. Duraciones existentes conservadas;
 sin overrides, producción usa 45 minutos; Zoom Basic requiere configurar ambas a 40.
 Registro operativo, no auditoría técnica nueva ni prueba de permisos OAuth de Zoom.
+
+## V54 — retirada de Terapeutas demo en ADMIN / 2026-10-10
+
+Se elimina la pantalla de demostración AdminTerapeutas, su entrada del menú, ruta,
+importación lazy, título y tipo de navegación. La gestión funcional permanece en
+Cuentas → Terapeutas. La URL anterior muestra el estado de ruta inexistente.
+Verificación local: 25 pruebas de rutas, typecheck y build correctos; detector Sidebar
+sin hallazgos. Sin pruebas nuevas en producción ni cambios en API/BD.

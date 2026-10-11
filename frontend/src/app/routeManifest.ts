@@ -85,7 +85,6 @@ export const routePaths = [
   "/admin",
   "/admin/dashboard",
   "/admin/cuentas",
-  "/admin/terapeutas",
   "/admin/operacion",
   "/admin/pagos",
   "/admin/contenido",

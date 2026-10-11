@@ -1,4 +1,4 @@
-import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Stethoscope, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
+import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
 import { Role } from "@/types/navigation";
@@ -134,11 +134,6 @@ export function Sidebar({
               icon: Users,
               label: "Cuentas",
               view: "admin/cuentas" as View,
-            },
-            {
-              icon: Stethoscope,
-              label: "Terapeutas",
-              view: "admin/terapeutas" as View,
             },
             {
               icon: Activity,

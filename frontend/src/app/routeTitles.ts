@@ -31,7 +31,6 @@ export const titles: Partial<Record<View, string>> = {
     admin: "Dashboard",
     "admin/dashboard": "Dashboard",
     "admin/cuentas": "Gestión de Cuentas",
-    "admin/terapeutas": "Terapeutas",
     "admin/operacion": "Operación",
     "admin/pagos": "Pagos",
     "admin/contenido": "Contenido",
