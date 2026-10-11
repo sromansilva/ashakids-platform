@@ -9,8 +9,9 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.login_limiter import limit_login
 from app.models.auth import Usuario
-from app.schemas.auth import ActivationRequest, AuthResponse, LoginRequest, MessageResponse, UserResponse
-from app.services.activacion import activate_account
+from app.schemas.auth import (ActivationRequest, AuthResponse, LoginRequest, MessageResponse, UserResponse,
+                              EmailActivationRequest, ResendActivationRequest)
+from app.services.email_activation import complete_email_activation, resend_activation
 from app.services.auth_service import (
     authenticate_user,
     create_user_session,
@@ -18,6 +19,23 @@ from app.services.auth_service import (
 )
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
+
+
+
+@router.post("/create-password", response_model=MessageResponse)
+async def create_password(req: EmailActivationRequest, request: Request,
+                          db: AsyncSession = Depends(get_db, scope="function")):
+    limit_login(request, "email-activation")
+    await complete_email_activation(db, req.token, req.new_password)
+    return MessageResponse(message="Contraseña creada. Ya puedes iniciar sesión con tu código de usuario.")
+
+
+@router.post("/resend-activation", response_model=MessageResponse)
+async def resend_password_link(req: ResendActivationRequest, request: Request,
+                               db: AsyncSession = Depends(get_db, scope="function")):
+    limit_login(request, "resend:" + req.codigo_usuario.strip().lower())
+    await resend_activation(db, req.codigo_usuario)
+    return MessageResponse(message="Si la cuenta está pendiente de activación, recibirás un enlace en su correo. Revisa también spam.")
 
 
 def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
@@ -128,11 +146,4 @@ async def activate(
     identity: tuple = Depends(get_session_user),
     db: AsyncSession = Depends(get_db, scope="function"),
 ):
-    limit_login(request, "activate:" + identity[0].codigo_usuario)
-    user, roles, token = await activate_account(db, identity, req)
-    response.set_cookie(
-        key=settings.SESSION_COOKIE_NAME, value=token, httponly=True,
-        secure=settings.is_production, samesite="lax", path="/",
-        max_age=settings.SESSION_EXPIRE_HOURS * 3600,
-    )
-    return AuthResponse(user=build_user_response(user, roles), message="Contraseña actualizada. Cuenta activada.")
+    raise HTTPException(410, "Crea tu contraseña desde el enlace enviado al correo. Solicita otro enlace en /crear-contrasena.")

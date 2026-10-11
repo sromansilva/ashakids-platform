@@ -4,6 +4,7 @@
  * Identificador de acceso: codigo_usuario (VARCHAR(6)).
  */
 
+import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
 import { ArrowRight, AudioLines, ChevronLeft, CircleAlert, Clock3, Eye, EyeOff, Loader2, Lock, ShieldCheck, Target, User as UserIcon, Users } from "lucide-react";
 import { AshaKidsLogo } from "@/components/illustrations/AshaKidsLogo";
@@ -89,6 +90,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <section className="login-form-panel" aria-labelledby="login-title">
             <h1 id="login-title">Bienvenido de vuelta</h1>
             <p className="login-description">Inicia sesión con tu código de usuario de ASHAKids.</p>
+            <p className="mb-4 text-sm text-violet-900">¿Es tu primer acceso? Revisa tu correo para crear tu contraseña. <Link className="underline font-bold" to="/crear-contrasena">Solicitar enlace</Link></p>
             {errorMessage && <div role="alert" className="login-error"><CircleAlert size={19} /><span>{errorMessage}</span></div>}
             <form onSubmit={handleSubmit} className="login-form">
               <div className="login-field">

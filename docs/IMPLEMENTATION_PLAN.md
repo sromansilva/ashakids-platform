@@ -425,3 +425,12 @@ alterados. Candidato99 ASGI/SQL real y133HTTP tras adoptar API8000;114 backend s
 Conservar datos AUDITORIA y documentar fuente/PDF/evidencias del corte. Próxima prioridad:
 hostingHTTPS/proxy/cookies, coordinación de credenciales runtime para clones y respaldo/
 recuperación. No se amplía alcance, no pagos ni DELETE físicos.
+
+
+## Ajuste V56 — alta mediante correo
+
+La petición actual reemplaza el primer login con DNI por enlace de alta para crear contraseña.
+Implementados formulario público, enlace24h de un uso, correoHTML y reenvío a pendientes.
+Verificación local descrita en relevoV56; integraciónSQL omitida sin base aislada configurada.
+Configuración privadaGmail guardada en Render con autorización expresa; recepción pendiente.
+No cambia recuperación de cuentas ya activadas ni amplía newsletter/pagos.

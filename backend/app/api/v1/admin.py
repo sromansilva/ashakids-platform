@@ -2,13 +2,14 @@
 
 from typing import List, Optional, Tuple
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.deps import require_admin
 from app.api.v1.auth import build_user_response
 from app.core.database import get_db
 from app.models.auth import Administrador, Usuario
+from app.models.auditoria import AuditoriaCambios
 from app.schemas.admin import (
     ActualizarCuentaRequest,
     CrearPadreRequest,
@@ -16,6 +17,8 @@ from app.schemas.admin import (
     CuentaItemResponse,
     CuentaListResponse,
     OperacionCuentaResponse,
+    AuditoriaItemResponse,
+    AuditoriaListResponse,
 )
 from app.schemas.pacientes import HijoListResponse, OperacionHijoResponse
 from app.schemas.perfiles import AdminProfileResponse, AdministradorData
@@ -32,9 +35,36 @@ from app.services.admin_service import (
     obtener_cuenta,
     suspender_cuenta,
 )
-from app.services.gmail import send_welcome_email
+from app.services.email_activation import welcome_for_user
 
 router = APIRouter(prefix="/admin", tags=["Administración"])
+
+
+@router.get("/auditoria", response_model=AuditoriaListResponse,
+            summary="Listar eventos administrativos de auditoría")
+async def get_auditoria_admin(
+    current_data: Tuple[Usuario, List[str]] = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    total = await db.scalar(select(func.count()).select_from(AuditoriaCambios)) or 0
+    rows = await db.execute(
+        select(AuditoriaCambios, Usuario.nombres, Usuario.apellidos)
+        .outerjoin(Usuario, Usuario.id_usuario == AuditoriaCambios.id_usuario_actor)
+        .order_by(AuditoriaCambios.fecha_evento.desc(), AuditoriaCambios.id_auditoria.desc())
+        .limit(100)
+    )
+    items = [
+        AuditoriaItemResponse(
+            id_auditoria=event.id_auditoria,
+            actor=f"{nombres} {apellidos}" if nombres else "Cuenta eliminada",
+            nombre_tabla=event.nombre_tabla,
+            nombre_entidad=event.nombre_entidad,
+            accion=event.accion,
+            fecha_evento=event.fecha_evento,
+        )
+        for event, nombres, apellidos in rows
+    ]
+    return AuditoriaListResponse(items=items, total=total)
 
 
 @router.post("/familias", response_model=FamiliaCreada, status_code=201,
@@ -47,13 +77,7 @@ async def post_familia(
     result = await registrar_familia(db, identity, req)
     await db.commit()
     cuenta = result["cuenta"]
-    mail = await send_welcome_email(
-        to=cuenta["email"],
-        name=f"{cuenta['nombres']} {cuenta['apellidos']}",
-        role="PADRE",
-        code=cuenta["codigo_usuario"],
-        initial_password=req.dni,
-    )
+    mail = await welcome_for_user(db, cuenta["id_usuario"], "PADRE")
     result["correo_bienvenida"] = mail.status
     return result
 
@@ -142,13 +166,7 @@ async def post_crear_padre(
     actor, _ = current_data
     nueva_cuenta = await crear_padre(db, req, actor)
     await db.commit()
-    mail = await send_welcome_email(
-        to=nueva_cuenta["email"],
-        name=f"{nueva_cuenta['nombres']} {nueva_cuenta['apellidos']}",
-        role="PADRE",
-        code=nueva_cuenta["codigo_usuario"],
-        initial_password=req.password,
-    )
+    mail = await welcome_for_user(db, nueva_cuenta["id_usuario"], "PADRE")
     return OperacionCuentaResponse(
         message=f"Cuenta de Padre '{nueva_cuenta['codigo_usuario']}' creada exitosamente.",
         cuenta=nueva_cuenta,
@@ -171,13 +189,7 @@ async def post_crear_terapeuta(
     actor, _ = current_data
     nueva_cuenta = await crear_terapeuta(db, req, actor)
     await db.commit()
-    mail = await send_welcome_email(
-        to=nueva_cuenta["email"],
-        name=f"{nueva_cuenta['nombres']} {nueva_cuenta['apellidos']}",
-        role="TERAPEUTA",
-        code=nueva_cuenta["codigo_usuario"],
-        initial_password=req.password,
-    )
+    mail = await welcome_for_user(db, nueva_cuenta["id_usuario"], "TERAPEUTA")
     return OperacionCuentaResponse(
         message=f"Cuenta de Terapeuta '{nueva_cuenta['codigo_usuario']}' creada exitosamente.",
         cuenta=nueva_cuenta,

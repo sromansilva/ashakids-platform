@@ -1,3 +1,13 @@
+## V61 - Integración local de dev y landing / 2026-10-11
+
+Rama `codex/landing-publica`: integra `origin/dev` `498df42114833723d4aa55f6cac1ab5b029a5f21` (V58) sobre `018dc42d3649f2f309a7dd08dae1689819d83601` (V60). Se incorporan cinco commits remotos de auditoría administrativa, activación de contraseña por correo y documentación/configuración de Gmail/Render. Landing, Mundo ASHA, footer, favicon, diseño de login y retorno seguro conservados.
+
+La integración automática encontró un único conflicto en `docs/architecture.md`: bloque remoto añadido frente a final local. Se conservaron ambas descripciones y se explicitaron los enlaces a los dos ADR identificados como 0022, sin renumerar decisiones previas. RouteAccess/paths se combinaron automáticamente: creación de contraseña pública y retorno al mundo elegido permanecen. Ningún archivo queda en conflicto. `.gitignore` local preservado byte por byte y fuera del commit.
+
+PASS: tipos, check:frontend (355 archivos, máximo 500), build (1914 módulos), 25 rutas y 285 componentes en 19 archivos, nueve pruebas unitarias de activación/correo y siete unitarias/ASGI de mundos. Sin BD real, login real, envío de correos, usuarios ni reservas. Se instalaron pytest y pytest-asyncio, dependencias dev ya declaradas, sólo en el entorno backend. El archivo automático de conftest en tmp no acredita una prueba de PostgreSQL: se ejecutaron exclusivamente unidades con mocks. Graphify refresh/check local: 2400 nodos, 102 comunidades, 13 fuentes sin símbolos.
+
+[Evidencia del merge](evidence/integration-v61/verification.md). Commit V61 de integración local consultable en Git. No push ni modificación de dev local (`396efda`): la publicación estaba condicionada a ausencia de conflictos y requiere aprobación tras esta resolución. Siguiente: aprobar publicación del resultado comprobado; entonces fetch de nuevo, comprobar concurrencia y publicar sin force-push, sincronizando dev local y rama de trabajo. La instrucción anterior de mantener todo local queda reemplazada únicamente por la autorización condicional de este corte.
+
 ## V60 - Inicio de sesión con diseño ASHAKids / 2026-10-10
 
 Rama `codex/landing-publica`, base `47a5470` / V59; fetch exitoso y `origin/dev` conserva `498df42` / V58. Los cinco commits remotos pendientes no se integran en este ajuste visual. Dev local `396efda` preservado. Commit V60 sólo local, sin publicación ni merge hacia dev; `.gitignore` previo excluido.
@@ -1235,3 +1245,107 @@ Cambios previos de adjuntos preservados fuera de este commit; no publicar ese tr
 como parte de la retirada. Sin auditoría técnica nueva, PDF ni pruebas sobre BD.
 Publicar cierre en dev y sincronizar codex/2do-intento; SHA efectivo consultable en Git.
 Siguiente: comprobar despliegue/aceptación humana y continuar el trabajo previo de adjuntos.
+
+## Relevo V55 — auditoría ADMIN conectada a eventos reales / 2026-10-10
+
+La pantalla demo se sustituyó por consulta de auditoria_cambios mediante GET protegido
+/admin/auditoria. La creación de cuentas ya registra INSERT transaccional; ahora ADMIN
+puede verlo en pantalla. El endpoint solo proyecta actor, tabla/registro, acción y hora,
+con tope100 y total. Front incluye estados carga/error/vacío. No se exponen JSON antes/nuevo
+ni se cambia/elimina historial. Verificados: Python compile, 25 pruebas de rutas,
+282 componentes, typecheck, build, check:frontend y Graphify check. Sin consulta a BD real ni
+prueba HTTP de extremo a extremo. Mapa Graphify actualizado en modo code-only.
+
+
+## V56 — crear contraseña desde correo / 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base codex/2do-intento
+64cbb3599aa5d705a345ef0fabcfc11fdf384dbd/V55, origin/dev comprobado con fetch.
+Las cuatro altas ADMIN generan hash de secreto aleatorio, no DNI ni contraseña entregada.
+Correo HTML/texto con código y botón Crear mi contraseña, enlace24h de un uso; página
+pública /crear-contrasena con confirmación12–128caracteres y reenvío por código.
+Login bloquea pendientes anteriores/nuevos; activados conservan acceso. Antigua activación
+por contraseña inicial retirada (410 con sesión válida). Sin migración ni nuevos permisos.
+ADR0022 explica HMAC ligado al hash privado/correo, bloqueo de usuario y revocación.
+
+Verificado:9unitarios backend,11frontend del flujo,25rutas;284componentes del árbol de
+trabajo (incluye adjuntos locales previos), tipos/checkfrontend/build1903módulos correctos.
+Detector de tres componentes []. Inspección escritorio1280x720 y móvil390x844 correcta.
+9integraciónSQL omitidos por falta de ASHAKIDS_TEST_DATABASE_URL; casos adaptados para
+activación pública/concurrencia futura. No OAuth/Gmail real, alta/pacientes compartidos
+ni concurrenciaSQL verificados. AvisoNodeDEP0205 heredado. Graphify2396nodos/code-only
+actualizado; check y diff antes de cierre. Es cambio funcional, no auditoría/PDF nuevo.
+
+Render consultado:servicioashakids,dev,V55Live, no variables GMAIL_* en inventario.
+Las credenciales entregadas no se guardaron en archivos ni Git. Siete variables privadas
+Render guardadas tras autorización explícita posterior; deploy iniciado sobre V55. El cambio de código
+se publica en dev/rama propia; registrar SHA efectivo en el chat. Push no prueba recepción.
+Primer commit falló por identidadGit ausente; reintentar con identidadCodex ya usada en
+V54/V55 solo para ese comando. Cambios previos de adjuntos preservados fuera del commit; en documentos
+compartidos se incorpora únicamente este apartado al índice Git.
+Siguiente:verificar redeployV56/recepción del botón
+y crear contraseña manualmente desde buzón de prueba. No envío masivo ni recuperación de
+contraseñas ya activadas. No ampliar newsletter/BD/pagos durante esta tarea.
+
+
+## V57 — configuración Gmail y despliegue del acceso / 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Código V56:
+66754c57aa7a7c38c0733acde5d149b0b3d0a017, publicado y comprobado igual en HEAD,
+origin/dev y origin/codex/2do-intento. Se resolvió el primer fallo de identidad Git
+usando Codex <codex@users.noreply.github.com>, como V54/V55, solo para el comando.
+Acceso GitHub existente suficiente; no nuevo login ni configuración global.
+
+Con autorización explícita, siete variables proporcionadas guardadas en Environment
+solo del servicio ashakids de Render: seis GMAIL_* y PUBLIC_ORIGIN. Persistencia de
+los siete nombres comprobada al volver a Environment, sin revelar valores en evidencia.
+No cambios de OAuth/permisos Google ni secretos guardados en archivos/repositorio.
+El guardado desplegó primero V55 (Live,44.9s); tras push, V56 Auto-Deploy quedó Live:
+dep-db5fq4jrjlhs73aoh0d0,38.5s, SHA66754c5. ReadinessHTTPS200 ready/database reachable;
+OpenAPI200 contiene POSTcreate-password y resend-activation. Página publicada
+/crear-contrasena visible con solicitud de enlace sin sesión. Evidencia saneada:
+render-live.png y https-smoke.json en docs/evidence/email-activation-v56/.
+
+Este cierre documental incorpora resultado externo, sin nuevas pruebas clínicas,
+auditoría/PDF ni cambios funcionales respecto a V56. No se crearon usuarios reales ni
+se enviaron correos de prueba. OAuth/envío/recepción del botón y activación real quedan
+pendientes de aceptación manual con una cuenta autorizada; la configuración guardada
+no demuestra entrega a un buzón. Pruebas locales de V56 mantienen su alcance/omisiones.
+Cambios previos de adjuntos continúan fuera de ambos commits, preservados en este clon.
+Siguiente: en alta ADMIN autorizada comprobar correo_bienvenida ENVIADO, recibir botón,
+crear contraseña manualmente y entrar con código; si falla, revisar configuración Google
+sin exponer secretos y reintentar enlace. No ampliar newsletter ni tocar pacientes/BD.
+
+
+## V58 — cierre operativo Gmail/boletín en Render / 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Rama dev; código desplegado
+d579a40ca28038f53c78e8bffdab63123c6e6eb3 (V53_Activar_autodeploy_Render_Gmail).
+Deploy manual dep-db5h1tqd0e5s73fem3bg confirmado Live,51.4s. Servicio independiente:
+no existe Blueprint ASHAKids asociado para sincronizar; rama dev, Auto-Deploy On Commit
+y health check /health/ready verificados en el servicio existente, sin crear otro recurso.
+Ocho variables Gmail/origen guardadas y comprobadas con valores solicitados, únicamente
+en Render; secretos excluidos de archivos/Git/evidencia. DATABASE_URL, DB_SSL_CA_FILE
+y DB_SSL_LEGACY_CA no editadas. El nombre del remitente quedó ASHAKids.
+
+La misma BD/rol de Render tenía public.suscripciones_boletin con 11 columnas y RLS activo,
+pero runtime sin SELECT/INSERT/UPDATE ni USAGE de secuencia y sin políticas: consulta
+real falló42501. No se reaplicó009 ni se ejecutaron migraciones destructivas. Respaldo
+custom/public179627bytes verificado con pg_restore--list y SHA256 antes del ajuste.
+Se otorgaron únicamente SELECT/INSERT/UPDATE y USAGE a ashakids_runtime y tres políticas
+por operación TO ese rol; DELETE sigue denegado y RLS activo. anon/authenticated/service_role
+sin acceso; filas del boletín conservadas por fingerprint antes/después. SQL operativo
+reproducible y metadatos sanitizados en docs/evidence/gmail-render-v58/. No nueva decisión
+de arquitectura: se mantiene el rol técnico B02 y la autorización en FastAPI.
+
+Verificación nueva: lectura runtime LIMIT0, grants/políticas/secuencia y HTTPS tras deploy:
+/health200 healthy; /health/ready200 ready/database reachable. No altas, suscripciones
+ni correos de prueba creados/enviados. El usuario hará manualmente boletín, recepción,
+confirmación/baja y bienvenida ADMIN; OAuth/entrega real no certificados por configuración
+o readiness. No auditoría académica nueva ni PDF. Primer query Graphify usó --budget
+no admitido por wrapper, corregido a query con presupuesto predeterminado1500.
+Cambios locales previos de adjuntos conservados fuera de este corte. Cierre documental
+publicado con [skip render] para conservar el SHA d579a40 desplegado; el salto V58 continúa
+la secuencia V57 existente, sin renumerar el V53 posterior.
+Siguiente: prueba manual en landing/ADMIN; si falla, distinguir NO_CONFIGURADO/PENDIENTE
+y503BD de401/403Gmail. Revisar logs sanitizados sin compartir OAuth ni enlaces privados.

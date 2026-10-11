@@ -8,7 +8,7 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    autoDeployTrigger: "off"
+    autoDeployTrigger: "commit"
     healthCheckPath: /health/ready
     envVars:
       - key: ENVIRONMENT
@@ -57,7 +57,7 @@ services:
       - key: GMAIL_API_BASE_URL
         value: https://gmail.googleapis.com/gmail/v1
       - key: PUBLIC_ORIGIN
-        sync: false
+        value: https://ashakids.onrender.com
       - key: NEWSLETTER_CONFIRMATION_TTL_HOURS
         value: "48"
       - key: NEWSLETTER_RATE_LIMIT

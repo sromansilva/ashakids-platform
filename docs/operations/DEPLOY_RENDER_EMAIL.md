@@ -27,3 +27,14 @@ Luego redeploya, crea una cuenta de prueba y verifica el estado `correo_bienveni
 mostrar la contraseña. Para el boletín confirma y usa el enlace de baja desde un buzón de
 prueba. Si Gmail queda deshabilitado, las altas conservan la cuenta con estado
 `NO_CONFIGURADO` y el boletín muestra que el servicio aún no está configurado.
+
+
+## Alta mediante botón — V56
+
+Las altas ya no envían contraseñas ni usan DNI. El correo lleva código y botón Crear mi
+contraseña a /crear-contrasena. Enlace válido24h, consume solo al guardar contraseña12–128.
+Reenvío desde esa página para cuentas pendientes; no restablece cuentas ya activadas.
+Este flujo no depende de suscripciones_boletin y no requiere su migración; mantener esa
+validación separada si se habilita el boletín. No crear usuarios reales para probar sin
+petición expresa. Validar recepción con un alta sintética autorizada y completar la
+contraseña manualmente. Guardar secretos solo en Environment del servicio backend.

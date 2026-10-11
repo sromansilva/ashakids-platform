@@ -55,7 +55,7 @@ async def authenticate_user(
     result = await db.execute(stmt)
     user = result.scalar_one_or_none()
 
-    if not user or not user.activo:
+    if not user or not user.activo or user.password_change_required:
         logger.info("Intento de login fallido: cuenta no encontrada o inactiva.")
         return None
 

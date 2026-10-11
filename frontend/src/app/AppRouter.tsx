@@ -1,4 +1,5 @@
 import { Route, Routes } from "react-router-dom";
+import { CreatePassword } from "@/pages/auth/Auth/CreatePassword";
 import { RouteAccess } from "@/app/RouteAccess";
 import { PageFrame } from "@/app/layouts/PageFrame";
 import { PageBoundary } from "@/app/PageBoundary";
@@ -12,6 +13,7 @@ const { view, role, authRole, go, navigate, location, handleLogin, handleLogout,
 return <RouteAccess><PageBoundary><Routes>
 <Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} padrePlan={padrePlan} />}>
 <Route path="/" element={<Landing go={go} />} />
+<Route path="/crear-contrasena" element={<CreatePassword />} />
 <Route path="/login" element={<LoginPage onSuccess={handleLogin} onGoHome={() => navigate("/")} onForgotPassword={() => navigate("/forgot-password")} />} />
 <Route path="/register" element={<RegisterSelector go={go} />} />
 <Route path="/register/padre" element={<RegisterPadre go={go} onNameSet={setPadreUserName} />} />

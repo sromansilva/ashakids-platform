@@ -1,0 +1,17 @@
+{
+  "/health": {
+    "http": 200,
+    "body": {
+      "status": "healthy",
+      "app": "Ashakids API",
+      "version": "0.1.0"
+    }
+  },
+  "/health/ready": {
+    "http": 200,
+    "body": {
+      "status": "ready",
+      "database": "reachable"
+    }
+  }
+}

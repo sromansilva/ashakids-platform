@@ -8,7 +8,10 @@ const resource = <T>(path: string) => ({
 });
 export const usersService = {
   ...resource<Account>("/usuarios"),
-  create: (data: AccountCreate) => apiClient.post<Account>("/usuarios", data),
+  create: (data: AccountCreate) => {
+    const { password, ...account } = data;
+    return apiClient.post<Account>("/usuarios", account);
+  },
   edit: (id: number, data: AccountEdit) => apiClient.patch<Account>(`/usuarios/${id}`, data),
 };
 export const patientsService = {

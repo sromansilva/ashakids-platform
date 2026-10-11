@@ -5,7 +5,7 @@ import { cleanup, configure } from "@testing-library/react";
 // Real lazy imports can exceed one second on a loaded Windows/CI machine.
 configure({ asyncUtilTimeout: 5000 });
 beforeEach(() => {
-  vi.stubGlobal("fetch", vi.fn().mockImplementation(input => Promise.resolve(new Response(JSON.stringify(/\/conversaciones(?:\?|$)/.test(String(input)) ? { items: [], next_before_id: null } : []), {
+  vi.stubGlobal("fetch", vi.fn().mockImplementation(input => Promise.resolve(new Response(JSON.stringify(/\/admin\/auditoria(?:\?|$)/.test(String(input)) ? { items: [], total: 0 } : /\/conversaciones(?:\?|$)/.test(String(input)) ? { items: [], next_before_id: null } : []), {
     headers: { "Content-Type": "application/json", "X-Total-Count": "0" },
   }))));
 });

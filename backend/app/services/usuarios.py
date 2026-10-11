@@ -5,6 +5,7 @@ from sqlalchemy import func, select, update
 from sqlalchemy.orm import selectinload
 from starlette.concurrency import run_in_threadpool
 
+import secrets
 from app.core.security import hash_password, verify_password
 from app.models.auth import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
 from app.models.perfiles import Terapeuta, Tutor
@@ -43,7 +44,7 @@ async def crear_usuario(db, identity, data):
     values = data.model_dump(exclude={"password", "rol"})
     values["email"] = str(data.email).lower()
     values["codigo_usuario"] = data.codigo_usuario.lower()
-    row = Usuario(**values, password_hash=await run_in_threadpool(hash_password, data.password),
+    row = Usuario(**values, password_hash=await run_in_threadpool(hash_password, secrets.token_urlsafe(48)),
                   password_change_required=True)
     db.add(row)
     await db.flush()

@@ -134,29 +134,7 @@ export function AdminCuentasCrearModal({
 
           {/* Contraseña Inicial */}
           <div>
-            <label htmlFor="account-dni" className="block text-xs font-extrabold text-slate-700 mb-1">
-              DNI — contraseña inicial *
-            </label>
-            <input
-              type="password"
-              id="account-dni" disabled={submitting}
-              aria-label="DNI — contraseña inicial"
-              required
-              inputMode="numeric"
-              pattern="[0-9]{8}"
-              minLength={8}
-              maxLength={8}
-              autoComplete="new-password"
-              value={tab === "PADRE" ? formPadre.password : formTerapeuta.password}
-              onChange={(e) =>
-                tab === "PADRE"
-                  ? setFormPadre((f) => ({ ...f, password: e.target.value }))
-                  : setFormTerapeuta((f) => ({ ...f, password: e.target.value }))
-              }
-              placeholder="8 dígitos"
-              className="w-full border border-[#E8E5F4] rounded-2xl px-3.5 py-2.5 text-sm font-medium text-[#1C1135] outline-none focus:border-violet-500"
-            />
-            <p className="mt-2 text-sm text-slate-700">Se usará solo para el primer ingreso. El usuario deberá crear su contraseña personal antes de continuar.</p>
+            <p className="text-sm text-slate-700">Se enviará un correo con el botón Crear mi contraseña. El enlace vence en 24 horas. El DNI no se usa como contraseña.</p>
           </div>
 
           {/* Campos específicos Padre */}
@@ -251,8 +229,8 @@ export function AdminCuentasCrearModal({
               disabled={
                 submitting ||
                 (tab === "PADRE"
-                  ? !formPadre.nombres.trim() || !formPadre.email.trim() || !formPadre.password
-                  : !formTerapeuta.nombres.trim() || !formTerapeuta.email.trim() || !formTerapeuta.password)
+                  ? !formPadre.nombres.trim() || !formPadre.email.trim()
+                  : !formTerapeuta.nombres.trim() || !formTerapeuta.email.trim())
               }
               className="flex-1 py-2.5 rounded-2xl text-sm font-extrabold text-white disabled:opacity-50 transition-all flex items-center justify-center gap-2 shadow-md"
               style={{ background: `linear-gradient(135deg, ${B.violet}, ${B.violetDark})` }}

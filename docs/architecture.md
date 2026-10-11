@@ -3,7 +3,7 @@
 Landing integra cinco mundos con metadata pública y conserva rutas de actividades.
 Catálogo anónimo entrega sólo metadatos/números de nivel; resumen de paciente entrega
 contenido únicamente en mundos asignados. Permisos y escritura server-side conservados.
-Sin cambios de tablas/BD. ADR0022 documenta cambio mínimo de contrato y límites.
+Sin cambios de tablas/BD. ADR [0022 catálogo público](decisions/0022_catalogo_publico_descriptivo.md) documenta el contrato y sus límites.
 WebP con hash/static hosting immutable; HTML no-cache y API no-store. Login retorna a
 ruta interna compatible usando helper compartido, sin otorgar permisos por la URL.
 
@@ -362,3 +362,22 @@ Los datos son simulación, no evaluación clínica ni inferencia de emociones. Q
 pendientes juegos finales, revisión profesional de contenidos, modelo ML/dataset con
 etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
 Los catálogos draft-1 y demos históricos no representan este flujo persistente.
+
+
+## V55 — consulta administrativa de auditoría
+
+FastAPI GET /admin/auditoria requiere rol ADMIN y devuelve hasta 100 eventos recientes
+de auditoria_cambios, con total, actor, acción, tabla/entidad y fecha. La proyección
+no serializa datos_anteriores ni datos_nuevos para reducir exposición de datos personales.
+React presenta únicamente eventos guardados; no genera ejemplos ni modifica historial.
+
+
+## V56 — activación pública con enlace de alta
+
+Gmail ya no envía contraseña inicial. Cuatro altas generan secreto aleatorio Argon2id;
+publican enlace de24h firmado con HMAC sobre ID/expiración/propósito/correo y el hash privado
+como clave. POST/auth/create-password bloquea usuario, valida activo/pendiente/firma,
+cambia hash, revoca sesiones y completa activación transaccionalmente. No crea sesión.
+POST/auth/resend-activation envía solo a pendientes; respuesta genérica y límiteIP/código.
+React recibe el token en fragmento, lo retira de la barra y confirma contraseña12–128.
+No tabla/migración nueva ni SupabaseAuth. ADR [0022 activación por correo](decisions/0022-activacion-contrasena-correo.md) documenta consecuencias y límites.

@@ -22,4 +22,4 @@ async def registrar_familia(db, identity, data):
         )
         hijos.append(row)
     return {"cuenta": cuenta, "hijos": hijos,
-            "message": f"Familia registrada. Entregue el código {cuenta['codigo_usuario']} y solicite cambiar la contraseña inicial."}
+            "message": f"Familia registrada. Entregue el código {cuenta['codigo_usuario']} y solicite crear su contraseña desde el enlace enviado al correo."}

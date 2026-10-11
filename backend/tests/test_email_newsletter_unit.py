@@ -15,7 +15,7 @@ def test_gmail_disabled_is_controlled(monkeypatch):
     monkeypatch.setattr(settings, "GMAIL_ENABLED", False)
     result = asyncio.run(gmail.send_welcome_email(
         to="person@example.com", name="Persona", role="PADRE",
-        code="P00001", initial_password="12345678"))
+        code="P00001", activation_url="https://example.com/crear-contrasena#token=test"))
     assert result.status == "NO_CONFIGURADO"
 
 
@@ -36,11 +36,12 @@ def test_gmail_sends_mime_without_logging_secrets(monkeypatch):
     monkeypatch.setattr(gmail, "_request_json", fake_request)
     result = asyncio.run(gmail.send_welcome_email(
         to="person@example.com", name="Persona", role="PADRE",
-        code="P00001", initial_password="12345678"))
+        code="P00001", activation_url="https://example.com/crear-contrasena#token=test"))
     assert result.status == "ENVIADO"
     body = calls[-1][1]["body"]
     raw = __import__("base64").urlsafe_b64decode(__import__("json").loads(body)["raw"])
-    assert b"12345678" in raw
+    assert b"12345678" not in raw
+    assert b"crear-contrasena" in raw
     assert b"secret" not in raw
     message = BytesParser(policy=policy.default).parsebytes(raw)
     assert message["To"] == "person@example.com"

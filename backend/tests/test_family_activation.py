@@ -13,10 +13,13 @@ from app.models.perfiles import Paciente
 from app.core.security import verify_password
 from app.core.config import settings
 from app.core import login_limiter
+from app.services.email_activation import activation_token
+from app.services.auth_service import create_user_session
 
 
 @pytest.fixture(autouse=True)
 def isolated_limiter(monkeypatch):
+    monkeypatch.setattr(settings, "GMAIL_ENABLED", False)
     # Many synthetic sessions in one process; keep throttling enabled but isolate counters.
     monkeypatch.setattr(login_limiter, "login_limiter", login_limiter.LoginLimiter(
         settings.model_copy(update={"LOGIN_IP_LIMIT": 1000, "LOGIN_PAIR_LIMIT": 100})))
@@ -46,30 +49,27 @@ async def test_family_activation_rotation_and_isolation(clinical):
     code = data["cuenta"]["codigo_usuario"]
     assert code == "P90003" and len(data["hijos"]) == 2
     assert DNI not in json.dumps(data)
+    async with factory() as db:
+        row = await db.get(Usuario, data["cuenta"]["id_usuario"])
+        assert not verify_password(DNI, row.password_hash)
+        token = activation_token(row)
+        old_token, _ = await create_user_session(db, row.id_usuario)
+        await db.commit()
     async with client() as parent, client() as old_session:
-        for browser in (parent, old_session):
-            login = await browser.post("/api/v1/auth/login", json={"codigo_usuario": code.lower(), "password": DNI})
-            assert login.status_code == 200
-            assert login.json()["user"]["password_change_required"] is True
-        for path in ("pacientes", "citas", "conversaciones", "padres/me", "usuarios", "admin/cuentas"):
-            assert (await parent.get(f"/api/v1/{path}")).status_code == 403
-        assert (await parent.patch(f"/api/v1/usuarios/{data['cuenta']['id_usuario']}", json={"password": NEW_PASSWORD})).status_code == 403
-        assert (await parent.get("/api/v1/auth/me")).status_code == 200
-        for payload, expected in [
-            ({"current_password": DNI, "new_password": "corta"}, 422),
-            ({"current_password": "87654321", "new_password": NEW_PASSWORD}, 403),
-            ({"current_password": DNI, "new_password": NEW_PASSWORD, "id_usuario": 1}, 422),
-        ]:
-            assert (await parent.post("/api/v1/auth/activate", json=payload)).status_code == expected
-        activation = await parent.post("/api/v1/auth/activate", json={"current_password": DNI, "new_password": NEW_PASSWORD})
-        assert activation.status_code == 200, activation.text
-        assert activation.json()["user"]["password_change_required"] is False
-        assert "HttpOnly" in activation.headers["set-cookie"]
-        assert (await old_session.get("/api/v1/auth/me")).status_code == 401
-        assert (await parent.get("/api/v1/pacientes")).json()[0]["id_tutor"] == data["hijos"][0]["id_tutor"]
-        assert (await parent.post("/api/v1/auth/activate", json={"current_password": DNI, "new_password": NEW_PASSWORD})).status_code == 409
-        await parent.post("/api/v1/auth/logout")
+        old_session.cookies.set(settings.SESSION_COOKIE_NAME, old_token)
         assert (await parent.post("/api/v1/auth/login", json={"codigo_usuario": code, "password": DNI})).status_code == 401
+        assert (await parent.get("/api/v1/pacientes")).status_code == 401
+        for payload, expected in [
+            ({"token": token, "new_password": "corta"}, 422),
+            ({"token": "invalid", "new_password": NEW_PASSWORD}, 400),
+            ({"token": token, "new_password": NEW_PASSWORD, "id_usuario": 1}, 422),
+        ]:
+            assert (await parent.post("/api/v1/auth/create-password", json=payload)).status_code == expected
+        activation = await parent.post("/api/v1/auth/create-password", json={"token": token, "new_password": NEW_PASSWORD})
+        assert activation.status_code == 200, activation.text
+        assert "set-cookie" not in activation.headers
+        assert (await old_session.get("/api/v1/auth/me")).status_code == 401
+        assert (await parent.post("/api/v1/auth/create-password", json={"token": token, "new_password": NEW_PASSWORD})).status_code == 400
         assert (await parent.post("/api/v1/auth/login", json={"codigo_usuario": code, "password": NEW_PASSWORD})).status_code == 200
         assert len((await parent.get("/api/v1/pacientes")).json()) == 2
     child = data["hijos"][0]["id_paciente"]
@@ -121,14 +121,13 @@ async def test_transaction_rolls_back_partial_family(clinical, monkeypatch):
 
 
 async def test_parallel_activation_has_single_winner(clinical):
-    clients, _ = clinical
+    clients, factory = clinical
     data = await register(clients["a90001"])
-    code = data["cuenta"]["codigo_usuario"]
+    async with factory() as db:
+        token = activation_token(await db.get(Usuario, data["cuenta"]["id_usuario"]))
     async with client() as first, client() as second:
-        for browser in (first, second):
-            assert (await browser.post("/api/v1/auth/login", json={"codigo_usuario": code, "password": DNI})).status_code == 200
-        responses = await asyncio.gather(*(browser.post("/api/v1/auth/activate", json={"current_password": DNI, "new_password": NEW_PASSWORD}) for browser in (first, second)))
-        assert sorted(r.status_code for r in responses) == [200, 409]
+        responses = await asyncio.gather(*(browser.post("/api/v1/auth/create-password", json={"token": token, "new_password": NEW_PASSWORD}) for browser in (first, second)))
+        assert sorted(r.status_code for r in responses) == [200, 400]
 
 
 async def test_other_creation_paths_require_activation(clinical):
@@ -139,11 +138,11 @@ async def test_other_creation_paths_require_activation(clinical):
     assert response.json()["cuenta"]["codigo_usuario"].startswith("T")
     async with client() as therapist:
         login = await therapist.post("/api/v1/auth/login", json={"codigo_usuario": response.json()["cuenta"]["codigo_usuario"], "password": DNI})
-        assert login.json()["user"]["password_change_required"]
-        assert (await therapist.get("/api/v1/terapeutas/me")).status_code == 403
+        assert login.status_code == 401
+        assert (await therapist.get("/api/v1/terapeutas/me")).status_code == 401
     generic = await admin.post("/api/v1/usuarios", json={"nombres": "P", "apellidos": "Prueba", "email": "generic@example.com", "codigo_usuario": "p77777", "rol": "PADRE", "password": NEW_PASSWORD})
     assert generic.status_code == 201
     async with client() as parent:
         login = await parent.post("/api/v1/auth/login", json={"codigo_usuario": "P77777", "password": NEW_PASSWORD})
-        assert login.json()["user"]["password_change_required"]
-        assert (await parent.get("/api/v1/pacientes")).status_code == 403
+        assert login.status_code == 401
+        assert (await parent.get("/api/v1/pacientes")).status_code == 401

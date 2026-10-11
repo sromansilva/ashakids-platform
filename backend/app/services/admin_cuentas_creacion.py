@@ -9,6 +9,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 from starlette.concurrency import run_in_threadpool
 
+import secrets
 from app.core.security import hash_password
 from app.models.auditoria import AuditoriaCambios
 from app.models.auth import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
@@ -73,7 +74,7 @@ async def crear_padre(
         )
 
     codigo = await generar_codigo_usuario(db, "p")
-    pwd_hash = await run_in_threadpool(hash_password, req.password)
+    pwd_hash = await run_in_threadpool(hash_password, secrets.token_urlsafe(48))
 
     user = Usuario(
         nombres=req.nombres.strip(),
@@ -155,7 +156,7 @@ async def crear_terapeuta(
         )
 
     codigo = await generar_codigo_usuario(db, "t")
-    pwd_hash = await run_in_threadpool(hash_password, req.password)
+    pwd_hash = await run_in_threadpool(hash_password, secrets.token_urlsafe(48))
 
     user = Usuario(
         nombres=req.nombres.strip(),
