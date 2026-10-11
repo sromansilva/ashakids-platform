@@ -1,6 +1,6 @@
 ## Corte V88 — Centro Familiar, administración y login / 2026-10-11
 
-Base `bf868da`/V87 en `feat/piero-dev`; cierre autorizado para integrar/publicar en `dev` y sincronizar la rama de Piero. Repositorio: https://github.com/sromansilva/ashakids-platform . Los apartados pendientes inferiores conservan el historial previo; el cierre vigente es `V88_Mejorar_Centro_Familiar_Admin_Login`, cuyo SHA se consulta en Git.
+Publicado `15ed694f57dacacfa397ef408f7969b759cb6926` (`V88_Mejorar_Centro_Familiar_Admin_Login`) sobre base `bf868da`/V87. Push atómico y referencias remotas iguales en `dev` y `feat/piero-dev`; CI Knowledge map aprobado en ambas ramas. Repositorio: https://github.com/sromansilva/ashakids-platform . Los apartados pendientes inferiores conservan el historial previo. El cierre documental V89 registra los resultados de publicación; no añade cambios funcionales ni nuevas pruebas.
 
 Centro Familiar adopta la propuesta infantil de dos destinos y un área Para mi familia: conserva selección por paciente, mundos asignados, jugador y guardado existente; reservas intro/terapia, actualización de seguimiento, planes, sesiones, reportes y navegación adulta siguen disponibles. Administración y login incluyen los ajustes documentados abajo: glass, herramientas con logos, auditoría agrupada con filtros, pacientes con campos respaldados, selectores, edad derivada y perfil profesional. Mensajes retira una indicación de presencia sin respaldo del servidor. Contratos HTTP, permisos y almacenamiento existentes conservados; sin cambios de arquitectura ni BD.
 

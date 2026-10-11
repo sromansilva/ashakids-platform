@@ -1,6 +1,6 @@
 # Centro Familiar infantil
 
-Fecha: 2026-10-11. Corte V88 sobre feat/piero-dev, base bf868da/V87; publicación autorizada en dev. Estado final y límites en IMPLEMENTATION_PROGRESS.md.
+Fecha: 2026-10-11. Corte V88 publicado en dev y feat/piero-dev: 15ed694f57dacacfa397ef408f7969b759cb6926, base bf868da/V87. Estado final y límites en IMPLEMENTATION_PROGRESS.md.
 
 Modo de pantalla: Operate. Usuario principal: niño acompañado por su familia. Acción principal: explorar actividades asignadas. Acción secundaria: consultar su recorrido. El adulto accede a los detalles desde Para mi familia.
 

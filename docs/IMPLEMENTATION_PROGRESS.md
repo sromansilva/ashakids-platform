@@ -10,7 +10,9 @@ Comandos ejecutados desde frontend con Node local: `node node_modules/vitest/vit
 
 Alcance real: pruebas con respuestas HTTP y escrituras simuladas, más revisión visual previa aislada en escritorio y móvil con perfiles ficticios. No se crearon cuentas ni reservas, ni se modificaron datos de la BD real; no se probó una sesión auténtica de extremo a extremo. No afirmar funcionamiento al 100% a partir de estas pruebas. DNI/RENIEC del terapeuta sigue bloqueado por diseño; correo/videollamadas dependen de configuración existente. No constituye una nueva auditoría técnica ni reemplaza sus informes.
 
-Publicación: preparar commit V88, avanzar `dev` sin reescribir historia, publicar `dev` y `feat/piero-dev` y verificar SHA remotos iguales. Si falla el push o CI, registrar el fallo y no declarar sincronización. Siguiente acción tras publicar: validación operativa autorizada con sesión real y revisión del usuario de las pantallas adultas existentes.
+Publicación verificada: commit funcional `15ed694f57dacacfa397ef408f7969b759cb6926` (`V88_Mejorar_Centro_Familiar_Admin_Login`). `dev` avanzó por fast-forward desde V87; push atómico de `dev` y `feat/piero-dev` aprobado. `git ls-remote --heads origin dev feat/piero-dev` devolvió el mismo SHA para ambas ramas; árbol limpio. CI Knowledge map aprobado en [dev](https://github.com/sromansilva/ashakids-platform/actions/runs/38140227111) y [feat/piero-dev](https://github.com/sromansilva/ashakids-platform/actions/runs/38140227071). Es un chequeo del mapa, no de operación clínica. El mapa local se regeneró tras el cambio de SHA.
+
+El cierre documental V89 registra esta publicación efectiva y no cambia fuentes ni pruebas. Se integra/publica también en ambas ramas sin reescribir V88. Siguiente acción: validación operativa autorizada con sesión real y revisión del usuario de las pantallas adultas existentes. No hay fallos de pruebas locales o CI pendientes en V88; quedan los límites operativos declarados arriba.
 
 ## Ajuste local pendiente — Centro Familiar infantil / 2026-10-11
 
