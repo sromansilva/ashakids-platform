@@ -1007,7 +1007,7 @@ La landing ahora usa un formulario real con consentimiento obligatorio, estado d
 errores y enlaces de confirmación/baja. La API pública crea `suscripciones_boletin`, guarda
 solo hashes de tokens, no enumera correos y aplica límite básico por IP. Se preparó la
 migración `009_newsletter_subscriptions.sql`, sin ejecución sobre la base compartida (el número 008 ya pertenece a la migración de juegos de dev).
-Se documentaron las variables de Render en `render.yaml`, `.env.example`, ADR0020 y
+Se documentaron las variables de Render en `render.yaml`, `.env.example`, ADR0021 y
 `docs/operations/DEPLOY_RENDER_EMAIL.md`.
 
 Comprobaciones nuevas: `backend/.venv` unit tests de Gmail/boletín `4 passed`, importación
@@ -1063,3 +1063,4 @@ Siguiente: aceptación humana de nueva reserva virtual (AUTOMATICA/enlace Zoom) 
 licencia/duración: sin overrides producción usa 45; Basic requiere ambos valores en 40.
 No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
 integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.
+

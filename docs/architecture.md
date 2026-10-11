@@ -23,7 +23,7 @@ hashes. La API pública exige consentimiento, responde sin enumerar correos exis
 envía un enlace de confirmación y permite la baja con un token independiente. Gmail se
 usa para bajo volumen: no existe editor de campañas ni programación masiva. La migración
 `009_newsletter_subscriptions.sql` es explícita y debe ensayarse en una base aislada antes
-de adoptar el esquema compartido. Véase ADR0020.
+de adoptar el esquema compartido. Véase ADR0021.
 
 ## V49 — duración de agenda y origen del enlace Zoom
 
@@ -353,3 +353,4 @@ Los datos son simulación, no evaluación clínica ni inferencia de emociones. Q
 pendientes juegos finales, revisión profesional de contenidos, modelo ML/dataset con
 etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
 Los catálogos draft-1 y demos históricos no representan este flujo persistente.
+
