@@ -51,3 +51,172 @@
 @supports not (backdrop-filter: blur(14px)) {
   .asha-landing.asha-ui .landing-worlds .mundo-card { background: #fff; }
 }
+
+/* Shared glass formats from the documented design system. */
+.asha-landing.asha-ui {
+  --asha-glass-blur: 14px;
+}
+.asha-landing.asha-ui .landing-step-list > li,
+.asha-landing.asha-ui .landing-therapist,
+.asha-landing.asha-ui .landing-flip-front,
+.asha-landing.asha-ui .landing-worlds .mundo-card {
+  background: var(--asha-glass);
+  border: 1px solid var(--asha-glass-border);
+  border-radius: var(--asha-radius-card);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 88%), var(--asha-shadow);
+  -webkit-backdrop-filter: blur(var(--asha-glass-blur));
+  backdrop-filter: blur(var(--asha-glass-blur));
+}
+.asha-landing.asha-ui > nav {
+  background: var(--asha-glass);
+  border-bottom: 1px solid var(--asha-glass-border);
+  -webkit-backdrop-filter: blur(var(--asha-glass-blur));
+  backdrop-filter: blur(var(--asha-glass-blur));
+}
+.asha-unified .landing-therapist-portrait { background: #ede4fb66; }
+.asha-unified .landing-therapist-1 .landing-therapist-portrait { background: #d9f3ed66; }
+.asha-unified .landing-therapist-2 .landing-therapist-portrait { background: #ffe9d066; }
+/* Reading and form surfaces stay solid; no stacked glass panels. */
+.asha-landing.asha-ui .landing-service-card,
+.asha-landing.asha-ui .landing-story,
+.asha-landing.asha-ui .landing-newsletter-controls,
+.asha-landing.asha-ui .landing-faq-item,
+.asha-landing.asha-ui .landing-faq-item.is-open {
+  background: var(--asha-white);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@media (max-width: 767px) {
+  .asha-landing.asha-ui { --asha-glass: #fff; --asha-glass-blur: 0px; }
+  .asha-landing.asha-ui .landing-step-list > li,
+  .asha-landing.asha-ui .landing-therapist,
+  .asha-landing.asha-ui .landing-flip-front,
+  .asha-landing.asha-ui .landing-worlds .mundo-card,
+  .asha-landing.asha-ui > nav {
+    background: var(--asha-white);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@supports not (backdrop-filter: blur(14px)) {
+  .asha-landing.asha-ui .landing-step-list > li,
+  .asha-landing.asha-ui .landing-therapist,
+  .asha-landing.asha-ui .landing-flip-front,
+  .asha-landing.asha-ui .landing-worlds .mundo-card,
+  .asha-landing.asha-ui > nav { background: var(--asha-white); }
+}
+
+/* Feedback is brief and runs only in response to an interaction. */
+.asha-unified { --landing-motion-ease: cubic-bezier(.16, 1, .3, 1); }
+.asha-unified .landing-flip-inner {
+  transition: transform 320ms var(--landing-motion-ease);
+}
+.asha-unified .landing-nav-link {
+  position: relative; text-decoration: none;
+  transition: color 140ms ease;
+}
+.asha-unified .landing-nav-link::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 3px;
+  height: 2px; border-radius: 2px; background: var(--asha-primary);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 180ms var(--landing-motion-ease);
+}
+.asha-unified .landing-nav-link:focus-visible::after { transform: scaleX(1); }
+.asha-unified .asha-btn > svg,
+.asha-unified .landing-context-link > svg {
+  transition: transform 160ms var(--landing-motion-ease);
+}
+.asha-landing.asha-ui .mundo-card {
+  transition: border-color 160ms ease, box-shadow 180ms ease;
+}
+.asha-landing.asha-ui .mundo-card:focus-within {
+  border-color: var(--asha-primary);
+  box-shadow: var(--asha-shadow-raised);
+}
+.asha-unified .landing-flip-face {
+  transition: border-color 140ms ease, box-shadow 180ms ease;
+}
+.asha-unified .landing-flip-card:active { transform: scale(.99); }
+.asha-unified .landing-flip-card { transition: transform 120ms ease; }
+.asha-unified .landing-faq-item button {
+  transition: background-color 140ms ease, color 140ms ease;
+}
+.asha-unified .landing-faq-item button > svg {
+  transition: transform 180ms var(--landing-motion-ease), background-color 140ms ease;
+}
+.asha-unified .landing-faq-item.is-open button > svg { background: var(--asha-lavender); }
+.asha-unified .landing-faq-answer {
+  animation: landing-answer-in 160ms var(--landing-motion-ease);
+}
+@keyframes landing-answer-in {
+  from { opacity: .35; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.asha-unified .landing-dock-control {
+  transition: transform 160ms var(--landing-motion-ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .asha-unified .landing-nav-link:hover { color: var(--asha-primary-dark); }
+  .asha-unified .landing-nav-link:hover::after { transform: scaleX(1); }
+  .asha-unified .asha-btn:not(:disabled):hover > svg,
+  .asha-unified .landing-context-link:hover > svg { transform: translateX(3px); }
+  .asha-landing.asha-ui .mundo-card:hover {
+    transform: none; border-color: var(--asha-primary); box-shadow: var(--asha-shadow-raised);
+  }
+  .asha-unified .landing-flip-card:hover .landing-flip-face { box-shadow: var(--asha-shadow-raised); }
+  .asha-unified .landing-dock-control:hover { transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .asha-unified .landing-flip-inner,
+  .asha-unified .landing-flip-card,
+  .asha-unified .landing-flip-face,
+  .asha-unified .landing-nav-link,
+  .asha-unified .landing-nav-link::after,
+  .asha-unified .asha-btn > svg,
+  .asha-unified .landing-context-link > svg,
+  .asha-unified .mundo-card,
+  .asha-unified .landing-faq-item button,
+  .asha-unified .landing-faq-item button > svg,
+  .asha-unified .landing-dock-control { transition: none; }
+  .asha-unified .landing-faq-answer { animation: none; }
+  .asha-unified .landing-flip-card:active,
+  .asha-unified .landing-dock-control:hover,
+  .asha-unified .asha-btn:hover > svg,
+  .asha-unified .landing-context-link:hover > svg { transform: none; }
+}
+
+/* Local preview: a clearer glass edge and more visible background color. */
+@media (min-width: 768px) {
+  .asha-landing.asha-ui {
+    --asha-glass: rgb(255 255 255 / 74%);
+    --asha-glass-border: rgb(124 58 237 / 20%);
+    --asha-glass-blur: 18px;
+  }
+  .asha-unified .landing-steps,
+  .asha-unified .landing-worlds,
+  .asha-unified .landing-team,
+  .asha-unified .landing-audience {
+    background: radial-gradient(ellipse at 12% 65%, #dcd0f5 0, transparent 58%),
+      radial-gradient(ellipse at 88% 45%, #ccebe6 0, transparent 58%), #f7f3fc;
+  }
+  .asha-unified .landing-stories {
+    background: radial-gradient(ellipse at 15% 70%, #dfd2f6 0, transparent 58%),
+      radial-gradient(ellipse at 85% 55%, #f8ddc6 0, transparent 58%), #faf6fc;
+  }
+  .asha-landing.asha-ui .landing-story {
+    background: rgb(255 255 255 / 80%);
+    border-color: var(--asha-glass-border);
+    box-shadow: inset 0 1px 0 #fff, 0 12px 28px rgb(28 17 53 / 8%);
+    -webkit-backdrop-filter: blur(var(--asha-glass-blur));
+    backdrop-filter: blur(var(--asha-glass-blur));
+  }
+  .asha-landing.asha-ui .landing-step-list > li,
+  .asha-landing.asha-ui .landing-therapist,
+  .asha-landing.asha-ui .landing-flip-front,
+  .asha-landing.asha-ui .landing-worlds .mundo-card {
+    box-shadow: inset 0 1px 0 #fff, 0 12px 28px rgb(28 17 53 / 8%);
+  }
+  @supports not (backdrop-filter: blur(18px)) {
+    .asha-landing.asha-ui .landing-story { background: #fff; }
+  }
+}

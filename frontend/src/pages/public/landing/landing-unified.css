@@ -31,11 +31,11 @@
   #root:has(.asha-unified) { height: calc(100% - 72px); }
   .asha-unified .landing-container,.asha-unified .landing-audience-container { width: calc(100% - 32px); }
   .asha-unified .landing-section { padding-block: 48px; }
-  .asha-unified .landing-reference-hero h1 { font-size: clamp(33px,4.8vw,52px); }
+  .asha-unified .landing-reference-hero h1 { font-size: clamp(31px,4.3vw,47px); }
   .asha-unified .landing-hero-layout { grid-template-columns: 1fr; }
   .asha-unified .landing-hero-copy { min-width: 0; }
   .asha-unified .landing-hero-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
-  .asha-unified.asha-ui .landing-hero-actions .asha-btn { padding-inline: 16px; min-width: 0; min-height: 56px; font-size: 18px; }
+  .asha-unified.asha-ui .landing-hero-actions .asha-btn { padding-inline: 16px; min-width: 0; min-height: 56px; font-size: 16px; }
   .asha-unified .landing-ashi-scene { max-width: 620px; margin: auto; }
   .asha-unified .landing-ashi-scene { display: flex; flex-direction: column; }
   .asha-unified .landing-ashi-bubble { position: relative; top: auto; right: auto; order: -1; width: max-content; max-width: 100%; margin: 12px auto 20px; }
@@ -57,7 +57,7 @@
 }
 @media (max-width: 639px) {
   .asha-unified .landing-hero-actions { grid-template-columns: 1fr; }
-  .asha-unified .landing-hero h1 { font-size: 33px; }
+  .asha-unified .landing-hero h1 { font-size: 31px; }
   .asha-unified .landing-desktop-break { display: none; }
   .asha-unified .landing-section h2 { font-size: 30px; }
   .asha-unified.asha-ui .landing-audience-card { grid-template-columns: 30% minmax(0,1fr) 32px; gap: 10px; padding: 16px 12px; height: auto; min-height: 150px; }

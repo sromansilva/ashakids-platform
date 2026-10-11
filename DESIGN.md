@@ -154,3 +154,9 @@ por petición expresa. Estilos limitados a landing-refinements.css.
 
 Las tres tarjetas de especialistas de la landing muestran únicamente información;
 se retira Agendar y el salto a login. La reserva se conserva en el dashboard.
+
+## V86 — Glass visible y respuesta ligera
+
+Landing: blanco74%, borde violeta20%, blur18px y fondos lavanda/agua en tarjetas y navbar. Ejemplos familiares blanco80%. Login: panel y barra superior con el mismo formato, campos blancos y fondo lavanda/naranja/agua. Móvil<768px y navegadores sin soporte usan superficies sólidas. FAQ y newsletter conservan fondo sólido.
+
+Feedback120–180ms, giro320ms y FAQ160ms; navbar subraya, flechas avanzan3px y mundos responden con borde/sombra. Reduced-motion elimina movimiento. Hero desktop46–66px, introducción18–24px, botones16–20px; móvil título31px y botones16px, conservando áreas de interacción. Textos de apoyo señalados en especialistas y ejemplos retirados.
