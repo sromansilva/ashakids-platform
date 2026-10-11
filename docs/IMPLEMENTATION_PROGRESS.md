@@ -1118,3 +1118,32 @@ compartidos se incorpora únicamente este apartado al índice Git.
 Siguiente:verificar redeployV56/recepción del botón
 y crear contraseña manualmente desde buzón de prueba. No envío masivo ni recuperación de
 contraseñas ya activadas. No ampliar newsletter/BD/pagos durante esta tarea.
+
+
+## V57 — configuración Gmail y despliegue del acceso / 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Código V56:
+66754c57aa7a7c38c0733acde5d149b0b3d0a017, publicado y comprobado igual en HEAD,
+origin/dev y origin/codex/2do-intento. Se resolvió el primer fallo de identidad Git
+usando Codex <codex@users.noreply.github.com>, como V54/V55, solo para el comando.
+Acceso GitHub existente suficiente; no nuevo login ni configuración global.
+
+Con autorización explícita, siete variables proporcionadas guardadas en Environment
+solo del servicio ashakids de Render: seis GMAIL_* y PUBLIC_ORIGIN. Persistencia de
+los siete nombres comprobada al volver a Environment, sin revelar valores en evidencia.
+No cambios de OAuth/permisos Google ni secretos guardados en archivos/repositorio.
+El guardado desplegó primero V55 (Live,44.9s); tras push, V56 Auto-Deploy quedó Live:
+dep-db5fq4jrjlhs73aoh0d0,38.5s, SHA66754c5. ReadinessHTTPS200 ready/database reachable;
+OpenAPI200 contiene POSTcreate-password y resend-activation. Página publicada
+/crear-contrasena visible con solicitud de enlace sin sesión. Evidencia saneada:
+render-live.png y https-smoke.json en docs/evidence/email-activation-v56/.
+
+Este cierre documental incorpora resultado externo, sin nuevas pruebas clínicas,
+auditoría/PDF ni cambios funcionales respecto a V56. No se crearon usuarios reales ni
+se enviaron correos de prueba. OAuth/envío/recepción del botón y activación real quedan
+pendientes de aceptación manual con una cuenta autorizada; la configuración guardada
+no demuestra entrega a un buzón. Pruebas locales de V56 mantienen su alcance/omisiones.
+Cambios previos de adjuntos continúan fuera de ambos commits, preservados en este clon.
+Siguiente: en alta ADMIN autorizada comprobar correo_bienvenida ENVIADO, recibir botón,
+crear contraseña manualmente y entrar con código; si falla, revisar configuración Google
+sin exponer secretos y reintentar enlace. No ampliar newsletter ni tocar pacientes/BD.

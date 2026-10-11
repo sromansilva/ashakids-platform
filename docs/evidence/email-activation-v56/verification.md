@@ -19,3 +19,13 @@ No auditoría nueva ni PDF. No datos/usuarios reales creados ni secretos guardad
 - Render leído:V55Live, inventario sinGmail. OAuth/recepción/alta compartida no verificados.
   Siete variables privadas guardadas con autorización posterior; deployV55 iniciado.
   Recepción y deploy del código nuevo por verificar. No equivale a correo recibido.
+
+
+## Resultado Render — cierre documental V57
+
+Variables guardadas con autorización expresa; siete nombres persistidos sin mostrar valores.
+V56/66754c5Live,dep-db5fq4jrjlhs73aoh0d0,38.5s. Readiness200 y OpenAPI200 con ambas
+operaciones presentes; páginaHTTPS visible sin sesión. Véase https-smoke.json y render-live.png.
+No OAuth/envío/recepción real ni pruebas de activación sobre BD compartida. El fallo inicial
+de identidadGit se corrigió con la identidadCodex usada en los dos commits previos; push a
+ambas ramas confirmado. No secretos en archivos. Cambios de adjuntos preservados aparte.

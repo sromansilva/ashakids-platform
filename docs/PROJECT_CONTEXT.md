@@ -961,3 +961,12 @@ No requiere migración. ADR0022; evidencia local en evidence/email-activation-v5
 Siete variables Gmail guardadas en Render tras autorización explícita; despliegue y recepción
 pendientes de comprobar en el cierre. Recepción real y concurrenciaSQL no comprobadas. Contextos V52 inferiores son
 históricos y describen el mecanismo anterior reemplazado aquí. No auditoría nueva.
+
+
+## V57 — Gmail configurado en Render y V56 Live
+
+Las siete variables privadas autorizadas quedaron guardadas en Environment y persistieron
+al volver a la pantalla. V56/66754c5 desplegado Live en38.5s; readinessHTTPS200 y OpenAPI
+con ambas operaciones de creación/reenvío. La página pública funciona en Render.
+Recepción real/OAuth/activación manual pendientes; no se crearon cuentas ni enviaron
+correos para probar. Cierre documental y evidencia en email-activation-v56; no auditoría.
