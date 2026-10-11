@@ -65,7 +65,7 @@ async def estructura(db, patient_id, code):
     world = Mundo(id_actividad=activity.id_actividad, nombre_mundo=content["name"],
                   descripcion=content["description"], objetivo="Completar tres actividades de simulación.", activo=True)
     db.add(world)
-    db.add(Objetivo(id_actividad=activity.id_actividad, titulo="Participación en " + content["name"],
+    db.add(Objetivo(id_actividad=activity.id_actividad, titulo="Mundo " + code.title(),
         descripcion="Objetivo del juego básico; no acredita dominio clínico.",
         resultados_objetivo={"tipo": "SIMULACION", "completados": 0, "total": 3, "version": VERSION}))
     await db.flush()
