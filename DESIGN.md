@@ -91,3 +91,7 @@ móvil fuera del área desplazable.Paleta/Nunito/mascota originalesintactos.
 originalesPNGconservados,hero fetchPriorityhigh,resto lazy.Canonicallanding/idiomaes,
 robotsnoindexpreviointacto.7viewportsChrome/foco/Tab/Escape/reducedmotion comprobados.
 [Auditoría y límites](docs/evidence/landing-v56/verification.md). No publicar hasta aprobación.
+
+## V59 - Marca del footer y navegación interna
+
+Sólo landing: footer lavanda #F3EEFB, tarjeta blanca para logo oficial, marca violeta/naranja, controles de 44 px, columnas 4/3/2 según ancho y marca a ancho completo en móvil. CSS encapsulado en `landing-footer.css`; otras páginas conservan footer anterior. Especialistas se consulta por anclas dentro de la landing, sin Ver todos. Favicon PNG reutiliza logo oficial sin modificaciones.

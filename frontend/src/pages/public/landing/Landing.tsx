@@ -16,6 +16,7 @@ import './landing.css';
 import './landing-reference.css';
 import './landing-continuity.css';
 import './landing-unified.css';
+import './landing-footer.css';
 import { LandingWorlds } from './LandingWorlds';
 const stepIcons = [ClipboardPenLine, Search, CalendarDays];
 const stepArt = ['step-account-v54', 'step-specialist-v54', 'step-session-v54'];

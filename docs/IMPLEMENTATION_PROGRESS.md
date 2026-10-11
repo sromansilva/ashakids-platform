@@ -1,3 +1,13 @@
+## V59 - Relevo de navegación interna y marca / 2026-10-10
+
+Rama `codex/landing-publica`, base `4740ffe` / V56. Fetch de cierre exitoso: `origin/dev` avanzó a `498df42` / V58 con cinco commits de cuentas, correo y documentación. Se continúa numeración en V59; esos cambios remotos no se integran en este ajuste visual. Dev local `396efda` preservado. Commit V59 sólo local, sin push ni merge hacia dev; `.gitignore` previo excluido.
+
+Se retira Ver todos de terapeutas y se conservan perfiles, textos y Agendar (login). Explorar terapeutas, tarjeta Terapeutas y enlace Especialistas del footer apuntan a `#landing-specialists`, sin abrir el directorio separado. La ruta externa de especialistas permanece disponible. Footer de landing rediseñado con fondo lavanda, logo oficial y marca violeta/naranja, columnas y contraste; otras variantes públicas conservadas. Favicon y apple-touch-icon reutilizan una copia exacta del logo oficial; sin imagen nueva ni cambios de marca.
+
+Verificación: tipos, check de frontend (354 archivos, máximo 500) y build (1913 módulos) aprobados. Chrome en 320/375/768/1024/1536 px: sin overflow ni errores JS, logo cargado, enlaces internos, Agendar, footer de otra página y favicon 200 idéntico al original. Archivos: LandingTerapeutasCertificados, LandingElApoyoQue, LandingAudience, PublicFooter, landing-footer.css, index.html, favicon.png e interactions.test.tsx. Evidencia en [landing-v59](evidence/landing-v59/verification.md). La suite tenía una expectativa del antiguo enlace Especialistas como botón/directorio; se actualizó a los enlaces de sección solicitados. Resultado final: 25 rutas y 283 componentes en 19 archivos, PASS. Graphify refresh/check vigente (2374 nodos, 103 comunidades; 13 fuentes sin símbolos). Backend y servicios no modificados ni pruebas reales de login/BD/reservas/correo.
+
+Preview :5176 y API :8002 reiniciados; recordatorios desactivados. Pendiente revisión humana y conciliación de los nuevos commits remotos antes de una futura publicación autorizada. No publicar en dev hasta aprobación explícita.
+
 ## V56 - Relevo de integración pública y optimización / 2026-10-10
 
 Objetivo: integrar mundos conservando el hero, ordenar acciones, adaptar móvil y aligerar recursos. Rama `codex/landing-publica`, base `796fc28`; `origin/dev` conocido `ca9e1b3`. Fetch final falló en GitHub:443. Commit V56 local consultable en Git; sin push ni merge hacia dev, dev local `396efda` preservado. `.gitignore` previo excluido.

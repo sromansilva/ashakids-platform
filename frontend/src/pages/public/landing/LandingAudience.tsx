@@ -11,7 +11,7 @@ const audiences: { title: string; description: string; image: string; view: View
 export function LandingAudience({ go }: { go: (view: View) => void }) {
   return <section className="landing-audience"><div className="landing-audience-container">
     <h2><span className="landing-heading-rays" aria-hidden="true"/>Un equipo para acompañar <span>cada paso</span><span className="landing-heading-rays" aria-hidden="true"/></h2>
-    <div className="landing-audience-grid">{audiences.map(audience => <button type="button" key={audience.title} className="asha-card asha-glass landing-audience-card" onClick={() => audience.view === 'public/mundo' ? (window.location.hash = 'landing-worlds') : go(audience.view)}>
+    <div className="landing-audience-grid">{audiences.map(audience => <button type="button" key={audience.title} className="asha-card asha-glass landing-audience-card" onClick={() => audience.view === 'public/mundo' ? (window.location.hash = 'landing-worlds') : audience.view === 'public/especialistas' ? (window.location.hash = 'landing-specialists') : go(audience.view)}>
       <PublicIllustration src={`/illustrations/${audience.image}-v1.png`} alt="" width={176} height={176}/>
       <span className="landing-audience-copy"><strong>{audience.title}</strong><span>{audience.description}</span></span>
       <span className="landing-audience-arrow" aria-hidden="true"><ArrowRight size={22}/></span>

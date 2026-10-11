@@ -13,7 +13,7 @@ export function LandingElApoyoQue({ go }: Props) {
         <p className="landing-intro">Un espacio para conectar a familias y terapeutas,<br className="landing-desktop-break"/> acompañar su desarrollo y aprender jugando.</p>
         <div className="landing-hero-actions">
           <Btn size="lg" className="asha-btn asha-btn--lg landing-primary" onClick={() => go('register')}>Solicitar cuenta <ArrowRight size={24}/></Btn>
-          <Btn size="lg" variant="outline" className="asha-btn asha-btn--outline asha-btn--lg" onClick={() => go('public/especialistas')}>Explorar terapeutas</Btn>
+          <a className="asha-btn asha-btn--outline asha-btn--lg" href="#landing-specialists">Explorar terapeutas</a>
         </div>
         <ul className="landing-benefits">
           <li><Check size={24}/><span>Acompañamiento familiar</span></li>
