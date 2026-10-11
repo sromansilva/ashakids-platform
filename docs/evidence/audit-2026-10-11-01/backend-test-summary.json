@@ -1,0 +1,22 @@
+{
+  "command": "backend/.venv/Scripts/python.exe -m pytest tests -q --junitxml=../tmp/base-flow-backend-results.xml",
+  "junit": [
+    {
+      "name": "pytest",
+      "errors": "0",
+      "failures": "0",
+      "skipped": "82",
+      "tests": "303",
+      "time": "9.401",
+      "timestamp": "2026-10-11T08:32:39.650611-05:00"
+    }
+  ],
+  "passed": 221,
+  "skipped": 82,
+  "warnings": 19,
+  "clinical_db_tests_executed": false,
+  "notes": [
+    "Initial collection lacked pypdf; installed existing requirements-dev dependency 6.20.0.",
+    "Initial protection test expected authentication on public activation endpoint; corrected exact method/path allowlist and added six public contract checks."
+  ]
+}

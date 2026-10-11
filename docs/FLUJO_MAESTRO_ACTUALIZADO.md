@@ -1,3 +1,5 @@
+Entrada vigente de recorrido web (11/10/2026): [guion V90](acceptance/GUION_RECORRIDO_BASE_WEB.md) y [auditoría del recorrido](audits/auditoria-2026-10-11-01.md). El contenido V46 inferior es histórico; no usar DNI como contraseña de cuentas nuevas.
+
 # ASHAKids — Contexto maestro del flujo actualizado
 
 **Estado implementado vigente V46:** consultar [guía operativa](GUIA_FLUJO_ESTADO_Y_PENDIENTES.md)

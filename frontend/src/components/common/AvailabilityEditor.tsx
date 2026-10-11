@@ -7,7 +7,7 @@ import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 import { Clock3, Check } from 'lucide-react';
 import './workspace.css';
-const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 const hours = Array.from({ length: 10 }, (_, i) => i + 8);
 const asInput = (date: string) => new Date(Date.parse(date) - 5 * 3600000).toISOString().slice(0, 16);
 

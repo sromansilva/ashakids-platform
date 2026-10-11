@@ -1,3 +1,5 @@
+Entrada vigente de recorrido web (11/10/2026): [guion V90](acceptance/GUION_RECORRIDO_BASE_WEB.md) y [auditoría del recorrido](audits/auditoria-2026-10-11-01.md). El contenido V46 inferior es histórico; no usar DNI como contraseña de cuentas nuevas.
+
 # ASHAKids — guía del flujo actual y base del equipo
 
 **V46 · 10/10/2026 · America/Lima.** Base examinada: `codex/2do-intento`, V45 `62048038b70d2411234fb681284e327cf142d1b7`, integrada en `dev`. Repositorio: https://github.com/sromansilva/ashakids-platform . Web: https://ashakids.onrender.com . Documento operativo; el detalle de tablas, relaciones, API y requisitos del Avance 2 está en [la documentación maestra](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md).

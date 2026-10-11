@@ -1,0 +1,68 @@
+{
+  "url": "http://127.0.0.1:8000/openapi.json",
+  "captured_utc": "2026-10-11T13:44:07.316415+00:00",
+  "schemas": {
+    "TurnoDatos": {
+      "properties": {
+        "dia": {
+          "type": "integer",
+          "maximum": 6.0,
+          "minimum": 0.0,
+          "title": "Dia"
+        },
+        "hora": {
+          "type": "integer",
+          "maximum": 17.0,
+          "minimum": 8.0,
+          "title": "Hora"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "dia",
+        "hora"
+      ],
+      "title": "TurnoDatos"
+    },
+    "DisponibilidadDatos": {
+      "properties": {
+        "turnos": {
+          "items": {
+            "$ref": "#/components/schemas/TurnoDatos"
+          },
+          "type": "array",
+          "maxItems": 70,
+          "title": "Turnos"
+        },
+        "bloqueos": {
+          "items": {
+            "$ref": "#/components/schemas/BloqueoDatos"
+          },
+          "type": "array",
+          "maxItems": 60,
+          "title": "Bloqueos"
+        },
+        "duracion_minutos": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "maximum": 45.0,
+              "minimum": 40.0
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Duracion Minutos"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "turnos"
+      ],
+      "title": "DisponibilidadDatos"
+    }
+  }
+}

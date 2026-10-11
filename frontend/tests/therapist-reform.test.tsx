@@ -48,9 +48,12 @@ it('availability changes a whole day and preserves explicit publish semantics', 
   await screen.findByRole('checkbox',{name:'Lunes 08:00'});
   fireEvent.click(screen.getAllByRole('button',{name:'Seleccionar día'})[0]);
   expect(screen.getByRole('checkbox',{name:'Lunes 17:00'})).toBeChecked();
+  expect(screen.getByRole('checkbox',{name:'Domingo 08:00'})).not.toBeChecked();
+  fireEvent.click(screen.getByRole('checkbox',{name:'Domingo 08:00'}));
   expect(payload).toBeUndefined();
   fireEvent.click(screen.getByRole('button',{name:'Publicar disponibilidad'}));
   await waitFor(() => expect(payload?.turnos.filter(t=>t.dia===0)).toHaveLength(10));
+  expect(payload?.turnos.filter(t=>t.dia===6)).toEqual([{dia:6,hora:8}]);
 });
 
 it('review list only calculates metrics from recorded reviews', async () => {

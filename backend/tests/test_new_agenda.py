@@ -58,7 +58,10 @@ async def test_publication_persistence_and_permissions(clinical):
     async with factory() as db:
         assert await db.scalar(select(func.count()).select_from(TurnoSemanal)) == 60
     assert len((await clients['p90001'].get('/api/v1/terapeutas/1/disponibilidad')).json()['turnos']) == 60
-    assert (await clients['t90001'].put('/api/v1/terapeutas/1/disponibilidad', json={'turnos': [{'dia': 6, 'hora': 8}]})).status_code == 422
+    sunday = await clients['t90001'].put('/api/v1/terapeutas/1/disponibilidad', json={'turnos': [{'dia': 6, 'hora': 8}]})
+    assert sunday.status_code == 200
+    assert sunday.json()['turnos'] == [{'dia': 6, 'hora': 8}]
+    assert (await clients['t90001'].put('/api/v1/terapeutas/1/disponibilidad', json={'turnos': [{'dia': 7, 'hora': 8}]})).status_code == 422
     assert (await clients['t90001'].put('/api/v1/terapeutas/1/disponibilidad', json={'turnos': [{'dia': 0, 'hora': 8}]*2})).status_code == 422
     assert len((await clients['p90001'].get('/api/v1/terapeutas')).json()) == 2
 

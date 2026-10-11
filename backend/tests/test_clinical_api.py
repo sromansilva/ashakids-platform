@@ -153,10 +153,46 @@ async def test_csrf_pagination_and_missing_resources(clinical):
 
 
 async def test_anonymous_routes_are_protected():
+    # Operaciones públicas deliberadas: se verifican por separado, no por prefijo.
+    public = {
+        ("post", "/api/v1/auth/login"), ("post", "/api/v1/auth/logout"),
+        ("post", "/api/v1/auth/create-password"),
+        ("post", "/api/v1/auth/resend-activation"),
+        ("get", "/api/v1/juegos/catalogo"),
+        ("post", "/api/v1/newsletter/suscripciones"),
+        ("get", "/api/v1/newsletter/confirmar"),
+        ("get", "/api/v1/newsletter/baja"),
+    }
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
         for path, operations in app.openapi()["paths"].items():
-            if not path.startswith("/api/v1") or path.endswith(("/login", "/logout")):
+            if not path.startswith("/api/v1"):
                 continue
             for method in operations:
+                if (method, path) in public:
+                    continue
                 response = await client.request(method.upper(), path.replace("{key}", "1"), json={})
                 assert response.status_code == 401, (method, path, response.text)
+
+
+@pytest.mark.parametrize("method,path", [
+    ("post", "/api/v1/auth/create-password"),
+    ("post", "/api/v1/auth/resend-activation"),
+    ("post", "/api/v1/newsletter/suscripciones"),
+    ("get", "/api/v1/newsletter/confirmar"),
+    ("get", "/api/v1/newsletter/baja"),
+])
+async def test_public_entry_points_validate_before_database(method, path):
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.request(method, path, json={})
+        assert response.status_code == 422
+        assert "set-cookie" not in response.headers
+
+
+async def test_public_catalog_has_no_exercises_or_answers():
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as client:
+        response = await client.get("/api/v1/juegos/catalogo")
+        assert response.status_code == 200
+        assert len(response.json()) == 5
+        for world in response.json():
+            assert world["levels"] == [{"number": 1}, {"number": 2}, {"number": 3}]
+        assert "set-cookie" not in response.headers

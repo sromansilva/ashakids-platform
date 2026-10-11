@@ -1,3 +1,15 @@
+## Cierre V90 — recorrido web y disponibilidad dominical / 2026-10-11
+
+Revisión sobre feat/piero-dev, base bd8c17d79eb81b098535179f021e3b0adbfdfd11/V89. Repositorio: https://github.com/sromansilva/ashakids-platform . Corte [2026-10-11-01](audits/auditoria-2026-10-11-01.md), [guion de exposición](acceptance/GUION_RECORRIDO_BASE_WEB.md) y [operación dominical](operations/DISPONIBILIDAD_DOMINGO.md). Prioridad escritorio; sin estudio responsive.
+
+Domingo opcional en Disponibilidad: UI siete días, contrato dia0–6/máximo70 únicos, ORM/SQL y migración012. CHECK compartido adoptado explícitamente;60 filas/huella/ACL/RLS/políticas/otras restricciones conservadas tras COMMIT. No DML clínico, usuarios ni sesiones auth nuevas. OpenAPI local confirma máximo6/70; runtime remoto no certificado. Publicación de turnos sigue a cargo del profesional, sin saltar futuro/bloqueos/ocupación.
+
+Auditoría nueva:33 tablas/241 columnas/137 restricciones/44FK;32 modelos cargados, diferencias de tipo adjuntos y longitudes mundos/objetivos pendientes. REC01–REC09 documentan alta familiar con hijo obligatorio vs alta tutor solicitada, correo de activación vigente, formulario del hijo de tutor, borradores, cierre clínico, distintas habilitaciones, acceso infantil a XP/insignias, selects y documentación. No se implementan esas extensiones por esta revisión.
+
+Verificación nueva:319 componentes/27 archivos,25 rutas, tipos/check385/build1935 PASS; backend221PASS/82SKIP/19 avisos. pypdf6.20 instalado según requirements-dev; test de protección público histórico corregido con lista exacta y seis casos adicionales, sin cambiar API. API GET raíz/health/readiness/OpenAPI200 y auth/me401;16 SELECT LIMIT0 aprobados. UI disponibilidad revisada en fixture sintético escritorio1274px, publicación dia6 sin BD. No aceptación real completa, correo/Zoom operativo ni carga. Avisos existentes de Node/Starlette/cookies y ciclo de metadatos.
+
+Commit del conjunto: V90_Habilitar_Domingos_Agenda_Recorrido_Web, se publica en dev/feat/piero-dev al cerrar. La confirmación de SHA/push y CI se registra en el siguiente cierre documental; no confundir este estado de trabajo con despliegue remoto. Siguiente acción: ejecutar el guion con cohorte autorizada y decidir REC01/02/06 antes de ampliar UI.
+
 ## Cierre V88 — Centro Familiar, administración y login / 2026-10-11
 
 Objetivo: cerrar las observaciones de diseño acumuladas y conservar los flujos operativos. Rama de trabajo `feat/piero-dev`, base auditada `bf868da` (V87); integración solicitada en `dev` y sincronización de ambas ramas. Repositorio: https://github.com/sromansilva/ashakids-platform . El SHA de este cierre se identifica por el commit `V88_Mejorar_Centro_Familiar_Admin_Login`; no confundirlo con la versión de la API. Los apartados locales inferiores son el historial anterior a esta autorización de publicación.
