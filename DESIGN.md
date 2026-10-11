@@ -137,3 +137,15 @@ Se retiran los dos indicadores con check y Demostración sólo de la burbuja dec
 El asistente interactivo conserva su aviso. Título desktop clamp(51px,4.8vw,73px),
 introducción clamp(19px,1.78vw,27px), título móvil 33px; Nunito, paleta, Ashi y controles
 existentes conservados. Ver docs/evidence/landing-v83/verification.md.
+
+## V84 — tarjetas de mundos y audiencias
+
+Mundo ASHA usa cristal blanco84%, blur14px y borde violeta12% sobre fondo lavanda/agua.
+Ilustraciones con tintes transparentes, texto legible y controles sólidos; fallback blanco.
+CTA únicos: Descubre los sonidos, Juega con las palabras, Encuentra tu ritmo,
+Explora tu voz y Descubre los gestos. Acceso y catálogo conservados.
+Audiencias con giro al pulsar/teclado, frente imagen/título, reverso de acompañamiento
+profesional. Sin flechas, enlaces ni rutas; aria-expanded y caras aria-hidden alternadas.
+Giro420ms, sin transición con reduced-motion; reverso sólido para lectura.
+FAQ reemplaza paquetes por acompañamiento del lenguaje; párrafo de mundos retirado
+por petición expresa. Estilos limitados a landing-refinements.css.

@@ -104,8 +104,8 @@ const faqs = [
       a: "En la evaluación inicial el terapeuta diseñará un plan personalizado con la frecuencia y duración recomendadas.",
     },
     {
-      q: "¿Qué paquetes de horas están disponibles?",
-      a: "Ofrecemos paquetes de 2, 6 y 10 horas con vigencia de 6 meses. Cada compra incluye factura PDF automática.",
+      q: "¿Por qué es importante acompañar el lenguaje de mi hijo?",
+      a: "El lenguaje forma parte de cómo tu hijo expresa sus ideas y se relaciona con los demás. La terapia ofrece un espacio para trabajar la comunicación con un profesional y orientar a la familia según las necesidades de cada niño.",
     },
     {
       q: "¿Puedo ver el progreso de mi hijo?",

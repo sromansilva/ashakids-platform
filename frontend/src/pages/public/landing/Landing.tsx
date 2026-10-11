@@ -17,6 +17,7 @@ import './landing-reference.css';
 import './landing-continuity.css';
 import './landing-unified.css';
 import './landing-footer.css';
+import './landing-refinements.css';
 import { LandingWorlds } from './LandingWorlds';
 const stepIcons = [ClipboardPenLine, Search, CalendarDays];
 const stepArt = ['step-account-v54', 'step-specialist-v54', 'step-session-v54'];
@@ -46,7 +47,7 @@ export function Landing(props: Parameters<typeof useLanding>[0]) {
           {faqOpen===i && <div id={`landing-faq-${i}`} className="landing-faq-answer"><p>{faq.a}</p></div>}
         </div>)}</div>
       </div></section>
-      <LandingAudience go={go}/>
+      <LandingAudience/>
       <LandingTerapiasEspecializadas services={services} go={go}/>
       <LandingComoUnaFamiliaPodria testimonials={testimonials}/>
       <LandingConsejosDeTerapia email={email} setEmail={setEmail} newsletterConsent={newsletterConsent} setNewsletterConsent={setNewsletterConsent} newsletterSubmitting={newsletterSubmitting} newsletterMessage={newsletterMessage} newsletterError={newsletterError} submitNewsletter={submitNewsletter}/>
