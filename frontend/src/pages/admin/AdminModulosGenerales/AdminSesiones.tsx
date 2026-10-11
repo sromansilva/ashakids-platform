@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, Shield, Activity } from "lucide-react";
+import { X, Activity } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { Btn } from "@/components/common/Btn";
 import { Crd } from "@/components/common/Crd";
@@ -18,20 +18,13 @@ export function AdminSesiones() {
     id: s.id_sesion, appointmentId: s.id_reserva, therapistAv: s.cita.terapeuta_nombre.split(' ').map(n => n[0]).slice(0, 2).join(''), therapistColor: B.violet,
     started: new Date(s.cita.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima' }),
     dur: s.fecha_hora_inicio_real && s.fecha_hora_fin_real ? `${Math.round((Date.parse(s.fecha_hora_fin_real) - Date.parse(s.fecha_hora_inicio_real)) / 60000)} min` : 'Sin duración final',
-    quality: 'Sin medición', type: s.cita.modalidad === 'VIRTUAL' ? 'Virtual' : 'Presencial',
+    type: s.cita.modalidad === 'VIRTUAL' ? 'Virtual' : 'Presencial',
     status: s.estado_sesion === 'EN_CURSO' ? 'activa' : s.estado_sesion === 'FINALIZADA' ? 'finalizada' : 'programada',
-    latency: 'No disponible', incidents: null, name: s.cita.paciente_nombre, report: s.reporte_disponible,
+    name: s.cita.paciente_nombre, report: s.reporte_disponible,
   }));
   const sel = sessions.find(s => s.id === selectedSession);
   return (
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">
-      {/* Operational restriction notice */}
-      <div className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-5 border" style={{ background: "#EFF6FF", borderColor: "#BFDBFE" }}>
-        <Shield size={14} className="text-blue-500 flex-shrink-0" />
-        <p className="text-xs font-medium text-blue-700">
-          <span className="font-extrabold">Acceso autorizado por el servidor.</span> Sesiones y reportes reales; calidad de conexión e incidencias no están medidas por esta API.
-        </p>
-      </div>
       <div className="mb-5">
         <h2 className="text-2xl font-black text-[#1C1135] mb-1">Sesiones · ASHA Session</h2>
         <p className="text-sm text-[#7C6F9A] font-medium">Sesiones clínicas registradas · America/Lima</p>
@@ -75,7 +68,6 @@ export function AdminSesiones() {
                     style={{ background: s.status === "activa" ? "#D1FAE5" : B.violetLight, color: s.status === "activa" ? "#059669" : B.violet }}>
                     {s.status}
                   </span>
-                  <span className="text-xs font-medium" style={{ color: s.quality === "excelente" ? "#059669" : B.teal }}>📶 {s.quality}</span>
                   {s.status === "activa" && (
                     <Btn size="sm" variant="ghost" onClick={e => { e.stopPropagation(); setSelectedSession(s.id); }}>
                       <Activity size={12} /> Detalle
@@ -101,18 +93,12 @@ export function AdminSesiones() {
                   { label: "Duración",            val: sel.dur },
                   { label: "Modalidad",           val: sel.type },
                   { label: "Estado",              val: sel.status },
-                  { label: "Calidad técnica",     val: sel.quality },
-                  { label: "Latencia", val: sel.latency },
-                  { label: "Incidencias", val: 'No disponible' },
                 ].map(r => (
                   <div key={r.label} className="flex justify-between items-center py-2 border-b border-[#F5F3FF] last:border-0">
                     <span className="text-[#9E95B7] font-medium">{r.label}</span>
                     <span className="font-extrabold text-[#1C1135]">{r.val}</span>
                   </div>
                 ))}
-              </div>
-              <div className="mt-4 p-3 rounded-xl border text-xs font-medium" style={{ background: "#EFF6FF", borderColor: "#BFDBFE", color: "#1D4ED8" }}>
-                🔒 El chat privado es exclusivo de sus participantes. El acceso al reporte clínico se verifica en el servidor.
               </div>
               <SessionActions key={sel.appointmentId} appointmentId={sel.appointmentId} />
             </Crd>

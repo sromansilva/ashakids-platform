@@ -1033,3 +1033,32 @@ Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos 
 del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
+
+
+## V63 — filtros de citas y limpieza de sesiones ADMIN / 2026-10-11
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base7e958c8/V59;
+rama feat/piero-dev, autor Piero2311 <pieroah26@gmail.com>. El usuario autorizó
+publicar los ajustes acumulados en dev y sincronizar su rama. SHA efectivo en Git.
+
+AdminCitas: filtros acumulativos por terapeuta (ID), modalidad, fechas desde/hasta
+y estado; consulta todas las páginas con useAppointments/readAllPages. Fechas
+inclusivas por inicio de cita en Lima; extremos opcionales, validación de rango,
+conteo de coincidencias y Limpiar filtros. Se retiran del listado Crear cita,
+reprogramar, cancelar y confirmar; Detalle y SessionActions se conservan.
+AdminSesiones: retirados avisos azules e indicadores de red Sin medición, junto
+con campos de calidad/latencia/incidencias sin medición del detalle. Consulta,
+permisos, estados y reportes existentes conservados. Sin backend/BD modificados.
+
+Verificación nueva local:28 pruebas (3filtros con límites Lima y25remediation),
+typecheck y checkfrontend347/máximo500 correctos; detectorUI[] en ambas pantallas.
+Error TS inicial por opción exact de Testing Library corregido y3pruebas repetidas
+correctas. Graphify2431nodos/111comunidades y checkvigente. Build del índice Git
+comprobado antes de publicar; no certifica recorrido completo ni datos productivos.
+Diff/secretos/referencias revisados antes del push. No auditoría/PDF nuevos.
+
+Adjuntos y sus cambios/documentación anteriores permanecen locales fuera del
+commit. La restricción de no publicar mientras se acumulaban ajustes queda
+superada por la autorización actual de cierre. Sin force-push ni rama Codex.
+Siguiente: aceptar filtros en web desplegada y continuar los ajustes que el usuario
+solicite. No ampliar permisos API, pagos ni funciones clínicas por este cierre.
