@@ -1,13 +1,15 @@
 # ASHAKids · Sistema de componentes web
 
-Versión de diseño: **1.0** · Fecha: **2026-10-10, America/Lima**
+Versión de diseño: **1.1** · Fecha: **2026-10-11, America/Lima**
 
 Estado: **especificación de implementación basada en la maqueta aprobada**. El CSS de
-este documento es una base copiable; todavía no está instalado en la aplicación.
+este documento es una base copiable, todavía no adoptada globalmente en la aplicación.
+La landing ya utiliza `asha-glass` y sus tokens en superficies seleccionadas.
 No confundir esta versión de diseño con la versión de API ni con los commits VNN.
 
 Repositorio: https://github.com/sromansilva/ashakids-platform
-Base consultada: `codex/2do-intento` y `dev`, SHA `bb7d166df4a7201267d9cc88ad6861a137a49f8a` (V46).
+Base documental: rama `feat/piero-dev`, V74, SHA `6fa5c5ebb8a7d517f0c8a70fed7b89d9406e28a3`.
+La maqueta visual aprobada se conserva como referencia original del kit.
 
 ## 1. Los dos entregables y su autoridad
 
@@ -50,8 +52,9 @@ violeta, verde agua, naranja, blanco cálido y Ashi robot. No importar el verde 
 - Blanco cálido como fondo dominante. Lavanda en superficies secundarias y selección.
 - Violeta en acciones principales. Verde agua en confirmación y acompañamiento.
 - Naranja en juegos e ilustraciones; texto oscuro en botones naranjas.
-- Cristal en navegación, tarjetas de presentación y envolvente del chat. Formularios,
-  tablas, mensajes y reportes con fondos blancos para estabilizar lectura y contraste.
+- Glassmorphism en navegación flotante, tarjetas sobre ilustraciones y paneles auxiliares
+  breves. Formularios, tablas, mensajes y reportes mantienen fondos sólidos para lectura,
+  contraste y exploración de datos.
 - En administración y terapeuta: superficie tranquila, iconos lineales y poco relieve.
   En landing y Mundo ASHA: ilustraciones, botones táctiles y acentos más expresivos.
 - No introducir gradientes de texto, halos intensos, confeti permanente ni nuevas
@@ -77,6 +80,39 @@ violeta, verde agua, naranja, blanco cálido y Ashi robot. No importar el verde 
 
 Los colores semánticos amplían la paleta para errores; no constituyen otra identidad.
 WhatsApp conserva su verde de marca solamente en su acceso propio.
+
+### Glassmorphism: alcance y reglas de composición
+
+El vidrio es una superficie de elevación, no un fondo universal. Aplicarlo sólo donde el
+fondo aporte profundidad sin competir con la tarea: navegación flotante, tarjetas sobre
+ilustración y paneles auxiliares breves. Mantener una única capa visual y suficiente
+espacio entre el contenido y el borde.
+
+La base es 84% blanco, borde violeta al 12% y desenfoque de 14px. Se diseñó para fondos
+claros de la paleta ASHAKids. El desenfoque no garantiza contraste: comprobar el resultado
+sobre los fondos más claros y oscuros donde aparecerá la superficie. Texto normal requiere
+4.5:1 y texto grande o indicadores esenciales 3:1. Si no alcanza, subir la opacidad hasta
+blanco sólido; no aclarar el texto ni añadir sombra para compensarlo.
+
+No usar glass en campos, validaciones, controles, tablas, reportes, mensajes clínicos,
+estados de error/éxito ni texto prolongado. Esos elementos necesitan color sólido y límites
+visibles. No apilar paneles translúcidos. Estado, foco, selección y error se comunican con
+etiqueta, forma o icono además del color.
+
+En viewports menores de 768px se usa blanco opaco y se retira el desenfoque para cuidar
+la lectura y el rendimiento. `@supports` entrega fondo sólido cuando `backdrop-filter` no
+está disponible. El foco de teclado permanece visible y reduced-motion elimina transiciones
+sin ocultar estados.
+
+| Token | Valor | Aplicación |
+| --- | --- | --- |
+| `--asha-glass` | `rgb(255 255 255 / 84%)` | Superficie de escritorio en fondos claros |
+| `--asha-glass-border` | `rgb(124 58 237 / 12%)` | Borde decorativo, no borde de campo |
+| `--asha-glass-blur` | `14px` | Desenfoque del fondo |
+| Fallback | `#FFFFFF` | Sin soporte o en móvil |
+
+Estos valores son el punto de partida. La transparencia final se valida sobre la imagen y
+el contenido reales; no equivale a certificación automática de contraste.
 
 | Propiedad | Contrato |
 | --- | --- |
@@ -143,6 +179,7 @@ relieve en paneles profesionales. Todos los colores funcionales se declaran aqu�
   --asha-whatsapp: #25D366;
   --asha-glass: rgb(255 255 255 / 84%);
   --asha-glass-border: rgb(124 58 237 / 12%);
+  --asha-glass-blur: 14px;
   --asha-font: "Nunito", system-ui, sans-serif;
   --asha-space-1: 4px;
   --asha-space-2: 8px;
@@ -266,7 +303,7 @@ relieve en paneles profesionales. Todos los colores funcionales se declaran aqu�
 
 /* Superficies y navegación. Cristal acotado a fondos claros. */
 .asha-ui .asha-card { min-width: 0; padding: 24px; border: 1px solid var(--asha-border); border-radius: var(--asha-radius-card); background: var(--asha-white); }
-.asha-ui .asha-glass { border-color: var(--asha-glass-border); background: var(--asha-glass); box-shadow: inset 0 1px 0 var(--asha-white), var(--asha-shadow); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.asha-ui .asha-glass { border-color: var(--asha-glass-border); background: var(--asha-glass); box-shadow: inset 0 1px 0 rgb(255 255 255 / 88%), var(--asha-shadow); -webkit-backdrop-filter: blur(var(--asha-glass-blur)); backdrop-filter: blur(var(--asha-glass-blur)); }
 .asha-ui .asha-card--interactive { display: block; text-decoration: none; color: inherit; transition: transform var(--asha-duration-ui) var(--asha-ease), box-shadow var(--asha-duration-ui) ease; }
 @media (hover: hover) {
   .asha-ui .asha-card--interactive:hover { transform: translateY(-2px); box-shadow: var(--asha-shadow-raised); }
@@ -324,6 +361,8 @@ relieve en paneles profesionales. Todos los colores funcionales se declaran aqu�
   .asha-ui .asha-glass { background: var(--asha-white); }
 }
 @media (max-width: 767px) {
+  .asha-ui { --asha-glass: #FFFFFF; --asha-glass-blur: 0px; }
+  .asha-ui .asha-glass { background: var(--asha-white); -webkit-backdrop-filter: none; backdrop-filter: none; }
   .asha-ui .asha-container { width: calc(100% - 32px); }
   .asha-ui .asha-title { font-size: 32px; }
   .asha-ui .asha-grid { gap: 16px; }
@@ -365,6 +404,7 @@ relieve en paneles profesionales. Todos los colores funcionales se declaran aqu�
 | Checkbox/radio | `asha-choice` con input nativo | Etiqueta clicable y 44px de altura de grupo; grupo radio en `fieldset`. |
 | Switch | `asha-switch` | Botón `role="switch"`, `aria-checked`, nombre accesible; área clicable de 44px con etiqueta asociada. |
 | Tarjeta | `asha-card`, opcional `asha-glass` | Icono o ilustración, título, descripción, acción. Padding 24px. |
+| Superficie glass | `asha-glass` opt-in | Sólo elevación sobre fondos claros y contenido breve; contraste verificado. Sin formularios o datos clínicos. Fondo sólido en móvil y fallback. |
 | Tarjeta interactiva | `asha-card--interactive` sobre `a` o `button` | Nunca `div onClick`; no anidar botones/enlaces dentro de un enlace de tarjeta. |
 | Tabs | `asha-tabs`, `asha-tab` | `tablist`, `tab`, `tabpanel`; flechas/Home/End y roving tabindex. |
 | Navegación | `asha-nav-item` | Enlaces reales, activo mediante `aria-current="page"`. |
@@ -596,9 +636,9 @@ Plan de adopción recomendado:
 
 ## 10. Estado de entrega y límites
 
-Este corte entrega **imagen + especificación textual**, sin modificar componentes de
-producción. Incluye CSS de referencia, estructuras HTML y contratos de interacción;
-los eventos, assets finales y adopción del tema forman parte de la implementación futura.
+Este documento entrega **imagen + especificación textual**. El CSS es una referencia;
+la landing usa glass en tarjetas seleccionadas. El kit completo no está adoptado globalmente.
+Otros módulos requieren migración y revisión propias; la clase queda opt-in.
 
 La lámina procede del mockup generado y aprobado en esta conversación, conservado sin
 edición. No es una captura de software funcionando. No se certifica igualdad píxel a

@@ -1,3 +1,5 @@
+Actualización V75 (2026-10-11): el sistema visual v1.1 documenta reglas glassmorphism en [ASHAKIDS_DESIGN_SYSTEM.md](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md).
+
 ## V52 — adjuntos persistentes en mensajes / 2026-10-10
 
 PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar

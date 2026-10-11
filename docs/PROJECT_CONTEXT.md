@@ -1312,3 +1312,6 @@ Publicación dev y codex/landing-publica, sin force-push; SHA final y resultado
 efectivo consultables en Git/remoto. .gitignore del usuario queda fuera del commit.
 El push no certifica despliegue Render; siguiente paso: aceptación visual con la
 cuenta administrativa del usuario. Responsive completo permanece diferido.
+## Sistema visual: glassmorphism / V75
+
+La versión 1.1 de `docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md` documenta glass opt-in: 84% blanco, borde violeta 12%, blur 14px sobre fondos claros; fallback blanco y móvil opaco sin blur bajo 768px. Reservarlo para navegación, tarjetas ilustradas y paneles breves. Formularios y datos clínicos mantienen superficies sólidas. La landing ya aplica glass selectivamente; otros módulos no se consideran migrados por esta especificación. Contraste se revisa sobre el fondo final.
