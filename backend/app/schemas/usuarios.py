@@ -38,3 +38,4 @@ class UsuarioSalida(Salida):
     roles: list[str]
     id_tutor: int | None = None
     id_terapeuta: int | None = None
+    correo_bienvenida: str | None = None

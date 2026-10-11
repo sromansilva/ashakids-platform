@@ -10,7 +10,7 @@ import { PublicFooter } from '@/pages/public/Public/PublicFooter';
 import './landing.css';
 const stepIcons = [ClipboardPenLine, Search, CalendarDays];
 export function Landing(props: Parameters<typeof useLanding>[0]) {
-  const { go, faqOpen, setFaqOpen, email, setEmail, services, steps, testimonials, faqs } = useLanding(props);
+  const { go, faqOpen, setFaqOpen, email, setEmail, newsletterConsent, setNewsletterConsent, newsletterSubmitting, newsletterMessage, newsletterError, submitNewsletter, services, steps, testimonials, faqs } = useLanding(props);
   return <div className="asha-landing">
     <a className="landing-skip" href="#landing-content">Saltar al contenido</a>
     <PublicNav go={go} cur="landing"/>
@@ -28,7 +28,7 @@ export function Landing(props: Parameters<typeof useLanding>[0]) {
           {faqOpen===i && <div id={`landing-faq-${i}`} className="landing-faq-answer"><p>{faq.a}</p></div>}
         </div>)}</div>
       </div></section>
-      <LandingConsejosDeTerapia email={email} setEmail={setEmail}/>
+      <LandingConsejosDeTerapia email={email} setEmail={setEmail} newsletterConsent={newsletterConsent} setNewsletterConsent={setNewsletterConsent} newsletterSubmitting={newsletterSubmitting} newsletterMessage={newsletterMessage} newsletterError={newsletterError} submitNewsletter={submitNewsletter}/>
     </main><PublicFooter go={go}/>
   </div>;
 }

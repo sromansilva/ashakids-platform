@@ -21,6 +21,49 @@ services:
         sync: false
       - key: DB_SSL_LEGACY_CA
         value: "false"
+      # Zoom Server-to-Server OAuth. Values marked sync:false must be entered
+      # privately in Render; never commit credentials to this Blueprint.
+      - key: ZOOM_ENABLED
+        sync: false
+      - key: ZOOM_ACCOUNT_ID
+        sync: false
+      - key: ZOOM_CLIENT_ID
+        sync: false
+      - key: ZOOM_CLIENT_SECRET
+        sync: false
+      - key: ZOOM_HOST_USER_ID
+        sync: false
+      - key: ZOOM_API_BASE_URL
+        value: https://api.zoom.us/v2
+      # Use 40 for Zoom Basic or 45 for an institutional plan that supports it.
+      # Both values must match when they are provided.
+      - key: APPOINTMENT_DURATION_MINUTES
+        sync: false
+      - key: ZOOM_MEETING_DURATION_MINUTES
+        sync: false
+      # Gmail API OAuth server-side. Render debe recibir los valores reales manualmente.
+      - key: GMAIL_ENABLED
+        sync: false
+      - key: GMAIL_CLIENT_ID
+        sync: false
+      - key: GMAIL_CLIENT_SECRET
+        sync: false
+      - key: GMAIL_REFRESH_TOKEN
+        sync: false
+      - key: GMAIL_SENDER_EMAIL
+        sync: false
+      - key: GMAIL_SENDER_NAME
+        value: ASHAKids
+      - key: GMAIL_API_BASE_URL
+        value: https://gmail.googleapis.com/gmail/v1
+      - key: PUBLIC_ORIGIN
+        sync: false
+      - key: NEWSLETTER_CONFIRMATION_TTL_HOURS
+        value: "48"
+      - key: NEWSLETTER_RATE_LIMIT
+        value: "5"
+      - key: NEWSLETTER_RATE_WINDOW_SECONDS
+        value: "3600"
       # Configure the actual ingress proxy addresses after inspecting the first deploy.
       # Until then forwarded headers from other peers are ignored; writes fail closed.
       - key: FORWARDED_ALLOW_IPS

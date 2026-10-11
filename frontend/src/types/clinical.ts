@@ -3,6 +3,7 @@ export interface Account {
   id_usuario: number; nombres: string; apellidos: string; email: string;
   codigo_usuario: string; activo: boolean; roles: SemanticRole[];
   id_tutor: number | null; id_terapeuta: number | null;
+  correo_bienvenida?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null;
 }
 export type AccountCreate = Pick<Account, "nombres" | "apellidos" | "email" | "codigo_usuario"> & { password: string; rol: SemanticRole };
 export type AccountEdit = Partial<Pick<Account, "nombres" | "apellidos" | "email" | "activo"> & { password: string; current_password: string }>;

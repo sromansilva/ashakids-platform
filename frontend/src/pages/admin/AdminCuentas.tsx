@@ -33,11 +33,8 @@ import { AdminCuentasDetalleModal } from "./AdminCuentasDetalleModal";
 import { AdminCuentasTable } from "./AdminCuentasTable";
 import { AdminCuentasStats } from "./AdminCuentasStats";
 import { emptyChild } from "./FamilyChildrenFields";
-
 // ─── Tipos Locales y Mapeos ────────────────────────────────────────────────────────
-
 export type TabRole = "PADRE" | "TERAPEUTA";
-
 // Compatibilidad hacia atrás (re-exportado por Admin.tsx)
 export type AccountRole = "familia" | "terapeuta";
 export type AccountStatus = "activa" | "pendiente" | "suspendida";
@@ -64,7 +61,6 @@ export const STATUS_COLOR: Record<AccountStatus, { bg: string; color: string }> 
   pendiente: { bg: "#FFFBEB", color: "#D97706" },
   suspendida: { bg: "#FEF2F2", color: "#DC2626" },
 };
-
 export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [tab, setTab] = useState<TabRole>("PADRE");
   const [cuentas, setCuentas] = useState<CuentaItem[]>([]);
@@ -73,7 +69,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [search, setSearch] = useState("");
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
-
   // Modales
   const [modal, setModal] = useState<
     "nueva" | "detail" | "editar" | "suspender" | "activar" | "eliminar" | null
@@ -235,10 +230,10 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     try {
       if (tab === "PADRE") {
         const res = await adminService.registrarFamilia(formPadre);
-        setSuccessBanner(res.message);
+        setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
       } else {
         const res = await adminService.crearTerapeuta(formTerapeuta);
-        setSuccessBanner(res.message + " Debe cambiar su contraseña inicial al ingresar.");
+        setSuccessBanner(`${res.message} Debe cambiar su contraseña inicial al ingresar. ${correoEstado(res.correo_bienvenida)}`.trim());
       }
       setModal(null);
       setFormPadre(f => ({ ...f, password: "" }));
@@ -250,6 +245,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     } finally {
       setSubmitting(false);
     }
+  }
+
+  function correoEstado(estado?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null) {
+    if (estado === "ENVIADO") return "Correo de bienvenida enviado.";
+    if (estado === "PENDIENTE") return "Cuenta creada; correo pendiente.";
+    if (estado === "NO_CONFIGURADO") return "Cuenta creada; correo no configurado.";
+    return "";
   }
 
   async function handleGuardarEdicion() {

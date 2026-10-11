@@ -115,6 +115,9 @@
 .landing-email-row { display: flex; align-items: center; gap: 12px; padding: 15px 18px; background: #ffffffec; color: #5b21b6; border-radius: 12px; }
 .landing-email-row input { width: 100%; min-width: 0; color: #1c1135; font-size: .95rem; background: transparent; caret-color: #7c3aed; }
 .landing-email-row input::placeholder { color: #615274; }
+.landing-newsletter-consent { display: flex !important; align-items: flex-start; gap: 8px; margin-top: 12px; color: #e0d5f2; font-size: .74rem !important; font-weight: 500 !important; }
+.landing-newsletter-consent input { margin-top: 2px; accent-color: #f97316; }
+.landing-newsletter-status { margin-top: 12px !important; color: #fff !important; }
 .landing-newsletter-controls button { margin-top: 12px; display: flex; justify-content: center; align-items: center; gap: 10px; padding: 13px 22px; width: 100%; border-radius: 12px; background: #f97316; color: #351604; font-weight: 850; }
 .landing-newsletter-controls button:hover { background: #fb923c; transform: translateY(-2px); }
 .landing-newsletter-controls > p { font-size: .74rem; color: #d5c7eb; }

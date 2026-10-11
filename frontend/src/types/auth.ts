@@ -95,6 +95,7 @@ export interface CuentaListResponse {
 export interface OperacionCuentaResponse {
   message: string;
   cuenta?: CuentaItem | null;
+  correo_bienvenida?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null;
 }
 
 export interface CrearPadrePayload {

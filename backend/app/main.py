@@ -15,7 +15,7 @@ from app.api.v1.padres import router as padres_router
 from app.api.v1.terapeutas import router as terapeutas_router
 from app.core.config import settings
 from app.core import database
-from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones
+from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones, newsletter
 from app.services.recordatorios import ejecutar as ejecutar_recordatorios
 
 
@@ -76,7 +76,7 @@ app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(padres_router, prefix=settings.API_V1_PREFIX)
 app.include_router(terapeutas_router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin_router, prefix=settings.API_V1_PREFIX)
-for domain in (usuarios, pacientes, citas, sesiones, mensajeria, notificaciones):
+for domain in (usuarios, pacientes, citas, sesiones, mensajeria, notificaciones, newsletter):
     app.include_router(domain.router, prefix=settings.API_V1_PREFIX)
 
 

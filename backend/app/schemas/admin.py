@@ -122,3 +122,4 @@ class OperacionCuentaResponse(BaseModel):
     """Respuesta tras realizar operaciones sobre cuentas."""
     message: str
     cuenta: Optional[CuentaItemResponse] = None
+    correo_bienvenida: Optional[str] = None

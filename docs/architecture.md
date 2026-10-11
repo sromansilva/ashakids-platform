@@ -10,6 +10,21 @@ Los apartados inferiores conservan estado histórico de implementación local/re
 
 # Arquitectura de ASHAKids
 
+## V50 — correo transaccional y boletín con doble confirmación
+
+Las altas administrativas conservan la transacción de cuenta y, después del commit,
+intentan enviar un correo de bienvenida mediante Gmail API server-side OAuth. El alcance
+requerido es `gmail.send`; los secretos y el refresh token solo viven en el entorno del
+backend. La respuesta indica `ENVIADO`, `PENDIENTE` o `NO_CONFIGURADO` y nunca incluye la
+contraseña inicial ni datos OAuth.
+
+El boletín usa `suscripciones_boletin` y tokens aleatorios almacenados únicamente como
+hashes. La API pública exige consentimiento, responde sin enumerar correos existentes,
+envía un enlace de confirmación y permite la baja con un token independiente. Gmail se
+usa para bajo volumen: no existe editor de campañas ni programación masiva. La migración
+`009_newsletter_subscriptions.sql` es explícita y debe ensayarse en una base aislada antes
+de adoptar el esquema compartido. Véase ADR0020.
+
 ## V49 — duración de agenda y origen del enlace Zoom
 
 La duración de la cita se comparte entre disponibilidad, reserva y Zoom: 40 minutos en
@@ -312,3 +327,4 @@ ADR0012 registra la excepción SCRAM4096 del rol nuevo por Supavisor2.9.10 con m
 coste offline autorizado; sin cambios de contraseña ni permisos. No Supabase Auth,
 nueva BD o DDL al arranque. Suspensión gratuita y límite de un worker siguen vigentes.
 Los apartados anteriores describen sus cortes históricos; hosting ya no está pendiente.
+

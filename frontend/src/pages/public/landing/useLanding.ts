@@ -1,10 +1,43 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
+import { apiClient, ApiError } from "@/api/client";
 
 export function useLanding({ go }: { go: (v: View) => void }) {
 const [faqOpen, setFaqOpen] = useState<number | null>(null);
 const [email, setEmail] = useState("");
+const [newsletterConsent, setNewsletterConsent] = useState(false);
+const [newsletterSubmitting, setNewsletterSubmitting] = useState(false);
+const [newsletterMessage, setNewsletterMessage] = useState<string | null>(null);
+const [newsletterError, setNewsletterError] = useState<string | null>(null);
+
+useEffect(() => {
+  const result = new URLSearchParams(window.location.search).get("newsletter");
+  if (result === "confirmada") setNewsletterMessage("Suscripción confirmada. Gracias por acompañarnos.");
+  if (result === "baja") setNewsletterMessage("Tu suscripción fue cancelada correctamente.");
+  if (result === "invalida") setNewsletterError("El enlace ya venció o no es válido.");
+}, []);
+
+const submitNewsletter = async () => {
+  setNewsletterMessage(null);
+  setNewsletterError(null);
+  if (!newsletterConsent) {
+    setNewsletterError("Acepta el consentimiento para recibir el boletín.");
+    return;
+  }
+  setNewsletterSubmitting(true);
+  try {
+    const result = await apiClient.post<{ message: string }>("/newsletter/suscripciones", {
+      email,
+      consent: newsletterConsent,
+    });
+    setNewsletterMessage(result.message || "Revisa tu correo para confirmar la suscripción.");
+  } catch (err: unknown) {
+    setNewsletterError(err instanceof ApiError ? err.message : "No se pudo enviar la solicitud. Inténtalo nuevamente.");
+  } finally {
+    setNewsletterSubmitting(false);
+  }
+};
 const services = [
     {
       icon: "🗣️",
@@ -79,5 +112,7 @@ const faqs = [
       a: "Sí. Tras cada sesión el terapeuta escribe notas clínicas visibles desde tu panel, con el historial completo.",
     },
   ];
-return { go, faqOpen, setFaqOpen, email, setEmail, services, steps, testimonials, faqs };
+return { go, faqOpen, setFaqOpen, email, setEmail, newsletterConsent, setNewsletterConsent,
+  newsletterSubmitting, newsletterMessage, newsletterError, submitNewsletter,
+  services, steps, testimonials, faqs };
 }

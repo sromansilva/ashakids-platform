@@ -995,3 +995,28 @@ evidencia docs/evidence/audit-2026-10-09-03/.
 - Próxima acción: decidir mínimos F5-01; para juegos, MA-01 con revisión detenida antes de
   implementar contenido. No ejecutar pytest/prepare sobre la demo que debe conservarse.
 
+## V50 — correo Gmail y boletín con doble confirmación / 2026-10-10
+
+Implementación local sobre `dev` a partir de `396efda` (V49). Se añadió Gmail API
+server-side OAuth opcional, con alcance documentado `gmail.send`, refresh token solo en
+entorno y estados de bienvenida `ENVIADO`, `PENDIENTE` y `NO_CONFIGURADO` en las cuatro
+rutas de alta ADMIN. El commit se ejecuta antes del envío y el mensaje no llega a JSON,
+logs ni auditoría.
+
+La landing ahora usa un formulario real con consentimiento obligatorio, estado de carga,
+errores y enlaces de confirmación/baja. La API pública crea `suscripciones_boletin`, guarda
+solo hashes de tokens, no enumera correos y aplica límite básico por IP. Se preparó la
+migración `009_newsletter_subscriptions.sql`, sin ejecución sobre la base compartida (el número 008 ya pertenece a la migración de juegos de dev).
+Se documentaron las variables de Render en `render.yaml`, `.env.example`, ADR0020 y
+`docs/operations/DEPLOY_RENDER_EMAIL.md`.
+
+Comprobaciones nuevas: `backend/.venv` unit tests de Gmail/boletín `4 passed`, importación
+OpenAPI con las tres rutas, `npm run typecheck`, `npm run check:frontend`, `npm run build`,
+`compileall`, `git diff --check`, `knowledge refresh` y `knowledge check`. No se probaron
+OAuth real, Gmail real, la migración ni escrituras en Supabase/Render. Pendiente: configurar
+OAuth publicado, aplicar 009 en una base aislada con respaldo y validar recepción/baja con
+un buzón sintético antes de activar Gmail en producción.
+
+
+
+

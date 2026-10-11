@@ -1,5 +1,17 @@
 ## Especificación de componentes UI — V47 / 2026-10-10
 
+## V50 — correo de bienvenida y boletín
+
+Se implementó Gmail API server-side OAuth opcional. Las cuatro rutas de alta devuelven
+`correo_bienvenida` (`ENVIADO`, `PENDIENTE` o `NO_CONFIGURADO`) después de confirmar el
+commit local; el mensaje nunca aparece en la respuesta, logs ni auditoría. La landing
+envía suscripciones con consentimiento explícito. `POST /api/v1/newsletter/suscripciones`
+crea o reinicia una solicitud pendiente sin enumerar correos, y los enlaces públicos de
+confirmación/baja cambian el estado mediante tokens hash. El esquema requiere migración
+`009_newsletter_subscriptions.sql`, aún no ejecutada en la base compartida. Gmail queda
+deshabilitado por defecto hasta configurar OAuth publicado, refresh token y remitente en
+Render. No hay campañas masivas ni panel administrativo en este corte.
+
 Nuevo paquete de diseño aprobado como dirección visual: [guía Markdown](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md)
 y [lámina PNG](design/ashakids-ui-kit-v1/ASHAKIDS_UI_KIT.png). Tokens, CSS copiable,
 componentes, estados, accesibilidad, contratos de interacción y mapa de adaptación.
@@ -880,3 +892,4 @@ La agenda, el contrato de cita y Zoom comparten duración configurable: desarrol
 `zoom_origen` para distinguir enlaces creados automáticamente de respaldos profesionales. Las
 vistas PADRE, TERAPEUTA y ADMIN usan el `zoom_join_url` de la API y explican su procedencia; no
 construyen meeting IDs. La cuenta Zoom y la migración 007 siguen pendientes de prueba aislada.
+
