@@ -1,0 +1,25 @@
+{
+  "cases": [
+    "email required",
+    "consent required, zero POST",
+    "pending disabled",
+    "success",
+    "error aria-invalid",
+    "retry"
+  ],
+  "posts": [
+    {
+      "email": "prueba@example.invalid",
+      "consent": true
+    },
+    {
+      "email": "prueba@example.invalid",
+      "consent": true
+    },
+    {
+      "email": "prueba@example.invalid",
+      "consent": true
+    }
+  ],
+  "scope": "All POST intercepted; no actual subscriptions or SMTP"
+}

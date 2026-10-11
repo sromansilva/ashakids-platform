@@ -1,3 +1,15 @@
+## V56 - Relevo de integración pública y optimización / 2026-10-10
+
+Objetivo: integrar mundos conservando el hero, ordenar acciones, adaptar móvil y aligerar recursos. Rama `codex/landing-publica`, base `796fc28`; `origin/dev` conocido `ca9e1b3`. Fetch final falló en GitHub:443. Commit V56 local consultable en Git; sin push ni merge hacia dev, dev local `396efda` preservado. `.gitignore` previo excluido.
+
+Archivos: LandingWorlds, WorldCards, PublicDialog, navegación, hero y componentes inferiores; PublicIllustration, manifiesto y WebP; helper loginDestination, guardia RouteAccess y callback de login; selección solicitada en MundoAshaHome; catálogo y resumen de juegos, caché de hosting, pruebas, ADR 0022 e informe PDF. Sin cambios de BD.
+
+PASS: 25 rutas y 283 componentes en 19 archivos; tipos, check de frontend (353 archivos, máximo 500) y build (1912 módulos). Siete pruebas backend unitarias/ASGI sin BD; avisos asyncio de tareas lentas. Chrome en siete anchos de 320 a 1536 px: sin overflow, controles pequeños ni errores JS; foco/Tab/Escape, retorno al mundo asignado, roles, anclas, FAQ, Demo, WhatsApp y movimiento reducido. Newsletter: seis estados, POST interceptados. Catálogo local 200 sin ejercicios. Graphify refresh/check: 2373 nodos, 100 comunidades, 13 fuentes sin símbolos.
+
+Incidencias corregidas: conversión de encoding, gaps de grid en 320 px, foco del modal, respuestas del layout en el arnés y carrera real del retorno de login. httpx faltaba en el entorno backend: se instaló desde la dependencia ya declarada; sin runtime nuevo. 18 PNG de 25,70 MB frente a 1,03 MB para variantes WebP máximas, 37 derivados; originales intactos. Sin Lighthouse, medición ambiental, BD, SMTP, Zoom o reservas reales. Evidencias e informe en `docs/evidence/landing-v56` y `docs/audits/auditoria-2026-10-10-01.md`.
+
+Registro público inexistente: Solicitar cuenta abre instrucciones. Perfiles de ejemplo identificados, sin disponibilidad prometida. Reservas originales conservadas, sin E2E real. `noindex` conservado. Preview Vite :5176 y uvicorn :8002 actualizados, recordatorios desactivados; :8000 anterior no detenido. Siguiente: revisión humana y validación de servicios reales antes de publicar. No publicar sin autorización; reintentar fetch al restablecerse la conexión.
+
 ## V55 — relevo de ilustraciones y Mundo ASHA, sólo local / 2026-10-10
 
 Objetivo: sustituir imágenes repetidas inferiores y extender diseño aprobado a Mundo

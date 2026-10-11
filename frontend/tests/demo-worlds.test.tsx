@@ -66,3 +66,16 @@ it('la recarga usa el servidor y otro hijo conserva su progreso separado',async(
   view.unmount();sessionStorage.setItem('ashakids:selected-patient:1','1');await open();
   expect(screen.getByText(/Nivel 3 · 400 XP/)).toBeInTheDocument();
 });
+
+it('abre el mundo solicitado por la landing sólo si está asignado y permite volver',async()=>{
+  api();renderRoute('/mundo-asha?world=HABLA','PADRE');
+  expect(await screen.findByRole('button',{name:'Jugar nivel 3'})).toBeEnabled();
+  fireEvent.click(screen.getByRole('button',{name:'Volver a mundos'}));
+  expect(await screen.findByRole('button',{name:'Abrir Taller de los Sonidos'})).toBeEnabled();
+});
+it('rechaza el mundo solicitado para un niño sin asignación',async()=>{
+  api();sessionStorage.setItem('ashakids:selected-patient:1','2');
+  renderRoute('/mundo-asha?world=HABLA','PADRE');
+  expect(await screen.findByText(/Este mundo no está habilitado/)).toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'Jugar nivel 1'})).not.toBeInTheDocument();
+});

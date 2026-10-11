@@ -1,3 +1,12 @@
+## V56 - Frontera pública del catálogo / 2026-10-10
+
+Landing integra cinco mundos con metadata pública y conserva rutas de actividades.
+Catálogo anónimo entrega sólo metadatos/números de nivel; resumen de paciente entrega
+contenido únicamente en mundos asignados. Permisos y escritura server-side conservados.
+Sin cambios de tablas/BD. ADR0022 documenta cambio mínimo de contrato y límites.
+WebP con hash/static hosting immutable; HTML no-cache y API no-store. Login retorna a
+ruta interna compatible usando helper compartido, sin otorgar permisos por la URL.
+
 ## Adopción compartida del flujo — 2026-10-10 / ADR0018
 
 Migraciones002–006 adoptadas explícitamente con respaldo, sin DDL al arrancar.

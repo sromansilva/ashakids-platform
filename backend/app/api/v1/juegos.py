@@ -2,14 +2,14 @@ from fastapi import APIRouter
 from app.api.contracts import DB, Identity
 from app.schemas.juegos import AreaMundo, IntentoCrear
 from app.services import juegos
-from app.services.juegos_catalogo import catalogo
+from app.services.juegos_catalogo import catalogo_publico
 
 router = APIRouter(tags=["Juegos básicos"])
 
 
 @router.get("/juegos/catalogo")
 async def mundos():
-    return catalogo()
+    return catalogo_publico()
 
 
 @router.get("/pacientes/{key}/juegos")

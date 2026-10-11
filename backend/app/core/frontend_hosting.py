@@ -1,5 +1,6 @@
 """Serve the compiled React app without swallowing API errors or exposing sources."""
 from pathlib import Path, PurePosixPath
+import re
 
 from fastapi import FastAPI
 from starlette.exceptions import HTTPException
@@ -29,6 +30,8 @@ class FrontendFiles(StaticFiles):
         if response.status_code == 200 and (path in {"", ".", "index.html"} or
                 response.headers.get("content-type", "").startswith("text/html")):
             response.headers["Cache-Control"] = "no-cache"
+        elif response.status_code == 200 and path.startswith("illustrations/optimized/") and re.search(r"-\d+-[a-f0-9]{10}\.webp$", path):
+            response.headers["Cache-Control"] = "public, max-age=31536000, immutable"
         return response
 
 

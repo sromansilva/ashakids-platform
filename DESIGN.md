@@ -1,4 +1,4 @@
-# ASHAKids: superficies públicas V55
+# ASHAKids: landing integrada V56
 
 Repositorio: https://github.com/sromansilva/ashakids-platform .
 Rama local `codex/landing-publica`, incluye `origin/dev` ca9e1b3 (V54).
@@ -77,3 +77,17 @@ ningún cambio al juego privado. Nav adopta marca sólo con `presentation="asha"
 Nunito, paleta, foco, reduced-motion y relieve se reutilizan; desktop verificado en
 1536/1440/1280. [Verificación](docs/evidence/landing-v55/verification.md).
 Responsive y optimizaciónPNG quedan diferidos. No publicar hasta aprobación explícita.
+
+## Integración y adaptación V56
+
+Sección Descubre Mundo ASHA después de pasos:cinco ilustraciones existentes,3+2centradas,
+2columnastablet/1móvil. WorldCards,PublicDialog y PublicIllustration reutilizables;sinotrohero.
+Navegación anclas y offsets;CTAhero Solicitar cuenta/manual y Explorar terapeutas.
+ServicioConocer especialistas contextual;Ver todos abre directorio demo;Agendar conservado.
+Perfiles claramenteejemplos,sin disponibilidades ficticias.AshiDemo/WSPúnicos;barra inferior
+móvil fuera del área desplazable.Paleta/Nunito/mascota originalesintactos.
+
+37WebP responsive con alpha/hashedcache y manifiesto regenerable por tools/images;
+originalesPNGconservados,hero fetchPriorityhigh,resto lazy.Canonicallanding/idiomaes,
+robotsnoindexpreviointacto.7viewportsChrome/foco/Tab/Escape/reducedmotion comprobados.
+[Auditoría y límites](docs/evidence/landing-v56/verification.md). No publicar hasta aprobación.

@@ -1,56 +1,23 @@
-/* Opt-in presentation for the public world catalogue; private games are untouched. */
-.asha-mundo .mundo-container { width: min(1368px,calc(100% - 112px)); margin-inline: auto; }
-.asha-mundo > nav > div > div:nth-child(2) { margin-left: 0; gap: 12px; }
-.asha-mundo .mundo-hero { background: #fffefd; }
-.asha-mundo .mundo-hero-layout { display: grid; grid-template-columns: 1fr 1.12fr; align-items: center; gap: 32px; padding-block: 64px; }
-.asha-mundo .mundo-hero h1 { font-size: clamp(56px,5.2vw,80px); line-height: 1.05; font-weight: 900; letter-spacing: -.045em; }
-.asha-mundo .mundo-hero h1 span { color: var(--asha-primary); }
-.asha-mundo .mundo-intro { font-size: 21px; color: var(--asha-muted); line-height: 1.55; margin-top: 24px; max-width: 47ch; }
-.asha-mundo .mundo-stats { display: flex; gap: 14px; flex-wrap: wrap; margin: 28px 0; }
-.asha-mundo .mundo-stats > div { min-width: 144px; padding: 14px 18px; border-radius: 20px; background: #f6f1ff; border: 1px solid white; }
-.asha-mundo .mundo-stats > div:nth-child(2) { background: #eaf8f5; }
-.asha-mundo .mundo-stats > div:nth-child(3) { background: #fff2e4; }
-.asha-mundo .mundo-stats p:first-child { font-size: 30px; font-weight: 900; color: var(--asha-primary-dark); line-height: 1.2; }
-.asha-mundo .mundo-stats p:last-child { font-size: 15px; color: var(--asha-muted); margin-top: 6px; }
-.asha-mundo.asha-ui .mundo-hero .asha-btn { height: 64px; font-size: 21px; padding-inline: 30px; border-radius: 18px; }
-.asha-mundo .mundo-hero-art { position: relative; min-width: 0; }
-.asha-mundo .mundo-hero-art::before { content: ''; position: absolute; inset: 4% 0; border-radius: 48% 52% 44% 56%; background: radial-gradient(ellipse at 70% 70%,#e8faf6,transparent 70%),#f5efff; }
-.asha-mundo .mundo-hero-art img { position: relative; width: 100%; height: 500px; object-fit: contain; }
-.asha-mundo .mundo-catalog { padding: 64px 0 84px; background: linear-gradient(180deg,#f8f5ff,#fffefd); border-radius: 50% 50% 0 0 / 32px 32px 0 0; }
-.asha-mundo .mundo-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 28px; }
-.asha-mundo.asha-ui .mundo-card { grid-column: span 4; padding: 0; overflow: hidden; border: 1px solid white; border-radius: 28px; box-shadow: 0 12px 32px #62448e0c; display: flex; flex-direction: column; }
-.asha-mundo .mundo-card:nth-child(4):nth-last-child(2) { grid-column: 3/span 4; }
-.asha-mundo .mundo-card-art { height: 220px; background: linear-gradient(140deg,#f1eaff,#e6dcfa); display: grid; place-items: center; }
-.asha-mundo .mundo-card-lenguaje .mundo-card-art { background: linear-gradient(140deg,#eafaf6,#d9f3ed); }
-.asha-mundo .mundo-card-fluidez .mundo-card-art { background: linear-gradient(140deg,#fff4e7,#ffe9d0); }
-.asha-mundo .mundo-card-voz .mundo-card-art { background: linear-gradient(140deg,#eaf9ff,#dbeef8); }
-.asha-mundo .mundo-card-orofacial .mundo-card-art { background: linear-gradient(140deg,#fff6e5,#f8ecd2); }
-.asha-mundo .mundo-card-art img { width: 240px; height: 200px; object-fit: contain; }
-.asha-mundo .mundo-card-copy { padding: 28px; display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
-.asha-mundo .mundo-card h3 { font-size: 26px; font-weight: 900; letter-spacing: -.035em; line-height: 1.2; }
-.asha-mundo .mundo-levels { display: inline-block; margin-top: 12px; padding: 5px 12px; border-radius: 999px; background: #f0e8fc; color: var(--asha-primary-dark); font-size: 14px; font-weight: 800; }
-.asha-mundo .mundo-card p { font-size: 17px; line-height: 1.6; color: var(--asha-muted); margin: 16px 0 24px; flex: 1; }
-.asha-mundo.asha-ui .mundo-card .asha-btn { width: 100%; min-height: 50px; font-size: 18px; }
-.asha-mundo .mundo-cta { margin-top: 64px; padding: 48px; border-radius: 32px; border: 2px solid white; background: linear-gradient(120deg,#f0e6ff,#edf9f7); text-align: center; box-shadow: 0 12px 32px #62448e0c; }
-.asha-mundo .mundo-cta h2 { font-size: 42px; font-weight: 900; color: var(--asha-primary-dark); }
-.asha-mundo .mundo-cta p { font-size: 19px; color: var(--asha-muted); margin: 20px auto 28px; max-width: 65ch; }
-.asha-mundo.asha-ui .mundo-cta .asha-btn { min-height: 56px; min-width: 200px; font-size: 20px; }
-.asha-mundo [role="alert"] { padding: 20px; border-radius: 20px; margin-bottom: 24px; }
-.asha-mundo [role="alert"] button { margin-top: 12px; }
-@media (max-width: 1279px) and (min-width: 1024px) {
-  .asha-mundo > nav > div > div:nth-child(2) { gap: 0; }
-  .asha-mundo > nav > div > div:nth-child(2) button { font-size: 14px; padding-inline: 8px; }
-  .asha-mundo .mundo-stats > div { min-width: 120px; padding: 12px; }
-}
+.landing-worlds .mundo-grid { display: grid; grid-template-columns: repeat(12,minmax(0,1fr)); gap: 28px; }
+.asha-ui .landing-worlds .mundo-card { grid-column: span 4; padding: 0; overflow: hidden; border: 1px solid white; border-radius: 28px; box-shadow: 0 12px 32px #62448e0c; display: flex; flex-direction: column; }
+.landing-worlds .mundo-card:nth-child(4):nth-last-child(2) { grid-column: 3/span 4; }
+.landing-worlds .mundo-card-art { height: 220px; background: linear-gradient(140deg,#f1eaff,#e6dcfa); display: grid; place-items: center; }
+.landing-worlds .mundo-card-lenguaje .mundo-card-art { background: linear-gradient(140deg,#eafaf6,#d9f3ed); }
+.landing-worlds .mundo-card-fluidez .mundo-card-art { background: linear-gradient(140deg,#fff4e7,#ffe9d0); }
+.landing-worlds .mundo-card-voz .mundo-card-art { background: linear-gradient(140deg,#eaf9ff,#dbeef8); }
+.landing-worlds .mundo-card-orofacial .mundo-card-art { background: linear-gradient(140deg,#fff6e5,#f8ecd2); }
+.landing-worlds .mundo-card-art img { width: 240px; height: 200px; object-fit: contain; }
+.landing-worlds .mundo-card-copy { padding: 28px; display: flex; flex-direction: column; align-items: flex-start; flex: 1; }
+.landing-worlds .mundo-card h3 { font-size: 26px; font-weight: 900; letter-spacing: -.035em; line-height: 1.2; }
+.landing-worlds .mundo-levels { display: inline-block; margin-top: 12px; padding: 5px 12px; border-radius: 999px; background: #f0e8fc; color: var(--asha-primary-dark); font-size: 14px; font-weight: 800; }
+.landing-worlds .mundo-card p { font-size: 17px; line-height: 1.6; color: var(--asha-muted); margin: 16px 0 24px; flex: 1; }
+.asha-ui .landing-worlds .mundo-card .asha-btn { width: 100%; min-height: 50px; font-size: 18px; }
+
 @media (max-width: 1023px) {
-  .asha-mundo .mundo-container { width: calc(100% - 32px); }
-  .asha-mundo .mundo-hero-layout { grid-template-columns: 1fr; padding-block: 40px; }
-  .asha-mundo .mundo-hero-art img { height: 360px; }
-  .asha-mundo.asha-ui .mundo-card { grid-column: span 6; }
-  .asha-mundo .mundo-card:nth-child(4):nth-last-child(2) { grid-column: span 6; }
+  .landing-worlds .mundo-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .asha-ui .landing-worlds .mundo-card,.landing-worlds .mundo-card:nth-child(4):nth-last-child(2) { grid-column: auto; }
 }
 @media (max-width: 639px) {
-  .asha-mundo.asha-ui .mundo-card,.asha-mundo .mundo-card:nth-child(4):nth-last-child(2) { grid-column: span 12; }
-  .asha-mundo .mundo-cta { padding: 28px; }
-  .asha-mundo .mundo-cta h2 { font-size: 32px; }
+  .landing-worlds .mundo-grid { grid-template-columns: minmax(0,1fr); }
+  .landing-worlds .mundo-card-copy { padding: 24px; }
 }

@@ -1,3 +1,15 @@
+## V56 - Landing unificada, acceso seguro y WebP, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, base `796fc28` / V55; último `origin/dev` conocido `ca9e1b3`. El fetch de cierre falló al conectar a GitHub:443; no se confirma actualización remota. Commit V56 identificable en Git, sin push ni merge hacia dev. Dev local `396efda` y `.gitignore` previo preservados.
+
+Hero, Ashi e ilustraciones conservados. Cinco mundos integrados tras los pasos, navegación por anclas, modal accesible y retorno al mundo elegido compatible con el rol. PADRE usa su módulo privado y la asignación del niño; otros roles reciben una explicación. El catálogo público sólo devuelve metadatos y números de niveles; el resumen entrega ejercicios de mundos asignados. Intentos mantienen controles de sesión, vínculo, rol y asignación. ADR 0022 documenta el contrato; sin tablas ni migraciones nuevas. Perfiles públicos de ejemplo rotulados como demostración; Agendar conservado. Solicitar cuenta abre las instrucciones existentes porque no hay autorregistro público.
+
+37 WebP derivados de 18 originales, con srcset, transparencia, dimensiones y caché por hash. Los originales suman 25,70 MB frente a 1,03 MB de las variantes WebP máximas (96% de reducción en ese conjunto); originales conservados, sin medición de red. Chrome de 320 a 1536 px: sin desbordamiento ni controles menores de 44 px; foco, Tab, Escape, roles, retorno, asignación, cinco FAQ, Demo, WhatsApp y movimiento reducido verificados.
+
+Tipos, check de frontend (353 archivos, máximo 500), build (1912 módulos), 25 rutas y 283 componentes en 19 archivos: PASS. Siete pruebas backend unitarias/ASGI sin BD: PASS. Newsletter con respuestas simuladas y catálogo local real 200 sin ejercicios. Se instaló httpx, dependencia de desarrollo ya declarada. Graphify: 2373 nodos, 100 comunidades, check vigente; 13 fuentes sin símbolos. Sin escrituras de BD, usuarios, login, correo ni reservas reales.
+
+[Informe y capturas](evidence/landing-v56/verification.md) y [auditoría](audits/auditoria-2026-10-10-01.md). Preview en :5176 conectado a API actual :8002 con recordatorios desactivados; API anterior :8000 conservada. Siguiente: revisión humana y validaciones específicas de directorio, registro y servicios antes de publicar. `noindex` conservado. No publicar hasta autorización explícita.
+
 ## V55 — ilustraciones originales y Mundo ASHA público, sólo local / 2026-10-10
 
 Rama `codex/landing-publica`, padre visual0d1e285/V53; incorpora origin/dev ca9e1b3/V54

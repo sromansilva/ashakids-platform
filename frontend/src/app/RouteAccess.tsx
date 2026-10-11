@@ -1,7 +1,7 @@
 import { Navigate, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { getRequiredRoleForPath } from "@/routes/paths";
+import { getRequiredRoleForPath, loginDestination } from "@/routes/paths";
 import { RouteLoading } from "@/app/RouteLoading";
 import { AccountActivation } from "@/auth/AccountActivation";
 
@@ -25,6 +25,6 @@ export function RouteAccess({ children }: { children: ReactNode }) {
       </section>
     </main>
   );
-  if (location.pathname === "/login" && isAuthenticated) return <Navigate to={home} replace />;
+  if (location.pathname === "/login" && isAuthenticated) return <Navigate to={loginDestination(role!, location.state?.from)} replace />;
   return <>{children}</>;
 }
