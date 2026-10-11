@@ -14,13 +14,13 @@ export const publicAssets: Record<string, {src: string; srcSet: string; width: n
   },
   "/illustrations/ashi-head-v1.png": {
     "src": "/illustrations/optimized/ashi-head-v1-640-65615645fa.webp",
-    "srcSet": "/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp 320w, /illustrations/optimized/ashi-head-v1-640-65615645fa.webp 640w",
+    "srcSet": "/illustrations/optimized/ashi-head-v1-160-generated.webp 160w, /illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp 320w, /illustrations/optimized/ashi-head-v1-640-65615645fa.webp 640w",
     "width": 1536,
     "height": 1024
   },
   "/illustrations/ashi-hero-v1.png": {
     "src": "/illustrations/optimized/ashi-hero-v1-1536-c25f776ad4.webp",
-    "srcSet": "/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp 960w, /illustrations/optimized/ashi-hero-v1-1440-fbbe94dfee.webp 1440w, /illustrations/optimized/ashi-hero-v1-1536-c25f776ad4.webp 1536w",
+    "srcSet": "/illustrations/optimized/ashi-hero-v1-640-generated.webp 640w, /illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp 960w, /illustrations/optimized/ashi-hero-v1-1440-fbbe94dfee.webp 1440w, /illustrations/optimized/ashi-hero-v1-1536-c25f776ad4.webp 1536w",
     "width": 1536,
     "height": 1024
   },

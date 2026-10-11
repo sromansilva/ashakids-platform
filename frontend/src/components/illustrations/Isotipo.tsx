@@ -1,4 +1,4 @@
-import ashaKidsLogo from "@/assets/ashakids-logo-final-transparent-1.png";
+import ashaKidsLogo from "@/assets/ashakids-logo-96.png";
 
 export function Isotipo({ size = 36 }: { size?: number }) {
   return (
