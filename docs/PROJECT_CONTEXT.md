@@ -1,3 +1,13 @@
+## V60 - Inicio de sesión con diseño ASHAKids / 2026-10-10
+
+Rama `codex/landing-publica`, base `47a5470` / V59; fetch exitoso y `origin/dev` conserva `498df42` / V58. Los cinco commits remotos pendientes no se integran en este ajuste visual. Dev local `396efda` preservado. Commit V60 sólo local, sin publicación ni merge hacia dev; `.gitignore` previo excluido.
+
+`frontend/src/pages/auth/login.css`: tokens del sistema v1 dentro de `.asha-login`, Nunito, fondos cálidos/lavanda, cabecera suave con logo oficial, títulos y campos más amplios, acentos verde agua y botón violeta con relieve. Formulario blanco para lectura estable; bloque de desarrollo diferenciado. Selectores encapsulados, foco de teclado visible, controles mínimos de 44 px y movimiento reducido. Textos y arte de letras conservados exactamente; LoginPage, useAuth, validaciones, credenciales, endpoints, roles y retornos no se modifican. Recordarme conserva el estado visual existente; no se añade persistencia nueva.
+
+Verificación: tipos, check:frontend (354 archivos, máximo 500) y build (1913 módulos) aprobados. Diez pruebas existentes de acceso, providers y destino de login en tres archivos: PASS; no se repite ni se atribuye la suite completa de V59 a este corte. Chrome en 320/375/768/1024/1536 px: sin overflow, botones pequeños ni errores JS; textos/arte contra baseline, vacío sin POST, prellenado sin autenticar, mostrar/ocultar contraseña, checkbox, carga deshabilitada, rechazo y recuperación del formulario, foco, movimiento reducido, inicio y recuperación comprobados con respuestas interceptadas. No autenticación real, escrituras, correo o reservas. [Evidencia y capturas](evidence/login-v60/verification.md).
+
+Incidencias de revisión: se hizo explícito el outline de los campos porque el reset previo lo anulaba; el arnés espera la pantalla tras volver de recuperación. Graphify refresh/check vigente, extracción AST local sin LLM. Preview :5176 y API :8002 activos, recordatorios desactivados. Siguiente: revisión humana y conciliación de cambios remotos antes de publicar. No publicar hasta autorización explícita.
+
 ## V59 - Terapeutas en landing y marca del footer / 2026-10-10
 
 Rama `codex/landing-publica`, base `4740ffe` / V56. Fetch de cierre exitoso: `origin/dev` avanzó a `498df42` / V58 con cinco commits de cuentas, correo y documentación. Se continúa numeración en V59; esos cambios remotos no se integran en este ajuste visual. Dev local `396efda` preservado. Commit V59 sólo local, sin push ni merge hacia dev; `.gitignore` previo excluido.

@@ -95,3 +95,7 @@ robotsnoindexpreviointacto.7viewportsChrome/foco/Tab/Escape/reducedmotion compro
 ## V59 - Marca del footer y navegación interna
 
 Sólo landing: footer lavanda #F3EEFB, tarjeta blanca para logo oficial, marca violeta/naranja, controles de 44 px, columnas 4/3/2 según ancho y marca a ancho completo en móvil. CSS encapsulado en `landing-footer.css`; otras páginas conservan footer anterior. Especialistas se consulta por anclas dentro de la landing, sin Ver todos. Favicon PNG reutiliza logo oficial sin modificaciones.
+
+## V60 - Presentación del inicio de sesión
+
+`login.css` aplica el sistema v1 sólo bajo `.asha-login`: violeta #7C3AED, base #5B21B6, verde agua #0F766E, naranja #F97316, fondo #FAFAF9, Nunito 400–900, radios de 14 px en controles y 24 px en paneles. Formulario blanco, cabecera y panel de desarrollo suaves. Relieve inferior de 5 px en botón principal; campos de 56 px y controles de 44 px. Estados visuales de foco, carga, error y movimiento reducido. Arte decorativo de letras, textos y comportamiento originales conservados. Paneles privados y otras superficies sin migración visual.
