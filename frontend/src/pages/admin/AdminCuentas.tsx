@@ -22,6 +22,7 @@ import {
   CrearPadrePayload,
   CrearTerapeutaPayload,
   CuentaItem,
+  RegistroHijo,
 } from "@/types/auth";
 import { PacienteItem } from "@/types/pacientes";
 import { getAvatarInfo } from "@/config/avatars";
@@ -74,7 +75,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     "nueva" | "detail" | "editar" | "suspender" | "activar" | "eliminar" | null
   >(null);
   const [selected, setSelected] = useState<CuentaItem | null>(null);
-
   // Estado para gestión administrativa de hijos
   const [modalHijos, setModalHijos] = useState<boolean>(false);
   const [hijosPadre, setHijosPadre] = useState<PacienteItem[]>([]);
@@ -82,7 +82,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [errorHijos, setErrorHijos] = useState<string | null>(null);
   const [hijoAReactivar, setHijoAReactivar] = useState<PacienteItem | null>(null);
   const [reactivando, setReactivando] = useState<boolean>(false);
-
   // Formulario de Creación
   const [formPadre, setFormPadre] = useState<CrearPadrePayload>({
     nombres: "",
@@ -90,11 +89,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     email: "",
     password: "",
     parentesco: "Padre",
-    hijos: [emptyChild()],
+    hijos: [],
     telefono: "",
     direccion: "",
+    tipo_documento: "DNI",
+    numero_documento: "",
   });
-
+  const [hijoEnEdicion, setHijoEnEdicion] = useState<RegistroHijo>(emptyChild());
   const [formTerapeuta, setFormTerapeuta] = useState<CrearTerapeutaPayload>({
     nombres: "",
     apellidos: "",
@@ -105,10 +106,8 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     idiomas: "Español",
     descripcion_profesional: "",
   });
-
   // Formulario de Edición
   const [editForm, setEditForm] = useState<ActualizarCuentaPayload>({});
-
   // Carga inicial y refresco de cuentas
   async function cargarCuentas() {
     setLoading(true);
@@ -124,11 +123,9 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setLoading(false);
     }
   }
-
   useEffect(() => {
     cargarCuentas();
   }, []);
-
   // Notificación temporal
   function showToast(msg: string) {
     setSuccessBanner(msg);
@@ -136,7 +133,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setSuccessBanner(null);
     }, 4000);
   }
-
   // Filtrado
   const visible = cuentas.filter(a => {
     const matchRole = a.rol === tab;
@@ -149,11 +145,9 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       a.codigo_usuario.toLowerCase().includes(term);
     return matchRole && matchSearch;
   });
-
   const famCount = cuentas.filter(a => a.rol === "PADRE").length;
   const terCount = cuentas.filter(a => a.rol === "TERAPEUTA").length;
   const suspCount = cuentas.filter(a => !a.activo).length;
-
   function formatDate(dStr: string) {
     try {
       return new Date(dStr).toLocaleDateString("es-PE", {
@@ -165,7 +159,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       return dStr;
     }
   }
-
   // Apertura de Modales
   function openNueva() {
     setFormPadre({
@@ -174,10 +167,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       email: "",
       password: "",
       parentesco: "Padre",
-      hijos: [emptyChild()],
+      hijos: [],
       telefono: "",
       direccion: "",
+      tipo_documento: "DNI",
+      numero_documento: "",
     });
+    setHijoEnEdicion(emptyChild());
     setFormTerapeuta({
       nombres: "",
       apellidos: "",
@@ -191,12 +187,10 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     setErrorBanner(null);
     setModal("nueva");
   }
-
   function openDetail(acc: CuentaItem) {
     setSelected(acc);
     setModal("detail");
   }
-
   function openEditar(acc: CuentaItem) {
     setSelected(acc);
     if (acc.rol === "PADRE") {
@@ -222,7 +216,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     setErrorBanner(null);
     setModal("editar");
   }
-
   // Acciones CRUD
   async function handleCrear() {
     setSubmitting(true);
@@ -246,14 +239,12 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setSubmitting(false);
     }
   }
-
   function correoEstado(estado?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null) {
     if (estado === "ENVIADO") return "Correo de bienvenida enviado.";
     if (estado === "PENDIENTE") return "Cuenta creada; correo pendiente.";
     if (estado === "NO_CONFIGURADO") return "Cuenta creada; correo no configurado.";
     return "";
   }
-
   async function handleGuardarEdicion() {
     if (!selected) return;
     setSubmitting(true);
@@ -466,6 +457,8 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         formTerapeuta={formTerapeuta}
         setFormPadre={setFormPadre}
         setFormTerapeuta={setFormTerapeuta}
+        hijoEnEdicion={hijoEnEdicion}
+        setHijoEnEdicion={setHijoEnEdicion}
         submitting={submitting}
         onClose={() => setModal(null)}
         onCrear={handleCrear}

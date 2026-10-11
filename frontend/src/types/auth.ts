@@ -46,6 +46,8 @@ export interface TutorData {
   direccion: string | null;
 }
 
+export type TipoDocumento = "DNI";
+
 export interface PadreProfileResponse {
   user: User;
   perfil_tutor: TutorData | null;
@@ -106,6 +108,8 @@ export interface CrearPadrePayload {
   parentesco?: string;
   telefono?: string;
   direccion?: string;
+  tipo_documento?: TipoDocumento;
+  numero_documento?: string;
   hijos?: RegistroHijo[];
 }
 
@@ -114,6 +118,8 @@ export interface RegistroHijo {
   apellidos_paciente: string;
   fecha_nacimiento: string;
   sexo: string;
+  /** Dato de captura administrativa; la edad clínica se deriva de la fecha. */
+  edad?: number;
 }
 
 export interface CrearTerapeutaPayload {
