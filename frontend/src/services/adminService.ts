@@ -15,6 +15,9 @@ import {
 import { HijoListResponse, OperacionHijoResponse } from "@/types/pacientes";
 
 export const adminService = {
+  async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
+    return apiClient.get("/admin/auditoria");
+  },
   async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
     const { password, hijos, ...adulto } = payload;
     return apiClient.post<OperacionCuentaResponse>("/admin/familias", {
@@ -128,5 +131,14 @@ export const adminService = {
       { method: "PATCH" }
     );
   },
+};
+
+export type AuditoriaItem = {
+  id_auditoria: number;
+  actor: string | null;
+  nombre_tabla: string;
+  nombre_entidad: string;
+  accion: string;
+  fecha_evento: string;
 };
 

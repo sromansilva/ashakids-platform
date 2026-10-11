@@ -1077,3 +1077,13 @@ Cambios previos de adjuntos preservados fuera de este commit; no publicar ese tr
 como parte de la retirada. Sin auditoría técnica nueva, PDF ni pruebas sobre BD.
 Publicar cierre en dev y sincronizar codex/2do-intento; SHA efectivo consultable en Git.
 Siguiente: comprobar despliegue/aceptación humana y continuar el trabajo previo de adjuntos.
+
+## Relevo V55 — auditoría ADMIN conectada a eventos reales / 2026-10-10
+
+La pantalla demo se sustituyó por consulta de auditoria_cambios mediante GET protegido
+/admin/auditoria. La creación de cuentas ya registra INSERT transaccional; ahora ADMIN
+puede verlo en pantalla. El endpoint solo proyecta actor, tabla/registro, acción y hora,
+con tope100 y total. Front incluye estados carga/error/vacío. No se exponen JSON antes/nuevo
+ni se cambia/elimina historial. Verificados: Python compile, 25 pruebas de rutas,
+282 componentes, typecheck, build, check:frontend y Graphify check. Sin consulta a BD real ni
+prueba HTTP de extremo a extremo. Mapa Graphify actualizado en modo code-only.

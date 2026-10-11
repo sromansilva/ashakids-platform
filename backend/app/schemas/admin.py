@@ -123,3 +123,17 @@ class OperacionCuentaResponse(BaseModel):
     message: str
     cuenta: Optional[CuentaItemResponse] = None
     correo_bienvenida: Optional[str] = None
+
+
+class AuditoriaItemResponse(BaseModel):
+    id_auditoria: int
+    actor: Optional[str]
+    nombre_tabla: str
+    nombre_entidad: str
+    accion: str
+    fecha_evento: datetime
+
+
+class AuditoriaListResponse(BaseModel):
+    items: List[AuditoriaItemResponse]
+    total: int

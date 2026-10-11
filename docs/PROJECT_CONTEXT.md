@@ -939,3 +939,12 @@ importación lazy, título y tipo de navegación. La gestión funcional permanec
 Cuentas → Terapeutas. La URL anterior muestra el estado de ruta inexistente.
 Verificación local: 25 pruebas de rutas, typecheck y build correctos; detector Sidebar
 sin hallazgos. Sin pruebas nuevas en producción ni cambios en API/BD.
+
+## V55 — eventos reales en Auditoría ADMIN / 2026-10-10
+
+Auditoría y seguridad consulta GET /admin/auditoria, restringido a ADMIN. Expone
+solo actor, tabla/ID, acción y fecha; omite los JSON de cambios que pueden contener
+datos personales. La respuesta limita el listado a los 100 eventos recientes e informa
+el total. El panel reemplaza las filas ficticias con datos reales y maneja carga, error
+y lista vacía. Las altas administrativas ya registraban auditoría en la misma
+transacción. No se alteran eventos ni cuentas existentes.

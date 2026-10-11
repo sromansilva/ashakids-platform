@@ -354,3 +354,10 @@ pendientes juegos finales, revisión profesional de contenidos, modelo ML/datase
 etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
 Los catálogos draft-1 y demos históricos no representan este flujo persistente.
 
+
+## V55 — consulta administrativa de auditoría
+
+FastAPI GET /admin/auditoria requiere rol ADMIN y devuelve hasta 100 eventos recientes
+de auditoria_cambios, con total, actor, acción, tabla/entidad y fecha. La proyección
+no serializa datos_anteriores ni datos_nuevos para reducir exposición de datos personales.
+React presenta únicamente eventos guardados; no genera ejemplos ni modifica historial.
