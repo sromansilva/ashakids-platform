@@ -1020,3 +1020,21 @@ evidencia docs/evidence/audit-2026-10-09-03/.
 - Próximo: juegos más llamativos y revisión profesional. ML/reporte mensual no implementados;
   resultados_nivel JSON dispone de respuesta, aciertos, tiempo, ayudas y versión para análisis
   futuro. Definir etiquetas antes de afirmar eficacia de mundos o emociones.
+
+## V51 — configuración privada de Zoom / 2026-10-10
+
+Objetivo: guardar las seis variables proporcionadas en Render para activar Zoom automático.
+Base limpia codex/2do-intento, HEAD/origin/dev/origin/codex/2do-intento iguales a
+5dd572cb37a679d5e8674a0cf1910426d925a1f9 tras git fetch origin; repositorio
+https://github.com/sromansilva/ashakids-platform. Guía consultada: DEPLOY_RENDER_ZOOM.md
+del escritorio. Cambios externos: seis variables ZOOM_* guardadas en ashakids, sin alterar
+otros valores ni crear segunda instancia. Save, rebuild, and deploy confirmó Live
+dep-db5em4flot8c73emqo2g /34,6s; código V50. Readiness HTTPS 200, ready/database reachable.
+Persistencia comprobada al volver a Environment; captura con secretos ocultos en
+docs/evidence/zoom-render-v51/environment.jpg. Archivos: contexto, relevo y evidencia.
+No cambios de fuentes, BD ni .env; sin suites nuevas o auditoría nueva. Knowledge check
+vigente y diff revisado antes del cierre documental. No errores de despliegue observados.
+Siguiente: aceptación humana de nueva reserva virtual (AUTOMATICA/enlace Zoom) y revisar
+licencia/duración: sin overrides producción usa 45; Basic requiere ambos valores en 40.
+No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
+integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.
