@@ -1,6 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Path, Query, Response
 from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
 from app.api.contracts import DB, Identity, Limit, Offset
 from app.models.mensajeria import Conversacion, Mensaje
 from app.schemas.mensajeria import (ContactoSalida, ConversacionCrear, ConversacionSalida,
@@ -44,7 +45,7 @@ async def detalle(key: Key, db: DB, identity: Identity):
 @router.get('/{key}/mensajes', response_model=MensajesPagina)
 async def mensajes(key: Key, db: DB, identity: Identity, limit: Limit = 30, before_id: Cursor = None):
     await service.visible(db, identity, key)
-    stmt = select(Mensaje).where(Mensaje.id_conversacion == key)
+    stmt = select(Mensaje).options(selectinload(Mensaje.adjuntos)).where(Mensaje.id_conversacion == key)
     if before_id is not None:
         stmt = stmt.where(Mensaje.id_mensaje < before_id)
     rows = list((await db.scalars(stmt.order_by(Mensaje.id_mensaje.desc()).limit(limit + 1))).all())

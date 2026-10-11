@@ -137,6 +137,30 @@ Capturas/comparación y límites en [evidencia](evidence/landing-v51/verificatio
 Graphify setup/query/refresh/check al cierre, mapa no versionado.
 No auditoría técnica nueva, backend ni integraciones externas verificadas.
 Siguiente: revisión humana del corte local y recursos Ashi; sólo publicar tras aprobación.
+## V52 — adjuntos persistentes en mensajes / 2026-10-10
+
+PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar
+sus metadatos, visualizar imágenes/audio/video y descargarlo desde el chat. Formatos:
+JPG/PNG/GIF/WebP, MP3/WAV/OGG, MP4/WebM, PDF/TXT. Límite10MB por archivo y20envíos/hora
+por emisor. La comprobación de permisos usa participantes de la conversación; para
+nuevos envíos exige el vínculo vigente y chat abierto, como el texto existente.
+
+mensaje_adjuntos se conecta mediante ORM/FastAPI. Migración009 añade contenido BYTEA
+nullable, UUID de envío único y SHA256: mensaje+archivo se confirman en una transacción,
+reintento idéntico devuelve el mismo mensaje. Lecturas de historial cargan solo metadatos;
+contenido se lee mediante descarga autorizada y no se devuelve en JSON ni URL pública.
+El navegador carga medios al pulsar Ver archivo y revoca el blob al salir.
+
+Se elige almacenamiento binario acotado en PostgreSQL porque existe infraestructura
+persistente y solo una clave Supabase pública, insuficiente para un bucket privado.
+Evita guardar en disco efímero de Render; no añade claves ni cambia autenticación.
+Escala futura: mover archivos grandes a storage privado manteniendo el contrato.
+Migración009 adoptada en BD compartida con respaldo verificado y filas conservadas.
+No archivos/pacientes reales creados para pruebas; evidencia local sintética y metadatos
+saneados en [attachments-v52](evidence/attachments-v52/verification.md).
+ADR [0021](decisions/0021-adjuntos-pequenos-transaccionales.md). El contenido legada sin
+bytes no se recupera desde URLs externas. No antivirus/transcodificación ni extracción
+confiable de duración; se verifica formato por extensión y cabecera, no integridad total.
 
 ## V50 — cinco mundos básicos persistentes / 2026-10-10
 
@@ -1174,7 +1198,6 @@ del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
 
-
 ## V63 — filtros de citas y limpieza de sesiones ADMIN / 2026-10-11
 
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base7e958c8/V59;
@@ -1202,3 +1225,21 @@ commit. La restricción de no publicar mientras se acumulaban ajustes queda
 superada por la autorización actual de cierre. Sin force-push ni rama Codex.
 Siguiente: aceptar filtros en web desplegada y continuar los ajustes que el usuario
 solicite. No ampliar permisos API, pagos ni funciones clínicas por este cierre.
+
+## V65 — publicación de adjuntos del chat / 2026-10-11
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Rama feat/piero-dev,
+base 8d2ace2; autor Piero2311 <pieroah26@gmail.com>. Publicación de la implementación
+local de adjuntos autorizada en dev y sincronización de la rama propia.
+Envío multipart y descarga privados, metadatos de historial, vista previa de medios,
+UUID de reintento, límite 10 MB y permisos de participantes. ADR y migración009
+existentes incluidos; no se vuelve a ejecutar DDL ni se escriben datos compartidos.
+Evidencia attachments-v52 es heredada del 10/11 de octubre, no pruebas nuevas.
+Validación nueva: 18 pruebas frontend chat, 25 backend mensajería correctas;
+2 pruebas SQL omitidas sin habilitar base descartable. Tipos, checkfrontend360
+y build1917 correctos. Comando inicial backend con nombre inexistente corregido;
+Python global sin pytest, se utilizó backend/.venv. Advertencia DEP0205 heredada.
+Graphify refresh/check local. Integrar el nuevo cambio de correos origin/dev9184689
+antes de publicar; SHA/push efectivos consultables en Git. Sin nueva auditoría/PDF.
+Siguiente: aceptación de envío/descarga en web desplegada por participantes autorizados;
+no afirmar despliegue por el push ni volver a aplicar una migración ya adoptada.

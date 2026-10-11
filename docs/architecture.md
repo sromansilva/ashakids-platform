@@ -363,6 +363,30 @@ pendientes juegos finales, revisión profesional de contenidos, modelo ML/datase
 etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
 Los catálogos draft-1 y demos históricos no representan este flujo persistente.
 
+## V52 — adjuntos persistentes en mensajes / 2026-10-10
+
+PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar
+sus metadatos, visualizar imágenes/audio/video y descargarlo desde el chat. Formatos:
+JPG/PNG/GIF/WebP, MP3/WAV/OGG, MP4/WebM, PDF/TXT. Límite10MB por archivo y20envíos/hora
+por emisor. La comprobación de permisos usa participantes de la conversación; para
+nuevos envíos exige el vínculo vigente y chat abierto, como el texto existente.
+
+mensaje_adjuntos se conecta mediante ORM/FastAPI. Migración009 añade contenido BYTEA
+nullable, UUID de envío único y SHA256: mensaje+archivo se confirman en una transacción,
+reintento idéntico devuelve el mismo mensaje. Lecturas de historial cargan solo metadatos;
+contenido se lee mediante descarga autorizada y no se devuelve en JSON ni URL pública.
+El navegador carga medios al pulsar Ver archivo y revoca el blob al salir.
+
+Se elige almacenamiento binario acotado en PostgreSQL porque existe infraestructura
+persistente y solo una clave Supabase pública, insuficiente para un bucket privado.
+Evita guardar en disco efímero de Render; no añade claves ni cambia autenticación.
+Escala futura: mover archivos grandes a storage privado manteniendo el contrato.
+Migración009 adoptada en BD compartida con respaldo verificado y filas conservadas.
+No archivos/pacientes reales creados para pruebas; evidencia local sintética y metadatos
+saneados en [attachments-v52](evidence/attachments-v52/verification.md).
+ADR [0021](decisions/0021-adjuntos-pequenos-transaccionales.md). El contenido legada sin
+bytes no se recupera desde URLs externas. No antivirus/transcodificación ni extracción
+confiable de duración; se verifica formato por extensión y cabecera, no integridad total.
 
 ## V55 — consulta administrativa de auditoría
 

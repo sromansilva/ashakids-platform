@@ -1242,6 +1242,32 @@ licencia/duración: sin overrides producción usa 45; Basic requiere ambos valor
 No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
 integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.
 
+## Relevo V52 — mensajes con adjuntos,2026-10-10
+
+- Repositorio https://github.com/sromansilva/ashakids-platform . Base codex/2do-intento
+  a6eda9f/V51, limpia; comprobar secuencia remota antes de publicar.
+- Archivos: modelos/schemas/mensajeria, services/adjuntos, APIadjuntos y lista mensajes,
+  main/middleware, requirements python-multipart0.0.32, migración009/esquema inicial.
+  Front: cliente multipart/binario, messagingService, MessageAttachment y MessageThread.
+- BDcompartida009aplicada con pg_dump privado y pg_restore--list verificados;30tablas,
+ 3columnas nuevas, filasprevias conservadas, runtime SELECT/INSERT/RLS y anon/authenticated
+  denegados. Evidencia docs/evidence/attachments-v52/database-adoption.json. No pruebas
+  que inserten archivos o pacientes compartidos. Backup y credenciales quedan tmp ignorado.
+- Local PostgreSQL17:ashakids_test_attachments_v52 creada para la suite;27backend pasaron
+  (2integración+25mensajería).18pruebas chatfrontend y suitecompleta283pasaron. Typecheck,
+  build1903módulos6.50s y checkfrontend343archivos correctos; Node DEP0205 heredada.
+- Fallos corregidos antes de las pruebas: lectura Python cp1252 de archivo UTF8; ruta con
+  backend duplicado al crear test; import helper sin paquete tests. No fallos funcionales
+  en las suites ejecutadas. Detector Impeccable MessageThread: [].
+- Nuevos casos:archivo sintexto, tutor/profesional descargan, ajeno404/admin403, mismoUUID
+  no duplica, conflicto409, bytes falsos415/vacío422/exceso413, chatarchivado409, historial
+  sincontenido binario, retryUI conserva selección/UUID y tamañoUI deshabilita envío.
+- Límites:10MB/unarchivo,20/hora, solo formatos indicados. Validación cabeceras, noantivirus.
+  Duraciónnullable; imágenes/audio/video requieren codec navegador. Legacy sinbytes404.
+- Publicar V52 en dev/rama propia al cierre, registrar SHA en informe del chat. Comprobar
+  API HTTPS posterior al push; un push no prueba despliegue. No auditoría nueva ni PDF nuevo.
+- Próximo:aceptación humana y decidir storageprivado para archivos más grandes; no habilitar
+  bucketpúblico ni usar disco efímero para persistencia. evaluaciones_ia aún sinmodeloML.
 
 ## Relevo V54 — eliminar Terapeutas demo de ADMIN, 2026-10-10
 
@@ -1389,7 +1415,6 @@ del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
 
-
 ## V63 — filtros de citas y limpieza de sesiones ADMIN / 2026-10-11
 
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base7e958c8/V59;
@@ -1417,3 +1442,21 @@ commit. La restricción de no publicar mientras se acumulaban ajustes queda
 superada por la autorización actual de cierre. Sin force-push ni rama Codex.
 Siguiente: aceptar filtros en web desplegada y continuar los ajustes que el usuario
 solicite. No ampliar permisos API, pagos ni funciones clínicas por este cierre.
+
+## V65 — publicación de adjuntos del chat / 2026-10-11
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Rama feat/piero-dev,
+base 8d2ace2; autor Piero2311 <pieroah26@gmail.com>. Publicación de la implementación
+local de adjuntos autorizada en dev y sincronización de la rama propia.
+Envío multipart y descarga privados, metadatos de historial, vista previa de medios,
+UUID de reintento, límite 10 MB y permisos de participantes. ADR y migración009
+existentes incluidos; no se vuelve a ejecutar DDL ni se escriben datos compartidos.
+Evidencia attachments-v52 es heredada del 10/11 de octubre, no pruebas nuevas.
+Validación nueva: 18 pruebas frontend chat, 25 backend mensajería correctas;
+2 pruebas SQL omitidas sin habilitar base descartable. Tipos, checkfrontend360
+y build1917 correctos. Comando inicial backend con nombre inexistente corregido;
+Python global sin pytest, se utilizó backend/.venv. Advertencia DEP0205 heredada.
+Graphify refresh/check local. Integrar el nuevo cambio de correos origin/dev9184689
+antes de publicar; SHA/push efectivos consultables en Git. Sin nueva auditoría/PDF.
+Siguiente: aceptación de envío/descarga en web desplegada por participantes autorizados;
+no afirmar despliegue por el push ni volver a aplicar una migración ya adoptada.

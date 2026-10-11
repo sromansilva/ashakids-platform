@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-11T02:06:45.596773+00:00",
+  "migration": "009_mensaje_adjuntos.sql",
+  "success": true,
+  "backup": {
+    "bytes": 172502,
+    "sha256": "e209e3107e9d1f3d5dff2fec2d39f484f269857344c42de320bbe9b12449772e",
+    "archive_list_verified": true
+  },
+  "existing_rows_preserved": true,
+  "tables": 30,
+  "attachments_columns": 3,
+  "runtime_reads_and_rls": "pass",
+  "runtime_insert_and_anonymous_denied": "pass"
+}

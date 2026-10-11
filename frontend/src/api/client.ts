@@ -22,7 +22,7 @@ export class ApiError extends Error {
 
 export type QueryParams = Record<string, string | number | boolean | undefined | null>;
 export type Page<T> = { items: T[]; total: number };
-export type ApiOptions = RequestInit & { params?: QueryParams; paginated?: boolean; pdf?: boolean };
+export type ApiOptions = RequestInit & { params?: QueryParams; paginated?: boolean; pdf?: boolean; binary?: boolean };
 let identityVersion = 0;
 export function invalidateIdentityRequests() { identityVersion++; }
 
@@ -31,7 +31,7 @@ async function request<T>(
   options: ApiOptions = {}
 ): Promise<T> {
   const version = identityVersion;
-  const { params, paginated, pdf, ...init } = options;
+  const { params, paginated, pdf, binary, ...init } = options;
   const search = new URLSearchParams();
   Object.entries(params ?? {}).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") search.set(key, String(value));
@@ -41,8 +41,8 @@ async function request<T>(
     : `${API_BASE_URL}${endpoint.startsWith("/") ? "" : "/"}${endpoint}`;
 
   const headers: HeadersInit = {
-    "Content-Type": "application/json",
-    Accept: pdf ? "application/pdf" : "application/json",
+    ...(!(init.body instanceof FormData) ? { "Content-Type": "application/json" } : {}),
+    Accept: pdf ? "application/pdf" : binary ? "*/*" : "application/json",
     ...options.headers,
   };
 
@@ -69,6 +69,11 @@ async function request<T>(
 
     if (response.status === 204) {
       return {} as T;
+    }
+    if (binary && response.ok) {
+      const blob = await response.blob();
+      if (version !== identityVersion || init.signal?.aborted) throw new DOMException("Descarga cancelada", "AbortError");
+      return blob as T;
     }
 
     const contentType = response.headers.get("content-type");
@@ -99,6 +104,8 @@ async function request<T>(
 }
 
 export const apiClient = {
+  blob: (endpoint: string, signal?: AbortSignal) => request<Blob>(endpoint, { method: 'GET', signal, binary: true }),
+  upload: <T>(endpoint: string, body: FormData) => request<T>(endpoint, { method: 'POST', body }),
   pdf: (endpoint: string, signal?: AbortSignal) =>
     request<Blob>(endpoint, { method: 'GET', signal, pdf: true }),
   get: <T>(endpoint: string, options?: ApiOptions) =>
