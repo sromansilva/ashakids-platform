@@ -13,7 +13,6 @@
 .asha-landing .landing-ashi-bubble::after { content: ''; position: absolute; bottom: -22px; left: 42px; width: 34px; height: 32px; background: #f2fdff; clip-path: polygon(0 0,100% 0,0 100%); }
 .asha-landing .landing-ashi-bubble strong { font-weight: 900; font-size: 30px; }
 .asha-landing .landing-ashi-bubble span { font-size: 20px; }
-.asha-landing .landing-ashi-bubble small { font-size: 11px; color: var(--asha-muted); }
 .asha-landing .landing-voice-decoration { position: absolute; right: 21%; top: 31%; color: #16b8b5; }
 .asha-landing .landing-audience { position: relative; padding: 42px 0 50px; background: linear-gradient(120deg,#f8f5ff,#faf9ff); border-radius: 48% 52% 0 0 / 32px 32px 0 0; }
 .asha-landing .landing-audience h2 { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: clamp(30px,3.15vw,48px); white-space: nowrap; text-wrap: nowrap; }
@@ -50,12 +49,12 @@
   .asha-landing .landing-reference-hero { padding-top: 50px; background: #fffefd; overflow: hidden; }
   .asha-landing .landing-reference-hero .landing-hero-layout { height: 520px; display: block; padding-bottom: 0; position: relative; }
   .asha-landing .landing-reference-hero .landing-hero-copy { width: 58%; }
-  .asha-landing .landing-purpose { font-size: 18px; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px; color: #169b9c; }
-  .asha-landing .landing-reference-hero h1 { font-size: clamp(53px,5vw,76px); line-height: 1.02; letter-spacing: -.045em; white-space: nowrap; text-wrap: nowrap; }
+  .asha-landing .landing-purpose { font-size: 17px; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px; color: #169b9c; }
+  .asha-landing .landing-reference-hero h1 { font-size: clamp(51px,4.8vw,73px); line-height: 1.02; letter-spacing: -.045em; white-space: nowrap; text-wrap: nowrap; }
   .asha-landing .landing-reference-hero h1 > .landing-title-line { color: var(--asha-ink); }
   .asha-landing .landing-reference-hero h1 > .landing-title-line > span { color: #8728ee; }
-  .asha-landing .landing-reference-hero .landing-intro { font-size: clamp(20px,1.85vw,28px); line-height: 1.35; max-width: none; margin: 25px 0 34px; letter-spacing: -.012em; }
-  .asha-landing.asha-ui .landing-hero-actions .asha-btn { height: 70px; padding-inline: 32px; font-size: clamp(18px,1.6vw,24px); border-radius: 18px; white-space: nowrap; }
+  .asha-landing .landing-reference-hero .landing-intro { font-size: clamp(19px,1.78vw,27px); line-height: 1.35; max-width: none; margin: 25px 0 34px; letter-spacing: -.012em; }
+  .asha-landing.asha-ui .landing-hero-actions .asha-btn { height: 70px; padding-inline: 32px; font-size: clamp(17px,1.54vw,23px); border-radius: 18px; white-space: nowrap; }
   .asha-landing .landing-primary { min-width: 328px; }
   .asha-landing .landing-reference-hero .landing-benefits { padding: 36px 0 0; gap: 40px; }
   .asha-landing .landing-benefits li { font-size: 18px; }
@@ -68,7 +67,7 @@
   .asha-landing .landing-audience-grid { padding-right: 84px; }
   .asha-landing .landing-audience-grid { margin-top: 24px; }
   .asha-landing .landing-reference-hero .landing-intro { margin-bottom: 24px; }
-  .asha-landing.asha-ui .landing-hero-actions .asha-btn--outline { padding-inline: 26px; font-size: clamp(18px,1.5vw,23px); }
+  .asha-landing.asha-ui .landing-hero-actions .asha-btn--outline { padding-inline: 26px; font-size: clamp(17px,1.44vw,22px); }
   .asha-landing.asha-ui .landing-audience-card { grid-template-columns: 39% 1fr 40px; }
   .asha-landing .landing-audience-copy strong { font-size: 26px; white-space: nowrap; }
   .asha-landing .landing-audience-card img { transform: scale(1.12); }

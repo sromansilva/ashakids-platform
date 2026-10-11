@@ -1,6 +1,6 @@
 import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
 import type { useLanding } from './useLanding';
-import { ArrowRight, AudioLines, Check } from 'lucide-react';
+import { ArrowRight, AudioLines } from 'lucide-react';
 import { Btn } from '@/components/common/Btn';
 
 type Props = Pick<ReturnType<typeof useLanding>, 'go'>;
@@ -15,14 +15,10 @@ export function LandingElApoyoQue({ go }: Props) {
           <Btn size="lg" className="asha-btn asha-btn--lg landing-primary" onClick={() => go('register')}>Solicitar cuenta <ArrowRight size={24}/></Btn>
           <a className="asha-btn asha-btn--outline asha-btn--lg" href="#landing-specialists">Explorar terapeutas</a>
         </div>
-        <ul className="landing-benefits">
-          <li><Check size={24}/><span>Acompañamiento familiar</span></li>
-          <li><Check size={24}/><span>Aprendizaje con juego</span></li>
-        </ul>
       </div>
       <div className="landing-ashi-scene">
         <PublicIllustration className="landing-ashi-hero" sizes="(max-width: 1023px) 100vw, 930px" src="/illustrations/ashi-hero-v1.png" alt="Ashi, robot blanco y violeta con sonrisa luminosa y corazón verde agua, saluda junto a bloques de letras." fetchPriority="high"/>
-        <div className="landing-ashi-bubble"><strong>¡Hola! Soy Ashi</strong><span>Tu asistente de IA</span><small>Demostración</small></div>
+        <div className="landing-ashi-bubble"><strong>¡Hola! Soy Ashi</strong><span>Tu asistente de IA</span></div>
         <AudioLines className="landing-voice-decoration" size={72} strokeWidth={2.2} aria-hidden="true"/>
       </div>
     </div>

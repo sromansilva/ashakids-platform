@@ -6,7 +6,7 @@ import { Isotipo } from "@/components/illustrations/Isotipo";
 import { MobileTopBar } from "@/components/common/MobileTopBar";
 
 import { PublicDialog } from '../landing/PublicDialog';
-const anchors = [{label: "Cómo funciona", id: "landing-steps"}, {label: "Especialistas", id: "landing-specialists"}, {label: "Mundo ASHA", id: "landing-worlds"}, {label: "Preguntas frecuentes", id: "landing-faq"}];
+const anchors = [{label: "Cómo funciona", id: "landing-steps"}, {label: "Mundo ASHA", id: "landing-worlds"}, {label: "Especialistas", id: "landing-specialists"}, {label: "Preguntas frecuentes", id: "landing-faq"}];
 
 // â”€â”€â”€ Shared public nav â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 

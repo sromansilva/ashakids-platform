@@ -127,3 +127,13 @@ permanece visible y fijo en DNI; la consulta RENIEC sigue deshabilitada. Los cam
 usan separación vertical explícita para que etiquetas y bordes no se superpongan.
 Auditoría retira el aviso descriptivo superior solicitado; conserva títulos, eventos,
 errores y estados vacíos. Sin cambios de permisos ni operaciones clínicas.
+
+## V83 — navegación y hero de landing
+
+Las cuatro secciones principales aparecen inmediatamente tras el hero: Cómo funciona,
+Mundo ASHA, Especialistas y Preguntas frecuentes. Menú desktop/móvil en el mismo orden,
+con anclas internas. Audiencias, terapias, ejemplos y newsletter se conservan después.
+Se retiran los dos indicadores con check y Demostración sólo de la burbuja decorativa.
+El asistente interactivo conserva su aviso. Título desktop clamp(51px,4.8vw,73px),
+introducción clamp(19px,1.78vw,27px), título móvil 33px; Nunito, paleta, Ashi y controles
+existentes conservados. Ver docs/evidence/landing-v83/verification.md.

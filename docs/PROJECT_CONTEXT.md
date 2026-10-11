@@ -1,3 +1,11 @@
+## V83 - Orden de navegación y limpieza del hero / 2026-10-11
+
+Rama feat/piero-dev; base V82/e925f7164d5a3f95104cffe7852a982da2594c1b. Navbar de escritorio y móvil y secciones principales siguen Cómo funciona → Mundo ASHA → Especialistas → Preguntas frecuentes, inmediatamente después del hero. Audiencias, terapias y ejemplos se conservan después de FAQ; newsletter permanece al final. Enlaces internos por hash, sin abandonar la landing. Hero sin los dos indicadores con check ni la etiqueta Demostración de la burbuja; aviso de demostración del asistente interactivo conservado. Tipografía del hero reducida ligeramente (aprox. 4% escritorio, título móvil 33 px).
+
+PASS: typecheck, check:frontend (369 archivos, máximo 495 líneas), build (1924 módulos), cuatro pruebas existentes de interactions y detector sin hallazgos. Navegador: cuatro enlaces desktop y cuatro móvil, menú móvil cierra al navegar, orden DOM y sin overflow en 1159 px y 375 px. Advertencias: Node DEP0205 y aviso React fetchPriority preexistente en PublicIllustration, no corregido en este alcance. Graphify AST local refresh/check. No login, escrituras de BD, correo, Zoom ni suite completa. Evidencia: docs/evidence/landing-v83/verification.md y capturas. Ajuste UX/UI, no nueva auditoría académica.
+
+Vista local localhost:5174, proxy /api hacia API8000, override sólo del proceso; archivos .env intactos. Cierre autorizado con commit V83 y publicación normal a dev/feat/piero-dev; el resultado real de refs se registra al comprobar. Siguiente: aceptación visual del usuario y ajustes pequeños según sistema v1.1. CI/despliegue no certificados por este corte.
+
 ## V74 - Actualización de documentación maestra / 2026-10-11
 
 Base V73/09afec8911c3a043343df0c14db1967f15a24960, feat/piero-dev; fetch confirma dev y rama de usuario sincronizadas. Maestro/PDF actualizados con avances V47-V73, estado de módulos, flujo, ampliaciones de datos, contrato local de 87 operaciones, seguridad, integraciones, evidencia heredada y pendientes. Nombre PDF V46 conservado; antecedentes originales rotulados históricos. Exportador permite generar sólo maestro y pie de corte vigente. Evidencia: docs/evidence/documentacion-maestra-2026-10-11.
