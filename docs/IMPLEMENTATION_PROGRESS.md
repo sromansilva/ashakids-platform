@@ -1544,3 +1544,7 @@ Graphify refresh/check y revisión de diff/secretos antes de commit/push. Merge 
 publicado en dev/codex/landing-publica sin reescribir commits; verificar SHA efectivo
 con git log/ls-remote. .gitignore previo del usuario preservado sin versionarlo.
 Siguiente: aceptación visual real del administrador; no afirmar despliegue por push.
+
+## V75 - Espaciado y foco de campos ADMIN / 2026-10-11
+
+Corrección CSS de inputs, selects y textareas de ADMIN: contorno de teclado interior para evitar invadir etiquetas. El modal de alta separa filas contiguas 16 px, presenta los controles como bloques y limita su ancho. Comprobación local del DNI enfocado: separación de 15.996 px respecto a la etiqueta de apellidos. Build Vite aprobado antes de sincronizar; sin altas reales ni cambios en BD. Trabajo previo del formulario conservado fuera de este commit. Base remota V74 integrada por rebase sin conflictos. No se acredita despliegue de Render.
