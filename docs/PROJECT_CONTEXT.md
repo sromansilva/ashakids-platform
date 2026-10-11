@@ -137,6 +137,30 @@ Capturas/comparación y límites en [evidencia](evidence/landing-v51/verificatio
 Graphify setup/query/refresh/check al cierre, mapa no versionado.
 No auditoría técnica nueva, backend ni integraciones externas verificadas.
 Siguiente: revisión humana del corte local y recursos Ashi; sólo publicar tras aprobación.
+## V52 — adjuntos persistentes en mensajes / 2026-10-10
+
+PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar
+sus metadatos, visualizar imágenes/audio/video y descargarlo desde el chat. Formatos:
+JPG/PNG/GIF/WebP, MP3/WAV/OGG, MP4/WebM, PDF/TXT. Límite10MB por archivo y20envíos/hora
+por emisor. La comprobación de permisos usa participantes de la conversación; para
+nuevos envíos exige el vínculo vigente y chat abierto, como el texto existente.
+
+mensaje_adjuntos se conecta mediante ORM/FastAPI. Migración009 añade contenido BYTEA
+nullable, UUID de envío único y SHA256: mensaje+archivo se confirman en una transacción,
+reintento idéntico devuelve el mismo mensaje. Lecturas de historial cargan solo metadatos;
+contenido se lee mediante descarga autorizada y no se devuelve en JSON ni URL pública.
+El navegador carga medios al pulsar Ver archivo y revoca el blob al salir.
+
+Se elige almacenamiento binario acotado en PostgreSQL porque existe infraestructura
+persistente y solo una clave Supabase pública, insuficiente para un bucket privado.
+Evita guardar en disco efímero de Render; no añade claves ni cambia autenticación.
+Escala futura: mover archivos grandes a storage privado manteniendo el contrato.
+Migración009 adoptada en BD compartida con respaldo verificado y filas conservadas.
+No archivos/pacientes reales creados para pruebas; evidencia local sintética y metadatos
+saneados en [attachments-v52](evidence/attachments-v52/verification.md).
+ADR [0021](decisions/0021-adjuntos-pequenos-transaccionales.md). El contenido legada sin
+bytes no se recupera desde URLs externas. No antivirus/transcodificación ni extracción
+confiable de duración; se verifica formato por extensión y cabecera, no integridad total.
 
 ## V50 — cinco mundos básicos persistentes / 2026-10-10
 
@@ -1174,6 +1198,52 @@ del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
 
+## V63 — filtros de citas y limpieza de sesiones ADMIN / 2026-10-11
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base7e958c8/V59;
+rama feat/piero-dev, autor Piero2311 <pieroah26@gmail.com>. El usuario autorizó
+publicar los ajustes acumulados en dev y sincronizar su rama. SHA efectivo en Git.
+
+AdminCitas: filtros acumulativos por terapeuta (ID), modalidad, fechas desde/hasta
+y estado; consulta todas las páginas con useAppointments/readAllPages. Fechas
+inclusivas por inicio de cita en Lima; extremos opcionales, validación de rango,
+conteo de coincidencias y Limpiar filtros. Se retiran del listado Crear cita,
+reprogramar, cancelar y confirmar; Detalle y SessionActions se conservan.
+AdminSesiones: retirados avisos azules e indicadores de red Sin medición, junto
+con campos de calidad/latencia/incidencias sin medición del detalle. Consulta,
+permisos, estados y reportes existentes conservados. Sin backend/BD modificados.
+
+Verificación nueva local:28 pruebas (3filtros con límites Lima y25remediation),
+typecheck y checkfrontend347/máximo500 correctos; detectorUI[] en ambas pantallas.
+Error TS inicial por opción exact de Testing Library corregido y3pruebas repetidas
+correctas. Graphify2431nodos/111comunidades y checkvigente. Build del índice Git
+comprobado antes de publicar; no certifica recorrido completo ni datos productivos.
+Diff/secretos/referencias revisados antes del push. No auditoría/PDF nuevos.
+
+Adjuntos y sus cambios/documentación anteriores permanecen locales fuera del
+commit. La restricción de no publicar mientras se acumulaban ajustes queda
+superada por la autorización actual de cierre. Sin force-push ni rama Codex.
+Siguiente: aceptar filtros en web desplegada y continuar los ajustes que el usuario
+solicite. No ampliar permisos API, pagos ni funciones clínicas por este cierre.
+
+## V65 — publicación de adjuntos del chat / 2026-10-11
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Rama feat/piero-dev,
+base 8d2ace2; autor Piero2311 <pieroah26@gmail.com>. Publicación de la implementación
+local de adjuntos autorizada en dev y sincronización de la rama propia.
+Envío multipart y descarga privados, metadatos de historial, vista previa de medios,
+UUID de reintento, límite 10 MB y permisos de participantes. ADR y migración009
+existentes incluidos; no se vuelve a ejecutar DDL ni se escriben datos compartidos.
+Evidencia attachments-v52 es heredada del 10/11 de octubre, no pruebas nuevas.
+Validación nueva: 18 pruebas frontend chat, 25 backend mensajería correctas;
+2 pruebas SQL omitidas sin habilitar base descartable. Tipos, checkfrontend360
+y build1917 correctos. Comando inicial backend con nombre inexistente corregido;
+Python global sin pytest, se utilizó backend/.venv. Advertencia DEP0205 heredada.
+Graphify refresh/check local. Integrar el nuevo cambio de correos origin/dev9184689
+antes de publicar; SHA/push efectivos consultables en Git. Sin nueva auditoría/PDF.
+Siguiente: aceptación de envío/descarga en web desplegada por participantes autorizados;
+no afirmar despliegue por el push ni volver a aplicar una migración ya adoptada.
+
 ## V67 — rediseño visual de administración (local)
 
 2026-10-11. Rama codex/landing-publica, base fb471a3/V62. Sólo presentación
@@ -1190,3 +1260,21 @@ Fetch: origin/dev avanzó a 61e6a39, contiene V63–V66 y refinamientos de corre
 esta versión continúa como V67. No integrados ni publicados en este corte local.
 Pendiente: aprobación visual e integrar dev/reverificar antes de publicar; conservar
 .gitignore previo del usuario. Sin cambios de arquitectura ni ADR necesarios.
+
+## V68 — integración y publicación del administrador
+
+2026-10-11. Publicación visual aprobada por el usuario. Integración de V67
+5312b27 con origin/dev 61e6a39, conservando sus cambios de citas/sesiones,
+adjuntos y correos. Los dos conflictos documentales (contexto/progreso) se
+resolvieron conservando ambas secciones; sin conflictos en código. Backend
+idéntico a dev: ninguna modificación propia de backend ni operación de BD.
+Verificación nueva: tipos/check360/build1917 PASS; 25 rutas +293 componentes en
+21 archivos PASS; 9 unitarias de correo PASS. Chrome: 12 rutas admin y modal,
+incidencias/error/destino de acción, 1536/1024/390, Nunito/imágenes/movimiento
+reducido y aislamiento terapeuta PASS con todas las API interceptadas. Sin
+cuentas reales, escrituras, correos enviados, migraciones ni Zoom. Graphify
+refresh/check, diff/secretos y referencias revisados. Evidencia integration-v68.
+Publicación dev y codex/landing-publica, sin force-push; SHA final y resultado
+efectivo consultables en Git/remoto. .gitignore del usuario queda fuera del commit.
+El push no certifica despliegue Render; siguiente paso: aceptación visual con la
+cuenta administrativa del usuario. Responsive completo permanece diferido.

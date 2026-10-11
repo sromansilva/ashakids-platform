@@ -119,7 +119,7 @@ async def enviar(db, identity, key, data):
     if active is None:
         raise HTTPException(403, 'El envío requiere una asignación activa y participantes habilitados.')
     message = Mensaje(id_conversacion=key, id_usuario_emisor=identity[0].id_usuario,
-                      texto_mensaje=data.texto_mensaje, leido=False)
+                      texto_mensaje=data.texto_mensaje, leido=False, adjuntos=[])
     db.add(message)
     row.ultima_actividad = func.now()
     await db.flush()

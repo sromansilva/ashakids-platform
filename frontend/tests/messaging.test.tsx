@@ -1,6 +1,44 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { vi, it, expect } from 'vitest';
 import { renderRoute } from './helpers';
+
+it('sends a file without text and clears it only after server confirmation', async () => {
+  const saved = { id_mensaje: 11, id_conversacion: 12, id_usuario_emisor: 1, texto_mensaje: null, fecha_envio: message.fecha_envio,
+    adjuntos: [{ id_adjunto: 8, nombre_archivo: 'nota.txt', mime_type: 'text/plain', tamano_bytes: 4, duracion_segundos: null }] };
+  let uploaded: RequestInit | undefined;
+  api((path, method, init) => {
+    if (path.endsWith('/mensajes/adjunto') && method === 'POST') { uploaded = init; return response(saved, 201); }
+    if (path.endsWith('/mensajes') && uploaded) return response({ items: [message, saved], next_before_id: null });
+  });
+  renderRoute('/padre/mensajes', 'PADRE'); await open();
+  const input = screen.getByLabelText('Adjuntar archivo');
+  fireEvent.change(input, { target: { files: [new File(['Nota'], 'nota.txt', { type: 'text/plain' })] } });
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar mensaje' }));
+  await screen.findByText('Mensaje guardado en el servidor.');
+  expect(uploaded?.body).toBeInstanceOf(FormData);
+  expect((uploaded?.body as FormData).get('archivo')).toBeInstanceOf(File);
+  expect(new Headers(uploaded?.headers).has('Content-Type')).toBe(false);
+  expect(screen.queryByRole('button', { name: 'Quitar archivo' })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Descargar archivo' })).toBeInTheDocument();
+});
+
+it('retains file and upload key after a network error and rejects oversized selection', async () => {
+  const keys: FormDataEntryValue[] = [];
+  api((path, method, init) => {
+    if (path.endsWith('/mensajes/adjunto') && method === 'POST') { keys.push((init.body as FormData).get('clave_envio')!); return response({ detail: 'No se confirmó el envío' }, 503); }
+  });
+  renderRoute('/padre/mensajes', 'PADRE'); await open();
+  fireEvent.change(screen.getByLabelText('Adjuntar archivo'), { target: { files: [new File(['Nota'], 'nota.txt')] } });
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar mensaje' })); await screen.findByRole('alert');
+  expect(screen.getByText('Seleccionado: nota.txt')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar mensaje' }));
+  await waitFor(() => expect(keys).toHaveLength(2)); expect(keys[0]).toBe(keys[1]);
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Quitar archivo' })).not.toBeDisabled());
+  fireEvent.click(screen.getByRole('button', { name: 'Quitar archivo' }));
+  fireEvent.change(screen.getByLabelText('Adjuntar archivo'), { target: { files: [new File([new Uint8Array(10 * 1024 * 1024 + 1)], 'large.txt')] } });
+  expect(screen.getByText('Selecciona un archivo no vacío de hasta 10 MB.')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Enviar mensaje' })).toBeDisabled();
+});
 const contact = { id_tutor: 3, id_terapeuta: 4, tutor_nombre: 'Familia sintética', terapeuta_nombre: 'Profesional sintético' };
 const conversation = { ...contact, id_conversacion: 12, estado: 'ACTIVA', ultima_actividad: '2026-10-09T15:00:00Z', puede_enviar: true, id_usuario_tutor: 1, id_usuario_terapeuta: 2 };
 const message = { id_mensaje: 10, id_conversacion: 12, id_usuario_emisor: 2, texto_mensaje: 'Mensaje persistente del profesional', fecha_envio: '2026-10-09T15:00:00Z' };

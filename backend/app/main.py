@@ -15,7 +15,8 @@ from app.api.v1.padres import router as padres_router
 from app.api.v1.terapeutas import router as terapeutas_router
 from app.core.config import settings
 from app.core import database
-from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones, juegos, newsletter, incidencias
+from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones, juegos, newsletter, adjuntos, incidencias
+from app.services.adjuntos import LimiteAdjuntos
 from app.services.recordatorios import ejecutar as ejecutar_recordatorios
 
 
@@ -70,13 +71,14 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["X-Total-Count"],
 )
+app.add_middleware(LimiteAdjuntos)
 
 # Inclusión de routers de API v1
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(padres_router, prefix=settings.API_V1_PREFIX)
 app.include_router(terapeutas_router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin_router, prefix=settings.API_V1_PREFIX)
-for domain in (usuarios, pacientes, citas, sesiones, mensajeria, notificaciones, juegos, newsletter, incidencias):
+for domain in (usuarios, pacientes, citas, sesiones, mensajeria, notificaciones, juegos, newsletter, adjuntos, incidencias):
     app.include_router(domain.router, prefix=settings.API_V1_PREFIX)
 
 
