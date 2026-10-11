@@ -98,6 +98,11 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
         except DBAPIError as exc:
             await rollback_safely(session)
             sqlstate = getattr(exc.orig, "sqlstate", None)
+            logger.error(
+                "Error de base de datos: driver=%s sqlstate=%s",
+                type(exc.orig).__name__,
+                sqlstate or "unknown",
+            )
             if sqlstate in {"40001", "40P01"}:
                 raise HTTPException(409, "Conflicto concurrente. Reintente la operación.") from None
             raise HTTPException(503, "Base de datos temporalmente no disponible.") from None

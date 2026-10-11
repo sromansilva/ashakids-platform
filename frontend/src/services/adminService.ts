@@ -19,9 +19,11 @@ export const adminService = {
     return apiClient.get("/admin/auditoria");
   },
   async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
-    const { password, hijos, ...adulto } = payload;
+    const { password, hijos, tipo_documento: _tipoDocumento, numero_documento: _numeroDocumento, ...adulto } = payload;
     return apiClient.post<OperacionCuentaResponse>("/admin/familias", {
-      ...adulto, hijos: hijos ?? [],
+      ...adulto,
+      // edad se usa para validar la captura; el backend persiste la fecha de nacimiento.
+      hijos: (hijos ?? []).map(({ edad: _edad, ...hijo }) => hijo),
     });
   },
   /**

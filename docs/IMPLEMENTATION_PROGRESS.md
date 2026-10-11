@@ -1544,6 +1544,10 @@ Graphify refresh/check y revisión de diff/secretos antes de commit/push. Merge 
 publicado en dev/codex/landing-publica sin reescribir commits; verificar SHA efectivo
 con git log/ls-remote. .gitignore previo del usuario preservado sin versionarlo.
 Siguiente: aceptación visual real del administrador; no afirmar despliegue por push.
+## V75 - Espaciado y foco de campos ADMIN / 2026-10-11
+
+Corrección CSS de inputs, selects y textareas de ADMIN: contorno de teclado interior para evitar invadir etiquetas. El modal de alta separa filas contiguas 16 px, presenta los controles como bloques y limita su ancho. Comprobación local del DNI enfocado: separación de 15.996 px respecto a la etiqueta de apellidos. Build Vite aprobado antes de sincronizar; sin altas reales ni cambios en BD. Trabajo previo del formulario conservado fuera de este commit. Base remota V74 integrada por rebase sin conflictos. No se acredita despliegue de Render.
+
 ## V75 - Guía glassmorphism del sistema visual / 2026-10-11
 
-Se amplía `docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md` a versión 1.1. Formaliza el alcance de `asha-glass`, tokens de opacidad/borde/desenfoque, contraste, superficies apropiadas, exclusiones para contenido clínico/formularios, fallback sólido, comportamiento móvil y movimiento reducido. Aclara que la landing ya usa glass selectivamente y que el kit completo no está adoptado globalmente. Cambio documental; no modifica UI de producción ni afirma verificación visual nueva. Skill impeccable consultada; lanzador de contexto no estaba disponible. Cierre V75 con commit/push normal a dev y feat/piero-dev.
+Se amplía `docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md` a versión 1.1. Formaliza el alcance de `asha-glass`, tokens de opacidad/borde/desenfoque, contraste, superficies apropiadas, exclusiones para contenido clínico/formularios, fallback sólido, comportamiento móvil y movimiento reducido. Aclara que la landing ya usa glass selectivamente y que el kit completo no está adoptado globalmente. Cambio documental; no modifica UI de producción ni afirma verificación visual nueva. Commit local `8bf96b1`; publicación se completará con la integración concurrente de dev.

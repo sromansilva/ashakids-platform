@@ -35,13 +35,6 @@ export function AdminAuditoria() {
 
   return (
     <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      <div className="flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3 mb-5">
-        <Shield size={16} className="text-blue-600 flex-shrink-0 mt-0.5" />
-        <p className="text-xs font-medium text-blue-800">
-          <span className="font-extrabold">Registro de acciones administrativas.</span> Se muestran actor, acción y fecha. Los datos personales y detalles clínicos del evento no se exponen aquí.
-        </p>
-      </div>
-
       <div className="mb-6">
         <h2 className="text-2xl font-black text-[#1C1135]">Auditoría y seguridad</h2>
         <p className="text-sm text-[#7C6F9A] font-medium">Eventos registrados por el sistema · {total} en total</p>

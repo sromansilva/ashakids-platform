@@ -448,3 +448,14 @@ Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos 
 del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
+
+## V76 — captura local de DNI y formulario ADMIN compartido
+
+El DNI de ocho dígitos existe únicamente en el estado del formulario de alta y se
+descarta antes de construir el payload HTTP. RENIEC no tiene integración activa y la
+tabla `tutores` conserva su estructura inicial, sin migración ni nuevos atributos ORM.
+
+En React, `AdminFormDialog` define el contenedor accesible y la presentación común para
+formularios administrativos simples. El alta de familia conserva un modal especializado
+de tres pasos por su captura compuesta de adulto e hijos. No cambian rutas, permisos,
+autenticación ni autoridad del backend.

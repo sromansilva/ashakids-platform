@@ -117,3 +117,13 @@ Contenido/ML conservan Próximamente, sin afirmar nuevas funciones.
 Configuración se organiza en dos columnas; auditoría e incidencias mantienen datos
 y controles vigentes. Sin modificación visual del panel padre o terapeuta.
 Evidencia y límites: [verificación V67](docs/evidence/admin-visual-v67/verification.md).
+
+## V76 — formularios administrativos
+
+Los formularios modales de cuentas, usuarios y pacientes comparten cabecera con icono,
+superficie lavanda, campos blancos, etiquetas externas, controles de 48 px y pie de
+acciones fijo. El alta de familia conserva su flujo de tres pasos. Tipo de documento
+permanece visible y fijo en DNI; la consulta RENIEC sigue deshabilitada. Los campos
+usan separación vertical explícita para que etiquetas y bordes no se superpongan.
+Auditoría retira el aviso descriptivo superior solicitado; conserva títulos, eventos,
+errores y estados vacíos. Sin cambios de permisos ni operaciones clínicas.

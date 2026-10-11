@@ -1312,6 +1312,24 @@ Publicación dev y codex/landing-publica, sin force-push; SHA final y resultado
 efectivo consultables en Git/remoto. .gitignore del usuario queda fuera del commit.
 El push no certifica despliegue Render; siguiente paso: aceptación visual con la
 cuenta administrativa del usuario. Responsive completo permanece diferido.
+## V76 — formularios ADMIN y documento DNI / 2026-10-11
+
+La creación de familia usa tres pasos: identificación, contacto/dirección e hijos.
+El alcance actual admite únicamente DNI de ocho dígitos. El valor se mantiene en el
+estado local `formPadre.numero_documento` para la futura consulta RENIEC, visible y
+deshabilitada, pero no se envía ni persiste. La tabla `tutores` conserva su estructura
+inicial. Cada hijo se captura individualmente, con edad de 3 a 12 años, y se añade a
+la lista antes de crear la cuenta.
+
+Edición de cuentas, alta/edición de usuarios y alta/edición de pacientes reutilizan
+`AdminFormDialog`: cabecera, jerarquía, panel lavanda, campos blancos y pie de acciones
+del sistema visual V67. Auditoría ya no muestra el aviso descriptivo azul superior.
+
+Durante la revisión se comprobó `/health/ready` y una consulta de usuarios. El 503 de
+Gestión de Cuentas era causado por una modificación ORM local que esperaba columnas
+no existentes en `tutores`; esa modificación y su migración se retiraron por decisión
+del usuario. No se ejecutó DDL ni se modificó la base compartida.
+
 ## Sistema visual: glassmorphism / V75
 
 La versión 1.1 de `docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md` documenta glass opt-in: 84% blanco, borde violeta 12%, blur 14px sobre fondos claros; fallback blanco y móvil opaco sin blur bajo 768px. Reservarlo para navegación, tarjetas ilustradas y paneles breves. Formularios y datos clínicos mantienen superficies sólidas. La landing ya aplica glass selectivamente; otros módulos no se consideran migrados por esta especificación. Contraste se revisa sobre el fondo final.

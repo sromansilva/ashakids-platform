@@ -9,6 +9,27 @@
 .asha-admin ::selection { color: #2d1b69; background: #ddd6fe; }
 .asha-admin :is(button,a,input,select,textarea):focus-visible { outline: 3px solid #5b21b6; outline-offset: 3px; }
 .asha-admin :is(input,textarea) { caret-color: #7c3aed; }
+/* Keep keyboard focus visible inside fields, away from adjacent labels. */
+.asha-admin :is(input,select,textarea):focus-visible {
+  outline: 2px solid #5b21b6;
+  outline-offset: -2px;
+}
+.asha-admin [aria-labelledby="create-account-title"] label {
+  display: block;
+  min-width: 0;
+}
+.asha-admin [aria-labelledby="create-account-title"] label > :is(input,select,textarea) {
+  display: block;
+  margin-top: 0.375rem;
+  min-width: 0;
+  max-width: 100%;
+}
+.asha-admin [aria-labelledby="create-account-title"] .grid:has(> label) {
+  row-gap: 1rem;
+}
+.asha-admin [aria-labelledby="create-account-title"] .grid:has(> label) + .grid:has(> label) {
+  margin-top: 1rem;
+}
 .asha-admin button { transition-duration: .18s; }
 .asha-admin button:disabled { cursor: not-allowed; }
 .admin-support-rail { display: none; }
