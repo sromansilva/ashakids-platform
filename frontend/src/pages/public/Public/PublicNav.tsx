@@ -22,10 +22,14 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
       <div className="hidden md:flex max-w-7xl mx-auto px-4 sm:px-6 items-center justify-between h-16">
         <button onClick={() => go("landing")} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border border-transparent hover:border-[#E8E5F4] hover:shadow-sm transition-all ${cur === 'landing' ? 'landing-brand' : ''}`}>
           <Isotipo size={32} />
-          {cur === 'landing' ? <span className="landing-wordmark"><span>Asha</span><span>Kids</span></span> : <span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span>}
+          {cur === 'landing' ? <span className="landing-wordmark"><span>Asha</span><span>Kids</span><i className="landing-logo-rays" aria-hidden="true"/></span> : <span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span>}
         </button>
         <div className="hidden md:flex items-center gap-1">
-          {links.map(l => (
+          {cur === 'landing' ? <>
+            <a className="landing-nav-link" href="#landing-steps">Cómo funciona</a>
+            <button className="landing-nav-link" onClick={() => go('public/mundo')}>Mundo ASHA</button>
+            <a className="landing-nav-link" href="#landing-faq">Preguntas frecuentes</a>
+          </> : links.map(l => (
             <button key={l.view} onClick={() => go(l.view)}
               className={`px-3 py-1.5 rounded-xl text-sm font-bold transition-colors ${cur === l.view ? "text-violet-700 bg-violet-50" : "text-[#7C6F9A] hover:text-violet-700 hover:bg-violet-50"}`}>
               {l.label}

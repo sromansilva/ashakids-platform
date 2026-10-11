@@ -4,12 +4,13 @@ import { Isotipo } from "@/components/illustrations/Isotipo";
 
 // ─── Shared public nav ────────────────────────────────────────────────────────
 
-export function PublicFooter({ go }: { go: (v: View) => void }) {
+export function PublicFooter({ go, landing = false }: { go: (v: View) => void; landing?: boolean }) {
   const cols = [
     { title: "Plataforma",  links: [{ l: "Especialistas", v: "public/especialistas" as View }, { l: "Mundo ASHA", v: "public/mundo" as View }, { l: "ASHI Intelligence", v: "public/ashi" as View }] },
     { title: "Empresa",     links: [{ l: "Sobre Nosotros", v: "public/nosotros" as View }, { l: "Historias", v: "public/historias" as View }, { l: "Trabaja con nosotros", v: "public/trabaja" as View }] },
     { title: "Soporte",     links: [{ l: "Centro de Ayuda", v: "public/ayuda" as View }, { l: "Contacto", v: "public/contacto" as View }] },
   ];
+  if (landing) cols[0]?.links.push({ l: 'Recursos', v: 'public/recursos' });
   return (
     <footer style={{ background: B.violetDeep }} className="text-white mt-16">
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8">

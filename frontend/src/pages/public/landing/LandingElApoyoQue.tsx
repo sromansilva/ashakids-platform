@@ -1,30 +1,29 @@
 import type { useLanding } from './useLanding';
-import { ArrowRight, AudioLines, MessageCircle, ShieldCheck, Target } from 'lucide-react';
+import { ArrowRight, AudioLines, Check } from 'lucide-react';
 import { Btn } from '@/components/common/Btn';
+
 type Props = Pick<ReturnType<typeof useLanding>, 'go'>;
 export function LandingElApoyoQue({ go }: Props) {
-  return <section className="landing-hero">
+  return <section className="landing-hero landing-reference-hero">
     <div className="landing-container landing-hero-layout">
       <div className="landing-hero-copy">
-        <p className="landing-purpose">Plataforma de apoyo para terapia de lenguaje infantil</p>
-        <h1>El apoyo que<br/>tu hijo necesita,<br/><span>en un solo lugar</span></h1>
-        <p className="landing-intro">Conecta con terapeutas certificados, agenda sesiones virtuales y acompaña el desarrollo de tu hijo desde cualquier lugar.</p>
-        <Btn size="lg" variant="cta" onClick={() => go('login')} className="asha-btn asha-btn--lg landing-primary">Iniciar sesión <ArrowRight size={19}/></Btn>
+        <p className="landing-purpose">Terapia de lenguaje infantil</p>
+        <h1>Cada palabra,<br/><span className="landing-title-line">un pequeño <span>gran paso.</span></span></h1>
+        <p className="landing-intro">Un espacio para conectar a familias y terapeutas,<br className="landing-desktop-break"/> acompañar su desarrollo y aprender jugando.</p>
+        <div className="landing-hero-actions">
+          <Btn size="lg" className="asha-btn asha-btn--lg landing-primary" onClick={() => go('public/nosotros')}>Conocer ASHAKids <ArrowRight size={24}/></Btn>
+          <Btn size="lg" variant="outline" className="asha-btn asha-btn--outline asha-btn--lg" onClick={() => go('public/mundo')}>Explorar Mundo ASHA</Btn>
+        </div>
+        <ul className="landing-benefits">
+          <li><Check size={24}/><span>Acompañamiento familiar</span></li>
+          <li><Check size={24}/><span>Aprendizaje con juego</span></li>
+        </ul>
       </div>
-      {/* Reserved visual space: the approved Ashi robot asset is not available yet. */}
-      <div className="landing-language-art" aria-hidden="true" data-ashi-asset="pending">
-        <div className="landing-art-orbit"/>
-        <div className="landing-letter landing-letter-h">h</div><div className="landing-letter landing-letter-o">o</div>
-        <div className="landing-letter landing-letter-l">l</div><div className="landing-letter landing-letter-a">a</div>
-        <div className="landing-art-voice"><AudioLines size={40} strokeWidth={1.6}/></div>
-        <div className="landing-art-chat"><MessageCircle size={44} strokeWidth={1.5}/></div>
-        <div className="landing-art-caption">Cada palabra cuenta.</div>
+      <div className="landing-ashi-scene">
+        <img className="landing-ashi-hero" src="/illustrations/ashi-hero-v1.png" alt="Ashi, robot blanco y violeta con sonrisa luminosa y corazón verde agua, saluda junto a bloques de letras." fetchPriority="high"/>
+        <div className="landing-ashi-bubble"><strong>¡Hola! Soy Ashi</strong><span>Tu asistente de IA</span><small>Demostración</small></div>
+        <AudioLines className="landing-voice-decoration" size={72} strokeWidth={2.2} aria-hidden="true"/>
       </div>
     </div>
-    <ul className="landing-container landing-benefits">
-      <li><AudioLines size={22}/><span>Terapia del Lenguaje</span></li>
-      <li><Target size={22}/><span>Sesiones personalizadas</span></li>
-      <li><ShieldCheck size={22}/><span>Privacidad y acompañamiento</span></li>
-    </ul>
   </section>;
 }

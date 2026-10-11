@@ -1,3 +1,34 @@
+## V52 — Ashi y composición desktop, relevo local / 2026-10-10
+
+Objetivo: incorporar todo el pendiente visual de escritorio, incluida mascota, según
+referencia del usuario. Rama `codex/landing-publica`; padre local5dacd55/V51, incorpora
+remoto a6eda9f/V51 documental Zoom mediante merge local sin conflictos. Commit de fase
+V52 consultable en Git; no push, dev local396efda intacto. `.gitignore` previo excluido.
+
+Fuentes: Landing/hero/nuevoAudience, landing-reference.css; PublicNav condicional,
+PublicFooter con Recursos sólo landing; AshhiFloat appearance=landing, avatar robot
+público, nombre accesible de cierre. Cinco PNG transparentes en public/illustrations.
+No cambios de Btn/Crd, hooks, contratos, auth, API, permisos o BD. Texto visible del hero
+y tarjetas adaptado por nueva petición; resto de contenido/rutas conservado. Dock único
+con Demo explícita; WSP sólo URL, onda decorativa, newsletter sin nueva integración.
+Originales ImageGen conservados y prompts descriptivos/procedencia en evidenciaV52.
+
+Verificación nueva: npm typecheck/check345máximo498/build1905; npm test25rutas y
+281componentes/18archivos. Chrome API/v1 interceptada401: desktop1536/1440/1280,
+assets cargan, sin overflow/controles<44px;5FAQ,5destinos, Demo/Escape/foco/únicoWSP,
+anclaFAQ y reduced-motion; cero runtimeerrors. Capturas completas y viewport, máspanel,
+en docs/evidence/landing-v52. Diff/secretos revisados antes de commit; sin auditoría nueva.
+Graphify refresh/check final; advertencia heredada12fuentes sin símbolos.
+
+Incidencias: se corrigieron márgenes de tarjetas, tamaño/posición de Ashi y especificidad
+del logo inline; captura compara directamente referencia y corrige diferencias mayores.
+Los assets son recreaciones, con diferencias menores; PNG~7.1MB sin optimizar.
+Responsive V52 no verificado, diferido por usuario. Backend, IA real, envío WSP/correo,
+voz y sesiones privadas no certificados por este corte. Preview activo127.0.0.1:5176.
+
+Siguiente: revisión humana local. Mantener restricción de publicación; antes de publicar
+revisar remotos, imagenresponsive y optimización si se autoriza. No usar force-push.
+
 ## V51 — rediseño de landing pública, relevo local / 2026-10-10
 
 Objetivo: acercar la presentación pública a la imagen adjunta/kitv1 preservando V50.
@@ -1056,3 +1087,21 @@ evidencia docs/evidence/audit-2026-10-09-03/.
 - Próximo: juegos más llamativos y revisión profesional. ML/reporte mensual no implementados;
   resultados_nivel JSON dispone de respuesta, aciertos, tiempo, ayudas y versión para análisis
   futuro. Definir etiquetas antes de afirmar eficacia de mundos o emociones.
+
+## V51 — configuración privada de Zoom / 2026-10-10
+
+Objetivo: guardar las seis variables proporcionadas en Render para activar Zoom automático.
+Base limpia codex/2do-intento, HEAD/origin/dev/origin/codex/2do-intento iguales a
+5dd572cb37a679d5e8674a0cf1910426d925a1f9 tras git fetch origin; repositorio
+https://github.com/sromansilva/ashakids-platform. Guía consultada: DEPLOY_RENDER_ZOOM.md
+del escritorio. Cambios externos: seis variables ZOOM_* guardadas en ashakids, sin alterar
+otros valores ni crear segunda instancia. Save, rebuild, and deploy confirmó Live
+dep-db5em4flot8c73emqo2g /34,6s; código V50. Readiness HTTPS 200, ready/database reachable.
+Persistencia comprobada al volver a Environment; captura con secretos ocultos en
+docs/evidence/zoom-render-v51/environment.jpg. Archivos: contexto, relevo y evidencia.
+No cambios de fuentes, BD ni .env; sin suites nuevas o auditoría nueva. Knowledge check
+vigente y diff revisado antes del cierre documental. No errores de despliegue observados.
+Siguiente: aceptación humana de nueva reserva virtual (AUTOMATICA/enlace Zoom) y revisar
+licencia/duración: sin overrides producción usa 45; Basic requiere ambos valores en 40.
+No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
+integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.

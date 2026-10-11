@@ -1,3 +1,27 @@
+## V52 — Ashi y composición de referencia, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, avance anterior5dacd55 (V51 landing local). Incluye además
+`origin/dev` a6eda9f (V51 documentación Zoom), integrado localmente sin conflictos.
+V52 continúa la secuencia remota vigente; no se renombra el commit local anterior.
+Sin push ni integración de la landing en dev por instrucción del usuario.
+Dev local sigue396efda; `.gitignore` del usuario permanece fuera del commit.
+
+Recreaciones ImageGen desde la referencia: Ashi robot en hero/dock/panel público,
+familia, terapeuta y estrella/libros. Hero, navegación desktop y tarjetas adoptan
+textos/composición de la referencia por nueva petición expresa. Lower sections, FAQ,
+atribuciones, ejemplos y newsletter conservados; Recursos pasa al pie sólo en landing.
+Btn/Crd/hooks/rutas/API/BD sin cambios. Assistant reutilizado con variante visual local;
+Demo explícita, onda estática y URL WhatsApp existente, sin afirmar IA/voz/entrega reales.
+
+Checks:281componentes/18archivos,25rutas, typecheck, check345/máximo498, build1905módulos.
+Chrome desktop1536/1440/1280: imágenes cargan, sin overflow/controles<44px;5FAQ,
+5destinos, un WhatsApp, Demo/Escape/foco, anclaFAQ y movimiento reducido; cero errores.
+API interceptada401; no usuarios/BD ni servicios externos probados. Responsive V52
+diferido por prioridad explícita; evidencia móvil V51 no certifica este corte.
+Graphify refresh/check al cierre, mapa no versionado. [Evidencia](evidence/landing-v52/verification.md).
+Siguiente: aprobación humana del diseño local; responsive/optimización de PNG antes
+de publicar si se retoma ese alcance. No publicar hasta autorización.
+
 ## V51 — rediseño local de landing pública / 2026-10-10
 
 Rama `codex/landing-publica` creada desde el último `origin/dev`,
@@ -929,3 +953,16 @@ La agenda, el contrato de cita y Zoom comparten duración configurable: desarrol
 `zoom_origen` para distinguir enlaces creados automáticamente de respaldos profesionales. Las
 vistas PADRE, TERAPEUTA y ADMIN usan el `zoom_join_url` de la API y explican su procedencia; no
 construyen meeting IDs. La cuenta Zoom y la migración 007 siguen pendientes de prueba aislada.
+
+## V51 — configuración de Zoom en Render / 2026-10-10
+
+Las seis variables ZOOM_ENABLED, ZOOM_ACCOUNT_ID, ZOOM_CLIENT_ID, ZOOM_CLIENT_SECRET,
+ZOOM_HOST_USER_ID y ZOOM_API_BASE_URL se guardaron privadamente en el servicio ashakids.
+ZOOM_ENABLED=true; API base https://api.zoom.us/v2. No se versionaron credenciales.
+Render confirmó Live para dep-db5em4flot8c73emqo2g (34,6s), código dev/V50
+5dd572cb37a679d5e8674a0cf1910426d925a1f9. GET /health/ready respondió 200,
+status ready/database reachable. Evidencia: [Environment](evidence/zoom-render-v51/environment.jpg).
+No se crearon citas, usuarios ni reuniones para probar: falta aceptación de una reserva
+virtual con zoom_origen AUTOMATICA y enlace real. Duraciones existentes conservadas;
+sin overrides, producción usa 45 minutos; Zoom Basic requiere configurar ambas a 40.
+Registro operativo, no auditoría técnica nueva ni prueba de permisos OAuth de Zoom.

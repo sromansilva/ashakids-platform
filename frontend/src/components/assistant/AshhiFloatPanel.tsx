@@ -40,6 +40,7 @@ return (<div
               </span>
             </div>
             <button
+              aria-label="Cerrar asistente ASHI"
               onClick={closeAshi}
               className="p-1.5 rounded-xl"
               style={{ background: "rgba(255,255,255,.15)" }}
