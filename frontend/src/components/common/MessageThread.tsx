@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { ArrowLeft, Send, RefreshCw, Paperclip, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Send, RefreshCw, Paperclip, ShieldCheck, X } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useRemote, useWrite } from '@/hooks/useRemoteData';
 import { messagingService, type Conversation } from '@/services/messagingService';
@@ -14,6 +14,7 @@ export function MessageThread({ id, conversationSummary, draft, setDraft, onBack
   const [confirmed, setConfirmed] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState('');
+  const [showAttachmentModal, setShowAttachmentModal] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const key = useRef<string | null>(null);
   const conversation = useRemote(['conversation', id], signal => messagingService.get(id, signal));
@@ -44,21 +45,24 @@ export function MessageThread({ id, conversationSummary, draft, setDraft, onBack
         <time dateTime={message.fecha_envio} className="text-sm text-[#4B4264]">{new Date(message.fecha_envio).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'short' })} (Lima)</time>
       </li>;
     })}</ol>
-    <form className="message-composer space-y-3" onSubmit={event => { event.preventDefault(); if (!canSend || (!draft.trim() && !file) || !!fileError || send.isPending) return; setConfirmed(false); void send.submit(draft.trim()); }}>
+    <form className="message-composer" onSubmit={event => { event.preventDefault(); if (!canSend || (!draft.trim() && !file) || !!fileError || send.isPending) return; setConfirmed(false); void send.submit(draft.trim()); }}>
       <div className="message-composer-heading"><label htmlFor={`message-${id}`} className="font-bold text-base text-[#1C1135] block">Escribir mensaje</label><span><ShieldCheck size={14} aria-hidden="true" /> Mensaje privado</span></div>
-      <textarea id={`message-${id}`} value={draft} maxLength={4000} disabled={!canSend || send.isPending} onChange={event => { setDraft(event.target.value); key.current = null; setConfirmed(false); }} rows={3}
-        placeholder="Escribe aquí tu mensaje…" className="w-full rounded-xl border border-[#C8C2DC] p-3 text-base bg-white text-[#1C1135] focus-visible:outline-2 focus-visible:outline-violet-700 disabled:opacity-60" />
-      <p className="text-sm text-[#4B4264]">{draft.length}/4000 caracteres. Un archivo por mensaje, hasta 10 MB: JPG, PNG, GIF, WebP, MP3, WAV, OGG, MP4, WebM, PDF o TXT.</p>
-      <label className="message-attachment-label" htmlFor={`attachment-${id}`}><Paperclip size={18} aria-hidden="true"/>Adjuntar archivo</label>
-      <input ref={input} id={`attachment-${id}`} type="file" accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.mp4,.webm,.pdf,.txt" disabled={!canSend || send.isPending} className="block w-full min-w-0 text-sm text-[#4B4264]" onChange={event => {
-        const selected = event.target.files?.[0] ?? null; setFile(selected); key.current = null; setConfirmed(false);
-        setFileError(selected && (selected.size === 0 || selected.size > 10 * 1024 * 1024) ? 'Selecciona un archivo no vacío de hasta 10 MB.' : '');
-      }}/>
-      {file && <div className="flex flex-wrap items-center gap-2"><p className="break-all text-sm">Seleccionado: {file.name}</p><Btn size="sm" variant="ghost" disabled={send.isPending} onClick={() => { setFile(null); setFileError(''); key.current = null; if (input.current) input.current.value = ''; }}>Quitar archivo</Btn></div>}
+      <div className="message-composer-bar">
+        <textarea id={`message-${id}`} value={draft} maxLength={4000} disabled={!canSend || send.isPending} onChange={event => { setDraft(event.target.value); key.current = null; setConfirmed(false); }} rows={1}
+          placeholder="Escribe aquí tu mensaje…" className="message-composer-input" />
+        <button type="button" className="message-composer-tool" aria-label="Adjuntar archivo" disabled={!canSend || send.isPending} onClick={() => setShowAttachmentModal(true)}><Paperclip size={18} aria-hidden="true" /></button>
+        <button type="submit" className="message-composer-send" aria-label={send.isPending ? 'Guardando mensaje' : 'Enviar mensaje'} disabled={!canSend || (!draft.trim() && !file) || !!fileError || send.isPending}><Send size={17} aria-hidden="true" /></button>
+      </div>
+      <div className="message-composer-meta"><span>{draft.length}/4000 caracteres</span><span>Hasta 10 MB · JPG, PNG, PDF, audio o video</span></div>
+      {file && <div className="message-file-pill"><Paperclip size={14} aria-hidden="true" /><span className="break-all">{file.name}</span><button type="button" aria-label="Quitar archivo" disabled={send.isPending} onClick={() => { setFile(null); setFileError(''); key.current = null; if (input.current) input.current.value = ''; }}><X size={14} aria-hidden="true" /></button></div>}
       {fileError && <p role="alert" className="text-sm text-red-800">{fileError}</p>}
       <RemoteFeedback error={failure} />
       {confirmed && <p role="status" className="text-sm text-[#4B4264]">Mensaje guardado en el servidor.</p>}
-      <Btn type="submit" className="message-send-button min-h-11" disabled={!canSend || (!draft.trim() && !file) || !!fileError || send.isPending}><Send size={16} aria-hidden="true" />{send.isPending ? 'Guardando mensaje…' : 'Enviar mensaje'}</Btn>
+      <input ref={input} id={`attachment-${id}`} type="file" aria-hidden="true" tabIndex={-1} accept=".jpg,.jpeg,.png,.gif,.webp,.mp3,.wav,.ogg,.mp4,.webm,.pdf,.txt" disabled={!canSend || send.isPending} className="sr-only" onChange={event => {
+        const selected = event.target.files?.[0] ?? null; setFile(selected); key.current = null; setConfirmed(false);
+        setFileError(selected && (selected.size === 0 || selected.size > 10 * 1024 * 1024) ? 'Selecciona un archivo no vacío de hasta 10 MB.' : '');
+      }}/>
+      {showAttachmentModal && <div className="message-attachment-modal" role="presentation"><button type="button" className="message-attachment-backdrop" aria-label="Cerrar adjuntos" onClick={() => setShowAttachmentModal(false)} /><div className="message-attachment-dialog" role="dialog" aria-modal="true" aria-labelledby={`attachment-title-${id}`}><div className="message-attachment-dialog-heading"><div><p className="messages-panel-kicker">Conversación</p><h3 id={`attachment-title-${id}`}>Compartir un archivo</h3></div><button type="button" className="message-modal-close" aria-label="Cerrar adjuntos" onClick={() => setShowAttachmentModal(false)}><X size={18} aria-hidden="true" /></button></div><p className="message-attachment-dialog-copy">Selecciona un archivo para enviarlo junto con tu mensaje.</p><button type="button" className="message-attachment-picker" disabled={!canSend || send.isPending} onClick={() => input.current?.click()}><Paperclip size={20} aria-hidden="true" /><span><strong>{file ? 'Cambiar archivo' : 'Seleccionar archivo'}</strong><small>JPG, PNG, PDF, audio o video · máximo 10 MB</small></span></button>{file && <div className="message-modal-file">{file.name}<span>{Math.ceil(file.size / 1024)} KB</span></div>}{fileError && <p role="alert" className="text-sm text-red-800 mt-3">{fileError}</p>}<div className="message-attachment-dialog-actions"><Btn type="button" variant="ghost" onClick={() => setShowAttachmentModal(false)}>Cancelar</Btn><Btn type="button" disabled={!file || !!fileError} onClick={() => setShowAttachmentModal(false)}>Usar archivo</Btn></div></div></div>}
     </form>
   </>;
 }
