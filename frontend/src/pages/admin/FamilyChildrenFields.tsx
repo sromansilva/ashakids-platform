@@ -1,3 +1,5 @@
+import { childAge } from './childAge';
+import { AccountSelect } from './AccountSelect';
 import { Pencil, Plus, Save, Trash2, UserRound } from "lucide-react";
 import type { RegistroHijo } from "@/types/auth";
 
@@ -44,7 +46,7 @@ export function FamilyChildrenFields({ children, onChange, draft, onDraftChange,
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-violet-100 text-violet-700"><UserRound size={18} /></span>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-black text-slate-900">{child.nombres_paciente} {child.apellidos_paciente}</p>
-                  <p className="text-xs font-semibold text-slate-600">{child.edad} años · {child.sexo} · Nacimiento {child.fecha_nacimiento}</p>
+                  <p className="text-xs font-semibold text-slate-600">{childAge(child.fecha_nacimiento)} años · {child.sexo} · Nacimiento {child.fecha_nacimiento}</p>
                 </div>
               </div>
               <div className="flex shrink-0 gap-2">
@@ -61,9 +63,8 @@ export function FamilyChildrenFields({ children, onChange, draft, onDraftChange,
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="text-sm font-extrabold text-slate-700">Nombres del niño {draftHasValue && "*"}<input required={draftHasValue} maxLength={60} value={draft.nombres_paciente} onChange={(event) => onDraftChange({ ...draft, nombres_paciente: event.target.value })} className={inputClass} placeholder="Ej. Valentina" /></label>
           <label className="text-sm font-extrabold text-slate-700">Apellidos del niño {draftHasValue && "*"}<input required={draftHasValue} maxLength={80} value={draft.apellidos_paciente} onChange={(event) => onDraftChange({ ...draft, apellidos_paciente: event.target.value })} className={inputClass} placeholder="Ej. Pérez" /></label>
-          <label className="text-sm font-extrabold text-slate-700">Fecha de nacimiento {draftHasValue && "*"}<input type="date" required={draftHasValue} value={draft.fecha_nacimiento} onChange={(event) => onDraftChange({ ...draft, fecha_nacimiento: event.target.value })} className={inputClass} /></label>
-          <label className="text-sm font-extrabold text-slate-700">Edad {draftHasValue && "*"}<input type="number" required={draftHasValue} min={3} max={12} value={draft.edad ?? ""} onChange={(event) => onDraftChange({ ...draft, edad: event.target.value ? Number(event.target.value) : undefined })} className={inputClass} placeholder="Entre 3 y 12" /></label>
-          <label className="text-sm font-extrabold text-slate-700 sm:col-span-2">Sexo {draftHasValue && "*"}<select required={draftHasValue} value={draft.sexo} onChange={(event) => onDraftChange({ ...draft, sexo: event.target.value })} className={inputClass}><option value="Masculino">Masculino</option><option value="Femenino">Femenino</option><option value="Otro">Otro</option></select></label>
+          <label className="text-sm font-extrabold text-slate-700">Fecha de nacimiento {draftHasValue && "*"}<input type="date" required={draftHasValue} value={draft.fecha_nacimiento} onChange={(event) => onDraftChange({ ...draft, fecha_nacimiento: event.target.value, edad: childAge(event.target.value) })} className={inputClass} />{draft.fecha_nacimiento && childAge(draft.fecha_nacimiento) != null && <span className="mt-1.5 block text-xs font-medium text-slate-600">{childAge(draft.fecha_nacimiento)} años</span>}</label>
+          <label className="text-sm font-extrabold text-slate-700">Sexo {draftHasValue && "*"}<AccountSelect label="Sexo" disabled={disabled} value={draft.sexo} options={["Masculino", "Femenino", "Otro"]} onChange={(sexo) => onDraftChange({ ...draft, sexo })} /></label>
         </div>
         {draftError && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-bold text-red-800">{draftError}</p>}
         <div className="flex flex-col gap-2 border-t border-violet-100 pt-3 sm:flex-row sm:items-center sm:justify-between">
@@ -93,8 +94,8 @@ function LegacyFamilyChildrenFields({ children, onChange, disabled }: Pick<Famil
       <div className="grid gap-3 sm:grid-cols-2">
         <label className="text-sm font-extrabold text-slate-700">Nombres del niño *<input required value={active.nombres_paciente} onChange={(event) => updateActive({ nombres_paciente: event.target.value })} className={inputClass} /></label>
         <label className="text-sm font-extrabold text-slate-700">Apellidos del niño *<input required value={active.apellidos_paciente} onChange={(event) => updateActive({ apellidos_paciente: event.target.value })} className={inputClass} /></label>
-        <label className="text-sm font-extrabold text-slate-700">Fecha de nacimiento *<input required type="date" value={active.fecha_nacimiento} onChange={(event) => updateActive({ fecha_nacimiento: event.target.value })} className={inputClass} /></label>
-        <label className="text-sm font-extrabold text-slate-700">Sexo *<select required value={active.sexo} onChange={(event) => updateActive({ sexo: event.target.value })} className={inputClass}><option value="Masculino">Masculino</option><option value="Femenino">Femenino</option><option value="Otro">Otro</option></select></label>
+        <label className="text-sm font-extrabold text-slate-700">Fecha de nacimiento *<input required type="date" value={active.fecha_nacimiento} onChange={(event) => updateActive({ fecha_nacimiento: event.target.value, edad: childAge(event.target.value) })} className={inputClass} /></label>
+        <label className="text-sm font-extrabold text-slate-700">Sexo *<AccountSelect label="Sexo" disabled={disabled} value={active.sexo} options={["Masculino", "Femenino", "Otro"]} onChange={(sexo) => updateActive({ sexo })} /></label>
       </div>
       <button type="button" onClick={addChild} className="mt-3 inline-flex min-h-10 items-center gap-2 text-sm font-black text-violet-700"><Plus size={16} />Añadir otro hijo</button>
     </fieldset>

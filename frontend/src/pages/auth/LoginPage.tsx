@@ -6,7 +6,7 @@
 
 import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
-import { ArrowRight, AudioLines, ChevronLeft, CircleAlert, Clock3, Eye, EyeOff, Loader2, Lock, ShieldCheck, Target, User as UserIcon, Users } from "lucide-react";
+import { ArrowRight, AudioLines, ChevronLeft, CircleAlert, Eye, EyeOff, Loader2, Lock, ShieldCheck, User as UserIcon, Users } from "lucide-react";
 import { AshaKidsLogo } from "@/components/illustrations/AshaKidsLogo";
 import { useAuth } from "@/hooks/useAuth";
 import { SemanticRole } from "@/types/auth";
@@ -79,18 +79,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             <span className="login-letter login-letter-l">l</span><span className="login-letter login-letter-a">a</span>
             <span className="login-word-caption">Cada palabra cuenta.</span>
           </div>
-          <p>Conecta con los mejores especialistas y sigue el progreso de tu hijo en tiempo real.</p>
-          <ul className="login-benefits">
-            <li><AudioLines size={19} /><span>Lenguaje</span></li>
-            <li><Target size={19} /><span>Seguimiento</span></li>
-            <li><Clock3 size={19} /><span><strong>24/7</strong> Disponible</span></li>
-          </ul>
         </section>
         <div className="login-access">
           <section className="login-form-panel" aria-labelledby="login-title">
             <h1 id="login-title">Bienvenido de vuelta</h1>
             <p className="login-description">Inicia sesión con tu código de usuario de ASHAKids.</p>
-            <p className="mb-4 text-sm text-violet-900">¿Es tu primer acceso? Revisa tu correo para crear tu contraseña. <Link className="underline font-bold" to="/crear-contrasena">Solicitar enlace</Link></p>
             {errorMessage && <div role="alert" className="login-error"><CircleAlert size={19} /><span>{errorMessage}</span></div>}
             <form onSubmit={handleSubmit} className="login-form">
               <div className="login-field">
@@ -116,6 +109,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                 {isLoading ? <><Loader2 size={19} className="login-spinner" /><span>Iniciando sesión…</span></> : <>Iniciar sesión <ArrowRight size={19} /></>}
               </button>
             </form>
+            <p className="login-first-access">¿Es tu primer acceso? Revisa tu correo para crear tu contraseña. <Link className="underline font-bold" to="/crear-contrasena">Solicitar enlace</Link></p>
           </section>
           {import.meta.env.DEV && <section className="login-development" aria-label="Usuarios de desarrollo">
             <p>Usuarios de desarrollo (Fase 3A)</p>

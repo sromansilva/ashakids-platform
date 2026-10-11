@@ -1,3 +1,77 @@
+## Corte V88 — Centro Familiar, administración y login / 2026-10-11
+
+Base `bf868da`/V87 en `feat/piero-dev`; cierre autorizado para integrar/publicar en `dev` y sincronizar la rama de Piero. Repositorio: https://github.com/sromansilva/ashakids-platform . Los apartados pendientes inferiores conservan el historial previo; el cierre vigente es `V88_Mejorar_Centro_Familiar_Admin_Login`, cuyo SHA se consulta en Git.
+
+Centro Familiar adopta la propuesta infantil de dos destinos y un área Para mi familia: conserva selección por paciente, mundos asignados, jugador y guardado existente; reservas intro/terapia, actualización de seguimiento, planes, sesiones, reportes y navegación adulta siguen disponibles. Administración y login incluyen los ajustes documentados abajo: glass, herramientas con logos, auditoría agrupada con filtros, pacientes con campos respaldados, selectores, edad derivada y perfil profesional. Mensajes retira una indicación de presencia sin respaldo del servidor. Contratos HTTP, permisos y almacenamiento existentes conservados; sin cambios de arquitectura ni BD.
+
+Evidencia nueva: 319 pruebas de componentes/27 archivos y 25 de rutas aprobadas, incluida reserva introductoria y terapia desde el panel familiar con paciente/plan correctos y actualización de lecturas. Typecheck, check:frontend385, build1935 módulos, diff y Graphify aprobados tras el último ajuste. Visual QA anterior aislada con datos ficticios en escritorio/móvil. La validación utiliza API simulada, no sesiones o escrituras reales; no acredita funcionamiento operacional al 100%. RENIEC permanece visual y bloqueado; proveedores externos dependen de su configuración. Detalles del cierre, comandos y límites en IMPLEMENTATION_PROGRESS.md.
+
+## Ajuste local pendiente — Centro Familiar infantil / 2026-10-11
+
+Rama `feat/piero-dev`, base `bf868da` (V87). Implementada la propuesta elegida de dos destinos ilustrados, Mi mundo y Mi camino, sin sidebar en /padre y su alias dashboard. Para mi familia abre seguimiento y herramientas adultas. Las secciones se seleccionan con `section=world|journey|family`; un mundo seleccionado añade `world`. Cambiar de perfil conserva el ID real y retira el mundo anterior. Glass breve consistente con landing/login; lectura clínica sólida, móvil opaco y movimiento reducido.
+
+Mi mundo utiliza mundos asignados, niveles y guardado de learningGames existentes. Mi camino resume tres momentos derivados de los hitos registrados, sin métricas clínicas ni reportes visibles para el niño. El área familiar reutiliza FamilyTrackingPanel embebido con reservas, planes, sesiones y reportes, y accesos a agenda, mensajes, terapeutas, configuración, ayuda e incidencias. Las rutas adultas existentes conservan su navegación habitual. No cambios de API, autenticación, esquema o datos reales.
+
+Verificación: 57 pruebas en cuatro archivos PASS (cinco nuevas de Centro Familiar, seguimiento, juegos y coherencia); se actualizan expectativas obsoletas de rutas antiguas para comprobar planes en su pestaña. Revisión visual con fixture temporal aislado y datos sintéticos: escritorio, 375 px, mundos/niveles, camino, área familiar y cambio de perfil; imágenes cargadas y sin desbordamiento horizontal en móvil. Fixture retirado, capturas ignoradas en tmp/family-center-*.jpg. No se ha comprobado el flujo completo con sesión real ni guardado contra BD. Assets nuevos transparentes con derivados WebP 320/640. Sin commit/push por petición de terminar observaciones; el nombre v88 de los assets no identifica una versión publicada.
+
+Comprobaciones finales: typecheck, check:frontend (385 archivos), build (1935 módulos), detector de los cuatro archivos nuevos [] y diff--check PASS. Graphify refresh/check actual. Build conserva aviso DEP0205 module.register existente. Estas verificaciones no acreditan cobertura visual de todas las rutas ni despliegue.
+
+## Ajuste local pendiente — auditoría visual / 2026-10-11
+
+Rama `feat/piero-dev`, base `bf868da` (V87). La vista Auditoría y seguridad sustituye tarjetas altas por una línea de tiempo agrupada por día en America/Lima, con iconos por acción, filtros por módulo, búsqueda por actor/registro/acción y fechas inclusivas. Contadores glass para total global y operaciones cargadas; eventos y controles sólidos para lectura. Detalle desplegable muestra únicamente ID, acción y fecha existentes. Conserva GET /admin/auditoria y permisos; el backend devuelve hasta 100 eventos CRUD recientes. No se inventan accesos, alertas, porcentajes ni datos de seguridad ausentes del contrato. Incluye carga, error/403, reintento, actualización y vacío filtrado.
+
+Archivos: AdminAuditoria.tsx, auditView.ts, audit.css y tests/admin-audit.test.tsx. PASS: 3 pruebas de filtros/fecha Lima/orden, total global frente a cargados, detalle/limpieza/actualización y reintento; typecheck, check:frontend (380 archivos), build, detector [] y diff--check. Graphify refresh/check actual. Revisión visual aislada del componente en escritorio y 375 px con eventos ficticios, sin desbordamiento horizontal; no se verificó una sesión autenticada ni tráfico real contra BD. Avisos existentes: module.register DEP0205 y fetchPriority en PublicIllustration. Capturas locales ignoradas tmp/audit-desktop.jpg y tmp/audit-mobile.jpg; fixture temporal retirado del public y dist. No escrituras de BD.
+
+Sin commit/push por la instrucción vigente de terminar todas las observaciones de diseño. Centro Familiar conserva sus tres propuestas visuales pendientes de elección; no se ha implementado una variante. Siguiente acción: revisar el diseño de auditoría con el usuario y continuar sus observaciones.
+
+## Ajuste local pendiente — foco fino de campos login / 2026-10-11
+
+Usuario y contraseña retiran outline interno3px; wrapper conserva borde1px violeta y halo2px suave mediante focus-within, sin choque con texto/iconos. Indicador de foco externo de botones conservado. Diff--check y Graphify refresh/check; sin nuevas pruebas de autenticación. Sin commit/push.
+
+## Ajuste local pendiente — primer acceso bajo login / 2026-10-11
+
+Aviso de primer acceso y Solicitar enlace se mueven debajo de Iniciar sesión, fuera del form dentro del panel, con separación24px. Ruta crear-contrasena conservada. Diff--check y Graphify refresh/check; sin nuevas pruebas funcionales. Sin commit/push hasta terminar observaciones.
+
+## Ajuste local pendiente — limpieza del login / 2026-10-11
+
+Retirados párrafo inferior de bienvenida y etiquetas Lenguaje, Seguimiento y24/7 Disponible, junto a estilos/imports sin uso. Título, ilustración y formulario conservados. Diff--check y Graphify refresh/check; sin nuevas pruebas de autenticación. Sin commit/push hasta completar observaciones.
+
+## Ajuste local pendiente — idiomas y habilidades de terapeuta / 2026-10-11
+
+Perfil profesional incorpora hasta3 idiomas (Español, Quechua, Aimara, Inglés, Portugués) y2 habilidades (Trabajo en equipo, Comunicación con familias, Escucha activa, Adaptación de actividades, Organización y seguimiento). Desplegables propios, opciones no repetidas, adicionales aparecen progresivamente y pueden quitarse. Sólo texto, sin medallas/puntuaciones. Idiomas conserva campo de50 caracteres; fortalezas se guardan como línea Habilidades en descripcion_profesional existente, preservando otras líneas; backend ya persiste ambos. Resumen muestra selecciones. Sin esquema ni escrituras reales.
+
+PASS typecheck, check:frontend377 archivos, tres pruebas selector/perfil (idiomas distintos, habilidades y descripción conservada), detector[], diff--check y Graphify refresh/check. Sin verificación visual autenticada ni creación de cuenta. Sin commit/push hasta completar observaciones.
+
+## Ajuste local pendiente — áreas del perfil de terapeuta / 2026-10-11
+
+Especialidad de texto libre pasa a desplegable propio Área de especialización con cinco áreas vinculadas a Mundo ASHA: Habla y articulación, Comprensión y expresión del lenguaje, Fluidez del habla, Voz y Motricidad orofacial. No usa títulos de juegos. Conserva valor previo general hasta seleccionar un área y guarda selección en especialidad existente, sin cambios de esquema ni de cuentas reales. Idiomas y experiencia conservados. Typecheck, dos pruebas AccountSelect, detector[], diff--check y Graphify refresh/check. Sin verificación visual autenticada nueva; sin commit/push hasta completar observaciones.
+
+## Ajuste local pendiente — DNI visual de terapeuta / 2026-10-11
+
+Primer paso de crear terapeuta incorpora tipo DNI, número y botón Consultar RENIEC, todos bloqueados como presentación pendiente. No son obligatorios, no almacenan documento ni envían consultas; nombres/apellidos/correo conservan flujo. Typecheck y diff--check PASS; Graphify refresh/check. Sin nueva prueba de BD o visual autenticada. Sin commit/push por petición vigente.
+
+## Ajuste local pendiente — edad derivada de nacimiento / 2026-10-11
+
+Registro padre/hijos elimina input editable Edad y sube Sexo a la segunda columna junto a Fecha de nacimiento. Edad calculada en años cumplidos con fecha de Lima, mostrada como información bajo nacimiento y conservada en resumen. Al elegir/borrar fecha, editar o guardar hijo se deriva edad; validación3–12 recalcula desde nacimiento, sin exigir valor manual. Backend persiste fecha como antes; sin cambios de BD. PASS15 pruebas (edad, select y family-activation), typecheck, detector[], diff--check y Graphify refresh/check. Validación visual autenticada pendiente. Sin commit/push, avances admin anteriores preservados.
+
+## Ajuste local pendiente — desplegables propios de registro / 2026-10-11
+
+Parentesco y Sexo del flujo padre/hijos usan AccountSelect, con menú blanco, borde violeta, opciones lavanda y marca de selección. DNI bloqueado conserva presentación existente. Combobox/listbox con aria-activedescendant, selección controlada, flechas/Home/End, Enter/Espacio, búsqueda por inicial, Escape sin cerrar modal, cierre al salir de foco/clic exterior y estado disabled. Valores/payloads originales conservados. Sin cambios de BD. Foco inicial del paso incluye combobox.
+
+PASS typecheck/check:frontend373 archivos, dos pruebas nuevas de interacción del selector y11 pruebas existentes de family-activation. Primer intento de escribir pruebas usó una ruta duplicada y falló; corregido, dos casos ejecutados después. Detector/diff--check y Graphify refresh/check. Verificación visual autenticada pendiente. Sin commit/push hasta completar observaciones; avances admin previos preservados.
+
+## Ajuste local pendiente — tarjetas de herramientas y glass admin / 2026-10-11
+
+Configuración sustituye párrafos técnicos por12 tarjetas de herramientas, logos SVG locales y función breve; integraciones conservan condición de configuración sin indicadores de servicio conectado. Logos de Devicon y Simple Icons, fuentes anotadas en frontend/public/technology/README.md. La descarga inicial del CDN devolvió403; recursos completos obtenidos desde repositorios oficiales de iconos.
+
+Glass estandarizado como landing/login: blanco74%, blur18px, borde violeta20%, sombra suave; sidebar, toolbar, hero de dashboard, accesos y tarjetas de indicadores/configuración. Fondos lavanda/agua; tablas, campos y modales sólidos. Móvil<768px y sin soporte sólidos. Typecheck/check:frontend, build, detector[], diff--check y12 SVG XML válidos. Graphify refresh/check; sin validación visual autenticada nueva, pruebas de BD/login ni cambios de arquitectura. Base V87, cambios de navegación previos preservados. Sin commit/push hasta terminar observaciones de diseño. Siguiente: revisión del usuario en admin.
+
+## Ajuste local pendiente — navegación y cabeceras admin / 2026-10-11
+
+Base V87/bf868da, feat/piero-dev. Sin commit/push hasta terminar observaciones de diseño por petición actual. Botón de dashboard conserva /admin/pacientes y se llama Pacientes. Ruta confirmada en AppRouter; patientsService usa GET /api/v1/pacientes y usersService GET /api/v1/usuarios; backend pagina consulta SQLAlchemy de pacientes visibles. Lectura directa de BD configurada, transacción READ ONLY con rollback:5 pacientes,5 activos; sin datos personales en salida ni escrituras. No sesión HTTP autenticada nueva.
+
+Se retiran aviso azul y pie técnico de pacientes, etiqueta azul de flujo en ASHA Core, columnas sin datos reales (terapeuta placeholder, consentimiento Sin API y soporte fijo). Pendientes de incorporación cuando tengan información real. Cabecera Pacientes con búsqueda y registro agrupados, títulos de rutas pacientes/citas/sesiones completados para móvil, barra admin sin título duplicado y altura56px. Typecheck/check:frontend PASS, detector[], diff--check; mapa refresh/check. Prueba de rutas registrada en salida del cierre; no validación visual autenticada ni nueva auditoría. Siguiente: continuar observaciones del usuario y revisar vista admin; conservar avance local sin publicar.
+
 ## V87 — Cabecera compacta de Gestión de Cuentas / 2026-10-11
 
 Base V86/35c2fa4, feat/piero-dev. Se retira la etiqueta Gestión de accesos y reduce el espacio superior de cuentas en escritorio de38px combinados a12px; ajuste limitado a admin-accounts, sin cambios de formularios ni acceso. Typecheck PASS, detector[], diff--check y Graphify refresh/check. Sin nueva compilación o pruebas backend/BD. Verificación visual autenticada pendiente: navegador disponible en login; no se inició sesión ni se crearon usuarios. Cierre con publicación normal a feat/piero-dev y dev; SHA/refs efectivos consultables en Git. Siguiente: revisión del usuario dentro de admin.

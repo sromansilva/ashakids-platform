@@ -160,3 +160,17 @@ se retira Agendar y el salto a login. La reserva se conserva en el dashboard.
 Landing: blanco74%, borde violeta20%, blur18px y fondos lavanda/agua en tarjetas y navbar. Ejemplos familiares blanco80%. Login: panel y barra superior con el mismo formato, campos blancos y fondo lavanda/naranja/agua. Móvil<768px y navegadores sin soporte usan superficies sólidas. FAQ y newsletter conservan fondo sólido.
 
 Feedback120–180ms, giro320ms y FAQ160ms; navbar subraya, flechas avanzan3px y mundos responden con borde/sombra. Reduced-motion elimina movimiento. Hero desktop46–66px, introducción18–24px, botones16–20px; móvil título31px y botones16px, conservando áreas de interacción. Textos de apoyo señalados en especialistas y ejemplos retirados.
+
+## Admin — ajuste local de glass y configuración
+
+Superficies breves comparten blanco74%, blur18px y borde violeta20% con landing/login. Configuración usa tarjetas de logos locales con función breve. Sidebar, toolbar, accesos y métricas adoptan glass; tablas, campos y modales sólidos. Móvil y fallback sólidos. Sin commit/publicación hasta completar observaciones.
+
+## Auditoría administrativa: línea de tiempo (ajuste local 2026-10-11)
+
+Vista Operate inspirada en el mockup del usuario. Mantiene Nunito, paleta ASHAKids y la ilustración existente de cuidado profesional. Cabecera compacta; cuatro contadores glass con blur18px y borde violeta; módulos, búsqueda y fecha en controles sólidos. Eventos agrupados por día de Lima sobre superficies blancas, iconos semánticos (creación aqua, edición naranja, eliminación rojo), detalle desplegable con objetivo táctil44px y foco visible. En móvil se apilan los eventos y contadores usan fondo sólido sin blur. No mostrar tendencias, accesos o alertas mientras el contrato entregue solo CRUD; distinguir el total global de las operaciones en los100 eventos cargados. Revisión visual aislada con datos ficticios en escritorio y375px; aprobación del usuario pendiente, sin commit.
+
+## Centro Familiar infantil — ajuste local 2026-10-11
+
+Entrada con Ashi, saludo por perfil y dos tarjetas: Mi mundo (primaria) y Mi camino. Para mi familia concentra herramientas y lectura adulta. Se retira sidebar sólo de la entrada y sus secciones internas; las rutas operativas conservan navegación. Nunito, paleta ASHA, radios24/14 y acciones56px. Glass blanco74%, borde violeta20%, blur18px sobre lavanda/aqua; clínico sólido y móvil<768px opaco sin blur, fallback y reduced-motion. Microinteracción de botón y elevación de ilustración sólo en hover compatible. Navegación con foco y regreso, sin animación ambiental.
+
+Especificación de pantalla: docs/design/family-center.md. Capturas locales de implementación con datos sintéticos en tmp/family-center-desktop.jpg y mobile.jpg; no evidencia de BD real ni versión publicada.

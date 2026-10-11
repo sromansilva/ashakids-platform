@@ -34,6 +34,7 @@ export function DashLayout({
 }) {
   const [mob, setMob] = useState(false);
   const { user } = useAuth();
+  const childCenter = role === 'padre' && cur === 'padre';
   const mobileMenuButton = useRef<HTMLButtonElement>(null);
   const closeMobileMenu = () => { setMob(false); requestAnimationFrame(() => mobileMenuButton.current?.focus()); };
   useEffect(() => {
@@ -46,13 +47,13 @@ export function DashLayout({
   }, [mob]);
   return (
     <div
-      className={`flex h-screen overflow-hidden${role === "admin" ? " asha-admin" : role === "padre" ? " asha-family" : role === "terapeuta" ? " asha-professional" : ""}`}
+      className={`flex h-screen overflow-hidden${role === "admin" ? " asha-admin" : role === "padre" ? " asha-family" : role === "terapeuta" ? " asha-professional" : ""}${childCenter ? ' family-center-layout' : ''}`}
       style={{
         background: B.bg,
         fontFamily: '"Nunito", system-ui, sans-serif',
       }}
     >
-      <Sidebar role={role} cur={cur} go={go} logout={logout} padreUserName={padreUserName} padrePlan={padrePlan} />
+      {!childCenter && <Sidebar role={role} cur={cur} go={go} logout={logout} padreUserName={padreUserName} padrePlan={padrePlan} />}
 
       {mob && (
         <div className="md:hidden fixed inset-0 z-40 flex bg-black/50 backdrop-blur-sm">
@@ -93,10 +94,10 @@ export function DashLayout({
       )}
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {role === 'admin' && <div className="admin-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
-        {role === 'padre' && <div className="family-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Familia / Tutor</span></span></div>}
+        {role === 'admin' && <div className="admin-toolbar"><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
+        {role === 'padre' && !childCenter && <div className="family-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Familia / Tutor</span></span></div>}
         {role === 'terapeuta' && <div className="professional-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Terapeuta</span></span></div>}
-        <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />
+        {!childCenter && <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />}
         <div className="flex-1 overflow-y-auto flex min-h-0">
           <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : role === "terapeuta" ? " professional-content" : ""}`}>
             {role === 'terapeuta' && <NotificationCenter key={user?.id_usuario} go={go}/>}
@@ -382,7 +383,7 @@ export function DashLayout({
         </div>
       </main>
       {role === 'admin' && <div className="admin-support-rail">Ayuda y asistente</div>}
-      <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />
+      {!childCenter && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
     </div>
   );
 }

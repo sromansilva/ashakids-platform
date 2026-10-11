@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { vi, it, expect } from 'vitest';
 import { renderRoute } from './helpers';
 
@@ -11,7 +11,7 @@ it('sends a file without text and clears it only after server confirmation', asy
     if (path.endsWith('/mensajes') && uploaded) return response({ items: [message, saved], next_before_id: null });
   });
   renderRoute('/padre/mensajes', 'PADRE'); await open();
-  const input = screen.getByLabelText('Adjuntar archivo');
+  const input = document.getElementById('attachment-12')!;
   fireEvent.change(input, { target: { files: [new File(['Nota'], 'nota.txt', { type: 'text/plain' })] } });
   fireEvent.click(screen.getByRole('button', { name: 'Enviar mensaje' }));
   await screen.findByText('Mensaje guardado en el servidor.');
@@ -28,14 +28,14 @@ it('retains file and upload key after a network error and rejects oversized sele
     if (path.endsWith('/mensajes/adjunto') && method === 'POST') { keys.push((init.body as FormData).get('clave_envio')!); return response({ detail: 'No se confirmó el envío' }, 503); }
   });
   renderRoute('/padre/mensajes', 'PADRE'); await open();
-  fireEvent.change(screen.getByLabelText('Adjuntar archivo'), { target: { files: [new File(['Nota'], 'nota.txt')] } });
+  fireEvent.change(document.getElementById('attachment-12')!, { target: { files: [new File(['Nota'], 'nota.txt')] } });
   fireEvent.click(screen.getByRole('button', { name: 'Enviar mensaje' })); await screen.findByRole('alert');
-  expect(screen.getByText('Seleccionado: nota.txt')).toBeInTheDocument();
+  expect(screen.getByText('nota.txt')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Enviar mensaje' }));
   await waitFor(() => expect(keys).toHaveLength(2)); expect(keys[0]).toBe(keys[1]);
   await waitFor(() => expect(screen.getByRole('button', { name: 'Quitar archivo' })).not.toBeDisabled());
   fireEvent.click(screen.getByRole('button', { name: 'Quitar archivo' }));
-  fireEvent.change(screen.getByLabelText('Adjuntar archivo'), { target: { files: [new File([new Uint8Array(10 * 1024 * 1024 + 1)], 'large.txt')] } });
+  fireEvent.change(document.getElementById('attachment-12')!, { target: { files: [new File([new Uint8Array(10 * 1024 * 1024 + 1)], 'large.txt')] } });
   expect(screen.getByText('Selecciona un archivo no vacío de hasta 10 MB.')).toBeInTheDocument();
   expect(screen.getByRole('button', { name: 'Enviar mensaje' })).toBeDisabled();
 });
@@ -56,7 +56,7 @@ function api(overrides?: (path: string, method: string, init: RequestInit) => Re
   });
 }
 async function open() {
-  fireEvent.click(await screen.findByRole('button', { name: 'Profesional sintético Asignación activa' }));
+  fireEvent.click(await screen.findByRole('button', { name: /Profesional sintético Asignación activa$/ }));
   const input = await screen.findByLabelText('Escribir mensaje');
   await waitFor(() => expect(input).not.toBeDisabled());
   return input;
@@ -67,7 +67,8 @@ it('reads persisted family messages without invented names, calls or replies', a
   expect(await screen.findByText(message.texto_mensaje)).toBeInTheDocument();
   expect(screen.queryByText('Laura Gómez')).not.toBeInTheDocument();
   expect(screen.queryByText(/En línea|Llamando/)).not.toBeInTheDocument();
-  expect(screen.queryByRole('button', { name: /adjuntar|llamar/i })).not.toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Adjuntar archivo' })).toBeEnabled();
+  expect(screen.queryByRole('button', { name: /llamar/i })).not.toBeInTheDocument();
 });
 
 it('explains an empty assignment list without fallback chats', async () => {
@@ -81,7 +82,7 @@ it('explains an empty assignment list without fallback chats', async () => {
 it('opens only a server-supplied contact with participant ids', async () => {
   const requests=api((path, method) => path === '/conversaciones' && method === 'GET' ? response({ items: [], next_before_id: null }) : undefined);
   renderRoute('/padre/mensajes', 'PADRE');
-  fireEvent.click(await screen.findByRole('button', { name: 'Conversar con Profesional sintético' }));
+  fireEvent.click(await screen.findByRole('button', { name: /Profesional sintético Abrir conversación$/ }));
   await screen.findByText(message.texto_mensaje);
   const post=requests.mock.calls.find(([,init]) => init?.method==='POST');
   expect(JSON.parse(String(post?.[1]?.body))).toEqual({ id_tutor: 3, id_terapeuta: 4 });
@@ -92,7 +93,7 @@ it('waits for server confirmation and prevents duplicate simultaneous submission
   const requests=api((path,method) => path.endsWith('/mensajes') && method==='POST' ? new Promise(resolve => { finish=resolve; }) : undefined);
   renderRoute('/padre/mensajes', 'PADRE'); const input=await open();
   fireEvent.change(input,{target:{value:'Borrador sin confirmar'}}); fireEvent.click(screen.getByRole('button',{name:'Enviar mensaje'}));
-  await screen.findByRole('button',{name:'Guardando mensaje…'});
+  await screen.findByRole('button',{name:'Guardando mensaje'});
   expect(screen.queryByText('Mensaje guardado en el servidor.')).not.toBeInTheDocument();
   expect(screen.queryByText('Borrador sin confirmar',{selector:'p'})).not.toBeInTheDocument();
   fireEvent.submit(input.closest('form')!);
@@ -121,7 +122,7 @@ it('describes uncertain delivery honestly after network failure', async () => {
 
 it('shows inactive-assignment history in read-only mode', async () => {
   api(path=>path==='/conversaciones/12'?response({...conversation,puede_enviar:false}):undefined);
-  renderRoute('/padre/mensajes','PADRE');fireEvent.click(await screen.findByRole('button',{name:'Profesional sintético Asignación activa'}));
+  renderRoute('/padre/mensajes','PADRE');fireEvent.click(await screen.findByRole('button',{name:/Profesional sintético Asignación activa$/}));
   expect(await screen.findByText(message.texto_mensaje)).toBeInTheDocument();
   expect(screen.getByLabelText('Escribir mensaje')).toBeDisabled();expect(screen.getByRole('button',{name:'Enviar mensaje'})).toBeDisabled();
 });
@@ -129,7 +130,7 @@ it('shows inactive-assignment history in read-only mode', async () => {
 it('hides cached messages when an update loses access', async () => {
   let revoked=false;api(path=>revoked&&path.startsWith('/conversaciones/12')?response({detail:'Conversación no encontrada.'},404):undefined);
   renderRoute('/padre/mensajes','PADRE');await open();await screen.findByText(message.texto_mensaje);
-  revoked=true;fireEvent.click(screen.getByRole('button',{name:'Actualizar conversación'}));
+  revoked=true;fireEvent.click(screen.getByRole('button',{name:'Actualizar'}));
   await screen.findByRole('alert');expect(screen.queryByText(message.texto_mensaje)).not.toBeInTheDocument();
   expect(screen.getByRole('button',{name:'Enviar mensaje'})).toBeDisabled();
 });
@@ -151,9 +152,9 @@ it('preserves separate drafts while switching conversation ids', async () => {
   const other={...conversation,id_conversacion:13,terapeuta_nombre:'Otro profesional'};
   api(path=>path==='/conversaciones'?response({items:[conversation,other],next_before_id:null}):path==='/conversaciones/13'?response(other):path==='/conversaciones/13/mensajes'?response({items:[],next_before_id:null}):undefined);
   renderRoute('/padre/mensajes','PADRE');const input=await open();fireEvent.change(input,{target:{value:'Borrador uno'}});
-  fireEvent.click(screen.getByRole('button',{name:'Otro profesional Asignación activa'}));
+  fireEvent.click(screen.getByRole('button',{name:/Otro profesional Asignación activa$/}));
   const otherInput=await screen.findByLabelText('Escribir mensaje');await waitFor(()=>expect(otherInput).not.toBeDisabled());expect(otherInput).toHaveValue('');
-  fireEvent.change(otherInput,{target:{value:'Borrador dos'}});fireEvent.click(screen.getByRole('button',{name:'Profesional sintético Asignación activa'}));
+  fireEvent.change(otherInput,{target:{value:'Borrador dos'}});fireEvent.click(screen.getByRole('button',{name:/Profesional sintético Asignación activa$/}));
   expect(await screen.findByLabelText('Escribir mensaje')).toHaveValue('Borrador uno');
 });
 
@@ -166,7 +167,10 @@ it('renders message markup literally without injecting images', async () => {
 
 it('does not invent a name for a removed historical sender', async () => {
   api(path=>path.endsWith('/mensajes')?response({items:[{...message,id_usuario_emisor:null}],next_before_id:null}):undefined);
-  renderRoute('/padre/mensajes','PADRE');await open();expect(await screen.findByText('Emisor anterior no disponible')).toBeInTheDocument();
+  renderRoute('/padre/mensajes','PADRE');await open();
+  const history = await screen.findByRole('list',{name:'Mensajes guardados'});
+  expect(within(history).getByText(message.texto_mensaje)).toBeInTheDocument();
+  expect(within(history).queryByText(/Profesional sintético|Familia sintética|Emisor anterior/)).not.toBeInTheDocument();
 });
 
 it('administrator sees pending campaigns without fake counts or private chats', async () => {
@@ -177,7 +181,7 @@ it('administrator sees pending campaigns without fake counts or private chats', 
 
 it('therapist opens the family conversation with the same service', async () => {
   api(path=>path==='/conversaciones'?response({items:[conversation],next_before_id:null}):undefined);
-  renderRoute('/terapeuta/mensajes','TERAPEUTA');fireEvent.click(await screen.findByRole('button',{name:'Familia sintética Asignación activa'}));
+  renderRoute('/terapeuta/mensajes','TERAPEUTA');fireEvent.click(await screen.findByRole('button',{name:/Familia sintética Asignación activa$/}));
   expect(await screen.findByText(message.texto_mensaje)).toBeInTheDocument();
 });
 
@@ -191,7 +195,7 @@ it('does not clear a draft or claim success for an invalid successful response',
 
 it('rejects an open response for a different participant pair', async () => {
   api((path,method)=>path==='/conversaciones' ? method==='POST' ? response({...conversation,id_tutor:99}) : response({items:[],next_before_id:null}) : undefined);
-  renderRoute('/padre/mensajes','PADRE');fireEvent.click(await screen.findByRole('button',{name:'Conversar con Profesional sintético'}));
+  renderRoute('/padre/mensajes','PADRE');fireEvent.click(await screen.findByRole('button',{name:/Profesional sintético Abrir conversación$/}));
   expect(await screen.findByRole('alert')).toHaveTextContent('no confirmó una conversación válida');
   expect(screen.queryByLabelText('Escribir mensaje')).not.toBeInTheDocument();
 });

@@ -45,10 +45,10 @@ it('Family cannot simulate professional confirmation of a pending appointment', 
   expect(screen.queryByRole('button', { name: /Simular confirmación/ })).not.toBeInTheDocument();
 });
 
-it('Keeps the original admin patient table and opens the real treatment selector', async () => {
+it('Shows the simplified admin patient table and opens the real treatment selector', async () => {
   mockApi(); renderRoute('/admin/pacientes', 'ADMIN');
   expect(await screen.findByText('Paciente Aislado')).toBeInTheDocument();
-  expect(screen.getByText('Perfiles Vinculados')).toBeInTheDocument();
+  expect(screen.getByRole('heading', {name:'Pacientes'})).toBeInTheDocument();
   fireEvent.click(screen.getByTitle('Ver detalle operativo'));
   expect(await screen.findByText(/Lenguaje · Profesional Aislado · ACTIVO/)).toBeInTheDocument();
 });

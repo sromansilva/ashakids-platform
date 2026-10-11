@@ -84,7 +84,7 @@ function History({ data, reportsOnly = false }: { data: Tracking; reportsOnly?: 
   </section>;
 }
 
-export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode: "home" | "journey"; go: (view: View) => void; familyName?: string }) {
+export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded = false }: { mode: "home" | "journey"; go: (view: View) => void; familyName?: string; embedded?: boolean }) {
   const data = useFamilyTracking();
   const [tab, setTab] = useState<typeof tabs[number]>("Resumen");
   const { patient, summary } = data;
@@ -95,15 +95,16 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
     { label: "Progreso clínico", value: "Sin medición", icon: Target, tone: "text-sky-700 bg-sky-100" },
   ] : [];
   return <div style={{ fontFamily: '"Nunito", system-ui, sans-serif' }} className={`family-panel ${mode === "journey" ? "family-journey" : ""} mx-auto max-w-7xl space-y-6 p-4 pb-10 sm:p-6`}>
-    <header className="family-heading flex flex-wrap items-end justify-between gap-4">
+    {embedded && <div className="flex justify-end"><Btn variant="outline" disabled={data.refreshing} onClick={data.retry}><RefreshCw size={16} aria-hidden="true" className={data.refreshing ? "animate-spin" : ""} /> Actualizar seguimiento</Btn></div>}
+    {!embedded && <header className="family-heading flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
         <p className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-[0.18em] text-violet-700"><Sparkles size={14} aria-hidden="true" /> {mode === "home" ? "Centro familiar" : "Seguimiento familiar"}</p>
         <h1 className="text-3xl font-black tracking-tight text-[#1C1135] sm:text-4xl">{mode === "home" ? "Centro Familiar" : "Mi Camino ASHA"}</h1>
         <p className="mt-2 max-w-2xl text-base leading-relaxed text-[#615274]">{mode === "home" ? `Hola, ${familyName}. Consulta las citas y el seguimiento de tu familia.` : "Acompaña cada paso del desarrollo de tu hijo con información clara y cercana."}</p>
       </div>
       <Btn variant="outline" className="rounded-2xl border-violet-100 bg-white/80 shadow-sm" disabled={data.refreshing} onClick={data.retry}><RefreshCw size={16} aria-hidden="true" className={data.refreshing ? "animate-spin" : ""} /> Actualizar seguimiento</Btn>
-    </header>
-    {!!data.children.length && <div className="family-child-picker flex flex-col gap-3 rounded-3xl border border-violet-100 bg-white/80 p-4 shadow-sm shadow-violet-100/40 sm:flex-row sm:items-center sm:justify-between">
+    </header>}
+    {!embedded && !!data.children.length && <div className="family-child-picker flex flex-col gap-3 rounded-3xl border border-violet-100 bg-white/80 p-4 shadow-sm shadow-violet-100/40 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-2xl bg-violet-100 text-xl" aria-hidden="true">🧒</span><div><p className="text-xs font-black uppercase tracking-wider text-violet-700">Perfil que estás viendo</p><p className="text-sm text-[#615274]">Selecciona un hijo para ver su recorrido.</p></div></div>
       <label className="block text-sm font-extrabold text-[#1C1135] sm:min-w-64">Hijo o hija
         <select aria-label="Hijo o hija" value={patient?.id_paciente ?? ""} onChange={e => data.selectPatient(Number(e.target.value))} className="mt-1.5 block w-full rounded-2xl border border-[#D6CCEB] bg-white px-4 py-3 text-base font-bold text-[#1C1135] shadow-sm outline-none transition focus:border-violet-500 focus:ring-4 focus:ring-violet-100">
@@ -114,7 +115,7 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
     {data.error ? <ReadError error={data.error} retry={data.retry} /> : data.pending ? <p role="status" className="py-6 text-[#4B4264]">Cargando seguimiento…</p> : !patient || !summary ?
       <Crd className="p-6 space-y-3"><Users size={28} className="text-violet-700" aria-hidden="true" /><h2 className="font-extrabold text-lg text-[#1C1135]">Aún no tienes hijos registrados</h2>
         <p className="text-[#4B4264]">Añade un perfil para consultar sus tratamientos, citas y reportes.</p><Btn onClick={() => go("padre/config")}>Gestionar hijos</Btn></Crd> : <>
-      <section className="family-summary relative isolate overflow-hidden rounded-[2rem] p-6 text-white shadow-xl shadow-violet-200/40 sm:p-8" style={{ background: `linear-gradient(125deg, ${B.violetDeep} 0%, #4C1D95 58%, ${B.violet} 100%)` }}>
+      {!embedded && <section className="family-summary relative isolate overflow-hidden rounded-[2rem] p-6 text-white shadow-xl shadow-violet-200/40 sm:p-8" style={{ background: `linear-gradient(125deg, ${B.violetDeep} 0%, #4C1D95 58%, ${B.violet} 100%)` }}>
         <div className="pointer-events-none absolute -right-16 -top-24 -z-10 h-72 w-72 rounded-full bg-white/10" /><div className="pointer-events-none absolute -bottom-36 left-1/3 -z-10 h-72 w-72 rounded-full bg-orange-300/10" />
         <div className="relative flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="min-w-0">
@@ -123,15 +124,15 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia" }: { mode
             <div className="mt-6 flex flex-wrap gap-3"><Btn variant="outline" className="!border-transparent !bg-white !text-violet-800 hover:!bg-violet-50" onClick={() => go(mode === "home" ? "padre/camino" : "padre/agenda")}>{mode === "home" ? "Ver Mi Camino ASHA" : "Ir a agenda"}<ArrowRight size={16} /></Btn><Btn variant="outline" className="!border-white/30 !bg-white/10 !text-white hover:!bg-white/20" onClick={() => go("padre/config")}>Gestionar hijos</Btn></div>
           </div><div className="hidden shrink-0 lg:block"><Ashi size={124} mood="happy" /></div>
         </div>
-      </section>
+      </section>}
       <IntroductionStatus key={patient.id_paciente} patientId={patient.id_paciente} />
       {mode === 'home' && data.treatments.some(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen) && <section className="family-plan space-y-3"><h2 className="text-lg font-extrabold">Plan vigente</h2>{data.treatments.filter(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen).map(t => <div key={t.id_tratamiento} className="text-[#4B4264] space-y-2"><p className="font-bold">{t.nombre_tratamiento} · {t.terapeuta_nombre}</p><p>{t.area && areaLabels[t.area]} · {t.sesiones_recomendadas} sesiones recomendadas · Mes: {t.fecha_inicio}</p><p>Mundos: {t.mundos_asignados?.map(w => areaLabels[w]).join(', ')}</p><Btn variant="outline" onClick={() => go('mundo-asha')}>Practicar en Mundo ASHA</Btn></div>)}</section>}
-      <dl aria-label="Registros del hijo seleccionado" className="family-stats grid grid-cols-2 gap-3 lg:grid-cols-4">
+      {!embedded && <dl aria-label="Registros del hijo seleccionado" className="family-stats grid grid-cols-2 gap-3 lg:grid-cols-4">
         {metrics.map(s => { const Icon = s.icon; return <div key={s.label} className="group rounded-3xl border border-white/80 bg-white/85 p-4 shadow-sm shadow-violet-100/50 transition hover:-translate-y-0.5 hover:shadow-md sm:p-5"><div className="flex items-start justify-between gap-2"><span className={`grid h-10 w-10 place-items-center rounded-2xl ${s.tone}`}><Icon size={18} aria-hidden="true" /></span><span className="text-xs font-black text-[#B0A8C1]">ASHA</span></div><dd className={`mt-4 break-words font-black ${typeof s.value === "number" ? "text-2xl" : "text-base"} text-[#1C1135]`}>{s.value}</dd><dt className="mt-1 text-xs font-bold text-[#615274]">{s.label}</dt></div>; })}
-      </dl>
+      </dl>}
       {mode === "journey" && <div role="group" aria-label="Secciones del seguimiento" className="flex flex-wrap items-center gap-1.5 rounded-3xl border border-violet-100 bg-white/80 p-2 shadow-sm shadow-violet-100/40"><span className="hidden px-3 text-xs font-black uppercase tracking-wider text-[#9E95B7] lg:block">Explora tu seguimiento</span>{tabs.map(t => <button key={t} type="button" aria-pressed={tab === t} onClick={() => setTab(t)} className={`rounded-2xl px-4 py-2.5 text-sm font-extrabold transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-700 ${tab === t ? "bg-violet-700 text-white shadow-md shadow-violet-200" : "text-[#615274] hover:bg-violet-50 hover:text-violet-800"}`}>{t}</button>)}</div>}
       {(mode === "home" || tab === "Resumen") && <>
-        <Milestones summary={summary} />
+        {!embedded && <Milestones summary={summary} />}
         <div className="family-workspace grid lg:grid-cols-2 gap-5 items-start">
           <Crd className="p-5 sm:p-6 space-y-3"><CalendarDays size={22} className="text-violet-700" aria-hidden="true" /><h2 className="text-lg font-extrabold text-[#1C1135]">Próxima cita o sesión en curso</h2>
             {summary.next ? <><p className="font-bold text-[#1C1135] break-words">{summary.next.terapeuta_nombre}</p><p className="text-[#4B4264]">{familyDate(summary.next.fecha_hora_inicio)} · {familyTime(summary.next.fecha_hora_inicio)} · {summary.next.modalidad}</p><p className="text-sm text-[#4B4264]">Estado de cita: {summary.next.estado_reserva}</p></> : <p className="text-[#4B4264]">No hay próximas citas ni sesiones en curso para este hijo.</p>}

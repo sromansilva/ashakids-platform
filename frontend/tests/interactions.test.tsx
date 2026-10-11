@@ -5,7 +5,7 @@ const loaded = () => waitFor(() => expect(screen.queryByText("Cargando pantallaâ
 const healthy = () => expect(screen.queryByText("No pudimos cargar esta pantalla")).not.toBeInTheDocument();
 
 it("The assistant opens and closes with its extracted avatar component", async () => {
-  renderRoute("/padre", "PADRE"); await loaded();
+  renderRoute("/padre/agenda", "PADRE"); await loaded();
   fireEvent.click(screen.getByRole("button", { name: "Abrir asistente ASHI" }));
   healthy();
   expect(screen.getAllByText(/ASHI/).length).toBeGreaterThan(0);

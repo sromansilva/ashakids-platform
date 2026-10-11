@@ -46,7 +46,7 @@
 .asha-admin .admin-sidebar nav button[aria-current=page] svg { color: #fff; }
 .asha-admin .admin-sidebar nav button:not([aria-current]):hover { color: #5b21b6; background: #ede9fe80; }
 .asha-admin .admin-sidebar > div:last-child { border-top: 1px solid #e8e1f0; padding: 20px; }
-.admin-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 17px 32px; min-height: 74px; background: #ffffff70; backdrop-filter: blur(18px); border-bottom: 1px solid #e8e1f0; }
+.admin-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 24px; padding: 10px 32px; min-height: 56px; background: #ffffff70; backdrop-filter: blur(18px); border-bottom: 1px solid #e8e1f0; }
 .admin-toolbar > p { font-size: .9rem; font-weight: 850; color: #615274; }
 .admin-toolbar > span { font-size: .83rem; font-weight: 800; text-align: right; }
 .admin-toolbar > span > span { display: block; color: #615274; font-size: .72rem; font-weight: 650; margin-top: 2px; }
@@ -54,6 +54,8 @@
 .admin-content > :is(div,section):not([role=note]) { max-width: 1200px; padding: 24px 28px; }
 .admin-content:has(> .admin-accounts) { padding-top: 0; }
 .admin-content > .admin-accounts { padding-top: 12px; }
+.admin-content:has(> .admin-patients) { padding-top: 0; }
+.admin-content > .admin-patients { padding-top: 12px; }
 .admin-content > [role=note] { margin: 10px 28px 0; border-radius: 10px; padding: 12px 16px; }
 .admin-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #fff; border-radius: 24px; border-color: #e8e1f0; box-shadow: 0 7px 24px #45247807,inset 0 1px 0 #fff; }
 .admin-content .bg-white:is(.rounded-2xl,.rounded-3xl):has(.bg-white.rounded-2xl) { box-shadow: none; }
@@ -222,3 +224,38 @@
 }
 @supports not (backdrop-filter: blur(16px)) { .asha-admin .admin-sidebar,.admin-toolbar,.asha-admin .operational-stats { background: #fff; } }
 @media (prefers-reduced-motion: reduce) { .asha-admin *, .asha-admin *::before, .asha-admin *::after { animation: none !important; transition: none !important; } .asha-admin button:active { transform: none !important; } }
+
+/* Same glass material as landing/login; long tables and fields remain opaque. */
+.asha-admin {
+  --admin-glass: rgb(255 255 255 / 74%);
+  --admin-glass-edge: rgb(124 58 237 / 20%);
+  --admin-glass-shadow: inset 0 1px 0 rgb(255 255 255 / 90%), 0 12px 28px rgb(28 17 53 / 8%);
+  background: radial-gradient(ellipse at 15% 55%, #e4d9f8, transparent 58%), radial-gradient(ellipse at 88% 25%, #ccebe6, transparent 55%), #fafaf9 !important;
+}
+.asha-admin :is(.admin-sidebar,.admin-toolbar,.operational-heading,.operational-actions > button,.admin-tool-card),
+.asha-admin .operational-stats > div,
+.asha-admin .admin-account-stats > div {
+  background: var(--admin-glass) !important;
+  border: 1px solid var(--admin-glass-edge) !important;
+  box-shadow: var(--admin-glass-shadow) !important;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+.asha-admin .admin-config-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.asha-admin .admin-config-repository { color: #5b21b6; font-size: 14px; font-weight: 800; padding: 12px 16px; border: 1px solid var(--admin-glass-edge); border-radius: 14px; background: #ffffffbd; }
+.asha-admin .admin-config-repository:hover { background: #fff; }
+.asha-admin .admin-tools-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 20px; }
+.asha-admin .admin-tool-card { display: flex; align-items: flex-start; gap: 18px; padding: 24px; border-radius: 24px; min-width: 0; }
+.asha-admin .admin-tool-card img { width: 48px; height: 48px; object-fit: contain; flex-shrink: 0; }
+.asha-admin .admin-tool-area { color: #615274; font-size: 12px; font-weight: 700; }
+.asha-admin .admin-tool-card h2 { margin: 3px 0 6px; font-size: 19px; font-weight: 900; }
+.asha-admin .admin-tool-card p { color: #615274; font-size: 14px; line-height: 1.5; }
+.asha-admin .admin-tool-card small { display: block; margin-top: 8px; color: #615274; font-size: 12px; line-height: 1.5; }
+@media (max-width: 1100px) { .asha-admin .admin-tools-grid { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 767px) {
+  .asha-admin { --admin-glass: #fff; }
+  .asha-admin :is(.admin-sidebar,.admin-toolbar,.operational-heading,.operational-actions > button,.admin-tool-card),
+  .asha-admin .operational-stats > div,.asha-admin .admin-account-stats > div { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .asha-admin .admin-tools-grid { grid-template-columns: minmax(0,1fr); gap: 16px; }
+}
+@supports not ((backdrop-filter: blur(18px)) or (-webkit-backdrop-filter: blur(18px))) { .asha-admin { --admin-glass: #fff; } }

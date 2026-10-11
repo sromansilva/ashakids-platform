@@ -282,7 +282,6 @@ export function AshaCore() {
         <div className="flex items-center gap-2 mb-4">
           <div className="w-1 h-5 rounded-full" style={{ background: "#2563EB" }} />
           <h3 className="font-black text-[#1C1135]">ASHA Event Center</h3>
-          <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ background: "#EFF6FF", color: "#2563EB" }}>Flujo en tiempo real</span>
         </div>
         <div className="rounded-3xl p-6 overflow-hidden" style={{ background: `linear-gradient(145deg, ${B.violetDeep}, #1a3461)` }}>
           <p className="text-xs font-medium mb-6 text-center" style={{ color: "rgba(255,255,255,.5)" }}>

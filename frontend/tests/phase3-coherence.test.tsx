@@ -91,7 +91,9 @@ it("Family directory displays active professionals before a treatment is assigne
 });
 it.each(["/padre/recorrido", "/padre/seguimiento"])("%s reuses the persisted tracking model", async path => {
   api(); renderRoute(path, "PADRE");
-  await screen.findByText("Seguimiento de Alex Uno");
+  expect(await screen.findByRole('combobox',{name:'Hijo o hija'})).toHaveValue('1');
+  fireEvent.click(await screen.findByRole('button',{name:'Planes'}));
+  expect(await screen.findByText('Profesional Uno · ACTIVO')).toBeInTheDocument();
   expect(screen.queryByText(/60%|6\/10|Dra. Ana Ruiz|Correo electrónico verificado/)).not.toBeInTheDocument();
 });
 it("Therapist dashboard counts authorised data and never requests administrator accounts", async () => {

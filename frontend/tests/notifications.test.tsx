@@ -60,6 +60,6 @@ it('reports inbox failure without exposing stale entries and keeps notifications
   await screen.findByText('Bandeja no disponible');
   expect(screen.queryByText(notification.texto)).not.toBeInTheDocument();
   view.unmount();vi.mocked(fetch).mockClear();renderRoute('/padre','PADRE');
-  await screen.findByText('Centro Familiar',{selector:'h1'});
+  await screen.findByRole('button',{name:'Centro Familiar'});
   await waitFor(()=>expect(vi.mocked(fetch).mock.calls.every(([input])=>!String(input).includes('/notificaciones'))).toBe(true));
 });
