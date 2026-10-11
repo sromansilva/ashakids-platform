@@ -38,9 +38,8 @@ export function MessageThread({ id, conversationSummary, draft, setDraft, onBack
     {ready && rows.length === 0 && <p className="text-base text-[#4B4264] py-8">No hay mensajes guardados en esta conversación.</p>}
     <ol aria-label="Mensajes guardados" className="message-history space-y-3 my-4 overflow-y-auto">{rows.map(message => {
       const own = message.id_usuario_emisor === user?.id_usuario;
-      const author = own ? 'Tú' : message.id_usuario_emisor === view?.id_usuario_tutor ? view?.tutor_nombre : message.id_usuario_emisor === view?.id_usuario_terapeuta ? view?.terapeuta_nombre : 'Emisor anterior no disponible';
       return <li key={message.id_mensaje} className={`message-bubble ${own ? 'is-own' : 'is-received'}`}>
-        <p className="text-sm font-bold text-[#4B4264] break-words">{author}</p><p className="text-base text-[#1C1135] whitespace-pre-wrap [overflow-wrap:anywhere] my-1">{message.texto_mensaje ?? ''}</p>
+        <p className="text-base text-[#1C1135] whitespace-pre-wrap [overflow-wrap:anywhere]">{message.texto_mensaje ?? ''}</p>
         {message.adjuntos?.map(attachment => <MessageAttachment key={attachment.id_adjunto} conversation={id} attachment={attachment}/>)}
         <time dateTime={message.fecha_envio} className="text-sm text-[#4B4264]">{new Date(message.fecha_envio).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'short' })} (Lima)</time>
       </li>;
