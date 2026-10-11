@@ -3,6 +3,7 @@ import { afterEach, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
 import { AuthContext } from "@/auth/AuthContext";
 import { RouteAccess } from "@/app/RouteAccess";
+import { CreatePassword } from "@/pages/auth/Auth/CreatePassword";
 import { AccountActivation } from "@/auth/AccountActivation";
 import { authService } from "@/services/authService";
 import { adminService } from "@/services/adminService";
@@ -26,40 +27,53 @@ it.each(["/padre", "/padre/reportes", "/session/active", "/admin", "/"])("bloque
   expect(screen.queryByText("Contenido privado")).not.toBeInTheDocument();
 });
 
-it("conserva las entradas ante rechazo y comprueba la confirmación antes de enviar", async () => {
-  const activate = vi.spyOn(authService, "activate").mockRejectedValue(new ApiError("Contraseña inicial incorrecta", 403));
-  withSession(<AccountActivation />);
-  fireEvent.change(screen.getByLabelText("Contraseña inicial"), { target: { value: "12345678" } });
-  fireEvent.change(screen.getByLabelText("Contraseña nueva"), { target: { value: "Nueva-Clave-Sintetica" } });
-  fireEvent.change(screen.getByLabelText("Repite la contraseña nueva"), { target: { value: "Otra-Clave-Sintetica" } });
-  fireEvent.click(screen.getByRole("button", { name: "Guardar contraseña y continuar" }));
+it("valida confirmación, conserva entradas ante rechazo y no pide DNI", async () => {
+  window.history.replaceState(null, "", "/crear-contrasena#token=synthetic");
+  const activate = vi.spyOn(authService, "createPassword").mockRejectedValue(new ApiError("Enlace vencido", 400));
+  render(<MemoryRouter><CreatePassword /></MemoryRouter>);
+  fireEvent.change(screen.getByLabelText("Nueva contraseña"), { target: { value: "Nueva-Clave-Sintetica" } });
+  fireEvent.change(screen.getByLabelText("Repite la contraseña"), { target: { value: "Otra-Clave-Sintetica" } });
+  fireEvent.click(screen.getByRole("button", { name: "Crear mi contraseña" }));
   expect(screen.getByRole("alert")).toHaveTextContent("no coinciden");
   expect(activate).not.toHaveBeenCalled();
-  fireEvent.change(screen.getByLabelText("Repite la contraseña nueva"), { target: { value: "Nueva-Clave-Sintetica" } });
-  fireEvent.click(screen.getByRole("button", { name: "Guardar contraseña y continuar" }));
-  await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Contraseña inicial incorrecta"));
-  expect(screen.getByLabelText("Contraseña inicial")).toHaveValue("12345678");
+  fireEvent.change(screen.getByLabelText("Repite la contraseña"), { target: { value: "Nueva-Clave-Sintetica" } });
+  fireEvent.click(screen.getByRole("button", { name: "Crear mi contraseña" }));
+  await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent("Enlace vencido"));
+  expect(screen.getByLabelText("Nueva contraseña")).toHaveValue("Nueva-Clave-Sintetica");
+  expect(window.location.hash).toBe("");
 });
 
-it("actualiza la identidad del servidor después de cambiar la contraseña", async () => {
-  vi.spyOn(authService, "activate").mockResolvedValue({ user: { ...user, password_change_required: false }, message: "Activada" });
-  const refresh = withSession(<AccountActivation />);
-  for (const name of ["Contraseña inicial", "Contraseña nueva", "Repite la contraseña nueva"]) {
-    fireEvent.change(screen.getByLabelText(name), { target: { value: name === "Contraseña inicial" ? "12345678" : "Nueva-Clave-Sintetica" } });
+it("crea contraseña con enlace y ofrece iniciar sesión", async () => {
+  window.history.replaceState(null, "", "/crear-contrasena#token=synthetic");
+  const activate = vi.spyOn(authService, "createPassword").mockResolvedValue({ message: "Contraseña creada", success: true });
+  render(<MemoryRouter><CreatePassword /></MemoryRouter>);
+  for (const name of ["Nueva contraseña", "Repite la contraseña"]) {
+    fireEvent.change(screen.getByLabelText(name), { target: { value: "Nueva-Clave-Sintetica" } });
   }
-  fireEvent.click(screen.getByRole("button", { name: "Guardar contraseña y continuar" }));
-  await waitFor(() => expect(refresh).toHaveBeenCalledOnce());
-  expect(screen.getByLabelText("Contraseña inicial")).toHaveValue("");
+  fireEvent.click(screen.getByRole("button", { name: "Crear mi contraseña" }));
+  await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Contraseña creada"));
+  expect(activate).toHaveBeenCalledWith("synthetic", "Nueva-Clave-Sintetica");
+  expect(screen.queryByLabelText("Nueva contraseña")).not.toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Ir al inicio de sesión" })).toHaveAttribute("href", "/login");
 });
 
-it("envía padre e hijos juntos y usa el DNI solo como entrada de activación", async () => {
+it("permite pedir enlace sin tener una sesión", async () => {
+  window.history.replaceState(null, "", "/crear-contrasena");
+  const resend = vi.spyOn(authService, "resendActivation").mockResolvedValue({ message: "Si está pendiente, recibirás un enlace", success: true });
+  render(<MemoryRouter><CreatePassword /></MemoryRouter>);
+  fireEvent.change(screen.getByLabelText("Código de usuario"), { target: { value: "P00010" } });
+  fireEvent.click(screen.getByRole("button", { name: "Enviar otro enlace" }));
+  await waitFor(() => expect(resend).toHaveBeenCalledWith("P00010"));
+});
+
+it("envía padre e hijos juntos y no envía DNI ni contraseña", async () => {
   const fetch = vi.fn().mockResolvedValue(new Response(JSON.stringify({ message: "Registrada" }), { status: 201, headers: { "content-type": "application/json" } }));
   vi.stubGlobal("fetch", fetch);
   await adminService.registrarFamilia({ nombres: "Familia", apellidos: "Prueba", email: "family@example.com", password: "12345678", hijos: [{ nombres_paciente: "Ana", apellidos_paciente: "Prueba", fecha_nacimiento: "2020-01-01", sexo: "Femenino" }] });
   const [url, options] = fetch.mock.calls[0]!;
   expect(url).toContain("/admin/familias");
   const payload = JSON.parse(options.body);
-  expect(payload.dni).toBe("12345678");
+  expect(payload.dni).toBeUndefined();
   expect(payload.hijos).toHaveLength(1);
   expect(payload.password).toBeUndefined();
 });

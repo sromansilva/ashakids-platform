@@ -361,3 +361,14 @@ FastAPI GET /admin/auditoria requiere rol ADMIN y devuelve hasta 100 eventos rec
 de auditoria_cambios, con total, actor, acción, tabla/entidad y fecha. La proyección
 no serializa datos_anteriores ni datos_nuevos para reducir exposición de datos personales.
 React presenta únicamente eventos guardados; no genera ejemplos ni modifica historial.
+
+
+## V56 — activación pública con enlace de alta
+
+Gmail ya no envía contraseña inicial. Cuatro altas generan secreto aleatorio Argon2id;
+publican enlace de24h firmado con HMAC sobre ID/expiración/propósito/correo y el hash privado
+como clave. POST/auth/create-password bloquea usuario, valida activo/pendiente/firma,
+cambia hash, revoca sesiones y completa activación transaccionalmente. No crea sesión.
+POST/auth/resend-activation envía solo a pendientes; respuesta genérica y límiteIP/código.
+React recibe el token en fragmento, lo retira de la barra y confirma contraseña12–128.
+No tabla/migración nueva ni SupabaseAuth. ADR0022 documenta consecuencias y límites.

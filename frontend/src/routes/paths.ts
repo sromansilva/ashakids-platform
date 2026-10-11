@@ -87,6 +87,7 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
   if (
     cleanPath === "/" ||
     cleanPath === "/login" ||
+    cleanPath === "/crear-contrasena" ||
     cleanPath === "/forgot-password" ||
     cleanPath === "/onboarding" ||
     cleanPath.startsWith("/register") ||

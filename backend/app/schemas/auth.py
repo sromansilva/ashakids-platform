@@ -42,3 +42,14 @@ class ActivationRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     current_password: str = Field(min_length=1, max_length=128)
     new_password: Password
+
+
+class EmailActivationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    token: str = Field(min_length=1, max_length=200)
+    new_password: Password
+
+
+class ResendActivationRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    codigo_usuario: str = Field(min_length=1, max_length=64)

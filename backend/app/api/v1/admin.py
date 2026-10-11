@@ -35,7 +35,7 @@ from app.services.admin_service import (
     obtener_cuenta,
     suspender_cuenta,
 )
-from app.services.gmail import send_welcome_email
+from app.services.email_activation import welcome_for_user
 
 router = APIRouter(prefix="/admin", tags=["Administración"])
 
@@ -77,13 +77,7 @@ async def post_familia(
     result = await registrar_familia(db, identity, req)
     await db.commit()
     cuenta = result["cuenta"]
-    mail = await send_welcome_email(
-        to=cuenta["email"],
-        name=f"{cuenta['nombres']} {cuenta['apellidos']}",
-        role="PADRE",
-        code=cuenta["codigo_usuario"],
-        initial_password=req.dni,
-    )
+    mail = await welcome_for_user(db, cuenta["id_usuario"], "PADRE")
     result["correo_bienvenida"] = mail.status
     return result
 
@@ -172,13 +166,7 @@ async def post_crear_padre(
     actor, _ = current_data
     nueva_cuenta = await crear_padre(db, req, actor)
     await db.commit()
-    mail = await send_welcome_email(
-        to=nueva_cuenta["email"],
-        name=f"{nueva_cuenta['nombres']} {nueva_cuenta['apellidos']}",
-        role="PADRE",
-        code=nueva_cuenta["codigo_usuario"],
-        initial_password=req.password,
-    )
+    mail = await welcome_for_user(db, nueva_cuenta["id_usuario"], "PADRE")
     return OperacionCuentaResponse(
         message=f"Cuenta de Padre '{nueva_cuenta['codigo_usuario']}' creada exitosamente.",
         cuenta=nueva_cuenta,
@@ -201,13 +189,7 @@ async def post_crear_terapeuta(
     actor, _ = current_data
     nueva_cuenta = await crear_terapeuta(db, req, actor)
     await db.commit()
-    mail = await send_welcome_email(
-        to=nueva_cuenta["email"],
-        name=f"{nueva_cuenta['nombres']} {nueva_cuenta['apellidos']}",
-        role="TERAPEUTA",
-        code=nueva_cuenta["codigo_usuario"],
-        initial_password=req.password,
-    )
+    mail = await welcome_for_user(db, nueva_cuenta["id_usuario"], "TERAPEUTA")
     return OperacionCuentaResponse(
         message=f"Cuenta de Terapeuta '{nueva_cuenta['codigo_usuario']}' creada exitosamente.",
         cuenta=nueva_cuenta,

@@ -1087,3 +1087,34 @@ con tope100 y total. Front incluye estados carga/error/vacío. No se exponen JSO
 ni se cambia/elimina historial. Verificados: Python compile, 25 pruebas de rutas,
 282 componentes, typecheck, build, check:frontend y Graphify check. Sin consulta a BD real ni
 prueba HTTP de extremo a extremo. Mapa Graphify actualizado en modo code-only.
+
+
+## V56 — crear contraseña desde correo / 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base codex/2do-intento
+64cbb3599aa5d705a345ef0fabcfc11fdf384dbd/V55, origin/dev comprobado con fetch.
+Las cuatro altas ADMIN generan hash de secreto aleatorio, no DNI ni contraseña entregada.
+Correo HTML/texto con código y botón Crear mi contraseña, enlace24h de un uso; página
+pública /crear-contrasena con confirmación12–128caracteres y reenvío por código.
+Login bloquea pendientes anteriores/nuevos; activados conservan acceso. Antigua activación
+por contraseña inicial retirada (410 con sesión válida). Sin migración ni nuevos permisos.
+ADR0022 explica HMAC ligado al hash privado/correo, bloqueo de usuario y revocación.
+
+Verificado:9unitarios backend,11frontend del flujo,25rutas;284componentes del árbol de
+trabajo (incluye adjuntos locales previos), tipos/checkfrontend/build1903módulos correctos.
+Detector de tres componentes []. Inspección escritorio1280x720 y móvil390x844 correcta.
+9integraciónSQL omitidos por falta de ASHAKIDS_TEST_DATABASE_URL; casos adaptados para
+activación pública/concurrencia futura. No OAuth/Gmail real, alta/pacientes compartidos
+ni concurrenciaSQL verificados. AvisoNodeDEP0205 heredado. Graphify2396nodos/code-only
+actualizado; check y diff antes de cierre. Es cambio funcional, no auditoría/PDF nuevo.
+
+Render consultado:servicioashakids,dev,V55Live, no variables GMAIL_* en inventario.
+Las credenciales entregadas no se guardaron en archivos ni Git. Siete variables privadas
+Render guardadas tras autorización explícita posterior; deploy iniciado sobre V55. El cambio de código
+se publica en dev/rama propia; registrar SHA efectivo en el chat. Push no prueba recepción.
+Primer commit falló por identidadGit ausente; reintentar con identidadCodex ya usada en
+V54/V55 solo para ese comando. Cambios previos de adjuntos preservados fuera del commit; en documentos
+compartidos se incorpora únicamente este apartado al índice Git.
+Siguiente:verificar redeployV56/recepción del botón
+y crear contraseña manualmente desde buzón de prueba. No envío masivo ni recuperación de
+contraseñas ya activadas. No ampliar newsletter/BD/pagos durante esta tarea.

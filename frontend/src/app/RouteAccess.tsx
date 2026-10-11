@@ -15,7 +15,7 @@ export function RouteAccess({ children }: { children: ReactNode }) {
     return <RouteLoading label="Verificando sesión segura…" />;
   }
   if (required && !isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
-  if (user?.password_change_required) return <AccountActivation />;
+  if (user?.password_change_required && location.pathname !== "/crear-contrasena") return <AccountActivation />;
   if (required && required !== role) return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <section className="max-w-md rounded-3xl border p-8 text-center bg-white">

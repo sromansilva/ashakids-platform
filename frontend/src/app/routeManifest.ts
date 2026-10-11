@@ -2,6 +2,7 @@
 export const routePaths = [
   "/",
   "/login",
+  "/crear-contrasena",
   "/register",
   "/register/padre",
   "/register/verify",

@@ -948,3 +948,16 @@ datos personales. La respuesta limita el listado a los 100 eventos recientes e i
 el total. El panel reemplaza las filas ficticias con datos reales y maneja carga, error
 y lista vacía. Las altas administrativas ya registraban auditoría en la misma
 transacción. No se alteran eventos ni cuentas existentes.
+
+
+## V56 — contraseña personal desde enlace de correo
+
+Desde el alta ADMIN ya no se usa DNI ni una contraseña comunicada: se guarda un secreto
+aleatorio y se envía código+botón Crear mi contraseña. La página /crear-contrasena permite
+crear12–128caracteres, confirmar y solicitar enlace por código sin sesión. Enlace24h,
+ligado al hash privado/correo, consumido bajo bloqueoSQL con revocación de sesiones.
+Login rechaza cuentas pendientes nuevas/anteriores; cuentas activadas conservan contraseña.
+No requiere migración. ADR0022; evidencia local en evidence/email-activation-v56/verification.md.
+Siete variables Gmail guardadas en Render tras autorización explícita; despliegue y recepción
+pendientes de comprobar en el cierre. Recepción real y concurrenciaSQL no comprobadas. Contextos V52 inferiores son
+históricos y describen el mecanismo anterior reemplazado aquí. No auditoría nueva.

@@ -7,6 +7,7 @@ registra cuerpos de mensajes, credenciales ni contraseñas.
 import asyncio
 import base64
 import json
+from html import escape
 import threading
 import time
 from dataclasses import dataclass
@@ -80,20 +81,22 @@ def _get_access_token_sync() -> str:
         return token
 
 
-def _message_bytes(*, to: str, subject: str, text: str) -> bytes:
+def _message_bytes(*, to: str, subject: str, text: str, html: str | None = None) -> bytes:
     message = EmailMessage()
     message["To"] = to
     message["From"] = formataddr((settings.GMAIL_SENDER_NAME, settings.GMAIL_SENDER_EMAIL))
     message["Subject"] = subject
     message.set_content(text)
+    if html:
+        message.add_alternative(html, subtype="html")
     return base64.urlsafe_b64encode(message.as_bytes()).decode("ascii").encode("ascii")
 
 
-async def send_message(*, to: str, subject: str, text: str) -> None:
+async def send_message(*, to: str, subject: str, text: str, html: str | None = None) -> None:
     if not is_configured():
         raise GmailIntegrationError("Gmail no está configurado.")
     token = await asyncio.to_thread(_get_access_token_sync)
-    raw = _message_bytes(to=to, subject=subject, text=text)
+    raw = _message_bytes(to=to, subject=subject, text=text, html=html)
     await asyncio.to_thread(
         _request_json,
         f"{settings.GMAIL_API_BASE_URL.rstrip('/')}/users/me/messages/send",
@@ -106,16 +109,22 @@ async def send_message(*, to: str, subject: str, text: str) -> None:
 
 
 async def send_welcome_email(*, to: str, name: str, role: str, code: str,
-                             initial_password: str) -> GmailSendResult:
+                             activation_url: str) -> GmailSendResult:
     if not settings.GMAIL_ENABLED or not is_configured():
         return GmailSendResult("NO_CONFIGURADO")
-    origin = (settings.PUBLIC_ORIGIN or "http://localhost:5174").rstrip("/")
     text = (f"Hola {name},\n\nTu cuenta ASHAKids como {role} fue creada.\n"
-            f"Código de usuario: {code}\nContraseña inicial: {initial_password}\n\n"
-            f"Ingresa en: {origin}\n\n"
-            "Por seguridad, debes cambiar la contraseña en tu primer ingreso.\n")
+            f"Código de usuario: {code}\n\nCrea tu contraseña: {activation_url}\n\n"
+            "El enlace vence en 24 horas y se usa una sola vez.\n"
+            "Después podrás iniciar sesión con tu código y la contraseña que elegiste.\n")
+    html = (f"<p>Hola {escape(name)},</p><p>Tu cuenta ASHAKids fue creada.</p>"
+            f"<p>Código de usuario: <strong>{escape(code)}</strong></p>"
+            f'<p><a href="{escape(activation_url, quote=True)}" style="display:inline-block;'
+            'padding:14px 24px;background:#6d28d9;color:white;border-radius:12px;'
+            'text-decoration:none">Crear mi contraseña</a></p>'
+            '<p>El enlace vence en 24 horas y se usa una sola vez.</p>'
+            '<p>Después inicia sesión con tu código y la contraseña que elegiste.</p>')
     try:
-        await send_message(to=to, subject="Bienvenido a ASHAKids", text=text)
+        await send_message(to=to, subject="Crea tu contraseña de ASHAKids", text=text, html=html)
         return GmailSendResult("ENVIADO")
     except GmailIntegrationError as exc:
         return GmailSendResult("PENDIENTE", str(exc))

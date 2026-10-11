@@ -233,7 +233,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
       } else {
         const res = await adminService.crearTerapeuta(formTerapeuta);
-        setSuccessBanner(`${res.message} Debe cambiar su contraseña inicial al ingresar. ${correoEstado(res.correo_bienvenida)}`.trim());
+        setSuccessBanner(`${res.message} Debe crear su contraseña desde el enlace enviado al correo. ${correoEstado(res.correo_bienvenida)}`.trim());
       }
       setModal(null);
       setFormPadre(f => ({ ...f, password: "" }));

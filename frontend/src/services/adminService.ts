@@ -21,7 +21,7 @@ export const adminService = {
   async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
     const { password, hijos, ...adulto } = payload;
     return apiClient.post<OperacionCuentaResponse>("/admin/familias", {
-      ...adulto, dni: password, hijos: hijos ?? [],
+      ...adulto, hijos: hijos ?? [],
     });
   },
   /**
@@ -61,14 +61,16 @@ export const adminService = {
    * Crea una nueva cuenta de Padre/Tutor (POST /api/v1/admin/cuentas/padres).
    */
   async crearPadre(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
-    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/padres", payload);
+    const { password, ...account } = payload;
+    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/padres", account);
   },
 
   /**
    * Crea una nueva cuenta de Terapeuta (POST /api/v1/admin/cuentas/terapeutas).
    */
   async crearTerapeuta(payload: CrearTerapeutaPayload): Promise<OperacionCuentaResponse> {
-    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/terapeutas", payload);
+    const { password, ...account } = payload;
+    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/terapeutas", account);
   },
 
   /**

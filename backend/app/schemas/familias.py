@@ -1,4 +1,4 @@
-"""Alta administrativa de familia con contraseña inicial específica, sin DNI persistido."""
+"""Alta administrativa de familia con creación de contraseña mediante correo."""
 from pydantic import EmailStr, Field
 from app.schemas.admin import InitialDni
 from app.schemas.clinica import Entrada, PacienteDatos, PacienteSalida
@@ -10,7 +10,7 @@ class FamiliaCrear(Entrada):
     nombres: Nombre
     apellidos: Apellido
     email: EmailStr = Field(max_length=150)
-    dni: InitialDni
+    dni: InitialDni | None = None
     parentesco: str | None = Field(default=None, max_length=30)
     telefono: str | None = Field(default=None, max_length=12)
     direccion: str | None = Field(default=None, max_length=200)

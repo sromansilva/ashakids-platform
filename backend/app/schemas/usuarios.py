@@ -9,7 +9,7 @@ class UsuarioCrear(Entrada):
     apellidos: str = Field(min_length=1, max_length=80)
     email: EmailStr = Field(max_length=150)
     codigo_usuario: str = Field(pattern=r"^[a-zA-Z0-9]{6}$")
-    password: Password
+    password: Password | None = None
     rol: Literal["PADRE", "TERAPEUTA", "ADMIN"]
 
 
