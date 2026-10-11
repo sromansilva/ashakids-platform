@@ -1388,3 +1388,23 @@ Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos 
 del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
+
+## V67 — relevo del rediseño de administrador
+
+Objetivo: aplicar presentación ASHAKids al administrador exclusivamente. Rama
+codex/landing-publica; base fb471a3/V62. Frontend: admin.css, OperationalDashboard
+(adición decorativa sólo admin), clases en AdminOperacion/AdminConfig/AdminAuditoria/
+AdminContenido/AdminML. Documentación DESIGN.md/contexto y evidencia admin-visual-v67.
+Tipos/check/build correctos (358 archivos/1916 módulos); npm test 25 rutas y 288
+componentes correctos. Chrome fixture con todas las peticiones interceptadas:
+12 rutas, modal alta sin enviar, incidencia expandida/error, destino de acción,
+escritorio 1536, dashboard 1024/390, Nunito/recursos/reduced-motion y terapeuta
+sin clase admin. Evidencia sintética, no DB ni login real. Primer fallo del fixture
+por formato paginado corregido, ejecución final correcta. Capturas inspeccionadas.
+Graphify refresh/check y diff/secretos al cierre. Commit local V67; no push en esta
+fase. SHA definitivo consultable en git log, no confundir base con commit final.
+Fetch detectó origin/dev 61e6a39 con V63–V66 y correos; no mezclar sus cambios backend
+con este corte exclusivamente visual. Próximo paso: revisión visual del usuario,
+integrar dev preservando .gitignore local y repetir verificaciones antes de publicar.
+No afirmar sincronización con dev ni despliegue remoto. Sin nuevos recursos pendientes
+para la cabecera: Ashi aprobado reutilizado; responsive completo queda diferido.

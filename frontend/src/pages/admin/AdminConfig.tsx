@@ -10,7 +10,7 @@ export function AdminConfig() {
   return <section className="p-4 sm:p-6 max-w-4xl mx-auto text-[#1C1135]">
     <h1 className="text-2xl font-black mb-2">Configuración del sistema</h1>
     <p className="text-sm text-[#625779] mb-6">Información técnica de ASHAKids: tecnologías, arquitectura y herramientas del proyecto.</p>
-    <div className="bg-white rounded-2xl p-6 sm:p-8 space-y-6">
+    <div className="admin-system-sections bg-white rounded-2xl p-6 sm:p-8 space-y-6">
       {sections.map(section => <section key={section.title}>
         <h2 className="font-extrabold text-lg mb-2">{section.title}</h2>
         <p className="text-sm leading-relaxed text-[#625779] max-w-prose">{section.text}</p>

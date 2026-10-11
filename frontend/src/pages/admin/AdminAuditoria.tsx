@@ -60,7 +60,7 @@ export function AdminAuditoria() {
           <p className="mt-1 text-sm text-[#7C6F9A]">Las operaciones administrativas aparecerán aquí cuando se guarden.</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-2" aria-live="polite">
+        <div className="admin-audit-events flex flex-col gap-2" aria-live="polite">
           {items.map(item => (
             <article key={item.id_auditoria} className="rounded-2xl border border-[#E8E5F4] p-4">
               <div className="flex items-start justify-between gap-3 flex-wrap">

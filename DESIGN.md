@@ -9,7 +9,7 @@ y [kit](docs/design/ashakids-ui-kit-v1/ASHAKIDS_UI_KIT.png).
 Tokens/controles en `landing-kit.css`, composición previa en `landing.css` y nueva
 composición en `landing-reference.css`, siempre bajo `.asha-landing`.
 `landing-continuity.css` extiende esa escala/materiales a todas las secciones restantes.
-Nunito conserva la carga existente. Btn/Crd no cambian; paneles privados conservan tema.
+Nunito conserva la carga existente. Btn/Crd no cambian; administración se migra expresamente en V67.
 Paleta base: violeta #7C3AED/#5B21B6, aqua #0F766E, naranja #F97316, lavanda #EDE9FE,
 fondo #FAFAF9, tinta #1C1135 y texto secundario #615274. Cristal blanco84%, radios24px,
 botones con relieve inferior4px. Hero escritorio53–76px/1.02, títulos48px, tarjetas26px.
@@ -99,3 +99,13 @@ Sólo landing: footer lavanda #F3EEFB, tarjeta blanca para logo oficial, marca v
 ## V60 - Presentación del inicio de sesión
 
 `login.css` aplica el sistema v1 sólo bajo `.asha-login`: violeta #7C3AED, base #5B21B6, verde agua #0F766E, naranja #F97316, fondo #FAFAF9, Nunito 400–900, radios de 14 px en controles y 24 px en paneles. Formulario blanco, cabecera y panel de desarrollo suaves. Relieve inferior de 5 px en botón principal; campos de 56 px y controles de 44 px. Estados visuales de foco, carga, error y movimiento reducido. Arte decorativo de letras, textos y comportamiento originales conservados. Paneles privados y otras superficies sin migración visual.
+## V67 — superficie administrativa
+
+Migración visual exclusiva de `.asha-admin`: Nunito, violeta #7C3AED/#5B21B6,
+blanco cálido, lavanda y acentos agua/naranja. Menú de cristal suave, tarjetas
+de 20–28 px y controles de al menos 44 px; datos y formularios blancos.
+Dashboard con Ashi robot aprobado existente, decorativo y exclusivo de modo admin.
+Contenido/ML conservan Próximamente, sin afirmar nuevas funciones.
+Configuración se organiza en dos columnas; auditoría e incidencias mantienen datos
+y controles vigentes. Sin modificación visual del panel padre o terapeuta.
+Evidencia y límites: [verificación V67](docs/evidence/admin-visual-v67/verification.md).

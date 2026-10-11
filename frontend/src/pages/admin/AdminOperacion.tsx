@@ -35,7 +35,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     finally { setSaving(null); }
   };
   return <section className="p-4 sm:p-6 max-w-5xl mx-auto text-[#1C1135]">
-    <div className="flex flex-wrap items-start justify-between gap-4 mb-6">
+    <div className="admin-page-heading flex flex-wrap items-start justify-between gap-4 mb-6">
       <div><h1 className="text-2xl font-black">Incidencias</h1>
         <p className="text-sm text-[#625779] mt-2">Reportes enviados por padres y terapeutas desde su formulario de incidencias.</p></div>
       <Btn variant="secondary" disabled={loading || saving !== null} onClick={() => setReload(v => v + 1)}>Actualizar</Btn>

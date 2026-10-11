@@ -1,4 +1,8 @@
 .asha-admin {
+  --admin-ink: #1c1135;
+  --admin-muted: #615274;
+  --admin-border: #ddd6ef;
+  --admin-violet: #5b21b6;
   background: radial-gradient(ellipse at 80% 0%,#ede9fe,transparent 52%),radial-gradient(ellipse at 0% 90%,#ccfbf138,transparent 50%),#fafaf9 !important;
   color: #1c1135;
 }
@@ -28,7 +32,7 @@
 .admin-content { padding: 14px 8px 32px; }
 .admin-content > :is(div,section):not([role=note]) { max-width: 1200px; padding: 24px 28px; }
 .admin-content > [role=note] { margin: 10px 28px 0; border-radius: 10px; padding: 12px 16px; }
-.admin-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #ffffffbf; border-radius: 16px; border-color: transparent; box-shadow: 0 7px 24px #45247807,inset 0 1px 0 #fff; }
+.admin-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #fff; border-radius: 24px; border-color: #e8e1f0; box-shadow: 0 7px 24px #45247807,inset 0 1px 0 #fff; }
 .admin-content .bg-white:is(.rounded-2xl,.rounded-3xl):has(.bg-white.rounded-2xl) { box-shadow: none; }
 .admin-content .fixed .bg-white { background: #fff; box-shadow: 0 22px 70px #1c11351c; }
 .admin-content .fixed [role=dialog] { border-radius: 20px; border-color: transparent; }
@@ -69,7 +73,7 @@
 .asha-admin .admin-account-filters button { min-height: 42px; border-radius: 9px; }
 .asha-admin .admin-account-filters > div:last-child { border-color: #d8cfea; border-radius: 12px; box-shadow: none; background: #ffffffcf; min-width: 0; }
 .asha-admin .admin-account-filters input { min-width: 0; }
-.asha-admin .admin-account-list { gap: 0; border-radius: 16px; background: #ffffffbf; box-shadow: 0 8px 28px #45247808; overflow: hidden; }
+.asha-admin .admin-account-list { gap: 0; border-radius: 24px; background: #fff; border: 1px solid #e8e1f0; box-shadow: 0 8px 28px #45247808; overflow: hidden; }
 .asha-admin .admin-account-row { gap: 16px; padding: 20px; background: transparent !important; border: 0; border-radius: 0 !important; box-shadow: none !important; }
 .asha-admin .admin-account-row + .admin-account-row { border-top: 1px solid #e8e1f0; }
 .asha-admin .admin-account-row:hover { background: #f5f3ff80 !important; }
@@ -90,6 +94,58 @@
 .asha-admin .admin-config-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
 .asha-admin .admin-config-grid > div { padding: 26px; }
 .asha-admin .admin-config-grid > div:last-child { grid-column: 1 / -1; }
+/* Visual migration of administration only. Clinical data and forms remain white. */
+.asha-admin .admin-sidebar { margin: 16px 0 16px 16px; height: calc(100vh - 32px); border: 1px solid #e8e1f0; border-radius: 28px; box-shadow: 0 12px 36px #45247808; }
+.asha-admin .admin-sidebar > div:first-child { padding: 28px 20px; }
+.asha-admin .admin-sidebar nav button { border-radius: 16px; min-height: 50px; font-weight: 800; }
+.asha-admin .admin-sidebar nav button[aria-current=page] { background: #7c3aed; box-shadow: 0 3px 0 #5b21b6,0 6px 14px #7c3aed1c; }
+.asha-admin .admin-toolbar { background: transparent; backdrop-filter: none; border-bottom: 0; padding: 24px 36px 10px; }
+.asha-admin .admin-toolbar > p { color: #5b21b6; }
+.asha-admin .admin-toolbar > span { padding: 10px 16px; background: #ffffffb3; border: 1px solid #e8e1f0; border-radius: 16px; }
+.asha-admin .admin-content > :is(div,section):not([role=note]) { max-width: 1320px; padding: 24px 36px; }
+.asha-admin .admin-content h1 { font-size: clamp(1.65rem,2.4vw,2.25rem); font-weight: 900; line-height: 1.2; color: var(--admin-ink); }
+.asha-admin .admin-content :is(p,td) { line-height: 1.65; }
+.asha-admin .admin-content :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { background: #fff; border-radius: 14px; }
+.asha-admin .admin-content button { min-height: 44px; }
+.asha-admin .admin-content button.bg-violet-700 { background: #7c3aed; box-shadow: 0 3px 0 #5b21b6; border-radius: 14px; }
+.asha-admin .admin-content button:disabled { box-shadow: none; }
+.asha-admin .admin-content button:active:not(:disabled) { transform: translateY(1px); }
+.asha-admin .operational-heading { position: relative; min-height: 232px; padding: 38px 280px 34px 32px; border: 1px solid #ddd6ef; border-radius: 28px; background: radial-gradient(ellipse at 95% 25%,#ccfbf160,transparent 45%),linear-gradient(115deg,#fff,#f3edff); box-shadow: 0 12px 32px #45247808; align-content: center; overflow: hidden; }
+.asha-admin .operational-heading > div:first-child { width: 100%; }
+.asha-admin .operational-heading h1 { color: #3b176f; }
+.asha-admin .operational-heading p { line-height: 1.7; max-width: 54ch; }
+.asha-admin .operational-heading > button { background: #fff; border: 1px solid #ddd6ef; color: #5b21b6; border-radius: 14px; padding-inline: 18px; }
+.asha-admin .admin-welcome-art { position: absolute; right: 12px; bottom: 10px; width: 260px; pointer-events: none; }
+.asha-admin .admin-welcome-art img { width: 100%; height: auto; object-fit: contain; }
+.asha-admin .operational-actions { gap: 16px; }
+.asha-admin .operational-actions > button { min-height: 92px; padding: 20px 16px; border: 1px solid #e8e1f0; background: #ffffffc9; border-radius: 20px; box-shadow: 0 3px 0 #e8e1f0; font-size: .88rem; }
+.asha-admin .operational-actions svg { width: 24px; height: 24px; }
+.asha-admin .operational-actions > button:nth-child(2) svg { color: #0f766e; }
+.asha-admin .operational-actions > button:nth-child(3) svg { color: #c2410c; }
+.asha-admin .operational-stats { gap: 16px; background: transparent; padding: 0; border-radius: 0; box-shadow: none; backdrop-filter: none; overflow: visible; }
+.asha-admin .operational-stats > div { background: #fff !important; border: 1px solid #e8e1f0 !important; border-radius: 22px !important; padding: 24px; box-shadow: 0 7px 24px #45247807 !important; }
+.asha-admin .operational-stats > div::before { content: ''; display: block; width: 30px; height: 4px; margin-bottom: 18px; border-radius: 4px; background: #7c3aed; }
+.asha-admin .operational-stats > div:nth-child(2)::before { background: #0f766e; }
+.asha-admin .operational-stats > div:nth-child(3)::before { background: #f97316; }
+.asha-admin .operational-stats dd { color: #3b176f; font-size: 2.2rem; }
+.asha-admin .operational-workspace > section { background: #fff; border: 1px solid #e8e1f0; border-radius: 24px; padding: 28px; }
+.asha-admin .operational-workspace h2 { display: flex; align-items: center; gap: 10px; }
+.asha-admin .operational-workspace h2::before { content: ''; flex: 0 0 8px; height: 8px; background: #0f766e; border-radius: 50%; }
+.asha-admin .operational-note { border-left: 3px solid #ddd6ef; padding-left: 14px; }
+.asha-admin .admin-account-stats > div { border-radius: 22px; border: 1px solid #e8e1f0; background: #fff !important; }
+.asha-admin .admin-page-heading { padding-bottom: 24px; border-bottom: 1px solid #e8e1f0; }
+.asha-admin .admin-account-filters > div:first-child { background: #ede9fe; padding: 6px; border-radius: 18px; }
+.asha-admin .admin-account-filters button { border-radius: 12px; }
+.asha-admin .admin-account-row { padding: 24px; }
+.asha-admin .admin-content table { background: #fff; }
+.asha-admin .admin-content thead { background: #f5f3ff; }
+.asha-admin .admin-empty-card { min-height: 280px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; background: radial-gradient(ellipse at 95% 0%,#ede9fe,transparent 55%),#fff !important; border: 1px solid #e8e1f0; }
+.asha-admin .admin-empty-card > svg { width: 56px; height: 56px; padding: 12px; background: #ede9fe; border-radius: 18px; }
+.asha-admin .admin-system-sections { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 0 32px; }
+.asha-admin .admin-system-sections > section { border-bottom: 1px solid #e8e1f0; padding-bottom: 24px; }
+.asha-admin .admin-system-sections > section h2 { color: #5b21b6; }
+.asha-admin .admin-system-sections > a { grid-column: 1 / -1; }
+.asha-admin .admin-audit-events > article { background: #fff; border-radius: 20px; padding: 22px; }
 @media (max-width: 1150px) {
   .asha-admin .operational-actions { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .asha-admin .operational-stats { grid-template-columns: repeat(2,minmax(0,1fr)); }
@@ -99,6 +155,11 @@
   .asha-admin .admin-account-filters { flex-direction: column; }
 }
 @media (max-width: 767px) {
+  .asha-admin .admin-sidebar { margin: 0; height: 100%; border: 0; border-radius: 0; box-shadow: none; }
+  .asha-admin .admin-content > :is(div,section):not([role=note]) { padding: 20px; }
+  .asha-admin .operational-heading { padding: 24px; min-height: 0; padding-bottom: 150px; border-radius: 24px; }
+  .asha-admin .admin-welcome-art { width: 190px; right: 10px; bottom: 0; }
+  .asha-admin .admin-system-sections { grid-template-columns: minmax(0,1fr); }
   .asha-admin > main { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
   .asha-admin .admin-support-rail { display: flex; align-items: center; position: fixed; bottom: 0; inset-inline: 0; height: calc(76px + env(safe-area-inset-bottom)); padding: 0 20px env(safe-area-inset-bottom); z-index: 40; background: #fafaf9f2; border-top: 1px solid #e8e1f0; color: #615274; font-size: .8rem; font-weight: 800; }
   .asha-admin :is(a[aria-label="Contactar a AshaKids por WhatsApp"],button[aria-label="Abrir asistente ASHI"]) { bottom: calc(14px + env(safe-area-inset-bottom)) !important; }

@@ -1173,3 +1173,20 @@ Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos 
 del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
 enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
 No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
+
+## V67 — rediseño visual de administración (local)
+
+2026-10-11. Rama codex/landing-publica, base fb471a3/V62. Sólo presentación
+frontend administrativa según UI kit: menú, cabecera con Ashi aprobado existente,
+tarjetas, controles, cuentas, incidencias, auditoría, configuración y estados
+Próximamente. Textos, rutas, acciones y permisos conservados. Sin cambios backend,
+servicios HTTP, autenticación o datos; padre/terapeuta no migrados en este corte.
+Ver docs/evidence/admin-visual-v67/verification.md y DESIGN.md.
+Tipos/check358/build1916: PASS. 25 pruebas de rutas + 288 componentes: PASS.
+Chrome con API sintética interceptada: 12 rutas admin, modal sin enviar, expansión
+incidencia/error, destino de acción, 1536/1024/390, reduced-motion y aislamiento
+terapeuta. No prueba productiva de datos reales ni responsive completo.
+Fetch: origin/dev avanzó a 61e6a39, contiene V63–V66 y refinamientos de correo;
+esta versión continúa como V67. No integrados ni publicados en este corte local.
+Pendiente: aprobación visual e integrar dev/reverificar antes de publicar; conservar
+.gitignore previo del usuario. Sin cambios de arquitectura ni ADR necesarios.

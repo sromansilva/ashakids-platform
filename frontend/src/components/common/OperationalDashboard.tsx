@@ -7,6 +7,7 @@ import { familyDate, familyTime } from "@/services/familyTracking";
 import type { View } from "@/types/navigation";
 import { Btn } from "./Btn";
 import { CalendarDays, ClipboardList, FileText, Users } from "lucide-react";
+import { PublicIllustration } from "@/components/illustrations/PublicIllustration";
 const actionIcons = [Users, ClipboardList, CalendarDays, FileText];
 
 const limaDay = (date: string | number) => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(date));
@@ -34,6 +35,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
     <header className="operational-heading flex items-start justify-between gap-4 flex-wrap mb-6">
       <div><h1 className="text-2xl font-black">{admin ? "Panel de administración" : "Panel del terapeuta"}</h1><p className="text-base mt-2 text-[#4B4264]">Hola, {user?.nombres} {user?.apellidos}. {admin ? "Consulta los registros de la plataforma." : "Consulta tu agenda y las atenciones registradas."}</p></div>
       <Btn variant="outline" onClick={reload} disabled={queries.some(q => q.isFetching)}>Actualizar panel</Btn>
+      {admin && <div className="admin-welcome-art" aria-hidden="true"><PublicIllustration src="/illustrations/ashi-hero-v1.png" alt="" sizes="240px" /></div>}
     </header>
     <nav aria-label="Acciones del panel" className="operational-actions flex gap-3 flex-wrap mb-7">{actions.map(([label, view],index) => { const Icon = (admin ? actionIcons : [Users, CalendarDays, FileText])[index]; return <Btn key={view} variant="secondary" onClick={() => go(view)}>{<Icon size={19} aria-hidden="true"/>}{label}</Btn>; })}</nav>
     {error ? <div role="alert" className="rounded-2xl bg-red-50 p-5"><p className="font-bold">No pudimos actualizar los registros.</p><p className="mt-2">{error.message}</p><Btn onClick={reload} className="mt-3">Reintentar panel</Btn></div> : pending ? <p role="status">Cargando registros del panel…</p> : <>
