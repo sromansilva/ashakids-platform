@@ -1,0 +1,121 @@
+{
+  "captured_utc": "2026-10-11T15:13:32.536193+00:00",
+  "transaction_read_only": "on",
+  "ssl": true,
+  "tables": [
+    {
+      "table": "actividades",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "objetivos",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "mundos",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "niveles",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "resultados_nivel",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "perfiles",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "perfil_logros",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      },
+      "read": "PASS"
+    },
+    {
+      "table": "logros",
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false
+      },
+      "read": "PASS"
+    }
+  ],
+  "medal_catalog": [
+    {
+      "codigo_juego": "FLUIDEZ",
+      "medals": 1
+    },
+    {
+      "codigo_juego": "HABLA",
+      "medals": 1
+    },
+    {
+      "codigo_juego": "LENGUAJE",
+      "medals": 1
+    },
+    {
+      "codigo_juego": "OROFACIAL",
+      "medals": 1
+    },
+    {
+      "codigo_juego": "VOZ",
+      "medals": 1
+    }
+  ],
+  "stored_attempts": [
+    {
+      "codigo_juego": "HABLA",
+      "attempts": 2,
+      "correct": 2
+    },
+    {
+      "codigo_juego": "LENGUAJE",
+      "attempts": 4,
+      "correct": 4
+    }
+  ]
+}

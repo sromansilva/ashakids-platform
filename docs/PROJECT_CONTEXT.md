@@ -1,3 +1,13 @@
+## V96 — guardado de los cinco juegos / 2026-10-11
+
+Corregido el HTTP503 al completar un mundo: resultados_nivel admite INSERT pero no UPDATE para runtime. El premio final del nivel más la medalla se calcula antes de insertar el intento; conserva transacción, UUID idempotente y bloqueo por paciente, sin ampliar permisos ni cambiar esquema/datos compartidos. Actividades básicas de simulación, sin medición clínica.
+
+Validación nueva:8 pruebas API/SQL en PostgreSQL17.6 aislado con rol restringido,16 de frontend con API simulada,15 niveles en Chrome con React/API/SQL reales locales. Recarga y SELECT independiente confirman15 intentos,2000XP,nivel11 y5 medallas. Compartida:TLS,READ ONLY,8 lecturas/catálogo5medallas; no usuarios/sesiones auth/escrituras compartidas. Aviso cicloFK del comparador; diferencia ajena de adjuntos integer/bigint. Audio audible/carga/móvil/despliegue remoto no certificados. [Auditoría2026-10-11-02](audits/auditoria-2026-10-11-02.md) y [PDF](../output/pdf/Auditoria_Juegos_BD_ASHAKids_2026-10-11_02.pdf).
+
+Inicio6558a0776dd41302d3435819f3644fa9f1ff33f8/V93; integrado por fast-forward el V94 del equipo7b647aa3f0ca1c5a106edc537ac466411ec1c84c sin conflictos. Cierre V96_Corregir_Guardado_Juegos en feat/piero-dev, publicar también dev y verificar SHA/CI. Servidor local8000 tiene --reload; no se interrumpió. Siguiente: aceptar reintento HABLA3 en sesión familiar autorizada con backend actualizado; sin migración ni permisos nuevos. Repositorio:https://github.com/sromansilva/ashakids-platform .
+
+También se incorporó V95 de cabeceras del equipo,32df0e8b8459e8a5f78f1d7f311a029e4f58756e, por fast-forward sin conflictos; es la base final de V96. Se repitieron8 pruebas API/SQL después de esa integración, sin repetir navegador ni build de frontend.
+
 ## V93 — formulario guiado de reportes / 2026-10-11
 
 Observaciones iniciales, objetivos trabajados y próximos pasos incorporan plantillas editables mediante `Usar plantilla` en campos vacíos. Nombre del paciente tomado de la sesión; hallazgos, evaluación/actividad, objetivos, recursos y mundo requieren completar los datos de la atención. No se insertan ni guardan notas automáticamente. El formulario bloquea el envío si quedan marcadores de la plantilla, anuncia los campos pendientes y enfoca el primero.

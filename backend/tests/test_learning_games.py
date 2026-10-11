@@ -3,11 +3,18 @@ from datetime import datetime, timezone, timedelta
 from uuid import uuid4
 import asyncio
 import pytest
-from sqlalchemy import select, func
+from sqlalchemy import select, func, event
 from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion
 from app.models.perfiles import Paciente, Perfil, PerfilLogro
 from app.models.juegos import ResultadoNivel
 from app.services.juegos_catalogo import MUNDOS, VERSION
+
+
+@pytest.fixture(autouse=True)
+def isolated_login_budget(monkeypatch):
+    """Cada caso tiene su propio presupuesto de login, con límites reales."""
+    from app.core import login_limiter
+    monkeypatch.setattr(login_limiter, "login_limiter", login_limiter.LoginLimiter())
 
 
 async def prepare(clinical):
@@ -98,3 +105,33 @@ async def test_unassigned_world_is_denied(clinical):
         plan.mundos_asignados=['HABLA']
     response=await clients['p90001'].post(f'/api/v1/pacientes/{key}/juegos/VOZ/intentos',json=attempt('VOZ',1))
     assert response.status_code==403
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize('world', list(MUNDOS))
+async def test_world_completion_inserts_final_reward_without_updating_attempts(clinical, world):
+    clients, factory, key = await prepare(clinical)
+    engine = factory.kw['bind'].sync_engine
+    statements = []
+    def capture(_conn, _cursor, statement, _parameters, _context, _many):
+        if statement.lstrip().upper().startswith('UPDATE RESULTADOS_NIVEL'):
+            statements.append(statement)
+    event.listen(engine, 'before_cursor_execute', capture)
+    try:
+        url = f'/api/v1/pacientes/{key}/juegos/{world}/intentos'
+        final_data = attempt(world, 3)
+        for number, data in [(1, attempt(world, 1)), (2, attempt(world, 2)), (3, final_data)]:
+            response = await clients['p90001'].post(url, json=data)
+            assert response.status_code == 200, response.text
+            assert response.json()['experiencia_otorgada'] == (200 if number == 3 else 100)
+        repeat = await clients['p90001'].post(url, json=final_data)
+        assert repeat.status_code == 200 and repeat.json()['repetido'] is True
+        saved = repeat.json()['resumen']
+        assert saved['experiencia'] == 400 and len(saved['medallas']) == 1
+        assert saved['intentos_totales'] == 3
+        async with factory() as db:
+            assert list(await db.scalars(select(ResultadoNivel.experiencia_otorgada).order_by(ResultadoNivel.id_resultado_nivel))) == [100, 100, 200]
+            assert await db.scalar(select(func.count()).select_from(PerfilLogro)) == 1
+        assert statements == []
+    finally:
+        event.remove(engine, 'before_cursor_execute', capture)

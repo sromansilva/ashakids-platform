@@ -104,18 +104,12 @@ async def registrar(db, identity, patient_id, code, data):
         profile = Perfil(id_paciente=patient_id)
         db.add(profile)
         await db.flush()
-    attempt = ResultadoNivel(id_paciente=patient_id, id_nivel=level.id_nivel,
-        numero_intento=max((r.numero_intento for r in previous), default=0) + 1,
-        puntaje=100 if correct else 0, estrellas_obtenidas=3 if correct else 0,
-        detalle_resultados={"tipo": "SIMULACION", "version": VERSION, "solicitud": payload,
-                            "aciertos": sum(a == b for a, b in zip(data.respuestas, level_content["answer"])),
-                            "respuestas_totales": len(level_content["answer"]), "validacion": "SERVIDOR"},
-        fecha_realizacion=datetime.now(timezone.utc), clave_intento=data.clave_intento,
-        experiencia_otorgada=award)
-    db.add(attempt)
-    await db.flush()
-    all_rows = (await db.execute(resultados_query(patient_id))).all()
-    completed = {n for r, n, key in all_rows if key == code and r.puntaje == 100}
+    # Calcular el premio completo antes del INSERT: los intentos guardados son
+    # inmutables y el rol runtime no tiene UPDATE sobre resultados_nivel.
+    prior_rows = (await db.execute(resultados_query(patient_id))).all()
+    completed = {n for r, n, key in prior_rows if key == code and r.puntaje == 100}
+    if correct:
+        completed.add(data.nivel)
     objective = await db.scalar(select(Objetivo).where(Objetivo.id_actividad == activity.id_actividad))
     objective.resultados_objetivo = {"tipo": "SIMULACION", "version": VERSION, "total": 3, "completados": len(completed)}
     if len(completed) == 3:
@@ -128,7 +122,17 @@ async def registrar(db, identity, patient_id, code, data):
         if earned is None:
             db.add(PerfilLogro(id_perfil=profile.id_perfil, id_logro=medal.id_logro))
             award += XP_MEDALLA
-            attempt.experiencia_otorgada = award
+    attempt = ResultadoNivel(id_paciente=patient_id, id_nivel=level.id_nivel,
+        numero_intento=max((r.numero_intento for r in previous), default=0) + 1,
+        puntaje=100 if correct else 0, estrellas_obtenidas=3 if correct else 0,
+        detalle_resultados={"tipo": "SIMULACION", "version": VERSION, "solicitud": payload,
+                            "aciertos": sum(a == b for a, b in zip(data.respuestas, level_content["answer"])),
+                            "respuestas_totales": len(level_content["answer"]), "validacion": "SERVIDOR"},
+        fecha_realizacion=datetime.now(timezone.utc), clave_intento=data.clave_intento,
+        experiencia_otorgada=award)
+    db.add(attempt)
+    await db.flush()
+    all_rows = (await db.execute(resultados_query(patient_id))).all()
     profile.experiencia += award
     profile.nivel = 1 + profile.experiencia // XP_POR_NIVEL_PERFIL
     completed_pairs = {(key, n) for r, n, key in all_rows if r.puntaje == 100}
