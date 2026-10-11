@@ -131,10 +131,11 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
     expect(screen.queryByText('42 ms')).not.toBeInTheDocument();
     expect(calls.mock.calls.some(([url]) => String(url).includes('/sesiones'))).toBe(true);
   });
-  it('los accesos clínicos administrativos son alcanzables desde Operación', async () => {
-    mockApi(); renderRoute('/admin/operacion', 'ADMIN');
-    fireEvent.click(await screen.findByRole('button', { name: 'Sesiones y reportes' }));
-    expect(await screen.findByRole('heading', { name: 'Sesiones · ASHA Session' })).toBeInTheDocument();
+  it('Incidencias sustituye Operación y excluye las sesiones simuladas', async () => {
+    mockApi(path => path === '/admin/incidencias' ? response({ items: [], total: 0 }) : undefined);
+    renderRoute('/admin/operacion', 'ADMIN');
+    expect(await screen.findByText('No hay incidencias en esta página')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Sesiones y reportes' })).not.toBeInTheDocument();
   });
   it('un terapeuta sin asignaciones no recibe pacientes demostrativos', async () => {
     mockApi(); renderRoute('/terapeuta/pacientes', 'TERAPEUTA');

@@ -434,3 +434,32 @@ Implementados formulario público, enlace24h de un uso, correoHTML y reenvío a 
 Verificación local descrita en relevoV56; integraciónSQL omitida sin base aislada configurada.
 Configuración privadaGmail guardada en Render con autorización expresa; recepción pendiente.
 No cambia recuperación de cuentas ya activadas ni amplía newsletter/pagos.
+
+
+## V59 — incidencias y simplificación ADMIN
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base498df42/V58,
+codex/2do-intento y origin/dev coincidentes tras fetch. Nueva tabla incidencias con
+formulario compartido PADRE/TERAPEUTA: tipo, título120 y descripción600; UUID estable
+contra duplicados/concurrencia y permisos derivados de sesión. Lista paginada ADMIN
+y estados LEIDA/RESUELTA persistentes. Operación ahora se llama Incidencias, conserva
+URL anterior y elimina sesiones/reportes ficticios. Contenido y ML: Próximamente.
+Configuración informativa: React/TypeScript/Vite/Tailwind/Lucide, FastAPI/SQLAlchemy/
+asyncpg/PostgreSQL, Render/Supabase, permisos, Gmail/Zoom y herramientas; sin2FA.
+Auditoría sigue consultando auditoria_cambios real; aviso amarillo demo eliminado.
+Se alimenta con operaciones ya instrumentadas de cuentas/pacientes, no cada clic.
+
+ADR0023/migración010 adoptada en BD compartida con respaldo180614bytes verificado,
+31tablas previas conservadas, RLS/trespolíticas, grants mínimos runtime y sin acceso
+de identidades públicas. Sin usuarios/incidencias clínicas de prueba compartidos.
+Evidencia saneada docs/evidence/admin-incidents-v59/verification.md y JSON de adopción.
+6pruebasbackend SQL/HTTP aisladas;25rutas/287componentes del árbollocal, tipos,
+check346/máximo500 y build1905correctos; DEP0205heredado. DetectorUI[]. Navegador
+harnesssinbackend:escritorio1280 y formulario390, sin afirmar recorrido productivo.
+Fallos iniciales de conexión/puerto y unpackfixture corregidos y registrados.
+Graphifyrefresh/check al cierre. Cambio funcional, no auditoría/PDF nuevos.
+
+Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos fuera
+del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
+enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
+No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.

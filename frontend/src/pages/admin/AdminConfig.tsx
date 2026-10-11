@@ -1,40 +1,21 @@
-
-import { ChevronRight, Database, Link, Settings, ShieldCheck, Users } from "lucide-react";
-import { B } from "@/theme/brand/B";
-import { Crd } from "@/components/common/Crd";
-
 export function AdminConfig() {
   const sections = [
-    { title: "Parámetros del sistema",  icon: Settings, items: ["Logo y marca", "Colores corporativos", "Nombre de la plataforma"] },
-    { title: "Integraciones",           icon: Link, items: ["Zoom / videoconferencia", "Email (SendGrid)"] },
-    { title: "Seguridad",               icon: ShieldCheck, items: ["Autenticación 2FA", "Políticas de contraseñas", "Logs de acceso"] },
-    { title: "Roles y permisos",        icon: Users, items: ["Definir roles", "Asignar permisos", "Auditoría de accesos"] },
-    { title: "Respaldos y datos",       icon: Database, items: ["Backup automático", "Exportar datos", "Restaurar versión"] },
+    { title: 'Tecnologías', text: 'La interfaz utiliza React y TypeScript, con Vite para desarrollo y compilación, Tailwind CSS para estilos e iconos Lucide. El backend usa Python y FastAPI; SQLAlchemy asíncrono y asyncpg conectan con PostgreSQL.' },
+    { title: 'Arquitectura', text: 'La interfaz envía solicitudes HTTP/JSON a FastAPI. La API valida los datos, verifica permisos y ejecuta las operaciones en PostgreSQL. El navegador accede a los datos a través de la API.' },
+    { title: 'Despliegue y base de datos', text: 'Render aloja la aplicación y sirve la interfaz y la API bajo el mismo origen HTTPS. PostgreSQL está gestionado en Supabase. Las credenciales se configuran en el backend y las migraciones se aplican de forma explícita.' },
+    { title: 'Usuarios y seguridad', text: 'La autenticación propia utiliza sesiones con cookies HttpOnly y permisos para administrador, terapeuta y padre. La API controla el acceso a cada recurso. PostgreSQL usa un rol técnico con permisos limitados y políticas RLS. Las contraseñas se almacenan como hashes.' },
+    { title: 'Integraciones', text: 'Gmail API se utiliza desde el backend para el correo de alta y el boletín, según la configuración del servicio. Zoom permite abrir enlaces de videollamada; la creación automática de reuniones depende de su configuración. La entrega de correo y las reuniones requieren disponibilidad de sus proveedores.' },
+    { title: 'Herramientas de desarrollo', text: 'Git y GitHub mantienen el código y su historial. Pytest verifica el backend; Vitest y Testing Library comprueban componentes, y TypeScript revisa tipos. Graphify genera un mapa local del código para investigar sus relaciones; se utiliza solo durante el desarrollo.' },
   ];
-  return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-black text-[#1C1135] mb-1">Configuración del sistema</h2>
-        <p className="text-sm text-[#7C6F9A] font-medium">Parámetros globales de ASHAKids</p>
-      </div>
-      <div className="admin-config-grid flex flex-col gap-4">
-        {sections.map(s => (
-          <Crd key={s.title} className="p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <s.icon size={23} strokeWidth={1.7} className="text-violet-700"/>
-              <h4 className="font-extrabold text-[#1C1135]">{s.title}</h4>
-            </div>
-            <div className="flex flex-col gap-1">
-              {s.items.map(item => (
-                <div key={item} className="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-[#F5F3FF] transition-colors cursor-pointer">
-                  <p className="text-sm font-medium text-[#1C1135]">{item}</p>
-                  <ChevronRight size={16} style={{ color: B.textMuted }} />
-                </div>
-              ))}
-            </div>
-          </Crd>
-        ))}
-      </div>
+  return <section className="p-4 sm:p-6 max-w-4xl mx-auto text-[#1C1135]">
+    <h1 className="text-2xl font-black mb-2">Configuración del sistema</h1>
+    <p className="text-sm text-[#625779] mb-6">Información técnica de ASHAKids: tecnologías, arquitectura y herramientas del proyecto.</p>
+    <div className="bg-white rounded-2xl p-6 sm:p-8 space-y-6">
+      {sections.map(section => <section key={section.title}>
+        <h2 className="font-extrabold text-lg mb-2">{section.title}</h2>
+        <p className="text-sm leading-relaxed text-[#625779] max-w-prose">{section.text}</p>
+      </section>)}
+      <a className="inline-block text-sm text-violet-800 font-bold underline focus-visible:outline-2" href="https://github.com/sromansilva/ashakids-platform" target="_blank" rel="noreferrer">Ver repositorio del proyecto</a>
     </div>
-  );
+  </section>;
 }
