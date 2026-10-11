@@ -5,6 +5,8 @@ import { Btn } from "@/components/common/Btn";
 import { useFamilyPatients } from "@/hooks/useFamilyPatients";
 import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 
+import { getPacienteAvatarImage } from "@/config/avatars";
+
 type Props = Pick<ReturnType<typeof usePadreConfig>, "padrePlan" | "childList" | "setShowPlanUpgradeModal" | "setShowAddChildModal" | "setEditChild" | "setDeleteChild">;
 export function PadreConfigHijos({ childList, setShowAddChildModal, setEditChild, setDeleteChild }: Props) {
 const { query } = useFamilyPatients();
@@ -27,12 +29,15 @@ return (<div className="flex flex-col gap-5">
                       key={k.id}
                       className="grid grid-cols-[48px_minmax(0,1fr)] items-center gap-4 p-4 rounded-2xl border border-[#E8E5F4] bg-white"
                     >
-                      <div
-                        className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl flex-shrink-0"
-                        style={{ background: (k as any).color || B.violetLight }}
-                      >
-                        {(k as any).av || (k as any).emoji || k.name.slice(0, 2)}
-                      </div>
+                      <img
+                        src={getPacienteAvatarImage((k as any).avatar_nombre)}
+                        alt={`Avatar de ${k.name}`}
+                        className="w-12 h-12 rounded-2xl object-cover flex-shrink-0 border border-[#E8E5F4] shadow-sm bg-violet-50"
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/avatar_paciente/zorro.jpg";
+                        }}
+                      />
                       <div className="flex-1 min-w-0">
                         <p className="font-extrabold text-[#1C1135] break-words">
                           {k.name} {k.surname}

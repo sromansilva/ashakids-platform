@@ -3,16 +3,22 @@ import { patientsService } from "@/services/clinicalService";
 import { useWrite } from "@/hooks/useRemoteData";
 import { RemoteFeedback } from "@/components/common/RemoteFeedback";
 import type { usePadreConfig } from "@/pages/padre/settings/usePadreConfig";
-import { Plus, X } from "lucide-react";
-import { B } from "@/theme/brand/B";
+import { Plus, X, Check } from "lucide-react";
 import { Btn } from "@/components/common/Btn";
 import { Inp } from "@/components/common/Inp";
+import { PACIENTE_AVATARES } from "@/config/avatars";
 
 type Props = Pick<ReturnType<typeof usePadreConfig>, "setShowAddChildModal" | "setNewCN" | "setNewBirth" | "setNewAvatar" | "newAvatar" | "avatarOptions" | "newCN" | "newBirth" | "setNewCA" | "newCA" | "setChildList" | "showToast">;
-export function PadreConfigShowAddChildModal({ setShowAddChildModal, setNewCN, setNewBirth, setNewAvatar, newAvatar, avatarOptions, newCN, newBirth, setNewCA, newCA, setChildList, showToast }: Props) {
+export function PadreConfigShowAddChildModal({ setShowAddChildModal, setNewCN, setNewBirth, setNewAvatar, newAvatar, avatarOptions: _avatarOptions, newCN, newBirth, setNewCA, newCA, setChildList, showToast }: Props) {
 const [surname, setSurname] = useState(""); const [sex, setSex] = useState("");
-const save = useWrite(() => patientsService.create({ nombres_paciente: newCN, apellidos_paciente: surname, fecha_nacimiento: newBirth, sexo: sex }), () => {
-  setChildList(); setShowAddChildModal(false); setNewCN(""); setNewBirth(""); setNewAvatar("🐻"); setNewCA(""); showToast("Hijo registrado en el servidor");
+const save = useWrite(() => patientsService.create({
+  nombres_paciente: newCN,
+  apellidos_paciente: surname,
+  fecha_nacimiento: newBirth,
+  sexo: sex,
+  avatar_nombre: newAvatar || "zorro",
+}), () => {
+  setChildList(); setShowAddChildModal(false); setNewCN(""); setNewBirth(""); setNewAvatar("zorro"); setNewCA(""); showToast("Hijo registrado en el servidor");
 });
 return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -29,7 +35,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                   setShowAddChildModal(false);
                   setNewCN("");
                   setNewBirth("");
-                  setNewAvatar("🐻");
+                  setNewAvatar("zorro");
                 }}
                 aria-label="Cerrar formulario de hijo"
                 className="p-2 rounded-xl hover:bg-violet-50"
@@ -38,6 +44,49 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
               </button>
             </div>
             <div className="overflow-y-auto flex-1 p-6 flex flex-col gap-5">
+              {/* Avatar Selector */}
+              <div>
+                <label className="block text-sm font-bold text-[#1C1135] mb-2">
+                  Avatar del hijo
+                </label>
+                <div className="grid grid-cols-4 gap-2">
+                  {PACIENTE_AVATARES.map((av) => {
+                    const isSelected = (newAvatar || "zorro") === av.id;
+                    return (
+                      <button
+                        key={av.id}
+                        type="button"
+                        onClick={() => setNewAvatar(av.id)}
+                        className={`group relative flex flex-col items-center p-2 rounded-2xl border-2 transition-all cursor-pointer ${
+                          isSelected
+                            ? "border-violet-600 bg-violet-50/70 shadow-sm"
+                            : "border-[#E8E5F4] bg-white hover:border-violet-300 hover:bg-slate-50"
+                        }`}
+                        aria-label={`Seleccionar avatar ${av.name}`}
+                      >
+                        <img
+                          src={av.imagePath}
+                          alt={av.name}
+                          className="w-11 h-11 rounded-xl object-cover mb-1 border border-black/5"
+                          onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = "/avatar_paciente/zorro.jpg";
+                          }}
+                        />
+                        <span className={`text-[11px] font-bold truncate max-w-full ${isSelected ? "text-violet-700" : "text-[#7C6F9A]"}`}>
+                          {av.name.split(" ")[0]}
+                        </span>
+                        {isSelected && (
+                          <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-violet-600 text-white flex items-center justify-center">
+                            <Check size={10} strokeWidth={3} />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Name */}
               <Inp
                 label="Nombres"

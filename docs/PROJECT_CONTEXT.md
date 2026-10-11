@@ -1,3 +1,7 @@
+## V69 - Gestión y actualización de avatares de pacientes / 2026-10-11
+
+Persistencia del campo nativo `PACIENTES.avatar_nombre` y catálogo visual interactivo de 8 avatares infantiles (`oso`, `zorro`, `conejo`, `panda`, `leon`, `koala`, `tortuga`, `buho`) en `/padre/config`. Imágenes JPG alojadas en `frontend/public/avatar_paciente/` y alineadas con esquemas clínicos del backend.
+
 ## V62 - Publicación de landing y sincronización con incidencias / 2026-10-11
 
 Publicación autorizada a `dev` y sincronización de `codex/landing-publica`. Merge de `origin/dev` `7e958c8ec914866486764d6217e3e80b5f965c91` (V59 incidencias) sobre `92fa96774477a6ab0222d1d231ad4a651f57258a` (V61). Landing, Mundo ASHA, footer, favicon y diseño de login conservados; se incorporan las incidencias y simplificación administrativa del equipo. Conflicto únicamente documental en architecture.md, resuelto conservando el enlace explícito al ADR de correo y el apartado nuevo. Sin cambios funcionales añadidos durante la conciliación ni conflictos pendientes.

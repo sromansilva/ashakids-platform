@@ -18,11 +18,23 @@ class Salida(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
+from app.schemas.pacientes import ALLOWED_AVATARS
+
+
 class PacienteDatos(Entrada):
     nombres_paciente: Nombre
     apellidos_paciente: Apellido
     fecha_nacimiento: Nacimiento
     sexo: Sexo
+    avatar_nombre: str = Field(default="zorro", max_length=20)
+
+    @field_validator("avatar_nombre")
+    @classmethod
+    def validar_avatar(cls, v: str) -> str:
+        v_clean = v.strip().lower()
+        if v_clean not in ALLOWED_AVATARS:
+            raise ValueError(f"Avatar inválido. Opciones permitidas: {', '.join(sorted(ALLOWED_AVATARS))}")
+        return v_clean
 
 
 class PacienteCrear(PacienteDatos):
@@ -39,6 +51,7 @@ class PacienteSalida(PacienteDatos, Salida):
     id_tutor: int
     activo: bool
     fecha_registro: datetime
+    avatar_nombre: str = "zorro"
 
 
 class TratamientoCrear(Entrada):

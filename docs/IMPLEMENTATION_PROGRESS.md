@@ -1,3 +1,13 @@
+## V69 - Gestión y actualización de avatares de pacientes / 2026-10-11
+
+Configuración y persistencia del campo nativo `PACIENTES.avatar_nombre` en la vista `/padre/config` (apartado Mis hijos).
+Se implementaron 8 imágenes JPG en `frontend/public/avatar_paciente/` correspondientes a avatares de animales (`oso`, `zorro`, `conejo`, `panda`, `leon`, `koala`, `tortuga`, `buho`), coincidentes con el catálogo de backend `ALLOWED_AVATARS`.
+Se actualizó la visualización en la tarjeta del hijo, el modal de creación y el modal de edición para permitir seleccionar y cambiar interactivamente el avatar con retroalimentación visual inmediata.
+Se alineó el esquema backend `PacienteDatos`/`PacienteSalida` en `backend/app/schemas/clinica.py` y `PatientData` en frontend para validar y persistir `avatar_nombre` con valor predeterminado `'zorro'`.
+
+Verificación:
+PASS: frontend typecheck (`tsc --noEmit`), 293 pruebas vitest (21 suites), build Vite exitoso con derivados en `frontend/dist/avatar_paciente/`, backend hardening tests (39 PASS). Graphify check vigente. Sin migraciones de BD requeridas (la columna ya existe en PostgreSQL).
+
 ## V62 - Publicación de landing y sincronización con incidencias / 2026-10-11
 
 Publicación autorizada a `dev` y sincronización de `codex/landing-publica`. Merge de `origin/dev` `7e958c8ec914866486764d6217e3e80b5f965c91` (V59 incidencias) sobre `92fa96774477a6ab0222d1d231ad4a651f57258a` (V61). Landing, Mundo ASHA, footer, favicon y diseño de login conservados; se incorporan las incidencias y simplificación administrativa del equipo. Conflicto únicamente documental en architecture.md, resuelto conservando el enlace explícito al ADR de correo y el apartado nuevo. Sin cambios funcionales añadidos durante la conciliación ni conflictos pendientes.

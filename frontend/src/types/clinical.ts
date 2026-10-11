@@ -7,7 +7,7 @@ export interface Account {
 }
 export type AccountCreate = Pick<Account, "nombres" | "apellidos" | "email" | "codigo_usuario"> & { password: string; rol: SemanticRole };
 export type AccountEdit = Partial<Pick<Account, "nombres" | "apellidos" | "email" | "activo"> & { password: string; current_password: string }>;
-export interface PatientData { nombres_paciente: string; apellidos_paciente: string; fecha_nacimiento: string; sexo: string }
+export interface PatientData { nombres_paciente: string; apellidos_paciente: string; fecha_nacimiento: string; sexo: string; avatar_nombre?: string }
 export interface Patient extends PatientData { id_paciente: number; id_tutor: number; activo: boolean; fecha_registro: string }
 export interface TreatmentData {
   id_paciente: number; id_terapeuta: number; nombre_tratamiento: string;

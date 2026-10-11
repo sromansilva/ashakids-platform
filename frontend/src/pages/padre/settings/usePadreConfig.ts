@@ -52,28 +52,16 @@ const [newCN, setNewCN] = useState("");
 const [newCA, setNewCA] = useState("");
 const [newCS, setNewCS] = useState("Lenguaje");
 const [newBirth, setNewBirth] = useState("");
-const [newAvatar, setNewAvatar] = useState("🐻");
+const [newAvatar, setNewAvatar] = useState("zorro");
 const avatarOptions = [
-    "🐻",
-    "🦊",
-    "🐼",
-    "🐨",
-    "🐸",
-    "🦁",
-    "🐙",
-    "🦋",
-    "🐬",
-    "🦄",
-    "🐧",
-    "🐺",
-    "🦝",
-    "🐱",
-    "🐶",
-    "🐹",
-    "🐰",
-    "🦔",
-    "🦜",
-    "🐳",
+    "oso",
+    "zorro",
+    "conejo",
+    "panda",
+    "leon",
+    "koala",
+    "tortuga",
+    "buho",
   ];
 const [notifs, setNotifs] = useState({
     citas: true,
