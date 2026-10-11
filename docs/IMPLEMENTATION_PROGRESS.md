@@ -1,3 +1,13 @@
+## V62 - Publicación de landing y sincronización con incidencias / 2026-10-11
+
+Publicación autorizada a `dev` y sincronización de `codex/landing-publica`. Merge de `origin/dev` `7e958c8ec914866486764d6217e3e80b5f965c91` (V59 incidencias) sobre `92fa96774477a6ab0222d1d231ad4a651f57258a` (V61). Landing, Mundo ASHA, footer, favicon y diseño de login conservados; se incorporan las incidencias y simplificación administrativa del equipo. Conflicto únicamente documental en architecture.md, resuelto conservando el enlace explícito al ADR de correo y el apartado nuevo. Sin cambios funcionales añadidos durante la conciliación ni conflictos pendientes.
+
+PASS: tipos, check:frontend (358 archivos, máximo 500), build (1916 módulos), 25 rutas y 288 componentes en 20 archivos; 14 unidades backend de correo/activación/incidencias y siete unidades/ASGI de mundos. Una prueba SQL de incidencias omitida deliberadamente al no habilitar BD descartable. Sin migraciones ni DML real ejecutados, usuarios, reservas, correos o autenticación real. La adopción de migración010 descrita por el equipo se conserva como evidencia heredada, no una ejecución nueva. Graphify refresh/check AST local: 2433 nodos, 103 comunidades, 14 fuentes sin símbolos.
+
+[Evidencia de cierre](evidence/integration-v62/verification.md). Commit V62 de merge identificable en Git. Cierre autorizado: push normal, sin force, hacia dev y rama de trabajo; sincronizar dev local por avance de su referencia sólo si es ancestro. SHA y resultado efectivos deben comprobarse con las referencias locales/remotas; este documento no acredita por sí solo el push ni un deploy/CI exitoso. Render conserva su configuración remota de Auto-Deploy. `.gitignore` local preservado y excluido del commit.
+
+Siguiente: verificar CI/despliegue y realizar aceptación del equipo sobre el sitio publicado. No ampliar módulos ni aplicar migraciones o pruebas reales de correo/BD sin alcance explícito.
+
 ## V61 - Integración local de dev y landing / 2026-10-11
 
 Rama `codex/landing-publica`: integra `origin/dev` `498df42114833723d4aa55f6cac1ab5b029a5f21` (V58) sobre `018dc42d3649f2f309a7dd08dae1689819d83601` (V60). Se incorporan cinco commits remotos de auditoría administrativa, activación de contraseña por correo y documentación/configuración de Gmail/Render. Landing, Mundo ASHA, footer, favicon, diseño de login y retorno seguro conservados.
@@ -1349,3 +1359,32 @@ publicado con [skip render] para conservar el SHA d579a40 desplegado; el salto V
 la secuencia V57 existente, sin renumerar el V53 posterior.
 Siguiente: prueba manual en landing/ADMIN; si falla, distinguir NO_CONFIGURADO/PENDIENTE
 y503BD de401/403Gmail. Revisar logs sanitizados sin compartir OAuth ni enlaces privados.
+
+
+## V59 — incidencias y simplificación ADMIN
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base498df42/V58,
+codex/2do-intento y origin/dev coincidentes tras fetch. Nueva tabla incidencias con
+formulario compartido PADRE/TERAPEUTA: tipo, título120 y descripción600; UUID estable
+contra duplicados/concurrencia y permisos derivados de sesión. Lista paginada ADMIN
+y estados LEIDA/RESUELTA persistentes. Operación ahora se llama Incidencias, conserva
+URL anterior y elimina sesiones/reportes ficticios. Contenido y ML: Próximamente.
+Configuración informativa: React/TypeScript/Vite/Tailwind/Lucide, FastAPI/SQLAlchemy/
+asyncpg/PostgreSQL, Render/Supabase, permisos, Gmail/Zoom y herramientas; sin2FA.
+Auditoría sigue consultando auditoria_cambios real; aviso amarillo demo eliminado.
+Se alimenta con operaciones ya instrumentadas de cuentas/pacientes, no cada clic.
+
+ADR0023/migración010 adoptada en BD compartida con respaldo180614bytes verificado,
+31tablas previas conservadas, RLS/trespolíticas, grants mínimos runtime y sin acceso
+de identidades públicas. Sin usuarios/incidencias clínicas de prueba compartidos.
+Evidencia saneada docs/evidence/admin-incidents-v59/verification.md y JSON de adopción.
+6pruebasbackend SQL/HTTP aisladas;25rutas/287componentes del árbollocal, tipos,
+check346/máximo500 y build1905correctos; DEP0205heredado. DetectorUI[]. Navegador
+harnesssinbackend:escritorio1280 y formulario390, sin afirmar recorrido productivo.
+Fallos iniciales de conexión/puerto y unpackfixture corregidos y registrados.
+Graphifyrefresh/check al cierre. Cambio funcional, no auditoría/PDF nuevos.
+
+Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos fuera
+del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
+enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
+No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.

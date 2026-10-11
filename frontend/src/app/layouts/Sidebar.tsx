@@ -137,7 +137,7 @@ export function Sidebar({
             },
             {
               icon: Activity,
-              label: "Operación",
+              label: "Incidencias",
               view: "admin/operacion" as View,
             },
             {

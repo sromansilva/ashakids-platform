@@ -4,7 +4,7 @@ const persisted = new Set([
   "/padre/hijos", "/padre/pacientes", "/padre/progreso", "/padre/config", "/padre/perfil", "/padre/agenda", "/padre/reportes", "/padre/psicologos",
   "/padre/mensajes", "/terapeuta/mensajes",
   "/terapeuta/analiticas", "/terapeuta", "/terapeuta/agenda", "/terapeuta/pacientes", "/terapeuta/reportes",
-  "/admin/cuentas",
+  "/admin/cuentas", "/admin/operacion", "/admin/auditoria", "/admin/config", "/admin/contenido", "/admin/ml", "/padre/incidencias", "/terapeuta/incidencias",
   "/admin", "/admin/dashboard", "/admin/usuarios", "/admin/pacientes", "/admin/citas", "/admin/sesiones", "/admin/reportes",
 ]);
 export function capabilityNotice(path: string) {
