@@ -1,0 +1,74 @@
+/* Unified public landing; existing tokens, hero and private surfaces are retained. */
+.asha-unified #landing-steps,.asha-unified #landing-specialists,.asha-unified #landing-worlds,.asha-unified #landing-faq { scroll-margin-top: 108px; }
+.asha-unified { scroll-behavior: smooth; }
+#root:has(.asha-unified) { scroll-behavior: smooth; }
+.asha-unified > nav > div > div:nth-child(2) { margin-left: 0; gap: clamp(12px,2vw,28px); }
+.asha-unified .landing-worlds { background: linear-gradient(180deg,#f6f1ff,#fffefd); }
+.asha-unified .landing-worlds .landing-section-heading { text-align: center; }
+.asha-unified .landing-worlds .landing-section-heading p { margin: 24px auto; max-width: 62ch; }
+.asha-unified .landing-world-indicators { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 24px 0; }
+.asha-unified .landing-world-indicators li { padding: 8px 14px; border-radius: 999px; background: #fff9; color: var(--asha-primary-dark); font-size: 15px; font-weight: 800; }
+.asha-unified .landing-world-note { color: var(--asha-muted); text-align: center; max-width: 80ch; margin: 0 auto 32px; font-size: 15px; line-height: 1.6; }
+.asha-unified .mundo-card { min-width: 0; transition: transform 180ms ease,box-shadow 180ms ease; }
+.asha-unified .mundo-card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px #62448e18; }
+.asha-unified .landing-context-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; font-size: 17px; font-weight: 800; color: var(--asha-primary-dark); text-decoration: underline; text-underline-offset: 4px; }
+.asha-unified .landing-demo-note { color: var(--asha-muted); line-height: 1.6; margin: 20px 0; }
+.asha-unified .landing-dialog { width: min(520px,calc(100% - 32px)); max-height: calc(100dvh - 48px); margin: auto; border: 2px solid white; border-radius: 28px; padding: 0; background: #fffefd; color: var(--asha-ink); box-shadow: 0 24px 80px #29164c33; }
+.asha-unified .landing-dialog::backdrop { background: #29164c66; backdrop-filter: blur(4px); }
+.asha-unified .landing-dialog-content { position: relative; padding: 64px 32px 32px; }
+.asha-unified .landing-dialog h2 { font-size: 30px; line-height: 1.2; font-weight: 900; color: var(--asha-primary-dark); }
+.asha-unified .landing-dialog p { font-size: 17px; line-height: 1.6; margin: 20px 0; color: var(--asha-muted); }
+.asha-unified .landing-dialog-close { position: absolute; top: 12px; right: 12px; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50%; background: var(--asha-lavender); }
+.asha-unified .landing-dialog-actions,.asha-unified .landing-mobile-links { display: flex; flex-direction: column; gap: 14px; }
+.asha-unified .landing-dialog-actions > button { min-height: 48px; justify-content: center; }
+.asha-unified .landing-mobile-links a { padding: 12px 0; min-height: 48px; font-size: 18px; font-weight: 800; color: var(--asha-primary-dark); }
+@media (min-width: 1024px) and (max-width: 1279px) {
+  .asha-unified > nav .landing-nav-link { font-size: 15px; }
+  .asha-unified .landing-wordmark { font-size: 34px; }
+  .asha-unified.asha-ui > nav .asha-btn { min-width: 140px; font-size: 17px; }
+}
+@media (max-width: 1023px) {
+  #root:has(.asha-unified) { height: calc(100% - 72px); }
+  .asha-unified .landing-container,.asha-unified .landing-audience-container { width: calc(100% - 32px); }
+  .asha-unified .landing-section { padding-block: 48px; }
+  .asha-unified .landing-reference-hero h1 { font-size: clamp(34px,5vw,54px); }
+  .asha-unified .landing-hero-layout { grid-template-columns: 1fr; }
+  .asha-unified .landing-hero-copy { min-width: 0; }
+  .asha-unified .landing-hero-actions { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+  .asha-unified.asha-ui .landing-hero-actions .asha-btn { padding-inline: 16px; min-width: 0; min-height: 56px; font-size: 18px; }
+  .asha-unified .landing-ashi-scene { max-width: 620px; margin: auto; }
+  .asha-unified .landing-ashi-scene { display: flex; flex-direction: column; }
+  .asha-unified .landing-ashi-bubble { position: relative; top: auto; right: auto; order: -1; width: max-content; max-width: 100%; margin: 12px auto 20px; }
+  .asha-unified .landing-voice-decoration { width: 40px; height: 40px; right: 12%; top: 44%; }
+  .asha-unified .landing-reference-hero h1 > .landing-title-line { color: var(--asha-ink); }
+  .asha-unified .landing-audience h2 { display: block; font-size: 32px; }
+  .asha-unified .landing-heading-rays { display: none; }
+  .asha-unified .landing-section h2 { font-size: 34px; }
+  .asha-unified .landing-assistant-dock { inset: auto 0 0; height: 72px; padding: 8px 16px; flex-direction: row; justify-content: flex-end; align-items: center; background: #fffefd; border-top: 1px solid var(--asha-lavender); }
+  .asha-unified .landing-dock-label { display: none; }
+  .asha-unified .landing-dock-ashi,.asha-unified .landing-dock-whatsapp { width: 52px; height: 52px; }
+  .asha-unified .landing-dock-control { min-width: 52px; min-height: 52px; }
+  .asha-unified .landing-newsletter-panel,.asha-unified .landing-faq-layout,.asha-unified .landing-service-layout { grid-template-columns: minmax(0,1fr); }
+  .asha-unified .landing-newsletter-copy { flex-wrap: wrap; }
+  .asha-unified .landing-newsletter-copy > img { width: 120px; height: 120px; }
+  .asha-unified .landing-team-heading,.asha-unified .landing-stories-heading { flex-wrap: wrap; }
+  .asha-unified .landing-faq-illustration { margin-inline: auto; }
+  .asha-unified .landing-faq-illustration img { max-width: 100%; }
+}
+@media (max-width: 639px) {
+  .asha-unified .landing-hero-actions { grid-template-columns: 1fr; }
+  .asha-unified .landing-hero h1 { font-size: 34px; }
+  .asha-unified .landing-desktop-break { display: none; }
+  .asha-unified .landing-section h2 { font-size: 30px; }
+  .asha-unified.asha-ui .landing-audience-card { grid-template-columns: 30% minmax(0,1fr) 32px; gap: 10px; padding: 16px 12px; height: auto; min-height: 150px; }
+  .asha-unified .landing-audience-card img { height: 130px; }
+  .asha-unified .landing-audience-copy strong { font-size: 23px; }
+  .asha-unified .landing-audience-copy > span { font-size: 15px; }
+  .asha-unified .landing-audience-arrow { width: 32px; height: 32px; }
+  .asha-unified .landing-newsletter-panel { padding: 24px 16px; }
+  .asha-unified .landing-newsletter-controls { padding: 16px; min-width: 0; }
+  .asha-unified .landing-dialog-content { padding-inline: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #root:has(.asha-unified),.asha-unified { scroll-behavior: auto; }
+}

@@ -1,0 +1,166 @@
+{
+  "baseSHA": "5dd572cb37a679d5e8674a0cf1910426d925a1f9",
+  "api": "intercepted:401; no database or session writes",
+  "content": "same visible word and button-label multisets; exact anchor destinations; sections redistributed",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000,
+      "overflow": false,
+      "smallButtons": [],
+      "font": "Nunito, system-ui, sans-serif",
+      "nunitoLoaded": true,
+      "cta": {
+        "background": "linear-gradient(rgb(130, 64, 237), rgb(124, 58, 237))",
+        "shadow": "rgb(91, 33, 182) 0px -4px 0px 0px inset, rgba(28, 17, 53, 0.08) 0px 3px 6px 0px"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "overflow": false,
+      "smallButtons": [],
+      "font": "Nunito, system-ui, sans-serif",
+      "nunitoLoaded": true,
+      "cta": {
+        "background": "linear-gradient(rgb(130, 64, 237), rgb(124, 58, 237))",
+        "shadow": "rgb(91, 33, 182) 0px -4px 0px 0px inset, rgba(28, 17, 53, 0.08) 0px 3px 6px 0px"
+      }
+    },
+    {
+      "width": 320,
+      "height": 844,
+      "overflow": false,
+      "smallButtons": [],
+      "font": "Nunito, system-ui, sans-serif",
+      "nunitoLoaded": true,
+      "cta": {
+        "background": "linear-gradient(rgb(130, 64, 237), rgb(124, 58, 237))",
+        "shadow": "rgb(91, 33, 182) 0px -4px 0px 0px inset, rgba(28, 17, 53, 0.08) 0px 3px 6px 0px"
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "overflow": false,
+      "smallButtons": [],
+      "font": "Nunito, system-ui, sans-serif",
+      "nunitoLoaded": true,
+      "cta": {
+        "background": "linear-gradient(rgb(130, 64, 237), rgb(124, 58, 237))",
+        "shadow": "rgb(91, 33, 182) 0px -4px 0px 0px inset, rgba(28, 17, 53, 0.08) 0px 3px 6px 0px"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 900,
+      "overflow": false,
+      "smallButtons": [],
+      "font": "Nunito, system-ui, sans-serif",
+      "nunitoLoaded": true,
+      "cta": {
+        "background": "linear-gradient(rgb(130, 64, 237), rgb(124, 58, 237))",
+        "shadow": "rgb(91, 33, 182) 0px -4px 0px 0px inset, rgba(28, 17, 53, 0.08) 0px 3px 6px 0px"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "overflow": false,
+      "smallButtons": [],
+      "font": "Nunito, system-ui, sans-serif",
+      "nunitoLoaded": true,
+      "cta": {
+        "background": "linear-gradient(rgb(130, 64, 237), rgb(124, 58, 237))",
+        "shadow": "rgb(91, 33, 182) 0px -4px 0px 0px inset, rgba(28, 17, 53, 0.08) 0px 3px 6px 0px"
+      }
+    }
+  ],
+  "faqs": [
+    "Trabajamos con niños desde los 3 años. Nuestros especialistas adaptan cada terapia a la etapa del desarrollo de tu hijo.",
+    "Las sesiones se realizan por Zoom. Al agendar recibís el enlace automáticamente. Solo necesitás internet y una cámara.",
+    "En la evaluación inicial el terapeuta diseñará un plan personalizado con la frecuencia y duración recomendadas.",
+    "Ofrecemos paquetes de 2, 6 y 10 horas con vigencia de 6 meses. Cada compra incluye factura PDF automática.",
+    "Sí. Tras cada sesión el terapeuta escribe notas clínicas visibles desde tu panel, con el historial completo."
+  ],
+  "destinations": [
+    {
+      "name": "Iniciar sesión",
+      "path": "/login"
+    },
+    {
+      "name": "Iniciar sesión",
+      "path": "/login"
+    },
+    {
+      "name": "Ver todos",
+      "path": "/login"
+    },
+    {
+      "name": "Agendar",
+      "path": "/login"
+    },
+    {
+      "name": "Agendar",
+      "path": "/login"
+    },
+    {
+      "name": "Especialistas",
+      "path": "/especialistas"
+    },
+    {
+      "name": "Mundo ASHA",
+      "path": "/mundo-asha"
+    },
+    {
+      "name": "Recursos",
+      "path": "/recursos"
+    },
+    {
+      "name": "Sobre Nosotros",
+      "path": "/sobre-nosotros"
+    },
+    {
+      "name": "Iniciar sesión",
+      "path": "/login"
+    },
+    {
+      "name": "Especialistas",
+      "path": "/especialistas"
+    },
+    {
+      "name": "Mundo ASHA",
+      "path": "/mundo-asha"
+    },
+    {
+      "name": "ASHI Intelligence",
+      "path": "/ashi"
+    },
+    {
+      "name": "Sobre Nosotros",
+      "path": "/sobre-nosotros"
+    },
+    {
+      "name": "Historias",
+      "path": "/historias"
+    },
+    {
+      "name": "Trabaja con nosotros",
+      "path": "/trabaja"
+    },
+    {
+      "name": "Centro de Ayuda",
+      "path": "/ayuda"
+    },
+    {
+      "name": "Contacto",
+      "path": "/contacto"
+    }
+  ],
+  "focus": "solid",
+  "reducedMotion": {
+    "transition": "0s",
+    "animation": "none"
+  },
+  "browserErrors": []
+}

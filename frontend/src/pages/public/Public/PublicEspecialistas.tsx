@@ -25,10 +25,10 @@ export function PublicEspecialistas({ go }: { go: (v: View) => void }) {
       {/* Hero */}
       <div className="py-12 px-4 text-center max-w-3xl mx-auto">
         <span className="inline-flex items-center gap-1.5 text-xs font-extrabold px-3 py-1 rounded-full mb-4" style={{ background: B.violetLight, color: B.violet }}>
-          <Users size={12} /> {therapists.filter(t => t.available).length} especialistas disponibles ahora
+          <Users size={12} /> Perfiles de demostración · Disponibilidad por confirmar
         </span>
         <h1 className="text-3xl sm:text-5xl font-black text-[#1C1135] mb-4 leading-tight">Encuentra al especialista en <span style={{ color: B.violet }}>terapia de lenguaje</span></h1>
-        <p className="text-lg text-[#7C6F9A] font-medium mb-6">Especialistas en terapia de lenguaje infantil, verificados y con experiencia en atención virtual.</p>
+        <p className="text-lg text-[#7C6F9A] font-medium mb-6">Ejemplos de presentación de especialistas. Consulta credenciales y horarios en la agenda de tu cuenta.</p>
         <div className="flex items-center gap-2 max-w-lg mx-auto bg-white rounded-2xl border border-[#E8E5F4] px-4 py-3 shadow-sm">
           <Search size={16} className="text-[#9E95B7]" />
           <input className="flex-1 bg-transparent text-sm font-medium focus:outline-none text-[#1C1135] placeholder:text-[#9E95B7]"
@@ -59,7 +59,7 @@ export function PublicEspecialistas({ go }: { go: (v: View) => void }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-0.5">
                     <p className="font-extrabold text-[#1C1135] text-sm">{t.name}</p>
-                    {t.available && <span className="w-2 h-2 rounded-full bg-emerald-400 flex-shrink-0" />}
+
                   </div>
                   <p className="text-xs text-[#7C6F9A] font-medium">{t.specialty}</p>
                   <div className="flex items-center gap-1 mt-1">

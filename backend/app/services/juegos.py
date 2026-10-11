@@ -41,6 +41,8 @@ async def resumen(db, identity, patient_id):
     for world in catalogo():
         own = [(r, n) for r, n, code in rows if code == world["id"]]
         completed = sorted({n for r, n in own if r.puntaje == 100})
+        if world["id"] not in allowed:
+            world["levels"] = []
         worlds.append(dict(**world, asignado=world["id"] in allowed, completados=completed,
                            intentos=len(own), medalla=any(m["codigo"] == world["id"] for m in medals)))
     return dict(id_paciente=patient_id, version=VERSION, experiencia=profile.experiencia if profile else 0,

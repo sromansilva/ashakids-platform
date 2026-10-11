@@ -28,9 +28,12 @@ it("Therapist profile input uses the shared string-value contract", async () => 
   fireEvent.change(input, { target: { value: "Nombre actualizado" } });
   expect(input).toHaveValue("Nombre actualizado"); healthy();
 });
-it("Public navigation reaches specialists through the router", async () => {
+it("Public specialist links stay in the landing section", async () => {
   renderRoute("/", null); await loaded();
-  fireEvent.click(screen.getAllByRole("button", { name: /^Especialistas$/ })[0]);
-  await loaded(); healthy();
-  expect(screen.getByRole("heading", { name: /Encuentra al especialista/ })).toBeInTheDocument();
+  for (const link of screen.getAllByRole("link", { name: /^Especialistas$|^Explorar terapeutas$/ })) {
+    expect(link).toHaveAttribute("href", "#landing-specialists");
+  }
+  expect(screen.getByRole("heading", { name: /Terapeutas certificados/ })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: /^Ver todos/ })).not.toBeInTheDocument();
+  healthy();
 });

@@ -42,3 +42,10 @@ def catalogo():
     return [dict(id=key, version=VERSION, name=world["name"], description=world["description"],
                  levels=[dict(number=i + 1, **{k: v for k, v in level.items() if k != "answer"})
                          for i, level in enumerate(world["levels"])]) for key, world in MUNDOS.items()]
+
+
+def catalogo_publico():
+    """Información descriptiva: los ejercicios sólo viajan por el progreso autorizado."""
+    return [dict(id=key, version=VERSION, name=w["name"], description=w["description"],
+                 levels=[dict(number=i + 1) for i in range(len(w["levels"]))])
+            for key, w in MUNDOS.items()]

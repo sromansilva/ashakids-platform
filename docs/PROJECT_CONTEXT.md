@@ -1,3 +1,143 @@
+## V62 - Publicación de landing y sincronización con incidencias / 2026-10-11
+
+Publicación autorizada a `dev` y sincronización de `codex/landing-publica`. Merge de `origin/dev` `7e958c8ec914866486764d6217e3e80b5f965c91` (V59 incidencias) sobre `92fa96774477a6ab0222d1d231ad4a651f57258a` (V61). Landing, Mundo ASHA, footer, favicon y diseño de login conservados; se incorporan las incidencias y simplificación administrativa del equipo. Conflicto únicamente documental en architecture.md, resuelto conservando el enlace explícito al ADR de correo y el apartado nuevo. Sin cambios funcionales añadidos durante la conciliación ni conflictos pendientes.
+
+PASS: tipos, check:frontend (358 archivos, máximo 500), build (1916 módulos), 25 rutas y 288 componentes en 20 archivos; 14 unidades backend de correo/activación/incidencias y siete unidades/ASGI de mundos. Una prueba SQL de incidencias omitida deliberadamente al no habilitar BD descartable. Sin migraciones ni DML real ejecutados, usuarios, reservas, correos o autenticación real. La adopción de migración010 descrita por el equipo se conserva como evidencia heredada, no una ejecución nueva. Graphify refresh/check AST local: 2433 nodos, 103 comunidades, 14 fuentes sin símbolos.
+
+[Evidencia de cierre](evidence/integration-v62/verification.md). Commit V62 de merge identificable en Git. Cierre autorizado: push normal, sin force, hacia dev y rama de trabajo; sincronizar dev local por avance de su referencia sólo si es ancestro. SHA y resultado efectivos deben comprobarse con las referencias locales/remotas; este documento no acredita por sí solo el push ni un deploy/CI exitoso. Render conserva su configuración remota de Auto-Deploy. `.gitignore` local preservado y excluido del commit.
+
+Siguiente: verificar CI/despliegue y realizar aceptación del equipo sobre el sitio publicado. No ampliar módulos ni aplicar migraciones o pruebas reales de correo/BD sin alcance explícito.
+
+## V61 - Integración local de dev y landing / 2026-10-11
+
+Rama `codex/landing-publica`: integra `origin/dev` `498df42114833723d4aa55f6cac1ab5b029a5f21` (V58) sobre `018dc42d3649f2f309a7dd08dae1689819d83601` (V60). Se incorporan cinco commits remotos de auditoría administrativa, activación de contraseña por correo y documentación/configuración de Gmail/Render. Landing, Mundo ASHA, footer, favicon, diseño de login y retorno seguro conservados.
+
+La integración automática encontró un único conflicto en `docs/architecture.md`: bloque remoto añadido frente a final local. Se conservaron ambas descripciones y se explicitaron los enlaces a los dos ADR identificados como 0022, sin renumerar decisiones previas. RouteAccess/paths se combinaron automáticamente: creación de contraseña pública y retorno al mundo elegido permanecen. Ningún archivo queda en conflicto. `.gitignore` local preservado byte por byte y fuera del commit.
+
+PASS: tipos, check:frontend (355 archivos, máximo 500), build (1914 módulos), 25 rutas y 285 componentes en 19 archivos, nueve pruebas unitarias de activación/correo y siete unitarias/ASGI de mundos. Sin BD real, login real, envío de correos, usuarios ni reservas. Se instalaron pytest y pytest-asyncio, dependencias dev ya declaradas, sólo en el entorno backend. El archivo automático de conftest en tmp no acredita una prueba de PostgreSQL: se ejecutaron exclusivamente unidades con mocks. Graphify refresh/check local: 2400 nodos, 102 comunidades, 13 fuentes sin símbolos.
+
+[Evidencia del merge](evidence/integration-v61/verification.md). Commit V61 de integración local consultable en Git. No push ni modificación de dev local (`396efda`): la publicación estaba condicionada a ausencia de conflictos y requiere aprobación tras esta resolución. Siguiente: aprobar publicación del resultado comprobado; entonces fetch de nuevo, comprobar concurrencia y publicar sin force-push, sincronizando dev local y rama de trabajo. La instrucción anterior de mantener todo local queda reemplazada únicamente por la autorización condicional de este corte.
+
+## V60 - Inicio de sesión con diseño ASHAKids / 2026-10-10
+
+Rama `codex/landing-publica`, base `47a5470` / V59; fetch exitoso y `origin/dev` conserva `498df42` / V58. Los cinco commits remotos pendientes no se integran en este ajuste visual. Dev local `396efda` preservado. Commit V60 sólo local, sin publicación ni merge hacia dev; `.gitignore` previo excluido.
+
+`frontend/src/pages/auth/login.css`: tokens del sistema v1 dentro de `.asha-login`, Nunito, fondos cálidos/lavanda, cabecera suave con logo oficial, títulos y campos más amplios, acentos verde agua y botón violeta con relieve. Formulario blanco para lectura estable; bloque de desarrollo diferenciado. Selectores encapsulados, foco de teclado visible, controles mínimos de 44 px y movimiento reducido. Textos y arte de letras conservados exactamente; LoginPage, useAuth, validaciones, credenciales, endpoints, roles y retornos no se modifican. Recordarme conserva el estado visual existente; no se añade persistencia nueva.
+
+Verificación: tipos, check:frontend (354 archivos, máximo 500) y build (1913 módulos) aprobados. Diez pruebas existentes de acceso, providers y destino de login en tres archivos: PASS; no se repite ni se atribuye la suite completa de V59 a este corte. Chrome en 320/375/768/1024/1536 px: sin overflow, botones pequeños ni errores JS; textos/arte contra baseline, vacío sin POST, prellenado sin autenticar, mostrar/ocultar contraseña, checkbox, carga deshabilitada, rechazo y recuperación del formulario, foco, movimiento reducido, inicio y recuperación comprobados con respuestas interceptadas. No autenticación real, escrituras, correo o reservas. [Evidencia y capturas](evidence/login-v60/verification.md).
+
+Incidencias de revisión: se hizo explícito el outline de los campos porque el reset previo lo anulaba; el arnés espera la pantalla tras volver de recuperación. Graphify refresh/check vigente, extracción AST local sin LLM. Preview :5176 y API :8002 activos, recordatorios desactivados. Siguiente: revisión humana y conciliación de cambios remotos antes de publicar. No publicar hasta autorización explícita.
+
+## V59 - Terapeutas en landing y marca del footer / 2026-10-10
+
+Rama `codex/landing-publica`, base `4740ffe` / V56. Fetch de cierre exitoso: `origin/dev` avanzó a `498df42` / V58 con cinco commits de cuentas, correo y documentación. Se continúa numeración en V59; esos cambios remotos no se integran en este ajuste visual. Dev local `396efda` preservado. Commit V59 sólo local, sin push ni merge hacia dev; `.gitignore` previo excluido.
+
+Se retira Ver todos de terapeutas y se conservan perfiles, textos y Agendar (login). Explorar terapeutas, tarjeta Terapeutas y enlace Especialistas del footer apuntan a `#landing-specialists`, sin abrir el directorio separado. La ruta externa de especialistas permanece disponible. Footer de landing rediseñado con fondo lavanda, logo oficial y marca violeta/naranja, columnas y contraste; otras variantes públicas conservadas. Favicon y apple-touch-icon reutilizan una copia exacta del logo oficial; sin imagen nueva ni cambios de marca.
+
+Verificación: tipos, check de frontend (354 archivos, máximo 500) y build (1913 módulos) aprobados. Chrome en 320/375/768/1024/1536 px: sin overflow ni errores JS, logo cargado, enlaces internos, Agendar, footer de otra página y favicon 200 idéntico al original. Evidencia en [landing-v59](evidence/landing-v59/verification.md). La suite tenía una expectativa del antiguo enlace Especialistas como botón/directorio; se actualizó a los enlaces de sección solicitados. Resultado final: 25 rutas y 283 componentes en 19 archivos, PASS. Graphify refresh/check vigente (2374 nodos, 103 comunidades; 13 fuentes sin símbolos). Backend y servicios no modificados ni pruebas reales de login/BD/reservas/correo.
+
+Preview :5176 y API :8002 reiniciados; recordatorios desactivados. Pendiente revisión humana y conciliación de los nuevos commits remotos antes de una futura publicación autorizada. No publicar en dev hasta aprobación explícita.
+
+## V56 - Landing unificada, acceso seguro y WebP, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, base `796fc28` / V55; último `origin/dev` conocido `ca9e1b3`. El fetch de cierre falló al conectar a GitHub:443; no se confirma actualización remota. Commit V56 identificable en Git, sin push ni merge hacia dev. Dev local `396efda` y `.gitignore` previo preservados.
+
+Hero, Ashi e ilustraciones conservados. Cinco mundos integrados tras los pasos, navegación por anclas, modal accesible y retorno al mundo elegido compatible con el rol. PADRE usa su módulo privado y la asignación del niño; otros roles reciben una explicación. El catálogo público sólo devuelve metadatos y números de niveles; el resumen entrega ejercicios de mundos asignados. Intentos mantienen controles de sesión, vínculo, rol y asignación. ADR 0022 documenta el contrato; sin tablas ni migraciones nuevas. Perfiles públicos de ejemplo rotulados como demostración; Agendar conservado. Solicitar cuenta abre las instrucciones existentes porque no hay autorregistro público.
+
+37 WebP derivados de 18 originales, con srcset, transparencia, dimensiones y caché por hash. Los originales suman 25,70 MB frente a 1,03 MB de las variantes WebP máximas (96% de reducción en ese conjunto); originales conservados, sin medición de red. Chrome de 320 a 1536 px: sin desbordamiento ni controles menores de 44 px; foco, Tab, Escape, roles, retorno, asignación, cinco FAQ, Demo, WhatsApp y movimiento reducido verificados.
+
+Tipos, check de frontend (353 archivos, máximo 500), build (1912 módulos), 25 rutas y 283 componentes en 19 archivos: PASS. Siete pruebas backend unitarias/ASGI sin BD: PASS. Newsletter con respuestas simuladas y catálogo local real 200 sin ejercicios. Se instaló httpx, dependencia de desarrollo ya declarada. Graphify: 2373 nodos, 100 comunidades, check vigente; 13 fuentes sin símbolos. Sin escrituras de BD, usuarios, login, correo ni reservas reales.
+
+[Informe y capturas](evidence/landing-v56/verification.md) y [auditoría](audits/auditoria-2026-10-10-01.md). Preview en :5176 conectado a API actual :8002 con recordatorios desactivados; API anterior :8000 conservada. Siguiente: revisión humana y validaciones específicas de directorio, registro y servicios antes de publicar. `noindex` conservado. No publicar hasta autorización explícita.
+
+## V55 — ilustraciones originales y Mundo ASHA público, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, padre visual0d1e285/V53; incorpora origin/dev ca9e1b3/V54
+mediante merge local. Sin push ni integración hacia dev; dev local396efda y `.gitignore`
+del usuario preservados.14escenas ImageGen integradas, ocho inferiores distintas y seis
+para Mundo ASHA; Ashi FAQ conserva identidad con nueva pose. Hero/audiencia aprobados
+intactos. Mundo público, FAQ y newsletter mantienen Nunito/paleta/cristal/relieve; estilos
+encapsulados y variante opt-in de PublicNav. Contenido, catálogo, rutas y acciones vigentes
+conservados. Mundos privados/Btn/Crd/paneles no tienen rediseño en este corte.
+
+Se conservó el nuevo formulario de newsletter remoto, consentimiento y feedback claros.
+Checks PASS: tipos, check346/máximo500, build1906,25rutas,280componentes/18archivos;
+Chrome1536/1440/1280 en landing/mundo, textos/controles/enlaces preservados, imágenes
+únicas/cargadas,5FAQ, destinos, Demo/Escape/foco, estados catálogo y newsletter simulada,
+sin overflow/controles pequeños ni errores JS. GET catálogo real200 muestra5tarjetas.
+Graphify refresh2343/check vigente,12fuentes sin símbolos. Backend pytest no disponible
+en backend/.venv; no cobertura backend nueva, migraciones, correos ni BD escritos.
+[Capturas, prompts y alcance](evidence/landing-v55/verification.md). PNG lote-v54,
+commitV55 por actualización de secuencia remota. Responsive/optimizaciónPNG diferidos;
+recursos visuales de escritorio completos. Preview127.0.0.1:5176 activo.
+Siguiente: revisión humana; no publicar hasta autorización explícita.
+
+## V53 — continuidad visual de toda la landing, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, base d8eb10e/V52. `origin/dev` continúa en a6eda9f;
+no cambios remotos nuevos ni push. Dev local396efda y `.gitignore` del usuario intactos.
+El estilo aprobado del hero se extiende a pasos, terapias, equipo, ejemplos, FAQ,
+newsletter y pie, con escala común, cristal suave, ilustraciones V52 y margen del dock.
+Los perfiles conservan iniciales y datos; las ilustraciones son decorativas, no fotos.
+Se preservan todos los textos, nombres de controles, enlaces y estados deshabilitados,
+incluidos avisos ficticios/Demo. Sin cambios de hooks, rutas, Btn/Crd, paneles o API/BD.
+
+Checks nuevos: tipos, check346/máximo498, build1906,25rutas y Chrome desktop
+1536/1440/1280. Comparación de palabras/controles/enlaces contra V52; imágenes cargan,
+sin overflow/controles<44px;5FAQ,5destinos, newsletter sin envío, dock único/Demo/Escape,
+foco y reduced-motion, cero errores JS. Graphify refresh2292/check vigente.
+No repetición de281pruebas de componentes V52 ni backend/servicios externos.
+[Capturas y alcance](evidence/landing-v53/verification.md). Preview127.0.0.1:5176 activo.
+Siguiente: revisión humana del diseño completo local; responsive sigue diferido.
+No publicar ni integrar hacia dev hasta autorización explícita.
+
+## V52 — Ashi y composición de referencia, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, avance anterior5dacd55 (V51 landing local). Incluye además
+`origin/dev` a6eda9f (V51 documentación Zoom), integrado localmente sin conflictos.
+V52 continúa la secuencia remota vigente; no se renombra el commit local anterior.
+Sin push ni integración de la landing en dev por instrucción del usuario.
+Dev local sigue396efda; `.gitignore` del usuario permanece fuera del commit.
+
+Recreaciones ImageGen desde la referencia: Ashi robot en hero/dock/panel público,
+familia, terapeuta y estrella/libros. Hero, navegación desktop y tarjetas adoptan
+textos/composición de la referencia por nueva petición expresa. Lower sections, FAQ,
+atribuciones, ejemplos y newsletter conservados; Recursos pasa al pie sólo en landing.
+Btn/Crd/hooks/rutas/API/BD sin cambios. Assistant reutilizado con variante visual local;
+Demo explícita, onda estática y URL WhatsApp existente, sin afirmar IA/voz/entrega reales.
+
+Checks:281componentes/18archivos,25rutas, typecheck, check345/máximo498, build1905módulos.
+Chrome desktop1536/1440/1280: imágenes cargan, sin overflow/controles<44px;5FAQ,
+5destinos, un WhatsApp, Demo/Escape/foco, anclaFAQ y movimiento reducido; cero errores.
+API interceptada401; no usuarios/BD ni servicios externos probados. Responsive V52
+diferido por prioridad explícita; evidencia móvil V51 no certifica este corte.
+Graphify refresh/check al cierre, mapa no versionado. [Evidencia](evidence/landing-v52/verification.md).
+Siguiente: aprobación humana del diseño local; responsive/optimización de PNG antes
+de publicar si se retoma ese alcance. No publicar hasta autorización.
+
+## V51 — rediseño local de landing pública / 2026-10-10
+
+Rama `codex/landing-publica` creada desde el último `origin/dev`,
+`5dd572cb37a679d5e8674a0cf1910426d925a1f9`/V50. Commit local del rediseño;
+no integración ni push a dev ni a otra rama, pendientes de aprobación del usuario.
+El dev local previo permanece en396efda; `.gitignore` previo se conserva fuera del commit.
+
+Landing adopta tokens del kitv1 sólo en `.asha-landing.asha-ui`: Nunito, violeta,
+relieve inferior, blanco cálido, tarjetas de cristal y presentación responsive.
+Los pasos siguen al hero; servicios/equipo/ejemplos/FAQ/newsletter/pie conservan textos,
+controles y destinos. PublicNav sólo cambia presentación con `cur=landing`;
+Btn/Crd/paneles/contratos/API/BD no cambian. DESIGN.md describe la adopción real.
+No asset aprobado del robot Ashi ni ilustraciones separadas de la referencia;
+espacio decorativo de letras existente explícitamente pendiente. Dock privado intacto.
+
+Verificación nueva:281componentes/18archivos,25rutas,tipos/check343/build1903módulos.
+Chrome con API interceptada:6anchos320–1920px, contenido/18destinos,5FAQ, menú,
+foco y movimiento reducido; sin overflow ni botones visibles<44px de alto.
+Capturas/comparación y límites en [evidencia](evidence/landing-v51/verification.md).
+Graphify setup/query/refresh/check al cierre, mapa no versionado.
+No auditoría técnica nueva, backend ni integraciones externas verificadas.
+Siguiente: revisión humana del corte local y recursos Ashi; sólo publicar tras aprobación.
+
 ## V50 — cinco mundos básicos persistentes / 2026-10-10
 
 Catálogo `basica-1`: HABLA (Taller de los Sonidos), LENGUAJE (La Isla de las Palabras),

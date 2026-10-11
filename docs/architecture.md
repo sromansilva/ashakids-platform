@@ -1,3 +1,12 @@
+## V56 - Frontera pública del catálogo / 2026-10-10
+
+Landing integra cinco mundos con metadata pública y conserva rutas de actividades.
+Catálogo anónimo entrega sólo metadatos/números de nivel; resumen de paciente entrega
+contenido únicamente en mundos asignados. Permisos y escritura server-side conservados.
+Sin cambios de tablas/BD. ADR [0022 catálogo público](decisions/0022_catalogo_publico_descriptivo.md) documenta el contrato y sus límites.
+WebP con hash/static hosting immutable; HTML no-cache y API no-store. Login retorna a
+ruta interna compatible usando helper compartido, sin otorgar permisos por la URL.
+
 ## Adopción compartida del flujo — 2026-10-10 / ADR0018
 
 Migraciones002–006 adoptadas explícitamente con respaldo, sin DDL al arrancar.
@@ -371,7 +380,7 @@ como clave. POST/auth/create-password bloquea usuario, valida activo/pendiente/f
 cambia hash, revoca sesiones y completa activación transaccionalmente. No crea sesión.
 POST/auth/resend-activation envía solo a pendientes; respuesta genérica y límiteIP/código.
 React recibe el token en fragmento, lo retira de la barra y confirma contraseña12–128.
-No tabla/migración nueva ni SupabaseAuth. ADR0022 documenta consecuencias y límites.
+No tabla/migración nueva ni SupabaseAuth. ADR [0022 activación por correo](decisions/0022-activacion-contrasena-correo.md) documenta consecuencias y límites.
 
 
 ## V59 — incidencias y simplificación ADMIN

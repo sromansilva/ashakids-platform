@@ -134,3 +134,14 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
 
   return null;
 }
+
+/** Both the login callback and the authenticated route guard use the same safe return. */
+export function loginDestination(role: SemanticRole, from?: { pathname?: string; search?: string }): string {
+  const path = from?.pathname;
+  if (typeof path === 'string' && path.startsWith('/') && !path.startsWith('//') && !path.includes('\\') && getRequiredRoleForPath(path, role) === role) {
+    const requested = path === '/mundo-asha' ? new URLSearchParams(from?.search).get('world') : null;
+    const world = requested && ['HABLA','LENGUAJE','FLUIDEZ','VOZ','OROFACIAL'].includes(requested) ? `?world=${requested}` : '';
+    return path + world;
+  }
+  return role === 'ADMIN' ? '/admin' : role === 'TERAPEUTA' ? '/terapeuta' : '/padre';
+}
