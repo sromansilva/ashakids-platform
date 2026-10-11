@@ -1,3 +1,33 @@
+## V55 — relevo de ilustraciones y Mundo ASHA, sólo local / 2026-10-10
+
+Objetivo: sustituir imágenes repetidas inferiores y extender diseño aprobado a Mundo
+ASHA público y FAQ. Rama codex/landing-publica, padre0d1e285, remoto incorporado ca9e1b3.
+Merge local con conflictos en Landing, Consejos y landing.css resueltos preservando
+newsletter remoto y visuales V53. CommitV55 consultable en Git, sin push ni merge hacia
+dev. Dev local396efda sin cambios; .gitignore previo no incluido. Sin nueva decisión
+arquitectónica: se conserva ADR0021 heredado del correo remoto.
+
+Archivos: PublicMundo/PublicNav, nuevo public-mundo.css, Landing, cuatro componentes
+inferiores, landing-continuity.css/landing.css;14PNG transparentes únicos, DESIGN.md,
+contexto y evidencia landing-v55 (prompts exactos, baselines, arneses, resultados, capturas).
+Nombre de assets v54 corresponde al lote de generación previo al fetch, no al commit.
+Ashi FAQ tiene pose propia; perfiles mantienen iniciales y ejemplos siguen rotulados.
+
+Resultados: typecheck/check346máx500/build1906 PASS;25rutas y280componentes/18archivos
+PASS. Chrome1536/1440/1280 landing y Mundo, contenido/controles/enlaces preservados,
+8imágenes inferiores distintas, sin overflow ni botones<44px.5FAQ,5destinos landing,
+4login mundo, carga/error/reintento, newsletter consentimiento/éxito/error/reintento
+mock, dock único/Demo/Escape/foco/reduced-motion; cero errores JS. GET público real200
+con5tarjetas y captura live. No envíos reales de correo/WhatsApp ni registros BD.
+Graphify refresh2343/117comunidades/check vigente, advertencia12fuentes sin símbolos.
+Backend pytest intentado: falta módulo pytest en backend/.venv, prueba no ejecutada.
+Incidencia de arnés newsletter antiguo documentada/corregida; tres conflictos resueltos.
+
+Pendientes: revisión humana, responsive y optimizaciónPNG antes de publicar. Recursos
+creativos de escritorio integrados; no certificación de IA/voz/SMTP/paneles privados.
+Preview Vite127.0.0.1:5176 activo. No publicar hasta aprobación; al retomar actualizar
+referencias/revisar diff y comprobar servicios con el alcance autorizado, sin force-push.
+
 ## V53 — continuidad visual de landing completa, relevo local / 2026-10-10
 
 Objetivo: extender la estructura visual aprobada del hero a toda la landing.
@@ -1091,6 +1121,31 @@ evidencia docs/evidence/audit-2026-10-09-03/.
 - Próxima acción: decidir mínimos F5-01; para juegos, MA-01 con revisión detenida antes de
   implementar contenido. No ejecutar pytest/prepare sobre la demo que debe conservarse.
 
+## V52 — correo Gmail y boletín con doble confirmación / 2026-10-10
+
+Implementación local sobre `dev` a partir de `a6eda9f` (V51). Se añadió Gmail API
+server-side OAuth opcional, con alcance documentado `gmail.send`, refresh token solo en
+entorno y estados de bienvenida `ENVIADO`, `PENDIENTE` y `NO_CONFIGURADO` en las cuatro
+rutas de alta ADMIN. El commit se ejecuta antes del envío y el mensaje no llega a JSON,
+logs ni auditoría.
+
+La landing ahora usa un formulario real con consentimiento obligatorio, estado de carga,
+errores y enlaces de confirmación/baja. La API pública crea `suscripciones_boletin`, guarda
+solo hashes de tokens, no enumera correos y aplica límite básico por IP. Se preparó la
+migración `009_newsletter_subscriptions.sql`, sin ejecución sobre la base compartida (el número 008 ya pertenece a la migración de juegos de dev).
+Se documentaron las variables de Render en `render.yaml`, `.env.example`, ADR0021 y
+`docs/operations/DEPLOY_RENDER_EMAIL.md`.
+
+Comprobaciones nuevas: `backend/.venv` unit tests de Gmail/boletín `4 passed`, importación
+OpenAPI con las tres rutas, `npm run typecheck`, `npm run check:frontend`, `npm run build`,
+`compileall`, `git diff --check`, `knowledge refresh` y `knowledge check`. No se probaron
+OAuth real, Gmail real, la migración ni escrituras en Supabase/Render. Pendiente: configurar
+OAuth publicado, aplicar 009 en una base aislada con respaldo y validar recepción/baja con
+un buzón sintético antes de activar Gmail en producción.
+
+
+
+
 
 ## Relevo V50 — juegos persistentes, 2026-10-10
 
@@ -1134,3 +1189,17 @@ Siguiente: aceptación humana de nueva reserva virtual (AUTOMATICA/enlace Zoom) 
 licencia/duración: sin overrides producción usa 45; Basic requiere ambos valores en 40.
 No se verificaron OAuth ni permisos creando reuniones/citas. Cierre documental V51:
 integrar/publicar en dev y sincronizar rama propia; verificar SHA final con Git.
+
+
+## Relevo V54 — eliminar Terapeutas demo de ADMIN, 2026-10-10
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base local a6eda9f,
+codex/2do-intento; remoto dev efe46a7/V53 revisado antes de integración.
+Se retiran AdminTerapeutas.tsx y referencias de Sidebar, AppRouter, lazyPages,
+routeManifest, routeTitles y navigation. Cuentas conserva la gestión real.
+25 pruebas de rutas pasaron; typecheck y build (1902 módulos) correctos. Aviso
+Node DEP0205 heredado; detector Sidebar sin hallazgos; diff sin espacios inválidos.
+Cambios previos de adjuntos preservados fuera de este commit; no publicar ese trabajo
+como parte de la retirada. Sin auditoría técnica nueva, PDF ni pruebas sobre BD.
+Publicar cierre en dev y sincronizar codex/2do-intento; SHA efectivo consultable en Git.
+Siguiente: comprobar despliegue/aceptación humana y continuar el trabajo previo de adjuntos.

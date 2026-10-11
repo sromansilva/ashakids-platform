@@ -30,6 +30,19 @@ class Settings(BaseSettings):
     APPOINTMENT_DURATION_MINUTES: Optional[int] = Field(default=None, ge=40, le=45)
     ZOOM_MEETING_DURATION_MINUTES: Optional[int] = Field(default=None, ge=40, le=45)
 
+    # Gmail API server-side OAuth. Los valores reales viven solo en el entorno.
+    GMAIL_ENABLED: bool = False
+    GMAIL_CLIENT_ID: str = ""
+    GMAIL_CLIENT_SECRET: str = ""
+    GMAIL_REFRESH_TOKEN: str = ""
+    GMAIL_SENDER_EMAIL: str = ""
+    GMAIL_SENDER_NAME: str = "ASHAKids"
+    GMAIL_API_BASE_URL: str = "https://gmail.googleapis.com/gmail/v1"
+    PUBLIC_ORIGIN: str = ""
+    NEWSLETTER_CONFIRMATION_TTL_HOURS: int = Field(default=48, ge=1, le=168)
+    NEWSLETTER_RATE_LIMIT: int = Field(default=5, ge=1, le=100)
+    NEWSLETTER_RATE_WINDOW_SECONDS: int = Field(default=3600, ge=60, le=86400)
+
     # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""
     DB_SSL_CA_FILE: Optional[str] = None

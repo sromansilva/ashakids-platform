@@ -7,7 +7,8 @@ import { MobileTopBar } from "@/components/common/MobileTopBar";
 
 // ─── Shared public nav ────────────────────────────────────────────────────────
 
-export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
+export function PublicNav({ go, cur, presentation }: { go: (v: View) => void; cur: View; presentation?: 'asha' }) {
+  const branded = cur === 'landing' || presentation === 'asha';
   const [mob, setMob] = useState(false);
   const links: { label: string; view: View }[] = [
     { label: "Especialistas",  view: "public/especialistas" },
@@ -20,9 +21,9 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
     <nav className="sticky top-0 z-40 bg-white/95 backdrop-blur md:border-b md:border-[#E8E5F4]">
       <MobileTopBar title={mobileTitle} onMenu={() => setMob((value) => !value)} menuOpen={mob} />
       <div className="hidden md:flex max-w-7xl mx-auto px-4 sm:px-6 items-center justify-between h-16">
-        <button onClick={() => go("landing")} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border border-transparent hover:border-[#E8E5F4] hover:shadow-sm transition-all ${cur === 'landing' ? 'landing-brand' : ''}`}>
+        <button onClick={() => go("landing")} className={`flex items-center gap-2.5 px-3 py-1.5 rounded-2xl border border-transparent hover:border-[#E8E5F4] hover:shadow-sm transition-all ${branded ? 'landing-brand' : ''}`}>
           <Isotipo size={32} />
-          {cur === 'landing' ? <span className="landing-wordmark"><span>Asha</span><span>Kids</span><i className="landing-logo-rays" aria-hidden="true"/></span> : <span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span>}
+          {branded ? <span className="landing-wordmark"><span>Asha</span><span>Kids</span><i className="landing-logo-rays" aria-hidden="true"/></span> : <span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span>}
         </button>
         <div className="hidden md:flex items-center gap-1">
           {cur === 'landing' ? <>
@@ -37,7 +38,7 @@ export function PublicNav({ go, cur }: { go: (v: View) => void; cur: View }) {
           ))}
         </div>
         <div className="hidden md:flex items-center gap-2">
-          <Btn variant="cta" size="sm" className={cur === 'landing' ? 'asha-btn asha-btn--outline' : ''} onClick={() => go("login")}>Iniciar sesión</Btn>
+          <Btn variant="cta" size="sm" className={branded ? 'asha-btn asha-btn--outline' : ''} onClick={() => go("login")}>Iniciar sesión</Btn>
         </div>
 
       </div>

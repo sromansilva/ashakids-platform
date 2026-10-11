@@ -7,6 +7,7 @@ from app.models.auth import Usuario
 from app.schemas.usuarios import UsuarioCrear, UsuarioEditar, UsuarioSalida
 from app.services import usuarios as service
 from app.services.acceso import exigir, obtener
+from app.services.gmail import send_welcome_email
 
 router = APIRouter(prefix="/usuarios", tags=["Usuarios"])
 
@@ -30,7 +31,16 @@ async def listar(db: DB, identity: Identity, response: Response, limit: Limit = 
 
 @router.post("", response_model=UsuarioSalida, status_code=201)
 async def crear(data: UsuarioCrear, db: DB, identity: Identity):
-    return await service.crear_usuario(db, identity, data)
+    result = await service.crear_usuario(db, identity, data)
+    await db.commit()
+    mail = await send_welcome_email(
+        to=result.email,
+        name=f"{result.nombres} {result.apellidos}",
+        role=data.rol,
+        code=result.codigo_usuario,
+        initial_password=data.password,
+    )
+    return result.model_copy(update={"correo_bienvenida": mail.status})
 
 
 @router.get("/{key}", response_model=UsuarioSalida)

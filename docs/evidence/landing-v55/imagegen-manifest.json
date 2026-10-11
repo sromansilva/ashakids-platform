@@ -1,0 +1,92 @@
+{
+  "mode": "built-in ImageGen",
+  "styleReference": "docs/evidence/landing-v52/reference.png",
+  "robotReference": "frontend/public/illustrations/ashi-hero-v1.png",
+  "transparentBackground": true,
+  "assets": [
+    {
+      "name": "step-account-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: A smiling father and small daughter together at a rounded violet laptop, aqua screen with only simple abstract circles, orange pencil nearby. Full small bust vignette. Different people/pose from reference family.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-5e2d7361-390d-46c6-b1a5-2efa9255149f.png",
+      "destination": "frontend/public/illustrations/step-account-v54.png"
+    },
+    {
+      "name": "step-specialist-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: An orange magnifying glass leaning over a white rounded profile card with a violet abstract person silhouette and aqua check, small decorative lavender cloud. No actual professional photo, no letters.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-bcb8d675-493e-44aa-904f-03a661408dc6.png",
+      "destination": "frontend/public/illustrations/step-specialist-v54.png"
+    },
+    {
+      "name": "step-session-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: A rounded aqua desktop monitor showing two distinct smiling cartoon heads in a split video call, an orange webcam and violet calendar with blank colored squares beside it. Decorative illustration, no claims of a live call.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-44b7d4e5-ec2b-4156-ad9e-c0edcdb6b533.png",
+      "destination": "frontend/public/illustrations/step-session-v54.png"
+    },
+    {
+      "name": "therapy-play-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: Two happy children sitting opposite each other on a warm rug, using orange and aqua speech bubbles shaped like playful rounded toys, with small violet puzzle pieces between them. Language play, different people and composition from the reference.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-dd033e32-645e-4d5d-81a0-7b0bfb9b2d8b.png",
+      "destination": "frontend/public/illustrations/therapy-play-v54.png"
+    },
+    {
+      "name": "team-care-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: A white rounded medical clipboard with aqua heart, violet stethoscope loosely coiled, orange crayon and lavender leaf accents. No writing, no people.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-b77dc07b-bd2a-4c68-8ed0-ae9f2d397518.png",
+      "destination": "frontend/public/illustrations/team-care-v54.png"
+    },
+    {
+      "name": "family-play-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: A smiling dark-haired dad and small boy sitting on floor building an aqua and violet toy tower with one orange piece. Affectionate play together, no mother-hug scene and no alphabet blocks.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-3488f329-858b-439b-8dba-4e8fbcf91735.png",
+      "destination": "frontend/public/illustrations/family-play-v54.png"
+    },
+    {
+      "name": "faq-ashi-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: The EXACT SAME Ashi robot identity as the second reference: white rounded rectangular head, purple sides/hands/shoes, orange antenna, dark screen with aqua LED happy eyes/smile and pink cheeks, aqua heart. New pose seated beside a large empty rounded aqua speech-bubble object, one hand thoughtfully at cheek and the other raised helpfully. Full body complete, no A/B blocks or rug scene. Same robot, never a bear or another character. No text or punctuation.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-5690927f-4d46-4ccf-b3cd-4e8fab09beef.png",
+      "destination": "frontend/public/illustrations/faq-ashi-v54.png"
+    },
+    {
+      "name": "newsletter-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: A large open warm-white envelope with violet lining, aqua rounded note cards and orange paper airplane emerging, soft lavender cloud behind. No writing, hearts, books, stars or repeated figures.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-ffdbb241-9bc8-4240-bf06-779100b2b7bb.png",
+      "destination": "frontend/public/illustrations/newsletter-v54.png"
+    },
+    {
+      "name": "mundo-hero-v54",
+      "prompt": "Create a single standalone 3D clay illustration for the ASHAKids public website. The supplied reference is STYLE ONLY: match its warm white, vivid violet #7C3AED, orange #F97316 and aqua palette, soft rounded forms, polished toy materials, gentle shadows, friendly child-safe professional feeling. Invent a distinct composition for this subject; do not reproduce the mother-hug, therapist-tablet, star-on-books, A/B blocks or hero scene. Transparent background, clean edges, all objects fully framed, centered compact composition suitable at 180–320px. No text, labels, logos, UI, watermarks, emoji or extra mascot. Subject: A magical compact archipelago of five little floating toy islands connected by soft aqua paths: orange sound workshop, violet word tree with blank toy blocks, aqua musical river, small violet microphone studio, and orange pinwheel garden. Gentle lavender haze, no characters, no letters, not the star-and-books illustration. Landscape composition.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-9df82919-d861-46c4-8537-752fbb1c5c2a.png",
+      "destination": "frontend/public/illustrations/mundo-hero-v54.png"
+    },
+    {
+      "name": "world-habla-v54",
+      "prompt": "Create one unique transparent PNG 3D clay illustration for a children's language-learning world. Match the supplied ASHAKids style reference only: rounded polished toy materials, warm white, violet #7C3AED, aqua and orange, gentle lighting, soft shadow, professional and friendly. All objects fully visible, compact centered silhouette, readable at 180px. No UI, text, logos, watermarks, emoji, star-on-books, mother, therapist or Ashi. Subject: A tiny orange and violet toy sound workshop with rounded megaphone, three aqua sound-wave arches and a single small phonetic puzzle tile. No letters or faces.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-f669d48c-8736-4c70-b09e-ceafe598ae56.png",
+      "destination": "frontend/public/illustrations/world-habla-v54.png"
+    },
+    {
+      "name": "world-lenguaje-v54",
+      "prompt": "Create one unique transparent PNG 3D clay illustration for a children's language-learning world. Match the supplied ASHAKids style reference only: rounded polished toy materials, warm white, violet #7C3AED, aqua and orange, gentle lighting, soft shadow, professional and friendly. All objects fully visible, compact centered silhouette, readable at 180px. No UI, text, logos, watermarks, emoji, star-on-books, mother, therapist or Ashi. Subject: A magical aqua little island with a lavender word tree and three blank orange/violet picture tiles hanging from branches, soft toy bridge. No letters or books.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-5dfe1fe0-332d-4570-868a-c29e53dfa979.png",
+      "destination": "frontend/public/illustrations/world-lenguaje-v54.png"
+    },
+    {
+      "name": "world-fluidez-v54",
+      "prompt": "Create one unique transparent PNG 3D clay illustration for a children's language-learning world. Match the supplied ASHAKids style reference only: rounded polished toy materials, warm white, violet #7C3AED, aqua and orange, gentle lighting, soft shadow, professional and friendly. All objects fully visible, compact centered silhouette, readable at 180px. No UI, text, logos, watermarks, emoji, star-on-books, mother, therapist or Ashi. Subject: An aqua flowing ribbon river circling an orange toy drum and violet musical notes. A compact toy island, gentle rhythmic curves, no characters.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-9fc8a913-1948-431b-9008-9af78a91f9ed.png",
+      "destination": "frontend/public/illustrations/world-fluidez-v54.png"
+    },
+    {
+      "name": "world-voz-v54",
+      "prompt": "Create one unique transparent PNG 3D clay illustration for a children's language-learning world. Match the supplied ASHAKids style reference only: rounded polished toy materials, warm white, violet #7C3AED, aqua and orange, gentle lighting, soft shadow, professional and friendly. All objects fully visible, compact centered silhouette, readable at 180px. No UI, text, logos, watermarks, emoji, star-on-books, mother, therapist or Ashi. Subject: A rounded violet studio microphone on orange stand, aqua headphones and two small pastel acoustic panels, mounted on a tiny lavender island. No letters.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-7f7d9691-dd3e-475b-ad69-e1559d2bc004.png",
+      "destination": "frontend/public/illustrations/world-voz-v54.png"
+    },
+    {
+      "name": "world-orofacial-v54",
+      "prompt": "Create one unique transparent PNG 3D clay illustration for a children's language-learning world. Match the supplied ASHAKids style reference only: rounded polished toy materials, warm white, violet #7C3AED, aqua and orange, gentle lighting, soft shadow, professional and friendly. All objects fully visible, compact centered silhouette, readable at 180px. No UI, text, logos, watermarks, emoji, star-on-books, mother, therapist or Ashi. Subject: A cheerful orange pinwheel, aqua blowing wind trails, white rounded hand mirror and violet playful facial-expression mask with a simple smile. Toy exercise garden, no medical claims, no human portraits.",
+      "original": "C:\\Users\\HP\\.codex\\generated_images\\01a1288a-e1b0-7711-b740-541551696c89\\exec-6412d2c5-4fa9-4909-a317-1a173dfb3f03.png",
+      "destination": "frontend/public/illustrations/world-orofacial-v54.png"
+    }
+  ]
+}

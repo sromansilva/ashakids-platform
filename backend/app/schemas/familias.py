@@ -21,3 +21,4 @@ class FamiliaCreada(Entrada):
     cuenta: CuentaItemResponse
     hijos: list[PacienteSalida]
     message: str
+    correo_bienvenida: str | None = None

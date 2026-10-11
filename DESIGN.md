@@ -1,7 +1,7 @@
-# ASHAKids: landing pública V53
+# ASHAKids: superficies públicas V55
 
 Repositorio: https://github.com/sromansilva/ashakids-platform .
-Rama local `codex/landing-publica`, incluye `origin/dev` a6eda9f (V51 documental Zoom).
+Rama local `codex/landing-publica`, incluye `origin/dev` ca9e1b3 (V54).
 Sin push ni cambios en la rama dev local, pendiente de aprobación.
 
 Contrato: [sistema v1](docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md)
@@ -36,7 +36,8 @@ La landing monta una sola instancia del asistente con `appearance="landing"`.
 Dock Ashi/WhatsApp reutiliza hook, panel y URL existentes, sin cambiar su lógica.
 Robot también como avatar del panel público; avatares privados intactos. Panel rotulado
 Demo y conversación identificada como demostración. Escape devuelve foco al trigger.
-No se implementó IA remota, voz ni envío de newsletter. WhatsApp conserva el enlace
+No se implementó IA remota ni voz. El newsletter funcional de dev se conserva;
+sus estados se verificaron con respuestas simuladas, sin envíos reales. WhatsApp conserva el enlace
 externo, sin envío automatizado ni verificación de entrega.
 
 Ver [comprobaciones y capturas](docs/evidence/landing-v52/verification.md).
@@ -59,3 +60,20 @@ Sin animaciones nuevas ni cambios funcionales o estilos de paneles privados.
 Ver [evidencia V53](docs/evidence/landing-v53/verification.md) y capturas de cada sección.
 Responsive sigue diferido; las pruebas de componentes V52 son evidencia histórica,
 no se volvieron a ejecutar en este corte de presentación.
+
+## Ilustraciones y Mundo ASHA V55
+
+Las ocho ilustraciones inferiores ahora son escenas distintas: registro familiar,
+búsqueda, videollamada, juego de lenguaje, equipo de cuidado, padre/hijo con bloques,
+Ashi sentado y sobre de consejos.14PNG únicos del lote-v54 generados por ImageGen:
+[prompts y procedencia](docs/evidence/landing-v55/imagegen-manifest.json).
+Hero/audiencia previos intactos. FAQ mantiene preguntas/respuestas y acordeón, con
+cristal lavanda/aqua y nueva pose del mismo robot. Feedback/consentimiento del newsletter
+remoto adaptado a fondo claro conservando formulario, validación y petición.
+
+Mundo ASHA público adopta `.asha-landing.asha-ui.asha-mundo` y `public-mundo.css`, hero
+archipiélago y cinco ilustraciones independientes. Datos/estados/reintento/login conservados;
+ningún cambio al juego privado. Nav adopta marca sólo con `presentation="asha"` o landing.
+Nunito, paleta, foco, reduced-motion y relieve se reutilizan; desktop verificado en
+1536/1440/1280. [Verificación](docs/evidence/landing-v55/verification.md).
+Responsive y optimizaciónPNG quedan diferidos. No publicar hasta aprobación explícita.

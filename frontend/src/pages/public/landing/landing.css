@@ -172,3 +172,7 @@
 @supports not (backdrop-filter: blur(14px)) {
   .asha-landing.asha-ui .asha-glass { background: var(--asha-white); }
 }
+
+.asha-landing .landing-newsletter-consent { display: flex !important; align-items: flex-start; gap: 8px; margin-top: 12px; color: #e0d5f2; font-size: .74rem !important; font-weight: 500 !important; }
+.asha-landing .landing-newsletter-consent input { margin-top: 2px; accent-color: #f97316; }
+.asha-landing .landing-newsletter-status { margin-top: 12px !important; color: #fff !important; }

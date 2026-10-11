@@ -1,3 +1,25 @@
+## V55 — ilustraciones originales y Mundo ASHA público, sólo local / 2026-10-10
+
+Rama `codex/landing-publica`, padre visual0d1e285/V53; incorpora origin/dev ca9e1b3/V54
+mediante merge local. Sin push ni integración hacia dev; dev local396efda y `.gitignore`
+del usuario preservados.14escenas ImageGen integradas, ocho inferiores distintas y seis
+para Mundo ASHA; Ashi FAQ conserva identidad con nueva pose. Hero/audiencia aprobados
+intactos. Mundo público, FAQ y newsletter mantienen Nunito/paleta/cristal/relieve; estilos
+encapsulados y variante opt-in de PublicNav. Contenido, catálogo, rutas y acciones vigentes
+conservados. Mundos privados/Btn/Crd/paneles no tienen rediseño en este corte.
+
+Se conservó el nuevo formulario de newsletter remoto, consentimiento y feedback claros.
+Checks PASS: tipos, check346/máximo500, build1906,25rutas,280componentes/18archivos;
+Chrome1536/1440/1280 en landing/mundo, textos/controles/enlaces preservados, imágenes
+únicas/cargadas,5FAQ, destinos, Demo/Escape/foco, estados catálogo y newsletter simulada,
+sin overflow/controles pequeños ni errores JS. GET catálogo real200 muestra5tarjetas.
+Graphify refresh2343/check vigente,12fuentes sin símbolos. Backend pytest no disponible
+en backend/.venv; no cobertura backend nueva, migraciones, correos ni BD escritos.
+[Capturas, prompts y alcance](evidence/landing-v55/verification.md). PNG lote-v54,
+commitV55 por actualización de secuencia remota. Responsive/optimizaciónPNG diferidos;
+recursos visuales de escritorio completos. Preview127.0.0.1:5176 activo.
+Siguiente: revisión humana; no publicar hasta autorización explícita.
+
 ## V53 — continuidad visual de toda la landing, sólo local / 2026-10-10
 
 Rama `codex/landing-publica`, base d8eb10e/V52. `origin/dev` continúa en a6eda9f;
@@ -91,6 +113,18 @@ etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por e
 Los catálogos draft-1 y demos históricos no representan este flujo persistente.
 
 ## Especificación de componentes UI — V47 / 2026-10-10
+
+## V52 — correo de bienvenida y boletín
+
+Se implementó Gmail API server-side OAuth opcional. Las cuatro rutas de alta devuelven
+`correo_bienvenida` (`ENVIADO`, `PENDIENTE` o `NO_CONFIGURADO`) después de confirmar el
+commit local; el mensaje nunca aparece en la respuesta, logs ni auditoría. La landing
+envía suscripciones con consentimiento explícito. `POST /api/v1/newsletter/suscripciones`
+crea o reinicia una solicitud pendiente sin enumerar correos, y los enlaces públicos de
+confirmación/baja cambian el estado mediante tokens hash. El esquema requiere migración
+`009_newsletter_subscriptions.sql`, aún no ejecutada en la base compartida. Gmail queda
+deshabilitado por defecto hasta configurar OAuth publicado, refresh token y remitente en
+Render. No hay campañas masivas ni panel administrativo en este corte.
 
 Nuevo paquete de diseño aprobado como dirección visual: [guía Markdown](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md)
 y [lámina PNG](design/ashakids-ui-kit-v1/ASHAKIDS_UI_KIT.png). Tokens, CSS copiable,
@@ -985,3 +1019,11 @@ No se crearon citas, usuarios ni reuniones para probar: falta aceptación de una
 virtual con zoom_origen AUTOMATICA y enlace real. Duraciones existentes conservadas;
 sin overrides, producción usa 45 minutos; Zoom Basic requiere configurar ambas a 40.
 Registro operativo, no auditoría técnica nueva ni prueba de permisos OAuth de Zoom.
+
+## V54 — retirada de Terapeutas demo en ADMIN / 2026-10-10
+
+Se elimina la pantalla de demostración AdminTerapeutas, su entrada del menú, ruta,
+importación lazy, título y tipo de navegación. La gestión funcional permanece en
+Cuentas → Terapeutas. La URL anterior muestra el estado de ruta inexistente.
+Verificación local: 25 pruebas de rutas, typecheck y build correctos; detector Sidebar
+sin hallazgos. Sin pruebas nuevas en producción ni cambios en API/BD.
