@@ -1,3 +1,9 @@
+## V92 — ubicación automática en reservas / 2026-10-11
+
+El formulario familiar de reserva/reprogramación elimina la localización editable. Presencial muestra y envía `Jr. Ricardo Treneman 252, Chorrillos 15064`; Virtual muestra y envía `La reunión será mediante Zoom.`. El dato se deriva de la modalidad, cambia inmediatamente y se conserva en el resumen y en el contrato HTTP existente `localizacion`. No cambia la creación del enlace Zoom ni modifica reservas históricas o la BD directamente.
+
+Base `f34dfee`/V91, rama `feat/piero-dev`; cierre identificado por `V92_Autocompletar_Ubicacion_Reservas`, destinado a `dev` y `feat/piero-dev`. Verificación nueva:42 pruebas en family-center/integration-ui, typecheck, check:frontend385, build1935, detector[] y revisión visual aislada1274/375px con datos ficticios, ambas modalidades sin overflow horizontal. Aviso Node DEP0205 existente. Sin reserva real ni comprobación operativa del proveedor Zoom o despliegue remoto. Detalles y siguiente acción en IMPLEMENTATION_PROGRESS.md. Repositorio: https://github.com/sromansilva/ashakids-platform .
+
 ## Publicación verificada V90 / cierre documental V91 — 2026-10-11
 
 Commit funcional y auditoría publicados: 9a928604e07bb8eef1206a14b60a50581d6bd13e, V90_Habilitar_Domingos_Agenda_Recorrido_Web. Push atómico a dev y feat/piero-dev; git ls-remote devolvió ese mismo SHA para ambas ramas. Árbol limpio tras publicación. Repositorio: https://github.com/sromansilva/ashakids-platform .

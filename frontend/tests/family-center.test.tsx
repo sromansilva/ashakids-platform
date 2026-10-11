@@ -94,7 +94,10 @@ it('saves the embedded game through the existing patient-specific service',async
   expect(screen.getByRole('button',{name:'Repetir nivel 1'})).toBeInTheDocument();
 });
 
-it.each([false,true])('keeps the real booking flow in the family area (therapy enabled: %s)',async therapy=>{
+it.each([
+  {therapy:false,mode:'PRESENCIAL'}, {therapy:false,mode:'VIRTUAL'},
+  {therapy:true,mode:'PRESENCIAL'}, {therapy:true,mode:'VIRTUAL'},
+])('keeps the booking flow and automatic location (therapy: $therapy, mode: $mode)',async ({therapy,mode})=>{
   api(); const base = vi.mocked(fetch).getMockImplementation()!;
   const start = new Date(Date.now()+86400000).toISOString();
   const end = new Date(Date.parse(start)+2400000).toISOString();
@@ -108,11 +111,20 @@ it.each([false,true])('keeps the real booking flow in the family area (therapy e
   fireEvent.click(await screen.findByRole('button',{name:therapy?'Reservar sesión de terapia':'Reservar introducción'}));
   const dialog=await screen.findByRole('dialog');
   expect(within(dialog).getByLabelText('Hijo o hija')).toHaveValue('21');
+  const address='Jr. Ricardo Treneman 252, Chorrillos 15064';
+  const zoom='La reunión será mediante Zoom.';
+  expect(within(dialog).getByText(address)).toBeInTheDocument();
+  expect(within(dialog).queryByRole('textbox')).not.toBeInTheDocument();
+  fireEvent.change(within(dialog).getByLabelText('Modalidad'),{target:{value:'VIRTUAL'}});
+  expect(within(dialog).getByText(zoom)).toBeInTheDocument();
+  expect(within(dialog).queryByText(address)).not.toBeInTheDocument();
+  fireEvent.change(within(dialog).getByLabelText('Modalidad'),{target:{value:mode}});
   await within(dialog).findByRole('option',{name:'Profesional Ejemplo'});
   fireEvent.change(within(dialog).getByLabelText('Profesional'),{target:{value:'4'}});
   fireEvent.click(await within(dialog).findByRole('button',{name:/Disponible/}));
   fireEvent.click(within(dialog).getByRole('button',{name:'Revisar reserva'}));
+  expect(within(dialog).getByText(`${mode==='PRESENCIAL'?'Presencial':'Virtual'} · ${mode==='PRESENCIAL'?address:zoom}`)).toBeInTheDocument();
   fireEvent.click(within(dialog).getByRole('button',{name:'Confirmar cita'}));
-  await waitFor(()=>expect(create).toHaveBeenCalledWith(expect.objectContaining({id_paciente:21,id_terapeuta:4,id_tratamiento:therapy?8:null,tipo_cita:therapy?'TERAPIA':'INTRODUCTORIA',fecha_hora_inicio:start,fecha_hora_fin:end})));
+  await waitFor(()=>expect(create).toHaveBeenCalledWith(expect.objectContaining({id_paciente:21,id_terapeuta:4,id_tratamiento:therapy?8:null,tipo_cita:therapy?'TERAPIA':'INTRODUCTORIA',fecha_hora_inicio:start,fecha_hora_fin:end,modalidad:mode,localizacion:mode==='PRESENCIAL'?address:zoom})));
   await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 });

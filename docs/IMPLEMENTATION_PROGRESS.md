@@ -1,3 +1,13 @@
+## Cierre V92 — ubicación automática en reservas / 2026-10-11
+
+Objetivo: retirar la localización manual de la reserva familiar y completar la información según modalidad. Rama `feat/piero-dev`, base `f34dfee`/V91; `origin/dev` y `origin/feat/piero-dev` en esa base tras fetch. Repositorio: https://github.com/sromansilva/ashakids-platform . Commit de cierre previsto `V92_Autocompletar_Ubicacion_Reservas`; publicación autorizada en ambas ramas mediante avance normal, sin reescribir historia. Consultar su SHA final y sincronización en Git.
+
+Archivos: BookingDialog.tsx, tests/family-center.test.tsx y estos documentos de continuidad. Presencial usa `Jr. Ricardo Treneman 252, Chorrillos 15064`; Virtual usa `La reunión será mediante Zoom.`. Información de solo lectura con anuncio accesible al cambiar modalidad, resumen y payload derivados del mismo valor. El componente compartido también aplica esta selección al reprogramar. No cambios de arquitectura, API, esquema, enlaces Zoom ni reservas históricas; no escrituras a BD real.
+
+Verificación: `node node_modules/vitest/vitest.mjs run tests/family-center.test.tsx tests/integration-ui.test.tsx`:42PASS, incluye cuatro combinaciones intro/terapia y presencial/virtual, cambio de modalidad, ausencia de textbox manual, resumen y payload. Typecheck, check:frontend385, build1935 módulos, detector[] y diff--check PASS. Graphify refresh/check al cierre, AST local sin LLM. Revisión visual del componente con HTTP interceptado y perfiles ficticios en Chrome1274/375px, ambas modalidades sin overflow horizontal. Capturas locales ignoradas `tmp/booking-v92-*.png`; fixture temporal retirado. No sesión auténtica, reserva real, ensayo del proveedor Zoom ni certificación de despliegue remoto.
+
+Incidencias: servidor visual inicial no arrancó porque5176 estaba ocupado; verificación ejecutada en5187 y servidor propio detenido. Lectura inicial AuthContext.ts no encontró archivo; implementación usa AuthContext.tsx. Aviso existente DEP0205 al compilar; sin fallos de pruebas. Siguiente acción: comprobar la reserva en el despliegue con cohorte autorizada y continuar la aceptación operacional pendiente; no crear pacientes/reservas reales para pruebas sin autorización explícita.
+
 ## Publicación verificada V90 / cierre documental V91 — 2026-10-11
 
 Commit funcional y auditoría publicados: 9a928604e07bb8eef1206a14b60a50581d6bd13e, V90_Habilitar_Domingos_Agenda_Recorrido_Web. Push atómico a dev y feat/piero-dev; git ls-remote devolvió ese mismo SHA para ambas ramas. Árbol limpio tras publicación. Repositorio: https://github.com/sromansilva/ashakids-platform .

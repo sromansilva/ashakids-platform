@@ -21,7 +21,7 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   const [day, setDay] = useState(appointment ? localDate(appointment.fecha_hora_inicio) : localDate(new Date().toISOString()));
   const [start, setStart] = useState('');
   const [mode, setMode] = useState<'VIRTUAL' | 'PRESENCIAL'>(appointment?.modalidad ?? 'PRESENCIAL');
-  const [location, setLocation] = useState(appointment?.localizacion ?? '');
+  const location = mode === 'PRESENCIAL' ? 'Jr. Ricardo Treneman 252, Chorrillos 15064' : 'La reunión será mediante Zoom.';
   const [review, setReview] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   useEffect(() => {
@@ -42,7 +42,7 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   const ready = !!patient && !!therapist && !!selected && !blocked && !slots.error && (type === 'INTRODUCTORIA' || !!selectedPlan);
   const save = useWrite(() => {
     if (!selected) throw new Error('Vuelve a seleccionar un horario disponible.');
-    const body = { fecha_hora_inicio: selected.inicio, fecha_hora_fin: selected.fin, modalidad: mode, localizacion: location || null };
+    const body = { fecha_hora_inicio: selected.inicio, fecha_hora_fin: selected.fin, modalidad: mode, localizacion: location };
     return appointment ? appointmentsService.reschedule(appointment.id_reserva, body) : appointmentsService.create({ ...body,
       id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? selectedPlan : null, tipo_cita: type });
   }, close);
@@ -77,7 +77,7 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
             <fieldset><legend>Horario en Lima · {durationMinutes} minutos</legend><div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">{!slots.error && slots.data?.map(s => <button type="button" key={s.inicio} disabled={!s.disponible} aria-pressed={start === s.inicio} onClick={() => setStart(s.inicio)} className={`min-h-14 rounded-xl border p-2 ${start === s.inicio ? 'bg-violet-700 text-white border-violet-700' : 'bg-white border-[#C8C2DC] disabled:bg-slate-100 disabled:text-slate-600'}`}><span className="block">{clock(s.inicio)}</span><span className="text-xs font-normal">{s.motivo ?? 'Disponible'}</span></button>)}</div></fieldset>
           </>}
           <label className="block">Modalidad<select className={field} value={mode} onChange={e => setMode(e.target.value as typeof mode)}><option value="PRESENCIAL">Presencial</option><option value="VIRTUAL">Virtual</option></select></label>
-          <label className="block">{mode === 'PRESENCIAL' ? 'Localización acordada con el centro' : 'Observación para la cita'}<input maxLength={255} className={field} value={location} onChange={e => setLocation(e.target.value)} /></label>
+          <div aria-live="polite"><p>{mode === 'PRESENCIAL' ? 'Dirección del centro' : 'Reunión virtual'}</p><p className="mt-1 font-normal">{location}</p></div>
         </> : <section aria-label="Resumen de la reserva" className="space-y-3"><h3 className="font-extrabold text-lg">Revisa tu cita</h3><p>{type === 'INTRODUCTORIA' ? 'Consulta introductoria' : 'Sesión de terapia'}</p><p>{selectedChild ? `${selectedChild.name} ${selectedChild.surname}` : appointment?.paciente_nombre}</p><p>{professionals.data?.find(p => p.id_terapeuta === therapist)?.nombres} {professionals.data?.find(p => p.id_terapeuta === therapist)?.apellidos}</p><p>{day} · {selected && `${clock(selected.inicio)}–${clock(selected.fin)}`} (Lima)</p><p>{mode === 'VIRTUAL' ? 'Virtual' : 'Presencial'}{location && ` · ${location}`}</p><p className="font-normal">La cita quedará confirmada al guardar. El servidor volverá a comprobar que el turno esté libre.</p><Btn variant="outline" onClick={() => setReview(false)}>Editar selección</Btn></section>}
         <RemoteFeedback error={save.error} />
       </fieldset><div className="px-6 py-4 border-t border-[#E8E5F4] flex gap-3"><Btn variant="secondary" disabled={save.isPending} onClick={close}>Cancelar</Btn><Btn type="submit" disabled={save.isPending || !ready}>{save.isPending ? 'Confirmando…' : review ? 'Confirmar cita' : 'Revisar reserva'}</Btn></div>
