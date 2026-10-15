@@ -1,0 +1,27 @@
+{
+  "audit": "AUDIT-2026-10-09-08",
+  "date": "2026-10-09",
+  "hostname": "HailQueso",
+  "node_version": "v22.15.0",
+  "npm_version": "10.9.2",
+  "python_version": "3.13.7",
+  "postgres_version": "PostgreSQL 18.4 on x86_64-windows, compiled by msvc-19.44.35226, 64-bit",
+  "postgres_port": 5433,
+  "acceptance_database": "ashakids_test_accept07_hq",
+  "regression_database": "ashakids_test_regress08",
+  "api_port": 8001,
+  "web_port": 5174,
+  "backend_tests": {
+    "passed": 119,
+    "skipped": 25,
+    "warnings": 19,
+    "failed": 0
+  },
+  "frontend_tests": {
+    "components_passed": 232,
+    "routing_passed": 25,
+    "failed": 0
+  },
+  "journey_http_responses_verified": 92,
+  "delivery_success": true
+}

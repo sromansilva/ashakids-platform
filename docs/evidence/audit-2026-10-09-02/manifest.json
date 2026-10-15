@@ -1,0 +1,193 @@
+{
+  "audit": "AUDIT-2026-10-09-02",
+  "branch": "piero-dev",
+  "head": "82f868fd4a1b7e7d40a636651c13d9add472c71f",
+  "working_tree": "uncommitted changes; no push",
+  "entries": [
+    {
+      "path": "backend/app/models/auth.py",
+      "bytes": 5040,
+      "sha256": "d41ceae598fe756ba624a165dfc7a75e7c2786a578a3d22e9cd60fe8cb5d56c5"
+    },
+    {
+      "path": "backend/app/models/perfiles.py",
+      "bytes": 5994,
+      "sha256": "425c42f3c96c57f4edf1d952306f5c4aa7faddbd927f4f5d64576f6644448319"
+    },
+    {
+      "path": "backend/scripts/db_creation.sql",
+      "bytes": 19386,
+      "sha256": "bf6b3f00f98619508eaa3e14731e154f244e76ce2bf579462be3aaf016059bbc"
+    },
+    {
+      "path": "backend/scripts/inspect_schema_compatibility.py",
+      "bytes": 6905,
+      "sha256": "3c693127ab09b4e1925456e7651cf1aa8be6d6d65791a05596018409d892c285"
+    },
+    {
+      "path": "backend/scripts/phase2_sandbox.py",
+      "bytes": 4008,
+      "sha256": "fbd8e88fa28ae2e5416d56f57e3469c546daeb0826d839a80c336642924f7216"
+    },
+    {
+      "path": "backend/scripts/testing_database.py",
+      "bytes": 1087,
+      "sha256": "99ec084b12696fae931101bb1ca2ead6e48dfa51e6f4b299fe304fdb3fd3c972"
+    },
+    {
+      "path": "backend/scripts/verify_compatibility_journey.py",
+      "bytes": 4754,
+      "sha256": "3fb16af761ae71fefd085908df5928ccdf07c1b47a6a4e146fe569189961ce69"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "bytes": 3733,
+      "sha256": "47e6e3b3aee7fbf633e11506a60c96636c1c6706c641aea7621ad1430d199448"
+    },
+    {
+      "path": "backend/tests/test_testing_database.py",
+      "bytes": 1361,
+      "sha256": "f536d59babd52deb013ce6d3d49e648befe763904d8b89a6d99939c539ab63ff"
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 8527,
+      "sha256": "5765ef7375121797b5931ceef80f4b288ed5af698409b51db2676c1f5dfc88ee"
+    },
+    {
+      "path": "docs/audits/auditoria-2026-10-09-02.md",
+      "bytes": 16189,
+      "sha256": "47773fe6248b4db470a300b988f6ab3951bac6ad05a8338c9d5fb20c7d6caf15"
+    },
+    {
+      "path": "docs/audits/README.md",
+      "bytes": 4050,
+      "sha256": "b508110a7f7218076dce561cef1618a899033691ddbdd00945bb5b0397d698ef"
+    },
+    {
+      "path": "docs/DELIVERY_CHECKLIST.md",
+      "bytes": 4693,
+      "sha256": "f9ced403f715f4fb744dbdad6e22c269bb50544e22323f61a633a6b6263fbc4f"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/attempts.json",
+      "bytes": 841,
+      "sha256": "ae78bb8e0c9e6ee67d83e06cb1262e02d5a9814188e399a7ba0a86743e5b49b1"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/backend-api-evidence.json",
+      "bytes": 5993,
+      "sha256": "b14a97c931b072d05dc6cd4cc368f32c7c12bd4a61c3c12aaad959e968b7aca9"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/backend-dependencies.txt",
+      "bytes": 776,
+      "sha256": "ad38f68f5471842231d1f4f00fb7675ff850c23b8da7743e0a63db928e453396"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/backend-tests-before-fixture-fix.xml",
+      "bytes": 423586,
+      "sha256": "744b6c170014e4407014ce4ec5cb48a324aecc7b5204aeea8b55a223ebccf5ad"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/backend-tests.xml",
+      "bytes": 20606,
+      "sha256": "6434aae500c68c9d21c5fda505f91e357806e0d48bec3c1c7ab4f97ae16055a0"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/family-report-reload.png",
+      "bytes": 59884,
+      "sha256": "76125f4005cd0ff57ea897bbf820ff0cc146d59314b5cab22282531b053acd2a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/knowledge-check.txt",
+      "bytes": 27,
+      "sha256": "6fdbf5c49f03f501b04c24a287e3831587c59aa1f9ce3f158782685b550614d5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/local-final-inspection.json",
+      "bytes": 17973,
+      "sha256": "b1fe3e0ce3fe86d38546b45b5c27a1ba55d5183129a24851fb94d45b5f1de20f"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/local17-after-model-fix.json",
+      "bytes": 96874,
+      "sha256": "5d0d2ad8318f545f709d9ce2dfa66aecd77eda0fa7365094ff9a0bf8575dec4c"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/pdf-qa.json",
+      "bytes": 438,
+      "sha256": "c86b42a221f6d1d0bceeb6711e52a65b45409a4e7acd832d92e781b75e5be070"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/README.md",
+      "bytes": 5721,
+      "sha256": "200d6a6fb680241f37bffb230bc2821852d2a90fc22e80268414722aef4f6811"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/real-http-journey.json",
+      "bytes": 7127,
+      "sha256": "5fa7c53906dfec5146d93fa1d9569ed08dcaafb06f70bcb7954c6565ecd8a358"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/runtime-provenance.json",
+      "bytes": 905,
+      "sha256": "32ddd90b92ccd19397e6f930095a04eb8c5adca8e2f769faeb283122afcea0be"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/schema-comparison.json",
+      "bytes": 1315,
+      "sha256": "352ae9b73a14b5515c17e89a3a6283a9843564f77f6a60b6e1049c9995bded9b"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/schema-export-provenance.json",
+      "bytes": 313,
+      "sha256": "27346a77857f9356acc9aa088ae685f6b7d408db83336ac485d131c5da41be73"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/shared-after-model-fix.json",
+      "bytes": 96872,
+      "sha256": "ed5b3d22fb55f161e7b97611024a524f843fbaa5194c86dbc8bb4e040450ca01"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/shared-before-model-fix.json",
+      "bytes": 97676,
+      "sha256": "c13478342aa1f4b6c3866b39a597cfe7bbdc86966e7ffaa173565f8c304fd757"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/shared-public-schema.sql",
+      "bytes": 47239,
+      "sha256": "e7d4afe69409bba6f845a46326f3b85a83187ac0822bb63224422adcd6b7af6f"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-02/shared-schema-readonly.json",
+      "bytes": 75095,
+      "sha256": "e09cf19bd042e018cf4b854f4a5e2d7f29a93663f154f8116b51806a589a32ba"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PLAN.md",
+      "bytes": 16922,
+      "sha256": "e8a293955e19e3388b5da5ffff990ab2f2c484fa0b43136f75f2eb2b5569c913"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PROGRESS.md",
+      "bytes": 12575,
+      "sha256": "4720ddd27761705037b9994df19357cb2de56b83229327cb6d9c725fb18f916c"
+    },
+    {
+      "path": "docs/PROJECT_CONTEXT.md",
+      "bytes": 16655,
+      "sha256": "3271088215e8fdb077bdd94fe28970a056f978d22ef8849d1124ec7df258e3c6"
+    },
+    {
+      "path": "output/pdf/Auditoria_Compatibilidad_AshaKids_2026-10-09-02.pdf",
+      "bytes": 171057,
+      "sha256": "6e89955bb2e506ad51ce2c2f5bb2b547fe448db11bac57b5e279047c6a453935"
+    },
+    {
+      "path": "tools/reports/build_backend_audit_pdf.py",
+      "bytes": 6136,
+      "sha256": "e5139cb36f46f02e9be27ec40187fad239d68b98822f111a504c29a42770a962"
+    }
+  ]
+}

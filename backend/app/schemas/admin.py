@@ -6,6 +6,11 @@ from typing import List, Optional
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 from app.schemas.perfiles import TerapeutaData, TutorData
+from app.schemas.reglas import Password
+from typing import Annotated
+from pydantic import StringConstraints
+
+InitialDni = Annotated[str, StringConstraints(pattern=r"^[0-9]{8}$")]
 
 EMAIL_REGEX = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 
@@ -15,7 +20,7 @@ class CrearPadreRequest(BaseModel):
     nombres: str = Field(..., min_length=1, max_length=60)
     apellidos: str = Field(..., min_length=1, max_length=80)
     email: str = Field(..., min_length=3, max_length=150)
-    password: str = Field(..., min_length=6, max_length=100)
+    password: InitialDni | Password | None = None
     parentesco: Optional[str] = Field(None, max_length=30)
     telefono: Optional[str] = Field(None, max_length=12)
     direccion: Optional[str] = Field(None, max_length=200)
@@ -42,7 +47,7 @@ class CrearTerapeutaRequest(BaseModel):
     nombres: str = Field(..., min_length=1, max_length=60)
     apellidos: str = Field(..., min_length=1, max_length=80)
     email: str = Field(..., min_length=3, max_length=150)
-    password: str = Field(..., min_length=6, max_length=100)
+    password: InitialDni | Password | None = None
     especialidad: Optional[str] = Field(None, max_length=100)
     anios_experiencia: Optional[int] = Field(None, ge=0, le=70)
     idiomas: Optional[str] = Field(None, max_length=50)
@@ -117,3 +122,18 @@ class OperacionCuentaResponse(BaseModel):
     """Respuesta tras realizar operaciones sobre cuentas."""
     message: str
     cuenta: Optional[CuentaItemResponse] = None
+    correo_bienvenida: Optional[str] = None
+
+
+class AuditoriaItemResponse(BaseModel):
+    id_auditoria: int
+    actor: Optional[str]
+    nombre_tabla: str
+    nombre_entidad: str
+    accion: str
+    fecha_evento: datetime
+
+
+class AuditoriaListResponse(BaseModel):
+    items: List[AuditoriaItemResponse]
+    total: int

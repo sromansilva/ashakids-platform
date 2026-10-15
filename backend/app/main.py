@@ -1,6 +1,8 @@
 """Punto de entrada principal de la API de ASHAKids."""
 
 from contextlib import asynccontextmanager
+import asyncio
+from contextlib import suppress
 from fastapi import FastAPI, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -13,14 +15,23 @@ from app.api.v1.padres import router as padres_router
 from app.api.v1.terapeutas import router as terapeutas_router
 from app.core.config import settings
 from app.core import database
-from app.api.v1 import citas, pacientes, sesiones, usuarios
+from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones, juegos, newsletter, adjuntos, incidencias, valoraciones
+from app.services.adjuntos import LimiteAdjuntos
+from app.services.recordatorios import ejecutar as ejecutar_recordatorios
 
 
 @asynccontextmanager
 async def lifespan(app):
-    yield
-    if database.async_engine is not None:
-        await database.async_engine.dispose()
+    worker = asyncio.create_task(ejecutar_recordatorios()) if settings.NOTIFICATION_REMINDERS_ENABLED else None
+    try:
+        yield
+    finally:
+        if worker:
+            worker.cancel()
+            with suppress(asyncio.CancelledError):
+                await worker
+        if database.async_engine is not None:
+            await database.async_engine.dispose()
 
 app = FastAPI(
     lifespan=lifespan,
@@ -32,6 +43,13 @@ app = FastAPI(
     openapi_url="/openapi.json",
 )
 
+SECURITY_HEADERS = {
+    "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; media-src 'self' blob:",
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    "X-Frame-Options": "DENY",
+    "Permissions-Policy": "camera=(), geolocation=(self), microphone=(self)",
+}
+
 
 @app.middleware("http")
 async def check_origin(request: Request, call_next):
@@ -39,6 +57,8 @@ async def check_origin(request: Request, call_next):
     origin = request.headers.get("origin")
     mutation = request.method in {"POST", "PUT", "PATCH", "DELETE"}
     cookie = request.cookies.get(settings.SESSION_COOKIE_NAME)
+    if mutation and settings.is_production and request.url.scheme != "https":
+        return JSONResponse(status_code=403, content={"detail": "Se requiere HTTPS."})
     if mutation and ((origin and origin not in settings.CORS_ORIGINS) or (
         cookie and not origin and settings.ENVIRONMENT.lower() == "production"
     )):
@@ -47,6 +67,9 @@ async def check_origin(request: Request, call_next):
     if request.url.path.startswith(settings.API_V1_PREFIX):
         response.headers["Cache-Control"] = "no-store"
     response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers.update(SECURITY_HEADERS)
+    if settings.is_production and request.url.scheme == "https":
+        response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
     return response
 
 # Configuración de CORS estricta (no usar origins=['*'] con allow_credentials=True)
@@ -58,13 +81,14 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["X-Total-Count"],
 )
+app.add_middleware(LimiteAdjuntos)
 
 # Inclusión de routers de API v1
 app.include_router(auth_router, prefix=settings.API_V1_PREFIX)
 app.include_router(padres_router, prefix=settings.API_V1_PREFIX)
 app.include_router(terapeutas_router, prefix=settings.API_V1_PREFIX)
 app.include_router(admin_router, prefix=settings.API_V1_PREFIX)
-for domain in (usuarios, pacientes, citas, sesiones):
+for domain in (usuarios, pacientes, citas, sesiones, mensajeria, notificaciones, juegos, newsletter, adjuntos, incidencias, valoraciones):
     app.include_router(domain.router, prefix=settings.API_V1_PREFIX)
 
 

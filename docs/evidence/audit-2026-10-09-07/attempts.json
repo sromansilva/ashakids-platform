@@ -1,0 +1,18 @@
+{
+  "audit": "AUDIT-2026-10-09-07",
+  "attempts": [
+    {"scope": "Schema restore", "initial": "CREATE SCHEMA public failed because new database already has public", "following": "Grant/role seed failed while tables were absent", "resolution": "Portable temporary copy changes only one CREATE SCHEMA public to IF NOT EXISTS. Restores completed with ON_ERROR_STOP; no drop or shared DDL."},
+    {"scope": "Frontend routing", "initial": "Sandbox spawn EPERM", "resolution": "Authorized retry passed 25 routing tests, 232 component tests and build. Initial failure preserved in routing-first.txt."},
+    {"scope": "API process setup", "initial": "Sandbox CIM process inventory denied; first clone API failed to bind occupied8001", "resolution": "Enabled terminating errors in helper, used authorized exact project-process matching and restarted only test API8001. First bind failure preserved."},
+    {"scope": "Clean clone backend", "passed": 115, "skipped": 25, "warnings": 19, "scope_note": "Full suite with SQL fixtures only in ashakids_test_regress07. No live/shared tests enabled."},
+    {"scope": "Final backend with guard tests", "passed": 119, "skipped": 25, "warnings": 19, "scope_note": "Four additional unit cases; same application. Full suite again in separate regress07, not journey/demo data."},
+    {"scope": "HTTP first acceptance", "responses": 92, "database": "ashakids_test_accept07", "success": true},
+    {"scope": "HTTP repeated acceptance", "responses": 92, "database": "ashakids_test_accept07_repeat", "success": true, "addition": "Newly issued API session verified in configured SQL database before first clinical write. Same journey cases; not184 distinct cases."},
+    {"scope": "Instance mismatch containment", "positive": true, "negative_rejected": true, "clinical_mutations": 0, "evidence": "restoration-and-target-guard.json"},
+    {"scope": "Browser", "user_reported_enabled": true, "access_attempts": 1, "result": "Saved permission still blocks5174", "action": "No evasion; document pending UI acceptance."}
+  ],
+  "backend_skip_reasons": {"legacy_live_HTTP_disabled": 20, "shared_integration_disabled": 5},
+  "backend_warning_reasons": {"Starlette_TestClient_httpx_deprecation": 1, "per_request_cookies_deprecation": 18},
+  "install_warnings": ["whatwg-encoding deprecated", "@tailwindcss/oxide and esbuild install scripts not covered by allowScripts; build/tests succeeded without changing script policy"],
+  "limits": ["No independent teammate/fresh operating system reproduction", "Existing PG17.6 cluster reused", "No new real browser UI captures", "No Supabase access or historical-account restoration", "No production deployment, load, SLA or pentest"]
+}

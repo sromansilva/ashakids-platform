@@ -44,7 +44,7 @@ return (<div
                 ["Paciente", "Mateo"],
                 ["Fecha", "30 Jul 2026"],
                 ["Hora", "10:00 AM"],
-                ["Duración", "45 minutos"],
+                ["Duración", "Según agenda"],
                 ["Modalidad", "Virtual"],
                 ["Estado", "Confirmada"],
                 ["Objetivo", "Pronunciación de la R"],

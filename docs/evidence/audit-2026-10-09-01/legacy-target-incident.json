@@ -1,0 +1,63 @@
+{
+  "target": "habitual localhost:8000",
+  "scope": "Observed log entries; historical file contains no timestamps per request; do not infer exact incident count",
+  "request_patterns": [
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 401
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/padres",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/padres",
+      "status": 409
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{key}",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{key}/suspender",
+      "status": 200
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{key}/activar",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/admin/cuentas/{key}",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/admin/cuentas/terapeutas",
+      "status": 201
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/{key}/suspender",
+      "status": 409
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/v1/admin/cuentas/{key}",
+      "status": 409
+    }
+  ],
+  "remediation": "stopped legacy run; live suites disabled by default; require isolated loopback API and matching disposable DB",
+  "shared_database_restored": false
+}

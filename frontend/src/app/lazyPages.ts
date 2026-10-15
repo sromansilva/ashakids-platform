@@ -78,7 +78,6 @@ export const AshaSessionPrep = lazy(() => import("@/pages/padre/SessionsMeeting/
 export const AshaSessionSummary = lazy(() => import("@/pages/padre/SessionsMeeting/AshaSessionSummary").then(module => ({ default: module.AshaSessionSummary })));
 export const AdminDashboardPage = lazy(() => import("@/pages/admin/DashboardPage").then(module => ({ default: module.AdminDashboardPage })));
 export const AdminCuentas = lazy(() => import("@/pages/admin/AdminCuentas").then(module => ({ default: module.AdminCuentas })));
-export const AdminTerapeutas = lazy(() => import("@/pages/admin/AdminTerapeutas").then(module => ({ default: module.AdminTerapeutas })));
 export const AdminOperacion = lazy(() => import("@/pages/admin/AdminOperacion").then(module => ({ default: module.AdminOperacion })));
 export const AdminPagos = lazy(() => import("@/pages/admin/AdminFinanzas").then(module => ({ default: module.AdminPagos })));
 export const AdminContenido = lazy(() => import("@/pages/admin/AdminContenido").then(module => ({ default: module.AdminContenido })));

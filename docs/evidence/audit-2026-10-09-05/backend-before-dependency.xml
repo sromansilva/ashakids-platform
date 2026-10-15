@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="11" time="0.698" timestamp="2026-10-09T02:59:05.305801-05:00" hostname="Piero"><testcase classname="tests.test_report_pdf" name="test_pdf_content_accents_markup_and_missing_values" time="0.001"><failure message="zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'">key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+&gt;           path = resources.files(package_name).joinpath(resource_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:46: in wrapper
+    return func(anchor)
+           ^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:56: in files
+    return from_package(resolve(anchor))
+                        ^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\functools.py:934: in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:82: in _
+    return importlib.import_module(cand)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'tzdata.zoneinfo.America', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+&gt;       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'tzdata'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\__init__.py:88: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_pdf_content_accents_markup_and_missing_values():
+&gt;       data = build_report_pdf(*fixtures())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_report_pdf.py:36: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\report_pdf.py:65: in build_report_pdf
+    ("Cita", fecha(appointment.fecha_hora_inicio)), ("Estado", session.estado_sesion),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\report_pdf.py:36: in fecha
+    return value.astimezone(ZoneInfo("America/Lima")).strftime("%d/%m/%Y %H:%M") + " (Lima)"
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+            path = resources.files(package_name).joinpath(resource_name)
+            # gh-85702: Prevent PermissionError on Windows
+            if path.is_dir():
+                raise IsADirectoryError
+            return path.open("rb")
+        except (ImportError, FileNotFoundError, UnicodeEncodeError, IsADirectoryError):
+            # There are four types of exception that can be raised that all amount
+            # to "we cannot find this key":
+            #
+            # ImportError: If package_name doesn't exist (e.g. if tzdata is not
+            #   installed, or if there's an error in the folder name like
+            #   Amrica/New_York)
+            # FileNotFoundError: If resource_name doesn't exist in the package
+            #   (e.g. Europe/Krasnoy)
+            # UnicodeEncodeError: If package_name or resource_name are not UTF-8,
+            #   such as keys containing a surrogate character.
+            # IsADirectoryError: If package_name without a resource_name specified.
+&gt;           raise ZoneInfoNotFoundError(f"No time zone found with key {key}")
+E           zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:29: ZoneInfoNotFoundError</failure></testcase><testcase classname="tests.test_report_pdf" name="test_pdf_paginates_without_truncating_long_fields" time="0.002"><failure message="zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'">key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+&gt;           path = resources.files(package_name).joinpath(resource_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:46: in wrapper
+    return func(anchor)
+           ^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:56: in files
+    return from_package(resolve(anchor))
+                        ^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\functools.py:934: in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:82: in _
+    return importlib.import_module(cand)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'tzdata.zoneinfo.America', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+&gt;       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'tzdata'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\__init__.py:88: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_pdf_paginates_without_truncating_long_fields():
+        long = 'Observación extensa con ñ y tildes. '*290 + 'FIN-OBSERVACIONES'
+&gt;       reader, text = extract(build_report_pdf(*fixtures(observaciones_iniciales=long,
+            objetivos_trabajados='x'*10000+'FIN-OBJETIVOS', proximos_pasos='FIN-PASOS')))
+
+tests\test_report_pdf.py:48: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\report_pdf.py:65: in build_report_pdf
+    ("Cita", fecha(appointment.fecha_hora_inicio)), ("Estado", session.estado_sesion),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\report_pdf.py:36: in fecha
+    return value.astimezone(ZoneInfo("America/Lima")).strftime("%d/%m/%Y %H:%M") + " (Lima)"
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+            path = resources.files(package_name).joinpath(resource_name)
+            # gh-85702: Prevent PermissionError on Windows
+            if path.is_dir():
+                raise IsADirectoryError
+            return path.open("rb")
+        except (ImportError, FileNotFoundError, UnicodeEncodeError, IsADirectoryError):
+            # There are four types of exception that can be raised that all amount
+            # to "we cannot find this key":
+            #
+            # ImportError: If package_name doesn't exist (e.g. if tzdata is not
+            #   installed, or if there's an error in the folder name like
+            #   Amrica/New_York)
+            # FileNotFoundError: If resource_name doesn't exist in the package
+            #   (e.g. Europe/Krasnoy)
+            # UnicodeEncodeError: If package_name or resource_name are not UTF-8,
+            #   such as keys containing a surrogate character.
+            # IsADirectoryError: If package_name without a resource_name specified.
+&gt;           raise ZoneInfoNotFoundError(f"No time zone found with key {key}")
+E           zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:29: ZoneInfoNotFoundError</failure></testcase><testcase classname="tests.test_report_pdf" name="test_naive_registration_time_is_not_assigned_an_invented_timezone" time="0.003"><failure message="zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'">key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+&gt;           path = resources.files(package_name).joinpath(resource_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:46: in wrapper
+    return func(anchor)
+           ^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:56: in files
+    return from_package(resolve(anchor))
+                        ^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\functools.py:934: in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:82: in _
+    return importlib.import_module(cand)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'tzdata.zoneinfo.America', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+&gt;       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'tzdata'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\__init__.py:88: ModuleNotFoundError
+
+During handling of the above exception, another exception occurred:
+
+    def test_naive_registration_time_is_not_assigned_an_invented_timezone():
+&gt;       _, text = extract(build_report_pdf(*fixtures(fecha_creacion=datetime(2026, 10, 9, 11))))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_report_pdf.py:57: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+app\services\report_pdf.py:65: in build_report_pdf
+    ("Cita", fecha(appointment.fecha_hora_inicio)), ("Estado", session.estado_sesion),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\report_pdf.py:36: in fecha
+    return value.astimezone(ZoneInfo("America/Lima")).strftime("%d/%m/%Y %H:%M") + " (Lima)"
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+            path = resources.files(package_name).joinpath(resource_name)
+            # gh-85702: Prevent PermissionError on Windows
+            if path.is_dir():
+                raise IsADirectoryError
+            return path.open("rb")
+        except (ImportError, FileNotFoundError, UnicodeEncodeError, IsADirectoryError):
+            # There are four types of exception that can be raised that all amount
+            # to "we cannot find this key":
+            #
+            # ImportError: If package_name doesn't exist (e.g. if tzdata is not
+            #   installed, or if there's an error in the folder name like
+            #   Amrica/New_York)
+            # FileNotFoundError: If resource_name doesn't exist in the package
+            #   (e.g. Europe/Krasnoy)
+            # UnicodeEncodeError: If package_name or resource_name are not UTF-8,
+            #   such as keys containing a surrogate character.
+            # IsADirectoryError: If package_name without a resource_name specified.
+&gt;           raise ZoneInfoNotFoundError(f"No time zone found with key {key}")
+E           zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:29: ZoneInfoNotFoundError</failure></testcase><testcase classname="tests.test_report_pdf" name="test_unsupported_character_fails_explicitly_without_partial_document" time="0.000" /><testcase classname="tests.test_report_pdf" name="test_route_reads_authorized_report_and_returns_attachment" time="0.074"><failure message="zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'">key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+&gt;           path = resources.files(package_name).joinpath(resource_name)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:12: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:46: in wrapper
+    return func(anchor)
+           ^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:56: in files
+    return from_package(resolve(anchor))
+                        ^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\functools.py:934: in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\resources\_common.py:82: in _
+    return importlib.import_module(cand)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+name = 'tzdata.zoneinfo.America', package = None
+
+    def import_module(name, package=None):
+        """Import a module.
+    
+        The 'package' argument is required when performing a relative import. It
+        specifies the package to use as the anchor point from which to resolve the
+        relative import to an absolute import.
+    
+        """
+        level = 0
+        if name.startswith('.'):
+            if not package:
+                raise TypeError("the 'package' argument is required to perform a "
+                                f"relative import for {name!r}")
+            for character in name:
+                if character != '.':
+                    break
+                level += 1
+&gt;       return _bootstrap._gcd_import(name[level:], package, level)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       ModuleNotFoundError: No module named 'tzdata'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\importlib\__init__.py:88: ModuleNotFoundError
+
+The above exception was the direct cause of the following exception:
+
+dependencies = &lt;AsyncMock id='1911107516944'&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001BCF6DC6D70&gt;
+
+    async def test_route_reads_authorized_report_and_returns_attachment(dependencies, monkeypatch):
+        visible = AsyncMock(return_value=fixtures())
+        monkeypatch.setattr(sesiones, 'reporte_visible', visible)
+        monkeypatch.setattr(presentacion, 'citas', AsyncMock(return_value=[fixtures()[1]]))
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url='http://test') as client:
+&gt;           response = await client.get('/api/v1/sesiones/12/reporte/pdf')
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_report_pdf.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+.venv313\Lib\site-packages\httpx\_client.py:1768: in get
+    return await self.request(
+.venv313\Lib\site-packages\httpx\_client.py:1540: in request
+    return await self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\httpx\_client.py:1629: in send
+    response = await self._send_handling_auth(
+.venv313\Lib\site-packages\httpx\_client.py:1657: in _send_handling_auth
+    response = await self._send_handling_redirects(
+.venv313\Lib\site-packages\httpx\_client.py:1694: in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\httpx\_client.py:1730: in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\httpx\_transports\asgi.py:170: in handle_async_request
+    await self.app(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\applications.py:1216: in __call__
+    await super().__call__(scope, receive, send)
+.venv313\Lib\site-packages\starlette\applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv313\Lib\site-packages\starlette\middleware\errors.py:186: in __call__
+    raise exc
+.venv313\Lib\site-packages\starlette\middleware\errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv313\Lib\site-packages\fastapi\telemetry\_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv313\Lib\site-packages\starlette\middleware\cors.py:91: in __call__
+    await self.simple_response(scope, receive, send, request_headers=headers)
+.venv313\Lib\site-packages\starlette\middleware\cors.py:149: in simple_response
+    await self.app(scope, receive, send)
+.venv313\Lib\site-packages\starlette\middleware\base.py:197: in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\main.py:46: in check_origin
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\starlette\middleware\base.py:173: in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+.venv313\Lib\site-packages\starlette\middleware\base.py:149: in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+.venv313\Lib\site-packages\starlette\middleware\exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv313\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv313\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv313\Lib\site-packages\fastapi\middleware\asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv313\Lib\site-packages\starlette\routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+.venv313\Lib\site-packages\fastapi\routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv313\Lib\site-packages\starlette\_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv313\Lib\site-packages\starlette\_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv313\Lib\site-packages\fastapi\routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\fastapi\routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv313\Lib\site-packages\fastapi\routing.py:360: in run_endpoint_function
+    return await dependant.call(**values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\api\v1\sesiones.py:60: in descargar_reporte
+    pdf = await run_in_threadpool(build_report_pdf, session, appointment_view, report)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\starlette\concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv313\Lib\site-packages\anyio\to_thread.py:65: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+.venv313\Lib\site-packages\anyio\_backends\_asyncio.py:2706: in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+.venv313\Lib\site-packages\anyio\_backends\_asyncio.py:1100: in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\report_pdf.py:65: in build_report_pdf
+    ("Cita", fecha(appointment.fecha_hora_inicio)), ("Estado", session.estado_sesion),
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+app\services\report_pdf.py:36: in fecha
+    return value.astimezone(ZoneInfo("America/Lima")).strftime("%d/%m/%Y %H:%M") + " (Lima)"
+                            ^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+key = 'America/Lima'
+
+    def load_tzdata(key):
+        from importlib import resources
+    
+        components = key.split("/")
+        package_name = ".".join(["tzdata.zoneinfo"] + components[:-1])
+        resource_name = components[-1]
+    
+        try:
+            path = resources.files(package_name).joinpath(resource_name)
+            # gh-85702: Prevent PermissionError on Windows
+            if path.is_dir():
+                raise IsADirectoryError
+            return path.open("rb")
+        except (ImportError, FileNotFoundError, UnicodeEncodeError, IsADirectoryError):
+            # There are four types of exception that can be raised that all amount
+            # to "we cannot find this key":
+            #
+            # ImportError: If package_name doesn't exist (e.g. if tzdata is not
+            #   installed, or if there's an error in the folder name like
+            #   Amrica/New_York)
+            # FileNotFoundError: If resource_name doesn't exist in the package
+            #   (e.g. Europe/Krasnoy)
+            # UnicodeEncodeError: If package_name or resource_name are not UTF-8,
+            #   such as keys containing a surrogate character.
+            # IsADirectoryError: If package_name without a resource_name specified.
+&gt;           raise ZoneInfoNotFoundError(f"No time zone found with key {key}")
+E           zoneinfo._common.ZoneInfoNotFoundError: 'No time zone found with key America/Lima'
+
+..\..\datafest\.python\cpython-3.13.7-windows-x86_64-none\Lib\zoneinfo\_common.py:29: ZoneInfoNotFoundError</failure></testcase><testcase classname="tests.test_report_pdf" name="test_route_propagates_read_errors[404-Recurso no encontrado.]" time="0.005" /><testcase classname="tests.test_report_pdf" name="test_route_propagates_read_errors[404-Reporte no registrado.]" time="0.003" /><testcase classname="tests.test_report_pdf" name="test_route_propagates_read_errors[503-Base no disponible.]" time="0.003" /><testcase classname="tests.test_report_pdf" name="test_route_requires_authentication" time="0.004" /><testcase classname="tests.test_report_pdf" name="test_shared_read_checks_session_access_before_report" time="0.002" /><testcase classname="tests.test_report_pdf" name="test_shared_read_rejects_missing_report" time="0.002" /></testsuite></testsuites>

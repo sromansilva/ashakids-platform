@@ -1,0 +1,222 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/login"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/logout"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/me"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/hijos"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/padres/hijos"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/padres/hijos/{id_paciente}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/padres/hijos/{id_paciente}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/padres/hijos/{id_paciente}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/padres/hijos/{id_paciente}/inactivar"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/terapeutas/me"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/me"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas/{id_usuario}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/admin/cuentas/{id_usuario}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/admin/cuentas/padres"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/admin/cuentas/terapeutas"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/suspender"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/activar"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/cuentas/{id_usuario}/hijos"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/pacientes/{id_paciente}/reactivar"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/usuarios"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/usuarios"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/usuarios/{key}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/usuarios/{key}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/pacientes"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes/{key}"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/pacientes/{key}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/pacientes/{key}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/pacientes/{key}/tratamientos"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/tratamientos"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/citas"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/citas"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/citas/{key}"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/citas/{key}"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/citas/{key}/estado"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones/{key}/iniciar"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/sesiones/{key}/cerrar"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}/reporte"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/sesiones/{key}/reporte"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/sesiones/{key}/reporte/pdf"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/contactos"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/conversaciones"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/{key}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/conversaciones/{key}/mensajes"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/conversaciones/{key}/mensajes"
+  },
+  {
+    "method": "GET",
+    "path": "/"
+  },
+  {
+    "method": "GET",
+    "path": "/health"
+  },
+  {
+    "method": "GET",
+    "path": "/health/ready"
+  }
+]

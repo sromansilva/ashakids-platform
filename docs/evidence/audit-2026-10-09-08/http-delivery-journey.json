@@ -1,0 +1,772 @@
+{
+  "audit": "AUDIT-2026-10-09-08",
+  "database": "ashakids_test_accept07_hq",
+  "environment": "Clon dev / API loopback8001 / PG18.4 local5433",
+  "success": true,
+  "sql_runtime": {
+    "database": "ashakids_test_accept07_hq",
+    "role": "ashakids_audit_runtime",
+    "rolsuper": false,
+    "rolcreatedb": false,
+    "rolcreaterole": false,
+    "rolbypassrls": true
+  },
+  "server_database_session_verified_before_clinical_writes": true,
+  "sample_pdf_sha256": "3349c8c866bcb2cf4ca8b6a36bd45f7bc3529fba46768dc6b6ee716242332f43",
+  "ids": {
+    "patient": 1,
+    "treatment": 1,
+    "appointment": 1,
+    "session": 1,
+    "conversation": 1
+  },
+  "checks": {
+    "report_json_matches_pdf": true,
+    "history_equal_after_relogin": true,
+    "active_assignment_required_real_sql": true,
+    "archived_chat_rejects_real_sql": true,
+    "foreign_resources_denied": true,
+    "same_pair_concurrent_open": true
+  },
+  "captured_utc": "2026-10-09T16:12:44.409599+00:00",
+  "verified_responses": 92,
+  "cases": [
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 171.01
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 107.64
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 90.14
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 89.61
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 87.53
+    },
+    {
+      "identity": "anonymous",
+      "method": "GET",
+      "path": "http://127.0.0.1:8001/health",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 9.34
+    },
+    {
+      "identity": "anonymous",
+      "method": "GET",
+      "path": "http://127.0.0.1:8001/health/ready",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 8.7
+    },
+    {
+      "identity": "anonymous",
+      "method": "GET",
+      "path": "pacientes",
+      "expected": 401,
+      "status": 401,
+      "elapsed_ms": 6.95
+    },
+    {
+      "identity": "anonymous",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 401,
+      "status": 401,
+      "elapsed_ms": 88.86
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "usuarios?limit=100",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 37.84
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "usuarios",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 14.51
+    },
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "usuarios",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 103.18
+    },
+    {
+      "identity": "p90003",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 82.25
+    },
+    {
+      "identity": "a90001",
+      "method": "PATCH",
+      "path": "usuarios/6",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 26.73
+    },
+    {
+      "identity": "p90003",
+      "method": "GET",
+      "path": "auth/me",
+      "expected": 401,
+      "status": 401,
+      "elapsed_ms": 9.5
+    },
+    {
+      "identity": "p90003",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 401,
+      "status": 401,
+      "elapsed_ms": 8.65
+    },
+    {
+      "identity": "a90001",
+      "method": "PATCH",
+      "path": "usuarios/6",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 20.53
+    },
+    {
+      "identity": "p90003",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 78.38
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "pacientes",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 25.05
+    },
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "tratamientos",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 38.84
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "tratamientos",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 14.34
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "citas",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 44.11
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "citas",
+      "expected": 409,
+      "status": 409,
+      "elapsed_ms": 23.77
+    },
+    {
+      "identity": "p90001",
+      "method": "PATCH",
+      "path": "citas/1/estado",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 20.58
+    },
+    {
+      "identity": "t90001",
+      "method": "PATCH",
+      "path": "citas/1/estado",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 25.19
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 36.03
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones",
+      "expected": 409,
+      "status": 409,
+      "elapsed_ms": 18.02
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones/1/iniciar",
+      "expected": 409,
+      "status": 409,
+      "elapsed_ms": 20.0
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones/1/iniciar",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 23.72
+    },
+    {
+      "identity": "t90001",
+      "method": "PUT",
+      "path": "sesiones/1/reporte",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 25.67
+    },
+    {
+      "identity": "p90001",
+      "method": "PUT",
+      "path": "sesiones/1/reporte",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 20.85
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones/1/cerrar",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 27.89
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "pacientes/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 16.48
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "citas/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 19.06
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "sesiones/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 21.88
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 17.5
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte/pdf",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 41.61
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "pacientes/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 14.81
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "citas/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 18.59
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 22.12
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 17.13
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte/pdf",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 34.1
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "pacientes/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 16.99
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "citas/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 18.22
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "sesiones/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 25.95
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 16.77
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte/pdf",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 33.05
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "pacientes/1",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.17
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "citas/1",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.3
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones/1",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.22
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.7
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte/pdf",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.51
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "pacientes/1",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.34
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "citas/1",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 13.46
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones/1",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.89
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.22
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte/pdf",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 15.41
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 30.2
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 59.85
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "conversaciones",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 222.7
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 21.84
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 17.39
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 17.51
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "conversaciones/contactos",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 28.01
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 16.74
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 404,
+      "status": 404,
+      "elapsed_ms": 17.61
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 14.81
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 4.89
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 422,
+      "status": 422,
+      "elapsed_ms": 15.3
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 422,
+      "status": 422,
+      "elapsed_ms": 14.64
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 31.4
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 201,
+      "status": 201,
+      "elapsed_ms": 27.17
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 18.31
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 17.71
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes?limit=1&before_id=2",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 18.15
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 13.19
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 401,
+      "status": 401,
+      "elapsed_ms": 5.96
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 80.99
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 16.0
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 20.89
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 23.41
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 17.13
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 403,
+      "status": 403,
+      "elapsed_ms": 21.55
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "conversaciones/1/mensajes",
+      "expected": 409,
+      "status": 409,
+      "elapsed_ms": 15.58
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "conversaciones/1/mensajes",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 16.42
+    },
+    {
+      "identity": "anonymous",
+      "method": "GET",
+      "path": "http://127.0.0.1:8001/openapi.json",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 311.32
+    },
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 11.6
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 11.5
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 9.33
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 9.56
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 10.28
+    },
+    {
+      "identity": "p90003",
+      "method": "POST",
+      "path": "auth/logout",
+      "expected": 200,
+      "status": 200,
+      "elapsed_ms": 9.54
+    }
+  ],
+  "limits": "Synthetic isolated fixture: new clinical records and 2 messages; time/state SQL adjustments only on its new IDs. No shared Supabase, reset of demo, production, browser UI or independent human reproduction."
+}

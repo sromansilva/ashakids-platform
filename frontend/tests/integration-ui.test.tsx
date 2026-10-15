@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
 import { appointmentsService, patientsService, sessionsService, treatmentsService, usersService } from '@/services/clinicalService';
 import { apiClient, invalidateIdentityRequests } from '@/api/client';
@@ -26,10 +26,29 @@ function mockApi(overrides?: (path: string, init: RequestInit) => Response | Pro
   });
 }
 
-it('Keeps the original admin patient table and opens the real treatment selector', async () => {
+it('Family reports distinguish persisted session data from demo metrics', async () => {
+  mockApi(); renderRoute('/padre/reportes', 'PADRE');
+  expect(await screen.findByText('Sin medición')).toBeInTheDocument();
+  expect(screen.getByText('Sin registro')).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: 'Progreso mensual (pendiente)' })).toBeInTheDocument();
+  expect(screen.queryByText('78%')).not.toBeInTheDocument();
+});
+
+it('Family cannot simulate professional confirmation of a pending appointment', async () => {
+  const now = new Date();
+  mockApi(path => path === '/citas' ? response([{ ...appointment,
+    estado_reserva: 'PENDIENTE', fecha_hora_inicio: now.toISOString(),
+    fecha_hora_fin: new Date(now.getTime() + 3600000).toISOString(),
+  }]) : undefined);
+  renderRoute('/padre/agenda', 'PADRE');
+  expect(await screen.findByText(/La confirmación corresponde al terapeuta asignado/)).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /Simular confirmación/ })).not.toBeInTheDocument();
+});
+
+it('Shows the simplified admin patient table and opens the real treatment selector', async () => {
   mockApi(); renderRoute('/admin/pacientes', 'ADMIN');
   expect(await screen.findByText('Paciente Aislado')).toBeInTheDocument();
-  expect(screen.getByText('Perfiles Vinculados')).toBeInTheDocument();
+  expect(screen.getByRole('heading', {name:'Pacientes'})).toBeInTheDocument();
   fireEvent.click(screen.getByTitle('Ver detalle operativo'));
   expect(await screen.findByText(/Lenguaje · Profesional Aislado · ACTIVO/)).toBeInTheDocument();
 });
@@ -45,20 +64,34 @@ it('Keeps patient input and displays a server failure instead of fake success', 
   expect(requests.mock.calls.filter(([, init]) => init?.method === 'PUT')).toHaveLength(1);
 });
 
-it('Books against an authorized treatment inside the existing agenda, with explicit Lima dates', async () => {
-  const requests = mockApi((path, init) => path === '/citas' && init.method === 'POST' ? response(appointment, 201) : undefined);
+it('Books a confirmed therapy slot with a professional selected separately from the plan', async () => {
+  const day = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const start = day + 'T10:00:00-05:00';
+  const requests = mockApi((path, init) => {
+    if (path === '/terapeutas') return response([{ id_terapeuta: 4, nombres: 'Profesional', apellidos: 'Aislado', especialidad: null }]);
+    if (path === '/pacientes/12/recorrido') return response({ introduccion_atendida: true, introduccion_pendiente: null, terapia_habilitada: true });
+    if (path === '/terapeutas/4/turnos') return response([{ inicio: start, fin: day + 'T10:40:00-05:00', disponible: true, motivo: null }, { inicio: day + 'T11:00:00-05:00', fin: day + 'T11:40:00-05:00', disponible: false, motivo: 'Ocupado' }]);
+    if (path === '/citas' && init.method === 'POST') return response(appointment, 201);
+  });
   renderRoute('/padre/agenda', 'PADRE');
-  fireEvent.click((await screen.findAllByRole('button', { name: /Solicitar cita/ }))[0]);
-  await screen.findByRole('option', { name: 'Paciente Aislado' });
-  fireEvent.change(screen.getByLabelText('Paciente'), { target: { value: '12' } });
-  await screen.findByRole('option', { name: 'Lenguaje · Profesional Aislado' });
-  fireEvent.change(screen.getByLabelText('Tratamiento y profesional'), { target: { value: '5' } });
-  fireEvent.change(screen.getByLabelText('Fecha y hora de inicio'), { target: { value: '2027-01-01T10:00' } });
-  fireEvent.change(screen.getByLabelText('Fecha y hora de fin'), { target: { value: '2027-01-01T11:00' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Guardar cita' }));
-  await waitFor(() => expect(screen.queryByText('Nueva cita')).not.toBeInTheDocument());
+  fireEvent.click((await screen.findAllByRole('button', { name: /Reservar cita/ }))[0]);
+  const booking = within(screen.getByRole('dialog'));
+  await booking.findByRole('option', { name: 'Paciente Aislado' });
+  fireEvent.change(booking.getByLabelText('Hijo o hija'), { target: { value: '12' } });
+  await screen.findByRole('option', { name: 'Lenguaje' });
+  fireEvent.change(screen.getByLabelText('Profesional'), { target: { value: '4' } });
+  fireEvent.change(screen.getByLabelText('Día'), { target: { value: day } });
+  expect(await screen.findByText('Horario en Lima · 40 minutos')).toBeInTheDocument();
+  expect(await screen.findByRole('button', { name: /11:00.*Ocupado/ })).toBeDisabled();
+  expect(screen.queryByLabelText('Fecha y hora de fin')).not.toBeInTheDocument();
+  fireEvent.click(await screen.findByRole('button', { name: /10:00.*Disponible/ }));
+  fireEvent.click(screen.getByRole('button', { name: 'Revisar reserva' }));
+  expect(screen.getByRole('heading', { name: 'Revisa tu cita' })).toBeInTheDocument();
+  expect(requests.mock.calls.some(([, init]) => init?.method === 'POST')).toBe(false);
+  fireEvent.click(screen.getByRole('button', { name: 'Confirmar cita' }));
+  await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
   const call = requests.mock.calls.find(([, init]) => init?.method === 'POST');
-  expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ id_tratamiento: 5, fecha_hora_inicio: '2027-01-01T10:00:00-05:00' });
+  expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ tipo_cita: 'TERAPIA', id_tratamiento: 5, id_paciente: 12, id_terapeuta: 4, fecha_hora_inicio: start, fecha_hora_fin: day + 'T10:40:00-05:00' });
 });
 
 it('Shows saved session report fields to the family without clinical mutation controls', async () => {
@@ -76,7 +109,7 @@ it('Edits the four real report fields inside the administrator appointment detai
   fireEvent.click(screen.getByRole('button', { name: 'Guardar reporte' }));
   await screen.findByText('Reporte guardado en el servidor.');
   const call = requests.mock.calls.find(([, init]) => init?.method === 'PUT');
-  expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ objetivos_trabajados: 'Objetivo actualizado' });
+  expect(JSON.parse(String(call?.[1]?.body))).toEqual({ observaciones_iniciales: 'Observación guardada', objetivos_trabajados: 'Objetivo actualizado', nivel_ayuda: 'Apoyo mínimo', proximos_pasos: 'Continuar' });
 });
 
 it('Does not populate the users table with demo accounts on a network error', async () => {

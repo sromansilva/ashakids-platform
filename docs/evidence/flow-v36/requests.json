@@ -1,0 +1,173 @@
+{
+  "environment": "isolated-local-qa",
+  "checks": [
+    {
+      "role_code": "p90001",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90002",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90001",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90002",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90001",
+      "method": "GET",
+      "path": "/sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90001",
+      "method": "GET",
+      "path": "/sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/pacientes/1/recorrido",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/pacientes/2/recorrido",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/sesiones/1/plan",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/citas",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90002",
+      "method": "GET",
+      "path": "/sesiones?paciente=1&contexto=true",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90002",
+      "method": "GET",
+      "path": "/sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90002",
+      "method": "PUT",
+      "path": "/sesiones/1/reporte",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "role_code": "t90002",
+      "method": "GET",
+      "path": "/sesiones/1/reporte/pdf",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "t90002",
+      "method": "PUT",
+      "path": "/citas/3/reunion",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90002",
+      "method": "GET",
+      "path": "/pacientes/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "role_code": "p90001",
+      "method": "POST",
+      "path": "/auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/citas/3",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "role_code": "p90001",
+      "method": "GET",
+      "path": "/sesiones/1/reporte/pdf",
+      "status": 200,
+      "expected": 200
+    }
+  ],
+  "first_intro_closed_by": "HTTP API, no evidencia de cierre UI",
+  "ana_journey": {
+    "introduccion_atendida": true,
+    "introduccion_pendiente": null,
+    "terapia_habilitada": true
+  },
+  "luis_journey": {
+    "introduccion_atendida": false,
+    "introduccion_pendiente": 2,
+    "terapia_habilitada": false
+  },
+  "second_professional_appointment": 3,
+  "report_unchanged": true,
+  "browser_acceptance": "pending native confirmation recovery"
+}

@@ -1,0 +1,42 @@
+[
+  {
+    "method": "GET",
+    "path": "/",
+    "actor": "anonymous",
+    "case": "system/readiness/anonymous",
+    "expected": 200,
+    "obtained": 200
+  },
+  {
+    "method": "GET",
+    "path": "/health",
+    "actor": "anonymous",
+    "case": "system/readiness/anonymous",
+    "expected": 200,
+    "obtained": 200
+  },
+  {
+    "method": "GET",
+    "path": "/health/ready",
+    "actor": "anonymous",
+    "case": "system/readiness/anonymous",
+    "expected": 200,
+    "obtained": 200
+  },
+  {
+    "method": "GET",
+    "path": "/openapi.json",
+    "actor": "anonymous",
+    "case": "system/readiness/anonymous",
+    "expected": 200,
+    "obtained": 200
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me",
+    "actor": "anonymous",
+    "case": "system/readiness/anonymous",
+    "expected": 401,
+    "obtained": 401
+  }
+]

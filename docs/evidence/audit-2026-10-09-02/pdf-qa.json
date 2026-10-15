@@ -1,0 +1,8 @@
+{
+  "pdf": "output/pdf/Auditoria_Compatibilidad_AshaKids_2026-10-09-02.pdf",
+  "pages": 9,
+  "render": "pdftoppm -r 90 -png",
+  "visual_inspection": "All 9 pages inspected; no clipped text, overlap, broken tables or missing glyphs. Screenshot readable.",
+  "artifact_operation_marker": "create executed once before authoring",
+  "credential_value_scan": "No configured Supabase key or password found in new text evidence/source."
+}

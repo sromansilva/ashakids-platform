@@ -1,0 +1,8 @@
+{
+  "pdf": "output/pdf/Auditoria_Fase3_AshaKids_2026-10-09-03.pdf",
+  "pages": 10,
+  "render": "pdftoppm -r 85 -png",
+  "inspection": "All10 final rendered pages visually inspected. Eight sections, tables and captions legible; no overlap, clipped document text or broken glyphs. Browser captures are visible portions of scrolled UI.",
+  "artifact_marker": "create executed once before report source authoring",
+  "ui_rounds": "Initial desktop/mobile and one confirmation after legibility adjustment; temporary viewport reset."
+}

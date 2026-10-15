@@ -1,0 +1,242 @@
+{
+  "date_utc": "2026-10-09T20:07:20.199422+00:00",
+  "target": "Vite same-origin proxy 5174 -> FastAPI 8000 -> Supabase",
+  "clinical_write_origin": "Browser original forms, authorized synthetic AUDITORIA only",
+  "database_verification": "READ ONLY, API session hash and patient/session/report matched",
+  "ids": {
+    "p91445": 50,
+    "t91446": 51,
+    "patient": 86,
+    "treatment": 6,
+    "appointment": 3,
+    "session": 2
+  },
+  "cases": [
+    {
+      "case": "PADRE login",
+      "method": "POST",
+      "path": "/auth/login",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "PADRE identity",
+      "method": "GET",
+      "path": "/auth/me",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "PADRE profile",
+      "method": "GET",
+      "path": "/padres/me",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA login",
+      "method": "POST",
+      "path": "/auth/login",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA identity",
+      "method": "GET",
+      "path": "/auth/me",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA profile",
+      "method": "GET",
+      "path": "/terapeutas/me",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Persisted family patient",
+      "method": "GET",
+      "path": "/pacientes?activo=true",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Parent cannot read foreign patient",
+      "method": "GET",
+      "path": "/pacientes/85",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Parent cannot administer users",
+      "method": "GET",
+      "path": "/usuarios",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "Therapist cannot administer users",
+      "method": "GET",
+      "path": "/usuarios",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "Assigned patient only",
+      "method": "GET",
+      "path": "/pacientes?activo=true",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Treatment persisted",
+      "method": "GET",
+      "path": "/pacientes/86/tratamientos",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Family appointment persisted",
+      "method": "GET",
+      "path": "/citas?id_paciente=86",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Assigned appointment",
+      "method": "GET",
+      "path": "/citas/3",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Session persisted",
+      "method": "GET",
+      "path": "/sesiones?id_paciente=86",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "PADRE session",
+      "method": "GET",
+      "path": "/sesiones/2",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "PADRE saved report",
+      "method": "GET",
+      "path": "/sesiones/2/reporte",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "PADRE PDF",
+      "method": "GET",
+      "path": "/sesiones/2/reporte/pdf",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA session",
+      "method": "GET",
+      "path": "/sesiones/2",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA saved report",
+      "method": "GET",
+      "path": "/sesiones/2/reporte",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA PDF",
+      "method": "GET",
+      "path": "/sesiones/2/reporte/pdf",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "Parent foreign session",
+      "method": "GET",
+      "path": "/sesiones/1",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Therapist foreign session",
+      "method": "GET",
+      "path": "/sesiones/1",
+      "expected": 404,
+      "actual": 404,
+      "passed": true
+    },
+    {
+      "case": "Parent admin profile denied",
+      "method": "GET",
+      "path": "/admin/me",
+      "expected": 403,
+      "actual": 403,
+      "passed": true
+    },
+    {
+      "case": "PADRE logout",
+      "method": "POST",
+      "path": "/auth/logout",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "PADRE revoked",
+      "method": "GET",
+      "path": "/auth/me",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA logout",
+      "method": "POST",
+      "path": "/auth/logout",
+      "expected": 200,
+      "actual": 200,
+      "passed": true
+    },
+    {
+      "case": "TERAPEUTA revoked",
+      "method": "GET",
+      "path": "/auth/me",
+      "expected": 401,
+      "actual": 401,
+      "passed": true
+    }
+  ],
+  "passed": 28,
+  "failed": 0
+}

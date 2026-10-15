@@ -1,0 +1,33 @@
+{
+  "audit": "2026-10-09-02",
+  "database": {
+    "version": "17.6",
+    "host": "127.0.0.1",
+    "port": 6544,
+    "name": "ashakids_test_compat17",
+    "role": "ashakids_audit_runtime",
+    "superuser": false,
+    "bypassrls": true,
+    "createdb": false,
+    "createrole": false,
+    "cleanup_role": "postgres",
+    "schema_only": true
+  },
+  "api": {
+    "host": "127.0.0.1",
+    "port": 8001,
+    "launcher_pid": 44680,
+    "server_pid_from_startup_log": 9372,
+    "command": "python -m uvicorn app.main:app --host 127.0.0.1 --port 8001",
+    "cookie_name": "ashakids_audit_session",
+    "cors_origins": [
+      "http://localhost:5174",
+      "http://127.0.0.1:5174"
+    ]
+  },
+  "frontend": {
+    "origin": "http://127.0.0.1:5174",
+    "api_base_url": "http://127.0.0.1:8001/api/v1"
+  },
+  "scope": "Local representative schema/version, not deployed infrastructure"
+}

@@ -1,0 +1,7418 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ashakids API",
+    "description": "ASHAKids Backend REST API — Plataforma de telerehabilitación e intervención infantil.",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Iniciar sesión",
+        "description": "Verifica credenciales con Argon2id por codigo_usuario, genera una sesión en PostgreSQL y fija una cookie HttpOnly.",
+        "operationId": "login_api_v1_auth_login_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Cerrar sesión",
+        "description": "Revoca la sesión activa en PostgreSQL y limpia la cookie de sesión del navegador.",
+        "operationId": "logout_api_v1_auth_logout_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessageResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Obtener usuario actual",
+        "description": "Retorna el perfil y roles reales del usuario correspondientes a la sesión activa en PostgreSQL.",
+        "operationId": "get_me_api_v1_auth_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/activate": {
+      "post": {
+        "tags": [
+          "Autenticación"
+        ],
+        "summary": "Cambiar contraseña inicial",
+        "operationId": "activate_api_v1_auth_activate_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/padres/me": {
+      "get": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Obtener perfil del padre autenticado",
+        "description": "Retorna la información del usuario autenticado y su perfil de tutor. Requiere sesión activa y rol PADRE.",
+        "operationId": "get_padre_me_api_v1_padres_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PadreProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/padres/hijos": {
+      "get": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Listar hijos activos del tutor autenticado",
+        "description": "Retorna únicamente los hijos activos vinculados a la cuenta de tutor del usuario autenticado.",
+        "operationId": "listar_hijos_api_v1_padres_hijos_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HijoListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Crear un nuevo hijo",
+        "description": "Registra un nuevo paciente y su perfil formativo/gamificado 1:1 en una transacción atómica. Audita en AUDITORIA_CAMBIOS.",
+        "operationId": "crear_hijo_api_v1_padres_hijos_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearHijoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionHijoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/padres/hijos/{id_paciente}": {
+      "get": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Consultar detalle de un hijo autorizado",
+        "description": "Obtiene los datos de un paciente verificando que pertenezca al tutor autenticado (anti-IDOR).",
+        "operationId": "obtener_hijo_api_v1_padres_hijos__id_paciente__get",
+        "parameters": [
+          {
+            "name": "id_paciente",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Paciente"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HijoItemResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Editar datos del hijo",
+        "description": "Permite modificar nombres, apellidos, fecha de nacimiento, sexo y avatar del hijo autorizado. Audita UPDATE.",
+        "operationId": "actualizar_hijo_api_v1_padres_hijos__id_paciente__patch",
+        "parameters": [
+          {
+            "name": "id_paciente",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Paciente"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarHijoRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionHijoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Eliminar hijo físicamente (solo sin dependencias)",
+        "description": "Elimina físicamente el paciente solo si no posee historial clínico, sesiones, reservas o actividades. Retorna 409 Conflict si hay dependencias.",
+        "operationId": "eliminar_hijo_api_v1_padres_hijos__id_paciente__delete",
+        "parameters": [
+          {
+            "name": "id_paciente",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Paciente"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionHijoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/padres/hijos/{id_paciente}/inactivar": {
+      "patch": {
+        "tags": [
+          "Padres"
+        ],
+        "summary": "Inactivar hijo lógicamente",
+        "description": "Pasa el paciente a activo=False preservando su historial, perfil y sesiones. Audita UPDATE.",
+        "operationId": "inactivar_hijo_api_v1_padres_hijos__id_paciente__inactivar_patch",
+        "parameters": [
+          {
+            "name": "id_paciente",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Paciente"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionHijoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/terapeutas": {
+      "get": {
+        "tags": [
+          "Terapeutas"
+        ],
+        "summary": "Directorio",
+        "operationId": "directorio_api_v1_terapeutas_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProfesionalSalida"
+                  },
+                  "title": "Response Directorio Api V1 Terapeutas Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/terapeutas/{key}/disponibilidad": {
+      "get": {
+        "tags": [
+          "Terapeutas"
+        ],
+        "summary": "Disponibilidad",
+        "operationId": "disponibilidad_api_v1_terapeutas__key__disponibilidad_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisponibilidadDatos"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Terapeutas"
+        ],
+        "summary": "Publicar",
+        "operationId": "publicar_api_v1_terapeutas__key__disponibilidad_put",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DisponibilidadDatos"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisponibilidadDatos"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/terapeutas/{key}/turnos": {
+      "get": {
+        "tags": [
+          "Terapeutas"
+        ],
+        "summary": "Turnos",
+        "operationId": "turnos_api_v1_terapeutas__key__turnos_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "fecha",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "title": "Fecha"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TurnoSalida"
+                  },
+                  "title": "Response Turnos Api V1 Terapeutas  Key  Turnos Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/terapeutas/me": {
+      "get": {
+        "tags": [
+          "Terapeutas"
+        ],
+        "summary": "Obtener perfil del terapeuta autenticado",
+        "description": "Retorna la información del usuario autenticado y su perfil profesional. Requiere sesión activa y rol TERAPEUTA.",
+        "operationId": "get_terapeuta_me_api_v1_terapeutas_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TerapeutaProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/familias": {
+      "post": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Registrar padre e hijos",
+        "operationId": "post_familia_api_v1_admin_familias_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FamiliaCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FamiliaCreada"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/me": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Obtener perfil del administrador autenticado",
+        "description": "Retorna la información del usuario autenticado y su perfil de administración. Requiere sesión activa y rol ADMIN.",
+        "operationId": "get_admin_me_api_v1_admin_me_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AdminProfileResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Listar cuentas de usuarios",
+        "description": "Lista cuentas registradas en el sistema con filtros opcionales por rol, término de búsqueda y estado activo. Requiere rol ADMIN.",
+        "operationId": "get_cuentas_api_v1_admin_cuentas_get",
+        "parameters": [
+          {
+            "name": "rol",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filtrar por rol: PADRE, TERAPEUTA, ADMIN",
+              "title": "Rol"
+            },
+            "description": "Filtrar por rol: PADRE, TERAPEUTA, ADMIN"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Buscar por nombre, apellido, email o código",
+              "title": "Search"
+            },
+            "description": "Buscar por nombre, apellido, email o código"
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Filtrar por estado activo",
+              "title": "Activo"
+            },
+            "description": "Filtrar por estado activo"
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas/{id_usuario}": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Obtener detalle de cuenta",
+        "description": "Obtiene información detallada de una cuenta específica con su perfil anidado. Requiere rol ADMIN.",
+        "operationId": "get_cuenta_por_id_api_v1_admin_cuentas__id_usuario__get",
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Usuario"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CuentaItemResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Editar cuenta de usuario",
+        "description": "Actualiza datos de usuario y perfil de tutor o terapeuta de forma transaccional con auditoría. Requiere rol ADMIN.",
+        "operationId": "patch_actualizar_cuenta_api_v1_admin_cuentas__id_usuario__patch",
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Usuario"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActualizarCuentaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionCuentaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Eliminar cuenta de usuario",
+        "description": "Elimina físicamente la cuenta únicamente si no posee historial clínico o dependencias. Responde 409 si existen datos asociados. Requiere rol ADMIN.",
+        "operationId": "delete_eliminar_cuenta_api_v1_admin_cuentas__id_usuario__delete",
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Usuario"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionCuentaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas/padres": {
+      "post": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Crear cuenta de Padre/Tutor",
+        "description": "Crea de forma transaccional el Usuario con rol PADRE, su perfil en TUTORES y registra la auditoría. Requiere rol ADMIN.",
+        "operationId": "post_crear_padre_api_v1_admin_cuentas_padres_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearPadreRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionCuentaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas/terapeutas": {
+      "post": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Crear cuenta de Terapeuta",
+        "description": "Crea de forma transaccional el Usuario con rol TERAPEUTA, su perfil en TERAPEUTAS y registra la auditoría. Requiere rol ADMIN.",
+        "operationId": "post_crear_terapeuta_api_v1_admin_cuentas_terapeutas_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearTerapeutaRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionCuentaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas/{id_usuario}/suspender": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Suspender cuenta de usuario",
+        "description": "Desactiva lógicamente la cuenta, revoca de inmediato todas las sesiones activas y registra la auditoría. Requiere rol ADMIN.",
+        "operationId": "patch_suspender_cuenta_api_v1_admin_cuentas__id_usuario__suspender_patch",
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Usuario"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionCuentaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas/{id_usuario}/activar": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Activar cuenta de usuario",
+        "description": "Reactiva la cuenta previamente suspendida y registra la auditoría. Requiere rol ADMIN.",
+        "operationId": "patch_activar_cuenta_api_v1_admin_cuentas__id_usuario__activar_patch",
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Usuario"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionCuentaResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/cuentas/{id_usuario}/hijos": {
+      "get": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Listar hijos de una cuenta de padre (activos e inactivos)",
+        "description": "Permite a un administrador consultar todos los hijos asociados a una cuenta de tutor. Requiere rol ADMIN.",
+        "operationId": "get_admin_hijos_padre_api_v1_admin_cuentas__id_usuario__hijos_get",
+        "parameters": [
+          {
+            "name": "id_usuario",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Usuario"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HijoListResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/admin/pacientes/{id_paciente}/reactivar": {
+      "patch": {
+        "tags": [
+          "Administración"
+        ],
+        "summary": "Reactivar paciente infantil",
+        "description": "Reactiva un paciente inactivo estableciendo activo=TRUE y registrando la auditoría administrativa. Requiere rol ADMIN.",
+        "operationId": "patch_reactivar_paciente_admin_api_v1_admin_pacientes__id_paciente__reactivar_patch",
+        "parameters": [
+          {
+            "name": "id_paciente",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Id Paciente"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OperacionHijoResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/usuarios": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Listar",
+        "operationId": "listar_api_v1_usuarios_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "rol",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Rol"
+            }
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Activo"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UsuarioSalida"
+                  },
+                  "title": "Response Listar Api V1 Usuarios Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Crear",
+        "operationId": "crear_api_v1_usuarios_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/usuarios/{key}": {
+      "get": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Detalle",
+        "operationId": "detalle_api_v1_usuarios__key__get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Usuarios"
+        ],
+        "summary": "Editar",
+        "operationId": "editar_api_v1_usuarios__key__patch",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UsuarioEditar"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UsuarioSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pacientes": {
+      "get": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Listar",
+        "operationId": "listar_api_v1_pacientes_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Q"
+            }
+          },
+          {
+            "name": "activo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Activo"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PacienteSalida"
+                  },
+                  "title": "Response Listar Api V1 Pacientes Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Crear",
+        "operationId": "crear_api_v1_pacientes_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PacienteCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PacienteSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pacientes/{key}": {
+      "get": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Detalle",
+        "operationId": "detalle_api_v1_pacientes__key__get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PacienteSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Editar",
+        "operationId": "editar_api_v1_pacientes__key__put",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PacienteDatos"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PacienteSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Desactivar sin borrar historial",
+        "operationId": "desactivar_api_v1_pacientes__key__delete",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PacienteSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pacientes/{key}/recorrido": {
+      "get": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Estado Recorrido",
+        "operationId": "estado_recorrido_api_v1_pacientes__key__recorrido_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/pacientes/{key}/tratamientos": {
+      "get": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Tratamientos",
+        "operationId": "tratamientos_api_v1_pacientes__key__tratamientos_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TratamientoSalida"
+                  },
+                  "title": "Response Tratamientos Api V1 Pacientes  Key  Tratamientos Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/tratamientos": {
+      "post": {
+        "tags": [
+          "Pacientes y tratamientos"
+        ],
+        "summary": "Asignar Tratamiento",
+        "operationId": "asignar_tratamiento_api_v1_tratamientos_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TratamientoCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TratamientoSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/citas": {
+      "get": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Listar",
+        "operationId": "listar_api_v1_citas_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "paciente",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paciente"
+            }
+          },
+          {
+            "name": "terapeuta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Terapeuta"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estado"
+            }
+          },
+          {
+            "name": "desde",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Desde"
+            }
+          },
+          {
+            "name": "hasta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasta"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CitaSalida"
+                  },
+                  "title": "Response Listar Api V1 Citas Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Crear",
+        "operationId": "crear_api_v1_citas_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CitaCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/citas/{key}": {
+      "get": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Detalle",
+        "operationId": "detalle_api_v1_citas__key__get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Reprogramar",
+        "operationId": "reprogramar_api_v1_citas__key__put",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CitaHorario"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/citas/{key}/estado": {
+      "patch": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Estado",
+        "operationId": "estado_api_v1_citas__key__estado_patch",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CitaEstado"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/citas/{key}/reunion": {
+      "put": {
+        "tags": [
+          "Citas"
+        ],
+        "summary": "Reunion",
+        "operationId": "reunion_api_v1_citas__key__reunion_put",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CitaReunion"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitaSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones": {
+      "get": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Listar",
+        "operationId": "listar_api_v1_sesiones_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "con_reporte",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Con Reporte"
+            }
+          },
+          {
+            "name": "contexto",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Contexto"
+            }
+          },
+          {
+            "name": "paciente",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Paciente"
+            }
+          },
+          {
+            "name": "terapeuta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Terapeuta"
+            }
+          },
+          {
+            "name": "estado",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Estado"
+            }
+          },
+          {
+            "name": "desde",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Desde"
+            }
+          },
+          {
+            "name": "hasta",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Hasta"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SesionSalida"
+                  },
+                  "title": "Response Listar Api V1 Sesiones Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Crear",
+        "operationId": "crear_api_v1_sesiones_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SesionCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones/{key}": {
+      "get": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Detalle",
+        "operationId": "detalle_api_v1_sesiones__key__get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones/{key}/iniciar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Iniciar",
+        "operationId": "iniciar_api_v1_sesiones__key__iniciar_post",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones/{key}/cerrar": {
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Cerrar",
+        "operationId": "cerrar_api_v1_sesiones__key__cerrar_post",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SesionCerrar"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SesionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones/{key}/reporte": {
+      "get": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Reporte",
+        "operationId": "reporte_api_v1_sesiones__key__reporte_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Guardar Reporte",
+        "operationId": "guardar_reporte_api_v1_sesiones__key__reporte_put",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReporteDatos"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReporteSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones/{key}/reporte/pdf": {
+      "get": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Descargar Reporte",
+        "operationId": "descargar_reporte_api_v1_sesiones__key__reporte_pdf_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/pdf": {}
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sesiones/{key}/plan": {
+      "get": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Plan",
+        "operationId": "plan_api_v1_sesiones__key__plan_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/TratamientoSalida"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Plan Api V1 Sesiones  Key  Plan Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Sesiones"
+        ],
+        "summary": "Publicar Plan",
+        "operationId": "publicar_plan_api_v1_sesiones__key__plan_post",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TratamientoSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversaciones/contactos": {
+      "get": {
+        "tags": [
+          "Mensajería"
+        ],
+        "summary": "Contactos",
+        "operationId": "contactos_api_v1_conversaciones_contactos_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ContactoSalida"
+                  },
+                  "title": "Response Contactos Api V1 Conversaciones Contactos Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversaciones": {
+      "get": {
+        "tags": [
+          "Mensajería"
+        ],
+        "summary": "Listar",
+        "operationId": "listar_api_v1_conversaciones_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "before_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 2147483647,
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Before Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversacionesPagina"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mensajería"
+        ],
+        "summary": "Abrir",
+        "operationId": "abrir_api_v1_conversaciones_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConversacionCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversacionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversaciones/{key}": {
+      "get": {
+        "tags": [
+          "Mensajería"
+        ],
+        "summary": "Detalle",
+        "operationId": "detalle_api_v1_conversaciones__key__get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 2147483647,
+              "exclusiveMinimum": 0,
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConversacionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/conversaciones/{key}/mensajes": {
+      "get": {
+        "tags": [
+          "Mensajería"
+        ],
+        "summary": "Mensajes",
+        "operationId": "mensajes_api_v1_conversaciones__key__mensajes_get",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 2147483647,
+              "exclusiveMinimum": 0,
+              "title": "Key"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 30,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "before_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "maximum": 2147483647,
+                  "exclusiveMinimum": 0
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Before Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MensajesPagina"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Mensajería"
+        ],
+        "summary": "Enviar",
+        "operationId": "enviar_api_v1_conversaciones__key__mensajes_post",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "maximum": 2147483647,
+              "exclusiveMinimum": 0,
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MensajeCrear"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MensajeSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notificaciones/preferencias": {
+      "get": {
+        "tags": [
+          "Notificaciones"
+        ],
+        "summary": "Preferencias",
+        "operationId": "preferencias_api_v1_notificaciones_preferencias_get",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenciasDatos"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Notificaciones"
+        ],
+        "summary": "Guardar",
+        "operationId": "guardar_api_v1_notificaciones_preferencias_put",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreferenciasDatos"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferenciasDatos"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notificaciones": {
+      "get": {
+        "tags": [
+          "Notificaciones"
+        ],
+        "summary": "Bandeja",
+        "operationId": "bandeja_api_v1_notificaciones_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "solo_sin_leer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Solo Sin Leer"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BandejaSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notificaciones/leidas": {
+      "post": {
+        "tags": [
+          "Notificaciones"
+        ],
+        "summary": "Leer Todas",
+        "operationId": "leer_todas_api_v1_notificaciones_leidas_post",
+        "parameters": [
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/notificaciones/{key}/leida": {
+      "patch": {
+        "tags": [
+          "Notificaciones"
+        ],
+        "summary": "Leer",
+        "operationId": "leer_api_v1_notificaciones__key__leida_patch",
+        "parameters": [
+          {
+            "name": "key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Key"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificacionSalida"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Health Check",
+        "description": "Health check para orquestadores y monitoreo.",
+        "operationId": "health_check_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Readiness",
+        "description": "Comprueba conectividad PostgreSQL; no certifica todos los contratos del esquema.",
+        "operationId": "readiness_health_ready_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActivationRequest": {
+        "properties": {
+          "current_password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 1,
+            "title": "Current Password"
+          },
+          "new_password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 12,
+            "title": "New Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "current_password",
+          "new_password"
+        ],
+        "title": "ActivationRequest"
+      },
+      "ActualizarCuentaRequest": {
+        "properties": {
+          "nombres": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apellidos"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "parentesco": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentesco"
+          },
+          "telefono": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 12
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefono"
+          },
+          "direccion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direccion"
+          },
+          "especialidad": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Especialidad"
+          },
+          "anios_experiencia": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 70.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anios Experiencia"
+          },
+          "idiomas": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idiomas"
+          },
+          "descripcion_profesional": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion Profesional"
+          }
+        },
+        "type": "object",
+        "title": "ActualizarCuentaRequest",
+        "description": "Payload para edición de cuenta administrativa."
+      },
+      "ActualizarHijoRequest": {
+        "properties": {
+          "nombres_paciente": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombres Paciente"
+          },
+          "apellidos_paciente": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apellidos Paciente"
+          },
+          "fecha_nacimiento": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Nacimiento"
+          },
+          "sexo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sexo"
+          },
+          "avatar_nombre": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 20
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Avatar Nombre"
+          }
+        },
+        "type": "object",
+        "title": "ActualizarHijoRequest",
+        "description": "Payload de edición de hijo admitido por el tutor."
+      },
+      "AdminProfileResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "perfil_admin": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AdministradorData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "user"
+        ],
+        "title": "AdminProfileResponse",
+        "description": "Respuesta para GET /api/v1/admin/me."
+      },
+      "AdministradorData": {
+        "properties": {
+          "id_administrador": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Administrador"
+          },
+          "fecha_creacion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Creacion"
+          }
+        },
+        "type": "object",
+        "title": "AdministradorData"
+      },
+      "AuthResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "type": "object",
+        "required": [
+          "user",
+          "message"
+        ],
+        "title": "AuthResponse",
+        "description": "Respuesta tras login o verificación de sesión."
+      },
+      "BandejaSalida": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/NotificacionSalida"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "sin_leer": {
+            "type": "integer",
+            "title": "Sin Leer"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "sin_leer"
+        ],
+        "title": "BandejaSalida"
+      },
+      "BloqueoDatos": {
+        "properties": {
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Inicio"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fin"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inicio",
+          "fin"
+        ],
+        "title": "BloqueoDatos"
+      },
+      "CitaCrear": {
+        "properties": {
+          "fecha_hora_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Hora Inicio"
+          },
+          "fecha_hora_fin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Hora Fin"
+          },
+          "modalidad": {
+            "type": "string",
+            "enum": [
+              "VIRTUAL",
+              "PRESENCIAL"
+            ],
+            "title": "Modalidad"
+          },
+          "localizacion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Localizacion"
+          },
+          "id_tratamiento": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Tratamiento"
+          },
+          "id_paciente": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Paciente"
+          },
+          "id_terapeuta": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Terapeuta"
+          },
+          "tipo_cita": {
+            "type": "string",
+            "enum": [
+              "INTRODUCTORIA",
+              "TERAPIA"
+            ],
+            "title": "Tipo Cita",
+            "default": "TERAPIA"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "fecha_hora_inicio",
+          "modalidad"
+        ],
+        "title": "CitaCrear"
+      },
+      "CitaEstado": {
+        "properties": {
+          "estado_reserva": {
+            "type": "string",
+            "enum": [
+              "CONFIRMADA",
+              "CANCELADA"
+            ],
+            "title": "Estado Reserva"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "estado_reserva"
+        ],
+        "title": "CitaEstado"
+      },
+      "CitaHorario": {
+        "properties": {
+          "fecha_hora_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Hora Inicio"
+          },
+          "fecha_hora_fin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Hora Fin"
+          },
+          "modalidad": {
+            "type": "string",
+            "enum": [
+              "VIRTUAL",
+              "PRESENCIAL"
+            ],
+            "title": "Modalidad"
+          },
+          "localizacion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Localizacion"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "fecha_hora_inicio",
+          "modalidad"
+        ],
+        "title": "CitaHorario"
+      },
+      "CitaReunion": {
+        "properties": {
+          "zoom_join_url": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zoom Join Url"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "CitaReunion"
+      },
+      "CitaSalida": {
+        "properties": {
+          "puede_editar": {
+            "type": "boolean",
+            "title": "Puede Editar",
+            "default": false
+          },
+          "zoom_join_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Zoom Join Url"
+          },
+          "paciente_nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paciente Nombre"
+          },
+          "terapeuta_nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terapeuta Nombre"
+          },
+          "id_sesion": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Sesion"
+          },
+          "id_reserva": {
+            "type": "integer",
+            "title": "Id Reserva"
+          },
+          "id_paciente": {
+            "type": "integer",
+            "title": "Id Paciente"
+          },
+          "id_terapeuta": {
+            "type": "integer",
+            "title": "Id Terapeuta"
+          },
+          "id_tratamiento": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Tratamiento"
+          },
+          "tipo_cita": {
+            "type": "string",
+            "title": "Tipo Cita"
+          },
+          "fecha_hora_inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Hora Inicio"
+          },
+          "fecha_hora_fin": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Hora Fin"
+          },
+          "modalidad": {
+            "type": "string",
+            "title": "Modalidad"
+          },
+          "localizacion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Localizacion"
+          },
+          "estado_reserva": {
+            "type": "string",
+            "title": "Estado Reserva"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Creacion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_reserva",
+          "id_paciente",
+          "id_terapeuta",
+          "id_tratamiento",
+          "tipo_cita",
+          "fecha_hora_inicio",
+          "fecha_hora_fin",
+          "modalidad",
+          "localizacion",
+          "estado_reserva",
+          "fecha_creacion"
+        ],
+        "title": "CitaSalida"
+      },
+      "ContactoSalida": {
+        "properties": {
+          "id_tutor": {
+            "type": "integer",
+            "title": "Id Tutor"
+          },
+          "id_terapeuta": {
+            "type": "integer",
+            "title": "Id Terapeuta"
+          },
+          "tutor_nombre": {
+            "type": "string",
+            "title": "Tutor Nombre"
+          },
+          "terapeuta_nombre": {
+            "type": "string",
+            "title": "Terapeuta Nombre"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_tutor",
+          "id_terapeuta",
+          "tutor_nombre",
+          "terapeuta_nombre"
+        ],
+        "title": "ContactoSalida"
+      },
+      "ConversacionCrear": {
+        "properties": {
+          "id_tutor": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Id Tutor"
+          },
+          "id_terapeuta": {
+            "type": "integer",
+            "maximum": 2147483647.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Id Terapeuta"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id_tutor",
+          "id_terapeuta"
+        ],
+        "title": "ConversacionCrear"
+      },
+      "ConversacionSalida": {
+        "properties": {
+          "id_tutor": {
+            "type": "integer",
+            "title": "Id Tutor"
+          },
+          "id_terapeuta": {
+            "type": "integer",
+            "title": "Id Terapeuta"
+          },
+          "tutor_nombre": {
+            "type": "string",
+            "title": "Tutor Nombre"
+          },
+          "terapeuta_nombre": {
+            "type": "string",
+            "title": "Terapeuta Nombre"
+          },
+          "id_conversacion": {
+            "type": "integer",
+            "title": "Id Conversacion"
+          },
+          "estado": {
+            "type": "string",
+            "title": "Estado"
+          },
+          "ultima_actividad": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Ultima Actividad"
+          },
+          "puede_enviar": {
+            "type": "boolean",
+            "title": "Puede Enviar"
+          },
+          "id_usuario_tutor": {
+            "type": "integer",
+            "title": "Id Usuario Tutor"
+          },
+          "id_usuario_terapeuta": {
+            "type": "integer",
+            "title": "Id Usuario Terapeuta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_tutor",
+          "id_terapeuta",
+          "tutor_nombre",
+          "terapeuta_nombre",
+          "id_conversacion",
+          "estado",
+          "ultima_actividad",
+          "puede_enviar",
+          "id_usuario_tutor",
+          "id_usuario_terapeuta"
+        ],
+        "title": "ConversacionSalida"
+      },
+      "ConversacionesPagina": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ConversacionSalida"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_before_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Before Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "next_before_id"
+        ],
+        "title": "ConversacionesPagina"
+      },
+      "CrearHijoRequest": {
+        "properties": {
+          "nombres_paciente": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres Paciente"
+          },
+          "apellidos_paciente": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos Paciente"
+          },
+          "fecha_nacimiento": {
+            "type": "string",
+            "format": "date",
+            "title": "Fecha Nacimiento"
+          },
+          "sexo": {
+            "type": "string",
+            "title": "Sexo"
+          },
+          "avatar_nombre": {
+            "type": "string",
+            "maxLength": 20,
+            "title": "Avatar Nombre",
+            "description": "Slug del avatar del catálogo",
+            "default": "zorro"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombres_paciente",
+          "apellidos_paciente",
+          "fecha_nacimiento",
+          "sexo"
+        ],
+        "title": "CrearHijoRequest",
+        "description": "Payload de creación de hijo por parte de un tutor."
+      },
+      "CrearPadreRequest": {
+        "properties": {
+          "nombres": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]{8}$"
+              },
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 12
+              }
+            ],
+            "title": "Password"
+          },
+          "parentesco": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentesco"
+          },
+          "telefono": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 12
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefono"
+          },
+          "direccion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direccion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombres",
+          "apellidos",
+          "email",
+          "password"
+        ],
+        "title": "CrearPadreRequest",
+        "description": "Payload para creación administrativa de Padre/Tutor."
+      },
+      "CrearTerapeutaRequest": {
+        "properties": {
+          "nombres": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 150,
+            "minLength": 3,
+            "title": "Email"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^[0-9]{8}$"
+              },
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 12
+              }
+            ],
+            "title": "Password"
+          },
+          "especialidad": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 100
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Especialidad"
+          },
+          "anios_experiencia": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 70.0,
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anios Experiencia"
+          },
+          "idiomas": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 50
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idiomas"
+          },
+          "descripcion_profesional": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion Profesional"
+          }
+        },
+        "type": "object",
+        "required": [
+          "nombres",
+          "apellidos",
+          "email",
+          "password"
+        ],
+        "title": "CrearTerapeutaRequest",
+        "description": "Payload para creación administrativa de Terapeuta."
+      },
+      "CuentaItemResponse": {
+        "properties": {
+          "id_usuario": {
+            "type": "integer",
+            "title": "Id Usuario"
+          },
+          "codigo_usuario": {
+            "type": "string",
+            "title": "Codigo Usuario"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos"
+          },
+          "rol": {
+            "type": "string",
+            "title": "Rol"
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Creacion"
+          },
+          "tutor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TutorData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "terapeuta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TerapeutaData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_usuario",
+          "codigo_usuario",
+          "email",
+          "nombres",
+          "apellidos",
+          "rol",
+          "activo",
+          "fecha_creacion"
+        ],
+        "title": "CuentaItemResponse",
+        "description": "Representación de una cuenta en el panel administrativo."
+      },
+      "CuentaListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/CuentaItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "CuentaListResponse",
+        "description": "Respuesta para listar cuentas administrativas."
+      },
+      "DisponibilidadDatos": {
+        "properties": {
+          "turnos": {
+            "items": {
+              "$ref": "#/components/schemas/TurnoDatos"
+            },
+            "type": "array",
+            "maxItems": 60,
+            "title": "Turnos"
+          },
+          "bloqueos": {
+            "items": {
+              "$ref": "#/components/schemas/BloqueoDatos"
+            },
+            "type": "array",
+            "maxItems": 60,
+            "title": "Bloqueos"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "turnos"
+        ],
+        "title": "DisponibilidadDatos"
+      },
+      "FamiliaCreada": {
+        "properties": {
+          "cuenta": {
+            "$ref": "#/components/schemas/CuentaItemResponse"
+          },
+          "hijos": {
+            "items": {
+              "$ref": "#/components/schemas/PacienteSalida"
+            },
+            "type": "array",
+            "title": "Hijos"
+          },
+          "message": {
+            "type": "string",
+            "title": "Message"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "cuenta",
+          "hijos",
+          "message"
+        ],
+        "title": "FamiliaCreada"
+      },
+      "FamiliaCrear": {
+        "properties": {
+          "nombres": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 150,
+            "format": "email",
+            "title": "Email"
+          },
+          "dni": {
+            "type": "string",
+            "pattern": "^[0-9]{8}$",
+            "title": "Dni"
+          },
+          "parentesco": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 30
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentesco"
+          },
+          "telefono": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 12
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefono"
+          },
+          "direccion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 200
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direccion"
+          },
+          "hijos": {
+            "items": {
+              "$ref": "#/components/schemas/PacienteDatos"
+            },
+            "type": "array",
+            "maxItems": 20,
+            "minItems": 1,
+            "title": "Hijos"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nombres",
+          "apellidos",
+          "email",
+          "dni",
+          "hijos"
+        ],
+        "title": "FamiliaCrear"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HijoItemResponse": {
+        "properties": {
+          "id_paciente": {
+            "type": "integer",
+            "title": "Id Paciente"
+          },
+          "id_tutor": {
+            "type": "integer",
+            "title": "Id Tutor"
+          },
+          "nombres_paciente": {
+            "type": "string",
+            "title": "Nombres Paciente"
+          },
+          "apellidos_paciente": {
+            "type": "string",
+            "title": "Apellidos Paciente"
+          },
+          "fecha_nacimiento": {
+            "type": "string",
+            "format": "date",
+            "title": "Fecha Nacimiento"
+          },
+          "edad": {
+            "type": "integer",
+            "title": "Edad"
+          },
+          "sexo": {
+            "type": "string",
+            "title": "Sexo"
+          },
+          "avatar_nombre": {
+            "type": "string",
+            "title": "Avatar Nombre"
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo"
+          },
+          "fecha_registro": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Registro"
+          },
+          "perfil": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PerfilInfantilResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres",
+            "readOnly": true
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos",
+            "readOnly": true
+          },
+          "edad_anios": {
+            "type": "integer",
+            "title": "Edad Anios",
+            "readOnly": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_paciente",
+          "id_tutor",
+          "nombres_paciente",
+          "apellidos_paciente",
+          "fecha_nacimiento",
+          "edad",
+          "sexo",
+          "avatar_nombre",
+          "activo",
+          "fecha_registro",
+          "nombres",
+          "apellidos",
+          "edad_anios"
+        ],
+        "title": "HijoItemResponse",
+        "description": "Información completa de un hijo/paciente."
+      },
+      "HijoListResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/HijoItemResponse"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total"
+        ],
+        "title": "HijoListResponse",
+        "description": "Lista de pacientes retornados."
+      },
+      "LoginRequest": {
+        "properties": {
+          "codigo_usuario": {
+            "type": "string",
+            "maxLength": 64,
+            "title": "Codigo Usuario"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "title": "Password"
+          }
+        },
+        "type": "object",
+        "required": [
+          "codigo_usuario",
+          "password"
+        ],
+        "title": "LoginRequest",
+        "description": "Payload para solicitud de inicio de sesión mediante código de usuario único (VARCHAR(6))."
+      },
+      "MensajeCrear": {
+        "properties": {
+          "texto_mensaje": {
+            "type": "string",
+            "maxLength": 4000,
+            "minLength": 1,
+            "title": "Texto Mensaje"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "texto_mensaje"
+        ],
+        "title": "MensajeCrear"
+      },
+      "MensajeSalida": {
+        "properties": {
+          "id_mensaje": {
+            "type": "integer",
+            "title": "Id Mensaje"
+          },
+          "id_conversacion": {
+            "type": "integer",
+            "title": "Id Conversacion"
+          },
+          "id_usuario_emisor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Usuario Emisor"
+          },
+          "texto_mensaje": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Texto Mensaje"
+          },
+          "fecha_envio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Envio"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_mensaje",
+          "id_conversacion",
+          "id_usuario_emisor",
+          "texto_mensaje",
+          "fecha_envio"
+        ],
+        "title": "MensajeSalida"
+      },
+      "MensajesPagina": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/MensajeSalida"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "next_before_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Before Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "next_before_id"
+        ],
+        "title": "MensajesPagina"
+      },
+      "MessageResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "success": {
+            "type": "boolean",
+            "title": "Success",
+            "default": true
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "MessageResponse",
+        "description": "Respuesta genérica de éxito o confirmación."
+      },
+      "NotificacionSalida": {
+        "properties": {
+          "id_notificacion": {
+            "type": "integer",
+            "title": "Id Notificacion"
+          },
+          "tipo": {
+            "type": "string",
+            "enum": [
+              "NUEVA_CITA",
+              "CANCELACION",
+              "REPROGRAMACION",
+              "RECORDATORIO",
+              "MENSAJE"
+            ],
+            "title": "Tipo"
+          },
+          "titulo": {
+            "type": "string",
+            "title": "Titulo"
+          },
+          "texto": {
+            "type": "string",
+            "title": "Texto"
+          },
+          "id_reserva": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Reserva"
+          },
+          "id_conversacion": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Conversacion"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Creacion"
+          },
+          "leida_en": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Leida En"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_notificacion",
+          "tipo",
+          "titulo",
+          "texto",
+          "id_reserva",
+          "id_conversacion",
+          "fecha_creacion",
+          "leida_en"
+        ],
+        "title": "NotificacionSalida"
+      },
+      "OperacionCuentaResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "cuenta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CuentaItemResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "OperacionCuentaResponse",
+        "description": "Respuesta tras realizar operaciones sobre cuentas."
+      },
+      "OperacionHijoResponse": {
+        "properties": {
+          "message": {
+            "type": "string",
+            "title": "Message"
+          },
+          "paciente": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HijoItemResponse"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "title": "OperacionHijoResponse",
+        "description": "Respuesta a mutaciones del CRUD de pacientes."
+      },
+      "PacienteCrear": {
+        "properties": {
+          "nombres_paciente": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres Paciente"
+          },
+          "apellidos_paciente": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos Paciente"
+          },
+          "fecha_nacimiento": {
+            "type": "string",
+            "format": "date",
+            "title": "Fecha Nacimiento"
+          },
+          "sexo": {
+            "type": "string",
+            "title": "Sexo"
+          },
+          "id_tutor": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "exclusiveMinimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Tutor"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nombres_paciente",
+          "apellidos_paciente",
+          "fecha_nacimiento",
+          "sexo"
+        ],
+        "title": "PacienteCrear"
+      },
+      "PacienteDatos": {
+        "properties": {
+          "nombres_paciente": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres Paciente"
+          },
+          "apellidos_paciente": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos Paciente"
+          },
+          "fecha_nacimiento": {
+            "type": "string",
+            "format": "date",
+            "title": "Fecha Nacimiento"
+          },
+          "sexo": {
+            "type": "string",
+            "title": "Sexo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nombres_paciente",
+          "apellidos_paciente",
+          "fecha_nacimiento",
+          "sexo"
+        ],
+        "title": "PacienteDatos"
+      },
+      "PacienteSalida": {
+        "properties": {
+          "nombres_paciente": {
+            "type": "string",
+            "title": "Nombres Paciente"
+          },
+          "apellidos_paciente": {
+            "type": "string",
+            "title": "Apellidos Paciente"
+          },
+          "fecha_nacimiento": {
+            "type": "string",
+            "format": "date",
+            "title": "Fecha Nacimiento"
+          },
+          "sexo": {
+            "type": "string",
+            "title": "Sexo"
+          },
+          "id_paciente": {
+            "type": "integer",
+            "title": "Id Paciente"
+          },
+          "id_tutor": {
+            "type": "integer",
+            "title": "Id Tutor"
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo"
+          },
+          "fecha_registro": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Registro"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nombres_paciente",
+          "apellidos_paciente",
+          "fecha_nacimiento",
+          "sexo",
+          "id_paciente",
+          "id_tutor",
+          "activo",
+          "fecha_registro"
+        ],
+        "title": "PacienteSalida"
+      },
+      "PadreProfileResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "perfil_tutor": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TutorData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "user"
+        ],
+        "title": "PadreProfileResponse",
+        "description": "Respuesta para GET /api/v1/padres/me."
+      },
+      "PerfilInfantilResponse": {
+        "properties": {
+          "id_perfil": {
+            "type": "integer",
+            "title": "Id Perfil"
+          },
+          "id_paciente": {
+            "type": "integer",
+            "title": "Id Paciente"
+          },
+          "progreso": {
+            "type": "number",
+            "title": "Progreso"
+          },
+          "racha_dias": {
+            "type": "integer",
+            "title": "Racha Dias"
+          },
+          "objetivos_totales": {
+            "type": "integer",
+            "title": "Objetivos Totales"
+          },
+          "objetivos_completados": {
+            "type": "integer",
+            "title": "Objetivos Completados"
+          },
+          "actividades_desarrolladas_total": {
+            "type": "integer",
+            "title": "Actividades Desarrolladas Total"
+          },
+          "sesiones_totales": {
+            "type": "integer",
+            "title": "Sesiones Totales"
+          },
+          "fecha_ultima_sesion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Ultima Sesion"
+          },
+          "experiencia": {
+            "type": "integer",
+            "title": "Experiencia"
+          },
+          "nivel": {
+            "type": "integer",
+            "title": "Nivel"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_perfil",
+          "id_paciente",
+          "progreso",
+          "racha_dias",
+          "objetivos_totales",
+          "objetivos_completados",
+          "actividades_desarrolladas_total",
+          "sesiones_totales",
+          "experiencia",
+          "nivel"
+        ],
+        "title": "PerfilInfantilResponse",
+        "description": "Métricas gamificadas y formativas asociadas al paciente."
+      },
+      "PlanCrear": {
+        "properties": {
+          "nombre_tratamiento": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Nombre Tratamiento"
+          },
+          "descripcion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "area": {
+            "type": "string",
+            "enum": [
+              "FLUIDEZ",
+              "HABLA",
+              "LENGUAJE"
+            ],
+            "title": "Area"
+          },
+          "mundos_asignados": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "FLUIDEZ",
+                "HABLA",
+                "LENGUAJE"
+              ]
+            },
+            "type": "array",
+            "maxItems": 3,
+            "minItems": 1,
+            "title": "Mundos Asignados"
+          },
+          "sesiones_recomendadas": {
+            "type": "integer",
+            "maximum": 31.0,
+            "minimum": 1.0,
+            "title": "Sesiones Recomendadas"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nombre_tratamiento",
+          "area",
+          "mundos_asignados",
+          "sesiones_recomendadas"
+        ],
+        "title": "PlanCrear"
+      },
+      "PreferenciasDatos": {
+        "properties": {
+          "nueva_cita": {
+            "type": "boolean",
+            "title": "Nueva Cita",
+            "default": true
+          },
+          "cancelacion": {
+            "type": "boolean",
+            "title": "Cancelacion",
+            "default": true
+          },
+          "reprogramacion": {
+            "type": "boolean",
+            "title": "Reprogramacion",
+            "default": true
+          },
+          "recordatorio": {
+            "type": "boolean",
+            "title": "Recordatorio",
+            "default": true
+          },
+          "mensajes": {
+            "type": "boolean",
+            "title": "Mensajes",
+            "default": true
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "PreferenciasDatos"
+      },
+      "ProfesionalSalida": {
+        "properties": {
+          "id_terapeuta": {
+            "type": "integer",
+            "title": "Id Terapeuta"
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos"
+          },
+          "especialidad": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Especialidad"
+          },
+          "descripcion_profesional": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion Profesional"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_terapeuta",
+          "nombres",
+          "apellidos",
+          "especialidad",
+          "descripcion_profesional"
+        ],
+        "title": "ProfesionalSalida"
+      },
+      "ReporteDatos": {
+        "properties": {
+          "observaciones_iniciales": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observaciones Iniciales"
+          },
+          "objetivos_trabajados": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objetivos Trabajados"
+          },
+          "nivel_ayuda": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nivel Ayuda"
+          },
+          "proximos_pasos": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proximos Pasos"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "ReporteDatos"
+      },
+      "ReporteSalida": {
+        "properties": {
+          "observaciones_iniciales": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Observaciones Iniciales"
+          },
+          "objetivos_trabajados": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objetivos Trabajados"
+          },
+          "nivel_ayuda": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nivel Ayuda"
+          },
+          "proximos_pasos": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Proximos Pasos"
+          },
+          "id_reporte_sesion": {
+            "type": "integer",
+            "title": "Id Reporte Sesion"
+          },
+          "id_sesion": {
+            "type": "integer",
+            "title": "Id Sesion"
+          },
+          "fecha_creacion": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fecha Creacion"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id_reporte_sesion",
+          "id_sesion",
+          "fecha_creacion"
+        ],
+        "title": "ReporteSalida"
+      },
+      "SesionCerrar": {
+        "properties": {
+          "asistencia": {
+            "type": "string",
+            "enum": [
+              "ASISTIO",
+              "NO_ASISTIO"
+            ],
+            "title": "Asistencia"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "asistencia"
+        ],
+        "title": "SesionCerrar"
+      },
+      "SesionCrear": {
+        "properties": {
+          "id_reserva": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Id Reserva"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id_reserva"
+        ],
+        "title": "SesionCrear"
+      },
+      "SesionSalida": {
+        "properties": {
+          "puede_editar": {
+            "type": "boolean",
+            "title": "Puede Editar",
+            "default": false
+          },
+          "cita": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CitaSalida"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "reporte_disponible": {
+            "type": "boolean",
+            "title": "Reporte Disponible",
+            "default": false
+          },
+          "id_sesion": {
+            "type": "integer",
+            "title": "Id Sesion"
+          },
+          "id_reserva": {
+            "type": "integer",
+            "title": "Id Reserva"
+          },
+          "fecha_hora_inicio_real": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Hora Inicio Real"
+          },
+          "fecha_hora_fin_real": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Hora Fin Real"
+          },
+          "asistencia": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Asistencia"
+          },
+          "estado_sesion": {
+            "type": "string",
+            "title": "Estado Sesion"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_sesion",
+          "id_reserva",
+          "fecha_hora_inicio_real",
+          "fecha_hora_fin_real",
+          "asistencia",
+          "estado_sesion"
+        ],
+        "title": "SesionSalida"
+      },
+      "TerapeutaData": {
+        "properties": {
+          "id_terapeuta": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Terapeuta"
+          },
+          "especialidad": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Especialidad"
+          },
+          "anios_experiencia": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Anios Experiencia"
+          },
+          "idiomas": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Idiomas"
+          },
+          "descripcion_profesional": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion Profesional"
+          }
+        },
+        "type": "object",
+        "title": "TerapeutaData"
+      },
+      "TerapeutaProfileResponse": {
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/UserResponse"
+          },
+          "perfil_terapeuta": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TerapeutaData"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "user"
+        ],
+        "title": "TerapeutaProfileResponse",
+        "description": "Respuesta para GET /api/v1/terapeutas/me."
+      },
+      "TratamientoCrear": {
+        "properties": {
+          "id_paciente": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Id Paciente"
+          },
+          "id_terapeuta": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Id Terapeuta"
+          },
+          "nombre_tratamiento": {
+            "type": "string",
+            "maxLength": 100,
+            "minLength": 1,
+            "title": "Nombre Tratamiento"
+          },
+          "descripcion": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 10000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "sesiones_recomendadas": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "minimum": 0.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesiones Recomendadas"
+          },
+          "fecha_inicio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Inicio"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "id_paciente",
+          "id_terapeuta",
+          "nombre_tratamiento"
+        ],
+        "title": "TratamientoCrear"
+      },
+      "TratamientoSalida": {
+        "properties": {
+          "id_sesion_origen": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Sesion Origen"
+          },
+          "area": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Area"
+          },
+          "mundos_asignados": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Mundos Asignados"
+          },
+          "id_paciente": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Paciente"
+          },
+          "paciente_nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Paciente Nombre"
+          },
+          "terapeuta_nombre": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Terapeuta Nombre"
+          },
+          "id_tratamiento": {
+            "type": "integer",
+            "title": "Id Tratamiento"
+          },
+          "id_expediente": {
+            "type": "integer",
+            "title": "Id Expediente"
+          },
+          "id_terapeuta": {
+            "type": "integer",
+            "title": "Id Terapeuta"
+          },
+          "nombre_tratamiento": {
+            "type": "string",
+            "title": "Nombre Tratamiento"
+          },
+          "descripcion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Descripcion"
+          },
+          "sesiones_recomendadas": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sesiones Recomendadas"
+          },
+          "estado_tratamiento": {
+            "type": "string",
+            "title": "Estado Tratamiento"
+          },
+          "fecha_inicio": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Inicio"
+          },
+          "fecha_fin": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fecha Fin"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_tratamiento",
+          "id_expediente",
+          "id_terapeuta",
+          "nombre_tratamiento",
+          "descripcion",
+          "sesiones_recomendadas",
+          "estado_tratamiento",
+          "fecha_inicio",
+          "fecha_fin"
+        ],
+        "title": "TratamientoSalida"
+      },
+      "TurnoDatos": {
+        "properties": {
+          "dia": {
+            "type": "integer",
+            "maximum": 5.0,
+            "minimum": 0.0,
+            "title": "Dia"
+          },
+          "hora": {
+            "type": "integer",
+            "maximum": 17.0,
+            "minimum": 8.0,
+            "title": "Hora"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "dia",
+          "hora"
+        ],
+        "title": "TurnoDatos"
+      },
+      "TurnoSalida": {
+        "properties": {
+          "inicio": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Inicio"
+          },
+          "fin": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Fin"
+          },
+          "disponible": {
+            "type": "boolean",
+            "title": "Disponible"
+          },
+          "motivo": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Motivo"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "inicio",
+          "fin",
+          "disponible"
+        ],
+        "title": "TurnoSalida"
+      },
+      "TutorData": {
+        "properties": {
+          "id_tutor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Tutor"
+          },
+          "parentesco": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parentesco"
+          },
+          "telefono": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Telefono"
+          },
+          "direccion": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Direccion"
+          }
+        },
+        "type": "object",
+        "title": "TutorData"
+      },
+      "UserResponse": {
+        "properties": {
+          "id_usuario": {
+            "type": "integer",
+            "title": "Id Usuario"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos"
+          },
+          "codigo_usuario": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Codigo Usuario"
+          },
+          "rol": {
+            "type": "string",
+            "title": "Rol"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles",
+            "default": []
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo",
+            "default": true
+          },
+          "password_change_required": {
+            "type": "boolean",
+            "title": "Password Change Required",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_usuario",
+          "email",
+          "nombres",
+          "apellidos",
+          "rol"
+        ],
+        "title": "UserResponse",
+        "description": "Información segura del usuario autenticado (nunca expone password_hash)."
+      },
+      "UsuarioCrear": {
+        "properties": {
+          "nombres": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 1,
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 1,
+            "title": "Apellidos"
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 150,
+            "format": "email",
+            "title": "Email"
+          },
+          "codigo_usuario": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9]{6}$",
+            "title": "Codigo Usuario"
+          },
+          "password": {
+            "type": "string",
+            "maxLength": 128,
+            "minLength": 12,
+            "title": "Password"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "PADRE",
+              "TERAPEUTA",
+              "ADMIN"
+            ],
+            "title": "Rol"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "nombres",
+          "apellidos",
+          "email",
+          "codigo_usuario",
+          "password",
+          "rol"
+        ],
+        "title": "UsuarioCrear"
+      },
+      "UsuarioEditar": {
+        "properties": {
+          "nombres": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 60,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 80,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Apellidos"
+          },
+          "email": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 150,
+                "format": "email"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "activo": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Activo"
+          },
+          "password": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 128,
+                "minLength": 12
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Password"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "UsuarioEditar"
+      },
+      "UsuarioSalida": {
+        "properties": {
+          "id_usuario": {
+            "type": "integer",
+            "title": "Id Usuario"
+          },
+          "nombres": {
+            "type": "string",
+            "title": "Nombres"
+          },
+          "apellidos": {
+            "type": "string",
+            "title": "Apellidos"
+          },
+          "codigo_usuario": {
+            "type": "string",
+            "title": "Codigo Usuario"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "activo": {
+            "type": "boolean",
+            "title": "Activo"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Roles"
+          },
+          "id_tutor": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Tutor"
+          },
+          "id_terapeuta": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Id Terapeuta"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id_usuario",
+          "nombres",
+          "apellidos",
+          "codigo_usuario",
+          "email",
+          "activo",
+          "roles"
+        ],
+        "title": "UsuarioSalida"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

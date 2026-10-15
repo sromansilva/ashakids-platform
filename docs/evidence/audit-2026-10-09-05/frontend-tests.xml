@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="216" failures="0" errors="0" time="26.3504197">
+    <testsuite name="tests/access.test.tsx" timestamp="2026-10-09T08:22:10.106Z" hostname="Piero" tests="5" failures="0" errors="0" skipped="0" time="0.3125286">
+        <testcase classname="tests/access.test.tsx" name="Waits for the session before rendering a protected view" time="0.0545738">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Unauthenticated users are sent to login" time="0.1620057">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Role mismatch does not mount the protected screen" time="0.0041504">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Authenticated users entering login go to their own dashboard" time="0.0839353">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Unknown routes render 404 instead of a family dashboard" time="0.0068865">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/auth-provider.test.tsx" timestamp="2026-10-09T08:22:10.111Z" hostname="Piero" tests="3" failures="0" errors="0" skipped="0" time="0.1162027">
+        <testcase classname="tests/auth-provider.test.tsx" name="Bootstrap restores a server session" time="0.0403043">
+        </testcase>
+        <testcase classname="tests/auth-provider.test.tsx" name="Network failure does not invent an authenticated session" time="0.013527">
+        </testcase>
+        <testcase classname="tests/auth-provider.test.tsx" name="Login, expiration and logout update the session" time="0.0615433">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/boundary.test.tsx" timestamp="2026-10-09T08:22:10.113Z" hostname="Piero" tests="2" failures="0" errors="0" skipped="0" time="0.0745852">
+        <testcase classname="tests/boundary.test.tsx" name="An unresolved page chunk displays a loading indicator" time="0.0528472">
+        </testcase>
+        <testcase classname="tests/boundary.test.tsx" name="A page render failure offers recovery instead of a blank screen" time="0.0203114">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/family-tracking.test.tsx" timestamp="2026-10-09T08:22:10.113Z" hostname="Piero" tests="12" failures="0" errors="0" skipped="0" time="0.7582166">
+        <testcase classname="tests/family-tracking.test.tsx" name="Scopes identical first names by ID and excludes completed, cancelled and expired appointments" time="0.0135355">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Counts only finalised attended sessions and uses the Lima month boundary" time="0.0009958">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Has no upcoming appointment after completing the only session" time="0.0008629">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Does not mark reservation, therapy, attendance or report milestones without records" time="0.0003601">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Home presents persisted reports and no invented progress, steps or professionals" time="0.1962204">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Switches siblings with identical names and retains selection after a new route mount" time="0.1547164">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Shows empty family state without falling back to fictional children" time="0.036894">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Shows loading instead of synthetic or zero-value metrics" time="0.0214634">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Keeps server failures visible and retries a read" time="0.1039887">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Journey shows real treatments and sessions in its sections" time="0.1269479">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Reports without rows do not invent recommendations" time="0.0648557">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="A failed report read offers retry without presenting a made-up report" time="0.035369">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/http.test.ts" timestamp="2026-10-09T08:22:10.115Z" hostname="Piero" tests="4" failures="0" errors="0" skipped="0" time="0.00877">
+        <testcase classname="tests/http.test.ts" name="API requests carry session cookies" time="0.0056968">
+        </testcase>
+        <testcase classname="tests/http.test.ts" name="Validation arrays become a readable error message" time="0.000935">
+        </testcase>
+        <testcase classname="tests/http.test.ts" name="Network errors are normalized" time="0.0003555">
+        </testcase>
+        <testcase classname="tests/http.test.ts" name="401 expires a session, but rejected login does not emit expiration" time="0.0010228">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/integration-ui.test.tsx" timestamp="2026-10-09T08:22:10.115Z" hostname="Piero" tests="33" failures="0" errors="0" skipped="0" time="1.1560344">
+        <testcase classname="tests/integration-ui.test.tsx" name="Family reports distinguish persisted session data from demo metrics" time="0.2847436">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Family cannot simulate professional confirmation of a pending appointment" time="0.0923759">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Keeps the original admin patient table and opens the real treatment selector" time="0.1853721">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Keeps patient input and displays a server failure instead of fake success" time="0.0943245">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Books against an authorized treatment inside the existing agenda, with explicit Lima dates" time="0.1598417">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Shows saved session report fields to the family without clinical mutation controls" time="0.1328563">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Edits the four real report fields inside the administrator appointment detail" time="0.1486877">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Does not populate the users table with demo accounts on a network error" time="0.0473541">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /usuarios uses the centralized cookie client" time="0.0012787">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /usuarios/1 uses the centralized cookie client" time="0.0005526">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /usuarios uses the centralized cookie client" time="0.0003884">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PATCH /usuarios/1 uses the centralized cookie client" time="0.0003582">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /pacientes uses the centralized cookie client" time="0.0003329">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /pacientes/12 uses the centralized cookie client" time="0.000322">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /pacientes uses the centralized cookie client" time="0.0004068">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PUT /pacientes/12 uses the centralized cookie client" time="0.0002893">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; DELETE /pacientes/12 uses the centralized cookie client" time="0.0002651">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /pacientes/12/tratamientos uses the centralized cookie client" time="0.0002536">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /tratamientos uses the centralized cookie client" time="0.0005582">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /citas uses the centralized cookie client" time="0.0003328">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /citas/25 uses the centralized cookie client" time="0.0002332">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /citas uses the centralized cookie client" time="0.000214">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PUT /citas/25 uses the centralized cookie client" time="0.000219">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PATCH /citas/25/estado uses the centralized cookie client" time="0.0002408">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /sesiones uses the centralized cookie client" time="0.0002249">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /sesiones/9 uses the centralized cookie client" time="0.0002037">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /sesiones uses the centralized cookie client" time="0.0002232">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /sesiones/9/iniciar uses the centralized cookie client" time="0.0002032">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /sesiones/9/cerrar uses the centralized cookie client" time="0.0001962">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /sesiones/9/reporte uses the centralized cookie client" time="0.0001944">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PUT /sesiones/9/reporte uses the centralized cookie client" time="0.0002144">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Reads pagination totals and serializes false/zero filters without dropping them" time="0.0005748">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Discards a delayed result after the authenticated identity changes" time="0.0008123">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/interactions.test.tsx" timestamp="2026-10-09T08:22:10.123Z" hostname="Piero" tests="4" failures="0" errors="0" skipped="0" time="0.6312278">
+        <testcase classname="tests/interactions.test.tsx" name="The assistant opens and closes with its extracted avatar component" time="0.2911847">
+        </testcase>
+        <testcase classname="tests/interactions.test.tsx" name="A therapist can open every section of a simulated patient record" time="0.1703628">
+        </testcase>
+        <testcase classname="tests/interactions.test.tsx" name="Therapist profile input uses the shared string-value contract" time="0.0505668">
+        </testcase>
+        <testcase classname="tests/interactions.test.tsx" name="Public navigation reaches specialists through the router" time="0.1182273">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/phase3-coherence.test.tsx" timestamp="2026-10-09T08:22:10.187Z" hostname="Piero" tests="33" failures="0" errors="0" skipped="0" time="6.3850752">
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register explains real access without invented credentials, email or success" time="0.2810145">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/padre explains real access without invented credentials, email or success" time="0.0503511">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/terapeuta explains real access without invented credentials, email or success" time="0.0516465">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/verify explains real access without invented credentials, email or success" time="0.0513149">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/terapeuta/success explains real access without invented credentials, email or success" time="0.0604161">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/onboarding explains real access without invented credentials, email or success" time="0.0292132">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/forgot-password explains real access without invented credentials, email or success" time="0.048938">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Consent is pending, does not record acceptance, and leads to real family settings" time="0.3842494">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Family settings expose both siblings without a plan restriction and describe a historical soft delete" time="0.2023129">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Settings security, privacy and notification tabs do not fake writes" time="0.2868581">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="A failed patient create keeps form values and never announces success" time="0.6804697">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Family professionals are treatment assignments, not a mock directory" time="1.2223255">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/padre/recorrido reuses the persisted tracking model" time="0.4287547">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/padre/seguimiento reuses the persisted tracking model" time="0.5670824">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Therapist dashboard counts authorised data and never requests administrator accounts" time="0.6562676">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Admin dashboard derives active account count and excludes cancelled/completed/expired future appointments" time="0.3229403">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Dashboard loading never looks like zero available records" time="0.2063526">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Dashboard failure hides aggregates and can be retried" time="0.229704">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Mundo ASHA uses the selected child ID and exposes proposals rather than fabricated mastery" time="0.2685674">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Mundo ASHA has an honest empty family state" time="0.0414987">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/academia does not claim verified rewards or completed levels" time="0.0310854">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/retos does not claim verified rewards or completed levels" time="0.0317146">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/insignias does not claim verified rewards or completed levels" time="0.093692">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/perfil does not claim verified rewards or completed levels" time="0.1411966">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="A missing progress connection remains unknown rather than zero" time="0.0010391">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="An empty verified history opens only the first level" time="0.0003073">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="World progress ignores other children, versions and worlds" time="0.0067045">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Out of order completion cannot unlock a skipped level" time="0.00525">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Verified mastery unlocks the next level and repeated attempts do not add duplicate mastery" time="0.0004798">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Completing each level once reaches the actual world total without replay inflation" time="0.0002536">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Conflicting repeated attempt IDs never contribute even when a third duplicate follows" time="0.0001851">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Oral production levels require professional validation, not a server quiz pass" time="0.0012398">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Unreviewed extensions and session prototypes stay explicitly labelled" time="0.000236">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/providers.test.tsx" timestamp="2026-10-09T08:22:10.221Z" hostname="Piero" tests="4" failures="0" errors="0" skipped="0" time="0.5104365">
+        <testcase classname="tests/providers.test.tsx" name="Providers restore PADRE on a direct URL (same bootstrap as reload)" time="0.1824079">
+        </testcase>
+        <testcase classname="tests/providers.test.tsx" name="Providers restore TERAPEUTA on a direct URL (same bootstrap as reload)" time="0.081168">
+        </testcase>
+        <testcase classname="tests/providers.test.tsx" name="Providers restore ADMIN on a direct URL (same bootstrap as reload)" time="0.0418131">
+        </testcase>
+        <testcase classname="tests/providers.test.tsx" name="A failed real-provider login keeps the form mounted and shows its network error" time="0.2041096">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/report-pdf.test.tsx" timestamp="2026-10-09T08:22:10.222Z" hostname="Piero" tests="18" failures="0" errors="0" skipped="0" time="1.4417304">
+        <testcase classname="tests/report-pdf.test.tsx" name="downloads PDF through the centralized cookie client" time="0.0109924">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 401 keeps JSON errors and rejects download" time="0.0014791">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 403 keeps JSON errors and rejects download" time="0.0005585">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 404 keeps JSON errors and rejects download" time="0.0003912">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 422 keeps JSON errors and rejects download" time="0.000394">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 503 keeps JSON errors and rejects download" time="0.0003226">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0002984">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0002595">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0003058">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0002887">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects a PDF response from a previous account" time="0.0004778">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects account change while the PDF body is being read" time="0.0005711">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="shows pending state, starts one download and releases its URL" time="1.1314119">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="failure does not create a file or false success and can retry" time="0.0443789">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="network error uses download copy, without pretending to save changes" time="0.0170032">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="unmount cancels download and does not create a file afterwards" time="0.0117246">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="Family reports &gt; monthly entry contains no invented report, signature or PDF action" time="0.2056201">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="Family reports &gt; loading has no zero-session claim or empty-family fallback" time="0.0139222">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/screens.test.tsx" timestamp="2026-10-09T08:22:10.224Z" hostname="Piero" tests="98" failures="0" errors="0" skipped="0" time="14.9556123">
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /" time="0.2712816">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /login" time="0.0415606">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register" time="0.0155683">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/padre" time="0.0157834">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/verify" time="0.0154763">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/terapeuta" time="0.0153359">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/terapeuta/landing" time="0.0153356">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/terapeuta/success" time="0.0176991">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/reportes" time="0.0664397">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/usuarios" time="0.0730227">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/pacientes" time="0.0982641">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/citas" time="0.2671143">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/sesiones" time="0.0517387">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/analiticas" time="0.0318754">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/mensajes" time="0.0683367">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/moderacion" time="0.2841587">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/solicitudes" time="1.502034">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/core" time="0.5018275">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /onboarding" time="0.1380032">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /forgot-password" time="0.0751872">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /especialistas" time="0.200586">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /especialidades" time="0.2807936">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /recursos" time="0.2658355">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /ashi" time="0.1877723">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /historias" time="0.1845533">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /sobre-nosotros" time="0.1991767">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /nosotros" time="0.1388902">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /planes" time="0.1287471">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /ayuda" time="0.183443">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /contacto" time="0.2106447">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /trabaja" time="0.0610703">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/waiting" time="0.2378698">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/active" time="0.0552238">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/end" time="0.1872935">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre" time="0.0351417">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/camino" time="0.0303766">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/ayuda" time="0.1869546">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/recorrido" time="0.0892802">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/consentimiento" time="0.0345662">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/seguimiento" time="0.0361547">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/evaluacion" time="0.3626961">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/hijos" time="0.1071648">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/progreso" time="0.0226679">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/reportes" time="0.0466434">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/config" time="0.1282768">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/psicologos" time="0.0680296">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/agenda" time="0.4540919">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/mensajes" time="0.0669119">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/compras" time="0.1574164">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/recompensas" time="0.0320148">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/incidencias" time="0.0278231">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha" time="0.0309964">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/cuentos" time="0.0507519">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/canciones" time="0.1302366">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/trabalenguas" time="0.1279814">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/adivinanzas" time="0.0482211">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/juegos" time="0.2661647">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/laberinto" time="0.0447699">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/isla" time="0.1620902">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/academia" time="0.2692661">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/retos" time="0.0581896">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/insignias" time="0.0327111">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/perfil" time="0.1219704">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta" time="0.0519769">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/agenda" time="0.1763087">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/pacientes" time="0.2904181">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/mensajes" time="0.2863157">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/reportes" time="0.0889343">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/analiticas" time="0.1286795">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/ingresos" time="0.059003">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/valoraciones" time="0.0341789">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/config" time="0.0567438">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/datos-actividad" time="0.1316687">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/incidencias" time="0.0605683">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /pay" time="0.103296">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /pay/history" time="0.2006492">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /pay/wallet" time="0.1259453">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session" time="0.1054045">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/prep" time="0.1041719">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/summary" time="0.0778316">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/rating" time="0.0349907">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/rewards" time="0.1287339">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin" time="0.0488797">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/dashboard" time="0.2772011">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/cuentas" time="0.5270713">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/terapeutas" time="0.2018034">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/operacion" time="1.2950844">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/pagos" time="0.1094187">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/contenido" time="0.1069071">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/ml" time="0.0923682">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/auditoria" time="0.0807085">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/config" time="0.0327443">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/dashboard" time="0.1203077">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/pacientes" time="0.0673265">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/perfil" time="0.0393161">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/mi-camino" time="0.0308053">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; Mundo ASHA uses the family destination for PADRE" time="0.0275826">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; Family settings tabs render without errors" time="0.3307656">
+        </testcase>
+    </testsuite>
+</testsuites>

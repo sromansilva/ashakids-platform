@@ -19,6 +19,11 @@ class TestDeleteDependenciesSecurity(unittest.TestCase):
 
     def test_auditoria_completa_dependencias_delete(self):
         """Ejecuta la suite integral de verificación de dependencias y DELETE físico."""
+        from tests.live_environment import isolated_live_api
+        try:
+            isolated_live_api()
+        except RuntimeError as exc:
+            self.skipTest(str(exc))
         asyncio.run(run_audit_main())
 
 

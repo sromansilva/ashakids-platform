@@ -1,0 +1,244 @@
+{
+  "audit": "AUDIT-2026-10-09-05",
+  "implementation_commit": "a8df56fc912db76a01092b60caa1efa220dcd85b",
+  "documentation_commit_title": "V06_Auditoria_Reportes_PDF",
+  "publication_target": "dev via PR, V07_Integracion_Reportes_PDF; consult Git history for merge SHA",
+  "limits": "Hashes of local files at this audit cut. Git CRLF normalization may affect byte hashes in another checkout.",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 8398,
+      "sha256": "a16c4a6bce9b1d79c0b5fc17042c1d87d5c609fc5c1efc334fe4b7ec66b56e86"
+    },
+    {
+      "path": "backend/app/api/v1/sesiones.py",
+      "bytes": 3439,
+      "sha256": "0a8cb972c387b195a7eed7c6fe78414f2e5439e5772067c091c8ef3c918115c0"
+    },
+    {
+      "path": "backend/app/services/report_pdf.py",
+      "bytes": 4740,
+      "sha256": "d0f938741f391dfcc5f5854d63a841e7e603998a11988796f66116527ebe4935"
+    },
+    {
+      "path": "backend/app/services/sesiones.py",
+      "bytes": 3473,
+      "sha256": "823ab65e818d6683b732ba59abde8040634452d158d3db0ad603eef03d6aa744"
+    },
+    {
+      "path": "backend/requirements-dev.txt",
+      "bytes": 88,
+      "sha256": "6b814cac231abc7a4d44f444828078e0892ba8b39397ff8f578a1a4b8ad7a8c5"
+    },
+    {
+      "path": "backend/requirements.txt",
+      "bytes": 280,
+      "sha256": "348fd6b483fccdc9d9e6d2ebd0be60f803d4bdd56923f865a8a35990d5f56b9f"
+    },
+    {
+      "path": "backend/scripts/verify_report_pdf.py",
+      "bytes": 4346,
+      "sha256": "5b2fbdb1282adc9d0c42dc3147e5dfbe1ac2b297ca88b6b82e1ee9d6d717f8e7"
+    },
+    {
+      "path": "backend/tests/test_report_pdf.py",
+      "bytes": 6105,
+      "sha256": "4eff956563ccafa515f6a935da5031ff88344c111174314f75838ef20012309f"
+    },
+    {
+      "path": "docs/DELIVERY_CHECKLIST.md",
+      "bytes": 5924,
+      "sha256": "56f4245a6c5aba56500ce56ee2e9a506f1d83822052602e76d5285a930c08722"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PLAN.md",
+      "bytes": 19094,
+      "sha256": "02f49e75a24d5b81a342cb7f08df1cd78297721eb4a9b74a1daf00ad08776147"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PROGRESS.md",
+      "bytes": 21690,
+      "sha256": "688f77309df2702796306d131372436151e50dc7a18fc8a8b83363174391ffa1"
+    },
+    {
+      "path": "docs/PROJECT_CONTEXT.md",
+      "bytes": 24597,
+      "sha256": "dc2993b8742149d492d56407ea1dd59bbe13a2a2c16f96afc58f0b50dcf2df37"
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 11555,
+      "sha256": "35ac74aa6b82625e45db2f31a9f0c72d911c5c11974979cfe1a934b9b0eac755"
+    },
+    {
+      "path": "docs/audits/README.md",
+      "bytes": 5213,
+      "sha256": "17e612f6d13c5d4f9cb8964f75f5b75751c965fe913091ae26506c229da5bb5a"
+    },
+    {
+      "path": "docs/audits/auditoria-2026-10-09-05.md",
+      "bytes": 14775,
+      "sha256": "eb85b4233a018389c64424021846b36e15a2c87b35754fadff070f6f61b3fb69"
+    },
+    {
+      "path": "docs/decisions/0006-exportacion-reportes-autorizados.md",
+      "bytes": 2450,
+      "sha256": "e69ed008162080c7e5fddfcdfbb0aea0851cd32e19682848343cdd50cfa680a3"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/README.md",
+      "bytes": 3453,
+      "sha256": "a16a5afc9f5d5d6793c2f5a17f3892f42b2e24a45f81aaf54c9eeeeb88c6f7e1"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/attempts.json",
+      "bytes": 2356,
+      "sha256": "607a72575888707ec55746f4f588070a536d8d4b54ff3780225ee057b966ddda"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/backend-before-dependency.xml",
+      "bytes": 27355,
+      "sha256": "f01eac1fa362194e1df9be3b95804a126cb3ff22b30de96189b1e249bc344437"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/backend-unit-tests.xml",
+      "bytes": 1573,
+      "sha256": "64b2247ba43096ed09fd232ce152bbeb09c2546ca4d5172cd333f4ad7edd60d8"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/browser-download.json",
+      "bytes": 322,
+      "sha256": "06a60dd329cb325569d70acec7eee1579a9b2c9f4c87332aced08027efac9154"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/browser-observations.json",
+      "bytes": 1276,
+      "sha256": "03aace880f26b61ff2b666e413ac2bf040b156b7eef804165a49d32a453d1303"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/build.txt",
+      "bytes": 12888,
+      "sha256": "e46545234cd04da440c5e19b00e16b14383f75ea72300e78c9ada091d6119271"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/design-detector.json",
+      "bytes": 3,
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/frontend-check.txt",
+      "bytes": 210,
+      "sha256": "b7a0bf8b31b4bcf9ac6d2056935e1b91f0af722c3dcd6cb1dbda22373c6c9c90"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/frontend-tests-before-fix.xml",
+      "bytes": 68179,
+      "sha256": "19f4b4ace0c6e8d718f09d4ca0350178e532cf7df6925a17899fc66a67b473fc"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/frontend-tests.xml",
+      "bytes": 37748,
+      "sha256": "3b212027501a53b8f5424af6079008fbf93b72bd987664fca9aa2afdd892c589"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/http-pdf.json",
+      "bytes": 3900,
+      "sha256": "feac7e92f855c384909ef4539ad04508921365ec3c0e57c08d703d2532e6e285"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/knowledge-check.txt",
+      "bytes": 27,
+      "sha256": "6fdbf5c49f03f501b04c24a287e3831587c59aa1f9ce3f158782685b550614d5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/pdf-qa.json",
+      "bytes": 602,
+      "sha256": "76a43252cf657f830b787cc62b50ec8afcc316cb5b763366d2b3d7438e6c1ec5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/report-download-desktop.png",
+      "bytes": 80841,
+      "sha256": "09decf0732e5524fe11884b0dd65941d3dffa1dd4085b6fc9e21c5f4ba9c7a0f"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/report-download-mobile.png",
+      "bytes": 46116,
+      "sha256": "ece275778e509942aa17be9be7e1a4976856c71f980c2a4cd64ef798f7ee9400"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/reporte-sesion-sintetica.pdf",
+      "bytes": 42612,
+      "sha256": "27807e7ea41ad5028e373618fcb7386107fdcbc6edd57d54269f7490832e8e0b"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/routing-sandbox-block.txt",
+      "bytes": 1038,
+      "sha256": "f5f0640f9a950c5248bb0a229a26e8611f1ac43adfb81eebed8d5bd741719997"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/routing-tests.txt",
+      "bytes": 2817,
+      "sha256": "dbd46fc35d916db29aa0f65a65a4f108c3cb2a38247f4ae70cb8259f41e29603"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/sanitized-secret-check.json",
+      "bytes": 279,
+      "sha256": "38923c0e5197022a78c8843c056624e5256188a53fd088aba33b4d3b9596a21a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-05/typecheck.txt",
+      "bytes": 57,
+      "sha256": "25dcb26872276a1ee654f01903914f6e704d3607dd11d7a8240136bdf230dc92"
+    },
+    {
+      "path": "frontend/src/api/client.ts",
+      "bytes": 5292,
+      "sha256": "2018ae6c5f8f748d0fd6289bc9439a9696ec345547110a4c46010574b79345a2"
+    },
+    {
+      "path": "frontend/src/components/common/ReportDownload.tsx",
+      "bytes": 2377,
+      "sha256": "94631cd1eac1e5774368e57ce0aa47d5e9749178717350015321bf9251f629a2"
+    },
+    {
+      "path": "frontend/src/components/common/SessionActions.tsx",
+      "bytes": 4947,
+      "sha256": "1f102a3032eb74fbebcd7f0c0fbf592ea2d82432c72be822071bd86493748896"
+    },
+    {
+      "path": "frontend/src/pages/padre/reports/PadreReportes.tsx",
+      "bytes": 693,
+      "sha256": "b6d0a6a85c5db902985ded047fcdd4913920993a5dcc9a90dcf743382e048446"
+    },
+    {
+      "path": "frontend/src/pages/padre/reports/PadreReportesundefined.tsx",
+      "bytes": 4177,
+      "sha256": "8d2f3b948f9cf5eb8c29cd359490e6ed9f855266302f45c43a774a2b8b989741"
+    },
+    {
+      "path": "frontend/src/pages/padre/reports/usePadreReportes.ts",
+      "bytes": 1401,
+      "sha256": "4107257a65cc9a85a6600654d4f098011f66f3ef59d67e7a490652f9f4403af8"
+    },
+    {
+      "path": "frontend/src/services/clinicalService.ts",
+      "bytes": 2501,
+      "sha256": "64fbd6e103eca1fbb75b36335e6c884edc5244837f877dc17a1ddc6760e19751"
+    },
+    {
+      "path": "frontend/tests/integration-ui.test.tsx",
+      "bytes": 11108,
+      "sha256": "317f6b54ea3b919ac43e46fde6ce64e1801cba03dcfe4f380c71f3cc7a19a472"
+    },
+    {
+      "path": "frontend/tests/report-pdf.test.tsx",
+      "bytes": 7043,
+      "sha256": "42a9cce418f3ebcf36d318cf863d774a3d12490f99eae7edf387a6575364fd70"
+    },
+    {
+      "path": "output/pdf/Auditoria_Reportes_PDF_AshaKids_2026-10-09-05.pdf",
+      "bytes": 190743,
+      "sha256": "96ede63b87f4ee8c92c070256ed50c654a72a1831e070030d956fbc35a0dbb58"
+    }
+  ]
+}

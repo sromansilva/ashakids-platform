@@ -1,0 +1,19 @@
+{
+  "file": "reporte-sesion-sintetica.pdf",
+  "sha256": "3349c8c866bcb2cf4ca8b6a36bd45f7bc3529fba46768dc6b6ee716242332f43",
+  "pages": 1,
+  "contains_audit_tag": true,
+  "contains_patient": true,
+  "contains_session_fields": true,
+  "metadata": {
+    "/Author": "ASHAKids",
+    "/CreationDate": "D:20261009111242-05'00'",
+    "/Creator": "(unspecified)",
+    "/Keywords": "",
+    "/ModDate": "D:20261009111242-05'00'",
+    "/Producer": "ReportLab PDF Library - (opensource)",
+    "/Subject": "(unspecified)",
+    "/Title": "Reporte de sesión 1",
+    "/Trapped": "/False"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "format": "pg_dump custom/public",
+  "bytes": 134561,
+  "sha256": "b88e72a29ba01476463c813b58ed41374a7b0fb391c2647c3edac0816626e60b",
+  "archive_list_verified": true,
+  "utc": "2026-10-10T17:54:12.505647+00:00"
+}

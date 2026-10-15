@@ -1,0 +1,15 @@
+{
+  "environment": "Local API8001/web5174/PG17.6 port6544; synthetic fixtures",
+  "kind": "manual browser observation, not additional automated test count",
+  "observations": [
+    "Family p90001 opened persisted Reportes session and four shared fields from the existing synthetic report.",
+    "Clicking PDF received a file and showed PDF recibido. El navegador inicio la descarga.",
+    "Physical downloaded PDF exists with one page; extracted text matches final HTTP sample (not byte-identical).",
+    "Desktop1366x900 screenshot inspected; saved report, PDF control and received state visible.",
+    "Mobile390x844 document/body/main width390: no horizontal overflow in that inspected state.",
+    "Monthly progress view was pending, without fabricated monthly metrics/signatures or download.",
+    "Mobile screenshot revealed fixed controls covering some note text; note/status margin added afterward."
+  ],
+  "final_mobile_confirmation": "Blocked. First action rejected by browser permission, then saved deny preference persisted after user granted full access. No alternate browser/surface used.",
+  "limits": "Only family browser route manually verified; role authorisation verified via local HTTP. Captures precede final mobile margin. No writes to clinical data."
+}

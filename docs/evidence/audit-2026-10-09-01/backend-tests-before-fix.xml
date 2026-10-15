@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="17" skipped="25" tests="97" time="82.171" timestamp="2026-10-09T00:01:31.768837-05:00" hostname="Piero"><testcase classname="tests.test_admin_crud.TestAdminCuentasCRUD" name="test_01_sin_sesion_retorna_401" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_admin_crud.TestAdminCuentasCRUD" name="test_02_padre_y_terapeuta_reciben_403" time="0.000"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_admin_crud.TestAdminCuentasCRUD" name="test_03_admin_lista_cuentas_sin_exponer_secretos" time="0.000"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_admin_crud.TestAdminCuentasCRUD" name="test_04_ciclo_completo_padre_crud_y_auditoria" time="0.000"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_admin_crud.TestAdminCuentasCRUD" name="test_05_crear_terapeuta_y_eliminar" time="0.000"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_admin_crud.TestAdminCuentasCRUD" name="test_06_proteccion_propia_cuenta_admin" time="0.000"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_admin_me_with_admin_session_returns_200" time="0.189" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_admin_me_with_padre_session_returns_403" time="0.142" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_admin_me_with_terapeuta_session_returns_403" time="0.159" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_db_unavailable_returns_503" time="0.085" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_docs_and_openapi" time="0.305" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_expired_session_returns_401" time="0.168" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_health_check" time="0.086" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_login_inactive_user_rejected" time="0.084" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_login_invalid_credentials_nonexistent_code" time="0.085" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_login_invalid_credentials_wrong_password" time="0.158" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_login_success_padre" time="0.204" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_login_success_terapeuta_and_admin" time="0.363" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_me_and_logout_flow" time="0.275" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_padre_me_with_admin_session_returns_403" time="0.234" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_padre_me_with_padre_session_returns_200" time="0.226" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_padre_me_with_terapeuta_session_returns_403" time="0.264" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_protected_endpoints_with_invalid_cookie_return_401" time="0.167" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_protected_endpoints_without_cookie_return_401" time="0.185" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_role_not_inferred_from_prefix" time="0.236" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_terapeuta_me_with_admin_session_returns_403" time="0.235" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_terapeuta_me_with_padre_session_returns_403" time="0.252" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_terapeuta_me_with_terapeuta_session_returns_200" time="0.238" /><testcase classname="tests.test_auth_api.TestAuthAPI" name="test_user_without_roles_cannot_login" time="0.223" /><testcase classname="tests.test_auth_integration_real.TestAuthIntegrationReal" name="test_01_login_inexistente_retorna_401" time="0.020"><skipped type="pytest.skip" message="Integración compartida deshabilitada: requiere autorización explícita.">C:\Users\piero\Desktop\ASHAKIDS\backend\tests\test_auth_integration_real.py:53: Integración compartida deshabilitada: requiere autorización explícita.</skipped></testcase><testcase classname="tests.test_auth_integration_real.TestAuthIntegrationReal" name="test_02_login_password_incorrecto_retorna_401" time="0.012"><skipped type="pytest.skip" message="Integración compartida deshabilitada: requiere autorización explícita.">C:\Users\piero\Desktop\ASHAKIDS\backend\tests\test_auth_integration_real.py:62: Integración compartida deshabilitada: requiere autorización explícita.</skipped></testcase><testcase classname="tests.test_auth_integration_real.TestAuthIntegrationReal" name="test_03_login_correcto_y_persistencia_en_sesiones_auth" time="0.009"><skipped type="pytest.skip" message="Integración compartida deshabilitada: requiere autorización explícita.">C:\Users\piero\Desktop\ASHAKIDS\backend\tests\test_auth_integration_real.py:71: Integración compartida deshabilitada: requiere autorización explícita.</skipped></testcase><testcase classname="tests.test_auth_integration_real.TestAuthIntegrationReal" name="test_04_padre_real_authorization_and_cross_role_403" time="0.009"><skipped type="pytest.skip" message="Integración compartida deshabilitada: requiere autorización explícita.">C:\Users\piero\Desktop\ASHAKIDS\backend\tests\test_auth_integration_real.py:132: Integración compartida deshabilitada: requiere autorización explícita.</skipped></testcase><testcase classname="tests.test_auth_integration_real.TestAuthIntegrationReal" name="test_05_terapeuta_and_admin_real_authorization" time="0.010"><skipped type="pytest.skip" message="Integración compartida deshabilitada: requiere autorización explícita.">C:\Users\piero\Desktop\ASHAKIDS\backend\tests\test_auth_integration_real.py:167: Integración compartida deshabilitada: requiere autorización explícita.</skipped></testcase><testcase classname="tests.test_auth_security.TestConfig" name="test_settings_metadata" time="0.001"><failure message="AssertionError: 'ASHAKids API' != 'Ashakids API'&#10;- ASHAKids API&#10;+ Ashakids API">self = &lt;tests.test_auth_security.TestConfig testMethod=test_settings_metadata&gt;
+
+    def test_settings_metadata(self):
+&gt;       self.assertEqual(settings.PROJECT_NAME, "Ashakids API")
+E       AssertionError: 'ASHAKids API' != 'Ashakids API'
+E       - ASHAKids API
+E       + Ashakids API
+
+tests\test_auth_security.py:20: AssertionError</failure></testcase><testcase classname="tests.test_auth_security.TestConfig" name="test_supabase_env_loaded" time="0.002" /><testcase classname="tests.test_auth_security.TestSecurityHashing" name="test_hash_produces_argon2id" time="0.121" /><testcase classname="tests.test_auth_security.TestSecurityHashing" name="test_unique_salts_for_identical_passwords" time="0.446" /><testcase classname="tests.test_auth_security.TestSecurityHashing" name="test_verify_password_empty_or_malformed" time="0.002" /><testcase classname="tests.test_auth_security.TestSecurityHashing" name="test_verify_password_incorrect" time="0.201" /><testcase classname="tests.test_auth_security.TestSecurityHashing" name="test_verify_password_success" time="0.231" /><testcase classname="tests.test_clinical_api" name="test_patient_persistence_and_ownership" time="2.166"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F25934DD30&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F25979D31...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259578310&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_patient_persistence_and_ownership(clinical):
+        clients, factory = clinical
+&gt;       patient, _, _, _ = await journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_api.py:17: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F25934DD30&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F25979D310...02': &lt;httpx.AsyncClient object at 0x000001F25979E350&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259292EA0&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_api" name="test_patient_invalid_or_foreign[payload0-403]" time="3.851" /><testcase classname="tests.test_clinical_api" name="test_patient_invalid_or_foreign[payload1-422]" time="2.273" /><testcase classname="tests.test_clinical_api" name="test_patient_invalid_or_foreign[payload2-422]" time="2.729" /><testcase classname="tests.test_clinical_api" name="test_patient_invalid_or_foreign[payload3-422]" time="2.096" /><testcase classname="tests.test_clinical_api" name="test_admin_users_create_update_revoke" time="4.694" /><testcase classname="tests.test_clinical_api" name="test_cita_conflict_and_transitions" time="2.263"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F25918A090&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259C6ABD...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259C2B750&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_cita_conflict_and_transitions(clinical):
+        clients, _ = clinical
+&gt;       patient, _, cita, payload = await journey(clients)
+                                    ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_api.py:82: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F25918A090&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259C6ABD0...02': &lt;httpx.AsyncClient object at 0x000001F259C6A450&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259C6A990&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_api" name="test_concurrent_citas_only_one_persists" time="3.779"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259C6A750&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259B950D...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259DA3290&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_concurrent_citas_only_one_persists(clinical):
+        clients, factory = clinical
+&gt;       _, _, cita, payload = await journey(clients)
+                              ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_api.py:100: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259C6A750&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259B950D0...02': &lt;httpx.AsyncClient object at 0x000001F259B95190&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259C6A510&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_api" name="test_session_report_and_state_machine" time="3.929"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259BFAB10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259BFA99...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259DCF1D0&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_session_report_and_state_machine(clinical):
+        clients, factory = clinical
+&gt;       _, cita, session = await session_journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_api.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\clinical_helpers.py:29: in session_journey
+    patient, treatment, cita, payload = await journey(clients)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259BFAB10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259BFA990...02': &lt;httpx.AsyncClient object at 0x000001F259CC7410&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259CC7DD0&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_api" name="test_session_no_show" time="2.252"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259C69850&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259DC835...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259E1FC90&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_session_no_show(clinical):
+        clients, factory = clinical
+&gt;       _, cita, row = await session_journey(clients)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_api.py:138: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\clinical_helpers.py:29: in session_journey
+    patient, treatment, cita, payload = await journey(clients)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259C69850&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259DC8350...02': &lt;httpx.AsyncClient object at 0x000001F259DCAB10&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259DCB650&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_api" name="test_csrf_pagination_and_missing_resources" time="4.185"><failure message="assert 503 == 404&#10; +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259DC96D0&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259DC901...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259E93250&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_csrf_pagination_and_missing_resources(clinical):
+        clients, _ = clinical
+        parent = clients["p90001"]
+        assert (await parent.post("/api/v1/pacientes", json=PATIENT, headers={"Origin": "https://evil.invalid"})).status_code == 403
+        assert (await parent.get("/api/v1/pacientes?limit=101")).status_code == 422
+&gt;       assert (await parent.get("/api/v1/pacientes/999999")).status_code == 404
+E       assert 503 == 404
+E        +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code
+
+tests\test_clinical_api.py:151: AssertionError</failure></testcase><testcase classname="tests.test_clinical_api" name="test_anonymous_routes_are_protected" time="0.437" /><testcase classname="tests.test_clinical_edges" name="test_duplicate_user_rolls_back_transaction" time="2.894" /><testcase classname="tests.test_clinical_edges" name="test_network_failure_is_not_success" time="4.262" /><testcase classname="tests.test_clinical_edges" name="test_commit_failure_returns_conflict_and_rolls_back" time="2.662"><failure message="assert 503 == 409&#10; +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259D60350&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259D9BF5...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259C56E50&gt;, autoflush=False, expire_on_commit=False))
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001F259C654E0&gt;
+
+    async def test_commit_failure_returns_conflict_and_rolls_back(clinical, monkeypatch):
+        clients, factory = clinical
+        class FailingCommit(AsyncSession):
+            async def commit(self):
+                raise IntegrityError("commit", {}, Exception("synthetic"))
+        monkeypatch.setattr(database, "async_session_factory", async_sessionmaker(
+            factory.kw["bind"], class_=FailingCommit, expire_on_commit=False))
+        response = await clients["p90001"].post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 409
+E       assert 503 == 409
+E        +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code
+
+tests\test_clinical_edges.py:51: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_bad_cita_payloads[change0]" time="3.973"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259D62B10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259E64D1...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259E93750&gt;, autoflush=False, expire_on_commit=False))
+change = {'fecha_hora_inicio': '2020-01-01T10:00:00Z', 'fecha_hora_fin': '2020-01-01T11:00:00Z'}
+
+    @pytest.mark.parametrize("change", [
+        {"fecha_hora_inicio": "2020-01-01T10:00:00Z", "fecha_hora_fin": "2020-01-01T11:00:00Z"},
+        {"fecha_hora_inicio": "2030-01-01T10:00:00"},
+        {"fecha_hora_fin": "2000-01-01T10:00:00Z"},
+        {"modalidad": "OTRO"},
+    ])
+    async def test_bad_cita_payloads(clinical, change):
+        clients, _ = clinical
+&gt;       _, _, _, payload = await journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259D62B10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259E64D10...02': &lt;httpx.AsyncClient object at 0x000001F259E64DD0&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259E65910&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_bad_cita_payloads[change1]" time="2.907"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259D60D10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259D9BDD...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259BF7310&gt;, autoflush=False, expire_on_commit=False))
+change = {'fecha_hora_inicio': '2030-01-01T10:00:00'}
+
+    @pytest.mark.parametrize("change", [
+        {"fecha_hora_inicio": "2020-01-01T10:00:00Z", "fecha_hora_fin": "2020-01-01T11:00:00Z"},
+        {"fecha_hora_inicio": "2030-01-01T10:00:00"},
+        {"fecha_hora_fin": "2000-01-01T10:00:00Z"},
+        {"modalidad": "OTRO"},
+    ])
+    async def test_bad_cita_payloads(clinical, change):
+        clients, _ = clinical
+&gt;       _, _, _, payload = await journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259D60D10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259D9BDD0...02': &lt;httpx.AsyncClient object at 0x000001F259D9B410&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259D9B4D0&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_bad_cita_payloads[change2]" time="2.668"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259D62BD0&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259DC96D...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259F37510&gt;, autoflush=False, expire_on_commit=False))
+change = {'fecha_hora_fin': '2000-01-01T10:00:00Z'}
+
+    @pytest.mark.parametrize("change", [
+        {"fecha_hora_inicio": "2020-01-01T10:00:00Z", "fecha_hora_fin": "2020-01-01T11:00:00Z"},
+        {"fecha_hora_inicio": "2030-01-01T10:00:00"},
+        {"fecha_hora_fin": "2000-01-01T10:00:00Z"},
+        {"modalidad": "OTRO"},
+    ])
+    async def test_bad_cita_payloads(clinical, change):
+        clients, _ = clinical
+&gt;       _, _, _, payload = await journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259D62BD0&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259DC96D0...02': &lt;httpx.AsyncClient object at 0x000001F259D9A510&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259F2CDD0&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_bad_cita_payloads[change3]" time="2.611"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259D9AF90&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259F2CF5...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259F9F7D0&gt;, autoflush=False, expire_on_commit=False))
+change = {'modalidad': 'OTRO'}
+
+    @pytest.mark.parametrize("change", [
+        {"fecha_hora_inicio": "2020-01-01T10:00:00Z", "fecha_hora_fin": "2020-01-01T11:00:00Z"},
+        {"fecha_hora_inicio": "2030-01-01T10:00:00"},
+        {"fecha_hora_fin": "2000-01-01T10:00:00Z"},
+        {"modalidad": "OTRO"},
+    ])
+    async def test_bad_cita_payloads(clinical, change):
+        clients, _ = clinical
+&gt;       _, _, _, payload = await journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259D9AF90&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259F2CF50...02': &lt;httpx.AsyncClient object at 0x000001F259F2FAD0&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259F78650&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_unassigned_cannot_create_treatment" time="2.716"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259F2DE50&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259F7B1D...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259FC9C50&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_unassigned_cannot_create_treatment(clinical):
+        clients, _ = clinical
+&gt;       patient, _, cita, payload = await journey(clients)
+                                    ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:73: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259F2DE50&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259F7B1D0...02': &lt;httpx.AsyncClient object at 0x000001F259F7B290&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259F7BDD0&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_session_concurrency_and_cita_lock" time="2.809"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259F79610&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259F2EA5...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259EF7990&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_session_concurrency_and_cita_lock(clinical):
+        clients, factory = clinical
+&gt;       _, _, cita, _ = await journey(clients)
+                        ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259F79610&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259F2EA50...02': &lt;httpx.AsyncClient object at 0x000001F259F2DA90&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259F79250&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_profile_auth_logout_expiry_postgres" time="2.651" /><testcase classname="tests.test_clinical_edges" name="test_multirole_does_not_grant_family_edit" time="2.552"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259D98B90&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259FDC7D...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F259FD0310&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_multirole_does_not_grant_family_edit(clinical):
+        clients, factory = clinical
+&gt;       patient, _, _, _ = await journey(clients)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_clinical_edges.py:112: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F259D98B90&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F259FDC7D0...02': &lt;httpx.AsyncClient object at 0x000001F259E65FD0&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259FDFF50&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_clinical_edges" name="test_production_cookie_and_origin" time="3.269"><failure message="assert 503 == 201&#10; +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F259FDF4D0&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F25A03AED...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F25A0DF750&gt;, autoflush=False, expire_on_commit=False))
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x000001F25A02F4D0&gt;
+
+    async def test_production_cookie_and_origin(clinical, monkeypatch):
+        clients, _ = clinical
+        monkeypatch.setattr(settings, "ENVIRONMENT", "production")
+        async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="https://test") as client:
+            response = await client.post("/api/v1/auth/login", json={"codigo_usuario": "p90001", "password": "Solo-Pruebas-Aisladas-2026"})
+            assert response.status_code == 200
+            assert "Secure" in response.headers["set-cookie"] and "HttpOnly" in response.headers["set-cookie"]
+            assert (await client.post("/api/v1/pacientes", json=PATIENT)).status_code == 403
+&gt;           assert (await client.post("/api/v1/pacientes", json=PATIENT, headers={"Origin": settings.CORS_ORIGINS[0]})).status_code == 201
+E           assert 503 == 201
+E            +  where 503 = &lt;Response [503 Service Unavailable]&gt;.status_code
+
+tests\test_clinical_edges.py:128: AssertionError</failure></testcase><testcase classname="tests.test_config_isolation" name="test_api_port_is_not_database_port" time="0.008" /><testcase classname="tests.test_config_isolation" name="test_cors_formats[[&quot;http://localhost:5173&quot;]]" time="0.008" /><testcase classname="tests.test_config_isolation" name="test_cors_formats[http://localhost:5173]" time="0.007" /><testcase classname="tests.test_config_isolation" name="test_expiry_cannot_be_negative" time="0.011" /><testcase classname="tests.test_delete_dependencies.TestDeleteDependenciesSecurity" name="test_auditoria_completa_dependencias_delete" time="0.007"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\tests\test_delete_dependencies.py:20: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_frontend_contracts" name="test_paginated_projection_is_scoped" time="2.568"><failure message="AssertionError: {&quot;detail&quot;:&quot;Base de datos temporalmente no disponible.&quot;}">clinical = ({'a90001': &lt;httpx.AsyncClient object at 0x000001F25A039C10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F25A03955...ind=&lt;sqlalchemy.ext.asyncio.engine.AsyncEngine object at 0x000001F25A0D63D0&gt;, autoflush=False, expire_on_commit=False))
+
+    async def test_paginated_projection_is_scoped(clinical):
+        clients, factory = clinical
+&gt;       patient, cita, session = await session_journey(clients)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_frontend_contracts.py:8: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\clinical_helpers.py:29: in session_journey
+    patient, treatment, cita, payload = await journey(clients)
+                                        ^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+clients = {'a90001': &lt;httpx.AsyncClient object at 0x000001F25A039C10&gt;, 'p90001': &lt;httpx.AsyncClient object at 0x000001F25A039550...02': &lt;httpx.AsyncClient object at 0x000001F259E66D50&gt;, 't90001': &lt;httpx.AsyncClient object at 0x000001F259FDC4D0&gt;, ...}
+
+    async def journey(clients):
+        admin, parent = clients["a90001"], clients["p90001"]
+        response = await parent.post("/api/v1/pacientes", json=PATIENT)
+&gt;       assert response.status_code == 201, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"detail":"Base de datos temporalmente no disponible."}
+
+tests\clinical_helpers.py:12: AssertionError</failure></testcase><testcase classname="tests.test_frontend_contracts" name="test_user_filters_and_cors" time="2.296" /><testcase classname="tests.test_live_environment" name="test_live_tests_disabled_by_default" time="0.001" /><testcase classname="tests.test_live_environment" name="test_live_guard_rejects_unsafe_targets[ASHAKIDS_TEST_API_URL-http://localhost:8000/api/v1]" time="0.004" /><testcase classname="tests.test_live_environment" name="test_live_guard_rejects_unsafe_targets[ASHAKIDS_TEST_API_URL-https://remote.invalid:8001/api/v1]" time="0.003" /><testcase classname="tests.test_live_environment" name="test_live_guard_rejects_unsafe_targets[ASHAKIDS_TEST_DATABASE_URL-postgresql://postgres@remote.invalid/ashakids_test_guard]" time="0.002" /><testcase classname="tests.test_live_environment" name="test_live_guard_rejects_unsafe_targets[ASHAKIDS_TEST_DATABASE_URL-postgresql://postgres@localhost/postgres]" time="0.003" /><testcase classname="tests.test_live_environment" name="test_live_guard_rejects_unsafe_targets[DATABASE_URL-postgresql://postgres@remote.invalid/postgres]" time="0.005" /><testcase classname="tests.test_live_environment" name="test_explicit_isolated_environment_allowed" time="0.002" /><testcase classname="tests.test_models.TestModels" name="test_logro_columns_and_relations" time="0.002" /><testcase classname="tests.test_models.TestModels" name="test_paciente_columns_and_relations" time="0.003" /><testcase classname="tests.test_models.TestModels" name="test_perfil_columns_and_relations" time="0.003" /><testcase classname="tests.test_models.TestModels" name="test_perfil_logro_columns_and_constraints" time="0.002" /><testcase classname="tests.test_models.TestModels" name="test_usuario_columns_and_constraints" time="0.003" /><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_01_crear_hijo_con_avatar_y_perfil_atomico" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_02_avatar_predeterminado_zorro" time="0.002"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_03_validacion_avatar_invalido" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_04_validacion_sexo_obligatorio_y_catalogo" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_05_validacion_fecha_nacimiento_no_futura" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_06_proteccion_idor_entre_tutores" time="0.002"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_07_edicion_autorizada_de_hijo_y_avatar" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_08_inactivacion_logica_excluye_de_lista_padre" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_09_bloqueo_eliminacion_con_dependencias_409" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_10_eliminacion_fisica_exitosa_cuando_limpio" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_11_admin_lista_hijos_activos_e_inactivos" time="0.000"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_12_reactivacion_administrativa_y_control_rbac" time="0.005"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase><testcase classname="tests.test_pacientes_crud.TestPacientesCRUD" name="test_13_auditoria_cambios_registrada_correctamente" time="0.001"><skipped type="pytest.skip" message="Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.">C:\Users\piero\Desktop\ASHAKIDS\backend\.venv313\Lib\site-packages\_pytest\unittest.py:523: Suite HTTP heredada deshabilitada; requiere API y BD descartables explícitas.</skipped></testcase></testsuite></testsuites>

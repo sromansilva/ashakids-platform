@@ -1,0 +1,36 @@
+{
+  "attempts": [
+    {
+      "operation": "initial typecheck",
+      "result": "modal props missing and unsupported Testing Library exact option; fixed"
+    },
+    {
+      "operation": "initial components",
+      "result": "187 passed, 8 failed: seven login labels and one test tab selector; fixed; final198passed"
+    },
+    {
+      "operation": "initial sandbox build",
+      "result": "spawn EPERM; authorized local retry passed"
+    },
+    {
+      "operation": "mobile settings",
+      "result": "name/actions overlap corrected and final screenshot checked"
+    },
+    {
+      "operation": "browser role switching",
+      "result": "wrong assumed destination caused timeout; one credential rejection followed by successful login; no password change"
+    },
+    {
+      "operation": "desktop capture",
+      "result": "viewport change initially cropped desktop; replaced after DOM width confirmation"
+    },
+    {
+      "operation": "knowledge refresh",
+      "result": "Windows parallel process denied; sequential fallback completed; twelve files with no extracted symbols"
+    },
+    {
+      "operation": "initial git fetch",
+      "result": "FETCH_HEAD permission denied in sandbox; escalated fetch succeeded"
+    }
+  ]
+}

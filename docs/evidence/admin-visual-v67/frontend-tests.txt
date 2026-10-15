@@ -1,0 +1,217 @@
+
+> ashakids-frontend@0.0.1 test
+> npm run test:routing && npm run test:components
+
+
+> ashakids-frontend@0.0.1 test:routing
+> node --experimental-strip-types --test tests/routing.test.mjs
+
+TAP version 13
+# (node:2916) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: ASHAKids Frontend Routing Tests
+    # Subtest: 1. Rutas Públicas
+        # Subtest: debe reconocer / como ruta pública (sin rol requerido)
+        ok 1 - debe reconocer / como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 1.3597
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /login como ruta pública (sin rol requerido)
+        ok 2 - debe reconocer /login como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.2067
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /forgot-password como ruta pública (sin rol requerido)
+        ok 3 - debe reconocer /forgot-password como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.1111
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /onboarding como ruta pública (sin rol requerido)
+        ok 4 - debe reconocer /onboarding como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.2066
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /especialistas como ruta pública (sin rol requerido)
+        ok 5 - debe reconocer /especialistas como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0976
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /especialidades como ruta pública (sin rol requerido)
+        ok 6 - debe reconocer /especialidades como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.1504
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /recursos como ruta pública (sin rol requerido)
+        ok 7 - debe reconocer /recursos como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.2928
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /sobre-nosotros como ruta pública (sin rol requerido)
+        ok 8 - debe reconocer /sobre-nosotros como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0999
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /nosotros como ruta pública (sin rol requerido)
+        ok 9 - debe reconocer /nosotros como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.2754
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /planes como ruta pública (sin rol requerido)
+        ok 10 - debe reconocer /planes como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.3989
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /ayuda como ruta pública (sin rol requerido)
+        ok 11 - debe reconocer /ayuda como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0902
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /contacto como ruta pública (sin rol requerido)
+        ok 12 - debe reconocer /contacto como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0563
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /trabaja como ruta pública (sin rol requerido)
+        ok 13 - debe reconocer /trabaja como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0441
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /ashi como ruta pública (sin rol requerido)
+        ok 14 - debe reconocer /ashi como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0415
+          type: 'test'
+          ...
+        # Subtest: debe reconocer /historias como ruta pública (sin rol requerido)
+        ok 15 - debe reconocer /historias como ruta pública (sin rol requerido)
+          ---
+          duration_ms: 0.0443
+          type: 'test'
+          ...
+        # Subtest: debe tratar /mundo-asha como pública cuando el usuario no está logueado como PADRE
+        ok 16 - debe tratar /mundo-asha como pública cuando el usuario no está logueado como PADRE
+          ---
+          duration_ms: 0.2145
+          type: 'test'
+          ...
+        1..16
+    ok 1 - 1. Rutas Públicas
+      ---
+      duration_ms: 6.2298
+      type: 'suite'
+      ...
+    # Subtest: 2. Rutas Protegidas y Determinación de Rol Requerido
+        # Subtest: debe requerir rol PADRE para rutas del portal de padres, sesiones y pagos
+        ok 1 - debe requerir rol PADRE para rutas del portal de padres, sesiones y pagos
+          ---
+          duration_ms: 0.1356
+          type: 'test'
+          ...
+        # Subtest: debe requerir rol TERAPEUTA para rutas de terapeutas
+        ok 2 - debe requerir rol TERAPEUTA para rutas de terapeutas
+          ---
+          duration_ms: 0.0926
+          type: 'test'
+          ...
+        # Subtest: debe requerir rol ADMIN para rutas de administración
+        ok 3 - debe requerir rol ADMIN para rutas de administración
+          ---
+          duration_ms: 0.0642
+          type: 'test'
+          ...
+        1..3
+    ok 2 - 2. Rutas Protegidas y Determinación de Rol Requerido
+      ---
+      duration_ms: 0.41
+      type: 'suite'
+      ...
+    # Subtest: 3. Lógica de Protección de Rutas (Simulación Guardias)
+        # Subtest: Ruta pública sin sesión: debe permitir acceso
+        ok 1 - Ruta pública sin sesión: debe permitir acceso
+          ---
+          duration_ms: 0.1881
+          type: 'test'
+          ...
+        # Subtest: Ruta protegida sin sesión: debe redirigir a /login
+        ok 2 - Ruta protegida sin sesión: debe redirigir a /login
+          ---
+          duration_ms: 0.9801
+          type: 'test'
+          ...
+        # Subtest: Rol correcto: debe permitir acceso a su área correspondiente
+        ok 3 - Rol correcto: debe permitir acceso a su área correspondiente
+          ---
+          duration_ms: 0.1458
+          type: 'test'
+          ...
+        # Subtest: Rol incorrecto (cruce de accesos): debe restringir y ofrecer su panel legítimo
+        ok 4 - Rol incorrecto (cruce de accesos): debe restringir y ofrecer su panel legítimo
+          ---
+          duration_ms: 0.3599
+          type: 'test'
+          ...
+        1..4
+    ok 3 - 3. Lógica de Protección de Rutas (Simulación Guardias)
+      ---
+      duration_ms: 1.8312
+      type: 'suite'
+      ...
+    # Subtest: 4. Mapeo Bidireccional de Vistas y Aliases
+        # Subtest: debe mapear correctamente viewToPath
+        ok 1 - debe mapear correctamente viewToPath
+          ---
+          duration_ms: 0.1993
+          type: 'test'
+          ...
+        # Subtest: debe mapear aliases amigables en pathToView
+        ok 2 - debe mapear aliases amigables en pathToView
+          ---
+          duration_ms: 0.0825
+          type: 'test'
+          ...
+        1..2
+    ok 4 - 4. Mapeo Bidireccional de Vistas y Aliases
+      ---
+      duration_ms: 0.3701
+      type: 'suite'
+      ...
+    1..4
+ok 1 - ASHAKids Frontend Routing Tests
+  ---
+  duration_ms: 9.7572
+  type: 'suite'
+  ...
+1..1
+# tests 25
+# suites 5
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 223.7973
+
+> ashakids-frontend@0.0.1 test:components
+> vitest run
+
+
+ RUN  v4.1.11 C:/Users/HP/ashakids-platform/frontend
+
+
+ Test Files  20 passed (20)
+      Tests  288 passed (288)
+   Start at  00:57:18
+   Duration  72.85s (transform 8.25s, setup 21.51s, import 8.21s, tests 51.79s, environment 57.21s)

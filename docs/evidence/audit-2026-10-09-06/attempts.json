@@ -1,0 +1,14 @@
+{
+  "audit": "AUDIT-2026-10-09-06",
+  "code_sha": "7fddd59d6cc6ec594c666c9c80ba184a88c9a91d",
+  "attempts": [
+    {"scope": "Frontend initial full suite", "passed": 229, "failed": 1, "total": 230, "evidence": "frontend-first.xml", "cause": "Old coherence assertion classified connected messaging as demonstration.", "resolution": "Updated classification; rerun 230 passed. Added 2 invalid POST acknowledgement cases and final 232 passed."},
+    {"scope": "Backend selected unit suite", "initial_passed": 31, "final_passed": 36, "failed": 0, "warnings": 0, "note": "Added five INTEGER/limit boundary cases. 25 messaging and 11 existing PDF tests rerun; simulated DB dependencies."},
+    {"scope": "First local HTTP run", "responses": 47, "openapi_status": 200, "messages_created": 7, "evidence": "http-messaging-first.json"},
+    {"scope": "Final local HTTP run", "responses": 53, "openapi_status": 200, "messages_created": 7, "pagination_rows_seen": 14, "evidence": "http-messaging.json", "note": "Validation extended to NUL and integer bounds. No fixture reset. Five auxiliary logout calls excluded from verified count."},
+    {"scope": "Browser", "status": "not_attempted_in_this_cut", "reason": "Previous cut recorded a saved origin permission denial. No bypass or new captures; jsdom tests are not real browser acceptance."},
+    {"scope": "UI mechanical detector", "runs": 1, "findings": 0, "evidence": "design-detector.json", "note": "Three changed UI components; later changes only service validation and tests. No visual guarantee."},
+    {"scope": "Knowledge graph", "result": "current", "mode": "local AST code-only/no-label with Windows fallback", "note": "Wrapper default query budget used; no complete graph loaded into conversation. Generated map ignored."}
+  ],
+  "limits": ["No full backend suite rerun", "No shared Supabase writes/read comparison", "No new clinical fixture writes or resets", "No real browser messaging acceptance", "No production deployment, load test or pentest", "No archive/assignment clinical mutation tests: unit mocks only"]
+}

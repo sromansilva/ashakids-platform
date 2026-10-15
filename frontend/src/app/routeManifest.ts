@@ -2,6 +2,7 @@
 export const routePaths = [
   "/",
   "/login",
+  "/crear-contrasena",
   "/register",
   "/register/padre",
   "/register/verify",
@@ -85,7 +86,6 @@ export const routePaths = [
   "/admin",
   "/admin/dashboard",
   "/admin/cuentas",
-  "/admin/terapeutas",
   "/admin/operacion",
   "/admin/pagos",
   "/admin/contenido",

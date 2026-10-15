@@ -14,7 +14,7 @@ BACKEND_DIR = Path(__file__).resolve().parent.parent
 if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
-BASE_URL = "http://localhost:8000/api/v1"
+BASE_URL = ""  # Se asigna únicamente después de validar el entorno descartable.
 
 
 class TestAdminCuentasCRUD(unittest.TestCase):
@@ -22,13 +22,19 @@ class TestAdminCuentasCRUD(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        from tests.live_environment import isolated_live_api
+        global BASE_URL
+        try:
+            BASE_URL = isolated_live_api()
+        except RuntimeError as exc:
+            raise unittest.SkipTest(str(exc)) from None
         # Verificar que el servidor FastAPI esté respondiendo
         try:
-            res = httpx.get("http://localhost:8000/health", timeout=10.0)
+            res = httpx.get(BASE_URL.removesuffix("/api/v1") + "/health", timeout=10.0)
             if res.status_code != 200:
                 raise unittest.SkipTest("El servidor FastAPI no responde 200 en /health.")
         except Exception as exc:
-            raise unittest.SkipTest(f"El servidor FastAPI no está accesible en http://localhost:8000: {exc}")
+            raise unittest.SkipTest(f"El servidor FastAPI de pruebas no está accesible en {BASE_URL}: {exc}")
 
     def setUp(self):
         self.admin_client = httpx.Client(base_url=BASE_URL, timeout=30.0)

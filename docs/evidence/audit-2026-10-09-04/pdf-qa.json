@@ -1,0 +1,29 @@
+{
+  "pages": 10,
+  "render": "Poppler85dpi",
+  "visually_inspected_pages": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
+  "result": "All ten pages inspected; no overlapping or clipped document text/table/image. Screenshots show visible viewport portions.",
+  "text_characters_per_page": [
+    2599,
+    2245,
+    1932,
+    1594,
+    1964,
+    1481,
+    2461,
+    1319,
+    460,
+    569
+  ]
+}

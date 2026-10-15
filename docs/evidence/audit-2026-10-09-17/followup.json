@@ -1,0 +1,238 @@
+{
+  "marker": "AUDITORIA17_20261010_021551",
+  "success": true,
+  "requests": [
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "other_parent",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/pacientes/97",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/citas/14",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones/13",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/conversaciones/7",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/padres/hijos",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/padres/hijos/97",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/admin/cuentas?search=AUDITORIA17_20261010_021551",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/admin/cuentas/81",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/admin/cuentas/80/hijos",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "GET",
+      "path": "/api/v1/usuarios?q=AUDITORIA17_20261010_021551",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/pacientes?q=AUDITORIA17_20261010_021551",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/pacientes/97/tratamientos",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/citas",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/sesiones",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "GET",
+      "path": "/api/v1/conversaciones/contactos",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "PATCH",
+      "path": "/api/v1/admin/cuentas/81",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "PATCH",
+      "path": "/api/v1/usuarios/81",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "other_parent",
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "case": "new-cohort followup",
+      "expected": 401,
+      "obtained": 401
+    },
+    {
+      "actor": "parent",
+      "method": "PATCH",
+      "path": "/api/v1/padres/hijos/98/inactivar",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "PATCH",
+      "path": "/api/v1/admin/pacientes/98/reactivar",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "admin",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "parent",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "other_parent",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "actor": "therapist",
+      "method": "POST",
+      "path": "/api/v1/auth/logout",
+      "case": "new-cohort followup",
+      "expected": 200,
+      "obtained": 200
+    }
+  ]
+}

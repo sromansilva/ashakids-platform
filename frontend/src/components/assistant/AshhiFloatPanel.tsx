@@ -36,10 +36,11 @@ return (<div
             <div className="flex items-center gap-1.5 mr-2">
               <span className="w-2 h-2 rounded-full bg-emerald-400" />
               <span className="text-xs font-bold text-emerald-300">
-                En línea
+                Demo
               </span>
             </div>
             <button
+              aria-label="Cerrar asistente ASHI"
               onClick={closeAshi}
               className="p-1.5 rounded-xl"
               style={{ background: "rgba(255,255,255,.15)" }}
@@ -106,7 +107,7 @@ return (<div
                     className="text-xs font-extrabold mb-2"
                     style={{ color: B.teal }}
                   >
-                    ✦ ASHI notó…
+                    ✦ Ejemplos ilustrativos (no son datos de tu cuenta)
                   </p>
                   <div className="flex flex-col gap-1.5">
                     {ctx.proactive.map((n, i) => (

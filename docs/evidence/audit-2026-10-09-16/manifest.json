@@ -1,0 +1,100 @@
+{
+  "hash_basis": "raw bytes; text UTF-8/LF",
+  "files": [
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/admin-cuentas-filtradas.png",
+      "bytes": 62312,
+      "sha256": "a47f110f1ed36e444a05cbfa6dc34f5b638c35470a212886193d57eb8203d8de"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/artifact.md",
+      "bytes": 2968,
+      "sha256": "2e1d0875df36cf31e191a37b7ee3eda2c71e4e49d03296aaea51406e76bfa55d"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/build.txt",
+      "bytes": 13248,
+      "sha256": "b1f92979b6c5194cdba118531dd5897d2941a96c9cc70603109045daa3f61c4d"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/check-frontend.txt",
+      "bytes": 210,
+      "sha256": "ac648190a00e648390527694ac42bfc426f22ce0601df77adedecab2892c03e6"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/commands.md",
+      "bytes": 1899,
+      "sha256": "590ccb92242d5602c851bb3070c06f1a5a3bbdcfa300e927a15b8c8bc38e46d0"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/detector.json",
+      "bytes": 10500,
+      "sha256": "e95252af8a035406d179d1544870d55fd3754c0c870d5f15436765889a746675"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/editor-profesional.png",
+      "bytes": 58714,
+      "sha256": "707977916a843e41cca7d2d32df79cdb209e046faaad4898ad68404fb3480f53"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/familia-desktop.png",
+      "bytes": 79541,
+      "sha256": "94c8e7de474740b578a0a6ec6df7098d5749e67df306415cbde74045302cbf73"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/frontend-tests.txt",
+      "bytes": 3181,
+      "sha256": "f6c6382551072846fd9eacff1910e88c7ab52bb3950fe9b38447193da44c853e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/login-controles.png",
+      "bytes": 42553,
+      "sha256": "5a6700408e3885ed5f9f880a4d4e8e89f4771fe62ef75bb86fcce21ca720d373"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/mensaje-familia.png",
+      "bytes": 88819,
+      "sha256": "852457a8411c062c0fb5a82decb80da1105d774b08b3f52fe35c921f7b99cacd"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/mundo-asha-desktop.png",
+      "bytes": 83408,
+      "sha256": "5e2c2bad2e5ff4074ec3aa9a4e489b9ac8e13eaed066fe6e836a442477394f56"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/npm-audit.json",
+      "bytes": 386,
+      "sha256": "fc7ca6db10c7721b93993c642277ba5d86a599c2c1b4ac3105250658ce5ec36d"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/observations.json",
+      "bytes": 1217,
+      "sha256": "32e06a20f6c5375c2c0c2f290b693f5ac3571d08c23fd21045568be1d1600b76"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/qa.json",
+      "bytes": 1629,
+      "sha256": "8f87586ec2c9469092e578da58414e455c91a99980a45f5fa92f076c8529e7bb"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/reporte-error-guardado.png",
+      "bytes": 58684,
+      "sha256": "cc4d179398213e3dc90f999a39bdff4af74771cdf7b203d076e4bf30450e7367"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/reporte-familia-desktop.png",
+      "bytes": 64853,
+      "sha256": "36aff6f2d57ceb171902700dc7f4b56cf61103d698da87289c8b005974fdb6a4"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/template-inventory.json",
+      "bytes": 8999,
+      "sha256": "8480051afc8f2d61ab8a74d9ead191b3a82001a872186e128a6920b25a9d8c6a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-16/typecheck.txt",
+      "bytes": 55,
+      "sha256": "bc7f5a6848c776a87257d581eb8f8786cc19b0b8ac6401ebcfc605d213561247"
+    }
+  ]
+}

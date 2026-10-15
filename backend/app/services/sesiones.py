@@ -23,10 +23,18 @@ async def crear_sesion(db, identity, data):
 
 async def sesion_visible(db, identity, key, *, escritura=False):
     row = await obtener(db, Sesion, key, lock=escritura)
-    cita = await cita_visible(db, identity, row.id_reserva)
+    cita = await cita_visible(db, identity, row.id_reserva, contexto=not escritura)
     if escritura:
         await exigir_profesional(db, identity, cita.id_terapeuta)
     return row, cita
+
+
+async def reporte_visible(db, identity, key):
+    session, appointment = await sesion_visible(db, identity, key)
+    report = await db.scalar(select(ReporteSesion).where(ReporteSesion.id_sesion == key))
+    if report is None:
+        raise HTTPException(404, "Reporte no registrado.")
+    return session, appointment, report
 
 
 async def iniciar_sesion(db, identity, key):
@@ -59,6 +67,8 @@ async def cerrar_sesion(db, identity, key, data):
 
 async def guardar_reporte(db, identity, key, data):
     row, _ = await sesion_visible(db, identity, key, escritura=True)
+    if row.asistencia == "NO_ASISTIO":
+        raise HTTPException(409, "No se puede guardar un reporte en una sesión con inasistencia.")
     if row.estado_sesion not in {"EN_CURSO", "FINALIZADA"}:
         raise HTTPException(409, "La sesión aún no ha comenzado.")
     report = await db.scalar(select(ReporteSesion).where(ReporteSesion.id_sesion == key))

@@ -1,0 +1,77 @@
+{
+  "count": 14,
+  "uniqueHashes": 14,
+  "totalBytes": 20571855,
+  "assets": [
+    {
+      "path": "frontend/public/illustrations/family-play-v54.png",
+      "bytes": 1399494,
+      "sha256": "8e27651d0c1679d2b3d71d3fd2c3b9b8ddecf7150d80ddda3ad5e712ea0e275d"
+    },
+    {
+      "path": "frontend/public/illustrations/faq-ashi-v54.png",
+      "bytes": 1514085,
+      "sha256": "1c57cdfa545cfa3f006778eaef1cbc807380110db863ac75ea94a11015a6630f"
+    },
+    {
+      "path": "frontend/public/illustrations/mundo-hero-v54.png",
+      "bytes": 1964809,
+      "sha256": "1cbc798031e0101060f4dd30db15dbfed9e93207d58f07047f4ff8538a4f16ac"
+    },
+    {
+      "path": "frontend/public/illustrations/newsletter-v54.png",
+      "bytes": 1418612,
+      "sha256": "5ef05d34caa9e64401921caf8de5cf9d838d54d230b24156192ff55cd5217709"
+    },
+    {
+      "path": "frontend/public/illustrations/step-account-v54.png",
+      "bytes": 1220892,
+      "sha256": "94e1770a1a0c80a640bdba79f4d0ac021624127da757846aaad1de6914f3217a"
+    },
+    {
+      "path": "frontend/public/illustrations/step-session-v54.png",
+      "bytes": 1643713,
+      "sha256": "b918c4a5f88bcfc4625e8839c7b44eb8f094307ead4260c8399b0474b7fc1043"
+    },
+    {
+      "path": "frontend/public/illustrations/step-specialist-v54.png",
+      "bytes": 952633,
+      "sha256": "5e36da541f09102063b9a61eabec5af66b272e8ae4a0d2252c17c944ec873743"
+    },
+    {
+      "path": "frontend/public/illustrations/team-care-v54.png",
+      "bytes": 1178545,
+      "sha256": "954e08a4128f139aef7510bca43a9ae141f6526f7c371f5feb08656f2c7cc33d"
+    },
+    {
+      "path": "frontend/public/illustrations/therapy-play-v54.png",
+      "bytes": 1547423,
+      "sha256": "f0d874b4794ee9225d0cddf2d58cfe66773012c8f5bb803ed95386d8bb618474"
+    },
+    {
+      "path": "frontend/public/illustrations/world-fluidez-v54.png",
+      "bytes": 1778424,
+      "sha256": "3be4954bd78648307ed2bcbd38893f122f7c50dfe165b3fce660d7f668fd4eaf"
+    },
+    {
+      "path": "frontend/public/illustrations/world-habla-v54.png",
+      "bytes": 960410,
+      "sha256": "29efc7262b4f4343d1e19470ce7a8144c3ba85f134a14dfa46397d810ccb1f44"
+    },
+    {
+      "path": "frontend/public/illustrations/world-lenguaje-v54.png",
+      "bytes": 1753278,
+      "sha256": "11b8fcbd5e9aa1d83ede745b7f9e0f5b09a46b5911010ddabe3bcd182e030360"
+    },
+    {
+      "path": "frontend/public/illustrations/world-orofacial-v54.png",
+      "bytes": 1694665,
+      "sha256": "efdc4b1b0c62e094a22e4f445a9f2131ce5286aaad0af5f21e380944ec8e92dd"
+    },
+    {
+      "path": "frontend/public/illustrations/world-voz-v54.png",
+      "bytes": 1544872,
+      "sha256": "3560d6cb5b8727f5bfad77900e976ae34bf3bb4d72983086c289a8fd1345cc2e"
+    }
+  ]
+}

@@ -1,9 +1,11 @@
 import { useState, useRef, useEffect } from "react";
 import { Sparkles } from "lucide-react";
 import { Role } from "@/types/navigation";
+import { useAuth } from '@/hooks/useAuth';
 
 
 export function useAshhiFloat({ role }: { role: Role }) {
+const { user } = useAuth();
 const ashiCSS = `
     @keyframes ashi-breathe{0%,100%{box-shadow:0 0 18px rgba(13,148,136,.35)}50%{box-shadow:0 0 34px rgba(13,148,136,.6)}}
     @keyframes ashi-dot{0%,80%,100%{transform:scale(0);opacity:.3}40%{transform:scale(1);opacity:1}}
@@ -240,12 +242,14 @@ const roleCtx = {
       ],
     },
   };
-const ctx =
+const exampleCtx =
     role === "terapeuta"
       ? roleCtx.terapeuta
       : role === "admin"
         ? roleCtx.admin
         : roleCtx.padre;
+const ctx = { ...exampleCtx, name: user?.nombres ?? 'Visitante',
+  greeting: `¡Hola${user?.nombres ? ', ' + user.nombres : ''}! Soy ASHI. Esta conversación es una demostración, no analiza tu expediente ni guarda cambios.` };
 const send = (text: string) => {
     if (!text.trim()) return;
     const t = text.trim();

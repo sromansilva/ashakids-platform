@@ -1,40 +1,29 @@
-
-import { ChevronRight } from "lucide-react";
-import { B } from "@/theme/brand/B";
-import { Crd } from "@/components/common/Crd";
+const tools = [
+  { name: 'React', logo: 'react', area: 'Interfaz', detail: 'Componentes y pantallas' },
+  { name: 'TypeScript', logo: 'typescript', area: 'Interfaz', detail: 'Tipos y contratos de datos' },
+  { name: 'Vite', logo: 'vitejs', area: 'Interfaz', detail: 'Desarrollo y compilación' },
+  { name: 'Tailwind CSS', logo: 'tailwindcss', area: 'Interfaz', detail: 'Estilos de la aplicación' },
+  { name: 'Python', logo: 'python', area: 'API', detail: 'Lógica del backend' },
+  { name: 'FastAPI', logo: 'fastapi', area: 'API', detail: 'Validación y permisos de acceso' },
+  { name: 'PostgreSQL', logo: 'postgresql', area: 'Datos', detail: 'Registros y relaciones' },
+  { name: 'Supabase', logo: 'supabase', area: 'Datos', detail: 'Alojamiento de PostgreSQL' },
+  { name: 'Render', logo: 'render', area: 'Despliegue', detail: 'Interfaz y API bajo HTTPS' },
+  { name: 'Gmail', logo: 'gmail', area: 'Integraciones', detail: 'Correo de alta y boletín', note: 'Según configuración del servicio' },
+  { name: 'Zoom', logo: 'zoom', area: 'Integraciones', detail: 'Enlaces de videollamada', note: 'Creación automática según configuración' },
+  { name: 'GitHub', logo: 'github', area: 'Desarrollo', detail: 'Código e historial del proyecto' },
+];
 
 export function AdminConfig() {
-  const sections = [
-    { title: "Parámetros del sistema",  icon: "⚙️", items: ["Logo y marca", "Colores corporativos", "Nombre de la plataforma"] },
-    { title: "Integraciones",           icon: "🔗", items: ["Zoom / videoconferencia", "Email (SendGrid)"] },
-    { title: "Seguridad",               icon: "🛡️", items: ["Autenticación 2FA", "Políticas de contraseñas", "Logs de acceso"] },
-    { title: "Roles y permisos",        icon: "👤", items: ["Definir roles", "Asignar permisos", "Auditoría de accesos"] },
-    { title: "Respaldos y datos",       icon: "💾", items: ["Backup automático", "Exportar datos", "Restaurar versión"] },
-  ];
-  return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-2xl font-black text-[#1C1135] mb-1">Configuración del sistema</h2>
-        <p className="text-sm text-[#7C6F9A] font-medium">Parámetros globales de ASHAKids</p>
-      </div>
-      <div className="flex flex-col gap-4">
-        {sections.map(s => (
-          <Crd key={s.title} className="p-5">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">{s.icon}</span>
-              <h4 className="font-extrabold text-[#1C1135]">{s.title}</h4>
-            </div>
-            <div className="flex flex-col gap-1">
-              {s.items.map(item => (
-                <div key={item} className="flex items-center justify-between px-3 py-2.5 rounded-2xl hover:bg-[#F5F3FF] transition-colors cursor-pointer">
-                  <p className="text-sm font-medium text-[#1C1135]">{item}</p>
-                  <ChevronRight size={16} style={{ color: B.textMuted }} />
-                </div>
-              ))}
-            </div>
-          </Crd>
-        ))}
-      </div>
+  return <section className="admin-system-config p-4 sm:p-6 max-w-6xl mx-auto text-[#1C1135]">
+    <div className="admin-page-heading admin-config-heading">
+      <h1 className="text-2xl font-black">Configuración del sistema</h1>
+      <a className="admin-config-repository" href="https://github.com/sromansilva/ashakids-platform" target="_blank" rel="noreferrer">Ver repositorio</a>
     </div>
-  );
+    <div className="admin-tools-grid">
+      {tools.map(tool => <article className="admin-tool-card" key={tool.name}>
+        <img src={`/technology/${tool.logo}.svg`} alt="" width={48} height={48} />
+        <div><span className="admin-tool-area">{tool.area}</span><h2>{tool.name}</h2><p>{tool.detail}</p>{tool.note && <small>{tool.note}</small>}</div>
+      </article>)}
+    </div>
+  </section>;
 }

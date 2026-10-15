@@ -1,0 +1,17 @@
+{
+  "captured_utc": "2026-10-10T01:49:43.817452+00:00",
+  "mode": "READ ONLY, only new AUDITORIA IDs",
+  "marker": "AUDITORIA_RENDER_20261010_014323",
+  "role": "ashakids_runtime",
+  "counts": {
+    "users": 6,
+    "patients_active": 2,
+    "treatments": 2,
+    "appointments": 2,
+    "finalized_sessions": 2,
+    "complete_reports": 1,
+    "messages": 2,
+    "unrevoked_auth_sessions": 0
+  },
+  "success": true
+}

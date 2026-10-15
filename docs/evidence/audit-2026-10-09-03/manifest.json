@@ -1,0 +1,218 @@
+{
+  "audit": "AUDIT-2026-10-09-03",
+  "branch": "piero-dev",
+  "head": "82f868fd4a1b7e7d40a636651c13d9add472c71f",
+  "working_tree": "uncommitted; no push",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 6517,
+      "sha256": "7db2eb7ca594c4a800f683bc588e207da2e6641a266e5509dc6deeffab4b6545"
+    },
+    {
+      "path": "backend/scripts/phase3_tracking_fixture.py",
+      "bytes": 3031,
+      "sha256": "a943459ade12b4428d91bb20d49be053e982a87e17d99b41a7b501502b52206f"
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 9116,
+      "sha256": "701f3c08b8adf0fbcfb6ac9cc6de2b56aff324decb39487c1cbd5ff991e746a8"
+    },
+    {
+      "path": "docs/audits/auditoria-2026-10-09-03.md",
+      "bytes": 15372,
+      "sha256": "f3ccc38b12302317e12693505aa546e52ed1a196b2e1148176ac25c9beb4544e"
+    },
+    {
+      "path": "docs/audits/README.md",
+      "bytes": 4399,
+      "sha256": "81a94869a2b967c87c6d911d458f35c9856610cea1ec3ab2bce11240e36e225b"
+    },
+    {
+      "path": "docs/decisions/0004-seguimiento-familiar-datos-persistentes.md",
+      "bytes": 2606,
+      "sha256": "15e95f307c298f2fbce1779714fa2d8797f9e3af2c90f79eb6e7b584ed03f6d9"
+    },
+    {
+      "path": "docs/DELIVERY_CHECKLIST.md",
+      "bytes": 5073,
+      "sha256": "41f4dd4939a9993b8961f4fc9e0765453d91b4c8fdbe57c034ab691ccb327310"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/attempts.json",
+      "bytes": 560,
+      "sha256": "9416943cd2c448e5e0e26e3a594806141ce8c9fea40c158e8f7f0f0ce33c6728"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/browser-observations.json",
+      "bytes": 2781,
+      "sha256": "3e4152906054bf1dbfa844a605f1e0e767d78728485865d57ad8ecaeaaf46b09"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/build.txt",
+      "bytes": 13158,
+      "sha256": "21aa6b76d91098ef4b8e75681f7cf1e950400763c27582a24f47a5a861f51d45"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/design-detector.json",
+      "bytes": 1188,
+      "sha256": "56e94dc7563a7e69b36607d00b3e1edc1196d146897322dd74b6e1824d9902a7"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/empty-family-mobile.png",
+      "bytes": 30964,
+      "sha256": "c3f06ffd306c64c9879127080661c7bb0992da7556b4a888bc5b06a7a87d5697"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/frontend-check.txt",
+      "bytes": 210,
+      "sha256": "88fc42c72835350efcf160c9388ef44e285032c3824b73153a4a578739f9a8ad"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/frontend-tests.xml",
+      "bytes": 28585,
+      "sha256": "a2be70c70a7fb9146899d11b132182f2d8b88e915e07ec5587bb627fbbb68775"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/home-desktop.png",
+      "bytes": 106100,
+      "sha256": "79851ae73dabe5744e8d0dbaff186b472d3a423934c0001b1cacf10947107918"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/home-mobile.png",
+      "bytes": 43701,
+      "sha256": "b453b5a9198c8709fc6a242862a7018161a5fb0845953b1eaf364de2560733f1"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/home-report-desktop.png",
+      "bytes": 99537,
+      "sha256": "6ac0efaa3bc70a9684643ff5200ae39226dd5715881463a35091ac7c3523d932"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/journey-mobile.png",
+      "bytes": 43413,
+      "sha256": "e4bd72bd3d2de12f983452475823e8b7b500bf9a7eff89ada5e85edcbda8aee2"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/journey-report-desktop.png",
+      "bytes": 88278,
+      "sha256": "2dad697a8ef1612ef8db46cb6a09bfb1638a36978b717b5a994ddd46c36a996c"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/knowledge-check.txt",
+      "bytes": 27,
+      "sha256": "6fdbf5c49f03f501b04c24a287e3831587c59aa1f9ce3f158782685b550614d5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/local-final-inspection.json",
+      "bytes": 17973,
+      "sha256": "aaa63c3977bf450f4764cdf50991c7fc6e88b7d9b484ef6288301a8825438b9a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/local-fixture.json",
+      "bytes": 994,
+      "sha256": "fa53e34e80439a1645c257a98d90b159240f625199ce73bf5b3cee21f9a74b85"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/pdf-qa.json",
+      "bytes": 535,
+      "sha256": "038fd440b536b569da22f4ccf951c5fe2482b39ea17899068cd79f9f0f837e40"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/README.md",
+      "bytes": 5200,
+      "sha256": "84ac6eb1dbe2ea432db5dbdbc244799e76864b355e3ff8ab554ad21795ef2786"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/routing-sandbox-block.txt",
+      "bytes": 1039,
+      "sha256": "d95d8c6fccdf1a0dc7e3c83a5df17dc939b886832009d81fae3683e4fc14c421"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/routing-tests.txt",
+      "bytes": 2820,
+      "sha256": "afb8d231ac40d921397801252f7043fc6804c2547bc1abbbf90d49e28f9b9669"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/sibling-mobile-reload.png",
+      "bytes": 43373,
+      "sha256": "58a93fb75fa5d7570a97bbbb2dfa78f29dde0858ce92cfe7a590904950b8d8bd"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/sibling-reload-desktop.png",
+      "bytes": 104876,
+      "sha256": "4934aa285a1197eff80d6a95044f688d06e0b96c4af76d526ce0353fd6a6a6c2"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/typecheck-before-test-fix.txt",
+      "bytes": 1093,
+      "sha256": "f568ef131b66ca1d2332693e606efae394f58eb397607e4c31869af0c9234c6a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-03/typecheck.txt",
+      "bytes": 57,
+      "sha256": "25dcb26872276a1ee654f01903914f6e704d3607dd11d7a8240136bdf230dc92"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PLAN.md",
+      "bytes": 17411,
+      "sha256": "2e134dd7be795f6ecc8bbf8dee6dbd3780e2107538bbefc471d6d75c0a30d5d1"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PROGRESS.md",
+      "bytes": 15416,
+      "sha256": "7f5f4a07fd653dcf51874d89a7efe141880e143b1d89496cf490df5c96e13d91"
+    },
+    {
+      "path": "docs/PROJECT_CONTEXT.md",
+      "bytes": 18677,
+      "sha256": "d63d6fb811f027a8419acc3260f1488c6ac5b073aef8f918d09b03224cdd358c"
+    },
+    {
+      "path": "frontend/package-lock.json",
+      "bytes": 130795,
+      "sha256": "4edfe0bf9f6ba60211caccef030467d5ce20cb79773b24cc202ae442fdeffed3"
+    },
+    {
+      "path": "frontend/package.json",
+      "bytes": 1099,
+      "sha256": "c6c4f02b38da3cd4d461f7f974ee1384976ff4ff9fe728f8c97dcf8df76ae24d"
+    },
+    {
+      "path": "frontend/src/components/common/FamilyTrackingPanel.tsx",
+      "bytes": 12016,
+      "sha256": "c6afc5fc27aaed5de5798b4f440dad24a5d2897cefe68c74740b33f7eb318597"
+    },
+    {
+      "path": "frontend/src/hooks/useFamilyTracking.ts",
+      "bytes": 2627,
+      "sha256": "4ead4be6ae6dc40e072378928558b154cafb149296ffcd04390d4cadc6aba2bc"
+    },
+    {
+      "path": "frontend/src/pages/padre/dashboard/PadreHome.tsx",
+      "bytes": 471,
+      "sha256": "5f85eb03174089cb91c60c59619cd6f547872c0bd91bd3bd9f5f6e495d89cd5f"
+    },
+    {
+      "path": "frontend/src/pages/padre/journey/camino/MiCaminoAsha.tsx",
+      "bytes": 301,
+      "sha256": "1119f7806d8e826d954f7f7948aec18500fd6e16d8be6a9a1d21b44ede3e5fd2"
+    },
+    {
+      "path": "frontend/src/services/familyTracking.ts",
+      "bytes": 2387,
+      "sha256": "141f5c02d33b2cff826bb1fdcd3b6d24552746101318046c3cdf4f325eccc763"
+    },
+    {
+      "path": "frontend/tests/family-tracking.test.tsx",
+      "bytes": 8423,
+      "sha256": "93150be4deb5421284488f87f3d834498ef678ebc509d36c739717db41092053"
+    },
+    {
+      "path": "output/pdf/Auditoria_Fase3_AshaKids_2026-10-09-03.pdf",
+      "bytes": 275678,
+      "sha256": "c9b188846ac64c647c55a1ca518238b6e9e510497e991e1c5d8927ea8e7ffbf3"
+    }
+  ]
+}

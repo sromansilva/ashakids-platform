@@ -18,6 +18,9 @@ class Usuario(Base):
     codigo_usuario: Mapped[str] = mapped_column(String(6), unique=True, index=True, nullable=False)
     email: Mapped[str] = mapped_column(String(150), unique=True, index=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
+    password_change_required: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false", nullable=False
+    )
     activo: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     fecha_creacion: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
@@ -93,7 +96,8 @@ class SesionAutenticacion(Base):
 
     id_sesion_auth: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     id_usuario: Mapped[int] = mapped_column(Integer, ForeignKey("usuarios.id_usuario"), nullable=False)
-    token_hash: Mapped[str] = mapped_column(String(64), index=True, nullable=False)
+    # SHA-256 genera 64 caracteres; el ancho físico existente es VARCHAR(255).
+    token_hash: Mapped[str] = mapped_column(String(255), index=True, nullable=False)
     fecha_emision: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )

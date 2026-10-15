@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-10",
+  "branch": "codex/2do-intento",
+  "base_sha": "7faa66682fc1b03d57b23aa96f196a35dddfcc31",
+  "environment": "API 8002 / Vite 5175 / PostgreSQL local loopback 6544 / QA separada",
+  "data": "Exclusivamente sintéticos; sin cookies ni credenciales",
+  "result": "Núcleo local visible y funcional, con límites de verificación explícitos",
+  "viewports": ["1280x720", "390x844"],
+  "cases": [
+    {"case": "Asesor ADMIN abre alta institucional", "result": "pass", "evidence": "asesor-admin-registro.png", "scope": "Apertura y campos vacíos al reabrir; no nueva alta V36"},
+    {"case": "Ana con introducción atendida, reporte y plan; Luis independiente pendiente", "result": "pass", "evidence": "luis-introduccion-independiente.png"},
+    {"case": "Familia reserva terapia virtual R4 con profesional2", "result": "pass", "evidence": "familia-terapia-confirmada.png", "state": "CONFIRMADA, 45 minutos"},
+    {"case": "Profesional2 consulta reporte/plan del autor inicial", "result": "pass", "evidence": "segundo-profesional-lectura.png", "scope": "Solo lectura de reporte ajeno"},
+    {"case": "Profesional2 registra/inicia sesión2, guarda reporte2 y conserva plan1", "result": "pass", "evidence": "atencion-finalizada-movil.png"},
+    {"case": "Cierre de sesión2 mediante confirmación dentro de la app", "result": "pass", "evidence": "cierre-confirmacion-app.png", "state": "FINALIZADA / ASISTIO"},
+    {"case": "Familia reingresa y consulta ambos reportes, plan1 y cita R4", "result": "pass", "evidence": "familia-enlace-persistido.png"},
+    {"case": "PDF sesiones1 y2 descargados desde controles reales de la app", "result": "pass", "evidence": "familia-reporte-pdf.png", "artifact": "output/pdf/Reporte_Continuidad_Sintetico_Flujo_V36.pdf", "scope": "PDF sesión2 renderizado e inspeccionado; sin igualdad binaria entre descargas"},
+    {"case": "Guardar enlace manual R4; familia consulta sin editor", "result": "pass", "evidence": "reunion-externa-movil.png", "scope": "URL sintética no abierta; sin llamada ni integración Zoom automática"},
+    {"case": "Analíticas profesional2: una atención propia, un niño, filtro octubre", "result": "pass", "evidence": "analiticas-atencion-propia.png"},
+    {"case": "Lenguaje: respuesta incorrecta, reintento, desbloquear y completar tres niveles", "result": "pass", "evidence": "mundo-terminado-escritorio.png"},
+    {"case": "Repetir nivel completado sin aumentar conteo, recargar y reingresar", "result": "pass", "evidence": "mundo-reingreso-escritorio.png", "state": "3/3 en misma pestaña/cuenta/niño"},
+    {"case": "Inspección móvil del juego, atención finalizada y reunión", "result": "pass", "evidence": "niveles-movil.png", "scope": "Vistas inspeccionadas, sin certificar todas las pantallas"}
+  ],
+  "inherited_evidence": {
+    "V33": "Alta UI de familia/dos hijos y guarda de activación; nueva contraseña enviada por API local, no navegador",
+    "V34": "Disponibilidad, bloqueos, introducción y reprogramación UI/API",
+    "V35": "Reporte1 y plan1 guardados en UI; primera introducción cerrada después por HTTP"
+  },
+  "historical_artifacts": ["qa-snapshot.json: estado anterior EN_CURSO", "requests.json: aceptación de navegador pendiente en aquel corte, resuelta posteriormente aquí"],
+  "not_verified": ["Cambio de contraseña por envío UI", "Todas las pantallas", "Adopción en otra máquina", "Hosting/BD compartida", "Llamada real Zoom"],
+  "deferred": ["Progreso educativo en servidor", "Zoom automático", "Extensiones de soporte/reseñas"],
+  "git_publication": "Consultar SHA final de V36 en Git; solo codex/2do-intento"
+}

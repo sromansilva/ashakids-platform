@@ -1,11 +1,15 @@
 from datetime import datetime, timezone
 
 from fastapi import HTTPException
-from sqlalchemy import false, or_, select
+from sqlalchemy import false, func, or_, select
 
-from app.models.clinica import Expediente, Reserva, Sesion, Tratamiento
+from app.models.clinica import Expediente, ReporteSesion, Reserva, Sesion, Tratamiento
 from app.models.perfiles import Paciente, Terapeuta, Tutor
+from app.core.config import settings
 from app.services.acceso import es_familia, exigir_profesional, obtener, paciente_visible, perfil_activo, roles_de
+from app.services.agenda import validar_turno
+from app.services.notificaciones import avisar_cita
+from app.services.zoom import ZoomIntegrationError, create_meeting, delete_meeting
 
 
 def citas_visibles(identity):
@@ -23,10 +27,17 @@ def citas_visibles(identity):
     return select(Reserva).where(or_(*clauses) if clauses else false())
 
 
-async def cita_visible(db, identity, key, *, lock=False):
+async def cita_visible(db, identity, key, *, lock=False, contexto=False):
+    if contexto:
+        own = await db.scalar(citas_visibles(identity).where(Reserva.id_reserva == key))
+        if own is not None:
+            return own
+        row = await obtener(db, Reserva, key)
+        await paciente_visible(db, identity, row.id_paciente)
+        return row
     stmt = citas_visibles(identity).where(Reserva.id_reserva == key)
     if lock:
-        stmt = stmt.with_for_update()
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         raise HTTPException(404, "Recurso no encontrado.")
@@ -42,6 +53,7 @@ async def validar_horario(db, patient_id, therapist_id, data, excluded=None):
     if not patient.activo:
         raise HTTPException(409, "Paciente inactivo.")
     await perfil_activo(db, Terapeuta, therapist_id)
+    await validar_turno(db, therapist_id, data.fecha_hora_inicio, data.fecha_hora_fin)
     collision = select(Reserva.id_reserva).where(
         or_(Reserva.id_paciente == patient_id, Reserva.id_terapeuta == therapist_id),
         Reserva.estado_reserva != "CANCELADA",
@@ -54,19 +66,75 @@ async def validar_horario(db, patient_id, therapist_id, data, excluded=None):
         raise HTTPException(409, "El paciente o terapeuta ya tiene una cita en ese horario.")
 
 
+async def recorrido(db, identity, patient_id):
+    await paciente_visible(db, identity, patient_id)
+    completed = await db.scalar(select(Reserva.id_reserva).join(Sesion).join(ReporteSesion).where(
+        Reserva.id_paciente == patient_id, Reserva.tipo_cita == "INTRODUCTORIA",
+        Sesion.estado_sesion == "FINALIZADA", Sesion.asistencia == "ASISTIO",
+        or_(func.length(func.trim(func.coalesce(ReporteSesion.observaciones_iniciales, ""))) > 0,
+            func.length(func.trim(func.coalesce(ReporteSesion.objetivos_trabajados, ""))) > 0,
+            func.length(func.trim(func.coalesce(ReporteSesion.proximos_pasos, ""))) > 0)).limit(1))
+    pending = await db.scalar(select(Reserva.id_reserva).where(Reserva.id_paciente == patient_id,
+        Reserva.tipo_cita == "INTRODUCTORIA", Reserva.estado_reserva.in_(["PENDIENTE", "CONFIRMADA"])).limit(1))
+    plan = await db.scalar(select(Tratamiento.id_tratamiento).join(Expediente).where(
+        Expediente.id_paciente == patient_id, Tratamiento.estado_tratamiento == "ACTIVO",
+        Tratamiento.id_sesion_origen.is_not(None)).limit(1))
+    return {"introduccion_atendida": completed is not None, "introduccion_pendiente": pending,
+            "terapia_habilitada": completed is not None and plan is not None}
+
+
 async def crear_cita(db, identity, data):
-    treatment = await obtener(db, Tratamiento, data.id_tratamiento)
-    record = await obtener(db, Expediente, treatment.id_expediente)
-    patient = await paciente_visible(db, identity, record.id_paciente)
+    patient_id, therapist_id = data.id_paciente, data.id_terapeuta
+    if data.tipo_cita == "TERAPIA":
+        treatment = await obtener(db, Tratamiento, data.id_tratamiento)
+        record = await obtener(db, Expediente, treatment.id_expediente)
+        await paciente_visible(db, identity, record.id_paciente)
+        if patient_id is not None and patient_id != record.id_paciente:
+            raise HTTPException(422, "El plan no pertenece a ese niño.")
+        patient_id = record.id_paciente
+        therapist_id = therapist_id or treatment.id_terapeuta
+    patient = await paciente_visible(db, identity, patient_id)
     if not await es_familia(db, identity, patient):
-        await exigir_profesional(db, identity, treatment.id_terapeuta)
-    if treatment.estado_tratamiento.upper() != "ACTIVO":
-        raise HTTPException(409, "Tratamiento no activo.")
-    await validar_horario(db, record.id_paciente, treatment.id_terapeuta, data)
-    row = Reserva(**data.model_dump(), id_paciente=record.id_paciente,
-                  id_terapeuta=treatment.id_terapeuta, estado_reserva="PENDIENTE")
+        await exigir_profesional(db, identity, therapist_id)
+    await validar_horario(db, patient_id, therapist_id, data)
+    if data.tipo_cita == "TERAPIA":
+        # El bloqueo del niño serializa con la publicación/reemplazo de su plan.
+        treatment = await obtener(db, Tratamiento, data.id_tratamiento, lock=True)
+        if treatment.estado_tratamiento.upper() != "ACTIVO" or treatment.id_sesion_origen is None:
+            raise HTTPException(409, "Seleccione el plan profesional vigente del nuevo flujo.")
+    state = await recorrido(db, identity, patient_id)
+    if data.tipo_cita == "TERAPIA" and not state["terapia_habilitada"]:
+        raise HTTPException(409, "Complete la introducción de este niño con asistencia, reporte y plan antes de reservar terapia.")
+    if data.tipo_cita == "INTRODUCTORIA" and (state["introduccion_atendida"] or state["introduccion_pendiente"]):
+        raise HTTPException(409, "Este niño ya tiene una introducción atendida o reservada.")
+    row = Reserva(**data.model_dump(exclude={"id_paciente", "id_terapeuta"}),
+                  id_paciente=patient_id, id_terapeuta=therapist_id, estado_reserva="CONFIRMADA")
     db.add(row)
     await db.flush()
+    meeting = None
+    if row.modalidad == "VIRTUAL":
+        try:
+            meeting = await create_meeting(
+                topic=f"ASHAKids · {data.tipo_cita.lower()} · cita {row.id_reserva}",
+                start_time=row.fecha_hora_inicio,
+                duration_minutes=settings.ZOOM_MEETING_DURATION_MINUTES,
+            )
+        except ZoomIntegrationError as exc:
+            raise HTTPException(502, str(exc)) from None
+    try:
+        if meeting is not None:
+            row.zoom_meeting_id = meeting.meeting_id
+            row.zoom_join_url = meeting.join_url
+            await db.flush()
+        await avisar_cita(db, identity[0], row, 'NUEVA_CITA', clave=f'NUEVA_CITA:{row.id_reserva}')
+    except Exception:
+        if meeting is not None:
+            try:
+                await delete_meeting(meeting.meeting_id, meeting.access_token)
+            except ZoomIntegrationError:
+                # La transacción local se revierte; no ocultar el error original.
+                pass
+        raise
     return row
 
 
@@ -76,11 +144,12 @@ async def cambiar_cita(db, identity, key, data, *, horario=False):
         raise HTTPException(409, "La cita ya está cerrada o tiene un estado no editable.")
     if await db.scalar(select(Sesion.id_sesion).where(Sesion.id_reserva == key)):
         raise HTTPException(409, "No se puede cambiar una cita con sesión registrada.")
+    previous = (row.fecha_hora_inicio, row.fecha_hora_fin, row.modalidad, row.estado_reserva)
     if horario:
         await validar_horario(db, row.id_paciente, row.id_terapeuta, data, key)
         for field, value in data.model_dump().items():
             setattr(row, field, value)
-        row.estado_reserva = "PENDIENTE"
+        row.estado_reserva = "CONFIRMADA"
     else:
         if data.estado_reserva == "CONFIRMADA":
             await exigir_profesional(db, identity, row.id_terapeuta)
@@ -88,4 +157,8 @@ async def cambiar_cita(db, identity, key, data, *, horario=False):
                 raise HTTPException(409, "No se puede confirmar una cita pasada.")
         row.estado_reserva = data.estado_reserva
     await db.flush()
+    if horario and previous[:3] != (row.fecha_hora_inicio, row.fecha_hora_fin, row.modalidad):
+        await avisar_cita(db, identity[0], row, 'REPROGRAMACION')
+    elif not horario and previous[3] != row.estado_reserva and row.estado_reserva == 'CANCELADA':
+        await avisar_cita(db, identity[0], row, 'CANCELACION', clave=f'CANCELACION:{row.id_reserva}')
     return row

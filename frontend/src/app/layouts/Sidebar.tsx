@@ -1,4 +1,4 @@
-import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Stethoscope, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
+import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
 import { Role } from "@/types/navigation";
@@ -136,13 +136,8 @@ export function Sidebar({
               view: "admin/cuentas" as View,
             },
             {
-              icon: Stethoscope,
-              label: "Terapeutas",
-              view: "admin/terapeutas" as View,
-            },
-            {
               icon: Activity,
-              label: "Operación",
+              label: "Incidencias",
               view: "admin/operacion" as View,
             },
             {
@@ -191,7 +186,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : ""}`}
+      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : ""}`}
       style={{ width: mobile ? "100%" : 240 }}
     >
       {!mobile && <div className="p-5 pb-4" style={{ position: "relative", zIndex: 1 }}>
@@ -204,6 +199,7 @@ export function Sidebar({
           return (
             <button
               key={item.view}
+              aria-current={active ? "page" : undefined}
               onClick={() => go(item.view)}
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98]
                 ${

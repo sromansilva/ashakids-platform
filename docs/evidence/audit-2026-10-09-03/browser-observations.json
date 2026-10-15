@@ -1,0 +1,82 @@
+{
+  "audit": "2026-10-09-03",
+  "type": "manual observations through browser UI; not an automated E2E suite",
+  "environment": "frontend5174/API8001/PG17.6 local6544",
+  "cases": [
+    {
+      "case": "home-records",
+      "result": "First patient shows 1 attended session / 1 this month / 1 report; no clinical percentage.",
+      "observed": true
+    },
+    {
+      "case": "next-appointment",
+      "result": "Future PENDIENTE appointment is shown; completed appointment is not next.",
+      "observed": true
+    },
+    {
+      "case": "home-report",
+      "result": "Four persisted report fields read; marker AUDIT-2026-10-09-02 inherited, not rewritten.",
+      "observed": true
+    },
+    {
+      "case": "same-name-siblings",
+      "result": "Patient2 with same given name shows zero counts and no report from patient1.",
+      "observed": true
+    },
+    {
+      "case": "route-selection",
+      "result": "Selecting patient2 then navigating to Mi Camino retains patient2.",
+      "observed": true
+    },
+    {
+      "case": "desktop-reload",
+      "result": "Reload Mi Camino retains patient2 and empty scoped records.",
+      "observed": true
+    },
+    {
+      "case": "treatment-tab",
+      "result": "Patient1 treatment Aceptaci\u00f3n PostgreSQL17.6 / assigned professional shown.",
+      "observed": true
+    },
+    {
+      "case": "report-tab",
+      "result": "Patient1 session FINALIZADA/ASISTIO; opening report shows stored fields.",
+      "observed": true
+    },
+    {
+      "case": "mobile-layout",
+      "result": "390x844: selector and sections visible; document/body/main width390, no horizontal overflow.",
+      "observed": true
+    },
+    {
+      "case": "mobile-reload",
+      "result": "Patient2 selection retained after mobile reload.",
+      "observed": true
+    },
+    {
+      "case": "empty-family",
+      "result": "Logout p90001/login p90002 shows empty family without fictional patients.",
+      "observed": true
+    },
+    {
+      "case": "identity-restore",
+      "result": "Login p90001 and choose patient1 restores permitted records.",
+      "observed": true
+    },
+    {
+      "case": "agenda-navigation",
+      "result": "Panel action navigates to /padre/agenda; pending count1 observed. No new reschedule mutation.",
+      "observed": true
+    },
+    {
+      "case": "viewport-reset",
+      "result": "Temporary viewport override reset; final tab retained as deliverable.",
+      "observed": true
+    }
+  ],
+  "limitations": [
+    "Mocked fetch tests cover loading, server failure and retry; no live network outage injection.",
+    "No new complete create/start/close journey; existing report02 read.",
+    "Not all screens or devices; no deployment."
+  ]
+}

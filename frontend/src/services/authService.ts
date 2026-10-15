@@ -6,6 +6,15 @@ import { apiClient } from "@/api/client";
 import { AuthResponse, LoginCredentials, MessageResponse, User } from "@/types/auth";
 
 export const authService = {
+  async createPassword(token: string, new_password: string): Promise<MessageResponse> {
+    return apiClient.post("/auth/create-password", { token, new_password });
+  },
+  async resendActivation(codigo_usuario: string): Promise<MessageResponse> {
+    return apiClient.post("/auth/resend-activation", { codigo_usuario });
+  },
+  async activate(current_password: string, new_password: string): Promise<AuthResponse> {
+    return apiClient.post<AuthResponse>("/auth/activate", { current_password, new_password });
+  },
   /**
    * Envía credenciales a FastAPI (POST /api/v1/auth/login) y fija cookie HttpOnly.
    */

@@ -1,0 +1,43 @@
+{
+  "mode": "READ ONLY",
+  "marker": "AUDITORIA13_214527",
+  "ids": {
+    "users": [
+      57,
+      58,
+      59,
+      60,
+      61
+    ],
+    "patients": [
+      89,
+      90
+    ],
+    "treatments": [
+      9,
+      10
+    ],
+    "appointments": [
+      6,
+      7
+    ],
+    "sessions": [
+      5,
+      6
+    ],
+    "conversations": [
+      3
+    ]
+  },
+  "transaction_read_only": "on",
+  "new_users_match_marker": true,
+  "new_patients_match_marker": true,
+  "reservation_count": 2,
+  "session_count": 2,
+  "sessions_finalized": 2,
+  "report_count": 1,
+  "report_complete": true,
+  "message_count": 2,
+  "new_active_auth_sessions": 0,
+  "passed": true
+}

@@ -1,0 +1,35 @@
+- main:
+  - button "Abrir menú de navegación":
+  - paragraph: Reportes
+  - note: Usuarios, pacientes, tratamientos, citas, sesiones y reportes de sesión usan el servidor. Los indicadores, actividades y módulos adicionales pueden mostrar datos de demostración.
+  - heading "Reportes de sesiones" [level=1]
+  - paragraph: Historial de sesiones y reportes guardados por el profesional asignado.
+  - paragraph: "1"
+  - paragraph: Sesiones totales
+  - paragraph: Sin medición
+  - paragraph: Progreso general
+  - paragraph: Sin registro
+  - paragraph: Valoración terapeuta
+  - button "🎥 Sesiones"
+  - button "📊 Progreso Mensual (demo)"
+  - button "🏥 presencial 1 min 9/10/2026 · 12:08 a. m. Paciente Sintetico · Terapeuta Auditoria" [active]:
+    - generic: 🏥
+    - generic: presencial
+    - generic: 1 min
+    - paragraph: 9/10/2026 · 12:08 a. m.
+    - paragraph: Paciente Sintetico · Terapeuta Auditoria
+  - heading "Sesión y reporte clínico" [level=3]
+  - paragraph: "Sesión #1 · FINALIZADA · ASISTIO"
+  - button "Actualizar estado"
+  - term: Observaciones iniciales
+  - definition: "AUDIT-2026-10-09-01: participación ficticia. Sin datos de pacientes reales."
+  - term: Objetivos trabajados
+  - definition: Ensayar instrucciones con material de demostración.
+  - term: Nivel de ayuda
+  - definition: Apoyo verbal simulado.
+  - term: Próximos pasos
+  - definition: Revisar este reporte después de recargar e iniciar sesión como familia.
+  - button "Descargar reporte guardado"
+- link "Contactar a AshaKids por WhatsApp":
+  - /url: https://wa.me/51986309426?text=Hola%20AshaKids%2C%20necesito%20ayuda.
+- button "Abrir asistente ASHI":

@@ -1,0 +1,9 @@
+{
+  "browser_download": "reporte-sesion-1.pdf",
+  "bytes": 42734,
+  "sha256": "6aaaa9fc64a92a95e022fa90e6aa0cc5a8ce622e846eb0aae693c279224dfd69",
+  "pages": 1,
+  "matches_http_sample_text": true,
+  "long_example_pages": 4,
+  "limits": "Synthetic clinical data. Download existence/text checked; no real patients."
+}

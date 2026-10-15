@@ -1,0 +1,27 @@
+{
+  "format": "SHA-256; PDF binary bytes; UTF-8 text CRLF normalized to LF; manifest excluded",
+  "files": {
+    "docs/evidence/audit-2026-10-09-14/adoption-system.json": "4b2747b4a086ea983531a19a5b61b79577dd8017c3c8e6c1c59cd099dd410539",
+    "docs/evidence/audit-2026-10-09-14/application.json": "42de749c66f1b6c01ed4784de9544dc4384311bea44556fe486659f6193cb1ab",
+    "docs/evidence/audit-2026-10-09-14/backend-unit.txt": "5a892ea717a45544f48be4139999fdc3b9b0596ed0bdff4cc2ae51cac5d53cf5",
+    "docs/evidence/audit-2026-10-09-14/candidate-journey.json": "2895880e8505c5a46c2f1b2d7fbc9e70b7451518a8267ba3ab2dee0df1a46643",
+    "docs/evidence/audit-2026-10-09-14/candidate-persistence.json": "51d8a405d256c359d315d40aec6d9e9f3910b7ea59bac691638e0c86240a9397",
+    "docs/evidence/audit-2026-10-09-14/database-readonly.json": "14403ba9600e600454b98df0e76ab452d4bed012b86f0b985fa749f0d2c9fdaa",
+    "docs/evidence/audit-2026-10-09-14/diagnostics.json": "8741a0f65c3312c7d8d83c749c8a4dc4d8d816ccdf69d4ceb250379395a2fcbb",
+    "docs/evidence/audit-2026-10-09-14/knowledge-check.txt": "0125657d6ce8c42b539a39effb09414c3e395a94451bd0fbe1ec6697996b1ea2",
+    "docs/evidence/audit-2026-10-09-14/knowledge-refresh.txt": "bccdba8fcac47d34651c8322d18687ebc35a0f9258b134dbdad1d147e5c2d39d",
+    "docs/evidence/audit-2026-10-09-14/live-followup.json": "b690ccc2fa2052f8b87d4963c992c192db48effe333858ef7dd449beb47b1206",
+    "docs/evidence/audit-2026-10-09-14/live-journey.json": "fdd739d895f611fead6e01a25d4238f615512f1f5b5cfcf7a6c9daf2a2149a50",
+    "docs/evidence/audit-2026-10-09-14/live-persistence.json": "bf9c36657a5b385bfd4d058551725993485610400998fb03f6b142b15b06ed29",
+    "docs/evidence/audit-2026-10-09-14/operation-matrix.json": "83dbdf559cceee78592b25550a67b7dcd56d773539b0da2b1c6465a2caf5e041",
+    "docs/evidence/audit-2026-10-09-14/operations.json": "6e07129808cb81388eac4a5902817950f553f8d03647d131f30a124da9b13ee9",
+    "docs/evidence/audit-2026-10-09-14/pdf-validation.json": "333dd4de65d1eb67783f450bf4341101bd276da34e15602f4355f0c807d1eeb3",
+    "docs/evidence/audit-2026-10-09-14/preflight.json": "551ec7cb4c0b620e2018e7f428afcff82b27a247fcd4761eec9630905379e24f",
+    "docs/evidence/audit-2026-10-09-14/preservation-final.json": "86c8961be712c5105e50c98ea52ceaf16dd13a88ad3f6c91ca5d9ab638c4966e",
+    "docs/evidence/audit-2026-10-09-14/privileges-verification.json": "6f9c749af80da89d8c17a3e9974279fbaadee1e72daa9d40247b17676f26bbf6",
+    "docs/evidence/audit-2026-10-09-14/report-candidate.pdf": "e1f1d5fd83aba4c1dc0a79a84355b8c157bdca8b815b1194f17d9100f73e2328",
+    "docs/evidence/audit-2026-10-09-14/report-live.pdf": "3053a070abeec6c4309aab778f9abe08d51e61604f8680c0e699160f258a66a8",
+    "output/pdf/Auditoria_BD_Permisos_AshaKids_2026-10-09-14.pdf": "cf5d9728ef9178275fccc38481cc2d2d20ae6e8a5290f6883179f549d96b56fa",
+    "docs/audits/auditoria-2026-10-09-14.md": "e5b0df45bece229034d2264e7035fc1df313dcd6c4376b0fe58fac72a48f6bcd"
+  }
+}

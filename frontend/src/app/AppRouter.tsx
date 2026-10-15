@@ -1,17 +1,19 @@
 import { Route, Routes } from "react-router-dom";
+import { CreatePassword } from "@/pages/auth/Auth/CreatePassword";
 import { RouteAccess } from "@/app/RouteAccess";
 import { PageFrame } from "@/app/layouts/PageFrame";
 import { PageBoundary } from "@/app/PageBoundary";
 import { NotFoundPage } from "@/pages/public/NotFoundPage";
 import { useDemoWorkflow } from "@/app/hooks/useDemoWorkflow";
 import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminReportes, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminAnaliticas, AdminMensajes, AdminModeracion, AdminSolicitudes, AshaCore } from "./lazyPages";
-import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, AshaSessionWaiting, AshaSessionActive, AshaSessionEnd, PadreHome, MiCaminoAsha, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, PadreCompras, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaIsla, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaIngresos, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AshaPayCheckout, AshaPayHistory, AshaPayWallet, AshaSessionHome, AshaSessionPrep, AshaSessionSummary, AdminDashboardPage, AdminCuentas, AdminTerapeutas, AdminOperacion, AdminPagos, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/app/lazyPages";
+import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, AshaSessionWaiting, AshaSessionActive, AshaSessionEnd, PadreHome, MiCaminoAsha, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, PadreCompras, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaIsla, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaIngresos, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AshaPayCheckout, AshaPayHistory, AshaPayWallet, AshaSessionHome, AshaSessionPrep, AshaSessionSummary, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminPagos, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/app/lazyPages";
 
 export default function AppRouter() {
 const { view, role, authRole, go, navigate, location, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, addParentAppointment, setParentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, bookedSlots, setPadreUserName } = useDemoWorkflow();
 return <RouteAccess><PageBoundary><Routes>
 <Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} padrePlan={padrePlan} />}>
 <Route path="/" element={<Landing go={go} />} />
+<Route path="/crear-contrasena" element={<CreatePassword />} />
 <Route path="/login" element={<LoginPage onSuccess={handleLogin} onGoHome={() => navigate("/")} onForgotPassword={() => navigate("/forgot-password")} />} />
 <Route path="/register" element={<RegisterSelector go={go} />} />
 <Route path="/register/padre" element={<RegisterPadre go={go} onNameSet={setPadreUserName} />} />
@@ -96,7 +98,6 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/admin/core" element={<AshaCore />} />
 <Route path="/admin/dashboard" element={<AdminDashboardPage go={go} />} />
 <Route path="/admin/cuentas" element={<AdminCuentas go={go} />} />
-<Route path="/admin/terapeutas" element={<AdminTerapeutas go={go} />} />
 <Route path="/admin/operacion" element={<AdminOperacion go={go} />} />
 <Route path="/admin/pagos" element={<AdminPagos />} />
 <Route path="/admin/contenido" element={<AdminContenido />} />

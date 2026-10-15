@@ -23,11 +23,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
               Eliminar cuenta
             </h2>
             <p className="text-sm text-center text-[#7C6F9A] font-medium mb-4">
-              Esta acción es{" "}
-              <strong className="text-red-600">
-                permanente e irreversible
-              </strong>
-              . Perderás todos tus datos.
+              La solicitud de autoeliminación todavía no está disponible. No se eliminará la cuenta ni se enviará ninguna solicitud.
             </p>
             <div className="mb-4">
               <Inp
@@ -51,12 +47,10 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
               <Btn
                 variant="danger"
                 className="flex-1 justify-center"
-                disabled={deleteConfirm !== "ELIMINAR"}
-                onClick={() =>
-                  showToast("Solicitud de eliminación enviada")
-                }
+                disabled
+                onClick={() => showToast("La autoeliminación todavía no está disponible.")}
               >
-                Eliminar cuenta
+                Función no disponible
               </Btn>
             </div>
           </div>

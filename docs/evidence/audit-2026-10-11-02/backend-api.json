@@ -1,0 +1,76 @@
+{
+  "exitstatus": 0,
+  "environment": "isolated-local-postgresql",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/juegos/catalogo",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/juegos",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/{key}/juegos",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/FLUIDEZ/intentos",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/HABLA/intentos",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/HABLA/intentos",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/HABLA/intentos",
+      "status": 404
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/LENGUAJE/intentos",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/LENGUAJE/intentos",
+      "status": 409
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/OROFACIAL/intentos",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/VOZ/intentos",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/VOZ/intentos",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/pacientes/{key}/juegos/VOZ/intentos",
+      "status": 422
+    }
+  ]
+}

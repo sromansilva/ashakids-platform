@@ -1,4 +1,4 @@
-import ashaKidsLogo from "@/assets/ashakids-logo-final-transparent-1.png";
+import ashaKidsLogo from "@/assets/ashakids-logo-96.png";
 
 export function IsotipoWhite({ size = 36 }: { size?: number }) {
   // PNG has real transparency — reads cleanly on dark violet surfaces.

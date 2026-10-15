@@ -1,0 +1,488 @@
+{
+  "audit": "AUDIT-2026-10-09-04",
+  "implementation_commit": "9a6b06160c5210ec05bd3273ef516bba6989560d",
+  "documentation_commit_title": "V02_AuditoriaFase3",
+  "publication_target": "dev via PR; consult Git history for merge SHA",
+  "entries": [
+    {
+      "path": "AGENTS.md",
+      "bytes": 7307,
+      "sha256": "95a7129e0bfed30e891d7e8299738c7d53e06af84320bd7f821c1bd03c9e08e7"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3069,
+      "sha256": "acf7f954a6b762c0c5ed93eeba5ce8fb977886033898ebb0b2afc1f3a5e88262"
+    },
+    {
+      "path": "backend/app/models/auth.py",
+      "bytes": 5040,
+      "sha256": "d41ceae598fe756ba624a165dfc7a75e7c2786a578a3d22e9cd60fe8cb5d56c5"
+    },
+    {
+      "path": "backend/app/models/perfiles.py",
+      "bytes": 5994,
+      "sha256": "425c42f3c96c57f4edf1d952306f5c4aa7faddbd927f4f5d64576f6644448319"
+    },
+    {
+      "path": "backend/scripts/db_creation.sql",
+      "bytes": 19386,
+      "sha256": "bf6b3f00f98619508eaa3e14731e154f244e76ce2bf579462be3aaf016059bbc"
+    },
+    {
+      "path": "backend/scripts/inspect_schema_compatibility.py",
+      "bytes": 6905,
+      "sha256": "3c693127ab09b4e1925456e7651cf1aa8be6d6d65791a05596018409d892c285"
+    },
+    {
+      "path": "backend/scripts/migrations/001_paciente_avatar.sql",
+      "bytes": 341,
+      "sha256": "71f60b3ceb3f5f34cca34ea5c582a31c277a7e6cc5dfe187f55f81ee5a6a3ed0"
+    },
+    {
+      "path": "backend/scripts/phase2_sandbox.py",
+      "bytes": 4008,
+      "sha256": "fbd8e88fa28ae2e5416d56f57e3469c546daeb0826d839a80c336642924f7216"
+    },
+    {
+      "path": "backend/scripts/phase2_verify_http.py",
+      "bytes": 2451,
+      "sha256": "71577aa16bf97228beca1fc2e77a5cb53277d95c69fefd5bbcdec7650654ef2b"
+    },
+    {
+      "path": "backend/scripts/phase3_tracking_fixture.py",
+      "bytes": 3031,
+      "sha256": "a943459ade12b4428d91bb20d49be053e982a87e17d99b41a7b501502b52206f"
+    },
+    {
+      "path": "backend/scripts/phase3_verify_reads.py",
+      "bytes": 3944,
+      "sha256": "1e12108225cc364ea769452371ec83eca6740ea5c18b5d8d6c8e42ac8e5ce67f"
+    },
+    {
+      "path": "backend/scripts/testing_database.py",
+      "bytes": 1087,
+      "sha256": "99ec084b12696fae931101bb1ca2ead6e48dfa51e6f4b299fe304fdb3fd3c972"
+    },
+    {
+      "path": "backend/scripts/verify_compatibility_journey.py",
+      "bytes": 4754,
+      "sha256": "3fb16af761ae71fefd085908df5928ccdf07c1b47a6a4e146fe569189961ce69"
+    },
+    {
+      "path": "backend/tests/conftest.py",
+      "bytes": 3733,
+      "sha256": "47e6e3b3aee7fbf633e11506a60c96636c1c6706c641aea7621ad1430d199448"
+    },
+    {
+      "path": "backend/tests/live_environment.py",
+      "bytes": 1467,
+      "sha256": "a0842454903cb2a8f39e18a6b867abc9fbf8f96a7ebf6aa3c0500fd29ef52bd6"
+    },
+    {
+      "path": "backend/tests/run_delete_dependencies_audit.py",
+      "bytes": 16578,
+      "sha256": "62713167c49120bdfef4fcb7a10d4933b2ab4acdff2c67bcacc60bb81bf9cfa5"
+    },
+    {
+      "path": "backend/tests/test_admin_crud.py",
+      "bytes": 9353,
+      "sha256": "d12879485cd2c852986fd7b5ffc493a2a65d681ae5fed00b27fdcf84de6e575a"
+    },
+    {
+      "path": "backend/tests/test_auth_security.py",
+      "bytes": 3124,
+      "sha256": "5093f44a5c2044072cdbd54a94fccee955fdee43878b5ff37d40635be25e36e2"
+    },
+    {
+      "path": "backend/tests/test_delete_dependencies.py",
+      "bytes": 1001,
+      "sha256": "df3cad89678bded2d6a14ef4e0f47e5a160d6d0999e6c2312eb50d20c86fcdac"
+    },
+    {
+      "path": "backend/tests/test_live_environment.py",
+      "bytes": 1461,
+      "sha256": "ff1314bd7e1f940f24a4ff579109f58f4d9a8c79f843ed6fd806eb04108ccfea"
+    },
+    {
+      "path": "backend/tests/test_pacientes_crud.py",
+      "bytes": 20188,
+      "sha256": "b02850d92429f16cb60c8ca78c41d31105b1f3c2c97598d952117e53ce540581"
+    },
+    {
+      "path": "backend/tests/test_testing_database.py",
+      "bytes": 1361,
+      "sha256": "f536d59babd52deb013ce6d3d49e648befe763904d8b89a6d99939c539ab63ff"
+    },
+    {
+      "path": "docs/DELIVERY_CHECKLIST.md",
+      "bytes": 5733,
+      "sha256": "bd198e0eeacc1e56d5766a61a8d23f73f21cf5f189b7739561eddf5160687948"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PLAN.md",
+      "bytes": 18470,
+      "sha256": "9a0012a19495f2d5db8c71d553e3e9bb934e60173a4be87df5f5a6f6c62ea9de"
+    },
+    {
+      "path": "docs/IMPLEMENTATION_PROGRESS.md",
+      "bytes": 18571,
+      "sha256": "6ce8b6a13375539d88c9be87d9a2f9185a5ef1f9ba950b2b06e4baec045722d5"
+    },
+    {
+      "path": "docs/MUNDO_ASHA_PLAN.md",
+      "bytes": 6827,
+      "sha256": "82226d735f72ce0bb135f322b8b7a22940e1979e7486647b5ebf54e670dd1aa7"
+    },
+    {
+      "path": "docs/PROJECT_CONTEXT.md",
+      "bytes": 21371,
+      "sha256": "8eca103cf62cdd5b44afc38022e1b2a6f4263a8d87df603f7fd385574599abf2"
+    },
+    {
+      "path": "docs/architecture.md",
+      "bytes": 10259,
+      "sha256": "c1bcff89a755c788dcae2a92af2b6ebd4feb84760fdb25ab7163bfce096184ff"
+    },
+    {
+      "path": "docs/audits/README.md",
+      "bytes": 4816,
+      "sha256": "5a8169c7277f305b80ae20d2919ade722a826da7a9460243fecd61c57fd1cafc"
+    },
+    {
+      "path": "docs/audits/auditoria-2026-10-09-04.md",
+      "bytes": 16740,
+      "sha256": "a2fdd5948fed76a679186e675edfbd0f75900910c07044d8249efb363267befa"
+    },
+    {
+      "path": "docs/decisions/0005-experiencia-nucleo-y-mundos.md",
+      "bytes": 2500,
+      "sha256": "bd7140d8cbbe237c97cc82be0bb20001375d1e3725c8c68f8df8404a7c0385b0"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/README.md",
+      "bytes": 2696,
+      "sha256": "d2d2a65f4a998fbc8ada0aac01e0a748e446b36008c7d860101c83e1edb98f13"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/admin-desktop.png",
+      "bytes": 58432,
+      "sha256": "2fb444516ab8d1a88c7782dee1f5172a5e95bb8d8cef0b26897bcc5737aafb21"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/admin-mobile.png",
+      "bytes": 27812,
+      "sha256": "0b10bf8f723685c8814a7a98da98405f270768c85bed05e744f09d918b37673d"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/assigned-professional-desktop.png",
+      "bytes": 49771,
+      "sha256": "5b33ea86428e2c0a5cb153a8bcc9165ee75d5cf319a663a5421cd08b8b554d8a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/attempts.json",
+      "bytes": 1265,
+      "sha256": "f97c9c0bf8b636945bb6bf3c374423ee5b91a0187e9802cb0daba5be87665e61"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/browser-observations.json",
+      "bytes": 1653,
+      "sha256": "251e816acddc216b90f4870313be973cb88bc3e84143795cf98476c2850c8787"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/build-sandbox-block.txt",
+      "bytes": 1331,
+      "sha256": "738795e4d74ad1f051b4a2e028d26ee445ec8c9e99caebe6b2624f1d0f4fbc77"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/build.txt",
+      "bytes": 12889,
+      "sha256": "439ccdc3304cc67543af6fdbe04015d2e223005f1e59e8d52e752b0720efe84a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/design-detector.json",
+      "bytes": 4,
+      "sha256": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/frontend-check.txt",
+      "bytes": 210,
+      "sha256": "1181b2cf6a48acd11f21c9421fc2f075975ca006347cac694dbe75bc1f4e242f"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/frontend-tests-before-fix.xml",
+      "bytes": 254331,
+      "sha256": "9390ec6e31631174d973ec7a487a6b25e266afb25588e7bfec5a972a6751c3ad"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/frontend-tests.xml",
+      "bytes": 34765,
+      "sha256": "cf6d0eabae0a64be849d87a313f56480adec5bcbe266115bff3cecb461cf81d1"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/http-reads.json",
+      "bytes": 5467,
+      "sha256": "8e873f92eb43c1a9be7af7902f124958482da15ba8d14d6034e7675c4c7e1471"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/knowledge-check.txt",
+      "bytes": 27,
+      "sha256": "6fdbf5c49f03f501b04c24a287e3831587c59aa1f9ce3f158782685b550614d5"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/pdf-qa.json",
+      "bytes": 453,
+      "sha256": "8c61e4d6ec5a761451484bfedfbba183407ddf18509d69c66c0e146a1b42cd5a"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/r-levels-desktop.png",
+      "bytes": 78880,
+      "sha256": "5bbeba25f20fbbb8e25fe73c1907cc8f5913af998208f687834f2080da6cfb79"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/r-levels-mobile.png",
+      "bytes": 46696,
+      "sha256": "26d6743124b489373fee80e409c51d8c3f6ad8650de053012417bcd71450bf1e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/recovery-desktop.png",
+      "bytes": 60511,
+      "sha256": "012a1ff0392481d71ae4b8a25b325f1502c67dc99ac34978e7ec35ec1d6993e2"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/routing-tests.txt",
+      "bytes": 2820,
+      "sha256": "507c3de7a0566d3fee527d02ace364da4ff3f52d7ae89fdcc1a5b7dc2be29ed6"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/sanitized-secret-check.json",
+      "bytes": 278,
+      "sha256": "20027157fa182650a789050a715f289c0978147dc27070282526af14a3df7b0c"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/siblings-mobile.png",
+      "bytes": 27740,
+      "sha256": "9cdd9a9fccacc08b97b247023a23aa705cb87bc30f1b7b7739cf71da233d6000"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/therapist-desktop.png",
+      "bytes": 56910,
+      "sha256": "537c7cffc7fef0bcbf829d648e84850414464a71797b62f5a41d2fb0054ec5cf"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/typecheck.txt",
+      "bytes": 57,
+      "sha256": "25dcb26872276a1ee654f01903914f6e704d3607dd11d7a8240136bdf230dc92"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-04/worlds-desktop.png",
+      "bytes": 95659,
+      "sha256": "4b0989ef8c0bef20123ce8706e2b84ab5dc9d23a4b8ede8045762973dc0b6367"
+    },
+    {
+      "path": "frontend/src/app/layouts/PageFrame.tsx",
+      "bytes": 1261,
+      "sha256": "b9355196ac69c0ca2542b3245786dc3cdeb802d67a853c2498d9c6e3378095d2"
+    },
+    {
+      "path": "frontend/src/app/routeCapabilities.ts",
+      "bytes": 1467,
+      "sha256": "855b5df05f7cfc85106c82dd4d31889b357153ec4cb1864639f2116a3de2098f"
+    },
+    {
+      "path": "frontend/src/components/common/FamilyTrackingPanel.tsx",
+      "bytes": 12016,
+      "sha256": "c6afc5fc27aaed5de5798b4f440dad24a5d2897cefe68c74740b33f7eb318597"
+    },
+    {
+      "path": "frontend/src/components/common/Inp.tsx",
+      "bytes": 1872,
+      "sha256": "969cac87a36b3f2de489d782f3aa87abcb90b37212d54782bfb361fc6567c9fe"
+    },
+    {
+      "path": "frontend/src/components/common/OperationalDashboard.tsx",
+      "bytes": 5316,
+      "sha256": "9c0cdb7032c4df06a18cf24f35e6101a1e0b38c5490135468cfbe44c476f76b0"
+    },
+    {
+      "path": "frontend/src/hooks/useFamilyTracking.ts",
+      "bytes": 1784,
+      "sha256": "636ec5059ccc2063f0f97cddb1f7c696884af2c6b07d8a21ae3a405348874ec8"
+    },
+    {
+      "path": "frontend/src/hooks/useSelectedFamilyPatient.ts",
+      "bytes": 1243,
+      "sha256": "b6507f701ab0b70f51cd0ad9d0c486a79ce234dc6124ed31bb8cf20f0f06e5ad"
+    },
+    {
+      "path": "frontend/src/pages/admin/AdminPanel.tsx",
+      "bytes": 258,
+      "sha256": "03891bed978f1242c4b0fd5fe8a94fb17eac10bef44f371190a35911d70a5aa1"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/AccountAccessInfo.tsx",
+      "bytes": 2592,
+      "sha256": "490809a532634715e25ee71e15ed90f521e0930c81bcf3e9a313cd6f190957fe"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/ForgotPassword.tsx",
+      "bytes": 238,
+      "sha256": "4efc13f8d6a9f5fdaacf54b95a6ef0654d83678b6a6153e8f59975c946521892"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/Onboarding.tsx",
+      "bytes": 263,
+      "sha256": "534c7e34cfc7d3c4bbff2c209f32b53a492f98b73cec7831baddcdb1ba3b6a4d"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/RegisterPadre.tsx",
+      "bytes": 296,
+      "sha256": "ca69e4a2c95793541c7e13786ab2d3ebe0c363b3fdc84853a085bcfcc0a72dad"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/RegisterSelector.tsx",
+      "bytes": 244,
+      "sha256": "17cd5629e6dacba3b228f6bdd52b25f7d6b8f5a14e7f29d1bcb5e1586947beda"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/RegisterTerapeuta.tsx",
+      "bytes": 266,
+      "sha256": "06218762fab8e1a7772a98031a9022db10343a174a3a82f698aa4ceaff1d4f3e"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/RegisterTerapeutaSuccess.tsx",
+      "bytes": 273,
+      "sha256": "6e2cd7f3c5fe08bac6bd764faf4be2b5c9979bcafba5ccf6e69ff53080c81029"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/RegisterVerify.tsx",
+      "bytes": 242,
+      "sha256": "a4f49b3edd0f790c9872cdfa6dacfe219628e3f64d8c06e4f4f33eb324eb8119"
+    },
+    {
+      "path": "frontend/src/pages/auth/Auth/TerapeutaLanding.tsx",
+      "bytes": 265,
+      "sha256": "b5ad136cf0e2526c813e7d342531779a4c5687715ea40d48582d1015ae3bfe95"
+    },
+    {
+      "path": "frontend/src/pages/auth/LoginPage.tsx",
+      "bytes": 11419,
+      "sha256": "f76f72bd5d33f6d724fd6d67cd177a7fc243ab90bfe7166b1db9835b57d12c97"
+    },
+    {
+      "path": "frontend/src/pages/padre/MundoAshaProgreso.tsx",
+      "bytes": 1627,
+      "sha256": "e224a9b589cd2e258e33835626e155175c3bab0f6b8b2333f18a4d06b268bbd3"
+    },
+    {
+      "path": "frontend/src/pages/padre/Padre/PadreAgendaMiAgenda.tsx",
+      "bytes": 30180,
+      "sha256": "2f50a55d7d7b1acc1d953bb0c3b806cbb13cfc4e05b5e3e049f8255d3316434d"
+    },
+    {
+      "path": "frontend/src/pages/padre/Padre/PadrePsicologos.tsx",
+      "bytes": 2779,
+      "sha256": "cb912e54884203109257224120fc2c387882ebdb42040d24dff5f3ac6d66acf3"
+    },
+    {
+      "path": "frontend/src/pages/padre/Sessions/MundoAshaHome.tsx",
+      "bytes": 5401,
+      "sha256": "01266723986d6574f58d8c32a81f2f9e87791db602820483010a3bcb91cfc55c"
+    },
+    {
+      "path": "frontend/src/pages/padre/dashboard/PadreHome.tsx",
+      "bytes": 471,
+      "sha256": "5f85eb03174089cb91c60c59619cd6f547872c0bd91bd3bd9f5f6e495d89cd5f"
+    },
+    {
+      "path": "frontend/src/pages/padre/journey/PadreConsentimiento.tsx",
+      "bytes": 1479,
+      "sha256": "1890e66976c73e2aa906d260a0c1c04f2ad14980428b582654b69fa6009953b9"
+    },
+    {
+      "path": "frontend/src/pages/padre/journey/PadreRecorrido.tsx",
+      "bytes": 261,
+      "sha256": "82e86ff90d0f43c1c1b29354993b123831c75293bc124b299a57908a26893d48"
+    },
+    {
+      "path": "frontend/src/pages/padre/journey/PadreSeguimiento.tsx",
+      "bytes": 263,
+      "sha256": "a4c5cb0d5f1d6c1a70a7d4aad600afd55601ce860f7621a89e53eb4496166eb4"
+    },
+    {
+      "path": "frontend/src/pages/padre/journey/camino/MiCaminoAsha.tsx",
+      "bytes": 301,
+      "sha256": "1119f7806d8e826d954f7f7948aec18500fd6e16d8be6a9a1d21b44ede3e5fd2"
+    },
+    {
+      "path": "frontend/src/pages/padre/reports/PadreReportesundefined.tsx",
+      "bytes": 14032,
+      "sha256": "7eca8dfa1c62785c3e5237ae1eea79f29ac54062745f00b8bc22c468f79ba32a"
+    },
+    {
+      "path": "frontend/src/pages/padre/settings/PadreConfig.tsx",
+      "bytes": 4718,
+      "sha256": "33ae231399bc987784742a5adbf9688b397c5b42187ba645d98f4db210ea3025"
+    },
+    {
+      "path": "frontend/src/pages/padre/settings/PadreConfigDeleteChild.tsx",
+      "bytes": 2467,
+      "sha256": "d965dbf16be6c3dafaef579103b82dd95b5d1bbf52f65512cbaeefda3b3b5cbb"
+    },
+    {
+      "path": "frontend/src/pages/padre/settings/PadreConfigHijos.tsx",
+      "bytes": 3790,
+      "sha256": "42eb050a572351870d1b0243ce26c8a4ebf42fafba8d0b15f70a20e3a3a9e848"
+    },
+    {
+      "path": "frontend/src/pages/padre/settings/PadreConfigShowAddChildModal.tsx",
+      "bytes": 4829,
+      "sha256": "aa3d37f78081f47ee5ec947a16d14c38610dc968b1d55482976bd36a59f121cb"
+    },
+    {
+      "path": "frontend/src/pages/terapeuta/TerapeutaHome.tsx",
+      "bytes": 265,
+      "sha256": "de1882318913d689361a40c95d815dada36d1c6e50bafcfea4edd40b2f7b77cb"
+    },
+    {
+      "path": "frontend/src/services/familyTracking.ts",
+      "bytes": 2387,
+      "sha256": "141f5c02d33b2cff826bb1fdcd3b6d24552746101318046c3cdf4f325eccc763"
+    },
+    {
+      "path": "frontend/src/services/learningWorlds.ts",
+      "bytes": 4470,
+      "sha256": "f87f3de04b50aaa0068a78c83db65043fa493aef4910f9879302e8d167471ac6"
+    },
+    {
+      "path": "frontend/tests/family-tracking.test.tsx",
+      "bytes": 8423,
+      "sha256": "93150be4deb5421284488f87f3d834498ef678ebc509d36c739717db41092053"
+    },
+    {
+      "path": "frontend/tests/integration-ui.test.tsx",
+      "bytes": 11105,
+      "sha256": "14c43412f89af9d10ab3bc571c87e3987e723263709a8c50d030967d68ecd106"
+    },
+    {
+      "path": "frontend/tests/phase3-coherence.test.tsx",
+      "bytes": 13398,
+      "sha256": "b71f20f2aa3446a98e3b5f63f74296cac0bcd14d569642c77edc7bedf62abeca"
+    },
+    {
+      "path": "frontend/tests/screens.test.tsx",
+      "bytes": 1768,
+      "sha256": "6d375a04d1f89905a13188a0902d6bf40f3c07f7b1504edbcb5b01a72c49cfed"
+    },
+    {
+      "path": "output/pdf/Auditoria_Fase3_AshaKids_2026-10-09-04.pdf",
+      "bytes": 283731,
+      "sha256": "a5ea1c8d1056a12423a9a22cb3f1be4add9a3f2cb4e6255c800294822b4be89d"
+    },
+    {
+      "path": "tools/reports/build_backend_audit_pdf.py",
+      "bytes": 6136,
+      "sha256": "e5139cb36f46f02e9be27ec40187fad239d68b98822f111a504c29a42770a962"
+    }
+  ]
+}

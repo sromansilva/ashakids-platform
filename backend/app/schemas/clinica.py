@@ -1,8 +1,10 @@
 """Contratos explícitos, fechas con zona horaria y límites de entrada."""
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Annotated, Literal
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator, HttpUrl
+from app.core.config import settings
+from app.schemas.reglas import Nombre, Apellido, Nacimiento, Sexo
 
 Id = Annotated[int, Field(gt=0)]
 Nota = Annotated[str, Field(max_length=10000)]
@@ -16,18 +18,23 @@ class Salida(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-class PacienteDatos(Entrada):
-    nombres_paciente: str = Field(min_length=1, max_length=60)
-    apellidos_paciente: str = Field(min_length=1, max_length=80)
-    fecha_nacimiento: date
-    sexo: str = Field(min_length=1, max_length=10)
+from app.schemas.pacientes import ALLOWED_AVATARS
 
-    @field_validator("fecha_nacimiento")
+
+class PacienteDatos(Entrada):
+    nombres_paciente: Nombre
+    apellidos_paciente: Apellido
+    fecha_nacimiento: Nacimiento
+    sexo: Sexo
+    avatar_nombre: str = Field(default="zorro", max_length=20)
+
+    @field_validator("avatar_nombre")
     @classmethod
-    def nacimiento_no_futuro(cls, value):
-        if value > date.today():
-            raise ValueError("La fecha de nacimiento no puede ser futura.")
-        return value
+    def validar_avatar(cls, v: str) -> str:
+        v_clean = v.strip().lower()
+        if v_clean not in ALLOWED_AVATARS:
+            raise ValueError(f"Avatar inválido. Opciones permitidas: {', '.join(sorted(ALLOWED_AVATARS))}")
+        return v_clean
 
 
 class PacienteCrear(PacienteDatos):
@@ -35,10 +42,16 @@ class PacienteCrear(PacienteDatos):
 
 
 class PacienteSalida(PacienteDatos, Salida):
+    # Lectura tolerante de vocabulario/datos antiguos; no reescribirlos al consultar.
+    nombres_paciente: str
+    apellidos_paciente: str
+    fecha_nacimiento: date
+    sexo: str
     id_paciente: int
     id_tutor: int
     activo: bool
     fecha_registro: datetime
+    avatar_nombre: str = "zorro"
 
 
 class TratamientoCrear(Entrada):
@@ -51,6 +64,9 @@ class TratamientoCrear(Entrada):
 
 
 class TratamientoSalida(Salida):
+    id_sesion_origen: int | None = None
+    area: str | None = None
+    mundos_asignados: list[str] = Field(default_factory=list)
     id_paciente: int | None = None
     paciente_nombre: str | None = None
     terapeuta_nombre: str | None = None
@@ -67,19 +83,34 @@ class TratamientoSalida(Salida):
 
 class CitaHorario(Entrada):
     fecha_hora_inicio: AwareDatetime
-    fecha_hora_fin: AwareDatetime
+    fecha_hora_fin: AwareDatetime | None = None
     modalidad: Literal["VIRTUAL", "PRESENCIAL"]
     localizacion: str | None = Field(default=None, max_length=255)
 
     @model_validator(mode="after")
     def intervalo_valido(self):
-        if self.fecha_hora_fin <= self.fecha_hora_inicio:
-            raise ValueError("El fin debe ser posterior al inicio.")
+        duration = settings.APPOINTMENT_DURATION_MINUTES
+        expected = self.fecha_hora_inicio + timedelta(minutes=duration)
+        if self.fecha_hora_fin is not None and self.fecha_hora_fin != expected:
+            raise ValueError(f"La cita dura {duration} minutos.")
+        self.fecha_hora_fin = expected
         return self
 
 
 class CitaCrear(CitaHorario):
-    id_tratamiento: Id
+    id_tratamiento: Id | None = None
+    id_paciente: Id | None = None
+    id_terapeuta: Id | None = None
+    tipo_cita: Literal["INTRODUCTORIA", "TERAPIA"] = "TERAPIA"
+
+    @model_validator(mode="after")
+    def destino(self):
+        if self.tipo_cita == "INTRODUCTORIA":
+            if self.id_tratamiento or not self.id_paciente or not self.id_terapeuta:
+                raise ValueError("La introducción requiere niño y terapeuta, sin tratamiento.")
+        elif not self.id_tratamiento:
+            raise ValueError("La terapia requiere un plan.")
+        return self
 
 
 class CitaEstado(Entrada):
@@ -87,13 +118,17 @@ class CitaEstado(Entrada):
 
 
 class CitaSalida(Salida):
+    puede_editar: bool = False
+    zoom_join_url: str | None = None
+    zoom_origen: Literal["AUTOMATICA", "MANUAL"] | None = None
     paciente_nombre: str | None = None
     terapeuta_nombre: str | None = None
     id_sesion: int | None = None
     id_reserva: int
     id_paciente: int
     id_terapeuta: int
-    id_tratamiento: int
+    id_tratamiento: int | None
+    tipo_cita: str
     fecha_hora_inicio: datetime
     fecha_hora_fin: datetime
     modalidad: str
@@ -111,6 +146,7 @@ class SesionCerrar(Entrada):
 
 
 class SesionSalida(Salida):
+    puede_editar: bool = False
     cita: CitaSalida | None = None
     reporte_disponible: bool = False
     id_sesion: int
@@ -132,3 +168,33 @@ class ReporteSalida(ReporteDatos, Salida):
     id_reporte_sesion: int
     id_sesion: int
     fecha_creacion: datetime
+
+
+class PlanCrear(Entrada):
+    nombre_tratamiento: str = Field(min_length=1, max_length=100)
+    descripcion: Nota | None = None
+    area: Literal["FLUIDEZ", "HABLA", "LENGUAJE", "VOZ", "OROFACIAL"]
+    mundos_asignados: list[Literal["FLUIDEZ", "HABLA", "LENGUAJE", "VOZ", "OROFACIAL"]] = Field(min_length=1, max_length=5)
+    sesiones_recomendadas: int = Field(ge=1, le=31)
+
+    @field_validator("mundos_asignados")
+    @classmethod
+    def sin_repeticiones(cls, value):
+        if len(set(value)) != len(value):
+            raise ValueError("Seleccione mundos distintos.")
+        return value
+
+
+class CitaReunion(Entrada):
+    zoom_join_url: str | None = Field(default=None, max_length=2048)
+
+    @field_validator('zoom_join_url')
+    @classmethod
+    def enlace_externo(cls, value):
+        if value is None:
+            return None
+        url = HttpUrl(value)
+        host = url.host or ''
+        if url.scheme != 'https' or url.username or url.password or url.port not in {None, 443} or not (host == 'zoom.us' or host.endswith('.zoom.us')):
+            raise ValueError('Use un enlace HTTPS de Zoom sin credenciales en la URL.')
+        return str(url)

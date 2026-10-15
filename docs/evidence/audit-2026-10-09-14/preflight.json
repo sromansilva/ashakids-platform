@@ -1,0 +1,328 @@
+{
+  "runtime_exists": [
+    {
+      "exists": false
+    }
+  ],
+  "tables": [
+    {
+      "name": "actividades",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "administradores",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "auditoria_cambios",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "conversaciones",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "evaluaciones_ia",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "expedientes",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "logros",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "mensaje_adjuntos",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "mensajes",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "mundos",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "niveles",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "objetivos",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "pacientes",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "perfil_logros",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "perfiles",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "reportes_sesion",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "reservas",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "resultados_nivel",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "roles",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "sesiones",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "sesiones_autenticacion",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "terapeutas",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "tratamientos",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "tutores",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "usuario_roles",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    },
+    {
+      "name": "usuarios",
+      "rls": true,
+      "forced": false,
+      "owned_by_current": true
+    }
+  ],
+  "policies": [],
+  "public_acl": [
+    {
+      "kind": "schema",
+      "name": "public",
+      "privilege_type": "USAGE"
+    },
+    {
+      "kind": "database",
+      "name": "configured_database",
+      "privilege_type": "TEMPORARY"
+    },
+    {
+      "kind": "database",
+      "name": "configured_database",
+      "privilege_type": "CONNECT"
+    }
+  ],
+  "public_tables": [],
+  "definer_public_execute": [
+    {
+      "schema": "graphql",
+      "name": "get_schema_version",
+      "privilege_type": "EXECUTE"
+    },
+    {
+      "schema": "graphql",
+      "name": "increment_schema_version",
+      "privilege_type": "EXECUTE"
+    }
+  ],
+  "sequences": [
+    {
+      "table_name": "actividades",
+      "column_name": "id_actividad",
+      "sequence_name": "public.actividades_id_actividad_seq"
+    },
+    {
+      "table_name": "administradores",
+      "column_name": "id_administrador",
+      "sequence_name": "public.administradores_id_administrador_seq"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "id_auditoria",
+      "sequence_name": "public.auditoria_cambios_id_auditoria_seq"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "id_conversacion",
+      "sequence_name": "public.conversaciones_id_conversacion_seq"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "id_evaluacion_ia",
+      "sequence_name": "public.evaluaciones_ia_id_evaluacion_ia_seq"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "id_expediente",
+      "sequence_name": "public.expedientes_id_expediente_seq"
+    },
+    {
+      "table_name": "logros",
+      "column_name": "id_logro",
+      "sequence_name": "public.logros_id_logro_seq"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "column_name": "id_adjunto",
+      "sequence_name": "public.mensaje_adjuntos_id_adjunto_seq"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "id_mensaje",
+      "sequence_name": "public.mensajes_id_mensaje_seq"
+    },
+    {
+      "table_name": "mundos",
+      "column_name": "id_mundo",
+      "sequence_name": "public.mundos_id_mundo_seq"
+    },
+    {
+      "table_name": "niveles",
+      "column_name": "id_nivel",
+      "sequence_name": "public.niveles_id_nivel_seq"
+    },
+    {
+      "table_name": "objetivos",
+      "column_name": "id_objetivo",
+      "sequence_name": "public.objetivos_id_objetivo_seq"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "id_paciente",
+      "sequence_name": "public.pacientes_id_paciente_seq"
+    },
+    {
+      "table_name": "perfil_logros",
+      "column_name": "id_perfil_logro",
+      "sequence_name": "public.perfil_logros_id_perfil_logro_seq"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "id_perfil",
+      "sequence_name": "public.perfiles_id_perfil_seq"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "id_reporte_sesion",
+      "sequence_name": "public.reportes_sesion_id_reporte_sesion_seq"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_reserva",
+      "sequence_name": "public.reservas_id_reserva_seq"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "id_resultado_nivel",
+      "sequence_name": "public.resultados_nivel_id_resultado_nivel_seq"
+    },
+    {
+      "table_name": "roles",
+      "column_name": "id_rol",
+      "sequence_name": "public.roles_id_rol_seq"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "id_sesion",
+      "sequence_name": "public.sesiones_id_sesion_seq"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "id_sesion_auth",
+      "sequence_name": "public.sesiones_autenticacion_id_sesion_auth_seq"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "id_terapeuta",
+      "sequence_name": "public.terapeutas_id_terapeuta_seq"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_tratamiento",
+      "sequence_name": "public.tratamientos_id_tratamiento_seq"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "id_tutor",
+      "sequence_name": "public.tutores_id_tutor_seq"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "id_usuario_rol",
+      "sequence_name": "public.usuario_roles_id_usuario_rol_seq"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "id_usuario",
+      "sequence_name": "public.usuarios_id_usuario_seq"
+    }
+  ]
+}

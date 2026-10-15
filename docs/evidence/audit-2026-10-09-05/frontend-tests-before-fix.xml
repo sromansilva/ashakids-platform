@@ -1,0 +1,1149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<testsuites name="vitest tests" tests="216" failures="8" errors="0" time="21.3164576">
+    <testsuite name="tests/access.test.tsx" timestamp="2026-10-09T08:01:34.528Z" hostname="Piero" tests="5" failures="0" errors="0" skipped="0" time="0.3505667">
+        <testcase classname="tests/access.test.tsx" name="Waits for the session before rendering a protected view" time="0.0471176">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Unauthenticated users are sent to login" time="0.166626">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Role mismatch does not mount the protected screen" time="0.0066436">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Authenticated users entering login go to their own dashboard" time="0.1208923">
+        </testcase>
+        <testcase classname="tests/access.test.tsx" name="Unknown routes render 404 instead of a family dashboard" time="0.0083101">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/auth-provider.test.tsx" timestamp="2026-10-09T08:01:34.533Z" hostname="Piero" tests="3" failures="0" errors="0" skipped="0" time="0.1221975">
+        <testcase classname="tests/auth-provider.test.tsx" name="Bootstrap restores a server session" time="0.0395786">
+        </testcase>
+        <testcase classname="tests/auth-provider.test.tsx" name="Network failure does not invent an authenticated session" time="0.0138337">
+        </testcase>
+        <testcase classname="tests/auth-provider.test.tsx" name="Login, expiration and logout update the session" time="0.0674877">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/boundary.test.tsx" timestamp="2026-10-09T08:01:34.534Z" hostname="Piero" tests="2" failures="0" errors="0" skipped="0" time="0.0769617">
+        <testcase classname="tests/boundary.test.tsx" name="An unresolved page chunk displays a loading indicator" time="0.0549014">
+        </testcase>
+        <testcase classname="tests/boundary.test.tsx" name="A page render failure offers recovery instead of a blank screen" time="0.0203866">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/family-tracking.test.tsx" timestamp="2026-10-09T08:01:34.536Z" hostname="Piero" tests="12" failures="0" errors="0" skipped="0" time="0.7608411">
+        <testcase classname="tests/family-tracking.test.tsx" name="Scopes identical first names by ID and excludes completed, cancelled and expired appointments" time="0.0125157">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Counts only finalised attended sessions and uses the Lima month boundary" time="0.0009074">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Has no upcoming appointment after completing the only session" time="0.0003782">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Does not mark reservation, therapy, attendance or report milestones without records" time="0.000271">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Home presents persisted reports and no invented progress, steps or professionals" time="0.1880336">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Switches siblings with identical names and retains selection after a new route mount" time="0.1681901">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Shows empty family state without falling back to fictional children" time="0.0320195">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Shows loading instead of synthetic or zero-value metrics" time="0.0238702">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Keeps server failures visible and retries a read" time="0.0999404">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Journey shows real treatments and sessions in its sections" time="0.1281562">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="Reports without rows do not invent recommendations" time="0.0567234">
+        </testcase>
+        <testcase classname="tests/family-tracking.test.tsx" name="A failed report read offers retry without presenting a made-up report" time="0.0485426">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/http.test.ts" timestamp="2026-10-09T08:01:34.538Z" hostname="Piero" tests="4" failures="0" errors="0" skipped="0" time="0.0068565">
+        <testcase classname="tests/http.test.ts" name="API requests carry session cookies" time="0.0035514">
+        </testcase>
+        <testcase classname="tests/http.test.ts" name="Validation arrays become a readable error message" time="0.000787">
+        </testcase>
+        <testcase classname="tests/http.test.ts" name="Network errors are normalized" time="0.0003069">
+        </testcase>
+        <testcase classname="tests/http.test.ts" name="401 expires a session, but rejected login does not emit expiration" time="0.0014154">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/integration-ui.test.tsx" timestamp="2026-10-09T08:01:34.539Z" hostname="Piero" tests="33" failures="0" errors="0" skipped="0" time="1.4157221">
+        <testcase classname="tests/integration-ui.test.tsx" name="Family reports distinguish persisted session data from demo metrics" time="0.3074235">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Family cannot simulate professional confirmation of a pending appointment" time="0.2358724">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Keeps the original admin patient table and opens the real treatment selector" time="0.1202181">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Keeps patient input and displays a server failure instead of fake success" time="0.1148076">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Books against an authorized treatment inside the existing agenda, with explicit Lima dates" time="0.1848578">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Shows saved session report fields to the family without clinical mutation controls" time="0.1668759">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Edits the four real report fields inside the administrator appointment detail" time="0.1693922">
+            <system-err>
+Warning: Encountered two children with the same key, `9`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at section
+    at SessionActions (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/components/common/SessionActions.tsx:56:27)
+    at div
+    at div
+    at div
+    at AdminCitas (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/pages/admin/AdminModulosGenerales/AdminCitas.tsx:17:77)
+    at RenderedRoute (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:6309:26)
+    at Outlet (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7125:26)
+    at div
+    at div
+    at main
+    at div
+    at DashLayout (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/layouts/DashLayout.tsx:11:3)
+    at PageFrame (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/layouts/PageFrame.tsx:10:61)
+    at RenderedRoute (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:6309:26)
+    at Routes (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7195:3)
+    at Suspense
+    at RenderBoundary (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/PageBoundary.tsx:7:1)
+    at PageBoundary (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/PageBoundary.tsx:45:25)
+    at RouteAccess (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/RouteAccess.tsx:7:24)
+    at AppRouter (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/AppRouter.tsx:12:319)
+    at Router (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7134:13)
+    at MemoryRouter (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7044:3)
+    at QueryClientProvider (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:42:32)
+
+Warning: Encountered two children with the same key, `9`. Keys should be unique so that components maintain their identity across updates. Non-unique keys may cause children to be duplicated and/or omitted — the behavior is unsupported and could change in a future version.
+    at section
+    at SessionActions (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/components/common/SessionActions.tsx:56:27)
+    at div
+    at div
+    at div
+    at AdminCitas (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/pages/admin/AdminModulosGenerales/AdminCitas.tsx:17:77)
+    at RenderedRoute (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:6309:26)
+    at Outlet (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7125:26)
+    at div
+    at div
+    at main
+    at div
+    at DashLayout (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/layouts/DashLayout.tsx:11:3)
+    at PageFrame (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/layouts/PageFrame.tsx:10:61)
+    at RenderedRoute (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:6309:26)
+    at Routes (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7195:3)
+    at Suspense
+    at RenderBoundary (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/PageBoundary.tsx:7:1)
+    at PageBoundary (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/PageBoundary.tsx:45:25)
+    at RouteAccess (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/RouteAccess.tsx:7:24)
+    at AppRouter (C:/Users/piero/Desktop/ASHAKIDS/frontend/src/app/AppRouter.tsx:12:319)
+    at Router (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7134:13)
+    at MemoryRouter (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/react-router/dist/development/chunk-OB3PAWPO.mjs:7044:3)
+    at QueryClientProvider (file:///C:/Users/piero/Desktop/ASHAKIDS/frontend/node_modules/@tanstack/react-query/build/modern/QueryClientProvider.js:42:32)
+
+            </system-err>
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Does not populate the users table with demo accounts on a network error" time="0.1070775">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /usuarios uses the centralized cookie client" time="0.0012883">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /usuarios/1 uses the centralized cookie client" time="0.0004864">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /usuarios uses the centralized cookie client" time="0.000363">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PATCH /usuarios/1 uses the centralized cookie client" time="0.0003078">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /pacientes uses the centralized cookie client" time="0.000308">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /pacientes/12 uses the centralized cookie client" time="0.0002612">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /pacientes uses the centralized cookie client" time="0.0002505">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PUT /pacientes/12 uses the centralized cookie client" time="0.0002223">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; DELETE /pacientes/12 uses the centralized cookie client" time="0.0002403">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /pacientes/12/tratamientos uses the centralized cookie client" time="0.0002355">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /tratamientos uses the centralized cookie client" time="0.0002198">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /citas uses the centralized cookie client" time="0.0002112">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /citas/25 uses the centralized cookie client" time="0.0002264">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /citas uses the centralized cookie client" time="0.0002186">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PUT /citas/25 uses the centralized cookie client" time="0.0002018">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PATCH /citas/25/estado uses the centralized cookie client" time="0.0002087">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /sesiones uses the centralized cookie client" time="0.0001791">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /sesiones/9 uses the centralized cookie client" time="0.0002024">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /sesiones uses the centralized cookie client" time="0.0002091">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /sesiones/9/iniciar uses the centralized cookie client" time="0.0002004">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; POST /sesiones/9/cerrar uses the centralized cookie client" time="0.0001875">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; GET /sesiones/9/reporte uses the centralized cookie client" time="0.0002189">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Domain service contracts &gt; PUT /sesiones/9/reporte uses the centralized cookie client" time="0.0001978">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Reads pagination totals and serializes false/zero filters without dropping them" time="0.0004513">
+        </testcase>
+        <testcase classname="tests/integration-ui.test.tsx" name="Discards a delayed result after the authenticated identity changes" time="0.0007129">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/interactions.test.tsx" timestamp="2026-10-09T08:01:34.542Z" hostname="Piero" tests="4" failures="0" errors="0" skipped="0" time="1.2187251">
+        <testcase classname="tests/interactions.test.tsx" name="The assistant opens and closes with its extracted avatar component" time="0.4332435">
+        </testcase>
+        <testcase classname="tests/interactions.test.tsx" name="A therapist can open every section of a simulated patient record" time="0.554425">
+        </testcase>
+        <testcase classname="tests/interactions.test.tsx" name="Therapist profile input uses the shared string-value contract" time="0.0590813">
+        </testcase>
+        <testcase classname="tests/interactions.test.tsx" name="Public navigation reaches specialists through the router" time="0.1708667">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/phase3-coherence.test.tsx" timestamp="2026-10-09T08:01:34.543Z" hostname="Piero" tests="33" failures="0" errors="0" skipped="0" time="2.4846807">
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register explains real access without invented credentials, email or success" time="0.369223">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/padre explains real access without invented credentials, email or success" time="0.0416296">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/terapeuta explains real access without invented credentials, email or success" time="0.0500629">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/verify explains real access without invented credentials, email or success" time="0.0393748">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/register/terapeuta/success explains real access without invented credentials, email or success" time="0.0315736">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/onboarding explains real access without invented credentials, email or success" time="0.037875">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/forgot-password explains real access without invented credentials, email or success" time="0.0425629">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Consent is pending, does not record acceptance, and leads to real family settings" time="0.1602351">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Family settings expose both siblings without a plan restriction and describe a historical soft delete" time="0.0786281">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Settings security, privacy and notification tabs do not fake writes" time="0.1056444">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="A failed patient create keeps form values and never announces success" time="0.1120764">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Family professionals are treatment assignments, not a mock directory" time="0.1063764">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/padre/recorrido reuses the persisted tracking model" time="0.0634374">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/padre/seguimiento reuses the persisted tracking model" time="0.0292628">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Therapist dashboard counts authorised data and never requests administrator accounts" time="0.1216264">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Admin dashboard derives active account count and excludes cancelled/completed/expired future appointments" time="0.1172702">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Dashboard loading never looks like zero available records" time="0.0139262">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Dashboard failure hides aggregates and can be retried" time="0.0557723">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Mundo ASHA uses the selected child ID and exposes proposals rather than fabricated mastery" time="0.1819718">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Mundo ASHA has an honest empty family state" time="0.0373277">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/academia does not claim verified rewards or completed levels" time="0.1002833">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/retos does not claim verified rewards or completed levels" time="0.1804982">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/insignias does not claim verified rewards or completed levels" time="0.1776313">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="/mundo-asha/perfil does not claim verified rewards or completed levels" time="0.2087477">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="A missing progress connection remains unknown rather than zero" time="0.0091846">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="An empty verified history opens only the first level" time="0.0003883">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="World progress ignores other children, versions and worlds" time="0.0002166">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Out of order completion cannot unlock a skipped level" time="0.0001733">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Verified mastery unlocks the next level and repeated attempts do not add duplicate mastery" time="0.0002066">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Completing each level once reaches the actual world total without replay inflation" time="0.0002063">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Conflicting repeated attempt IDs never contribute even when a third duplicate follows" time="0.0040931">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Oral production levels require professional validation, not a server quiz pass" time="0.0025715">
+        </testcase>
+        <testcase classname="tests/phase3-coherence.test.tsx" name="Unreviewed extensions and session prototypes stay explicitly labelled" time="0.0009394">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/providers.test.tsx" timestamp="2026-10-09T08:01:34.549Z" hostname="Piero" tests="4" failures="0" errors="0" skipped="0" time="0.4401378">
+        <testcase classname="tests/providers.test.tsx" name="Providers restore PADRE on a direct URL (same bootstrap as reload)" time="0.1699822">
+        </testcase>
+        <testcase classname="tests/providers.test.tsx" name="Providers restore TERAPEUTA on a direct URL (same bootstrap as reload)" time="0.0599305">
+        </testcase>
+        <testcase classname="tests/providers.test.tsx" name="Providers restore ADMIN on a direct URL (same bootstrap as reload)" time="0.076629">
+        </testcase>
+        <testcase classname="tests/providers.test.tsx" name="A failed real-provider login keeps the form mounted and shows its network error" time="0.1326512">
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/report-pdf.test.tsx" timestamp="2026-10-09T08:01:34.550Z" hostname="Piero" tests="18" failures="8" errors="0" skipped="0" time="2.2770224">
+        <testcase classname="tests/report-pdf.test.tsx" name="downloads PDF through the centralized cookie client" time="0.0060506">
+            <failure message="blob.slice(...).text is not a function" type="ApiError">
+ApiError: blob.slice(...).text is not a function
+ ❯ request src/api/client.ts:96:11
+ ❯ tests/report-pdf.test.tsx:19:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { status: +0, data: undefined }
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 401 keeps JSON errors and rejects download" time="0.0016851">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 403 keeps JSON errors and rejects download" time="0.0003873">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 404 keeps JSON errors and rejects download" time="0.0003375">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 422 keeps JSON errors and rejects download" time="0.000302">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="PDF 503 keeps JSON errors and rejects download" time="0.0002701">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0002606">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0039215">
+            <failure message="expected ApiError: blob.slice(...).text is not a f… { …(2) } to match object { status: 502 }
+(2 matching properties omitted from actual)" type="AssertionError">
+AssertionError: expected ApiError: blob.slice(...).text is not a f… { …(2) } to match object { status: 502 }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   &quot;status&quot;: 502,
++ ApiError {
++   &quot;status&quot;: 0,
+  }
+
+ ❯ tests/report-pdf.test.tsx:39:56
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0010036">
+            <failure message="expected ApiError: blob.slice(...).text is not a f… { …(2) } to match object { status: 502 }
+(2 matching properties omitted from actual)" type="AssertionError">
+AssertionError: expected ApiError: blob.slice(...).text is not a f… { …(2) } to match object { status: 502 }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   &quot;status&quot;: 502,
++ ApiError {
++   &quot;status&quot;: 0,
+  }
+
+ ❯ tests/report-pdf.test.tsx:39:56
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects unexpected and empty binary bodies" time="0.0002677">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects a PDF response from a previous account" time="0.0004899">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="rejects account change while the PDF body is being read" time="0.0013021">
+            <failure message="expected ApiError: blob.slice(...).text is not a f… { …(2) } to match object { name: &apos;AbortError&apos; }
+(2 matching properties omitted from actual)" type="AssertionError">
+AssertionError: expected ApiError: blob.slice(...).text is not a f… { …(2) } to match object { name: &apos;AbortError&apos; }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+- {
+-   &quot;name&quot;: &quot;AbortError&quot;,
++ ApiError {
++   &quot;name&quot;: &quot;ApiError&quot;,
+  }
+
+ ❯ tests/report-pdf.test.tsx:54:56
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="shows pending state, starts one download and releases its URL" time="1.0883239">
+            <failure message="Unable to find role=&quot;status&quot;
+
+Ignored nodes: comments, script, style
+[36m&lt;body&gt;[39m
+  [36m&lt;div&gt;[39m
+    [36m&lt;div[39m
+      [33mclass[39m=[32m&quot;space-y-2&quot;[39m
+    [36m&gt;[39m
+      [36m&lt;button[39m
+        [33mclass[39m=[32m&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;[39m
+        [33mtype[39m=[32m&quot;button&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;svg[39m
+          [33maria-hidden[39m=[32m&quot;true&quot;[39m
+          [33mclass[39m=[32m&quot;lucide lucide-download&quot;[39m
+          [33mfill[39m=[32m&quot;none&quot;[39m
+          [33mheight[39m=[32m&quot;16&quot;[39m
+          [33mstroke[39m=[32m&quot;currentColor&quot;[39m
+          [33mstroke-linecap[39m=[32m&quot;round&quot;[39m
+          [33mstroke-linejoin[39m=[32m&quot;round&quot;[39m
+          [33mstroke-width[39m=[32m&quot;2&quot;[39m
+          [33mviewBox[39m=[32m&quot;0 0 24 24&quot;[39m
+          [33mwidth[39m=[32m&quot;16&quot;[39m
+          [33mxmlns[39m=[32m&quot;http://www.w3.org/2000/svg&quot;[39m
+        [36m&gt;[39m
+          [36m&lt;path[39m
+            [33md[39m=[32m&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;polyline[39m
+            [33mpoints[39m=[32m&quot;7 10 12 15 17 10&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;line[39m
+            [33mx1[39m=[32m&quot;12&quot;[39m
+            [33mx2[39m=[32m&quot;12&quot;[39m
+            [33my1[39m=[32m&quot;15&quot;[39m
+            [33my2[39m=[32m&quot;3&quot;[39m
+          [36m/&gt;[39m
+        [36m&lt;/svg&gt;[39m
+        [0mDescargar reporte PDF[0m
+      [36m&lt;/button&gt;[39m
+      [36m&lt;div[39m
+        [33mclass[39m=[32m&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;[39m
+        [33mrole[39m=[32m&quot;alert&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;p&gt;[39m
+          [0mNo hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.[0m
+        [36m&lt;/p&gt;[39m
+      [36m&lt;/div&gt;[39m
+      [36m&lt;p[39m
+        [33mclass[39m=[32m&quot;text-sm text-[#4B4264]&quot;[39m
+      [36m&gt;[39m
+        [0mIncluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.[0m
+      [36m&lt;/p&gt;[39m
+    [36m&lt;/div&gt;[39m
+  [36m&lt;/div&gt;[39m
+[36m&lt;/body&gt;[39m
+
+Ignored nodes: comments, script, style
+[36m&lt;body&gt;[39m
+  [36m&lt;div&gt;[39m
+    [36m&lt;div[39m
+      [33mclass[39m=[32m&quot;space-y-2&quot;[39m
+    [36m&gt;[39m
+      [36m&lt;button[39m
+        [33mclass[39m=[32m&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;[39m
+        [33mtype[39m=[32m&quot;button&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;svg[39m
+          [33maria-hidden[39m=[32m&quot;true&quot;[39m
+          [33mclass[39m=[32m&quot;lucide lucide-download&quot;[39m
+          [33mfill[39m=[32m&quot;none&quot;[39m
+          [33mheight[39m=[32m&quot;16&quot;[39m
+          [33mstroke[39m=[32m&quot;currentColor&quot;[39m
+          [33mstroke-linecap[39m=[32m&quot;round&quot;[39m
+          [33mstroke-linejoin[39m=[32m&quot;round&quot;[39m
+          [33mstroke-width[39m=[32m&quot;2&quot;[39m
+          [33mviewBox[39m=[32m&quot;0 0 24 24&quot;[39m
+          [33mwidth[39m=[32m&quot;16&quot;[39m
+          [33mxmlns[39m=[32m&quot;http://www.w3.org/2000/svg&quot;[39m
+        [36m&gt;[39m
+          [36m&lt;path[39m
+            [33md[39m=[32m&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;polyline[39m
+            [33mpoints[39m=[32m&quot;7 10 12 15 17 10&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;line[39m
+            [33mx1[39m=[32m&quot;12&quot;[39m
+            [33mx2[39m=[32m&quot;12&quot;[39m
+            [33my1[39m=[32m&quot;15&quot;[39m
+            [33my2[39m=[32m&quot;3&quot;[39m
+          [36m/&gt;[39m
+        [36m&lt;/svg&gt;[39m
+        [0mDescargar reporte PDF[0m
+      [36m&lt;/button&gt;[39m
+      [36m&lt;div[39m
+        [33mclass[39m=[32m&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;[39m
+        [33mrole[39m=[32m&quot;alert&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;p&gt;[39m
+          [0mNo hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.[0m
+        [36m&lt;/p&gt;[39m
+      [36m&lt;/div&gt;[39m
+      [36m&lt;p[39m
+        [33mclass[39m=[32m&quot;text-sm text-[#4B4264]&quot;[39m
+      [36m&gt;[39m
+        [0mIncluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.[0m
+      [36m&lt;/p&gt;[39m
+    [36m&lt;/div&gt;[39m
+  [36m&lt;/div&gt;[39m
+[36m&lt;/body&gt;[39m" type="TestingLibraryElementError">
+TestingLibraryElementError: Unable to find role=&quot;status&quot;
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      class=&quot;space-y-2&quot;
+    &gt;
+      &lt;button
+        class=&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;
+        type=&quot;button&quot;
+      &gt;
+        &lt;svg
+          aria-hidden=&quot;true&quot;
+          class=&quot;lucide lucide-download&quot;
+          fill=&quot;none&quot;
+          height=&quot;16&quot;
+          stroke=&quot;currentColor&quot;
+          stroke-linecap=&quot;round&quot;
+          stroke-linejoin=&quot;round&quot;
+          stroke-width=&quot;2&quot;
+          viewBox=&quot;0 0 24 24&quot;
+          width=&quot;16&quot;
+          xmlns=&quot;http://www.w3.org/2000/svg&quot;
+        &gt;
+          &lt;path
+            d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;
+          /&gt;
+          &lt;polyline
+            points=&quot;7 10 12 15 17 10&quot;
+          /&gt;
+          &lt;line
+            x1=&quot;12&quot;
+            x2=&quot;12&quot;
+            y1=&quot;15&quot;
+            y2=&quot;3&quot;
+          /&gt;
+        &lt;/svg&gt;
+        Descargar reporte PDF
+      &lt;/button&gt;
+      &lt;div
+        class=&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;
+        role=&quot;alert&quot;
+      &gt;
+        &lt;p&gt;
+          No hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;p
+        class=&quot;text-sm text-[#4B4264]&quot;
+      &gt;
+        Incluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      class=&quot;space-y-2&quot;
+    &gt;
+      &lt;button
+        class=&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;
+        type=&quot;button&quot;
+      &gt;
+        &lt;svg
+          aria-hidden=&quot;true&quot;
+          class=&quot;lucide lucide-download&quot;
+          fill=&quot;none&quot;
+          height=&quot;16&quot;
+          stroke=&quot;currentColor&quot;
+          stroke-linecap=&quot;round&quot;
+          stroke-linejoin=&quot;round&quot;
+          stroke-width=&quot;2&quot;
+          viewBox=&quot;0 0 24 24&quot;
+          width=&quot;16&quot;
+          xmlns=&quot;http://www.w3.org/2000/svg&quot;
+        &gt;
+          &lt;path
+            d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;
+          /&gt;
+          &lt;polyline
+            points=&quot;7 10 12 15 17 10&quot;
+          /&gt;
+          &lt;line
+            x1=&quot;12&quot;
+            x2=&quot;12&quot;
+            y1=&quot;15&quot;
+            y2=&quot;3&quot;
+          /&gt;
+        &lt;/svg&gt;
+        Descargar reporte PDF
+      &lt;/button&gt;
+      &lt;div
+        class=&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;
+        role=&quot;alert&quot;
+      &gt;
+        &lt;p&gt;
+          No hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;p
+        class=&quot;text-sm text-[#4B4264]&quot;
+      &gt;
+        Incluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/report-pdf.test.tsx:64:23
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="failure does not create a file or false success and can retry" time="1.0466483">
+            <failure message="Unable to find role=&quot;status&quot;
+
+Ignored nodes: comments, script, style
+[36m&lt;body&gt;[39m
+  [36m&lt;div&gt;[39m
+    [36m&lt;div[39m
+      [33mclass[39m=[32m&quot;space-y-2&quot;[39m
+    [36m&gt;[39m
+      [36m&lt;button[39m
+        [33mclass[39m=[32m&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;[39m
+        [33mtype[39m=[32m&quot;button&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;svg[39m
+          [33maria-hidden[39m=[32m&quot;true&quot;[39m
+          [33mclass[39m=[32m&quot;lucide lucide-download&quot;[39m
+          [33mfill[39m=[32m&quot;none&quot;[39m
+          [33mheight[39m=[32m&quot;16&quot;[39m
+          [33mstroke[39m=[32m&quot;currentColor&quot;[39m
+          [33mstroke-linecap[39m=[32m&quot;round&quot;[39m
+          [33mstroke-linejoin[39m=[32m&quot;round&quot;[39m
+          [33mstroke-width[39m=[32m&quot;2&quot;[39m
+          [33mviewBox[39m=[32m&quot;0 0 24 24&quot;[39m
+          [33mwidth[39m=[32m&quot;16&quot;[39m
+          [33mxmlns[39m=[32m&quot;http://www.w3.org/2000/svg&quot;[39m
+        [36m&gt;[39m
+          [36m&lt;path[39m
+            [33md[39m=[32m&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;polyline[39m
+            [33mpoints[39m=[32m&quot;7 10 12 15 17 10&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;line[39m
+            [33mx1[39m=[32m&quot;12&quot;[39m
+            [33mx2[39m=[32m&quot;12&quot;[39m
+            [33my1[39m=[32m&quot;15&quot;[39m
+            [33my2[39m=[32m&quot;3&quot;[39m
+          [36m/&gt;[39m
+        [36m&lt;/svg&gt;[39m
+        [0mDescargar reporte PDF[0m
+      [36m&lt;/button&gt;[39m
+      [36m&lt;div[39m
+        [33mclass[39m=[32m&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;[39m
+        [33mrole[39m=[32m&quot;alert&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;p&gt;[39m
+          [0mNo hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.[0m
+        [36m&lt;/p&gt;[39m
+      [36m&lt;/div&gt;[39m
+      [36m&lt;p[39m
+        [33mclass[39m=[32m&quot;text-sm text-[#4B4264]&quot;[39m
+      [36m&gt;[39m
+        [0mIncluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.[0m
+      [36m&lt;/p&gt;[39m
+    [36m&lt;/div&gt;[39m
+  [36m&lt;/div&gt;[39m
+[36m&lt;/body&gt;[39m
+
+Ignored nodes: comments, script, style
+[36m&lt;body&gt;[39m
+  [36m&lt;div&gt;[39m
+    [36m&lt;div[39m
+      [33mclass[39m=[32m&quot;space-y-2&quot;[39m
+    [36m&gt;[39m
+      [36m&lt;button[39m
+        [33mclass[39m=[32m&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;[39m
+        [33mtype[39m=[32m&quot;button&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;svg[39m
+          [33maria-hidden[39m=[32m&quot;true&quot;[39m
+          [33mclass[39m=[32m&quot;lucide lucide-download&quot;[39m
+          [33mfill[39m=[32m&quot;none&quot;[39m
+          [33mheight[39m=[32m&quot;16&quot;[39m
+          [33mstroke[39m=[32m&quot;currentColor&quot;[39m
+          [33mstroke-linecap[39m=[32m&quot;round&quot;[39m
+          [33mstroke-linejoin[39m=[32m&quot;round&quot;[39m
+          [33mstroke-width[39m=[32m&quot;2&quot;[39m
+          [33mviewBox[39m=[32m&quot;0 0 24 24&quot;[39m
+          [33mwidth[39m=[32m&quot;16&quot;[39m
+          [33mxmlns[39m=[32m&quot;http://www.w3.org/2000/svg&quot;[39m
+        [36m&gt;[39m
+          [36m&lt;path[39m
+            [33md[39m=[32m&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;polyline[39m
+            [33mpoints[39m=[32m&quot;7 10 12 15 17 10&quot;[39m
+          [36m/&gt;[39m
+          [36m&lt;line[39m
+            [33mx1[39m=[32m&quot;12&quot;[39m
+            [33mx2[39m=[32m&quot;12&quot;[39m
+            [33my1[39m=[32m&quot;15&quot;[39m
+            [33my2[39m=[32m&quot;3&quot;[39m
+          [36m/&gt;[39m
+        [36m&lt;/svg&gt;[39m
+        [0mDescargar reporte PDF[0m
+      [36m&lt;/button&gt;[39m
+      [36m&lt;div[39m
+        [33mclass[39m=[32m&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;[39m
+        [33mrole[39m=[32m&quot;alert&quot;[39m
+      [36m&gt;[39m
+        [36m&lt;p&gt;[39m
+          [0mNo hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.[0m
+        [36m&lt;/p&gt;[39m
+      [36m&lt;/div&gt;[39m
+      [36m&lt;p[39m
+        [33mclass[39m=[32m&quot;text-sm text-[#4B4264]&quot;[39m
+      [36m&gt;[39m
+        [0mIncluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.[0m
+      [36m&lt;/p&gt;[39m
+    [36m&lt;/div&gt;[39m
+  [36m&lt;/div&gt;[39m
+[36m&lt;/body&gt;[39m" type="TestingLibraryElementError">
+TestingLibraryElementError: Unable to find role=&quot;status&quot;
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      class=&quot;space-y-2&quot;
+    &gt;
+      &lt;button
+        class=&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;
+        type=&quot;button&quot;
+      &gt;
+        &lt;svg
+          aria-hidden=&quot;true&quot;
+          class=&quot;lucide lucide-download&quot;
+          fill=&quot;none&quot;
+          height=&quot;16&quot;
+          stroke=&quot;currentColor&quot;
+          stroke-linecap=&quot;round&quot;
+          stroke-linejoin=&quot;round&quot;
+          stroke-width=&quot;2&quot;
+          viewBox=&quot;0 0 24 24&quot;
+          width=&quot;16&quot;
+          xmlns=&quot;http://www.w3.org/2000/svg&quot;
+        &gt;
+          &lt;path
+            d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;
+          /&gt;
+          &lt;polyline
+            points=&quot;7 10 12 15 17 10&quot;
+          /&gt;
+          &lt;line
+            x1=&quot;12&quot;
+            x2=&quot;12&quot;
+            y1=&quot;15&quot;
+            y2=&quot;3&quot;
+          /&gt;
+        &lt;/svg&gt;
+        Descargar reporte PDF
+      &lt;/button&gt;
+      &lt;div
+        class=&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;
+        role=&quot;alert&quot;
+      &gt;
+        &lt;p&gt;
+          No hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;p
+        class=&quot;text-sm text-[#4B4264]&quot;
+      &gt;
+        Incluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      class=&quot;space-y-2&quot;
+    &gt;
+      &lt;button
+        class=&quot;inline-flex items-center justify-center gap-1.5 font-bold rounded-2xl transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:pointer-events-none focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-400 focus-visible:ring-offset-2 select-none active:scale-[.97] text-sm px-5 py-2.5 border border-[#E8E5F4] bg-white text-[#1C1135] hover:bg-[#F5F3FF] &quot;
+        type=&quot;button&quot;
+      &gt;
+        &lt;svg
+          aria-hidden=&quot;true&quot;
+          class=&quot;lucide lucide-download&quot;
+          fill=&quot;none&quot;
+          height=&quot;16&quot;
+          stroke=&quot;currentColor&quot;
+          stroke-linecap=&quot;round&quot;
+          stroke-linejoin=&quot;round&quot;
+          stroke-width=&quot;2&quot;
+          viewBox=&quot;0 0 24 24&quot;
+          width=&quot;16&quot;
+          xmlns=&quot;http://www.w3.org/2000/svg&quot;
+        &gt;
+          &lt;path
+            d=&quot;M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4&quot;
+          /&gt;
+          &lt;polyline
+            points=&quot;7 10 12 15 17 10&quot;
+          /&gt;
+          &lt;line
+            x1=&quot;12&quot;
+            x2=&quot;12&quot;
+            y1=&quot;15&quot;
+            y2=&quot;3&quot;
+          /&gt;
+        &lt;/svg&gt;
+        Descargar reporte PDF
+      &lt;/button&gt;
+      &lt;div
+        class=&quot;my-3 p-3 rounded-2xl bg-red-50 text-red-700 text-sm&quot;
+        role=&quot;alert&quot;
+      &gt;
+        &lt;p&gt;
+          No hay conexión. Vuelve a descargar el reporte cuando el servidor esté disponible.
+        &lt;/p&gt;
+      &lt;/div&gt;
+      &lt;p
+        class=&quot;text-sm text-[#4B4264]&quot;
+      &gt;
+        Incluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+ ❯ waitForWrapper node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ tests/report-pdf.test.tsx:76:16
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="network error uses download copy, without pretending to save changes" time="0.0156197">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="unmount cancels download and does not create a file afterwards" time="0.0148183">
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="Family reports &gt; monthly entry contains no invented report, signature or PDF action" time="0.0720053">
+            <failure message="Unable to find an accessible element with the role &quot;button&quot; and name &quot;Progreso mensual (pendiente)&quot;
+
+Here are the accessible roles:
+
+  status:
+
+  Name &quot;&quot;:
+  [36m&lt;div[39m
+    [33maria-live[39m=[32m&quot;polite&quot;[39m
+    [33mclass[39m=[32m&quot;min-h-[50vh] flex items-center justify-center gap-3&quot;[39m
+    [33mrole[39m=[32m&quot;status&quot;[39m
+  [36m/&gt;[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name &quot;&quot;:
+  [36m&lt;p /&gt;[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m&lt;body&gt;[39m
+  [36m&lt;div&gt;[39m
+    [36m&lt;div[39m
+      [33maria-live[39m=[32m&quot;polite&quot;[39m
+      [33mclass[39m=[32m&quot;min-h-[50vh] flex items-center justify-center gap-3&quot;[39m
+      [33mrole[39m=[32m&quot;status&quot;[39m
+    [36m&gt;[39m
+      [36m&lt;span[39m
+        [33maria-hidden[39m=[32m&quot;true&quot;[39m
+        [33mclass[39m=[32m&quot;h-8 w-8 rounded-full border-4 border-violet-200 border-t-violet-600 animate-spin&quot;[39m
+      [36m/&gt;[39m
+      [36m&lt;p&gt;[39m
+        [0mCargando pantalla…[0m
+      [36m&lt;/p&gt;[39m
+    [36m&lt;/div&gt;[39m
+  [36m&lt;/div&gt;[39m
+[36m&lt;/body&gt;[39m" type="TestingLibraryElementError">
+TestingLibraryElementError: Unable to find an accessible element with the role &quot;button&quot; and name &quot;Progreso mensual (pendiente)&quot;
+
+Here are the accessible roles:
+
+  status:
+
+  Name &quot;&quot;:
+  &lt;div
+    aria-live=&quot;polite&quot;
+    class=&quot;min-h-[50vh] flex items-center justify-center gap-3&quot;
+    role=&quot;status&quot;
+  /&gt;
+
+  --------------------------------------------------
+  paragraph:
+
+  Name &quot;&quot;:
+  &lt;p /&gt;
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      aria-live=&quot;polite&quot;
+      class=&quot;min-h-[50vh] flex items-center justify-center gap-3&quot;
+      role=&quot;status&quot;
+    &gt;
+      &lt;span
+        aria-hidden=&quot;true&quot;
+        class=&quot;h-8 w-8 rounded-full border-4 border-violet-200 border-t-violet-600 animate-spin&quot;
+      /&gt;
+      &lt;p&gt;
+        Cargando pantalla…
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/report-pdf.test.tsx:99:28
+            </failure>
+        </testcase>
+        <testcase classname="tests/report-pdf.test.tsx" name="Family reports &gt; loading has no zero-session claim or empty-family fallback" time="0.0220293">
+            <failure message="Unable to find an element with the text: Sin datos. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m&lt;body&gt;[39m
+  [36m&lt;div&gt;[39m
+    [36m&lt;div[39m
+      [33maria-live[39m=[32m&quot;polite&quot;[39m
+      [33mclass[39m=[32m&quot;min-h-[50vh] flex items-center justify-center gap-3&quot;[39m
+      [33mrole[39m=[32m&quot;status&quot;[39m
+    [36m&gt;[39m
+      [36m&lt;span[39m
+        [33maria-hidden[39m=[32m&quot;true&quot;[39m
+        [33mclass[39m=[32m&quot;h-8 w-8 rounded-full border-4 border-violet-200 border-t-violet-600 animate-spin&quot;[39m
+      [36m/&gt;[39m
+      [36m&lt;p&gt;[39m
+        [0mCargando pantalla…[0m
+      [36m&lt;/p&gt;[39m
+    [36m&lt;/div&gt;[39m
+  [36m&lt;/div&gt;[39m
+[36m&lt;/body&gt;[39m" type="TestingLibraryElementError">
+TestingLibraryElementError: Unable to find an element with the text: Sin datos. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+&lt;body&gt;
+  &lt;div&gt;
+    &lt;div
+      aria-live=&quot;polite&quot;
+      class=&quot;min-h-[50vh] flex items-center justify-center gap-3&quot;
+      role=&quot;status&quot;
+    &gt;
+      &lt;span
+        aria-hidden=&quot;true&quot;
+        class=&quot;h-8 w-8 rounded-full border-4 border-violet-200 border-t-violet-600 animate-spin&quot;
+      /&gt;
+      &lt;p&gt;
+        Cargando pantalla…
+      &lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+ ❯ Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ tests/report-pdf.test.tsx:106:19
+            </failure>
+        </testcase>
+    </testsuite>
+    <testsuite name="tests/screens.test.tsx" timestamp="2026-10-09T08:01:34.560Z" hostname="Piero" tests="98" failures="0" errors="0" skipped="0" time="12.162746">
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /" time="0.9377701">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /login" time="0.0398868">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register" time="0.0156844">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/padre" time="0.0158311">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/verify" time="0.016028">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/terapeuta" time="0.015713">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/terapeuta/landing" time="0.0464544">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /register/terapeuta/success" time="0.0157487">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/reportes" time="0.2694039">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/usuarios" time="0.0452604">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/pacientes" time="0.0296179">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/citas" time="0.0309253">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/sesiones" time="0.1021441">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/analiticas" time="0.036162">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/mensajes" time="0.0736604">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/moderacion" time="0.0763348">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/solicitudes" time="0.0539943">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/core" time="0.2811122">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /onboarding" time="0.0146358">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /forgot-password" time="0.0054075">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /especialistas" time="1.1114842">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /especialidades" time="0.0989305">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /recursos" time="0.1284664">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /ashi" time="0.2065778">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /historias" time="0.0650412">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /sobre-nosotros" time="0.2512345">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /nosotros" time="0.0139718">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /planes" time="0.0317035">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /ayuda" time="0.2073926">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /contacto" time="0.0580124">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /trabaja" time="0.1261477">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/waiting" time="0.0494718">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/active" time="0.0572782">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/end" time="0.1990855">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre" time="0.0354137">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/camino" time="0.0415724">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/ayuda" time="0.0837293">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/recorrido" time="0.1715656">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/consentimiento" time="0.0319205">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/seguimiento" time="0.0266888">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/evaluacion" time="0.8715294">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/hijos" time="0.1619589">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/progreso" time="0.0606588">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/reportes" time="0.1949469">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/config" time="0.3205726">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/psicologos" time="0.034225">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/agenda" time="0.2740577">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/mensajes" time="0.0735199">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/compras" time="0.2222637">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/recompensas" time="0.0588973">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/incidencias" time="0.4840831">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha" time="0.2366314">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/cuentos" time="0.2725867">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/canciones" time="0.2212128">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/trabalenguas" time="0.2229147">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/adivinanzas" time="0.1403389">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/juegos" time="0.1361108">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/laberinto" time="0.3034018">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/isla" time="0.0530716">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/academia" time="0.0317062">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/retos" time="0.1070671">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/insignias" time="0.0285619">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /mundo-asha/perfil" time="0.0298242">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta" time="0.1117845">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/agenda" time="0.0490612">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/pacientes" time="0.0839552">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/mensajes" time="0.0912274">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/reportes" time="0.0809657">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/analiticas" time="0.0457493">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/ingresos" time="0.1166477">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/valoraciones" time="0.0801141">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/config" time="0.043971">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/datos-actividad" time="0.0319732">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /terapeuta/incidencias" time="0.1607448">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /pay" time="0.0778986">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /pay/history" time="0.0423285">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /pay/wallet" time="0.0764373">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session" time="0.0874086">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/prep" time="0.0470144">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/summary" time="0.0464975">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/rating" time="0.077401">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /session/rewards" time="0.0618363">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin" time="0.0238408">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/dashboard" time="0.0166923">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/cuentas" time="0.2291734">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/terapeutas" time="0.0968329">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/operacion" time="0.0493482">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/pagos" time="0.0457397">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/contenido" time="0.0831473">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/ml" time="0.0779888">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/auditoria" time="0.0622085">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /admin/config" time="0.0467234">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/dashboard" time="0.0260949">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/pacientes" time="0.0143236">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/perfil" time="0.0153484">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; /padre/mi-camino" time="0.0307019">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; Mundo ASHA uses the family destination for PADRE" time="0.016513">
+        </testcase>
+        <testcase classname="tests/screens.test.tsx" name="Every declared destination renders &gt; Family settings tabs render without errors" time="0.2530937">
+        </testcase>
+    </testsuite>
+</testsuites>

@@ -1,0 +1,28 @@
+{
+  "date_lima": "2026-10-10",
+  "service": "srv-db4penqjnfac7382hjhg",
+  "branch": "dev",
+  "deployed_sha": "d579a40ca28038f53c78e8bffdab63123c6e6eb3",
+  "deploy_id": "dep-db5h1tqd0e5s73fem3bg",
+  "deploy_status": "Live",
+  "duration_seconds": 51.4,
+  "blueprint_associated": false,
+  "auto_deploy": "On Commit",
+  "environment_keys_verified": [
+    "GMAIL_ENABLED",
+    "GMAIL_CLIENT_ID",
+    "GMAIL_CLIENT_SECRET",
+    "GMAIL_REFRESH_TOKEN",
+    "GMAIL_SENDER_EMAIL",
+    "GMAIL_SENDER_NAME",
+    "GMAIL_API_BASE_URL",
+    "PUBLIC_ORIGIN"
+  ],
+  "all_requested_values_match": true,
+  "database_environment_fields_unedited": [
+    "DATABASE_URL",
+    "DB_SSL_CA_FILE",
+    "DB_SSL_LEGACY_CA"
+  ],
+  "email_delivery_tests": "deferred to user manual verification"
+}

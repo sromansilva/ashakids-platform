@@ -39,7 +39,7 @@ const milestones = [
     { icon: "📚", title: "Primer cuento",               date: "20 Ene 2026", desc: '"El Osito Viajero" completado.', done: true  },
     { icon: "🏅", title: "Primera insignia",            date: "25 Ene 2026", desc: "«Explorador Valiente» desbloqueada.", done: true  },
     { icon: "🗣️", title: "Pronunciación R",            date: "12 Feb 2026", desc: "Avance del 40% en fonología.", done: true  },
-    { icon: "🎉", title: "Objetivo alcanzado",          date: "5 Mar 2026",  desc: "Plan de lenguaje mensual completado.", done: true  },
+    { icon: "🎉", title: "Objetivo alcanzado",          date: "5 Mar 2026",  desc: "Plan de lenguaje vigente completado.", done: true  },
     { icon: "📖", title: "10 cuentos completados",      date: "18 Abr 2026", desc: "Insignia «Lector Estrella» ganada.", done: true  },
     { icon: "🔥", title: "Racha de 7 días",             date: "22 Jun 2026", desc: "7 días consecutivos de actividades.", done: true  },
     { icon: "🚀", title: "Comprensión avanzada",        date: "Ago 2026",    desc: "Próxima meta en comprensión verbal.", done: false },
@@ -63,8 +63,8 @@ const sessions = [
     { id: 3, date: "16 Jul 2026", time: "10:30 AM", duration: "40 min", therapist: "Dra. Ana Ruiz", type: "virtual", goals: ["Atención sostenida", "Comprensión"],      comment: "Mejoró 15% en tiempo de atención. Excelente concentración." },
   ];
 const reports = [
-    { id: 1, title: "Informe Mensual — Julio 2026",    date: "31 Jul 2026", therapist: "Dra. Ana Ruiz", status: "completado", summary: "Avance significativo en pronunciación y comprensión verbal. Racha de 7 días activos en Mundo ASHA.", fav: true  },
-    { id: 2, title: "Informe Mensual — Junio 2026",    date: "30 Jun 2026", therapist: "Dra. Ana Ruiz", status: "completado", summary: "Vocabulario expresivo alcanzó el 90%. Se completó el objetivo de lenguaje receptivo del plan mensual.", fav: false },
+    { id: 1, title: "Informe de seguimiento — Julio 2026", date: "31 Jul 2026", therapist: "Dra. Ana Ruiz", status: "completado", summary: "Avance significativo en pronunciación y comprensión verbal. Racha de 7 días activos en Mundo ASHA.", fav: true  },
+    { id: 2, title: "Informe de seguimiento — Junio 2026", date: "30 Jun 2026", therapist: "Dra. Ana Ruiz", status: "completado", summary: "Vocabulario expresivo y objetivos de lenguaje receptivo del plan vigente.", fav: false },
     { id: 3, title: "Evaluación Inicial — Enero 2026", date: "15 Ene 2026", therapist: "Dra. Ana Ruiz", status: "completado", summary: "Diagnóstico funcional de inicio. Línea base establecida para plan terapéutico individualizado.", fav: true  },
     { id: 4, title: "Plan Terapéutico Q3 2026",        date: "1 Jul 2026",  therapist: "Dra. Ana Ruiz", status: "activo",     summary: "Objetivos para el tercer trimestre: pronunciación avanzada, comprensión verbal y juego simbólico.",  fav: false },
   ];

@@ -1,0 +1,11 @@
+{
+  "audit": "AUDIT-2026-10-09-06",
+  "source": "Inherited browser permission observation from audit-2026-10-09-05",
+  "origin": "http://127.0.0.1:5174",
+  "saved_preference": "denied in previous cut",
+  "new_browser_calls_this_cut": 0,
+  "new_screenshots_this_cut": 0,
+  "status": "Messaging desktop/mobile visual acceptance pending",
+  "action": "User/team can enable browser access and perform a new, identified acceptance run. Do not bypass denied preference using another origin, surface or tool.",
+  "limits": "Component tests run in jsdom with simulated fetch. HTTP tests verify FastAPI/PostgreSQL directly. Neither is a new real browser E2E. Previous PDF screenshots are not messaging evidence."
+}

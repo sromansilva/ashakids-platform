@@ -1,0 +1,344 @@
+{
+  "audit": "AUDIT-2026-10-09-02",
+  "captured_utc": "2026-10-09T05:52:30.183433+00:00",
+  "environment": "API loopback 8001 / PostgreSQL 17.6 loopback 6544 / ashakids_test_compat17",
+  "verified_cases": 48,
+  "cases": [
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "pacientes",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "tratamientos",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "citas",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "identity": "t90001",
+      "method": "PATCH",
+      "path": "citas/1/estado",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones",
+      "status": 201,
+      "expected": 201
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones/1/iniciar",
+      "status": 409,
+      "expected": 409
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones/1/iniciar",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "PUT",
+      "path": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "sesiones/1/cerrar",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/login",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "citas/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "a90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "citas/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "citas/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "sesiones/1",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "citas/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "pacientes",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "citas",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "GET",
+      "path": "sesiones",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "pacientes/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "citas/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones/1",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones/1/reporte",
+      "status": 404,
+      "expected": 404
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "pacientes",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "citas",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "GET",
+      "path": "sesiones",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "PUT",
+      "path": "sesiones/1/reporte",
+      "status": 403,
+      "expected": 403
+    },
+    {
+      "identity": "a90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90001",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "p90002",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "identity": "t90002",
+      "method": "POST",
+      "path": "auth/logout",
+      "status": 200,
+      "expected": 200
+    }
+  ]
+}

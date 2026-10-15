@@ -31,7 +31,7 @@ if str(BACKEND_DIR) not in sys.path:
 from app.core.database import init_db, async_session_factory
 from app.schemas.pacientes import ALLOWED_AVATARS, ALLOWED_SEXO
 
-BASE_URL = "http://localhost:8000/api/v1"
+BASE_URL = ""  # Se asigna únicamente después de validar el entorno descartable.
 
 
 class TestPacientesCRUD(unittest.TestCase):
@@ -56,13 +56,19 @@ class TestPacientesCRUD(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        from tests.live_environment import isolated_live_api
+        global BASE_URL
+        try:
+            BASE_URL = isolated_live_api()
+        except RuntimeError as exc:
+            raise unittest.SkipTest(str(exc)) from None
         init_db()
         try:
-            res = httpx.get("http://localhost:8000/health", timeout=10.0)
+            res = httpx.get(BASE_URL.removesuffix("/api/v1") + "/health", timeout=10.0)
             if res.status_code != 200:
                 raise unittest.SkipTest("FastAPI no responde 200 en /health")
         except Exception as exc:
-            raise unittest.SkipTest(f"FastAPI no accesible en http://localhost:8000: {exc}")
+            raise unittest.SkipTest(f"FastAPI de pruebas no accesible en {BASE_URL}: {exc}")
 
         cls.admin_client = httpx.Client(base_url=BASE_URL, timeout=30.0)
         cls.padre1_client = httpx.Client(base_url=BASE_URL, timeout=30.0)

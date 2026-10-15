@@ -1,42 +1,61 @@
-import { useState } from 'react';
-import { Btn } from '@/components/common/Btn';
-import { Inp } from '@/components/common/Inp';
-import { RemoteFeedback } from '@/components/common/RemoteFeedback';
-import { useRemote, useWrite } from '@/hooks/useRemoteData';
-import { patientsService, usersService, treatmentsService } from '@/services/clinicalService';
-import { readAllPages } from '@/services/readAllPages';
-import type { Patient, PatientData } from '@/types/clinical';
+import { useState } from "react";
+import { Baby, Loader2, Save, UserMinus } from "lucide-react";
+import { RemoteFeedback } from "@/components/common/RemoteFeedback";
+import { useRemote, useWrite } from "@/hooks/useRemoteData";
+import { patientsService, usersService, treatmentsService } from "@/services/clinicalService";
+import { readAllPages } from "@/services/readAllPages";
+import type { Patient, PatientData } from "@/types/clinical";
+import { normalizePatientSex } from "@/types/patientSex";
+import { AdminFormDialog, adminFormInputClass, adminFormLabelClass } from "../AdminFormDialog";
 
 export function PatientEditor({ patient, close }: { patient?: Patient; close: () => void }) {
-  const [form, setForm] = useState<PatientData>({ nombres_paciente: patient?.nombres_paciente ?? '', apellidos_paciente: patient?.apellidos_paciente ?? '', fecha_nacimiento: patient?.fecha_nacimiento ?? '', sexo: patient?.sexo ?? 'M' });
+  const [form, setForm] = useState<PatientData>({ nombres_paciente: patient?.nombres_paciente ?? "", apellidos_paciente: patient?.apellidos_paciente ?? "", fecha_nacimiento: patient?.fecha_nacimiento ?? "", sexo: patient ? normalizePatientSex(patient.sexo) : "Masculino" });
   const [tutor, setTutor] = useState(patient?.id_tutor ?? 0);
-  const parents = useRemote(['tutors'], s => readAllPages(offset => usersService.list({ rol: 'PADRE', activo: true, limit: 100, offset }, s), s), !patient);
+  const parents = useRemote(["tutors"], signal => readAllPages(offset => usersService.list({ rol: "PADRE", activo: true, limit: 100, offset }, signal), signal), !patient);
   const save = useWrite(() => patient ? patientsService.edit(patient.id_paciente, form) : patientsService.create({ ...form, id_tutor: tutor }), close);
   const deactivate = useWrite(() => patientsService.deactivate(patient!.id_paciente), close);
-  return <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"><div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 space-y-4">
-    <h2 className="text-lg font-extrabold text-[#1C1135]">{patient ? 'Perfil del paciente' : 'Registrar paciente'}</h2>
-    <form className="space-y-3" onSubmit={e => { e.preventDefault(); void save.submit(undefined); }}>
-      <Inp label="Nombres" value={form.nombres_paciente} onChange={v => setForm({ ...form, nombres_paciente: v })}/>
-      <Inp label="Apellidos" value={form.apellidos_paciente} onChange={v => setForm({ ...form, apellidos_paciente: v })}/>
-      <Inp label="Fecha de nacimiento" type="date" value={form.fecha_nacimiento} onChange={v => setForm({ ...form, fecha_nacimiento: v })}/>
-      <label className="block text-sm font-bold">Sexo<select className="w-full p-3 rounded-2xl border border-[#E8E5F4] bg-[#F5F3FF]" value={form.sexo} onChange={e => setForm({ ...form, sexo: e.target.value })}><option value="M">Masculino</option><option value="F">Femenino</option><option value="OTRO">Otro</option></select></label>
-      {!patient && <><RemoteFeedback pending={parents.isPending} error={parents.error} retry={() => void parents.refetch()}/><label className="block text-sm font-bold">Representante<select className="w-full p-3 rounded-2xl border border-[#E8E5F4] bg-[#F5F3FF]" value={tutor} onChange={e => setTutor(Number(e.target.value))}><option value={0}>Seleccionar tutor</option>{parents.data?.map(p => <option key={p.id_usuario} value={p.id_tutor ?? 0}>{p.nombres} {p.apellidos} · {p.codigo_usuario}</option>)}</select></label></>}
-      <RemoteFeedback error={save.error || deactivate.error}/><div className="flex gap-2 flex-wrap"><Btn type="submit" disabled={save.isPending || deactivate.isPending || !form.nombres_paciente.trim() || !form.apellidos_paciente.trim() || !form.fecha_nacimiento || !tutor}>Guardar paciente</Btn>{patient?.activo && <Btn variant="outline" disabled={save.isPending || deactivate.isPending} onClick={() => { if (window.confirm('¿Dar de baja al paciente conservando su historial?')) void deactivate.submit(undefined); }}>Dar de baja</Btn>}</div>
-    </form>
-    {patient && <TreatmentAssignments patientId={patient.id_paciente} active={patient.activo}/>}
-    <Btn variant="secondary" disabled={save.isPending || deactivate.isPending} onClick={close}>Cerrar</Btn>
-  </div></div>;
+  const busy = save.isPending || deactivate.isPending;
+  const disabled = busy || !form.nombres_paciente.trim() || !form.apellidos_paciente.trim() || !form.fecha_nacimiento || !form.sexo || !tutor;
+
+  return (
+    <AdminFormDialog
+      ariaLabelledBy="patient-editor-title"
+      eyebrow={patient ? "Pacientes · Edición" : "Pacientes · Nuevo registro"}
+      title={patient ? "Perfil del paciente" : "Registrar paciente"}
+      subtitle={patient ? "Actualiza los datos personales y consulta su plan vigente." : "Asocia el nuevo paciente con un representante registrado."}
+      icon={Baby}
+      onClose={close}
+      maxWidth="max-w-4xl"
+      footer={<>
+        <div className="flex flex-col-reverse gap-2 sm:flex-row">
+          <button type="button" onClick={close} disabled={busy} className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#DDD6FE] px-5 text-sm font-black text-violet-700 transition hover:bg-[#F5F3FF] disabled:opacity-50">Cancelar</button>
+          {patient?.activo && <button type="button" disabled={busy} onClick={() => { if (window.confirm("¿Dar de baja al paciente conservando su historial?")) void deactivate.submit(undefined); }} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-5 text-sm font-black text-red-700 transition hover:bg-red-100 disabled:opacity-50"><UserMinus size={17} />Dar de baja</button>}
+        </div>
+        <button form="patient-editor-form" type="submit" disabled={disabled} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-violet-700 px-6 text-sm font-black text-white shadow-md transition hover:bg-violet-800 disabled:cursor-not-allowed disabled:opacity-50">{save.isPending ? <Loader2 size={17} className="animate-spin" /> : <Save size={17} />}Guardar paciente</button>
+      </>}
+    >
+      <div className="space-y-5">
+        <form id="patient-editor-form" onSubmit={event => { event.preventDefault(); void save.submit(undefined); }} className="space-y-5">
+          <div><h3 className="text-xl font-black text-[#1C1135]">Datos del paciente</h3><p className="mt-1 text-sm font-medium text-[#6B5E8A]">Completa los campos obligatorios para continuar.</p></div>
+          <div className="rounded-[20px] bg-white p-4 shadow-sm sm:p-5">
+            <div className="grid gap-x-4 gap-y-5 sm:grid-cols-2">
+              <label className={adminFormLabelClass}>Nombres *<input required maxLength={60} value={form.nombres_paciente} onChange={event => setForm({ ...form, nombres_paciente: event.target.value })} className={adminFormInputClass} /></label>
+              <label className={adminFormLabelClass}>Apellidos *<input required maxLength={80} value={form.apellidos_paciente} onChange={event => setForm({ ...form, apellidos_paciente: event.target.value })} className={adminFormInputClass} /></label>
+              <label className={adminFormLabelClass}>Fecha de nacimiento *<input required type="date" value={form.fecha_nacimiento} onChange={event => setForm({ ...form, fecha_nacimiento: event.target.value })} className={adminFormInputClass} /></label>
+              <label className={adminFormLabelClass}>Sexo *<select aria-label="Sexo" required value={form.sexo} onChange={event => setForm({ ...form, sexo: event.target.value })} className={adminFormInputClass}><option value="">Seleccionar</option><option value="Masculino">Masculino</option><option value="Femenino">Femenino</option><option value="Otro">Otro</option></select></label>
+              {!patient && <label className={`${adminFormLabelClass} sm:col-span-2`}>Representante *<select required value={tutor} onChange={event => setTutor(Number(event.target.value))} className={adminFormInputClass}><option value={0}>Seleccionar tutor</option>{parents.data?.map(parent => <option key={parent.id_usuario} value={parent.id_tutor ?? 0}>{parent.nombres} {parent.apellidos} · {parent.codigo_usuario}</option>)}</select></label>}
+            </div>
+            {!patient && <RemoteFeedback pending={parents.isPending} error={parents.error} retry={() => void parents.refetch()} />}
+          </div>
+          <RemoteFeedback error={save.error || deactivate.error} />
+        </form>
+        {patient && <TreatmentAssignments patientId={patient.id_paciente} />}
+      </div>
+    </AdminFormDialog>
+  );
 }
 
-function TreatmentAssignments({ patientId, active }: { patientId: number; active: boolean }) {
-  const list = useRemote(['treatments', patientId], s => readAllPages(offset => treatmentsService.list(patientId, { limit: 100, offset }, s), s));
-  const doctors = useRemote(['professionals'], s => readAllPages(offset => usersService.list({ rol: 'TERAPEUTA', activo: true, limit: 100, offset }, s), s));
-  const [name, setName] = useState(''); const [doctor, setDoctor] = useState(0);
-  const create = useWrite(() => treatmentsService.create({ id_paciente: patientId, id_terapeuta: doctor, nombre_tratamiento: name }), () => setName(''));
-  return <section className="border-t border-[#E8E5F4] pt-4 space-y-3"><h3 className="font-extrabold">Tratamientos y profesional asignado</h3>
-    <RemoteFeedback pending={list.isPending || doctors.isPending} error={list.error || doctors.error || create.error} retry={() => { void list.refetch(); void doctors.refetch(); }}/>
-    {list.data?.map(t => <p key={t.id_tratamiento} className="text-sm p-3 bg-[#F5F3FF] rounded-2xl">{t.nombre_tratamiento} · {t.terapeuta_nombre} · {t.estado_tratamiento}</p>)}
-    {list.isSuccess && list.data.length === 0 && <p className="text-sm text-[#7C6F9A]">Sin tratamientos asignados.</p>}
-    {active && <form className="space-y-3" onSubmit={e => { e.preventDefault(); void create.submit(undefined); }}><Inp label="Nombre del tratamiento" value={name} onChange={setName}/><label className="block text-sm font-bold">Profesional<select value={doctor} onChange={e => setDoctor(Number(e.target.value))} className="w-full p-3 rounded-2xl border border-[#E8E5F4] bg-[#F5F3FF]"><option value={0}>Seleccionar terapeuta</option>{doctors.data?.map(d => <option key={d.id_usuario} value={d.id_terapeuta ?? 0}>{d.nombres} {d.apellidos} · {d.codigo_usuario}</option>)}</select></label><Btn type="submit" disabled={create.isPending || !name.trim() || !doctor}>Asignar tratamiento</Btn></form>}
-  </section>;
+function TreatmentAssignments({ patientId }: { patientId: number }) {
+  const list = useRemote(["treatments", patientId], signal => readAllPages(offset => treatmentsService.list(patientId, { limit: 100, offset }, signal), signal));
+  return <section className="rounded-[20px] bg-white p-4 shadow-sm sm:p-5"><h3 className="text-lg font-black text-[#1C1135]">Planes del profesional</h3><p className="mt-1 text-sm text-[#6B5E8A]">El profesional define el plan desde una atención con reporte.</p><div className="mt-3"><RemoteFeedback pending={list.isPending} error={list.error} retry={() => void list.refetch()} />{list.data?.map(treatment => <p key={treatment.id_tratamiento} className="border-t border-[#E8E5F4] py-3 text-sm font-semibold text-[#4B4264] first:border-t-0">{treatment.nombre_tratamiento} · {treatment.terapeuta_nombre} · {treatment.estado_tratamiento}</p>)}{list.isSuccess && list.data.length === 0 && <p className="text-sm text-[#6B5E8A]">Sin plan publicado. Primero corresponde la consulta introductoria.</p>}</div></section>;
 }

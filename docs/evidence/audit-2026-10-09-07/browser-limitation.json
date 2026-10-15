@@ -1,0 +1,14 @@
+{
+  "audit": "AUDIT-2026-10-09-07",
+  "origin": "http://127.0.0.1:5174",
+  "user_reported_access_enabled": true,
+  "inventory_calls": 1,
+  "access_attempts": 1,
+  "result": "Browser Use rejected: saved user permission setting still blocks this origin",
+  "screenshots": 0,
+  "workarounds_attempted": 0,
+  "port_restart_scope": "Only ASHAKids API8001 changed between disposable fixtures and original demo. No other ports closed; browser preference untouched.",
+  "status": "Real browser acceptance and final mobile PDF recapture pending",
+  "official_guidance": "https://help.openai.com/en/articles/20001277-using-the-built-in-browser-in-the-chatgpt-desktop-app",
+  "required_user_action": "Remove saved block for the origin in desktop app allowed/blocked website settings. No alternate origin, surface or indirect automation to evade policy."
+}

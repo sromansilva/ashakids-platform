@@ -1,0 +1,1029 @@
+{
+  "layouts": [
+    {
+      "width": 320,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 16,
+          "y": 3809.625,
+          "width": 288,
+          "height": 548.328125,
+          "top": 3809.625,
+          "right": 304,
+          "bottom": 4357.953125,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 4385.953125,
+          "width": 288,
+          "height": 548.328125,
+          "top": 4385.953125,
+          "right": 304,
+          "bottom": 4934.28125,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 4962.28125,
+          "width": 288,
+          "height": 521.140625,
+          "top": 4962.28125,
+          "right": 304,
+          "bottom": 5483.421875,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 5511.421875,
+          "width": 288,
+          "height": 517.140625,
+          "top": 5511.421875,
+          "right": 304,
+          "bottom": 6028.5625,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 6056.5625,
+          "width": 288,
+          "height": 548.328125,
+          "top": 6056.5625,
+          "right": 304,
+          "bottom": 6604.890625,
+          "left": 16
+        }
+      ],
+      "h1": 1
+    },
+    {
+      "width": 375,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 16,
+          "y": 3675.796875,
+          "width": 343,
+          "height": 517.140625,
+          "top": 3675.796875,
+          "right": 359,
+          "bottom": 4192.9375,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 4220.9375,
+          "width": 343,
+          "height": 489.953125,
+          "top": 4220.9375,
+          "right": 359,
+          "bottom": 4710.890625,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 4738.890625,
+          "width": 343,
+          "height": 489.953125,
+          "top": 4738.890625,
+          "right": 359,
+          "bottom": 5228.84375,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 5256.84375,
+          "width": 343,
+          "height": 489.953125,
+          "top": 5256.84375,
+          "right": 359,
+          "bottom": 5746.796875,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 5774.796875,
+          "width": 343,
+          "height": 521.140625,
+          "top": 5774.796875,
+          "right": 359,
+          "bottom": 6295.9375,
+          "left": 16
+        }
+      ],
+      "h1": 1
+    },
+    {
+      "width": 430,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 16,
+          "y": 3546.96875,
+          "width": 398,
+          "height": 489.953125,
+          "top": 3546.96875,
+          "right": 414,
+          "bottom": 4036.921875,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 4064.921875,
+          "width": 398,
+          "height": 489.953125,
+          "top": 4064.921875,
+          "right": 414,
+          "bottom": 4554.875,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 4582.875,
+          "width": 398,
+          "height": 489.953125,
+          "top": 4582.875,
+          "right": 414,
+          "bottom": 5072.828125,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 5100.828125,
+          "width": 398,
+          "height": 489.953125,
+          "top": 5100.828125,
+          "right": 414,
+          "bottom": 5590.78125,
+          "left": 16
+        },
+        {
+          "x": 16,
+          "y": 5618.78125,
+          "width": 398,
+          "height": 489.953125,
+          "top": 5618.78125,
+          "right": 414,
+          "bottom": 6108.734375,
+          "left": 16
+        }
+      ],
+      "h1": 1
+    },
+    {
+      "width": 768,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 16,
+          "y": 2859.671875,
+          "width": 354,
+          "height": 525.140625,
+          "top": 2859.671875,
+          "right": 370,
+          "bottom": 3384.8125,
+          "left": 16
+        },
+        {
+          "x": 398,
+          "y": 2859.671875,
+          "width": 354,
+          "height": 525.140625,
+          "top": 2859.671875,
+          "right": 752,
+          "bottom": 3384.8125,
+          "left": 398
+        },
+        {
+          "x": 16,
+          "y": 3412.8125,
+          "width": 354,
+          "height": 497.953125,
+          "top": 3412.8125,
+          "right": 370,
+          "bottom": 3910.765625,
+          "left": 16
+        },
+        {
+          "x": 398,
+          "y": 3412.8125,
+          "width": 354,
+          "height": 497.953125,
+          "top": 3412.8125,
+          "right": 752,
+          "bottom": 3910.765625,
+          "left": 398
+        },
+        {
+          "x": 16,
+          "y": 3938.765625,
+          "width": 354,
+          "height": 529.140625,
+          "top": 3938.765625,
+          "right": 370,
+          "bottom": 4467.90625,
+          "left": 16
+        }
+      ],
+      "h1": 1
+    },
+    {
+      "width": 1024,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 56,
+          "y": 2080.15625,
+          "width": 258.65625,
+          "height": 606.109375,
+          "top": 2080.15625,
+          "right": 314.65625,
+          "bottom": 2686.265625,
+          "left": 56
+        },
+        {
+          "x": 342.65625,
+          "y": 2080.15625,
+          "width": 258.671875,
+          "height": 606.109375,
+          "top": 2080.15625,
+          "right": 601.328125,
+          "bottom": 2686.265625,
+          "left": 342.65625
+        },
+        {
+          "x": 629.328125,
+          "y": 2080.15625,
+          "width": 258.671875,
+          "height": 606.109375,
+          "top": 2080.15625,
+          "right": 888,
+          "bottom": 2686.265625,
+          "left": 629.328125
+        },
+        {
+          "x": 199.328125,
+          "y": 2714.265625,
+          "width": 258.671875,
+          "height": 578.921875,
+          "top": 2714.265625,
+          "right": 458,
+          "bottom": 3293.1875,
+          "left": 199.328125
+        },
+        {
+          "x": 486,
+          "y": 2714.265625,
+          "width": 258.65625,
+          "height": 578.921875,
+          "top": 2714.265625,
+          "right": 744.65625,
+          "bottom": 3293.1875,
+          "left": 486
+        }
+      ],
+      "h1": 1
+    },
+    {
+      "width": 1280,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 56,
+          "y": 2021.3125,
+          "width": 344,
+          "height": 525.140625,
+          "top": 2021.3125,
+          "right": 400,
+          "bottom": 2546.453125,
+          "left": 56
+        },
+        {
+          "x": 428,
+          "y": 2021.3125,
+          "width": 344,
+          "height": 525.140625,
+          "top": 2021.3125,
+          "right": 772,
+          "bottom": 2546.453125,
+          "left": 428
+        },
+        {
+          "x": 800,
+          "y": 2021.3125,
+          "width": 344,
+          "height": 525.140625,
+          "top": 2021.3125,
+          "right": 1144,
+          "bottom": 2546.453125,
+          "left": 800
+        },
+        {
+          "x": 242,
+          "y": 2574.453125,
+          "width": 344,
+          "height": 529.140625,
+          "top": 2574.453125,
+          "right": 586,
+          "bottom": 3103.59375,
+          "left": 242
+        },
+        {
+          "x": 614,
+          "y": 2574.453125,
+          "width": 344,
+          "height": 529.140625,
+          "top": 2574.453125,
+          "right": 958,
+          "bottom": 3103.59375,
+          "left": 614
+        }
+      ],
+      "h1": 1
+    },
+    {
+      "width": 1536,
+      "overflow": false,
+      "small": [],
+      "images": [
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-hero-v1-960-1e08aa0c24.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-v1-320-99c49f0ae9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapist-v1-320-b4ad0e9b21.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-v1-320-56894880fb.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-account-v54-320-7357486102.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-specialist-v54-320-3e1a6ae345.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/step-session-v54-320-c169220fd0.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-habla-v54-320-71634ac58c.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-lenguaje-v54-320-6d1176668e.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-fluidez-v54-320-c120773bb2.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-voz-v54-320-880312a9f9.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/world-orofacial-v54-320-fe7709b659.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/therapy-play-v54-320-ceeb422bc4.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/team-care-v54-320-29a1007544.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/family-play-v54-320-034523c8bd.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/faq-ashi-v54-320-6576a6c523.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/newsletter-v54-320-aee3e5dc71.webp",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/src/assets/ashakids-logo-final-transparent-1.png",
+          "loaded": true
+        },
+        {
+          "src": "http://127.0.0.1:5176/illustrations/optimized/ashi-head-v1-320-f7fd1530eb.webp",
+          "loaded": true
+        }
+      ],
+      "cards": [
+        {
+          "x": 84,
+          "y": 2047.359375,
+          "width": 420,
+          "height": 497.953125,
+          "top": 2047.359375,
+          "right": 504,
+          "bottom": 2545.3125,
+          "left": 84
+        },
+        {
+          "x": 532,
+          "y": 2047.359375,
+          "width": 420,
+          "height": 497.953125,
+          "top": 2047.359375,
+          "right": 952,
+          "bottom": 2545.3125,
+          "left": 532
+        },
+        {
+          "x": 980,
+          "y": 2047.359375,
+          "width": 420,
+          "height": 497.953125,
+          "top": 2047.359375,
+          "right": 1400,
+          "bottom": 2545.3125,
+          "left": 980
+        },
+        {
+          "x": 308,
+          "y": 2573.3125,
+          "width": 420,
+          "height": 497.953125,
+          "top": 2573.3125,
+          "right": 728,
+          "bottom": 3071.265625,
+          "left": 308
+        },
+        {
+          "x": 756,
+          "y": 2573.3125,
+          "width": 420,
+          "height": 497.953125,
+          "top": 2573.3125,
+          "right": 1176,
+          "bottom": 3071.265625,
+          "left": 756
+        }
+      ],
+      "h1": 1
+    }
+  ],
+  "faqs": [
+    "Trabajamos con niños desde los 3 años. Nuestros especialistas adaptan cada terapia a la etapa del desarrollo de tu hijo.",
+    "Las sesiones se realizan por Zoom. Al agendar recibís el enlace automáticamente. Solo necesitás internet y una cámara.",
+    "En la evaluación inicial el terapeuta diseñará un plan personalizado con la frecuencia y duración recomendadas.",
+    "Ofrecemos paquetes de 2, 6 y 10 horas con vigencia de 6 meses. Cada compra incluye factura PDF automática.",
+    "Sí. Tras cada sesión el terapeuta escribe notas clínicas visibles desde tu panel, con el historial completo."
+  ],
+  "access": [
+    "guest modal/focus trap/Escape",
+    "PADRE login selected assigned world",
+    "unassigned denied",
+    "TERAPEUTA restriction",
+    "legacy public redirect",
+    "private guest redirect"
+  ],
+  "errors": [],
+  "scope": "Synthetic API responses; no real login, database or SMTP"
+}

@@ -1,0 +1,664 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-10T16:40:38.216Z",
+  "title": "Design System: ASHAKids",
+  "extensions": {
+    "scope": {
+      "version": "V38",
+      "surface": "Landing pública",
+      "root": ".asha-landing",
+      "source": "frontend/src/pages/public/landing/landing.css",
+      "contract": "docs/design/LANDING.md",
+      "adoption": "Extensión visual de landing; no aplicar automáticamente a roles.",
+      "unchanged": [
+        "Backend",
+        "Base de datos",
+        "Autenticación",
+        "Rutas",
+        "Lógica"
+      ]
+    },
+    "colorMeta": {
+      "landing-purple": {
+        "role": "primary",
+        "displayName": "landing purple",
+        "tonalRamp": [
+          "oklch(15% 0.2466 293.009)",
+          "oklch(26% 0.2466 293.009)",
+          "oklch(38% 0.2466 293.009)",
+          "oklch(49% 0.2466 293.009)",
+          "oklch(61% 0.2466 293.009)",
+          "oklch(72% 0.2466 293.009)",
+          "oklch(84% 0.2466 293.009)",
+          "oklch(95% 0.2466 293.009)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-purple-dark": {
+        "role": "primary",
+        "displayName": "landing purple dark",
+        "tonalRamp": [
+          "oklch(15% 0.2106 292.759)",
+          "oklch(26% 0.2106 292.759)",
+          "oklch(38% 0.2106 292.759)",
+          "oklch(49% 0.2106 292.759)",
+          "oklch(61% 0.2106 292.759)",
+          "oklch(72% 0.2106 292.759)",
+          "oklch(84% 0.2106 292.759)",
+          "oklch(95% 0.2106 292.759)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-purple-deep": {
+        "role": "primary",
+        "displayName": "landing purple deep",
+        "tonalRamp": [
+          "oklch(15% 0.1278 286.496)",
+          "oklch(26% 0.1278 286.496)",
+          "oklch(38% 0.1278 286.496)",
+          "oklch(49% 0.1278 286.496)",
+          "oklch(61% 0.1278 286.496)",
+          "oklch(72% 0.1278 286.496)",
+          "oklch(84% 0.1278 286.496)",
+          "oklch(95% 0.1278 286.496)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-purple-light": {
+        "role": "primary",
+        "displayName": "landing purple light",
+        "tonalRamp": [
+          "oklch(15% 0.0284 294.588)",
+          "oklch(26% 0.0284 294.588)",
+          "oklch(38% 0.0284 294.588)",
+          "oklch(49% 0.0284 294.588)",
+          "oklch(61% 0.0284 294.588)",
+          "oklch(72% 0.0284 294.588)",
+          "oklch(84% 0.0284 294.588)",
+          "oklch(95% 0.0284 294.588)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-purple-mid": {
+        "role": "primary",
+        "displayName": "landing purple mid",
+        "tonalRamp": [
+          "oklch(15% 0.0549 293.283)",
+          "oklch(26% 0.0549 293.283)",
+          "oklch(38% 0.0549 293.283)",
+          "oklch(49% 0.0549 293.283)",
+          "oklch(61% 0.0549 293.283)",
+          "oklch(72% 0.0549 293.283)",
+          "oklch(84% 0.0549 293.283)",
+          "oklch(95% 0.0549 293.283)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-orange": {
+        "role": "secondary",
+        "displayName": "landing orange",
+        "tonalRamp": [
+          "oklch(15% 0.1867 47.604)",
+          "oklch(26% 0.1867 47.604)",
+          "oklch(38% 0.1867 47.604)",
+          "oklch(49% 0.1867 47.604)",
+          "oklch(61% 0.1867 47.604)",
+          "oklch(72% 0.1867 47.604)",
+          "oklch(84% 0.1867 47.604)",
+          "oklch(95% 0.1867 47.604)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-orange-hover": {
+        "role": "secondary",
+        "displayName": "landing orange hover",
+        "tonalRamp": [
+          "oklch(15% 0.1590 55.934)",
+          "oklch(26% 0.1590 55.934)",
+          "oklch(38% 0.1590 55.934)",
+          "oklch(49% 0.1590 55.934)",
+          "oklch(61% 0.1590 55.934)",
+          "oklch(72% 0.1590 55.934)",
+          "oklch(84% 0.1590 55.934)",
+          "oklch(95% 0.1590 55.934)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-orange-ink": {
+        "role": "neutral",
+        "displayName": "landing orange ink",
+        "tonalRamp": [
+          "oklch(15% 0.0575 48.876)",
+          "oklch(26% 0.0575 48.876)",
+          "oklch(38% 0.0575 48.876)",
+          "oklch(49% 0.0575 48.876)",
+          "oklch(61% 0.0575 48.876)",
+          "oklch(72% 0.0575 48.876)",
+          "oklch(84% 0.0575 48.876)",
+          "oklch(95% 0.0575 48.876)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-orange-light": {
+        "role": "secondary",
+        "displayName": "landing orange light",
+        "tonalRamp": [
+          "oklch(15% 0.0211 60.752)",
+          "oklch(26% 0.0211 60.752)",
+          "oklch(38% 0.0211 60.752)",
+          "oklch(49% 0.0211 60.752)",
+          "oklch(61% 0.0211 60.752)",
+          "oklch(72% 0.0211 60.752)",
+          "oklch(84% 0.0211 60.752)",
+          "oklch(95% 0.0211 60.752)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-teal": {
+        "role": "tertiary",
+        "displayName": "landing teal",
+        "tonalRamp": [
+          "oklch(15% 0.1038 184.704)",
+          "oklch(26% 0.1038 184.704)",
+          "oklch(38% 0.1038 184.704)",
+          "oklch(49% 0.1038 184.704)",
+          "oklch(61% 0.1038 184.704)",
+          "oklch(72% 0.1038 184.704)",
+          "oklch(84% 0.1038 184.704)",
+          "oklch(95% 0.1038 184.704)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-teal-light": {
+        "role": "tertiary",
+        "displayName": "landing teal light",
+        "tonalRamp": [
+          "oklch(15% 0.0498 180.801)",
+          "oklch(26% 0.0498 180.801)",
+          "oklch(38% 0.0498 180.801)",
+          "oklch(49% 0.0498 180.801)",
+          "oklch(61% 0.0498 180.801)",
+          "oklch(72% 0.0498 180.801)",
+          "oklch(84% 0.0498 180.801)",
+          "oklch(95% 0.0498 180.801)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-ink": {
+        "role": "neutral",
+        "displayName": "landing ink",
+        "tonalRamp": [
+          "oklch(15% 0.0677 294.050)",
+          "oklch(26% 0.0677 294.050)",
+          "oklch(38% 0.0677 294.050)",
+          "oklch(49% 0.0677 294.050)",
+          "oklch(61% 0.0677 294.050)",
+          "oklch(72% 0.0677 294.050)",
+          "oklch(84% 0.0677 294.050)",
+          "oklch(95% 0.0677 294.050)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-muted": {
+        "role": "neutral",
+        "displayName": "landing muted",
+        "tonalRamp": [
+          "oklch(15% 0.0569 304.453)",
+          "oklch(26% 0.0569 304.453)",
+          "oklch(38% 0.0569 304.453)",
+          "oklch(49% 0.0569 304.453)",
+          "oklch(61% 0.0569 304.453)",
+          "oklch(72% 0.0569 304.453)",
+          "oklch(84% 0.0569 304.453)",
+          "oklch(95% 0.0569 304.453)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-bg": {
+        "role": "neutral",
+        "displayName": "landing bg",
+        "tonalRamp": [
+          "oklch(15% 0.0013 106.423)",
+          "oklch(26% 0.0013 106.423)",
+          "oklch(38% 0.0013 106.423)",
+          "oklch(49% 0.0013 106.423)",
+          "oklch(61% 0.0013 106.423)",
+          "oklch(72% 0.0013 106.423)",
+          "oklch(84% 0.0013 106.423)",
+          "oklch(95% 0.0013 106.423)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-white": {
+        "role": "neutral",
+        "displayName": "landing white",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.876)",
+          "oklch(26% 0.0000 89.876)",
+          "oklch(38% 0.0000 89.876)",
+          "oklch(49% 0.0000 89.876)",
+          "oklch(61% 0.0000 89.876)",
+          "oklch(72% 0.0000 89.876)",
+          "oklch(84% 0.0000 89.876)",
+          "oklch(95% 0.0000 89.876)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-on-dark": {
+        "role": "neutral",
+        "displayName": "landing on dark",
+        "tonalRamp": [
+          "oklch(15% 0.0149 298.569)",
+          "oklch(26% 0.0149 298.569)",
+          "oklch(38% 0.0149 298.569)",
+          "oklch(49% 0.0149 298.569)",
+          "oklch(61% 0.0149 298.569)",
+          "oklch(72% 0.0149 298.569)",
+          "oklch(84% 0.0149 298.569)",
+          "oklch(95% 0.0149 298.569)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-dark-muted": {
+        "role": "neutral",
+        "displayName": "landing dark muted",
+        "tonalRamp": [
+          "oklch(15% 0.0515 302.990)",
+          "oklch(26% 0.0515 302.990)",
+          "oklch(38% 0.0515 302.990)",
+          "oklch(49% 0.0515 302.990)",
+          "oklch(61% 0.0515 302.990)",
+          "oklch(72% 0.0515 302.990)",
+          "oklch(84% 0.0515 302.990)",
+          "oklch(95% 0.0515 302.990)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-glass": {
+        "role": "neutral",
+        "displayName": "landing glass",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.876)",
+          "oklch(26% 0.0000 89.876)",
+          "oklch(38% 0.0000 89.876)",
+          "oklch(49% 0.0000 89.876)",
+          "oklch(61% 0.0000 89.876)",
+          "oklch(72% 0.0000 89.876)",
+          "oklch(84% 0.0000 89.876)",
+          "oklch(95% 0.0000 89.876)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "landing-field": {
+        "role": "neutral",
+        "displayName": "landing field",
+        "tonalRamp": [
+          "oklch(15% 0.0000 89.876)",
+          "oklch(26% 0.0000 89.876)",
+          "oklch(38% 0.0000 89.876)",
+          "oklch(49% 0.0000 89.876)",
+          "oklch(61% 0.0000 89.876)",
+          "oklch(72% 0.0000 89.876)",
+          "oklch(84% 0.0000 89.876)",
+          "oklch(95% 0.0000 89.876)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "shared-border": {
+        "role": "neutral",
+        "displayName": "shared border",
+        "tonalRamp": [
+          "oklch(15% 0.0204 295.174)",
+          "oklch(26% 0.0204 295.174)",
+          "oklch(38% 0.0204 295.174)",
+          "oklch(49% 0.0204 295.174)",
+          "oklch(61% 0.0204 295.174)",
+          "oklch(72% 0.0204 295.174)",
+          "oklch(84% 0.0204 295.174)",
+          "oklch(95% 0.0204 295.174)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "shared-outline-hover": {
+        "role": "neutral",
+        "displayName": "shared outline hover",
+        "tonalRamp": [
+          "oklch(15% 0.0161 293.756)",
+          "oklch(26% 0.0161 293.756)",
+          "oklch(38% 0.0161 293.756)",
+          "oklch(49% 0.0161 293.756)",
+          "oklch(61% 0.0161 293.756)",
+          "oklch(72% 0.0161 293.756)",
+          "oklch(84% 0.0161 293.756)",
+          "oklch(95% 0.0161 293.756)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "shared-nav-muted": {
+        "role": "neutral",
+        "displayName": "shared nav muted",
+        "tonalRamp": [
+          "oklch(15% 0.0668 298.126)",
+          "oklch(26% 0.0668 298.126)",
+          "oklch(38% 0.0668 298.126)",
+          "oklch(49% 0.0668 298.126)",
+          "oklch(61% 0.0668 298.126)",
+          "oklch(72% 0.0668 298.126)",
+          "oklch(84% 0.0668 298.126)",
+          "oklch(95% 0.0668 298.126)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "shared-primary": {
+        "role": "primary",
+        "displayName": "shared primary",
+        "tonalRamp": [
+          "oklch(15% 0.2700 292.581)",
+          "oklch(26% 0.2700 292.581)",
+          "oklch(38% 0.2700 292.581)",
+          "oklch(49% 0.2700 292.581)",
+          "oklch(61% 0.2700 292.581)",
+          "oklch(72% 0.2700 292.581)",
+          "oklch(84% 0.2700 292.581)",
+          "oklch(95% 0.2700 292.581)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      },
+      "shared-primary-hover": {
+        "role": "primary",
+        "displayName": "shared primary hover",
+        "tonalRamp": [
+          "oklch(15% 0.2320 292.759)",
+          "oklch(26% 0.2320 292.759)",
+          "oklch(38% 0.2320 292.759)",
+          "oklch(49% 0.2320 292.759)",
+          "oklch(61% 0.2320 292.759)",
+          "oklch(72% 0.2320 292.759)",
+          "oklch(84% 0.2320 292.759)",
+          "oklch(95% 0.2320 292.759)"
+        ],
+        "tonalRampPurpose": "Escala sintetizada solo para el panel de documentación; no añade colores al CSS de producción."
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Titular principal",
+        "purpose": "Jerarquía del hero de la landing."
+      },
+      "headline": {
+        "displayName": "Encabezado de sección",
+        "purpose": "Separar bloques de lectura."
+      },
+      "title": {
+        "displayName": "Título de tarjeta",
+        "purpose": "Servicios y equipo."
+      },
+      "body": {
+        "displayName": "Texto",
+        "purpose": "Párrafos con interlínea amplia."
+      },
+      "intro": {
+        "displayName": "Introducción",
+        "purpose": "Primer párrafo."
+      },
+      "tag": {
+        "displayName": "Etiqueta",
+        "purpose": "Datos informativos compactos."
+      }
+    },
+    "shadows": [
+      {
+        "name": "glass-rest",
+        "value": "0 12px 40px #4524780f, inset 0 1px 1px #ffffff",
+        "purpose": "Tarjetas de cristal en reposo."
+      },
+      {
+        "name": "glass-hover",
+        "value": "0 20px 45px #4524781a,inset 0 1px 1px #ffffff",
+        "purpose": "Tarjeta elevada con capacidad de hover."
+      },
+      {
+        "name": "cta-rest",
+        "value": "0 8px 24px #f9731626, inset 0 1px 0 #ffffff80",
+        "purpose": "Acción naranja."
+      },
+      {
+        "name": "cta-hover",
+        "value": "0 12px 30px #f9731636",
+        "purpose": "Respuesta del CTA al apuntar."
+      },
+      {
+        "name": "letter",
+        "value": "inset 0 3px 5px #ffffff8c, inset 0 -10px 16px #00000012, 0 22px 32px #45247824",
+        "purpose": "Volumen de letras decorativas."
+      }
+    ],
+    "materials": [
+      {
+        "name": "glass-card",
+        "background": "#ffffffa6",
+        "backdropFilter": "blur(16px)",
+        "reflection": "linear-gradient(130deg,#ffffff50,transparent 48%)",
+        "fallback": "#ffffffed",
+        "purpose": "Cristal de tarjetas con reflejo interior."
+      },
+      {
+        "name": "glass-nav",
+        "background": "rgba(250,250,249,.82)",
+        "backdropFilter": "blur(20px)",
+        "purpose": "Encabezado translúcido."
+      },
+      {
+        "name": "hero-light",
+        "background": "radial-gradient(ellipse at 86% 30%,#c9b6ff8c,transparent 55%), radial-gradient(ellipse at 38% 10%,#ffeadf80,transparent 47%),radial-gradient(ellipse at 90% 95%,#ccfbf190,transparent 40%)",
+        "purpose": "Luz difuminada estática; sin iluminación animada."
+      }
+    ],
+    "motion": [
+      {
+        "name": "landing-ease",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Asentamiento y elevación."
+      },
+      {
+        "name": "button-transition",
+        "value": "background .2s, box-shadow .3s cubic-bezier(.16,1,.3,1), transform .3s cubic-bezier(.16,1,.3,1)",
+        "purpose": "Respuesta breve de botones."
+      },
+      {
+        "name": "glass-transition",
+        "value": "transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1)",
+        "purpose": "Elevar tarjeta 5px solo en hover:hover."
+      },
+      {
+        "name": "letter-transition",
+        "value": "transform .7s cubic-bezier(.16,1,.3,1), box-shadow .7s cubic-bezier(.16,1,.3,1)",
+        "purpose": "Pequeños cambios de rotación y desplazamiento del arte."
+      },
+      {
+        "name": "settle",
+        "value": "from { transform: translateY(8px); filter: blur(1px); } to { transform: translateY(0); filter: blur(0); }",
+        "purpose": "Entrada única de arte (.7s) y respuesta FAQ (.3s)."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "prefers-reduced-motion: reduce",
+        "purpose": "Desactiva animaciones/transiciones y desplazamientos hover; letras conservan sus rotaciones iniciales.",
+        "css": ".asha-landing *, .asha-landing *::before,.asha-landing *::after { animation:none!important;transition:none!important; } .landing-language-art:hover .landing-letter-h {transform:rotate(-13deg)} .landing-language-art:hover .landing-letter-o {transform:rotate(10deg)} .landing-language-art:hover .landing-letter-l {transform:rotate(7deg)} .landing-language-art:hover .landing-letter-a {transform:rotate(-9deg)} .asha-landing .landing-glass:hover,.asha-landing .landing-primary:hover,.asha-landing > nav button.bg-orange-500:hover,.landing-newsletter-controls button:hover {transform:none}"
+      }
+    ],
+    "focus": {
+      "selector": ".asha-landing :is(button,a,input):focus-visible",
+      "outline": "3px solid #5b21b6",
+      "outlineOffset": "4px",
+      "skipLink": {
+        "text": "Saltar al contenido",
+        "target": "#landing-content",
+        "hiddenTransform": "translateY(-180%)",
+        "focusedTransform": "none"
+      },
+      "buttonMinHeight": "44px"
+    },
+    "breakpoints": [
+      {
+        "name": "landing-compact-desktop",
+        "value": "1100px"
+      },
+      {
+        "name": "landing-mobile",
+        "value": "767px"
+      },
+      {
+        "name": "landing-narrow-mobile",
+        "value": "359px"
+      },
+      {
+        "name": "shared-nav-desktop",
+        "value": "48rem"
+      }
+    ],
+    "assetProvenance": [
+      {
+        "path": "frontend/src/assets/ashakids-logo-final-transparent-1.png",
+        "type": "raster",
+        "origin": "Archivo de marca heredado del repositorio; autoría externa no constatada.",
+        "usage": "Isotipo en navegación y pie; también en barra móvil.",
+        "source": "frontend/src/components/illustrations/Isotipo.tsx",
+        "generatedInThisCut": false,
+        "modifiedInThisCut": false
+      },
+      {
+        "path": "frontend/src/pages/public/landing/LandingElApoyoQue.tsx",
+        "type": "html-css-geometry",
+        "origin": "Implementación de letras, órbitas y materiales CSS en el corte V38.",
+        "usage": "Arte decorativo hola, aria-hidden=true.",
+        "raster": false
+      },
+      {
+        "type": "inline-svg",
+        "origin": "Lucide React, dependencia existente del proyecto.",
+        "usage": "Iconos de comunicación, acciones, servicios y pasos.",
+        "raster": false
+      }
+    ],
+    "sources": [
+      "frontend/src/pages/public/landing/landing.css",
+      "frontend/src/pages/public/landing/Landing.tsx",
+      "frontend/src/pages/public/landing/LandingElApoyoQue.tsx",
+      "frontend/src/pages/public/landing/LandingTerapiasEspecializadas.tsx",
+      "frontend/src/pages/public/landing/LandingTerapeutasCertificados.tsx",
+      "frontend/src/pages/public/landing/LandingComoUnaFamiliaPodria.tsx",
+      "frontend/src/pages/public/landing/LandingConsejosDeTerapia.tsx",
+      "frontend/src/theme/brand/B.tsx",
+      "frontend/src/theme/fonts.css",
+      "frontend/src/components/common/Btn.tsx",
+      "frontend/src/pages/public/Public/PublicNav.tsx",
+      "frontend/src/components/common/MobileTopBar.tsx",
+      "frontend/node_modules/tailwindcss/theme.css"
+    ],
+    "previewNote": "Extractos visuales autocontenidos. Los snippets no incorporan lógica ni certifican acciones; las escalas tonales son auxiliares y no modifican producción."
+  },
+  "components": [
+    {
+      "name": "CTA de acceso",
+      "kind": "button",
+      "refersTo": "button-cta",
+      "description": "Acción naranja de la landing.",
+      "html": "<button class=\"ds-cta\" type=\"button\">Iniciar sesión</button>",
+      "css": ".ds-cta{font-family:Nunito,system-ui,sans-serif;min-height:44px;cursor:pointer;transition:background .2s,box-shadow .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);background:#f97316;color:#351604;padding:14px 26px;border:0;border-radius:14px;font-size:1rem;font-weight:700;box-shadow:0 8px 24px #f9731626,inset 0 1px 0 #ffffff80}.ds-cta:hover{background:#fb923c;box-shadow:0 12px 30px #f9731636;transform:translateY(-2px)}.ds-cta:active{scale:.97}.ds-cta:disabled{opacity:.65;pointer-events:none}.ds-cta:focus-visible,.ds-primary:focus-visible,.ds-outline:focus-visible,.ds-email:focus-visible,.ds-nav button:focus-visible,.ds-faq button:focus-visible{outline:3px solid #5b21b6;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-cta,.ds-primary,.ds-outline,.ds-card,.ds-faq svg{animation:none!important;transition:none!important}.ds-cta:hover,.ds-card:hover{transform:none}}"
+    },
+    {
+      "name": "Botón primario compartido",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Variante pequeña de Agendar conservada de Btn.",
+      "html": "<button class=\"ds-primary\" type=\"button\">Agendar</button>",
+      "css": ".ds-primary{font-family:Nunito,system-ui,sans-serif;min-height:44px;cursor:pointer;transition:background .2s,box-shadow .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);background:oklch(49.1% .27 292.581);color:#fff;border:0;border-radius:1rem;padding:6px 14px;font-size:.75rem;font-weight:700;box-shadow:0 1px 3px 0 oklch(89.4% .057 293.283),0 1px 2px -1px oklch(89.4% .057 293.283)}.ds-primary:hover{background:oklch(43.2% .232 292.759)}.ds-primary:active{scale:.97}.ds-primary:disabled{opacity:.65;pointer-events:none}.ds-cta:focus-visible,.ds-primary:focus-visible,.ds-outline:focus-visible,.ds-email:focus-visible,.ds-nav button:focus-visible,.ds-faq button:focus-visible{outline:3px solid #5b21b6;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-cta,.ds-primary,.ds-outline,.ds-card,.ds-faq svg{animation:none!important;transition:none!important}.ds-cta:hover,.ds-card:hover{transform:none}}"
+    },
+    {
+      "name": "Botón outline compartido",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Acción secundaria conservada de Btn.",
+      "html": "<button class=\"ds-outline\" type=\"button\">Ver todos</button>",
+      "css": ".ds-outline{font-family:Nunito,system-ui,sans-serif;min-height:44px;cursor:pointer;transition:background .2s,box-shadow .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);background:#fff;color:#1c1135;padding:10px 20px;border:1px solid #E8E5F4;border-radius:1rem;font-size:.875rem;font-weight:700}.ds-outline:hover{background:#F5F3FF}.ds-outline:active{scale:.97}.ds-outline:disabled{opacity:.65;pointer-events:none}.ds-cta:focus-visible,.ds-primary:focus-visible,.ds-outline:focus-visible,.ds-email:focus-visible,.ds-nav button:focus-visible,.ds-faq button:focus-visible{outline:3px solid #5b21b6;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-cta,.ds-primary,.ds-outline,.ds-card,.ds-faq svg{animation:none!important;transition:none!important}.ds-cta:hover,.ds-card:hover{transform:none}}"
+    },
+    {
+      "name": "Campo de correo",
+      "kind": "input",
+      "refersTo": "email-field",
+      "description": "Presentación del campo heredado; no incorpora envío.",
+      "html": "<div class=\"ds-email-wrap\"><label for=\"ds-email\">Newsletter semanal · Gratis</label><div class=\"ds-email-row\"><input class=\"ds-email\" id=\"ds-email\" type=\"email\" placeholder=\"tu@correo.com\"></div></div>",
+      "css": ".ds-email-wrap{font-family:Nunito,system-ui,sans-serif}.ds-email-wrap label{display:block;margin-bottom:12px;font-size:.8rem;font-weight:750;color:#f7f4ff}.ds-email-wrap{padding:20px;background:#2d1b69;border-radius:22px}.ds-email-row{display:flex;gap:12px;padding:15px 18px;background:#ffffffec;border-radius:12px}.ds-email{width:100%;min-width:0;background:transparent;border:0;color:#1c1135;font-size:.95rem;caret-color:#7c3aed}.ds-email::placeholder{color:#615274}.ds-cta:focus-visible,.ds-primary:focus-visible,.ds-outline:focus-visible,.ds-email:focus-visible,.ds-nav button:focus-visible,.ds-faq button:focus-visible{outline:3px solid #5b21b6;outline-offset:4px}"
+    },
+    {
+      "name": "Navegación de cristal",
+      "kind": "nav",
+      "description": "Extracto del encabezado de escritorio; conserva acciones existentes en producción.",
+      "html": "<nav class=\"ds-nav\"><span>AshaKids</span><button type=\"button\">Especialistas</button><button class=\"ds-nav-cta\" type=\"button\">Iniciar sesión</button></nav>",
+      "css": ".ds-nav{font-family:Nunito,system-ui,sans-serif;display:flex;align-items:center;gap:16px;min-height:88px;background:rgba(250,250,249,.82);backdrop-filter:blur(20px);padding:0 24px}.ds-nav span{color:#1c1135;font-size:1.125rem;font-weight:800}.ds-nav button{font-family:Nunito,system-ui,sans-serif;min-height:44px;cursor:pointer;transition:background .2s,box-shadow .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);padding:6px 12px;background:transparent;color:#7C6F9A;border:0;border-radius:12px;font-size:.875rem;font-weight:700}.ds-nav button:hover{background:oklch(96.9% .016 293.756);color:oklch(49.1% .27 292.581)}.ds-nav .ds-nav-cta{background:#f97316;color:#351604;box-shadow:0 8px 24px #f9731626,inset 0 1px 0 #ffffff80}.ds-nav .ds-nav-cta:hover{background:#fb923c;color:#351604;transform:translateY(-2px)}.ds-cta:focus-visible,.ds-primary:focus-visible,.ds-outline:focus-visible,.ds-email:focus-visible,.ds-nav button:focus-visible,.ds-faq button:focus-visible{outline:3px solid #5b21b6;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-nav button{transition:none}.ds-nav .ds-nav-cta:hover{transform:none}}"
+    },
+    {
+      "name": "Etiqueta informativa",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Especialidad/experiencia del dato existente; sin estado interactivo.",
+      "html": "<span class=\"ds-tag\">Terapia del Lenguaje</span>",
+      "css": ".ds-tag{display:inline-block;font-family:Nunito,system-ui,sans-serif;padding:5px 10px;background:#ede9fe80;color:#5b21b6;border-radius:7px;font-weight:700;font-size:.73rem}"
+    },
+    {
+      "name": "Tarjeta de cristal",
+      "kind": "card",
+      "refersTo": "glass-card",
+      "description": "Superficie de historias y equipo; ejemplo sin datos personales.",
+      "html": "<article class=\"ds-card\"><h3>Terapia del Lenguaje</h3><p>Plataforma de apoyo para terapia de lenguaje infantil</p></article>",
+      "css": ".ds-card{font-family:Nunito,system-ui,sans-serif;position:relative;isolation:isolate;background:#ffffffa6;color:#1c1135;padding:28px;backdrop-filter:blur(16px);border-radius:22px;box-shadow:0 12px 40px #4524780f,inset 0 1px 1px #ffffff;transition:transform .45s cubic-bezier(.16,1,.3,1),box-shadow .45s cubic-bezier(.16,1,.3,1)}.ds-card:after{content:'';pointer-events:none;position:absolute;inset:0;border-radius:inherit;background:linear-gradient(130deg,#ffffff50,transparent 48%);z-index:-1}.ds-card h3{font-size:1.35rem;font-weight:850;line-height:1.25;letter-spacing:-.02em}.ds-card p{color:#615274;font-size:.94rem;line-height:1.75}@media(hover:hover){.ds-card:hover{transform:translateY(-5px);box-shadow:0 20px 45px #4524781a,inset 0 1px 1px #ffffff}}@supports not(backdrop-filter:blur(16px)){.ds-card{background:#ffffffed}}@media(prefers-reduced-motion:reduce){.ds-cta,.ds-primary,.ds-outline,.ds-card,.ds-faq svg{animation:none!important;transition:none!important}.ds-cta:hover,.ds-card:hover{transform:none}}"
+    },
+    {
+      "name": "Fila FAQ",
+      "kind": "custom",
+      "description": "Extracto visual cerrado; el estado real se controla en useLanding.",
+      "html": "<div class=\"ds-faq\"><button type=\"button\" aria-expanded=\"false\">¿Puedo ver el progreso de mi hijo?<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" aria-hidden=\"true\"><path d=\"m6 9 6 6 6-6\"/></svg></button></div>",
+      "css": ".ds-faq{font-family:Nunito,system-ui,sans-serif;border-top:1px solid #ded7e9;border-bottom:1px solid #ded7e9}.ds-faq button{font-family:Nunito,system-ui,sans-serif;min-height:44px;cursor:pointer;transition:background .2s,box-shadow .3s cubic-bezier(.16,1,.3,1),transform .3s cubic-bezier(.16,1,.3,1);width:100%;padding:24px 0;display:flex;justify-content:space-between;gap:24px;align-items:center;text-align:left;font-size:1rem;font-weight:800;border:0;background:transparent;color:#1c1135}.ds-faq button:hover{color:#5b21b6}.ds-faq svg{flex-shrink:0;color:#7c3aed;transition:transform .3s cubic-bezier(.16,1,.3,1)}.ds-faq button[aria-expanded=true] svg{transform:rotate(180deg)}.ds-cta:focus-visible,.ds-primary:focus-visible,.ds-outline:focus-visible,.ds-email:focus-visible,.ds-nav button:focus-visible,.ds-faq button:focus-visible{outline:3px solid #5b21b6;outline-offset:4px}@media(prefers-reduced-motion:reduce){.ds-cta,.ds-primary,.ds-outline,.ds-card,.ds-faq svg{animation:none!important;transition:none!important}.ds-cta:hover,.ds-card:hover{transform:none}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Cristal y luz para acompañar la palabra",
+    "overview": "La identidad conserva Nunito, el logo y los acentos violeta, naranja y teal. La extensión visual de la landing añade cristal translúcido, iluminación difuminada y volumen suave a un entorno infantil luminoso. La tinta oscura y los fondos tranquilos sostienen la lectura.\n\nEste corte V38 documenta los estilos implementados en la landing pública. Los estilos están encapsulados en `.asha-landing`; no constituye una adopción del cristal en los paneles de familia, profesional o asesor. El contrato de composición y estrategia de esta pantalla reside en [LANDING.md](docs/design/LANDING.md). Backend, BD, autenticación, rutas y lógica conservan su alcance previo.",
+    "keyCharacteristics": [
+      "Marca existente con tres acentos reconocibles y Nunito.",
+      "Superficies de lectura tranquilas con cristal y luz localizada.",
+      "Volumen mediante geometría CSS, reflejos y sombras difusas.",
+      "Microinteracciones breves, foco visible y alternativa de movimiento reducido."
+    ],
+    "rules": [
+      {
+        "name": "The Lectura Rule",
+        "body": "Las luces y transparencias acompañan la superficie; el texto mantiene una tinta definida y los ejemplos ficticios conservan su rótulo.",
+        "section": "colors"
+      },
+      {
+        "name": "The Jerarquía Rule",
+        "body": "Los encabezados usan balance de líneas; los párrafos conservan la interlínea amplia del frontmatter y los bloques limitan su longitud cuando el CSS lo define.",
+        "section": "typography"
+      },
+      {
+        "name": "The Movimiento Rule",
+        "body": "El volumen reacciona brevemente a la interacción; no usa animaciones continuas. Con movimiento reducido se eliminan animaciones, transiciones y desplazamientos de hover; las letras conservan su rotación inicial.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** conservar Nunito, el logo existente y la paleta violeta/naranja/teal.",
+      "**Do** mantener el foco visible, los botones de al menos 44px y la alternativa de movimiento reducido.",
+      "**Do** limitar esta extensión a la landing y consultar el contrato de cada pantalla antes de adoptarla.",
+      "**Do** conservar los rótulos de ficción y distinguir apariencia de funcionamiento comprobado."
+    ],
+    "donts": [
+      "**Don't** extender estos materiales a los roles sin su encargo específico.",
+      "**Don't** introducir datos clínicos, cifras comerciales o resultados nuevos mediante decoración o textos.",
+      "**Don't** convertir el arte CSS en una afirmación de imagen generada ni atribuir al logo un origen desconocido.",
+      "**Don't** modificar lógica, API, BD, autenticación o rutas como parte de este corte visual."
+    ]
+  }
+}
