@@ -7,6 +7,7 @@ import { speakForChild } from './speakForChild';
 import { VoiceSpeechGame } from './VoiceSpeechGame';
 import { WorldGameDialog } from './WorldGameDialog';
 import { worldArt } from './worldArt';
+import { SoundWorld } from './SoundGames/SoundWorld';
 
 function LevelActivity({ level, world, patientId, onSaved, exit, onPending }: {
   level: BasicLevel; world: WorldProgress; patientId: number; onSaved: (progress: GameProgress) => void; exit: () => void; onPending: (pending: boolean) => void;
@@ -49,7 +50,15 @@ function LevelActivity({ level, world, patientId, onSaved, exit, onPending }: {
   </section>;
 }
 
-export function DemoWorldPlayer({ world, patientId, onSaved, back }: {
+export function DemoWorldPlayer(props: {
+  world: WorldProgress; patientId: number; onSaved: (progress: GameProgress) => void; back: () => void;
+}) {
+  const [previousActivities, setPreviousActivities] = useState(false);
+  if (props.world.id === 'HABLA' && !previousActivities) return <SoundWorld back={props.back} legacy={() => setPreviousActivities(true)}/>;
+  return <>{props.world.id === 'HABLA' && <button type="button" className="asha-map-back" onClick={() => setPreviousActivities(false)}><ArrowLeft size={18}/> Volver a juegos de sonidos</button>}<BasicWorldPlayer {...props}/></>;
+}
+
+function BasicWorldPlayer({ world, patientId, onSaved, back }: {
   world: WorldProgress; patientId: number; onSaved: (progress: GameProgress) => void; back: () => void;
 }) {
   const [levelNumber, setLevelNumber] = useState<number | null>(null);

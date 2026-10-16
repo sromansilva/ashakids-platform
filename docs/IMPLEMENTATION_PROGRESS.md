@@ -1,3 +1,48 @@
+## Cierre V99 — juegos de sonidos / 2026-10-16
+
+Objetivo: implementar los tres niveles de animales solicitados dentro de HABLA en
+Mundo ASHA. Rama `amparitomaxi`; base inicial250defc/V68, sincronizada por fast-forward
+con devf93f88957e2cf4d342f5004ce0489484783d96af antes de editar. `.gitignore` previo
+preservado mediante stash específico/pop sin conflictos y excluido del cierre.
+Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+Archivos: `SoundGames/{SoundWorld,SoundActivities,SoundParts,useSoundAudio,soundContent}`
+y CSS, cuatro SVG/cuatro MP3/CREDITS, integración en DemoWorldPlayer y aclaración en
+MundoAshaHome, seis pruebas nuevas y ajuste de entrada a pruebas del flujo anterior.
+ADR0025 y documentación de arquitectura/diseño/contexto. No dependencias runtime nuevas;
+imageio-ffmpeg instalado sólo en entorno local backend como herramienta de preparación
+de audio, no en requirements ni en producción. Fuentes descargadas a tmp ignorado.
+
+Verificación final tras incorporar devV98:335PASS/30archivos y rutas25PASS. Pasada
+focalizada previa13PASS. Tipos/check402archivos/build1945módulos aprobados; Graphify
+refresh/check2779nodos/127comunidades. Aviso Type Stripping experimental de Node y
+22fuentes sin símbolos AST, sin fallo. Chrome real con APIs
+interceptadas: seis recorridos/diezlayouts, cuatro archivos decodificados con señal,
+cancelación/errores/mute/repetición, cinco rondas, asociación por ratón nativo y toque,
+foco al entrar/volver y movimiento reducido. Capturas y resultados sanitizados en
+`docs/evidence/sounds-v97/`. No login real, usuarios/pacientes nuevos, escrituras BD,
+SMTP ni prueba de integración clínica; no se ejecuta pytest destructivo.
+
+Incidencias: al iniciar la preparación, Python por defecto no servía a Graphify; se
+usó `.venv-graphify`. Descarga inicial del gato429, recuperada desde la misma fuente
+licenciada; se conservaron los cuatro recursos. Un comando npm inicial se lanzó en
+la raíz sin package.json: se corrigió al directorio frontend. El nombre accesible del
+botón de escucha y el retorno de foco fueron corregidos. Arrastre del verificador
+requería mantener ambos extremos visibles sin scroll suave; ratón nativo confirmado.
+Los fallos intermedios no representan el resultado final de las comprobaciones.
+Integración concurrente: dev4cdd97bdf7b9bb4f65584de34ae0f1e8ec0b2230 incorpora V97/V98
+del equipo. Al reaplicar el avance hubo dos conflictos de documentación: resueltos
+conservando entradas de ambas partes. DemoWorldPlayer combina automáticamente VOZ
+y HABLA; módulo VoiceSpeechGame intacto. Se repitieron suite/build/tipos/Chrome/mapa
+sobre esa base. El ID de evidencia sounds-v97 se conserva; commit de entrega esV99.
+
+Límite explícito: nueva práctica sólo en memoria; `basica-1` y su progreso guardado
+continúan en «Para la familia». No presentar como persistida ni otorgar resultados
+clínicos. La imagen mencionada no venía adjunta; dirección aplicada desde el texto y
+el diseño existente. Siguiente: aceptación humana de apariencia/audio; persistencia
+nueva requiere una extensión versionada y autorizada. Cierre V99 destinado a dev y
+amparitomaxi con push normal; verificar SHA/refs/CI reales antes de informar entrega.
+
 ## Cierre V98 — Reconocimiento de voz local con Whisper en El Estudio de la Voz / 2026-10-16
 
 Objetivo: incorporar reconocimiento de voz automático (ASR) para el mundo «El Estudio de la Voz» (`VOZ`) usando faster-whisper en local y comparación textual para gamificación de habla infantil.

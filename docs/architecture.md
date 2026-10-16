@@ -1,3 +1,11 @@
+## Práctica de sonidos en Mundo ASHA / 2026-10-16
+
+HABLA incorpora tres juegos de animales como práctica de la visita. Se mantienen
+el acceso familiar/asignación y las actividades `basica-1` con sus intentos y premios.
+No se reutilizan esos intentos para resultados de los juegos nuevos. Contenido y
+medios locales separados de la lógica; reproductor único con cancelación al salir.
+Sin BD ni API nueva. [ADR 0025](decisions/0025-practica-sonidos-sin-reinterpretar-intentos.md).
+
 ## V56 - Frontera pública del catálogo / 2026-10-10
 
 Landing integra cinco mundos con metadata pública y conserva rutas de actividades.

@@ -1,3 +1,32 @@
+## V99 — juegos de sonidos en Mundo ASHA / 2026-10-16
+
+Rama `amparitomaxi`, sincronizada antes de implementar con `origin/dev`
+`f93f88957e2cf4d342f5004ce0489484783d96af`. HABLA/Taller de los Sonidos abre tres
+juegos: Toca y descubre (cuatro animales), ¿Quién está sonando? (cinco rondas) y
+Cada sonido en su lugar (dos y luego tres parejas). Ilustraciones SVG originales,
+grabaciones reales MP3 locales con licencias/créditos, controles grandes, teclado,
+toque/arrastre, errores recuperables y movimiento reducido. No hay música ni voz sintética.
+
+Práctica en memoria de esta visita, sin enviar intentos ni otorgar XP/medallas. Las
+actividades anteriores `basica-1` siguen accesibles desde «Para la familia» y conservan
+su contrato/progreso. Acceso familiar y asignación siguen en API. Sin cambios de BD,
+migraciones, cuentas reales ni módulos de otros mundos. [ADR0025](decisions/0025-practica-sonidos-sin-reinterpretar-intentos.md).
+
+Verificación final tras incorporar dev V98: 335 pruebas de componentes/30 archivos y
+25 rutas aprobados; tipos/check402/build1945 y Graphify2779nodos/127comunidades registrados
+en [evidencia](evidence/sounds-v97/verification.md). Chrome real con API sintética:
+seis recorridos, diez comprobaciones de layout (320/390/768/1366 y juego), cuatro MP3
+decodificados/reproducidos, sin errores JS ni escrituras API. No certifica audio oído
+por una persona, progreso clínico ni pantallas ajenas. No faltan recursos de animales.
+
+Integración concurrente de dev `4cdd97bdf7b9bb4f65584de34ae0f1e8ec0b2230`: código
+combinado automáticamente y entradas de V98/V99 conservadas al resolver los dos
+conflictos documentales. Commit de cierre `V99_Implementar_Juegos_Sonidos`; comprobar SHA y referencias remotas
+en Git antes de asumir publicación. `.gitignore` local previo queda fuera del commit.
+Repositorio: https://github.com/sromansilva/ashakids-platform . Siguiente: aceptación
+visual/escucha con el usuario; si se desea guardar esta práctica, definir catálogo
+versionado y validación de servidor sin reinterpretar resultados históricos.
+
 ## V98 — Reconocimiento de voz local con Whisper en El Estudio de la Voz / 2026-10-16
 
 Implementación del módulo lúdico «El Estudio de la Voz» (`VOZ`) con reconocimiento automático de voz (ASR) local mediante `faster-whisper` (modelo "base", ejecución en CPU con cuantización int8, no bloqueante vía thread pool). Validación estricta de formato por magic bytes (WebM, WAV, OGG, MP3), límite de 30s / 5MB y limpieza de archivos temporales. Comparador sintáctico normalizado (SequenceMatcher, umbral 70%) para calificar pronunciación y otorgar experiencia/medallas sin evaluación clínica.

@@ -43,6 +43,6 @@ export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'e
       {progress.data?.medallas.length ? <section className="asha-world-medals"><h2><Award size={22} aria-hidden="true"/> Medallas del perfil</h2><ul>{progress.data.medallas.map(m => <li key={m.codigo}>{m.nombre} · {new Date(m.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}</li>)}</ul></section> : null}
       {patients.isSuccess && children.length === 0 && <p>Aún no tienes hijos registrados.</p>}
     </>}
-    <p role="note" className="asha-map-help">Actividades básicas de simulación. Los intentos, experiencia y medallas se guardan por niño; no acreditan progreso clínico. Los juegos definitivos se incorporarán después.</p>
+    <p role="note" className="asha-map-help">El progreso guardado corresponde a las actividades básicas por niño. La práctica de sonidos se realiza en esta visita y no otorga XP ni medallas. Estas actividades no acreditan progreso clínico.</p>
   </div></section>;
 }

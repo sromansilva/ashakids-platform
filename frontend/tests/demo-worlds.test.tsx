@@ -39,7 +39,7 @@ function api(failOnce=false) {
     return reply([]);
   });
 }
-async function open(){const view=renderRoute('/mundo-asha','PADRE');fireEvent.click(await screen.findByRole('button',{name:'Abrir Taller de los Sonidos'}));return view;}
+async function open(){const view=renderRoute('/mundo-asha','PADRE');fireEvent.click(await screen.findByRole('button',{name:'Abrir Taller de los Sonidos'}));fireEvent.click(screen.getByText('Para la familia'));fireEvent.click(screen.getByRole('button',{name:/Actividades con progreso guardado/}));return view;}
 it('permite jugar nivel 3 primero y solo completa ese nivel después de guardar',async()=>{
   api();await open();
   expect(screen.getByRole('button',{name:'Jugar nivel 3'})).toBeEnabled();
@@ -74,7 +74,7 @@ it('la recarga usa el servidor y otro hijo conserva su progreso separado',async(
 
 it('abre el mundo solicitado por la landing sólo si está asignado y permite volver',async()=>{
   api();renderRoute('/mundo-asha?world=HABLA','PADRE');
-  expect(await screen.findByRole('button',{name:'Jugar nivel 3'})).toBeEnabled();
+  expect(await screen.findByRole('button',{name:'Jugar nivel 3: Cada sonido en su lugar'})).toBeEnabled();
   fireEvent.click(screen.getByRole('button',{name:'Volver a mundos'}));
   expect(await screen.findByRole('button',{name:'Abrir Taller de los Sonidos'})).toBeEnabled();
 });
