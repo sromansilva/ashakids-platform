@@ -25,10 +25,12 @@ MUNDOS = {
         nivel("Tu turno", "Tu amiga está contando algo. ¿Qué puedes hacer para respetar su turno?", ["Escuchar hasta que termine", "Hablar encima", "Interrumpir siempre"], ["Escuchar hasta que termine"]),
         nivel("Ordena la conversación", "Ordena: escuchar, esperar el turno y responder.", ["Responder", "Escuchar", "Esperar"], ["Escuchar", "Esperar", "Responder"], True),
     ]),
-    "VOZ": dict(name="El Estudio de la Voz", description="Voz: identifica situaciones de cuidado vocal mediante preguntas.", levels=[
-        nivel("Una voz cómoda", "¿Qué opción permite conversar sin forzar la voz?", ["Gritar", "Hablar con un volumen cómodo", "Competir con el ruido"], ["Hablar con un volumen cómodo"]),
-        nivel("Cuida tu voz", "Hay mucho ruido y quieres hablar con alguien. ¿Qué opción ayuda?", ["Gritar más", "Buscar un lugar tranquilo", "Forzar la voz"], ["Buscar un lugar tranquilo"]),
-        nivel("Elige el lugar", "¿Dónde sería más fácil conversar con una voz cómoda?", ["Junto a una bocina", "En un rincón tranquilo", "En medio del ruido"], ["En un rincón tranquilo"]),
+    "VOZ": dict(name="El Estudio de la Voz", description="Voz y habla: practica la pronunciación y entonación de frases con dificultad progresiva.", levels=[
+        nivel("Frases breves", "Pronuncia la frase en voz alta: «El perro corre».", ["El perro corre"], ["El perro corre"]),
+        nivel("Frases descriptivas", "Pronuncia la frase en voz alta: «El gato duerme sobre la cama».", ["El gato duerme sobre la cama"], ["El gato duerme sobre la cama"]),
+        nivel("Oraciones de longitud media", "Pronuncia la frase en voz alta: «El niño guarda sus juguetes después de jugar».", ["El niño guarda sus juguetes después de jugar"], ["El niño guarda sus juguetes después de jugar"]),
+        nivel("Oraciones más elaboradas", "Pronuncia la frase en voz alta: «El perro corre hacia su casa porque empieza a llover».", ["El perro corre hacia su casa porque empieza a llover"], ["El perro corre hacia su casa porque empieza a llover"]),
+        nivel("Oraciones extensas", "Pronuncia la frase en voz alta: «Cuando termina sus tareas, el niño ordena sus libros y prepara la mochila para el día siguiente».", ["Cuando termina sus tareas, el niño ordena sus libros y prepara la mochila para el día siguiente"], ["Cuando termina sus tareas, el niño ordena sus libros y prepara la mochila para el día siguiente"]),
     ]),
     "OROFACIAL": dict(name="Laboratorio de los Gestos", description="Motricidad orofacial: reconoce labios y lengua en preguntas ilustrativas.", levels=[
         nivel("Conoce los labios", "¿Qué parte de la cara se junta al decir eme?", ["Los labios", "Las cejas", "Las orejas"], ["Los labios"]),

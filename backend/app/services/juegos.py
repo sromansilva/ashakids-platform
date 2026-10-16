@@ -52,10 +52,19 @@ async def resumen(db, identity, patient_id):
 
 async def estructura(db, patient_id, code):
     content = MUNDOS[code]
+    total_levels = len(content["levels"])
     activity = await db.scalar(select(Actividad).where(Actividad.id_paciente == patient_id,
         Actividad.codigo_juego == code, Actividad.version_contenido == VERSION))
     if activity:
         world = await db.scalar(select(Mundo).where(Mundo.id_actividad == activity.id_actividad))
+        existing_levels = (await db.scalars(select(Nivel).where(Nivel.id_mundo == world.id_mundo))).all()
+        existing_orders = {l.orden for l in existing_levels}
+        missing = [Nivel(id_mundo=world.id_mundo, nombre_nivel=level["title"], orden=i + 1,
+                         objetivo=level["prompt"], activo=True)
+                   for i, level in enumerate(content["levels"]) if (i + 1) not in existing_orders]
+        if missing:
+            db.add_all(missing)
+            await db.flush()
         return activity, world
     activity = Actividad(id_paciente=patient_id, codigo_juego=code, version_contenido=VERSION,
         nombre_actividad=content["name"], descripcion="SIMULACIÓN BÁSICA. " + content["description"],
@@ -63,11 +72,11 @@ async def estructura(db, patient_id, code):
     db.add(activity)
     await db.flush()
     world = Mundo(id_actividad=activity.id_actividad, nombre_mundo=content["name"],
-                  descripcion=content["description"], objetivo="Completar tres actividades de simulación.", activo=True)
+                  descripcion=content["description"], objetivo=f"Completar {total_levels} actividades del mundo.", activo=True)
     db.add(world)
     db.add(Objetivo(id_actividad=activity.id_actividad, titulo="Mundo " + code.title(),
         descripcion="Objetivo del juego básico; no acredita dominio clínico.",
-        resultados_objetivo={"tipo": "SIMULACION", "completados": 0, "total": 3, "version": VERSION}))
+        resultados_objetivo={"tipo": "SIMULACION", "completados": 0, "total": total_levels, "version": VERSION}))
     await db.flush()
     db.add_all([Nivel(id_mundo=world.id_mundo, nombre_nivel=level["title"], orden=i + 1,
                       objetivo=level["prompt"], activo=True) for i, level in enumerate(content["levels"])])
@@ -91,11 +100,32 @@ async def registrar(db, identity, patient_id, code, data):
                     experiencia_otorgada=prior.experiencia_otorgada, repetido=True,
                     resumen=await resumen(db, identity, patient_id))
     level_content = MUNDOS[code]["levels"][data.nivel - 1]
-    if any(len(a) > 100 or a not in level_content["choices"] for a in data.respuestas):
-        raise HTTPException(422, "Seleccione respuestas de esta actividad.")
+    if code == "VOZ":
+        if any(len(a) > 300 for a in data.respuestas):
+            raise HTTPException(422, "Texto de respuesta demasiado largo.")
+        from app.services.comparador_texto import comparar_frases
+        transcripcion_obtenida = " ".join(data.respuestas)
+        frase_esperada = level_content["answer"][0] if isinstance(level_content["answer"], list) else level_content["answer"]
+        comp = comparar_frases(frase_esperada, transcripcion_obtenida)
+        correct = comp.es_coincidente
+        detalle_extra = {
+            "frase_esperada": frase_esperada,
+            "transcripcion": transcripcion_obtenida,
+            "porcentaje_coincidencia": comp.porcentaje_coincidencia,
+            "palabras_omitidas": comp.palabras_omitidas,
+            "palabras_adicionales": comp.palabras_adicionales,
+            "es_coincidente": comp.es_coincidente,
+        }
+    else:
+        if any(len(a) > 100 or a not in level_content["choices"] for a in data.respuestas):
+            raise HTTPException(422, "Seleccione respuestas de esta actividad.")
+        correct = data.respuestas == level_content["answer"]
+        detalle_extra = {
+            "aciertos": sum(a == b for a, b in zip(data.respuestas, level_content["answer"])),
+            "respuestas_totales": len(level_content["answer"]),
+        }
     activity, world = await estructura(db, patient_id, code)
     level = await db.scalar(select(Nivel).where(Nivel.id_mundo == world.id_mundo, Nivel.orden == data.nivel))
-    correct = data.respuestas == level_content["answer"]
     previous = (await db.scalars(select(ResultadoNivel).where(ResultadoNivel.id_paciente == patient_id,
                             ResultadoNivel.id_nivel == level.id_nivel))).all()
     award = XP_NIVEL if correct and not any(r.puntaje == 100 for r in previous) else 0
@@ -110,9 +140,11 @@ async def registrar(db, identity, patient_id, code, data):
     completed = {n for r, n, key in prior_rows if key == code and r.puntaje == 100}
     if correct:
         completed.add(data.nivel)
+    total_levels = len(MUNDOS[code]["levels"])
     objective = await db.scalar(select(Objetivo).where(Objetivo.id_actividad == activity.id_actividad))
-    objective.resultados_objetivo = {"tipo": "SIMULACION", "version": VERSION, "total": 3, "completados": len(completed)}
-    if len(completed) == 3:
+    if objective:
+        objective.resultados_objetivo = {"tipo": "SIMULACION", "version": VERSION, "total": total_levels, "completados": len(completed)}
+    if len(completed) == total_levels:
         activity.estado_actividad = "COMPLETADA"
         medal = await db.scalar(select(Logro).where(Logro.codigo_juego == code))
         if medal is None:
@@ -125,9 +157,8 @@ async def registrar(db, identity, patient_id, code, data):
     attempt = ResultadoNivel(id_paciente=patient_id, id_nivel=level.id_nivel,
         numero_intento=max((r.numero_intento for r in previous), default=0) + 1,
         puntaje=100 if correct else 0, estrellas_obtenidas=3 if correct else 0,
-        detalle_resultados={"tipo": "SIMULACION", "version": VERSION, "solicitud": payload,
-                            "aciertos": sum(a == b for a, b in zip(data.respuestas, level_content["answer"])),
-                            "respuestas_totales": len(level_content["answer"]), "validacion": "SERVIDOR"},
+        detalle_resultados={"tipo": "VOZ" if code == "VOZ" else "SIMULACION", "version": VERSION,
+                            "solicitud": payload, "validacion": "SERVIDOR", **detalle_extra},
         fecha_realizacion=datetime.now(timezone.utc), clave_intento=data.clave_intento,
         experiencia_otorgada=award)
     db.add(attempt)
@@ -138,10 +169,13 @@ async def registrar(db, identity, patient_id, code, data):
     completed_pairs = {(key, n) for r, n, key in all_rows if r.puntaje == 100}
     profile.actividades_desarrolladas_total = len(completed_pairs)
     profile.objetivos_totales = len({key for _, _, key in all_rows})
-    profile.objetivos_completados = sum(sum(1 for c, _ in completed_pairs if c == key) == 3
-                                       for key in {c for _, _, c in all_rows})
+    profile.objetivos_completados = sum(
+        sum(1 for c, _ in completed_pairs if c == k) == len(MUNDOS[k]["levels"])
+        for k in {c for _, _, c in all_rows if c in MUNDOS}
+    )
     allowed = await asignados(db, patient)
-    profile.progreso = round(100 * sum(key in allowed for key, _ in completed_pairs) / (3 * len(allowed)), 2) if allowed else 0
+    total_assigned_levels = sum(len(MUNDOS[k]["levels"]) for k in allowed if k in MUNDOS)
+    profile.progreso = round(100 * sum(key in allowed for key, _ in completed_pairs) / total_assigned_levels, 2) if total_assigned_levels else 0
     dates = {r.fecha_realizacion.astimezone(ZoneInfo("America/Lima")).date() for r, _, _ in all_rows}
     day, streak = datetime.now(ZoneInfo("America/Lima")).date(), 0
     while day in dates:
@@ -151,3 +185,4 @@ async def registrar(db, identity, patient_id, code, data):
     await db.flush()
     return dict(id_intento=attempt.id_resultado_nivel, correcto=correct, experiencia_otorgada=award,
                 repetido=False, resumen=await resumen(db, identity, patient_id))
+

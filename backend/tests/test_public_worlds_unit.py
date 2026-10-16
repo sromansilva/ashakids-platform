@@ -16,7 +16,8 @@ class PublicWorldTests(unittest.IsolatedAsyncioTestCase):
         data=catalogo_publico()
         self.assertEqual(len(data),5)
         for world in data:
-            self.assertEqual(world['levels'],[{'number':1},{'number':2},{'number':3}])
+            expected_levels = [{'number': i + 1} for i in range(5 if world['id'] == 'VOZ' else 3)]
+            self.assertEqual(world['levels'], expected_levels)
             self.assertEqual(set(world),{'id','version','name','description','levels'})
 
     async def test_http_guests_can_only_read_metadata(self):

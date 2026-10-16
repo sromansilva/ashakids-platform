@@ -1,3 +1,17 @@
+## Cierre V98 — Reconocimiento de voz local con Whisper en El Estudio de la Voz / 2026-10-16
+
+Objetivo: incorporar reconocimiento de voz automático (ASR) para el mundo «El Estudio de la Voz» (`VOZ`) usando faster-whisper en local y comparación textual para gamificación de habla infantil.
+Rama feat/nlavadom sobre base dev sincronizada.
+Archivos modificados/creados:
+- Backend: `app/api/v1/voz.py`, `app/schemas/voz.py`, `app/services/reconocimiento_voz.py`, `app/services/comparador_texto.py`, `app/core/config.py`, `app/main.py`, `app/schemas/juegos.py`, `app/services/juegos.py`, `app/services/juegos_catalogo.py`, `requirements.txt`, `tests/test_reconocimiento_voz.py`, `tests/test_clinical_api.py`, `tests/test_public_worlds_unit.py`.
+- Frontend: `src/pages/padre/Sessions/VoiceSpeechGame.tsx`, `src/services/voiceService.ts`, `src/pages/padre/Sessions/DemoWorldPlayer.tsx`, `tests/voice-speech-game.test.tsx`.
+Verificación realizada:
+- Pytest backend: 239 passed (18 de voz y regresiones de catálogo público) en pytest local.
+- Vitest frontend: 25 rutas pasadas + 6 tests de componente `voice-speech-game.test.tsx` pasados.
+- Build frontend: `npm run build` completado exitosamente sin errores de TypeScript.
+- Knowledge Map: `python tools/knowledge/manage.py refresh` y `check` aprobados (2755 nodos).
+Integración: commit bajo convención `V98_Reconocimiento_Voz_Juegos` e integración a dev y origin.
+
 ## Cierre V96 — guardado de juegos y validación BD / 2026-10-11
 
 Objetivo: resolver el error mostrado al completar HABLA3 y verificar cinco mundos/15niveles. Rama feat/piero-dev, inicio6558a0776dd41302d3435819f3644fa9f1ff33f8/V93. Fetch detectó V94 del equipo7b647aa3f0ca1c5a106edc537ac466411ec1c84c, incorporado por fast-forward sin conflictos; conservar título/SHA. Repositorio:https://github.com/sromansilva/ashakids-platform . Cierre V96_Corregir_Guardado_Juegos; push normal autorizado a dev/feat/piero-dev y refs/CI verificados al entregar. No confundir commit con despliegue.

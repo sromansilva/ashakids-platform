@@ -194,5 +194,6 @@ async def test_public_catalog_has_no_exercises_or_answers():
         assert response.status_code == 200
         assert len(response.json()) == 5
         for world in response.json():
-            assert world["levels"] == [{"number": 1}, {"number": 2}, {"number": 3}]
+            expected_levels = [{"number": i + 1} for i in range(5 if world["id"] == "VOZ" else 3)]
+            assert world["levels"] == expected_levels
         assert "set-cookie" not in response.headers

@@ -1,3 +1,9 @@
+## V98 — Reconocimiento de voz local con Whisper en El Estudio de la Voz / 2026-10-16
+
+Implementación del módulo lúdico «El Estudio de la Voz» (`VOZ`) con reconocimiento automático de voz (ASR) local mediante `faster-whisper` (modelo "base", ejecución en CPU con cuantización int8, no bloqueante vía thread pool). Validación estricta de formato por magic bytes (WebM, WAV, OGG, MP3), límite de 30s / 5MB y limpieza de archivos temporales. Comparador sintáctico normalizado (SequenceMatcher, umbral 70%) para calificar pronunciación y otorgar experiencia/medallas sin evaluación clínica.
+
+Componente frontend `VoiceSpeechGame.tsx` con grabación en navegador vía `MediaRecorder`, manejo de estados (grabando, procesando, éxito, reintento) e integración transparente en `DemoWorldPlayer.tsx`. Tests unitarios de backend y frontend verificados.
+
 ## V96 — guardado de los cinco juegos / 2026-10-11
 
 Corregido el HTTP503 al completar un mundo: resultados_nivel admite INSERT pero no UPDATE para runtime. El premio final del nivel más la medalla se calcula antes de insertar el intento; conserva transacción, UUID idempotente y bloqueo por paciente, sin ampliar permisos ni cambiar esquema/datos compartidos. Actividades básicas de simulación, sin medición clínica.
