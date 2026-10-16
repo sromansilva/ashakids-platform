@@ -12,3 +12,5 @@ email-validator>=2.2.0,<3
 reportlab>=4.4.9,<5
 tzdata>=2025.2
 python-multipart==0.0.32
+faster-whisper>=1.0.0,<2
+av>=14,<19

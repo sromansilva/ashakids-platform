@@ -4,6 +4,7 @@ import { Btn } from '@/components/common/Btn';
 import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
 import { learningGames, type AttemptData, type BasicLevel, type GameProgress, type WorldProgress } from '@/services/learningGames';
 import { speakForChild } from './speakForChild';
+import { VoiceSpeechGame } from './VoiceSpeechGame';
 import { WorldGameDialog } from './WorldGameDialog';
 import { worldArt } from './worldArt';
 
@@ -70,6 +71,20 @@ export function DemoWorldPlayer({ world, patientId, onSaved, back }: {
       })}</ol>
     </div>
     <div className="asha-route-footer"><Award size={28} aria-hidden="true"/><div>{world.medalla ? <p role="status">Medalla obtenida por completar este mundo.</p> : <p>Completa los {world.levels.length} niveles para obtener la medalla de este mundo.</p>}<p>Puedes visitar cualquier nivel. Saltar a otro nivel no completa los anteriores. Repetir un nivel completado no vuelve a otorgar XP.</p></div></div>
-    {level && <WorldGameDialog title={`Nivel ${level.number}: ${level.title}`} pending={pending} onClose={() => setLevelNumber(null)}><LevelActivity key={level.number} level={level} world={world} patientId={patientId} onSaved={onSaved} onPending={setPending} exit={() => setLevelNumber(null)}/></WorldGameDialog>}
+    {level && <WorldGameDialog title={`Nivel ${level.number}: ${level.title}`} pending={pending} onClose={() => setLevelNumber(null)}>
+      {world.id === 'VOZ' ? (
+        <VoiceSpeechGame
+          key={level.number}
+          levelNumber={level.number}
+          targetPhrase={level.choices?.[0] || 'El perro corre'}
+          patientId={patientId}
+          worldVersion={world.version}
+          onSaved={onSaved}
+          onExit={() => setLevelNumber(null)}
+        />
+      ) : (
+        <LevelActivity key={level.number} level={level} world={world} patientId={patientId} onSaved={onSaved} onPending={setPending} exit={() => setLevelNumber(null)}/>
+      )}
+    </WorldGameDialog>}
   </section>;
 }

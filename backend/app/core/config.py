@@ -43,6 +43,13 @@ class Settings(BaseSettings):
     NEWSLETTER_RATE_LIMIT: int = Field(default=5, ge=1, le=100)
     NEWSLETTER_RATE_WINDOW_SECONDS: int = Field(default=3600, ge=60, le=86400)
 
+    # Reconocimiento de voz local con Whisper (faster-whisper)
+    WHISPER_MODEL_SIZE: str = "base"
+    WHISPER_DEVICE: str = "cpu"
+    WHISPER_COMPUTE_TYPE: str = "int8"
+    WHISPER_AUDIO_MAX_SECONDS: int = Field(default=30, ge=5, le=120)
+    WHISPER_AUDIO_MAX_BYTES: int = Field(default=5 * 1024 * 1024, ge=1024, le=25 * 1024 * 1024)
+
     # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""
     DB_SSL_CA_FILE: Optional[str] = None
