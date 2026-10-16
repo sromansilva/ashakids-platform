@@ -1,19 +1,85 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="210" viewBox="0 0 240 210">
- <ellipse cx="120" cy="190" rx="76" ry="10" fill="#8c6443" opacity=".12"/>
- <g stroke="#72503e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
- <path d="M168 159q47-14 30-40q-13-11-15 5q7 13-20 16" fill="#c48b59"/>
- <path d="M83 119q-19 28-12 62q12 11 27 3h51q19 10 25-4q6-38-18-61" fill="#eac299"/>
- <path d="M98 139q22-16 44 0l6 41H95z" fill="#fff1d9" stroke="none"/>
- <path d="M81 158v25q8 7 21 0v-24M141 159v24q12 7 22-1v-24" fill="#eac299"/>
- <path d="M67 52q-27-2-31 34q-4 35 19 37q16-6 19-37M174 52q27-2 31 34q4 35-19 37q-16-6-19-37" fill="#b47b51"/>
- <path d="M63 80q0-50 58-51q59 1 58 51l-5 32q-6 25-53 27q-48-2-54-27z" fill="#eac299"/>
- <path d="M76 67q5-21 23-17q18 4 14 24q-2 25-21 24q-18-2-16-31" fill="#b47b51" stroke="none"/>
- <path d="M115 33q-7-18 5-20q1 11 9 15q-2-15 9-12l-1 18" fill="#eac299"/>
- <ellipse cx="94" cy="81" rx="5" ry="7" fill="#47382f" stroke="none"/><ellipse cx="149" cy="81" rx="5" ry="7" fill="#47382f" stroke="none"/>
- <circle cx="92" cy="79" r="1.5" fill="white" stroke="none"/><circle cx="147" cy="79" r="1.5" fill="white" stroke="none"/>
- <ellipse cx="122" cy="108" rx="30" ry="21" fill="#fff1d9" stroke="none"/>
- <path d="M111 96q11-7 23 0q0 10-12 13q-11-3-11-13" fill="#665041"/>
- <path d="M112 115q10 4 21 0v12q-9 16-20 0z" fill="#e7949e"/><path d="M122 120v7" fill="none" stroke="#b9697a"/>
- <path d="M94 138q28 10 54 0" fill="none" stroke="#80ab8c" stroke-width="9"/><path d="M116 147h13l-2 13h-9z" fill="#f4cf67"/>
+ <defs>
+  <radialGradient id="dog-clay-0" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#9c948f" />
+   <stop offset="43%" stop-color="#564840" />
+   <stop offset="80%" stop-color="#47382f" />
+   <stop offset="100%" stop-color="#372c25" />
+  </radialGradient>
+  <radialGradient id="dog-clay-1" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#aca098" />
+   <stop offset="43%" stop-color="#725e50" />
+   <stop offset="80%" stop-color="#665041" />
+   <stop offset="100%" stop-color="#503e33" />
+  </radialGradient>
+  <radialGradient id="dog-clay-2" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#c1ab99" />
+   <stop offset="43%" stop-color="#957052" />
+   <stop offset="80%" stop-color="#8c6443" />
+   <stop offset="100%" stop-color="#6d4e34" />
+  </radialGradient>
+  <radialGradient id="dog-clay-3" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#d6b8a1" />
+   <stop offset="43%" stop-color="#ba865f" />
+   <stop offset="80%" stop-color="#b47b51" />
+   <stop offset="100%" stop-color="#8c603f" />
+  </radialGradient>
+  <radialGradient id="dog-clay-4" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#dfc0a5" />
+   <stop offset="43%" stop-color="#c99466" />
+   <stop offset="80%" stop-color="#c48b59" />
+   <stop offset="100%" stop-color="#996c45" />
+  </radialGradient>
+  <radialGradient id="dog-clay-5" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f2c5cb" />
+   <stop offset="43%" stop-color="#e99da6" />
+   <stop offset="80%" stop-color="#e7949e" />
+   <stop offset="100%" stop-color="#b4737b" />
+  </radialGradient>
+  <radialGradient id="dog-clay-6" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f4dec8" />
+   <stop offset="43%" stop-color="#ecc7a1" />
+   <stop offset="80%" stop-color="#eac299" />
+   <stop offset="100%" stop-color="#b79777" />
+  </radialGradient>
+  <radialGradient id="dog-clay-7" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f9e5ad" />
+   <stop offset="43%" stop-color="#f5d373" />
+   <stop offset="80%" stop-color="#f4cf67" />
+   <stop offset="100%" stop-color="#bea150" />
+  </radialGradient>
+  <radialGradient id="dog-clay-8" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#fff7ea" />
+   <stop offset="43%" stop-color="#fff2dc" />
+   <stop offset="80%" stop-color="#fff1d9" />
+   <stop offset="100%" stop-color="#c7bca9" />
+  </radialGradient>
+  <filter id="dog-shadow" x="-25%" y="-25%" width="150%" height="165%">
+   <feDropShadow dx="0" dy="4" stdDeviation="2.5" flood-color="#443050" flood-opacity=".2" />
+  </filter>
+ </defs>
+ <ellipse cx="120" cy="190" rx="76" ry="10" fill="url(#dog-clay-2)" opacity=".12" />
+ <g stroke="#72503e" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" filter="url(#dog-shadow)">
+  <path d="M168 159q47-14 30-40q-13-11-15 5q7 13-20 16" fill="url(#dog-clay-4)" />
+  <path d="M83 119q-19 28-12 62q12 11 27 3h51q19 10 25-4q6-38-18-61" fill="url(#dog-clay-6)" />
+  <path d="M98 139q22-16 44 0l6 41H95z" fill="url(#dog-clay-8)" stroke="none" />
+  <path d="M81 158v25q8 7 21 0v-24M141 159v24q12 7 22-1v-24" fill="url(#dog-clay-6)" />
+  <path d="M67 52q-27-2-31 34q-4 35 19 37q16-6 19-37M174 52q27-2 31 34q4 35-19 37q-16-6-19-37" fill="url(#dog-clay-3)" />
+  <path d="M63 80q0-50 58-51q59 1 58 51l-5 32q-6 25-53 27q-48-2-54-27z" fill="url(#dog-clay-6)" />
+  <path d="M76 67q5-21 23-17q18 4 14 24q-2 25-21 24q-18-2-16-31" fill="url(#dog-clay-3)" stroke="none" />
+  <path d="M115 33q-7-18 5-20q1 11 9 15q-2-15 9-12l-1 18" fill="url(#dog-clay-6)" />
+  <ellipse cx="94" cy="81" rx="5" ry="7" fill="url(#dog-clay-0)" stroke="none" />
+  <ellipse cx="149" cy="81" rx="5" ry="7" fill="url(#dog-clay-0)" stroke="none" />
+  <circle cx="92" cy="79" r="1.5" fill="white" stroke="none" />
+  <circle cx="147" cy="79" r="1.5" fill="white" stroke="none" />
+  <ellipse cx="122" cy="108" rx="30" ry="21" fill="url(#dog-clay-8)" stroke="none" />
+  <path d="M111 96q11-7 23 0q0 10-12 13q-11-3-11-13" fill="url(#dog-clay-1)" />
+  <path d="M112 115q10 4 21 0v12q-9 16-20 0z" fill="url(#dog-clay-5)" />
+  <path d="M122 120v7" fill="none" stroke="#b9697a" />
+  <path d="M94 138q28 10 54 0" fill="none" stroke="#80ab8c" stroke-width="9" />
+  <path d="M116 147h13l-2 13h-9z" fill="url(#dog-clay-7)" />
+ </g>
+ <g fill="#fff" opacity=".28" pointer-events="none">
+  <ellipse cx="128" cy="49" rx="17" ry="5" transform="rotate(-18 128 49)" />
  </g>
 </svg>

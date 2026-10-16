@@ -1,16 +1,70 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="240" height="210" viewBox="0 0 240 210">
- <ellipse cx="120" cy="190" rx="68" ry="10" fill="#a07724" opacity=".12"/>
- <g stroke="#a8782d" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
- <path d="M102 162v21l-12 5m12-5l9 4M141 162v21l-10 5m10-5l12 4" fill="none" stroke="#d18c36" stroke-width="5"/>
- <path d="M71 110q-31-5-23 23q10 23 36 9M170 110q30-5 22 23q-10 23-36 9" fill="#f3c852"/>
- <path d="M66 112q0-31 22-44q-2-40 37-42q39 4 36 44q20 15 17 47q1 52-54 53q-58-1-58-58" fill="#ffdf6d"/>
- <path d="M112 29q-15-20-5-23q12 0 17 19q-2-24 9-22q13 5 1 25" fill="#ffdf6d"/>
- <ellipse cx="122" cy="137" rx="32" ry="23" fill="#ffed9c" stroke="none"/>
- <ellipse cx="100" cy="81" rx="5" ry="7" fill="#68482d" stroke="none"/><ellipse cx="147" cy="81" rx="5" ry="7" fill="#68482d" stroke="none"/>
- <circle cx="98" cy="79" r="1.5" fill="white" stroke="none"/><circle cx="145" cy="79" r="1.5" fill="white" stroke="none"/>
- <ellipse cx="91" cy="98" rx="12" ry="7" fill="#f5ae75" stroke="none"/><ellipse cx="155" cy="98" rx="12" ry="7" fill="#f5ae75" stroke="none"/>
- <path d="M110 99l13-9l14 9l-14 12z" fill="#f2a443"/><path d="M111 99h25" fill="none"/>
- <path d="M78 122l9 11M167 122l-9 11" fill="none" stroke="#dcaf3d"/>
- <path d="M54 176l5-10l3 10m117 4l4-10l5 10" fill="none" stroke="#89ad72"/>
+ <defs>
+  <radialGradient id="chick-clay-0" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#ad9c8e" />
+   <stop offset="43%" stop-color="#74573e" />
+   <stop offset="80%" stop-color="#68482d" />
+   <stop offset="100%" stop-color="#513823" />
+  </radialGradient>
+  <radialGradient id="chick-clay-1" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#ccb689" />
+   <stop offset="43%" stop-color="#a88236" />
+   <stop offset="80%" stop-color="#a07724" />
+   <stop offset="100%" stop-color="#7d5d1c" />
+  </radialGradient>
+  <radialGradient id="chick-clay-2" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f8ce99" />
+   <stop offset="43%" stop-color="#f3ab52" />
+   <stop offset="80%" stop-color="#f2a443" />
+   <stop offset="100%" stop-color="#bd8034" />
+  </radialGradient>
+  <radialGradient id="chick-clay-3" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f9e1a2" />
+   <stop offset="43%" stop-color="#f4cc60" />
+   <stop offset="80%" stop-color="#f3c852" />
+   <stop offset="100%" stop-color="#be9c40" />
+  </radialGradient>
+  <radialGradient id="chick-clay-4" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#fad3b4" />
+   <stop offset="43%" stop-color="#f6b480" />
+   <stop offset="80%" stop-color="#f5ae75" />
+   <stop offset="100%" stop-color="#bf885b" />
+  </radialGradient>
+  <radialGradient id="chick-clay-5" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#ffeeb0" />
+   <stop offset="43%" stop-color="#ffe279" />
+   <stop offset="80%" stop-color="#ffdf6d" />
+   <stop offset="100%" stop-color="#c7ae55" />
+  </radialGradient>
+  <radialGradient id="chick-clay-6" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#fff5ca" />
+   <stop offset="43%" stop-color="#ffeea4" />
+   <stop offset="80%" stop-color="#ffed9c" />
+   <stop offset="100%" stop-color="#c7b97a" />
+  </radialGradient>
+  <filter id="chick-shadow" x="-25%" y="-25%" width="150%" height="165%">
+   <feDropShadow dx="0" dy="4" stdDeviation="2.5" flood-color="#443050" flood-opacity=".2" />
+  </filter>
+ </defs>
+ <ellipse cx="120" cy="190" rx="68" ry="10" fill="url(#chick-clay-1)" opacity=".12" />
+ <g stroke="#a8782d" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" filter="url(#chick-shadow)">
+  <path d="M102 162v21l-12 5m12-5l9 4M141 162v21l-10 5m10-5l12 4" fill="none" stroke="#d18c36" stroke-width="5" />
+  <path d="M71 110q-31-5-23 23q10 23 36 9M170 110q30-5 22 23q-10 23-36 9" fill="url(#chick-clay-3)" />
+  <path d="M66 112q0-31 22-44q-2-40 37-42q39 4 36 44q20 15 17 47q1 52-54 53q-58-1-58-58" fill="url(#chick-clay-5)" />
+  <path d="M112 29q-15-20-5-23q12 0 17 19q-2-24 9-22q13 5 1 25" fill="url(#chick-clay-5)" />
+  <ellipse cx="122" cy="137" rx="32" ry="23" fill="url(#chick-clay-6)" stroke="none" />
+  <ellipse cx="100" cy="81" rx="5" ry="7" fill="url(#chick-clay-0)" stroke="none" />
+  <ellipse cx="147" cy="81" rx="5" ry="7" fill="url(#chick-clay-0)" stroke="none" />
+  <circle cx="98" cy="79" r="1.5" fill="white" stroke="none" />
+  <circle cx="145" cy="79" r="1.5" fill="white" stroke="none" />
+  <ellipse cx="91" cy="98" rx="12" ry="7" fill="url(#chick-clay-4)" stroke="none" />
+  <ellipse cx="155" cy="98" rx="12" ry="7" fill="url(#chick-clay-4)" stroke="none" />
+  <path d="M110 99l13-9l14 9l-14 12z" fill="url(#chick-clay-2)" />
+  <path d="M111 99h25" fill="none" />
+  <path d="M78 122l9 11M167 122l-9 11" fill="none" stroke="#dcaf3d" />
+  <path d="M54 176l5-10l3 10m117 4l4-10l5 10" fill="none" stroke="#89ad72" />
+ </g>
+ <g fill="#fff" opacity=".28" pointer-events="none">
+  <ellipse cx="117" cy="45" rx="14" ry="5" transform="rotate(-18 117 45)" />
  </g>
 </svg>

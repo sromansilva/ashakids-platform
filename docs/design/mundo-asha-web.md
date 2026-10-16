@@ -2,6 +2,15 @@
 
 ## Juegos de sonidos / 2026-10-16
 
+Refinamiento V100 solicitado por el usuario: se conserva la estructura y el contenido
+de los tres niveles, con acabado SVG semitridimensional. Modelado con gradientes
+radiales, reflejos pequeños, sombras de contacto y contornos suaves. Una granja
+vectorial original integra los animales con el escenario. Superficies de juguete
+lavanda/aqua/amarillo, bordes inferiores con relieve, marcos y pulsación hundida.
+Las fichas de asociación conservan su color neutro, sin dar pistas de la respuesta.
+Animaciones de respuesta y respeto a movimiento reducido conservados; sin WebGL,
+imágenes raster nuevas, dependencias ni cambios de audio/reglas/persistencia.
+
 HABLA abre una granja con tres niveles libres: Toca y descubre, ¿Quién está sonando?
 y Cada sonido en su lugar. Ilustraciones SVG originales de vaca/gato/perro/pollito,
 audio real local, Nunito, lavanda #E6DDFC, coral #FFE0D2, turquesa #CFF1EB,

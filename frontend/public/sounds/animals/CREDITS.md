@@ -3,6 +3,12 @@
 Ilustraciones SVG originales creadas para ASHAKids, 2026-10-16. No son emojis ni
 imágenes remotas. El contenido y las rutas se centralizan en soundContent.ts.
 
+Actualización visual 2026-10-16: modelado semitridimensional mediante gradientes,
+sombras de contacto y reflejos en los cuatro animales; escenario `garden.svg`
+original con granero, colinas, nubes y jardín. Referencia del usuario utilizada
+para orientar el acabado de juguete con volumen; composición propia ASHAKids.
+No se incorporaron imágenes, iconos ni sonidos del producto de referencia.
+
 Grabaciones reales de animales, distribuidas localmente en MP3 mono 44,1 kHz.
 Se normalizaron con FFmpeg (loudnorm I=-20, TP=-3, LRA=7), con entrada/salida suave.
 Los derivados de obras CC BY-SA se distribuyen bajo la misma licencia CC BY-SA 3.0.

@@ -1,3 +1,18 @@
+## V100 — acabado de juguete en juegos de sonidos / 2026-10-16
+
+Rama de trabajo confirmada `dev`, base `e54c48084085c9a58e0324d3bf1deb3378bb5837`.
+El usuario pide mantener la estructura de ASHA con SVG más creativos y volumen.
+Cuatro animales refinados con gradientes, reflejos y sombras; escena garden.svg
+original, marcos de juguete, teclas con relieve y pulsación hundida. Menú, tres
+mecánicas, audio y límite de práctica sin XP conservados. No cambia la arquitectura.
+Referencia orienta el acabado, sin reutilizar recursos del producto mostrado.
+
+Verificación y capturas nuevas: [sounds-v100](evidence/sounds-v100/verification.md).
+Entrega por commit `V100_Redisenar_Juegos_Sonidos` en dev, con comprobación de
+publicación/Render al cierre. `.gitignore` previo permanece fuera del commit.
+Repositorio: https://github.com/sromansilva/ashakids-platform . Siguiente: aceptación
+visual del usuario; la persistencia nueva sigue diferida según ADR0025.
+
 ## V99 — juegos de sonidos en Mundo ASHA / 2026-10-16
 
 Rama `amparitomaxi`, sincronizada antes de implementar con `origin/dev`

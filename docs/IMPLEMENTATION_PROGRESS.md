@@ -1,3 +1,26 @@
+## Cierre V100 — diseño de juegos de sonidos / 2026-10-16
+
+Objetivo: acabado semitridimensional SVG y mayor creatividad, conservando la
+estructura y navegación de ASHA. Trabajo en `dev` por instrucción del usuario,
+base e54c48084085c9a58e0324d3bf1deb3378bb5837/V99. Repositorio:
+https://github.com/sromansilva/ashakids-platform .
+
+Archivos: cuatro SVG de animales refinados, garden.svg original, sound-world.css,
+créditos y documentación de diseño/contexto/evidencia. Sin cambios de TSX/lógica,
+BD/API, audios, permisos ni dependencias. La referencia orienta volumen/materiales/
+composición; se conservan las mecánicas de los tres niveles de V99.
+
+Comprobaciones nuevas y alcance en docs/evidence/sounds-v100/verification.md:
+tipos, estructura, build, las 13 regresiones de sonidos/actividades anteriores y
+recorrido Chrome con API sintética/audio real, incluidos arrastre, teclado, toque,
+errores y tamaños de 320/390/768/1366px. Validación XML/referencias de cinco SVG.
+No usuarios ni datos reales, cambios clínicos, migraciones o pruebas de BD.
+Graphify refresh/check al cierre. No reutilizar cifras V99 como ejecución nueva.
+
+Cierre V100_Redisenar_Juegos_Sonidos destinado a dev; comprobar SHA/push y recursos
+en Render al entregar. El cambio local previo de .gitignore queda excluido.
+Siguiente: aceptación visual; práctica nueva sigue sin XP/persistencia (ADR0025).
+
 ## Cierre V99 — juegos de sonidos / 2026-10-16
 
 Objetivo: implementar los tres niveles de animales solicitados dentro de HABLA en
