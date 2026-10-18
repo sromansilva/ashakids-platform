@@ -2,6 +2,11 @@ import { useState, type CSSProperties, type DragEvent, type ReactNode } from 're
 import { Check, Hand, RotateCcw, Sparkles, Star, Volume2 } from 'lucide-react';
 import type { SoundAnimal } from './soundContent';
 
+export function SoundGamePicture({ src, title }: { src: string; title: string }) {
+  const [failed, setFailed] = useState(false);
+  return <span className="sound-game-art">{failed ? <span className="sound-image-error">{title} · imagen no disponible</span> : <img src={src} alt="" width="320" height="320" draggable={false} onError={() => setFailed(true)}/>}</span>;
+}
+
 export function AnimalPicture({ animal }: { animal: SoundAnimal }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);

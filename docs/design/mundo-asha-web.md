@@ -14,6 +14,19 @@ quitar cantidades, zonas espaciales, rimas y vagones de frases. Instrucciones ha
 opcionales, feedback amable, vuelta/repetición, foco y movimiento reducido.
 Evidencia nueva y procedencia en [words-v101](../evidence/words-v101/verification.md).
 
+## Ilustraciones de tarjetas del Taller / 2026-10-18
+
+V103: portadas relacionadas con la acción, sin animales en las tarjetas iniciales.
+Explorar se representa por panel de teclas/altavoz; identificar por auriculares y
+lupa; asociación por tableros de dos y tres piezas. Cuatro ilustraciones ImageGen
+con volumen de juguete, WebP transparente de 384 × 384, 124488 bytes en total.
+Lavanda #DFD0FB, verde #C6EDDB, amarillo #FFE8AB y azul #CFDDFB. Superficies, bordes
+blancos y sombra de las tarjetas de la Isla; Nunito y menú de dos columnas/una móvil.
+El arte dispone de 200 px de altura en escritorio y 125 px en móvil para proteger
+los títulos y acciones. El fallback mantiene título y acceso aunque falle una imagen.
+Originales, prompts y verificación: [sounds-v103](../evidence/sounds-v103/verification.md).
+Las imágenes de animales permanecen dentro de los juegos de escucha y asociación.
+
 ## Taller separado por actividades / 2026-10-18
 
 V102 responde a la sobrecarga de niveles: menú de cuatro tarjetas y una actividad

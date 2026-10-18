@@ -1,3 +1,28 @@
+## V103 — ilustraciones por juego en el Taller / 2026-10-18
+
+Se reemplazan las imágenes de animales de las cuatro tarjetas iniciales por arte
+específico: panel sonoro, auriculares/lupa, tablero de dos piezas y tablero de tres.
+Cuatro ilustraciones ImageGen independientes, transparentes, con acabado 3D y colores
+coherentes con la Isla. WebP de 384 × 384, 124488 bytes totales. Las tarjetas toman
+las superficies, bordes y sombras de la Isla; se conserva el menú de cuatro juegos
+separados y su navegación. Los animales y MP3 dentro de las partidas no cambian.
+
+Trabajo en dev, base 3935f5609f208e88847503c3fac8d52902d8b6e6 (V102). Archivos:
+SoundWorld, SoundParts (imagen de tarjeta con fallback), soundContent, CSS,
+public/sounds/games y créditos. Originales/prompts/evidencia en sounds-v103.
+Sin cambios de arquitectura, dependencias, API, BD, permisos o persistencia.
+Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+Verificación nueva: tipos y estructura frontend aprobados, 15 casos focalizados
+aprobados; build de 1952 módulos y Chrome (seis recorridos, 20 layouts, cero errores
+JS/escrituras API) aprobados. Graphify actualizado: 2844 nodos y 131 comunidades.
+Resultados finales en
+[evidencia](evidence/sounds-v103/verification.md). La revisión visual detectó imágenes
+que desbordaban verticalmente sus tarjetas: altura explícita 200/125 px corregida y
+comprobación de contención añadida al verificador. No pruebas con datos reales.
+Commit previsto V103_Ilustrar_Tarjetas_Sonidos; dev y Render se comprueban al cierre.
+.gitignore previo excluido. Siguiente: aceptación visual de las tarjetas nuevas.
+
 ## V102 — Taller de los Sonidos por actividades / 2026-10-18
 
 El taller se organiza como la Isla: menú ilustrado y una sola actividad al entrar.

@@ -8,10 +8,10 @@ export const animals: SoundAnimal[] = [
 ];
 export const animalById = (id: AnimalId) => animals.find(animal => animal.id === id)!;
 export const soundLevels = [
-  { title: 'Toca y descubre', instruction: '¡Toca un animal y escucha!', description: 'Cuatro amigos tienen algo que contarte.', action: 'Explorar', icon: 'touch' },
-  { title: '¿Quién está sonando?', instruction: 'Escucha… ¿quién es?', description: 'Abre bien tus oídos y encuentra a tu amigo.', action: 'Escuchar', icon: 'listen' },
-  { title: 'Mis primeras dos parejas', instruction: 'Escucha una ficha y toca su animal.', description: 'Dos sonidos, dos amigos. Un paso pequeño para empezar.', action: 'Unir dos parejas', icon: 'match' },
-  { title: 'El reto de tres parejas', instruction: 'Escucha una ficha y toca su animal.', description: 'Elige este juego cuando quieras descubrir tres parejas.', action: 'Unir tres parejas', icon: 'match' },
+  { title: 'Toca y descubre', instruction: '¡Toca un animal y escucha!', description: 'Cuatro amigos tienen algo que contarte.', action: 'Explorar', icon: 'touch', image: '/sounds/games/explore-v103.webp' },
+  { title: '¿Quién está sonando?', instruction: 'Escucha… ¿quién es?', description: 'Abre bien tus oídos y encuentra a tu amigo.', action: 'Escuchar', icon: 'listen', image: '/sounds/games/identify-v103.webp' },
+  { title: 'Mis primeras dos parejas', instruction: 'Escucha una ficha y toca su animal.', description: 'Dos sonidos, dos amigos. Un paso pequeño para empezar.', action: 'Unir dos parejas', icon: 'match', image: '/sounds/games/pairs-two-v103.webp' },
+  { title: 'El reto de tres parejas', instruction: 'Escucha una ficha y toca su animal.', description: 'Elige este juego cuando quieras descubrir tres parejas.', action: 'Unir tres parejas', icon: 'match', image: '/sounds/games/pairs-three-v103.webp' },
 ] as const;
 export function shuffled<T>(values: readonly T[]): T[] {
   const result = [...values];

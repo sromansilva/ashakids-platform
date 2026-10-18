@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, Hand, Headphones, Link2, RotateCcw, Volume2, VolumeX } from 'lucide-react';
 import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
-import { animals, soundLevels } from './soundContent';
-import { AnimalPicture } from './SoundParts';
+import { soundLevels } from './soundContent';
+import { SoundGamePicture } from './SoundParts';
 import { ExploreSounds, IdentifySounds, MatchSounds } from './SoundActivities';
 import { useSoundAudio } from './useSoundAudio';
 import './sound-world.css';
@@ -31,7 +31,7 @@ export function SoundWorld({ back, legacy }: { back: () => void; legacy: () => v
     </header>
     {level === null ? <>
       <div className="sound-levels" aria-label="Cuatro juegos independientes">{soundLevels.map((item, index) => { const Icon = icons[index]; return <button type="button" ref={node => { levelButtons.current[index] = node; }} className={`sound-level sound-level-${index + 1}`} key={item.title} aria-label={`Jugar ${item.title}`} onClick={() => { opener.current = index; open(index); }}>
-        <AnimalPicture animal={animals[index]}/><span className="sound-level-kind"><Icon size={18}/>{item.action}</span><h3>{item.title}</h3><p>{item.description}</p><span className="sound-level-start">¡A jugar! <ArrowRight size={20}/></span>
+        <SoundGamePicture src={item.image} title={item.title}/><span className="sound-level-kind"><Icon size={18}/>{item.action}</span><h3>{item.title}</h3><p>{item.description}</p><span className="sound-level-start">¡A jugar! <ArrowRight size={20}/></span>
       </button>; })}</div>
       <p className="sound-parent-note">Cuatro juegos separados. Elige cualquiera y vuelve al menú cuando quieras.</p>
       <details className="sound-family-details"><summary>Para la familia</summary><p>Esta práctica de sonidos no guarda intentos, XP ni medallas. Las actividades anteriores conservan su progreso por niño. No es una evaluación clínica.</p><button type="button" className="sound-back" onClick={legacy}>Actividades con progreso guardado <ArrowRight size={18}/></button><a href="/sounds/animals/CREDITS.md" target="_blank" rel="noreferrer">Créditos de sonidos e ilustraciones</a></details>

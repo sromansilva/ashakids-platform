@@ -20,17 +20,17 @@
 .sound-friends .sound-picture { width: 100px; height: 120px; margin-left: -15px; transform: rotate(-7deg); }
 .sound-friends .sound-picture:nth-child(2) { margin-bottom: 20px; transform: rotate(8deg); }
 .sound-levels { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; padding: 30px; background: radial-gradient(ellipse at top,#ffffffc9,transparent 65%); }
-.sound-level { --toy-light: #f8efff; --toy-base: #e7d6fa; --toy-edge: #b49ace; position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; padding: 18px 16px; border: 2px solid var(--toy-edge); border-bottom-width: 7px; border-radius: 32px 32px 26px 26px; background: linear-gradient(145deg,var(--toy-light),var(--toy-base)); color: var(--sound-ink); box-shadow: inset 0 3px 2px #fff, inset -3px -3px 8px #77579518, 0 5px 0 #c4b4d155, 0 12px 15px #60407812; transition: transform .16s, box-shadow .16s; }
+.sound-level { --toy-base: #DFD0FB; position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; text-align: center; padding: 18px 16px; border: 2px solid #ffffffb3; border-bottom: 7px solid #6f50853d; border-radius: 30px; background: radial-gradient(ellipse at 30% 5%,#fffd,transparent 75%),var(--toy-base); color: var(--sound-ink); box-shadow: inset 0 2px 2px white,0 5px 0 #b9a2ca40,0 9px 18px #4c346d14; transition: transform .18s, box-shadow .18s; }
 .sound-level:hover { transform: translateY(-4px); }
-.sound-level-2 { --toy-light: #effff8; --toy-base: #bfe9df; --toy-edge: #7eb9ac; }
-.sound-level-3 { --toy-light: #fffbe4; --toy-base: #f7dfa0; --toy-edge: #cfb363; }
-.sound-level-4 { --toy-light: #eef9ff; --toy-base: #cee6fa; --toy-edge: #91b2d4; }
+.sound-level-2 { --toy-base: #C6EDDB; }
+.sound-level-3 { --toy-base: #FFE8AB; }
+.sound-level-4 { --toy-base: #CFDDFB; }
 .sound-heading > img { display: block; width: 260px; height: auto; object-fit: contain; flex-shrink: 0; }
 .sound-heading:not(.is-welcome) { padding: 22px 30px; background: #f8f5fc; border-bottom: 1px solid #dfd4ec; }
 .sound-heading:not(.is-welcome)::before, .sound-heading:not(.is-welcome)::after { display: none; }
 .sound-level-number { position: absolute; top: 14px; left: 14px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; color: #573880; background: white; font-weight: 900; }
-.sound-level .sound-picture { height: 175px; width: 100%; z-index: 0; }
-.sound-level .sound-picture::after { content: ''; position: absolute; z-index: -1; inset: 8% 9% 5%; border-radius: 50%; background: radial-gradient(ellipse at 40% 30%,#fff,#ffffff55 60%,#b69ec333); box-shadow: inset 0 2px 5px #fff, inset 0 -5px 9px #8568a233; border: 1px solid #fff9; }
+.sound-game-art { display: grid; place-items: center; width: 100%; height: 200px; margin: 4px 0 12px; }
+.sound-game-art img { display: block; width: 100%; height: 200px; object-fit: contain; user-select: none; filter: drop-shadow(0 5px 3px #4f37651a); }
 .sound-level-kind { display: flex; gap: 6px; align-items: center; font-size: 13px; font-weight: 800; color: #57456a; }
 .sound-level h3 { font-size: 21px; line-height: 1.2; font-weight: 900; margin: 10px 0; }
 .sound-level p { font-size: 14px; line-height: 1.5; margin: 0 0 18px; }
@@ -95,7 +95,8 @@
   .sound-heading > img { width: 180px; }
   .sound-levels { grid-template-columns: 1fr; gap: 16px; padding: 20px 16px; }
   .sound-level { display: grid; grid-template-columns: 110px 1fr; text-align: left; padding: 16px 12px; column-gap: 12px; }
-  .sound-level .sound-picture { grid-column: 1; grid-row: 1 / 5; height: 125px; } .sound-level-number { top: 9px; left: 9px; width: 28px; height: 28px; font-size: 13px; }
+  .sound-level .sound-game-art { grid-column: 1; grid-row: 1 / 5; height: 125px; margin: 0; } .sound-level-number { top: 9px; left: 9px; width: 28px; height: 28px; font-size: 13px; }
+  .sound-game-art img { height: 125px; }
   .sound-level h3 { font-size: 19px; margin: 7px 0; } .sound-level p { font-size: 13px; margin: 0 0 10px; } .sound-level-start { grid-column: 2; }
   .sound-playground { padding: 12px 12px calc(110px + env(safe-area-inset-bottom, 0px)); } .sound-animal-grid { gap: 12px; } .sound-animal { padding: 20px 8px 12px; border-radius: 22px; }
   .sound-picture { height: 125px; } .sound-animal strong { font-size: 20px; } .sound-card-caption { font-size: 13px; } .sound-animal-grid { padding: 12px; border-radius: 24px; } .sound-heading::before { background-position: right bottom; background-size: auto, auto 100%; }

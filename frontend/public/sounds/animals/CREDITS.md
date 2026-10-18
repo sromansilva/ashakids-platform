@@ -24,3 +24,5 @@ Esta licencia corresponde a cada audio, no al código de la aplicación.
 No hay síntesis de voz, pitidos ni música de fondo. El volumen del reproductor
 se limita a 0,7; sólo se reproduce tras una interacción. No se envían datos al
 proveedor de audio durante el juego.
+
+Las tarjetas del menú utilizan nuevas ilustraciones de actividades: [créditos](../games/CREDITS.md).
