@@ -1,0 +1,74 @@
+{
+  "cases": [
+    {
+      "mode": "gentle",
+      "positions": [
+        "encima",
+        "debajo",
+        "fuera"
+      ],
+      "completed": true
+    },
+    {
+      "mode": "challenge",
+      "positions": [
+        "derecha",
+        "debajo",
+        "izquierda"
+      ],
+      "completed": true
+    }
+  ],
+  "layouts": [
+    {
+      "label": "spatial-gentle-encima",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "artOverflow": []
+    },
+    {
+      "label": "spatial-gentle-debajo",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "artOverflow": []
+    },
+    {
+      "label": "spatial-gentle-fuera",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "artOverflow": []
+    },
+    {
+      "label": "spatial-challenge-derecha",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "artOverflow": []
+    },
+    {
+      "label": "spatial-challenge-debajo",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "artOverflow": []
+    },
+    {
+      "label": "spatial-challenge-izquierda",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "artOverflow": []
+    }
+  ],
+  "errors": [],
+  "apiWrites": 0
+}

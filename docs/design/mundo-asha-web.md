@@ -1,6 +1,13 @@
 # Mundo ASHA: diseño web
 
-## Isla de las Palabras / 2026-10-16
+## Isla de las Palabras / 2026-10-18
+
+V104 amplía la lógica, instrucciones y apoyos para jugar desde los 4 años. Dos modos,
+bienvenida separada, modelos visuales, voz opcional y diez portadas de cada actividad.
+Diseño y criterios: [isla-palabras-prescolar.md](isla-palabras-prescolar.md).
+Resultados nuevos: [words-v104](../evidence/words-v104/verification.md).
+
+## Diseño previo de la Isla / 2026-10-16
 
 Colección de diez juegos ilustrados de acceso libre dentro de LENGUAJE. Hero con
 árbol/isla de la landing; Nunito, lavanda/aqua y diez acentos coral/amarillo/verde/

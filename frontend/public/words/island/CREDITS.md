@@ -23,3 +23,11 @@ Contenido centralizado en WordGames/wordContent.ts. Las instrucciones habladas
 utilizan SpeechSynthesis del navegador, activado sólo por interacción. Su disponibilidad
 y pronunciación dependen del dispositivo; el texto y los controles visuales siguen
 disponibles. No se graba voz ni se envía audio a ASHAKids en estos juegos.
+
+
+## V104 — vocabulario de rimas / 2026-10-18
+
+Caracol (snail.webp) y tambor (drum.webp): dos ilustraciones nuevas generadas con
+ImageGen integrada en llamadas independientes, optimizadas a WebP RGBA de 288 × 288.
+Prompts y originales en docs/evidence/words-v104/. Amplían las parejas sol/caracol
+y flor/tambor. Portadas de actividades: [../games/CREDITS.md](../games/CREDITS.md).

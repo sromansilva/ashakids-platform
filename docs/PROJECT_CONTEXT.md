@@ -1,3 +1,30 @@
+## V104 — Isla con lógica de juego para preescolar / 2026-10-18
+
+Diez juegos revisados para acompañar a niños desde los 4 años: bienvenida con meta,
+pasos ilustrados, modos Primeros pasos/Un poquito más, pistas y mensajes concretos.
+Sílabas iniciales por palmadas sin lectura, memoria con vistazo y 2/4 parejas, cestas
+con un dibujo por turno, tres historias, comparación de opuestos por ronda, merienda
+uno a uno, modelo espacial, rimas con escucha/confirmación y frases con pictogramas.
+Bancos mezclados por partida y colección de la visita; éxito con recuerdo visual.
+Diez portadas ImageGen propias, caracol/tambor nuevos y estética de ASHA conservada.
+
+Trabajo en dev, base d35ee0cede509c6a53881b93c704c9685f765b93. Archivos WordGames,
+nuevo StoryGame, pruebas de palabras, arte/créditos y docs/design/isla-palabras-prescolar.md.
+Sin cambios de BD/API/permisos, dependencias ni premios persistentes (ADR0025).
+Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+Verificación nueva: 23 casos focalizados, suite completa de 360 componentes y 25
+rutas aprobados, tipos, estructura 411 archivos y build. Recorridos navegador de
+los diez juegos en ambos modos aprobados: 20 partidas, 126 layouts y dos variantes
+espaciales adicionales con 6 layouts; cero errores JS/escrituras API. Graphify:
+2867 nodos y 129 comunidades, check actual. Resultados en
+[evidencia V104](evidence/words-v104/verification.md). No datos reales ni pruebas BD.
+No se certifica eficacia pedagógica/terapéutica ni síntesis audible en dispositivos.
+Commit previsto V104_Mejorar_Juegos_Palabras_Preescolar,
+publicación en dev y comprobación de Render al cierre, autorizadas por el usuario.
+.gitignore local previo fuera del commit. Siguiente: aceptación visual y escucha
+humana en los dispositivos de las familias; persistencia de práctica sigue diferida.
+
 ## V103 — ilustraciones por juego en el Taller / 2026-10-18
 
 Se reemplazan las imágenes de animales de las cuatro tarjetas iniciales por arte

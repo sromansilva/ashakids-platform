@@ -1,0 +1,62 @@
+[
+  {
+    "id": "treasure",
+    "generatedFile": "exec-c1dc5a42-eee7-4ad4-b688-4aff5d01bd9a.png",
+    "kind": "card"
+  },
+  {
+    "id": "memory",
+    "generatedFile": "exec-7420902f-d20e-4671-8648-a2c2684e61d5.png",
+    "kind": "card"
+  },
+  {
+    "id": "sort",
+    "generatedFile": "exec-5ea37ef7-50ca-4f07-b54a-bf74552ef2aa.png",
+    "kind": "card"
+  },
+  {
+    "id": "story",
+    "generatedFile": "exec-a7ac86bd-3c8d-465d-8c2c-f603c352c109.png",
+    "kind": "card"
+  },
+  {
+    "id": "opposites",
+    "generatedFile": "exec-35d4d6c5-1f9c-4140-b67e-0adfbdab2bd9.png",
+    "kind": "card"
+  },
+  {
+    "id": "syllables",
+    "generatedFile": "exec-fa883235-e0a8-480a-892d-8b45250e3075.png",
+    "kind": "card"
+  },
+  {
+    "id": "count",
+    "generatedFile": "exec-99d1a75a-41aa-4bf4-afe7-ca862ea56564.png",
+    "kind": "card"
+  },
+  {
+    "id": "positions",
+    "generatedFile": "exec-ce876457-e91e-4ff0-b2c9-2d33814dc2fe.png",
+    "kind": "card"
+  },
+  {
+    "id": "rhymes",
+    "generatedFile": "exec-e0b24858-b840-4cd9-8105-3f6082f804ad.png",
+    "kind": "card"
+  },
+  {
+    "id": "sentence",
+    "generatedFile": "exec-f53ea7e0-9a3d-4563-acf6-cbae0900e520.png",
+    "kind": "card"
+  },
+  {
+    "id": "snail",
+    "generatedFile": "exec-1cecfa21-d1d2-40b4-ad95-35d77ab4cd16.png",
+    "kind": "word"
+  },
+  {
+    "id": "drum",
+    "generatedFile": "exec-be76ff39-828d-4784-9102-a3861ebc981c.png",
+    "kind": "word"
+  }
+]

@@ -1,20 +1,56 @@
 import { useState } from 'react';
-import { ArrowRight, Droplets, Sprout } from 'lucide-react';
-import { sentenceRounds,shuffle,words,type WordId } from './wordContent';
-import { GameInstruction,RoundFooter,Undo,useRounds,WordPicture,WordProgress,type WordSpeech } from './WordParts';
+import { Hand, Moon, Utensils, Wind, CircleDot } from 'lucide-react';
+import { pickRounds,sentenceRounds,shuffle,words,type WordId } from './wordContent';
+import { GameInstruction,Hint,Listen,RoundFooter,Undo,useRounds,WordPicture,WordProgress,type WordSpeech } from './WordParts';
 import type { WordActivityProps } from './DiscoveryGames';
 
-const syllableIds:WordId[]=['cat','apple','butterfly'];
-export function SyllableGame({finish,speech}:WordActivityProps){const state=useRounds(finish);const id=syllableIds[state.round];return <TokenPuzzle key={state.round} state={state} art={id} speech={speech} tokens={words[id].syllables} prompt={`Construye la palabra ${words[id].name.toLowerCase()}.`} kind="syllable"/>;}
-export function SentenceGame({finish,speech}:WordActivityProps){const state=useRounds(finish);const round=sentenceRounds[state.round];return <TokenPuzzle key={state.round} state={state} art={round.art} speech={speech} tokens={round.words} prompt={`Ordena la frase: ${round.phrase}`} kind="sentence"/>;}
-function TokenPuzzle({state,art,speech,tokens,prompt,kind}:{state:ReturnType<typeof useRounds>;art:WordId;speech:WordSpeech;tokens:readonly string[];prompt:string;kind:'syllable'|'sentence'}){
-  const [order]=useState(()=>shuffle(tokens.map((text,id)=>({id,text}))));
-  const [chosen,setChosen]=useState<number[]>([]);
-  return <><WordProgress value={state.round} total={3}/><GameInstruction text={prompt} speech={speech}>{kind==='syllable'?<>Construye <strong>{words[art].name.toLowerCase()}</strong> con sus sílabas.</>:'Escucha la frase y coloca sus vagones en orden.'}</GameInstruction><div className="word-puzzle-art"><WordPicture id={art}/></div><ol className={`word-puzzle-slots ${kind==='sentence'?'is-train':''}`} aria-label="Tu construcción">{tokens.map((_,index)=><li key={index}><span className="word-slot-number">{index+1}</span><strong>{chosen[index]===undefined?'…':tokens[chosen[index]]}</strong>{kind==='sentence'&&<span className="word-train-wheels" aria-hidden="true"/>}</li>)}</ol><div className="word-chips">{order.map(token=><button type="button" key={token.id} className="word-chip" disabled={state.solved||chosen.includes(token.id)} onClick={()=>{setChosen(previous=>[...previous,token.id]);state.setMessage('');}}>{token.text}</button>)}</div><div className="word-puzzle-actions"><Undo disabled={state.solved||chosen.length===0} onClick={()=>{setChosen([]);state.setMessage('');}}/>{!state.solved&&<button type="button" className="word-button" disabled={chosen.length!==tokens.length} onClick={()=>state.check(chosen.every((id,index)=>id===index))}>Comprobar</button>}</div><RoundFooter state={state}/></>;
+const syllablePool:WordId[]=['cat','house','ball','apple','rabbit','butterfly'];
+export function SyllableGame({finish,speech,mode}:WordActivityProps) {
+  const [rounds]=useState(()=>pickRounds(mode==='gentle'?syllablePool.slice(0,5):syllablePool));
+  const state=useRounds(finish,rounds.length),id=rounds[state.round];
+  return mode==='gentle'?<ClapRound key={state.round} id={id} state={state} speech={speech}/>:<SyllablePuzzle key={state.round} id={id} state={state} speech={speech}/>;
+}
+interface SyllableProps {id:WordId;state:ReturnType<typeof useRounds>;speech:WordSpeech}
+function ClapRound({id,state,speech}:SyllableProps) {
+  const [claps,setClaps]=useState(0),word=words[id];
+  return <><WordProgress value={state.round} total={state.total} label="Palabras con palmadas"/>
+    <GameInstruction text={`Escucha ${word.name}. Toca una palmada por cada trocito de la palabra.`} speech={speech}>¿Cuántas palmadas tiene <strong>{word.name.toLowerCase()}</strong>?</GameInstruction>
+    <div className="word-puzzle-art"><WordPicture id={id} label/></div>
+    <div className="word-center"><Listen text={word.syllables.join('. ')+'.'} speech={speech} label="Escuchar por partes"/></div>
+    <div className="word-claps" aria-label={`${claps} palmadas`} aria-live="polite">{claps===0?<span>Toca una vez por cada trocito</span>:Array.from({length:claps},(_,i)=><span className="word-clap-dot" key={i}><Hand size={25}/><small>{i+1}</small></span>)}</div>
+    <button type="button" className="word-clap-button" aria-label="Dar una palmada" disabled={state.solved||claps===6} onClick={()=>{setClaps(n=>n+1);state.setMessage('');}}><Hand size={46}/> ¡Palma!</button>
+    <div className="word-puzzle-actions"><Undo label="Quitar una palmada" disabled={state.solved||claps===0} onClick={()=>{setClaps(n=>n-1);state.setMessage('');}}/>{!state.solved&&<button type="button" className="word-button" onClick={()=>state.check(claps===word.syllables.length,`¡${word.syllables.length} palmadas! ${word.syllables.join(' · ')}.`, 'Escucha la palabra por partes y cuenta despacito.')}>Comprobar palmadas</button>}</div>
+    <Hint text={`${word.name}: ${word.syllables.join(', ')}. Son ${word.syllables.length} trocitos.`} speech={speech} visible={state.hint} reveal={state.showHint}/>
+    {state.hint&&<div className="word-syllable-model" aria-label="Trocitos de la palabra">{word.syllables.map((part,i)=><span key={i}>{part}<Hand size={18}/></span>)}</div>}
+    <RoundFooter state={state}/></>;
+}
+function SyllablePuzzle({id,state,speech}:SyllableProps) {
+  const word=words[id],[order]=useState(()=>shuffle(word.syllables.map((text,id)=>({id,text})))),[chosen,setChosen]=useState<number[]>([]);
+  return <><WordProgress value={state.round} total={state.total} label="Palabras construidas"/>
+    <GameInstruction text={`Escucha por partes: ${word.syllables.join('. ')}. Junta los trocitos para formar ${word.name}.`} speech={speech}>Construye <strong>{word.name.toLowerCase()}</strong> con sus trocitos.</GameInstruction>
+    <div className="word-puzzle-art"><WordPicture id={id}/></div>
+    <ol className="word-puzzle-slots" aria-label="Tu construcción">{word.syllables.map((_,i)=><li key={i}><span className="word-slot-number">{i+1}</span><strong>{chosen[i]===undefined?'…':word.syllables[chosen[i]]}</strong></li>)}</ol>
+    <div className="word-chips">{order.map(token=><button type="button" key={token.id} className="word-chip" disabled={state.solved||chosen.includes(token.id)} onClick={()=>{setChosen(previous=>[...previous,token.id]);state.setMessage('');speech.speak(token.text);}}>{token.text}</button>)}</div>
+    <div className="word-puzzle-actions"><Undo label="Quitar último trocito" disabled={state.solved||chosen.length===0} onClick={()=>{setChosen(previous=>previous.slice(0,-1));state.setMessage('');}}/>{!state.solved&&<button type="button" className="word-button" disabled={chosen.length!==word.syllables.length} onClick={()=>state.check(chosen.every((id,i)=>id===i),`¡Formaste ${word.name.toLowerCase()}!`,'Escucha el primer trocito. Puedes quitar el último y cambiarlo.')}>Comprobar palabra</button>}</div>
+    <Hint text={`${word.name} se forma así: ${word.syllables.join(', ')}.`} speech={speech} visible={state.hint} reveal={state.showHint}/><RoundFooter state={state}/></>;
 }
 
-const story=[{id:'seed',title:'Plantamos la semilla',detail:'Primero'},{id:'water',title:'Regamos con agua',detail:'Después'},{id:'flower',title:'Crece una flor',detail:'Al final'}] as const;
-export function StoryGame({finish,speech}:WordActivityProps){
-  const [cards]=useState(()=>shuffle(story));const [chosen,setChosen]=useState<string[]>([]),[solved,setSolved]=useState(false),[message,setMessage]=useState('');
-  return <><WordProgress value={solved?3:chosen.length} total={3} label="Pasos de la historia"/><GameInstruction text="Para que crezca una flor, primero plantamos una semilla, después regamos con agua y al final crece la flor. Toca las imágenes en ese orden." speech={speech}>De semilla a flor: ¿qué ocurre primero?</GameInstruction><ol className="word-story-order" aria-label="Tu historia">{[0,1,2].map((_,index)=><li key={index}><span>{['Primero','Después','Al final'][index]}</span><strong>{story.find(card=>card.id===chosen[index])?.title??'Elige una imagen'}</strong>{index<2&&<ArrowRight aria-hidden="true"/>}</li>)}</ol><div className="word-story-cards">{cards.map(card=><button type="button" key={card.id} className="word-story-card" aria-label={card.title} disabled={solved||chosen.includes(card.id)} onClick={()=>{setChosen(previous=>[...previous,card.id]);setMessage('');}}><div className={`word-growth growth-${card.id}`}>{card.id==='seed'?<><span className="word-seed-soil"/><span className="word-seed"/><Sprout size={46} aria-hidden="true"/></>:card.id==='water'?<><span className="word-seed-soil"/><Droplets size={58} aria-hidden="true"/><Sprout size={58} aria-hidden="true"/></>:<WordPicture id="flower"/>}</div><strong>{card.title}</strong></button>)}</div><div className="word-puzzle-actions"><Undo disabled={solved||chosen.length===0} onClick={()=>{setChosen([]);setMessage('');}}/>{!solved&&<button type="button" className="word-button" disabled={chosen.length!==3} onClick={()=>{const ok=chosen.every((id,index)=>id===story[index].id);setSolved(ok);setMessage(ok?'¡Tu historia ya tiene sentido!':'Vamos a cambiar el orden. ¿Qué necesita primero una flor?');}}>Comprobar historia</button>}</div><p role="status" className="word-feedback">{message}</p>{solved&&<button type="button" className="word-button word-next" onClick={finish}>Terminar juego</button>}</>;
+const actionIcons=[Moon,Wind,Utensils,CircleDot];
+function SentencePiece({round,index}:{round:typeof sentenceRounds[number];index:number}) {
+  if(index===1){const Action=actionIcons[sentenceRounds.indexOf(round)];return <span className="word-action-symbol"><Action size={64} aria-hidden="true"/></span>;}
+  return <WordPicture id={index===3?'book':round.pictures[index]}/>;
+}
+export function SentenceGame({finish,speech,mode}:WordActivityProps) {
+  const [rounds]=useState(()=>pickRounds(sentenceRounds));const state=useRounds(finish,rounds.length);
+  return <SentenceRound key={state.round} round={rounds[state.round]} state={state} speech={speech} mode={mode}/>;
+}
+function SentenceRound({round,state,speech,mode}:{round:typeof sentenceRounds[number];state:ReturnType<typeof useRounds>;speech:WordSpeech;mode:WordActivityProps['mode']}) {
+  const [order]=useState(()=>shuffle(mode==='gentle'?[0,1,2]:[0,1,2,3])),[chosen,setChosen]=useState<number[]>([]);
+  const label=(i:number)=>i===3?'con un libro':round.words[i];
+  return <><WordProgress value={state.round} total={state.total} label="Frases en el tren"/>
+    <GameInstruction text={`Vamos a contar: ${round.phrase} Elige primero quién, después qué hace y al final dónde o qué.`} speech={speech}>Escucha y construye: <strong>{round.phrase}</strong></GameInstruction>
+    <ol className="word-puzzle-slots is-train word-sentence-slots" aria-label="Tu frase">{[0,1,2].map(i=><li key={i}><span className="word-slot-number">{['¿Quién?','¿Qué hace?','¿Dónde o qué?'][i]}</span>{chosen[i]===undefined?<span className="word-empty-wagon" aria-hidden="true">…</span>:<><SentencePiece round={round} index={chosen[i]}/><strong>{label(chosen[i])}</strong></>}<span className="word-train-wheels" aria-hidden="true"/></li>)}</ol>
+    <div className="word-sentence-choices">{order.map(i=><button type="button" className="word-sentence-piece" key={i} aria-label={label(i)} disabled={state.solved||chosen.includes(i)||chosen.length===3} onClick={()=>{setChosen(previous=>[...previous,i]);state.setMessage('');speech.speak(label(i));}}><SentencePiece round={round} index={i}/><strong>{label(i)}</strong></button>)}</div>
+    <div className="word-puzzle-actions"><Undo label="Quitar último vagón" disabled={state.solved||chosen.length===0} onClick={()=>{setChosen(previous=>previous.slice(0,-1));state.setMessage('');}}/>{!state.solved&&<button type="button" className="word-button" disabled={chosen.length!==3} onClick={()=>state.check(chosen.every((id,i)=>id===i),'¡Tu tren cuenta lo que pasa!','¿Quién va primero? Puedes cambiar el último vagón.')}>Comprobar frase</button>}{state.solved&&<Listen label="Escuchar mi frase" text={round.phrase} speech={speech}/>}</div>
+    <Hint text={`Primero ${round.words[0].toLowerCase()}, después ${round.words[1]}, al final ${round.words[2]}.`} speech={speech} visible={state.hint} reveal={state.showHint}/><RoundFooter state={state}/></>;
 }
