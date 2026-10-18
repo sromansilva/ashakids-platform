@@ -8,7 +8,9 @@ salir/ocultar la página.24WebP locales generados; sin datos de pacientes en med
 
 ## Práctica de sonidos en Mundo ASHA / 2026-10-16
 
-HABLA incorpora tres juegos de animales como práctica de la visita. Se mantienen
+HABLA presenta cuatro actividades independientes de animales como práctica de la
+visita (V102, 2026-10-18): explorar, identificar, unir dos parejas y unir tres.
+La celebración reemplaza al tablero; ninguna actividad encadena otra. Se mantienen
 el acceso familiar/asignación y las actividades `basica-1` con sus intentos y premios.
 No se reutilizan esos intentos para resultados de los juegos nuevos. Contenido y
 medios locales separados de la lógica; reproductor único con cancelación al salir.

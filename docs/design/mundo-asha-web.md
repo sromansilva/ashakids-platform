@@ -14,7 +14,19 @@ quitar cantidades, zonas espaciales, rimas y vagones de frases. Instrucciones ha
 opcionales, feedback amable, vuelta/repetición, foco y movimiento reducido.
 Evidencia nueva y procedencia en [words-v101](../evidence/words-v101/verification.md).
 
-## Juegos de sonidos / 2026-10-16
+## Taller separado por actividades / 2026-10-18
+
+V102 responde a la sobrecarga de niveles: menú de cuatro tarjetas y una actividad
+por pantalla; dos y tres parejas tienen entradas y reinicios independientes. Una
+celebración sustituye el tablero y vuelve al menú con foco en la tarjeta elegida.
+No existe «Siguiente nivel». El escenario de portada reutiliza el megáfono de la
+landing; el interior tiene una cabecera tranquila sin el fondo de granja. Menú de
+dos columnas en escritorio y una en móvil. Se conservan Nunito, lavanda #E6DDFC,
+aqua #CFF1EB, amarillo #FFF0B6 y azul #CEE6FA, botones con volumen y animales SVG.
+Los audios, permisos y límite de práctica permanecen según ADR0025. Evidencia nueva:
+[sounds-v102](../evidence/sounds-v102/verification.md).
+
+## Diseño previo de sonidos / 2026-10-16
 
 Refinamiento V100 solicitado por el usuario: se conserva la estructura y el contenido
 de los tres niveles, con acabado SVG semitridimensional. Modelado con gradientes

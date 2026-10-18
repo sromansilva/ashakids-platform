@@ -17,10 +17,10 @@ export function ExploreSounds({ audio, next }: ActivityProps) {
     setExplored(previous => previous.includes(id) ? previous : [...previous, id]);
   }
   useEffect(() => { if (explored.length === animals.length) setCelebrate(true); }, [explored]);
+  if (celebrate) return <SoundCelebration title="¡Ya conoces sus sonidos!" repeat={() => { audio.stop(); setExplored([]); setLast(null); setCelebrate(false); }} next={next}>Tus cuatro amigos te esperan cuando quieras volver.</SoundCelebration>;
   return <>
     <SoundProgress label="Amigos escuchados" value={explored.length} total={animals.length}/>
     <div className="sound-animal-grid">{animals.map(animal => <AnimalCard key={animal.id} animal={animal} onClick={() => void explore(animal.id)} active={audio.active === animal.id} completed={explored.includes(animal.id)} voice={last === animal.id}/>)}</div>
-    {celebrate && <SoundCelebration title="¡Ya conoces sus sonidos!" repeat={() => { audio.stop(); setExplored([]); setLast(null); setCelebrate(false); }} next={next}>Tus cuatro amigos te esperan para jugar.</SoundCelebration>}
   </>;
 }
 
@@ -54,9 +54,8 @@ export function IdentifySounds({ audio, next }: ActivityProps) {
   </>;
 }
 
-export function MatchSounds({ audio, next }: ActivityProps) {
-  const [stage, setStage] = useState(0);
-  const [set, setSet] = useState(() => shuffled(animals).slice(0, 2));
+export function MatchSounds({ audio, next, count }: ActivityProps & { count: 2 | 3 }) {
+  const [set, setSet] = useState(() => shuffled(animals).slice(0, count));
   const [tokens, setTokens] = useState(() => shuffled(set));
   const [selected, setSelected] = useState<AnimalId | null>(null);
   const [heard, setHeard] = useState<AnimalId[]>([]);
@@ -76,12 +75,13 @@ export function MatchSounds({ audio, next }: ActivityProps) {
     if (token === target) { setMatched(previous => [...previous, target]); setSelected(null); setFeedback('¡Una pareja más!'); }
     else { setSelected(null); setFeedback('Casi… toca la ficha para escuchar otra vez.'); }
   }
-  function reset(count: number) {
+  function reset() {
     audio.stop(); const values = shuffled(animals).slice(0, count); setSet(shuffled(values)); setTokens(shuffled(values)); setSelected(null); setHeard([]); heardRef.current = []; setMatched([]); setFeedback('');
   }
   const done = matched.length === set.length;
+  if (done) return <SoundCelebration title="¡Cada sonido encontró su lugar!" repeat={reset} next={next}>Uniste {count === 2 ? 'dos' : 'tres'} parejas. ¡Bien hecho!</SoundCelebration>;
   return <>
-    <SoundProgress label={`Parejas · actividad ${stage + 1} de 2`} value={matched.length} total={set.length}/>
+    <SoundProgress label="Parejas encontradas" value={matched.length} total={set.length}/>
     <MatchDemo/>
     <div className="sound-tokens" aria-label="Fichas de sonido">{tokens.map((animal, index) => <button type="button" key={animal.id} className={`sound-token ${selected === animal.id ? 'is-selected' : ''}`} aria-label={`Escuchar ficha ${index + 1}`} aria-pressed={selected === animal.id} disabled={matched.includes(animal.id)}
       draggable={heard.includes(animal.id) && !matched.includes(animal.id)} onDragStart={event => { event.dataTransfer.setData('application/x-asha-sound', animal.id); event.dataTransfer.effectAllowed = 'move'; setSelected(animal.id); }} onClick={() => void listen(animal.id)}>
@@ -90,6 +90,5 @@ export function MatchSounds({ audio, next }: ActivityProps) {
     <div className="sound-animal-grid is-choices">{set.map(animal => <AnimalCard key={animal.id} animal={animal} label={`Relacionar con ${animal.name}`} active={matched.includes(animal.id)} completed={matched.includes(animal.id)} disabled={matched.includes(animal.id)} onClick={() => match(animal.id)}
       onDrop={event => { event.preventDefault(); const id = event.dataTransfer.getData('application/x-asha-sound'); if (tokens.some(t => t.id === id)) match(animal.id, id as AnimalId); }}/>)}</div>
     <p role="status" className="sound-feedback">{feedback}</p>
-    {done && (stage === 0 ? <button type="button" className="sound-button sound-continue" onClick={() => { setStage(1); reset(3); }}>¡Vamos con tres parejas! <ArrowRight size={20}/></button> : <SoundCelebration title="¡Cada sonido encontró su lugar!" repeat={() => { setStage(0); reset(2); }} next={next} nextLabel="Volver a los niveles">Has unido dos y después tres parejas. ¡Bien hecho!</SoundCelebration>)}
   </>;
 }

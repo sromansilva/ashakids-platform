@@ -74,7 +74,7 @@ it('la recarga usa el servidor y otro hijo conserva su progreso separado',async(
 
 it('abre el mundo solicitado por la landing sólo si está asignado y permite volver',async()=>{
   api();renderRoute('/mundo-asha?world=HABLA','PADRE');
-  expect(await screen.findByRole('button',{name:'Jugar nivel 3: Cada sonido en su lugar'})).toBeEnabled();
+  expect(await screen.findByRole('button',{name:'Jugar Mis primeras dos parejas'})).toBeEnabled();
   fireEvent.click(screen.getByRole('button',{name:'Volver a mundos'}));
   expect(await screen.findByRole('button',{name:'Abrir Taller de los Sonidos'})).toBeEnabled();
 });

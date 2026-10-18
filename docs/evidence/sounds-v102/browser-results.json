@@ -1,0 +1,372 @@
+{
+  "cases": [
+    "explore complete, success replaces board, mute/error recovery, keyboard",
+    "identify: five real-audio rounds, independent completion",
+    "independent 2 pairs: native drag/click, success without board, repeat same count",
+    "independent 3 pairs: native drag/click, success without board, repeat same count",
+    "complete two pairs by touch; reduced motion, navigation cancels audio"
+  ],
+  "layouts": [
+    {
+      "label": "menu-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 329.09375,
+        "width": 978,
+        "height": 1329.875,
+        "top": 329.09375,
+        "right": 1254,
+        "bottom": 1658.96875,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-1-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 248.09375,
+        "width": 978,
+        "height": 727.28125,
+        "top": 248.09375,
+        "right": 1254,
+        "bottom": 975.375,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-2-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 248.09375,
+        "width": 978,
+        "height": 981.78125,
+        "top": 248.09375,
+        "right": 1254,
+        "bottom": 1229.875,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-3-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 329.09375,
+        "width": 978,
+        "height": 1077.28125,
+        "top": 329.09375,
+        "right": 1254,
+        "bottom": 1406.375,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-4-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 329.09375,
+        "width": 978,
+        "height": 1077.28125,
+        "top": 329.09375,
+        "right": 1254,
+        "bottom": 1406.375,
+        "left": 276
+      }
+    },
+    {
+      "label": "menu-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": -360.40625,
+        "width": 432,
+        "height": 1541.75,
+        "top": -360.40625,
+        "right": 708,
+        "bottom": 1181.34375,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-1-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 390.59375,
+        "width": 432,
+        "height": 1000.9375,
+        "top": 390.59375,
+        "right": 708,
+        "bottom": 1391.53125,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-2-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 106.59375,
+        "width": 432,
+        "height": 1255.4375,
+        "top": 106.59375,
+        "right": 708,
+        "bottom": 1362.03125,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-3-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 390.59375,
+        "width": 432,
+        "height": 1406.9375,
+        "top": 390.59375,
+        "right": 708,
+        "bottom": 1797.53125,
+        "left": 276
+      }
+    },
+    {
+      "label": "game-4-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 390.59375,
+        "width": 432,
+        "height": 1873.53125,
+        "top": 390.59375,
+        "right": 708,
+        "bottom": 2264.125,
+        "left": 276
+      }
+    },
+    {
+      "label": "menu-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": -598.40625,
+        "width": 358,
+        "height": 1535.171875,
+        "top": -598.40625,
+        "right": 374,
+        "bottom": 936.765625,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-1-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": -8.40625,
+        "width": 358,
+        "height": 963.046875,
+        "top": -8.40625,
+        "right": 374,
+        "bottom": 954.640625,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-2-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 383.59375,
+        "width": 358,
+        "height": 974.546875,
+        "top": 383.59375,
+        "right": 374,
+        "bottom": 1358.140625,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-3-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 376.59375,
+        "width": 358,
+        "height": 1118.09375,
+        "top": 376.59375,
+        "right": 374,
+        "bottom": 1494.6875,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-4-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 383.59375,
+        "width": 358,
+        "height": 1413.046875,
+        "top": 383.59375,
+        "right": 374,
+        "bottom": 1796.640625,
+        "left": 16
+      }
+    },
+    {
+      "label": "menu-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": -768.40625,
+        "width": 288,
+        "height": 1804.859375,
+        "top": -768.40625,
+        "right": 304,
+        "bottom": 1036.453125,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-1-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": -29.40625,
+        "width": 288,
+        "height": 1098.546875,
+        "top": -29.40625,
+        "right": 304,
+        "bottom": 1069.140625,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-2-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 320.59375,
+        "width": 288,
+        "height": 1089.09375,
+        "top": 320.59375,
+        "right": 304,
+        "bottom": 1409.6875,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-3-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 320.59375,
+        "width": 288,
+        "height": 1219.09375,
+        "top": 320.59375,
+        "right": 304,
+        "bottom": 1539.6875,
+        "left": 16
+      }
+    },
+    {
+      "label": "game-4-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 320.59375,
+        "width": 288,
+        "height": 1657.09375,
+        "top": 320.59375,
+        "right": 304,
+        "bottom": 1977.6875,
+        "left": 16
+      }
+    }
+  ],
+  "errors": [],
+  "apiRequests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/901/juegos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/901/juegos"
+    }
+  ],
+  "apiWrites": 0,
+  "realMedia": true
+}

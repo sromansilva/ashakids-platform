@@ -1,3 +1,29 @@
+## V102 — Taller de los Sonidos por actividades / 2026-10-18
+
+El taller se organiza como la Isla: menú ilustrado y una sola actividad al entrar.
+Cuatro entradas libres: Toca y descubre, ¿Quién está sonando?, Mis primeras dos
+parejas y El reto de tres parejas. Las dificultades de asociación son independientes;
+repetir conserva la cantidad elegida. Al completar, el logro reemplaza al tablero y
+permite repetir o elegir otro juego, sin encadenar niveles. El mapa indica cuatro
+juegos de práctica libre. Hero de la landing, cuatro tarjetas de colores y cabecera
+sobria durante el juego, controles de audio y regreso con restauración de foco.
+
+Trabajo en dev, base fb2dbb9bbf2dea71b29f026bff4244f908b121c0 (V101). Cambios en
+SoundWorld, SoundActivities, SoundParts, soundContent, CSS, WorldMap y pruebas de
+sonidos/mundos. Sin arte nuevo, dependencias, BD, endpoints ni cambios de premios;
+las actividades guardadas siguen en «Para la familia» según ADR0025.
+Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+Verificación nueva: 15 casos focalizados aprobados y Chrome real con cinco recorridos,
+20 layouts (menú y cuatro juegos en 320/390/768/1366), cuatro actividades completadas,
+reinicio independiente, toque/arrastre/teclado, audio MP3 real, fallos recuperables y
+cero errores JS/escrituras API. Regresión completa aprobada: 349 componentes, 25 rutas, tipos sin errores, estructura
+410 archivos y build de 1952 módulos. El mapa se registra al cierre en
+[evidencia V102](evidence/sounds-v102/verification.md). No pruebas con datos reales.
+Commit previsto V102_Ordenar_Taller_Sonidos; publicación en dev y comprobación Render
+al cierre. El .gitignore local previo se conserva fuera del commit.
+Siguiente: aceptación del orden visual y uso familiar de las cuatro actividades.
+
 ## V101 — diez juegos en La Isla de las Palabras / cierre 2026-10-18
 
 Trabajo en `dev`, base 7bb67e130251113a9eb81055353ed4c8c44cfdcc/V100. LENGUAJE abre

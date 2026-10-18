@@ -10,7 +10,8 @@ export const animalById = (id: AnimalId) => animals.find(animal => animal.id ===
 export const soundLevels = [
   { title: 'Toca y descubre', instruction: '¡Toca un animal y escucha!', description: 'Cuatro amigos tienen algo que contarte.', action: 'Explorar', icon: 'touch' },
   { title: '¿Quién está sonando?', instruction: 'Escucha… ¿quién es?', description: 'Abre bien tus oídos y encuentra a tu amigo.', action: 'Escuchar', icon: 'listen' },
-  { title: 'Cada sonido en su lugar', instruction: 'Escucha y encuentra su animal', description: 'Une cada sonido con su pequeño dueño.', action: 'Relacionar', icon: 'match' },
+  { title: 'Mis primeras dos parejas', instruction: 'Escucha una ficha y toca su animal.', description: 'Dos sonidos, dos amigos. Un paso pequeño para empezar.', action: 'Unir dos parejas', icon: 'match' },
+  { title: 'El reto de tres parejas', instruction: 'Escucha una ficha y toca su animal.', description: 'Elige este juego cuando quieras descubrir tres parejas.', action: 'Unir tres parejas', icon: 'match' },
 ] as const;
 export function shuffled<T>(values: readonly T[]): T[] {
   const result = [...values];

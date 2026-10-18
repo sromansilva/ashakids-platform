@@ -27,7 +27,7 @@ export function SoundProgress({ value, total, label }: { value: number; total: n
     <span>{label}</span><span className="sound-progress-dots" aria-hidden="true">{Array.from({ length: total }, (_, i) => <span key={i} className={i < value ? 'is-done' : ''}>{i < value ? <Check size={14}/> : i + 1}</span>)}</span><span>{value}/{total}</span>
   </div>;
 }
-export function SoundCelebration({ title, children, repeat, next, nextLabel = 'Siguiente nivel' }: {
+export function SoundCelebration({ title, children, repeat, next, nextLabel = 'Elegir otro juego' }: {
   title: string; children: ReactNode; repeat: () => void; next: () => void; nextLabel?: string;
 }) {
   return <section className="sound-celebration" aria-label="Actividad completada">
