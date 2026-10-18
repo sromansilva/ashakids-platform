@@ -47,17 +47,17 @@ it('starts with two child destinations, keeps clinical information secondary and
   expect(screen.getByRole('heading',{name:'¡Hola, Leo!'})).toHaveFocus();
 });
 
-it('shows only assigned worlds, opens existing levels and changes siblings by patient ID',async()=>{
+it('shows assigned worlds, opens the word collection and changes siblings by patient ID',async()=>{
   api(); renderRoute('/padre?section=world','PADRE');
   const worlds=await screen.findByRole('list',{name:'Mis mundos asignados'});
   expect(within(worlds).getByRole('heading',{name:'La Isla de las Palabras'})).toBeInTheDocument();
   expect(screen.queryByRole('heading',{name:'El Estudio de la Voz'})).not.toBeInTheDocument();
   fireEvent.click(within(worlds).getByRole('button',{name:'Explorar'}));
-  await screen.findByRole('button',{name:'Jugar nivel 1'});
+  await screen.findByRole('button',{name:'Jugar El tesoro de palabras'});
   fireEvent.click(screen.getByText('Leo',{selector:'summary span'}));
   fireEvent.click(screen.getByRole('button',{name:'Luna Ejemplo'}));
   await screen.findByRole('heading',{name:'Tu aventura se está preparando'});
-  expect(screen.queryByRole('button',{name:'Jugar nivel 1'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'Jugar El tesoro de palabras'})).not.toBeInTheDocument();
   expect(sessionStorage.getItem('ashakids:selected-patient:1')).toBe('22');
 });
 
@@ -84,6 +84,8 @@ it('handles empty profiles and retries errors without falling back to sample nam
 it('saves the embedded game through the existing patient-specific service',async()=>{
   api(); const attempt = vi.spyOn(learningGames,'attempt').mockResolvedValue({id_intento:9,correcto:true,experiencia_otorgada:100,repetido:false,resumen:{...progress,experiencia:100,intentos_totales:1,mundos:[{...progress.mundos[0],completados:[1],intentos:1},progress.mundos[1]]}});
   renderRoute('/padre?section=world&world=LENGUAJE','PADRE');
+  fireEvent.click(await screen.findByText('Para la familia'));
+  fireEvent.click(screen.getByRole('button',{name:/Actividades con progreso guardado/}));
   fireEvent.click(await screen.findByRole('button',{name:'Jugar nivel 1'}));
   const dialog = await screen.findByRole('dialog');
   fireEvent.click(within(dialog).getByRole('button',{name:'Gato'}));

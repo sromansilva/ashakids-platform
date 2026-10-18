@@ -1,3 +1,29 @@
+## V101 — diez juegos en La Isla de las Palabras / cierre 2026-10-18
+
+Trabajo en `dev`, base 7bb67e130251113a9eb81055353ed4c8c44cfdcc/V100. LENGUAJE abre
+diez juegos: vocabulario, memoria, clasificación, historia, opuestos, sílabas,
+cantidades, posiciones, rimas y frases.24 ilustraciones ImageGen nuevas, optimizadas
+a WebP transparente (376 KB total), hero/isla del inicio y tarjetas coloridas con volumen.
+Menú libre, repetición, voz opcional del navegador, teclado, toque/arrastre y móvil.
+
+Práctica de la visita sin XP/medallas, coherente con ADR0025. Las actividades previas
+con progreso se conservan en «Para la familia» y se prueban con su contrato anterior.
+Permisos/asignaciones intactos, sin backend/BD nueva ni dependencias. Evidencia nueva:
+[words-v101](evidence/words-v101/verification.md), con diez juegos completados en Chrome,
+44 layouts y 0 errores JS/escriturasAPI. Resultados finales de tests/build/mapa en sus logs.
+
+Commit V101_Implementar_Juegos_Palabras destinado a dev; comprobar refs/SHA y Render
+al cierre. `.gitignore` local anterior excluido. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Siguiente: aceptación de contenido,
+apariencia y voz en dispositivos del usuario; persistencia nueva sigue diferida.
+
+
+Implementación y evidencia inicial obtenidas el 16 de octubre. Revalidación y cierre
+el 18 de octubre, con alcance confirmado únicamente en los diez juegos de la Isla.
+Revalidación aprobada: 347 componentes, 25 rutas, tipos, estructura 410 archivos,
+build 1952 módulos y diez recorridos/44 layouts en Chrome. Graphify actualizado: 2843
+nodos y 144 comunidades; aviso de 22 archivos sin símbolos. Sin pruebas BD reales.
+
 ## V100 — acabado de juguete en juegos de sonidos / 2026-10-16
 
 Rama de trabajo confirmada `dev`, base `e54c48084085c9a58e0324d3bf1deb3378bb5837`.

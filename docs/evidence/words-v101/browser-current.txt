@@ -1,0 +1,1 @@
+{"games":10,"layouts":44,"errors":[],"keyboard":true,"touch":true,"apiWrites":0}

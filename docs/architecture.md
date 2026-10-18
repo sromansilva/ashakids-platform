@@ -1,3 +1,11 @@
+## Colección de palabras en Mundo ASHA / 2026-10-16
+
+LENGUAJE aplica el mismo límite de práctica de la visita de ADR0025: diez juegos
+en WordGames, contenido/arte separados de las mecánicas y sin nuevos endpoints ni
+persistencia. El catálogo basica-1 queda disponible en «Para la familia», con sus
+permisos/progreso intactos. SpeechSynthesis opcional por interacción y cancelado al
+salir/ocultar la página.24WebP locales generados; sin datos de pacientes en medios.
+
 ## Práctica de sonidos en Mundo ASHA / 2026-10-16
 
 HABLA incorpora tres juegos de animales como práctica de la visita. Se mantienen

@@ -1,5 +1,19 @@
 # Mundo ASHA: diseño web
 
+## Isla de las Palabras / 2026-10-16
+
+Colección de diez juegos ilustrados de acceso libre dentro de LENGUAJE. Hero con
+árbol/isla de la landing; Nunito, lavanda/aqua y diez acentos coral/amarillo/verde/
+lila/azul. Tarjetas con relieve y24ilustraciones propias ImageGen semitridimensionales
+en WebP transparente. Datos centrales wordContent.ts, estilos aislados .word-world.
+Menú3columnas en escritorio y2en móvil; tarjetas grandes y botones≥44px. La marca
+«Jugado en esta visita» describe memoria local del componente, sin premios guardados.
+
+Mecánicas específicas: buscar, memoria, cestas, secuencia, opuestos, sílabas, añadir/
+quitar cantidades, zonas espaciales, rimas y vagones de frases. Instrucciones habladas
+opcionales, feedback amable, vuelta/repetición, foco y movimiento reducido.
+Evidencia nueva y procedencia en [words-v101](../evidence/words-v101/verification.md).
+
 ## Juegos de sonidos / 2026-10-16
 
 Refinamiento V100 solicitado por el usuario: se conserva la estructura y el contenido

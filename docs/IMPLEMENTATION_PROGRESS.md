@@ -1,3 +1,42 @@
+## Cierre V101 — colección de diez juegos de palabras / 2026-10-18
+
+Objetivo del usuario: aplicar el acabado de ASHA a LENGUAJE con diez juegos educativos
+distintos e imágenes de calidad como el inicio. Rama dev; base 7bb67e130251113a9eb81055353ed4c8c44cfdcc.
+Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+Archivos: Sessions/WordGames(content/partes/menú/tres archivos de mecánicas/CSS),
+DemoWorldPlayer, nota MundoAshaHome, etiqueta de 10 juegos en WorldMap,24WebP/CREDITS,
+12 pruebas nuevas y actualización de 2 entradas de family-center. Contexto/arquitectura/
+diseño y evidencia nueva en docs/evidence/words-v101. Fuente de arte/prompt/recortes
+conservados; ImageGen integrado, sin APIkey/CLI ni dependencias nuevas. No backend/BD.
+
+Funcional: vocabulario 3 rondas, memoria 3 parejas, clasificación 6 objetos, historia 3 pasos,
+opuestos 3 parejas, sílabas 3 palabras, cantidades 2/3/4, posiciones 3 rondas, rimas 3 rondas,
+frases 3 rondas. Menú/repetición/foco, feedback/reintentos sin castigo, toque y arrastre.
+Práctica durante la visita; no POST educativo ni XP nuevos. Catálogo anterior y
+asignación/paciente siguen en API. La voz usa SpeechSynthesis opcional con fallback;
+limpieza al salir/ocultar, sin grabación ni reconocimiento de voz.
+
+Verificación nueva:44 layouts y 10 finalizaciones/repeticiones Chrome real, errores JS 0,
+escrituras API 0. Teclado y contexto táctil; clasificación con arrastre nativo.12 casos
+Vitest nuevos cubren cada juego, errores/cambio/reinicio y limpieza. Suite/tipos/check/
+build/mapa finales en evidencia. No login/datos clínicos reales ni pruebas BD.
+Incidencias: límites de recorte del atlas ajustados por regiones alfa; expectativa
+antigua de nivel directo en family-center actualizada; verificador de botones ocultos
+corregido para medir controles visibles. No ampliar cobertura por imágenes/compilación.
+
+Cierre V101_Implementar_Juegos_Palabras destinado a dev y despliegue existente en
+Render; comprobar SHA/refs/recursos al entregar. `.gitignore` previo excluido.
+Siguiente: revisión humana de contenidos e instrucciones habladas por edad/dispositivo;
+persistencia de esta colección requiere un contrato versionado en etapa posterior.
+
+
+Implementación y evidencia inicial obtenidas el 16 de octubre. Revalidación y cierre
+el 18 de octubre, con alcance confirmado únicamente en los diez juegos de la Isla.
+Revalidación aprobada: 347 componentes, 25 rutas, tipos, estructura 410 archivos,
+build 1952 módulos y diez recorridos/44 layouts en Chrome. Graphify actualizado: 2843
+nodos y 144 comunidades; aviso de 22 archivos sin símbolos. Sin pruebas BD reales.
+
 ## Cierre V100 — diseño de juegos de sonidos / 2026-10-16
 
 Objetivo: acabado semitridimensional SVG y mayor creatividad, conservando la
