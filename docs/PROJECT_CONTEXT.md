@@ -1,3 +1,18 @@
+## V107 — publicación de la voz verificada / 2026-10-19
+
+V106/3686f64330f5a0bd79cc0234d835cdcd0af26f21 publicado en dev y sincronizado.
+Render https://ashakids.onrender.com comprobado19deoctubre08:56America/Lima:
+health200, manifiesto230audios equivalente, chunk de juego y tres MP3 con hashes
+exactos. Evidencia nueva [render-live.json](evidence/voice-v106/render-live.json).
+Es comprobación de contenido público, no consulta del SHA de la API de Render.
+Verificador ajustado para comparar JSON canónico entre CRLFWindows/LFLinux;
+binarios/JS siguen comparándose porSHA256. Sin cambios de aplicación ni pruebas
+funcionales nuevas respecto a V106. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Cierre V107_Verificar_Despliegue_Palabras
+en dev, base3686f64. .gitignore previo conservado fuera del commit.
+Siguiente: aceptación auditiva del usuario en «Escuchar voz de ASHA»; catálogo
+sigue11/selección8, objetivo30por mundo pendiente.
+
 ## V106 — narración natural en Palabras / 2026-10-19
 
 La Isla usa230 MP3 naturales con narradora sintética en español de Perú, Camila,

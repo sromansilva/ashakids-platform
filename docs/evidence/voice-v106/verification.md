@@ -53,6 +53,15 @@ verifican transporte/decodificación/flujo, no comodidad subjetiva ni exactitud
 fonética. El banco no añade juegos ni cubre voces de otros mundos. Instrucciones
 nuevas requieren nuevo recurso; el texto sigue disponible si falta audio.
 
-Publicación prevista en dev con integración automática Render. Se compara
-manifiesto y hashes públicos después del push; sólo esa evidencia confirma el
-audio remoto. No autenticar ni modificar datos clínicos para verificar estáticos.
+Publicación verificada: V106/3686f64330f5a0bd79cc0234d835cdcd0af26f21 subido a dev,
+con HEAD/origin/dev/SHA remoto iguales. Render servido el19deoctubre08:56America/Lima:
+health200, manifiesto230entradas equivalente, chunk compilado world-map-D2Wfugpy.js
+y tres MP3 (muestra, gato e instrucción) con SHA256 exactos. render-live.json conserva
+UTC, rutas, tamaños y hashes. Se verifica contenido desplegado, no un SHA consultado
+mediante API privilegiada Render. No cuentas/sesiones/datos clínicos usados.
+
+El verificador inicial comparaba bytes JSON WindowsCRLF/LinuxLF y seguía esperando
+aunque el despliegue ya estaba disponible. Se corrigió a comparación JSON canónica;
+los MP3 y JS siguen con comparación binaria exacta. Ejecución corregida aprobada.
+Este cierre documental/verificador se publica como V107_Verificar_Despliegue_Palabras,
+sin cambiar la aplicación V106 ni repetir sus suites como si fueran resultados nuevos.

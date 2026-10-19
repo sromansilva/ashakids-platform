@@ -1,0 +1,47 @@
+{
+  "code_reference_commit": "3686f64330f5a0bd79cc0234d835cdcd0af26f21",
+  "verification_note": "Public assets match V106. This is content verification, not a privileged Render deployment API SHA lookup.",
+  "checked_at_utc": "2026-10-19T13:56:22.342940+00:00",
+  "url": "https://ashakids.onrender.com",
+  "branch": "dev",
+  "health_http": 200,
+  "verified_assets": [
+    {
+      "path": "/words/voice/v106/manifest.json",
+      "bytes": 16206,
+      "sha256": "1c9e71d2c561e4ac949e99cdd2da28350b54b661b3915c5b894c1e36ca5757ad",
+      "http": 200,
+      "comparison": "canonical JSON"
+    },
+    {
+      "path": "/assets/world-map-D2Wfugpy.js",
+      "bytes": 106888,
+      "sha256": "8cbd865898be04edfbaf98e4451b3e0166a84d7de017314bf598901d7b7c054a",
+      "http": 200,
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/v106/d4e8973e04e657a4.mp3",
+      "bytes": 11232,
+      "sha256": "e19b495c33bb4a916a1234c82f2cb2d8961cda8cd9fe4cc4ff5bb466c34d96c5",
+      "http": 200,
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/v106/b0f9af5cdf87a45b.mp3",
+      "bytes": 20736,
+      "sha256": "14dbf11291b1269979bf247bd7edaa2790b9afffd1b65e76c694f59934352c2d",
+      "http": 200,
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/v106/ab46d3aa6ec63b49.mp3",
+      "bytes": 41328,
+      "sha256": "339cceff86bc6291c68aea4577ace2192948e9df1694c1711c4099fd6ff94971",
+      "http": 200,
+      "comparison": "exact SHA256"
+    }
+  ],
+  "voice_entries": 230,
+  "limits": "Public static assets and health only; no real child voice, account or clinical flow."
+}

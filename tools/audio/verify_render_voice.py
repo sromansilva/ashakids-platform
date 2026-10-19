@@ -35,9 +35,14 @@ def main():
                 request = urllib.request.Request(BASE + path, headers={'Cache-Control': 'no-cache'})
                 with urllib.request.urlopen(request, timeout=25) as response:
                     remote = response.read()
-                    if digest(remote) != digest(local):
+                    # Git normalizes text CRLF/LF between Windows and Linux.
+                    # Compare JSON content canonically; binary and compiled assets exactly.
+                    canonical = lambda value: json.dumps(json.loads(value), ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+                    matches = canonical(remote) == canonical(local) if path.endswith('.json') else digest(remote) == digest(local)
+                    if not matches:
                         raise RuntimeError('Deployment has not reached expected asset hashes')
-                    results.append({'path': path, 'bytes': len(remote), 'sha256': digest(remote), 'http': response.status})
+                    results.append({'path': path, 'bytes': len(remote), 'sha256': digest(remote), 'http': response.status,
+                                    'comparison': 'canonical JSON' if path.endswith('.json') else 'exact SHA256'})
             with urllib.request.urlopen(BASE + '/health', timeout=25) as response:
                 health = response.status
             result = {'checked_at_utc': datetime.now(timezone.utc).isoformat(), 'url': BASE, 'branch': 'dev',
@@ -46,7 +51,7 @@ def main():
             output = ROOT / 'tmp/voice-v106/render-live.json'
             output.parent.mkdir(parents=True, exist_ok=True)
             output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-            print(f'PASS: Render health {health}; {len(results)} exact asset hashes including compiled world map and voice manifest', flush=True)
+            print(f'PASS: Render health {health}; {len(results)} verified assets (JSON content and exact binary/compiled hashes)', flush=True)
             return
         except Exception:
             time.sleep(15)

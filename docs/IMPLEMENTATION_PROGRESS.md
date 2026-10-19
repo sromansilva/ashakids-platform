@@ -1,3 +1,27 @@
+## V107 — comprobación efectiva de Render / 2026-10-19
+
+Rama dev, base3686f64330f5a0bd79cc0234d835cdcd0af26f21/V106. Objetivo:
+registrar publicación real de la voz sin atribuir cambios funcionales al cierre.
+Repositorio: https://github.com/sromansilva/ashakids-platform .
+Cierre: V107_Verificar_Despliegue_Palabras.
+
+Push V106 realizado y HEAD/origin/dev/ls-remote coincidentes. Verificación nueva
+Render19deoctubre08:56America/Lima: health200; manifiesto230entradas equivalente;
+chunk compilado del juego y tres audios (muestra/gato/instrucción) con SHA256exactos.
+No usuarios/sesiones/lecturas clínicas. Rutas/tamaños/hashes/UTC en render-live.json.
+Confirma contenido público V106; no es lectura del SHA de despliegue en panel/API.
+
+Archivos de este cierre:tools/audio/verify_render_voice.py, evidencia de publicación,
+verification.md/contexto/relevo. El despliegue ya estaba disponible cuando el primer
+verificador seguía esperando por CRLFWindows/LFLinux del JSON; se corrigió comparación
+canónica de JSON conservando bytesexactos para JS/MP3. Script corregido PASS.
+Las389pruebas/25rutas y build corresponden a V106, no se declaran repetidas aquí.
+checkdelmapa actual; herramientas/documentación no forman parte de su corpus.
+
+Publicar este cierre también en dev y verificar referencia remota. .gitignore previo
+fuera del conjunto. Siguiente: aceptación humana del tono y micrófono en dispositivos;
+seguir ampliando catálogo11hacia30por mundo sin declarar terminadas extensiones.
+
 ## V106 — voz natural y publicación de Palabras / 2026-10-19
 
 Objetivo: atender el pedido de voz cálida y consistente para la Isla, y publicar
