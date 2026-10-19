@@ -1,3 +1,38 @@
+## V106 — voz natural y publicación de Palabras / 2026-10-19
+
+Objetivo: atender el pedido de voz cálida y consistente para la Isla, y publicar
+en Render. Rama dev; base823d544a1b43c6bb572bad4f218c9175bf8c556a/V105;
+cierre V106_Suavizar_Narracion_Palabras. Repositorio:
+https://github.com/sromansilva/ashakids-platform . No auditoría académica nueva.
+
+Archivos: WordGames/wordNarrator, wordVoiceIndex, WordParts, WordWorld y CSS;
+230MP3/manifiesto/créditos en public/words/voice; herramientas tools/audio de
+preparación/generación/verificación pública Render; tests y evidencia voice-v106;
+arquitectura/ADR0027. Se sustituye Web Speech sólo en la Isla por audios de narradora
+natural peruana Camila con velocidad/volumen moderados y sin alterar pitch.
+Se detienen al navegar, ocultar o activar micrófono. Muestra en menú, error recuperable,
+sin fallback robótico. No cambios BD/endpoints/permisos/reconocimiento ni nuevos
+juegos. El catálogo11/selección8 se conserva; treinta por mundo sigue pendiente.
+
+Verificación nueva:389componentes/34archivos y25rutas aprobados; tipos y estructura420
+aprobados. Chrome230MP3 reales decodificados con señal/duración, muestra/palabra/
+instrucciones reproducidas, error inducido recuperable y3layouts320/390/1366 sin
+overflow; cero llamadas de síntesis/escrituras API/errores JS. Captura móvil revisada.
+Graphify refresh/check PASS,2907nodos/137comunidades; aviso22archivos sin símbolos.
+Logs de build/suites y hashes en evidencia. Sin pruebas con personas/datos reales.
+
+Entorno: edge-tts7.3.1 sólo instalado en .venv-graphify como herramienta de autoría;
+no requirements/package-lock/Docker nuevos. 230audios5,554,512bytes, textos públicos
+sin información de niños. Node conserva aviso strip-types. Generación inicial
+ajustó seis textos de pistas espaciales para coincidir exactamente con el juego;
+clips previos de preparación retirados antes del commit. Sin fallos finales de tests.
+
+Publicación: push dev activa integración existente; tools/audio/verify_render_voice.py
+compara manifiesto, chunk compilado y tres audios públicos más health para verificar
+el despliegue real. No login/datos clínicos en ese verificador. .gitignore previo
+preservado fuera del commit. Siguiente: confirmar ese resultado tras push y escuchar
+con usuario/dispositivos; no certificar comodidad subjetiva sólo por decodificar MP3.
+
 ## V105 — selección por edad y Nombra el dibujo / 2026-10-19
 
 Objetivo: iniciar selección de ocho juegos por edad y respuesta oral en LENGUAJE.

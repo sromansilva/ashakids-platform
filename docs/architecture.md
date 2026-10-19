@@ -1,3 +1,12 @@
+## Narración natural estática en Palabras / 2026-10-19
+
+V106 sustituye Web Speech dentro de la Isla por230 MP3 locales con narradora
+sintética es-PE-CamilaNeural. Generación editorial previa, índice de texto en
+wordVoiceIndex y reproductor cancelable por instancia en wordNarrator. Sin TTS
+externo durante el uso, claves ni dependencia runtime nueva; herramientas de
+autoría en tools/audio. La voz histórica de otros mundos y reconocimiento del
+micrófono no cambian. [ADR0027](decisions/0027-narracion-estatica-palabras.md).
+
 ## Selección de Palabras por edad y micrófono / 2026-10-19
 
 V105 pasa fecha_nacimiento del paciente autorizado de MundoAshaHome a WordWorld,

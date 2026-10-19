@@ -19,7 +19,7 @@ const modes:WordPlayMode[]=['gentle','challenge'];
 it('conserva el catálogo familiar, bienvenida, restauración de foco y limpieza de voz',()=>{
  const view=open('treasure','gentle',false);
  expect(screen.getByRole('heading',{name:'El tesoro de palabras'})).toHaveFocus();expect(screen.getByRole('region',{name:'Antes de jugar'})).toBeInTheDocument();expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
- click('Escuchar cómo jugar');expect(window.speechSynthesis.speak).toHaveBeenCalled();click('¡Vamos a jugar!');expect(screen.queryByRole('region',{name:'Antes de jugar'})).not.toBeInTheDocument();
+ click('Escuchar cómo jugar');expect(HTMLMediaElement.prototype.play).toHaveBeenCalled();expect(window.speechSynthesis.speak).not.toHaveBeenCalled();click('¡Vamos a jugar!');expect(screen.queryByRole('region',{name:'Antes de jugar'})).not.toBeInTheDocument();
  click('Volver a los juegos');expect(screen.getByRole('button',{name:'Jugar El tesoro de palabras'})).toHaveFocus();expect(screen.getAllByRole('button',{name:/^Jugar /})).toHaveLength(11);
  expect(document.querySelectorAll('.word-game-card img[src^="/words/games/"]')).toHaveLength(10);view.unmount();expect(window.speechSynthesis.cancel).toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();
 });
@@ -77,7 +77,7 @@ it.each(modes)('frases %s: pictogramas, orden semántico y vagones corregibles',
 it('repetir genera otra variante, reinicia las ayudas y no envía intentos a API',()=>{
  open('treasure');for(const target of ['Gato','Barco','Flor']){click(target);advance();}done();vi.mocked(Math.random).mockReturnValue(0);click('Otra vez');expect(screen.getByText('Busca lo que viaja por el agua.')).toBeInTheDocument();expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow','0');expect(screen.queryByRole('note')).not.toBeInTheDocument();expect(fetch).not.toHaveBeenCalled();
 });
-it('recupera imágenes fallidas y funciona con voz no disponible',()=>{
+it('recupera imágenes fallidas y reproduce la narración sin voz del sistema',()=>{
  const view=open('treasure','gentle',false);fireEvent.error(document.querySelector<HTMLImageElement>('.word-mission img')!);expect(screen.getByText(/imagen no disponible/)).toBeInTheDocument();
- vi.stubGlobal('speechSynthesis',undefined);click('¡Vamos a jugar!');expect(screen.getByText('La voz no está disponible aquí. Puedes seguir con las imágenes y el texto.')).toBeInTheDocument();click('Gato');advance();view.unmount();expect(fetch).not.toHaveBeenCalled();
+ vi.stubGlobal('speechSynthesis',undefined);click('¡Vamos a jugar!');expect(HTMLMediaElement.prototype.play).toHaveBeenCalled();click('Gato');advance();view.unmount();expect(fetch).not.toHaveBeenCalled();
 });

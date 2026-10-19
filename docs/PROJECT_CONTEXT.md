@@ -1,3 +1,27 @@
+## V106 — narración natural en Palabras / 2026-10-19
+
+La Isla usa230 MP3 naturales con narradora sintética en español de Perú, Camila,
+velocidad-8%/volumen-8%,sin subir artificialmente el tono. Palabras, instrucciones,
+pistas e historias mantienen voz consistente sin depender de voces del dispositivo.
+Muestra «Escuchar voz de ASHA» en menú, reproducción cancelable y aviso recuperable
+si falla un recurso. Generación editorial previa de texto público: ningún servicio
+TTS externo recibe texto durante el juego. Otros mundos/micrófono sin cambios.
+Catálogo sigue11juegos con8iniciales por edad; treinta por mundo sigue pendiente.
+
+Rama dev, base823d544a1b43c6bb572bad4f218c9175bf8c556a/V105, cierre
+V106_Suavizar_Narracion_Palabras. Repositorio:
+https://github.com/sromansilva/ashakids-platform . [ADR0027](decisions/0027-narracion-estatica-palabras.md),
+[evidencia nueva](evidence/voice-v106/verification.md):389componentes/25rutas PASS,
+tipos/estructura420;230MP3 reales decodificados en Chrome,3layouts sin overflow,
+cero síntesis del sistema/escrituras API/errores JS. Graphify2907nodos/137comunidades
+actual. Audios5,554,512bytes con hashes/créditos. Herramientaedge-tts sólo autoría,
+sin dependencias runtime ni BD nuevas. Muestra móvil inspeccionada.
+
+Siguiente: escuchar/aceptar timbre con usuario y comprobar hashes estáticos en Render
+tras publicación automática de dev. El verificador de publicación no usa cuentas ni
+datos clínicos. .gitignore local previo fuera del commit. No declarar completos los
+treinta juegos ni eficacia/precisión fonética por pruebas de reproducción.
+
 ## V105 — ocho juegos por edad y micrófono en Palabras / 2026-10-19
 
 Primera entrega del catálogo amplio solicitado: once juegos en LENGUAJE, ocho en

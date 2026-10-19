@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { Check, Lightbulb, Mic, RotateCcw, Volume2 } from 'lucide-react';
 import { gameIllustration, words, type WordId } from './wordContent';
+import { createWordNarrator } from './wordNarrator';
 
 export function WordPicture({ id, label=false }: {id:WordId; label?:boolean}) {
   const [failed,setFailed]=useState(false);
@@ -11,17 +12,9 @@ export function PictureButton({ id, onClick, selected, complete, disabled, label
 }
 export function useWordSpeech() {
   const [notice,setNotice]=useState('');
-  const mounted=useRef(true);
-  const stop=()=>{window.speechSynthesis?.cancel();};
-  useEffect(()=>{mounted.current=true;const hide=()=>{if(document.hidden)window.speechSynthesis?.cancel();};document.addEventListener('visibilitychange',hide);return()=>{mounted.current=false;window.speechSynthesis?.cancel();document.removeEventListener('visibilitychange',hide);};},[]);
-  function speak(text:string) {
-    stop();setNotice('');
-    if(!window.speechSynthesis || !window.SpeechSynthesisUtterance){setNotice('La voz no está disponible aquí. Puedes seguir con las imágenes y el texto.');return;}
-    const utterance=new SpeechSynthesisUtterance(text);utterance.lang='es-PE';utterance.rate=.78;utterance.pitch=1.05;
-    utterance.onerror=event=>{if(mounted.current&&event.error!=='canceled'&&event.error!=='interrupted')setNotice('No se pudo escuchar. Toca el altavoz para reintentar.');};
-    try{window.speechSynthesis.speak(utterance);}catch{setNotice('No se pudo escuchar. Puedes seguir con las imágenes y el texto.');}
-  }
-  return {speak,stop,notice};
+  const [narrator]=useState(()=>createWordNarrator(setNotice));
+  useEffect(()=>{const hide=()=>{if(document.hidden)narrator.stop();};document.addEventListener('visibilitychange',hide);return()=>{narrator.stop();document.removeEventListener('visibilitychange',hide);};},[narrator]);
+  return {...narrator,notice};
 }
 export type WordSpeech=ReturnType<typeof useWordSpeech>;
 export function Listen({ text, speech,label='Escuchar',disabled=false }: {text:string;speech:WordSpeech;label?:string;disabled?:boolean}) {return <button type="button" disabled={disabled} className="word-button is-light" onClick={()=>speech.speak(text)}><Volume2 size={20}/> {label}</button>;}

@@ -4,6 +4,7 @@
 .word-world :is(h2,h3):focus { outline:none; }
 .word-world button { font:inherit; cursor:pointer; touch-action:manipulation; }
 .word-world button:disabled { opacity:.65; cursor:default; }
+.word-narrator-preview { display:flex; align-items:center; justify-content:center; flex-wrap:wrap; gap:12px; padding:18px 22px 0; color:#62526d; font-size:14px; text-align:center; }
 .word-naming { max-width:720px; margin:0 auto; text-align:center; }
 .word-naming-model { display:flex; flex-direction:column; align-items:center; gap:14px; }
 .word-naming-model .word-picture { width:min(240px,100%); }
