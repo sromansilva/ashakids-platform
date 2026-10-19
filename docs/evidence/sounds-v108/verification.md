@@ -46,6 +46,14 @@ es este avance; la meta aproximada de30 por mundo sigue pendiente.
 
 ## Publicación
 
-Push normal a `dev` autorizado por el usuario. Esta evidencia registra la versión
-local y sus pruebas; el despliegue público de Render se documentará sólo después de
-comparar manifiesto, chunk compilado, MP3, WebP y health con el contenido publicado.
+Commit de código y recursos: `11d9c388df0053179e454df2815bdfc240061484`
+(`V108_Ampliar_Juegos_Sonidos_Por_Edad`), publicado mediante push normal a `dev`.
+`HEAD`, `origin/dev` y `git ls-remote origin refs/heads/dev` quedaron en ese SHA.
+
+Render: https://ashakids.onrender.com . El 2026-10-19 a las 20:50:22 UTC
+(15:50:22 America/Lima), health respondió HTTP 200; 46 recursos públicos quedaron
+HTTP 200 y coincidieron con los archivos locales: el chunk de mundo, 33 voces MP3,
+siete ilustraciones WebP, cuatro sonidos de animales y el manifiesto canónico. Los
+hashes SHA-256, bytes y respuestas están en `render-live.json`. Esto confirma el
+contenido público desplegado, no consulta el SHA de despliegue mediante una API
+privilegiada de Render.

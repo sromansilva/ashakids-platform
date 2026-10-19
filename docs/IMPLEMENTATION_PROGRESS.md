@@ -23,9 +23,27 @@ escrituras API. Narración de UI y eventos de animales simulados; perfiles/fecha
 ficticios, sin micrófono real. Capturas, comandos, tamaños, hashes y límites en
 [evidencia sounds-v108](evidence/sounds-v108/verification.md).
 
-La publicación de código y recursos en `dev` se completa en este cierre; Render se
-verifica por HTTP público de assets y health en V109. No se afirmará despliegue por
-el push ni se consultará una cuenta ni dato clínico.
+V108 `11d9c388df0053179e454df2815bdfc240061484` está publicado en `dev`; `HEAD`,
+`origin/dev` y `ls-remote` coinciden. Render verificado el 2026-10-19 20:50:22 UTC:
+health HTTP 200 y 46 recursos públicos (chunk compilado, manifiesto, 33 voces,
+siete ilustraciones y cuatro audios animales) responden 200 y coinciden por SHA-256
+o JSON canónico. Evidencia en `docs/evidence/sounds-v108/render-live.json`. Confirma
+contenido servido, no consulta privilegiada al SHA interno de Render.
+
+## V109 — verificación pública del Taller de los Sonidos / 2026-10-19
+
+Seguimiento documental de V108; sin cambios funcionales ni pruebas nuevas de juego.
+Repositorio: https://github.com/sromansilva/ashakids-platform . Rama `dev`.
+V108 `11d9c388df0053179e454df2815bdfc240061484` publicado y sincronizado entre
+`HEAD`, `origin/dev` y la referencia remota. Render health HTTP 200 y 46/46 recursos
+estáticos equivalentes, incluidos chunk, manifiesto, 33 MP3, siete WebP y cuatro
+audios animales. Rutas, bytes, SHA-256 y hora UTC en
+[`render-live.json`](evidence/sounds-v108/render-live.json). No se accedió a una
+cuenta de Render, datos infantiles ni flujos clínicos. Suite y pruebas de navegador
+corresponden a V108; no se declaran ejecutadas de nuevo en este corte.
+
+Commit de cierre de esta evidencia: `V109_Verificar_Publicacion_Sonidos`.
+Se conservó fuera del conjunto el cambio local preexistente de `.gitignore`.
 
 ## V107 — comprobación efectiva de Render / 2026-10-19
 

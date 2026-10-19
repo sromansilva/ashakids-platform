@@ -11,6 +11,9 @@ y vista previa. Tres rondas, pistas, dos modos y audio cancelable; sin progreso/
 ni evaluación clínica en estas actividades. Recursos en [sounds-v108](evidence/sounds-v108/)
 y decisión en ADR0028. Objetivo de aproximadamente 30 juegos por mundo sigue
 pendiente; esta entrega contiene once. Franjas y timbre requieren aceptación humana.
+V108 `11d9c388df0053179e454df2815bdfc240061484` sincronizado en `dev`; Render
+comprobado: health 200 y 46 recursos públicos equivalentes, evidencia en
+`evidence/sounds-v108/render-live.json`.
 
 ## V107 — publicación de la voz verificada / 2026-10-19
 
