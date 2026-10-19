@@ -1,10 +1,10 @@
-import { useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
+import { useEffect, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
 import { Check, Hand, RotateCcw, Sparkles, Star, Volume2 } from 'lucide-react';
 import type { SoundAnimal } from './soundContent';
 
 export function SoundGamePicture({ src, title }: { src: string; title: string }) {
   const [failed, setFailed] = useState(false);
-  return <span className="sound-game-art">{failed ? <span className="sound-image-error">{title} · imagen no disponible</span> : <img src={src} alt="" width="320" height="320" draggable={false} onError={() => setFailed(true)}/>}</span>;
+  return <span className="sound-game-art word-game-art">{failed ? <span className="sound-image-error">{title} · imagen no disponible</span> : <img src={src} alt="" width="320" height="320" draggable={false} onError={() => setFailed(true)}/>}</span>;
 }
 
 export function AnimalPicture({ animal }: { animal: SoundAnimal }) {
@@ -32,9 +32,10 @@ export function SoundProgress({ value, total, label }: { value: number; total: n
     <span>{label}</span><span className="sound-progress-dots" aria-hidden="true">{Array.from({ length: total }, (_, i) => <span key={i} className={i < value ? 'is-done' : ''}>{i < value ? <Check size={14}/> : i + 1}</span>)}</span><span>{value}/{total}</span>
   </div>;
 }
-export function SoundCelebration({ title, children, repeat, next, nextLabel = 'Elegir otro juego' }: {
-  title: string; children: ReactNode; repeat: () => void; next: () => void; nextLabel?: string;
+export function SoundCelebration({ title, children, repeat, next, nextLabel = 'Elegir otro juego', onComplete }: {
+  title: string; children: ReactNode; repeat: () => void; next: () => void; nextLabel?: string; onComplete?: () => void;
 }) {
+  useEffect(() => { onComplete?.(); }, [onComplete]);
   return <section className="sound-celebration" aria-label="Actividad completada">
     <div className="sound-celebration-stars" aria-hidden="true"><Sparkles/><Star fill="currentColor" size={58}/><Sparkles/></div>
     <h3 tabIndex={-1} ref={node => node?.focus()}>{title}</h3><p>{children}</p>

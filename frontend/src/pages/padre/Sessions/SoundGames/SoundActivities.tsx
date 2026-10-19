@@ -4,8 +4,8 @@ import { animals, identificationRounds, shuffled, type AnimalId } from './soundC
 import { AnimalCard, MatchDemo, SoundCelebration, SoundProgress } from './SoundParts';
 import type { SoundAudio } from './useSoundAudio';
 
-interface ActivityProps { audio: SoundAudio; next: () => void }
-export function ExploreSounds({ audio, next }: ActivityProps) {
+interface ActivityProps { audio: SoundAudio; next: () => void; onComplete?: () => void }
+export function ExploreSounds({ audio, next, onComplete }: ActivityProps) {
   const [explored, setExplored] = useState<AnimalId[]>([]);
   const [last, setLast] = useState<AnimalId | null>(null);
   const [celebrate, setCelebrate] = useState(false);
@@ -17,14 +17,14 @@ export function ExploreSounds({ audio, next }: ActivityProps) {
     setExplored(previous => previous.includes(id) ? previous : [...previous, id]);
   }
   useEffect(() => { if (explored.length === animals.length) setCelebrate(true); }, [explored]);
-  if (celebrate) return <SoundCelebration title="¡Ya conoces sus sonidos!" repeat={() => { audio.stop(); setExplored([]); setLast(null); setCelebrate(false); }} next={next}>Tus cuatro amigos te esperan cuando quieras volver.</SoundCelebration>;
+  if (celebrate) return <SoundCelebration onComplete={onComplete} title="¡Ya conoces sus sonidos!" repeat={() => { audio.stop(); setExplored([]); setLast(null); setCelebrate(false); }} next={next}>Tus cuatro amigos te esperan cuando quieras volver.</SoundCelebration>;
   return <>
     <SoundProgress label="Amigos escuchados" value={explored.length} total={animals.length}/>
     <div className="sound-animal-grid">{animals.map(animal => <AnimalCard key={animal.id} animal={animal} onClick={() => void explore(animal.id)} active={audio.active === animal.id} completed={explored.includes(animal.id)} voice={last === animal.id}/>)}</div>
   </>;
 }
 
-export function IdentifySounds({ audio, next }: ActivityProps) {
+export function IdentifySounds({ audio, next, onComplete }: ActivityProps) {
   const [rounds, setRounds] = useState(identificationRounds);
   const [round, setRound] = useState(0);
   const [heard, setHeard] = useState(false);
@@ -45,7 +45,7 @@ export function IdentifySounds({ audio, next }: ActivityProps) {
     else { setFeedback('Escuchemos otra vez'); }
   }
   function advance() { audio.stop(); generation.current++; setHeard(false); setSolved(false); setFeedback(''); setRound(r => r + 1); }
-  return complete ? <SoundCelebration title="¡Qué buenos oídos!" repeat={() => { audio.stop(); setRounds(identificationRounds()); setRound(0); setHeard(false); setSolved(false); setFeedback(''); }} next={next}>Encontraste a tus amigos en las cinco rondas.</SoundCelebration> : <>
+  return complete ? <SoundCelebration onComplete={onComplete} title="¡Qué buenos oídos!" repeat={() => { audio.stop(); setRounds(identificationRounds()); setRound(0); setHeard(false); setSolved(false); setFeedback(''); }} next={next}>Encontraste a tus amigos en las cinco rondas.</SoundCelebration> : <>
     <SoundProgress label="Sonidos encontrados" value={round} total={5}/>
     <button type="button" aria-label="Escuchar sonido" aria-busy={audio.loading} className={`sound-listen ${audio.active ? 'is-active' : ''}`} onClick={() => void listen()}><Volume2 size={42} aria-hidden="true"/><span>{audio.loading ? 'Cargando…' : audio.active ? 'Escuchando…' : 'Escuchar sonido'}</span><small>Puedes escucharlo otra vez</small></button>
     <div className="sound-animal-grid is-choices">{challenge.options.map(animal => <AnimalCard key={animal.id} animal={animal} onClick={() => choose(animal.id)} completed={solved && challenge.answer === animal.id} active={solved && challenge.answer === animal.id} disabled={solved}/>)}</div>
@@ -54,7 +54,7 @@ export function IdentifySounds({ audio, next }: ActivityProps) {
   </>;
 }
 
-export function MatchSounds({ audio, next, count }: ActivityProps & { count: 2 | 3 }) {
+export function MatchSounds({ audio, next, count, onComplete }: ActivityProps & { count: 2 | 3 }) {
   const [set, setSet] = useState(() => shuffled(animals).slice(0, count));
   const [tokens, setTokens] = useState(() => shuffled(set));
   const [selected, setSelected] = useState<AnimalId | null>(null);
@@ -79,7 +79,7 @@ export function MatchSounds({ audio, next, count }: ActivityProps & { count: 2 |
     audio.stop(); const values = shuffled(animals).slice(0, count); setSet(shuffled(values)); setTokens(shuffled(values)); setSelected(null); setHeard([]); heardRef.current = []; setMatched([]); setFeedback('');
   }
   const done = matched.length === set.length;
-  if (done) return <SoundCelebration title="¡Cada sonido encontró su lugar!" repeat={reset} next={next}>Uniste {count === 2 ? 'dos' : 'tres'} parejas. ¡Bien hecho!</SoundCelebration>;
+  if (done) return <SoundCelebration onComplete={onComplete} title="¡Cada sonido encontró su lugar!" repeat={reset} next={next}>Uniste {count === 2 ? 'dos' : 'tres'} parejas. ¡Bien hecho!</SoundCelebration>;
   return <>
     <SoundProgress label="Parejas encontradas" value={matched.length} total={set.length}/>
     <MatchDemo/>

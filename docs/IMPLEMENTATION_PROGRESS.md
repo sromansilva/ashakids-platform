@@ -1,3 +1,32 @@
+## V108 — nueve juegos por edad y ampliación de Sonidos / 2026-10-19
+
+Objetivo solicitado: mostrar nueve juegos por edad en Palabras y Sonidos; llevar el
+Taller a un estilo ilustrado coherente con la Isla y añadir retos con voz cálida.
+Rama `dev`, base V107 `503296d1866a8aeafc36782e5b8a7081a843b009`.
+Cierre funcional: `V108_Ampliar_Juegos_Sonidos_Por_Edad`. Repositorio:
+https://github.com/sromansilva/ashakids-platform .
+
+Ambos mundos muestran nueve actividades editoriales para 4–5/6–7/8+, con once por
+mundo en total y catálogo familiar de once. HABLA suma siete retos a sus cuatro
+actividades y comparte 33 MP3 estáticos es-PE-CamilaNeural de la Isla. Siete nuevas
+ilustraciones WebP con PNGs de origen, metadatos y hashes. Audio cancelable, tres
+rondas, modos y pistas. Sin cambio BD/API/asignaciones, sin escritura de XP y sin
+evaluación clínica. La meta de aproximadamente30juegos por mundo sigue pendiente.
+Decisión [ADR0028](decisions/0028-juegos-por-edad-y-taller-de-sonidos.md).
+
+Comprobación: `npm test` 409 PASS (25 rutas +384 componentes); typecheck, check:frontend
+(431archivos/máximo495líneas), build1967módulos y Graphify `refresh/check` (2940nodos,
+131comunidades) PASS. Node muestra la advertencia experimental de `--experimental-strip-types`.
+Chrome sintético: siete recorridos;28layouts320/390/768/1366,sinoverflow, fallback de
+imagen ni objetivo menor de44px;33 MP3 decodificados con señal; cero errores JS o
+escrituras API. Narración de UI y eventos de animales simulados; perfiles/fechas
+ficticios, sin micrófono real. Capturas, comandos, tamaños, hashes y límites en
+[evidencia sounds-v108](evidence/sounds-v108/verification.md).
+
+La publicación de código y recursos en `dev` se completa en este cierre; Render se
+verifica por HTTP público de assets y health en V109. No se afirmará despliegue por
+el push ni se consultará una cuenta ni dato clínico.
+
 ## V107 — comprobación efectiva de Render / 2026-10-19
 
 Rama dev, base3686f64330f5a0bd79cc0234d835cdcd0af26f21/V106. Objetivo:

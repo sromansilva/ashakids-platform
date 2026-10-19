@@ -1,3 +1,17 @@
+## V108 — nueve juegos por edad en Palabras y Sonidos / 2026-10-19
+
+Isla y Taller comparten cálculo de edad calendario en America/Lima y muestran nueve
+selecciones editoriales para 4–5, 6–7 y 8+ años. Cada mundo ofrece once actividades
+para exploración familiar; la franja no altera asignaciones profesionales. Taller
+crece de cuatro a once con siete retos nuevos de comparación, secuencia, conteo,
+memoria de sonidos, sonido ausente, posición e intruso. Las tarjetas comparten la
+composición pastel de la Isla con WebP transparentes. La narradora estática
+es-PE-CamilaNeural comparte la voz suave de la Isla mediante 33 MP3 de instrucción
+y vista previa. Tres rondas, pistas, dos modos y audio cancelable; sin progreso/XP
+ni evaluación clínica en estas actividades. Recursos en [sounds-v108](evidence/sounds-v108/)
+y decisión en ADR0028. Objetivo de aproximadamente 30 juegos por mundo sigue
+pendiente; esta entrega contiene once. Franjas y timbre requieren aceptación humana.
+
 ## V107 — publicación de la voz verificada / 2026-10-19
 
 V106/3686f64330f5a0bd79cc0234d835cdcd0af26f21 publicado en dev y sincronizado.

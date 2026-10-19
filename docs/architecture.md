@@ -1,3 +1,25 @@
+## Catálogos de juegos por edad / V108 / 2026-10-19
+
+La Isla de las Palabras y el Taller de los Sonidos comparten el cálculo de edad
+calendario en America/Lima, a partir del nacimiento ya autorizado del paciente.
+Cada mundo muestra nueve de sus once juegos para las franjas editoriales 4–5,
+6–7 y 8+; «Para la familia» conserva el catálogo de once para explorar. La edad no
+se duplica ni se usa como permiso profesional.
+
+El Taller incorpora siete retos de escucha y memoria con tres rondas, ayuda visible
+y dos modos de dificultad. Comparar, ordenar, contar, recordar, buscar el sonido que
+falta, reconocer posiciones y detectar un sonido diferente complementan cuatro
+actividades existentes. Su narración comparte la voz estática es-PE-CamilaNeural de
+la Isla. Textos públicos se preparan durante autoría; MP3 e ilustraciones WebP se
+sirven desde el mismo origen. No hay TTS al jugar, peticiones nuevas, micrófono en
+HABLA, progreso persistente ni premios XP en estos retos. Las actividades básicas
+anteriores conservan su flujo.
+
+El catálogo ampliado llega a once actividades por mundo en este corte, no a los
+aproximadamente treinta solicitados. Selección, voz y contenido requieren aceptación
+humana; no son evaluación clínica ni normas de desarrollo.
+[ADR0028](decisions/0028-juegos-por-edad-y-taller-de-sonidos.md).
+
 ## Narración natural estática en Palabras / 2026-10-19
 
 V106 sustituye Web Speech dentro de la Isla por230 MP3 locales con narradora

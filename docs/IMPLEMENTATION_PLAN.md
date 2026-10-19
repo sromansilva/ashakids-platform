@@ -59,6 +59,15 @@ Los catálogos draft-1 y demos históricos no representan este flujo persistente
 
 # ASHAKids — Plan de implementación por fases
 
+## Alcance actualizado de juegos / V108 / 2026-10-19
+
+Isla y Taller muestran nueve juegos iniciales por edad, desde los cuatro años,
+usando fecha de nacimiento autorizada y bandas editoriales 4–5/6–7/8+. Cada uno
+ofrece once actividades en este corte y catálogo familiar. Aproximadamente treinta
+por mundo sigue siendo una meta de ampliación gradual, no una función completa.
+El Taller suma siete mecánicas y comparte la narración estática cálida de la Isla.
+Véase ADR0028 y relevo V108 para el alcance, comprobaciones y límites.
+
 Actualizado: 2026-10-10. Entrega confirmada: 2026-10-09 18:00 America/Lima. Personas por asignar.
 Alcance: [contexto maestro](PROJECT_CONTEXT.md). Ejecución: [avance y relevos](IMPLEMENTATION_PROGRESS.md).
 La numeración es nueva y no equivale a las fases históricas de refactorización.

@@ -55,7 +55,7 @@ export function DemoWorldPlayer(props: {
   world: WorldProgress; patientId: number; birthDate?: string; onSaved: (progress: GameProgress) => void; back: () => void;
 }) {
   const [previousActivities, setPreviousActivities] = useState(false);
-  if (props.world.id === 'HABLA' && !previousActivities) return <SoundWorld back={props.back} legacy={() => setPreviousActivities(true)}/>;
+  if (props.world.id === 'HABLA' && !previousActivities) return <SoundWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
   if (props.world.id === 'LENGUAJE' && !previousActivities) return <WordWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
   return <>{['HABLA','LENGUAJE'].includes(props.world.id) && <button type="button" className="asha-map-back" onClick={() => setPreviousActivities(false)}><ArrowLeft size={18}/> Volver a juegos de {props.world.id==='HABLA'?'sonidos':'palabras'}</button>}<BasicWorldPlayer {...props}/></>;
 }

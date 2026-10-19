@@ -1,0 +1,2 @@
+# Local authoring utility only. This file is not used by the application runtime.
+Pillow==12.3.0

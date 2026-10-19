@@ -10,10 +10,10 @@ it('calcula cumpleaños en Lima sin adelantarlo por UTC, valida fechas y no inve
   expect(ageInLima('2020-02-29', today)).toBe(6);
   for (const date of [undefined, '', '2023-02-29', '2026-10-20', '2099-01-01', '2020-13-01', '2020-01-01T00:00:00Z']) expect(ageInLima(date, today)).toBeNull();
 });
-it.each(['2022-10-19', '2020-10-19', '2018-10-19', '2010-10-19', undefined])('ofrece ocho juegos únicos y micrófono para %s', date => {
+it.each(['2022-10-19', '2020-10-19', '2018-10-19', '2010-10-19', undefined])('ofrece nueve juegos únicos y micrófono para %s', date => {
   const games = selectWordGames(date, today).games;
-  expect(games).toHaveLength(8);
-  expect(new Set(games.map(game => game.id)).size).toBe(8);
+  expect(games).toHaveLength(9);
+  expect(new Set(games.map(game => game.id)).size).toBe(9);
   expect(games.some(game => game.id === 'naming')).toBe(true);
 });
 it('cambia la selección entre franjas sin convertir la edad en un permiso', () => {
@@ -24,14 +24,14 @@ it('cambia la selección entre franjas sin convertir la edad en un permiso', () 
   expect(middle).toContain('sentence'); expect(middle).not.toContain('positions');
   expect(older).toContain('positions'); expect(older).not.toContain('memory');
 });
-it('muestra ocho inicialmente y permite explorar y volver al catálogo orientativo', () => {
+it('muestra nueve inicialmente y permite explorar y volver al catálogo orientativo', () => {
   render(<WordWorld birthDate="2022-01-01" back={vi.fn()} legacy={vi.fn()}/>);
-  expect(screen.getAllByRole('button', { name: /^Jugar / })).toHaveLength(8);
+  expect(screen.getAllByRole('button', { name: /^Jugar / })).toHaveLength(9);
   fireEvent.click(screen.getByRole('button', { name: 'Explorar los 11 juegos en familia' }));
   expect(screen.getAllByRole('button', { name: /^Jugar / })).toHaveLength(11);
-  fireEvent.click(screen.getByRole('button', { name: 'Volver a mis ocho juegos' }));
-  expect(screen.getAllByRole('button', { name: /^Jugar / })).toHaveLength(8);
-  expect(screen.getByText('0/8 aventuras')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Volver a mis nueve juegos' }));
+  expect(screen.getAllByRole('button', { name: /^Jugar / })).toHaveLength(9);
+  expect(screen.getByText('0/9 aventuras')).toBeInTheDocument();
 });
 it('explica la selección inicial si falta la fecha y el acompañamiento para menores de cuatro', () => {
   const view = render(<WordWorld back={vi.fn()} legacy={vi.fn()}/>);

@@ -10,7 +10,9 @@ beforeEach(() => {
 function mount(level = 1) {
   const back = vi.fn(), legacy = vi.fn();
   const view = render(<SoundWorld back={back} legacy={legacy}/>);
+  fireEvent.click(screen.getByRole('button', { name: 'Explorar los 11 juegos en familia' }));
   fireEvent.click(screen.getByRole('button', { name: `Jugar ${soundLevels[level - 1].title}` }));
+  fireEvent.click(screen.getByRole('button', { name: '¡Vamos a jugar!' }));
   return { ...view, back };
 }
 async function endSound() { await act(async () => { fireEvent.playing(player); fireEvent.ended(player); }); }
@@ -121,18 +123,21 @@ it('muestra un fallo de imagen legible y mantiene el control utilizable', async 
   expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '1');
 });
 
-it('mantiene cuatro juegos independientes, vuelve al menú tras completar y restaura foco', async () => {
+it('mantiene nueve juegos independientes, vuelve al menú tras completar y restaura foco', async () => {
   render(<SoundWorld back={vi.fn()} legacy={vi.fn()}/>);
-  const menu = screen.getByLabelText('Cuatro juegos independientes');
-  expect(within(menu).getAllByRole('button')).toHaveLength(4);
+  const menu = screen.getByLabelText('Juegos del taller');
+  expect(within(menu).getAllByRole('button')).toHaveLength(9);
   fireEvent.click(screen.getByRole('button', { name: 'Jugar Toca y descubre' }));
-  expect(screen.queryByLabelText('Cuatro juegos independientes')).not.toBeInTheDocument();
+  expect(screen.queryByLabelText('Juegos del taller')).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: '¡Vamos a jugar!' }));
   for (const animal of animals) {
     fireEvent.click(screen.getByRole('button', { name: animal.name })); await endSound();
   }
   fireEvent.click(screen.getByRole('button', { name: 'Elegir otro juego' }));
   expect(screen.getByRole('button', { name: 'Jugar Toca y descubre' })).toHaveFocus();
+  fireEvent.click(screen.getByRole('button', { name: 'Explorar los 11 juegos en familia' }));
   fireEvent.click(screen.getByRole('button', { name: 'Jugar El reto de tres parejas' }));
+  fireEvent.click(screen.getByRole('button', { name: '¡Vamos a jugar!' }));
   expect(within(screen.getByLabelText('Fichas de sonido')).getAllByRole('button')).toHaveLength(3);
   fireEvent.click(screen.getByRole('button', { name: 'Volver a los juegos' }));
   expect(screen.getByRole('button', { name: 'Jugar El reto de tres parejas' })).toHaveFocus();
