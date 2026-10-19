@@ -1,3 +1,15 @@
+## Selección de Palabras por edad y micrófono / 2026-10-19
+
+V105 pasa fecha_nacimiento del paciente autorizado de MundoAshaHome a WordWorld,
+calcula edad en America/Lima y elige ocho actividades entre once por bandas
+editoriales 4–5/6–7/8+. Catálogo completo dentro de Para la familia y modos de ayuda
+conservados; no cambia la asignación profesional ni crea permisos por edad.
+Nombra el dibujo reutiliza transcripción HTTP existente sin contexto de intento
+persistente. Grabación local con reproducción, límite10s/5MB, cancelación/limpieza,
+AbortSignal y respuesta máxima45s; confirmación textual o alternativa de imágenes.
+No mide pronunciación ni progreso clínico. Sin BD, nuevos endpoints o dependencias
+declaradas. [ADR0026](decisions/0026-seleccion-palabras-edad-y-voz-transitoria.md).
+
 ## Colección de palabras en Mundo ASHA / 2026-10-16
 
 LENGUAJE aplica el mismo límite de práctica de la visita de ADR0025: diez juegos

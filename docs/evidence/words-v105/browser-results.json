@@ -1,0 +1,140 @@
+{
+  "cases": [
+    "eight games for age 4; desktop/tablet/mobile",
+    "real MediaRecorder fake stream, playback and mismatch does not complete",
+    "three rounds completed, no patient/level/attempt fields in multipart",
+    "child switch stops microphone, clears visit and changes age selection",
+    "age 6 selection and family catalogue toggle",
+    "denied permission; all three image rounds complete",
+    "challenge vocabulary, keyboard start and three image rounds"
+  ],
+  "layouts": [
+    {
+      "label": "menu-4-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "menu-4-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "menu-4-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "menu-4-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "mission-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "naming-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "result-0-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "result-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "result-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "result-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "result-1-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "result-2-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    },
+    {
+      "label": "denied-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": []
+    }
+  ],
+  "errors": [],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/901/juegos"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/educacion/voz/transcribir"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/educacion/voz/transcribir"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/educacion/voz/transcribir"
+    },
+    {
+      "method": "POST",
+      "path": "/api/v1/educacion/voz/transcribir"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/902/juegos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/903/juegos"
+    }
+  ],
+  "limits": "Synthetic API. Fake microphone. No real recognition, clinical accuracy or remote deployment certified."
+}

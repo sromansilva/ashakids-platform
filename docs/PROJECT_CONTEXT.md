@@ -1,3 +1,28 @@
+## V105 — ocho juegos por edad y micrófono en Palabras / 2026-10-19
+
+Primera entrega del catálogo amplio solicitado: once juegos en LENGUAJE, ocho en
+el menú según fecha de nacimiento (4–5/6–7/8+), catálogo familiar y modos de ayuda.
+Franjas editoriales orientativas pendientes de aceptación profesional. Nombra el
+dibujo añade tres rondas con grabación/reproducción, reconocimiento textual y
+alternativa de imágenes. No mide pronunciación. Cambio de niño/salida apaga captura,
+cancela petición y limpia visita. Sin BD, permisos, endpoints ni dependencias nuevas
+declaradas. Se conserva práctica transitoria sin XP/medallas y basica-1 histórico.
+[ADR0026](decisions/0026-seleccion-palabras-edad-y-voz-transitoria.md).
+
+Rama dev, base 0aa0360d556981a72ce494ebc0856db7e958798c/V104; cierre
+V105_Personalizar_Palabras_Edad_Microfono. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Evidencia nueva en
+[words-v105](evidence/words-v105/verification.md):383componentes/25rutas, tipos,
+estructura416 y build aprobados;16casos backend sin BD (inferencia real sobre tono),
+7recorridos Chrome/13layouts sin errores JS/escrituras persistentes. ASR instalado
+en .venv y modelo base cargado localmente. Graphify2897nodos/126comunidades actual.
+Avisos de strip-types,22archivos sin símbolos y caché HF sin symlinks; límites en evidencia.
+
+Siguiente: aceptación de bandas/contenido y voz humana en dispositivos familiares;
+ampliar gradualmente hacia treinta por mundo. No se declara completo ese objetivo,
+personalización profesional persistente ni reconocimiento remoto. .gitignore previo
+fuera del commit. Publicación dev y SHA remoto se comprueban al cerrar esta entrega.
+
 ## V104 — Isla con lógica de juego para preescolar / 2026-10-18
 
 Diez juegos revisados para acompañar a niños desde los 4 años: bienvenida con meta,

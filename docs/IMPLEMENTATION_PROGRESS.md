@@ -1,3 +1,40 @@
+## V105 — selección por edad y Nombra el dibujo / 2026-10-19
+
+Objetivo: iniciar selección de ocho juegos por edad y respuesta oral en LENGUAJE.
+Rama dev; base 0aa0360d556981a72ce494ebc0856db7e958798c/V104; cierre
+V105_Personalizar_Palabras_Edad_Microfono. Repositorio:
+https://github.com/sromansilva/ashakids-platform . No es auditoría académica nueva.
+
+Archivos: WordGames/wordSelection, NamingGame, useWordRecorder, WordWorld,
+WordParts, wordContent y CSS; MundoAshaHome/DemoWorldPlayer/WorldMap; señal de
+cancelación en api/client y voiceService; pruebas/fixture sintéticos; ADR0026,
+arquitectura y diseño/evidencia words-v105. Catálogo once, menú ocho, modos manuales
+de ayuda y catálogo familiar. No cambios BD, backend, permisos, persistencia ni
+dependencias declaradas. Se conserva basica-1. Micrófono por acción, reproducción,
+10s/5MB, respuesta45s, cancelación y limpieza; coincidencia textual o alternativa
+de imágenes, sin calificación fonética/XP/medallas.
+
+Comprobaciones nuevas:383componentes/33archivos y25rutas PASS; typecheck,
+check:frontend416 y build1956 PASS. Backend16PASS/2deseleccionadas con -k 'not endpoint',
+incluye Whisper real sobre tono sintético sin DB/autenticación real. Chrome7casos y
+13layouts PASS con captura/reproducción reales sobre dispositivo falso y ASR/API
+simulados; edades4/6/8, cambio de niño, permisos, tres rondas en ambos modos, teclado.
+Tipos, estructura, rutas/componentes y build registrados en evidencia. Graphify
+refresh/check PASS:2897nodos/126comunidades. Imágenes menu1366/result390 inspeccionadas.
+
+Entorno local: instalado faster-whisper1.2.1 en backend/.venv y caché del modelo base
+CPU/int8; importación/carga e inferencia sintética reales aprobadas. No .env editado,
+cuentas ni datos compartidos. Avisos: Node strip-types experimental,22archivos de
+Graphify sin símbolos, caché HF sin symlinks y descarga pública sin token. Preparación:
+exact no permitido en Testing Library corregido; Playwright del runtime por variable
+PLAYWRIGHT_MODULE al faltar el paquete en node_modules. No bloqueos finales de código.
+
+Siguiente: probar voz humana/latencia y validar selección con profesional; luego
+ampliar catálogo hacia treinta por mundo y definir personalización/persistencia si se
+solicitan. No afirmar completadas esas extensiones. No Render/ASR remoto certificado.
+Se preserva .gitignore local previo fuera del conjunto; antes de publicación revisar
+diff/secretos/refs y al cierre confirmar SHA remoto de dev sin force-push.
+
 ## V104 — Isla con lógica de juego para preescolar / 2026-10-18
 
 Diez juegos revisados para acompañar a niños desde los 4 años: bienvenida con meta,

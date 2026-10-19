@@ -19,6 +19,7 @@ export const words = Object.fromEntries(wordItems.map(([id,name,syllables,catego
 }])) as Record<WordId, { id: WordId; name: string; syllables: string[]; category: string; image: string }>;
 export type WordPlayMode = 'gentle' | 'challenge';
 export const wordGames = [
+  { id:'naming', title:'Nombra el dibujo', detail:'Escucha, habla y descubre tu propia voz.', skill:'Palabras con micrófono', art:'cat', color:'#C7E9F5', action:'Hablar', goal:'Explora tres dibujos y di cómo se llaman.', steps:['Mira el dibujo y escucha su nombre.','Pulsa el micrófono y di la palabra.','Escucha tu grabación y sigue a tu ritmo.'], learned:'Exploraste tres palabras con imágenes y escucha.' },
   { id:'treasure', title:'El tesoro de palabras', detail:'Encuentra tres tesoros con pistas.', skill:'Vocabulario', art:'bag', color:'#FCE1A4', action:'Buscar', goal:'Encuentra tres tesoros para tu cofre.', steps:['Escucha la pista.','Toca la imagen que buscas.','Guarda tu tesoro y sigue.'], learned:'Encontraste palabras a partir de sus pistas.' },
   { id:'memory', title:'Parejas escondidas', detail:'Mira, recuerda y encuentra las parejas.', skill:'Memoria visual', art:'cat', color:'#DFD0FB', action:'Descubrir', goal:'Ayuda a cada dibujo a encontrar su pareja.', steps:['Mira los dibujos antes de empezar.','Da la vuelta a dos cartas.','Busca los dibujos iguales.'], learned:'Recordaste dónde estaban los dibujos.' },
   { id:'sort', title:'Cestas de colores', detail:'Ayuda a ordenar la isla.', skill:'Categorías', art:'apple', color:'#FFCFC3', action:'Clasificar', goal:'Lleva cada dibujo a su familia.', steps:['Mira un dibujo.','Busca una cesta con dibujos parecidos.','Toca la cesta o arrastra el dibujo.'], learned:'Agrupaste dibujos por lo que tienen en común.' },
@@ -30,7 +31,7 @@ export const wordGames = [
   { id:'rhymes', title:'Palabras que riman', detail:'Escucha palabras que terminan parecido.', skill:'Rimas', art:'shoe', color:'#F7CCE1', action:'Escuchar', goal:'Encuentra tres parejas que suenan parecido al final.', steps:['Escucha la primera palabra.','Escucha los dibujos de abajo.','Elige la que termina parecido.'], learned:'Escuchaste cómo terminan las palabras.' },
   { id:'sentence', title:'El tren de las frases', detail:'Dibujos que cuentan lo que pasa.', skill:'Frases con imágenes', art:'car', color:'#CFDDFB', action:'Crear', goal:'Construye tres frases en el tren.', steps:['Escucha lo que pasa.','Elige quién, qué hace y dónde o qué.','Escucha tu frase completa.'], learned:'Juntaste ideas para contar lo que pasa.' },
 ] as const;
-export const gameIllustration = (id: string) => `/words/games/${id}-v104.webp`;
+export const gameIllustration = (id: string) => id === 'naming' ? words.cat.image : `/words/games/${id}-v104.webp`;
 export type WordGameId = typeof wordGames[number]['id'];
 export function shuffle<T>(values: readonly T[]): T[] {
   const result=[...values];

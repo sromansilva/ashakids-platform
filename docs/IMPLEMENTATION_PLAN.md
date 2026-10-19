@@ -1,3 +1,9 @@
+Actualización V105 (2026-10-19): primera entrega de ocho juegos por edad y micrófono
+en Palabras, con once actividades disponibles. Ver ADR0026 y evidencia words-v105.
+Pendiente ampliar gradualmente hacia unos treinta juegos por cada mundo; revisar
+franjas con profesional y voz humana antes de extender. Personalización profesional
+persistente y nuevo guardado de práctica no están implementados.
+
 Actualización V75 (2026-10-11): el sistema visual v1.1 documenta reglas glassmorphism en [ASHAKIDS_DESIGN_SYSTEM.md](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md).
 
 ## V52 — adjuntos persistentes en mensajes / 2026-10-10

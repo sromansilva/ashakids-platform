@@ -21,7 +21,7 @@ if (import.meta.env.DEV) {
       if (!url.pathname.includes('/api/')) return nativeFetch(input, options);
       const method = options?.method || (input instanceof Request ? input.method : 'GET');
       const write = method.toUpperCase() !== 'GET';
-      const data = write ? { detail:'Esta vista previa no guarda intentos. Abre Mundo ASHA desde tu sesión familiar para practicar.' } : url.pathname.endsWith('/pacientes') ? [{id_paciente:901,nombres_paciente:'Ana',apellidos_paciente:'Demo',activo:true}] : url.pathname.endsWith('/juegos') ? progress : [];
+      const data = write ? { detail:'Esta vista previa no guarda intentos. Abre Mundo ASHA desde tu sesión familiar para practicar.' } : url.pathname.endsWith('/pacientes') ? [{id_paciente:901,nombres_paciente:'Ana',apellidos_paciente:'Demo',fecha_nacimiento:'2022-10-19',activo:true}] : url.pathname.endsWith('/juegos') ? progress : [];
       return new Response(JSON.stringify(data),{status:write?403:200,headers:{'Content-Type':'application/json','X-Total-Count':'1'}});
     };
   }

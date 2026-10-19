@@ -10,16 +10,17 @@ beforeEach(()=>{
 const click=(name:string|RegExp)=>fireEvent.click(screen.getByRole('button',{name}));
 function open(id:string,mode:WordPlayMode='gentle',start=true){
  const game=wordGames.find(g=>g.id===id)!,back=vi.fn(),legacy=vi.fn(),view=render(<WordWorld back={back} legacy={legacy}/>);
+ click('Explorar los 11 juegos en familia');
  if(mode==='challenge')click(/Un poquito más/);click(`Jugar ${game.title}`);if(start)click('¡Vamos a jugar!');return {...view,back,legacy};
 }
 const done=()=>expect(screen.getByRole('region',{name:'Juego completado'})).toBeInTheDocument();
 const advance=()=>click(screen.queryByRole('button',{name:'Continuar'})?'Continuar':'Terminar juego');
 const modes:WordPlayMode[]=['gentle','challenge'];
-it('presenta diez portadas y una bienvenida con meta antes de jugar, restaura foco y limpia voz',()=>{
+it('conserva el catálogo familiar, bienvenida, restauración de foco y limpieza de voz',()=>{
  const view=open('treasure','gentle',false);
  expect(screen.getByRole('heading',{name:'El tesoro de palabras'})).toHaveFocus();expect(screen.getByRole('region',{name:'Antes de jugar'})).toBeInTheDocument();expect(screen.queryByRole('progressbar')).not.toBeInTheDocument();
  click('Escuchar cómo jugar');expect(window.speechSynthesis.speak).toHaveBeenCalled();click('¡Vamos a jugar!');expect(screen.queryByRole('region',{name:'Antes de jugar'})).not.toBeInTheDocument();
- click('Volver a los juegos');expect(screen.getByRole('button',{name:'Jugar El tesoro de palabras'})).toHaveFocus();expect(screen.getAllByRole('button',{name:/^Jugar /})).toHaveLength(10);
+ click('Volver a los juegos');expect(screen.getByRole('button',{name:'Jugar El tesoro de palabras'})).toHaveFocus();expect(screen.getAllByRole('button',{name:/^Jugar /})).toHaveLength(11);
  expect(document.querySelectorAll('.word-game-card img[src^="/words/games/"]')).toHaveLength(10);view.unmount();expect(window.speechSynthesis.cancel).toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();
 });
 it.each(modes)('vocabulario %s: pistas, errores sin premio y tres tesoros',mode=>{

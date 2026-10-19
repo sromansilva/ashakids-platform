@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
-import { Check, Lightbulb, RotateCcw, Volume2 } from 'lucide-react';
+import { Check, Lightbulb, Mic, RotateCcw, Volume2 } from 'lucide-react';
 import { gameIllustration, words, type WordId } from './wordContent';
 
 export function WordPicture({ id, label=false }: {id:WordId; label?:boolean}) {
@@ -24,7 +24,7 @@ export function useWordSpeech() {
   return {speak,stop,notice};
 }
 export type WordSpeech=ReturnType<typeof useWordSpeech>;
-export function Listen({ text, speech,label='Escuchar' }: {text:string;speech:WordSpeech;label?:string}) {return <button type="button" className="word-button is-light" onClick={()=>speech.speak(text)}><Volume2 size={20}/> {label}</button>;}
+export function Listen({ text, speech,label='Escuchar',disabled=false }: {text:string;speech:WordSpeech;label?:string;disabled?:boolean}) {return <button type="button" disabled={disabled} className="word-button is-light" onClick={()=>speech.speak(text)}><Volume2 size={20}/> {label}</button>;}
 export function WordProgress({ value,total,label='Tu aventura' }: {value:number;total:number;label?:string}) {
   return <div className="word-progress" role="progressbar" aria-label={label} aria-valuenow={value} aria-valuemin={0} aria-valuemax={total}><span>{label}</span><div aria-hidden="true">{Array.from({length:total},(_,i)=><span key={i} className={i<value?'is-done':''}>{i<value?<Check size={14}/>:i+1}</span>)}</div><span>{value}/{total}</span></div>;
 }
@@ -47,7 +47,7 @@ export function Hint({text,speech,visible,reveal}:{text:string;speech:WordSpeech
 }
 export function GameArtwork({id,title}:{id:string;title:string}) {
   const [failed,setFailed]=useState(false);
-  return <span className="word-game-art">{failed?<span className="word-image-error">{title} · imagen no disponible</span>:<img src={gameIllustration(id)} alt="" width="384" height="384" draggable={false} onError={()=>setFailed(true)}/>}</span>;
+  return <span className="word-game-art">{failed?<span className="word-image-error">{title} · imagen no disponible</span>:<img src={gameIllustration(id)} alt="" width="384" height="384" draggable={false} onError={()=>setFailed(true)}/>} {id==='naming'&&<span className="word-mic-badge" aria-hidden="true"><Mic size={30}/></span>}</span>;
 }
 export function GameInstruction({ children,text,speech }: {children:ReactNode;text:string;speech:WordSpeech}) {
   const instruction=useRef<HTMLParagraphElement>(null);

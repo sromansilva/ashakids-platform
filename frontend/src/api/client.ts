@@ -105,7 +105,7 @@ async function request<T>(
 
 export const apiClient = {
   blob: (endpoint: string, signal?: AbortSignal) => request<Blob>(endpoint, { method: 'GET', signal, binary: true }),
-  upload: <T>(endpoint: string, body: FormData) => request<T>(endpoint, { method: 'POST', body }),
+  upload: <T>(endpoint: string, body: FormData, options: Pick<ApiOptions, 'signal'> = {}) => request<T>(endpoint, { ...options, method: 'POST', body }),
   pdf: (endpoint: string, signal?: AbortSignal) =>
     request<Blob>(endpoint, { method: 'GET', signal, pdf: true }),
   get: <T>(endpoint: string, options?: ApiOptions) =>

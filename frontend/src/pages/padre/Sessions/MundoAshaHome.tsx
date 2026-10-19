@@ -35,7 +35,7 @@ export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'e
         {progress.data && !progress.error && <div className="asha-explorer-progress"><p className="asha-explorer-score">Nivel {progress.data.nivel} · {progress.data.experiencia} XP · {progress.data.medallas.length} medallas</p><progress aria-label="Experiencia para el próximo nivel" max={200} value={progress.data.experiencia % 200}/><p>{progress.data.intentos_totales} intentos · Próximo nivel: {progress.data.experiencia_siguiente_nivel} XP.</p></div>}
       </div>}
       {requested && progress.isSuccess && !progress.error && !world && <p role="status" className="asha-world-notice">Este mundo no está habilitado para el niño seleccionado. Puedes elegir otro niño o consultar los mundos asignados por su terapeuta.</p>}
-      {!patients.error && !progress.error && progress.isSuccess && patient && (world ? <DemoWorldPlayer key={`${user?.id_usuario}:${patient.id_paciente}:${world.id}`} world={world} patientId={patient.id_paciente} onSaved={saved} back={() => { setWorldId(null); setSearch({}); }}/> : <section aria-label="Mundos asignados">
+      {!patients.error && !progress.error && progress.isSuccess && patient && (world ? <DemoWorldPlayer key={`${user?.id_usuario}:${patient.id_paciente}:${world.id}`} world={world} patientId={patient.id_paciente} birthDate={patient.fecha_nacimiento} onSaved={saved} back={() => { setWorldId(null); setSearch({}); }}/> : <section aria-label="Mundos asignados">
         <div className="asha-map-heading"><div><h2>Elige tu mundo, {patient.nombres_paciente}</h2><p>Explora una isla para ver sus niveles.</p></div><span>Mapa de aventuras</span></div>
         <WorldMap worlds={worlds} onOpen={setWorldId}/>
         {!worlds.some(w => w.asignado) ? <div className="asha-world-notice"><h2>Mundos pendientes para {patient.nombres_paciente}</h2><p>El profesional puede asignar los cinco mundos desde el plan de este niño.</p><Btn onClick={() => go('padre/camino')}>Ver el recorrido de mi hijo</Btn></div> : worlds.some(w => !w.asignado) && <p className="asha-map-help">Los mundos pendientes se habilitan cuando el terapeuta los asigna en el plan de tu hijo.</p>}
@@ -43,6 +43,6 @@ export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'e
       {progress.data?.medallas.length ? <section className="asha-world-medals"><h2><Award size={22} aria-hidden="true"/> Medallas del perfil</h2><ul>{progress.data.medallas.map(m => <li key={m.codigo}>{m.nombre} · {new Date(m.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}</li>)}</ul></section> : null}
       {patients.isSuccess && children.length === 0 && <p>Aún no tienes hijos registrados.</p>}
     </>}
-    <p role="note" className="asha-map-help">El progreso guardado corresponde a las actividades básicas por niño. Los juegos de sonidos y la colección de diez juegos de palabras son práctica de esta visita, sin XP ni medallas. Estas actividades no acreditan progreso clínico.</p>
+    <p role="note" className="asha-map-help">El progreso guardado corresponde a las actividades básicas por niño. Los juegos de sonidos y la selección de palabras por edad son práctica de esta visita, sin XP ni medallas. Estas actividades no acreditan progreso clínico.</p>
   </div></section>;
 }

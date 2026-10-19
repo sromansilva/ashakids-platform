@@ -36,6 +36,7 @@ export interface TranscripcionRespuesta {
 }
 
 export interface TranscribeOptions {
+  signal?: AbortSignal;
   targetPhrase?: string;
   patientId?: number;
   level?: number;
@@ -50,7 +51,7 @@ export const voiceService = {
     options?: string | TranscribeOptions
   ): Promise<TranscripcionRespuesta> => {
     const form = new FormData();
-    const ext = audioBlob.type.includes('wav') ? 'wav' : 'webm';
+    const ext = audioBlob.type.includes('wav') ? 'wav' : audioBlob.type.includes('ogg') ? 'ogg' : 'webm';
     form.append('audio', audioBlob, `audio-grabacion.${ext}`);
 
     let targetPhrase: string | undefined;
@@ -78,6 +79,9 @@ export const voiceService = {
     if (duracionSegundos !== undefined) form.append('duracion_segundos', String(duracionSegundos));
     if (ayudasUsadas !== undefined) form.append('ayudas_usadas', String(ayudasUsadas));
 
+    if (typeof options === 'object' && options.signal) {
+      return apiClient.upload<TranscripcionRespuesta>('/educacion/voz/transcribir', form, { signal: options.signal });
+    }
     return apiClient.upload<TranscripcionRespuesta>('/educacion/voz/transcribir', form);
   },
 };
