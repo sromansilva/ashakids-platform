@@ -115,7 +115,7 @@ export function FamilyTopNav({
                 width={40}
                 height={40}
               />
-              <span className="ftn-child-name">{patient.nombres_paciente}</span>
+              <strong className="ftn-child-name">{patient.nombres_paciente}</strong>
               <ChevronDown size={18} aria-hidden="true" />
             </summary>
             <div className="fc-profile-menu">
@@ -181,6 +181,7 @@ export function FamilyTopNav({
                 type="button"
                 className={`ftn-nav-btn ${active ? 'ftn-nav-btn--active' : ''}`}
                 aria-current={active ? 'page' : undefined}
+                aria-label={`Ir a ${item.label}`}
                 onClick={() => handleNavClick(item)}
               >
                 <Icon size={18} aria-hidden="true" />

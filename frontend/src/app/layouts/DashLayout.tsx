@@ -97,7 +97,7 @@ export function DashLayout({
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {role === 'admin' && <div className="admin-toolbar"><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
-        {isFamily && !childCenter && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
+        {isFamily && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
         {role === 'terapeuta' && <div className="professional-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Terapeuta</span></span></div>}
         {!isFamily && <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />}
         <div className="flex-1 overflow-y-auto flex min-h-0">
