@@ -20,7 +20,11 @@ cargadas y objetivos táctiles de al menos 48 px. Estados de reintento y acierto
 comprobados en identificación auditiva. La suite completa requirió permisos ampliados
 por un `EPERM` al renombrar la caché temporal del sandbox; bajo ejecución aprobada pasó.
 Los intentos usan sólo el fixture del navegador. No se modificó backend, API, BD ni
-asignaciones profesionales.
+asignaciones profesionales. V110 `3c059680f981976edeb8d2eaa9fc5c17bb2ef6f9` está
+sincronizado en `dev`; Render respondió health/index HTTP 200 y sus bundles de entrada
+y del mundo de Sonidos coinciden por SHA-256 con el build local. Verificación pública
+en [render-live.json](evidence/sounds-v110/render-live.json); no es lectura del SHA
+interno de Render.
 
 ## V108 — nueve juegos por edad en Palabras y Sonidos / 2026-10-19
 

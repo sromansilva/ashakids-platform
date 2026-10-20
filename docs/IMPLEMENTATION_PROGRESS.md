@@ -1,3 +1,19 @@
+## V111 — verificación de publicación del Taller de los Sonidos / 2026-10-19
+
+Seguimiento de despliegue de V110; sin cambios de interfaz, lógica ni pruebas de juego.
+Rama `dev`, base V110 `3c059680f981976edeb8d2eaa9fc5c17bb2ef6f9`.
+Repositorio: https://github.com/sromansilva/ashakids-platform . Commit documental:
+`V111_Verificar_Publicacion_Taller_Sonidos`.
+
+Verificación nueva el 2026-10-20 02:14 UTC (2026-10-19 21:14 America/Lima):
+`HEAD`, `origin/dev` y `git ls-remote` coincidían con V110; Render devolvió HTTP 200
+para index y health, y los bundles principal JS/CSS y `world-map` JS/CSS coincidieron
+byte por byte (SHA-256) con el build V110 local. Rutas, tamaños, SHA y límites en
+[`render-live.json`](evidence/sounds-v110/render-live.json). Es comprobación del
+contenido público; no lee el SHA interno de despliegue mediante una API de Render.
+No se usaron cuentas, cookies, datos infantiles o flujos clínicos. No se repiten aquí
+las pruebas funcionales ya registradas en V110.
+
 ## V110 — unificación visual del Taller de los Sonidos / 2026-10-19
 
 Objetivo: ordenar en 3×3 los nueve juegos y unificar sus pantallas conservando reglas,
@@ -29,7 +45,10 @@ API, datos infantiles ni flujos clínicos. Revisión previa: `HEAD`, `origin/dev
 `ls-remote origin/dev` coincidían en la base V109; `git diff --check` y la búsqueda de
 patrones de credenciales no encontraron problemas. La modificación local preexistente
 de `.gitignore` quedó fuera del conjunto. Cerrar con commit V110, push fast-forward y
-comparación de SHA; comprobar recursos públicos de Render antes de afirmar despliegue.
+comparación de SHA. V110 `3c059680f981976edeb8d2eaa9fc5c17bb2ef6f9` se publicó por
+fast-forward; `HEAD`, `origin/dev` y la referencia remota quedaron sincronizados.
+Render health/index HTTP 200; los bundles del sitio y de Sonidos coincidieron con el
+build local. Evidencia en [sounds-v110/render-live.json](evidence/sounds-v110/render-live.json).
 
 ## V108 — nueve juegos por edad y ampliación de Sonidos / 2026-10-19
 
