@@ -1,3 +1,18 @@
+## V113 — verificación de publicación de ilustraciones de Sonidos / 2026-10-19
+
+Seguimiento documental de V112, sin cambio funcional. Rama `dev`; build verificada del
+commit V112 `0ec870a9c455e939467e906f446132bf3b2159e9`. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Commit documental:
+`V113_Verificar_Publicacion_Animales_Sonidos`.
+
+Render `https://ashakids.onrender.com`: índice y health HTTP 200; las referencias de
+entrada coinciden con la build local. Los bundles principal JS/CSS y de Sonidos JS/CSS,
+más los cuatro WebP V112, coinciden byte a byte por SHA-256. Evidencia en
+[`render-live.json`](evidence/sounds-v112/render-live.json). Verifica contenido estático
+público, no consulta un SHA privilegiado de despliegue. V112 se empujó sin force y GitHub
+confirmó `1c92646..0ec870a`; `HEAD` y `origin/dev` locales coinciden. La consulta
+`ls-remote` de confirmación no completó por falta de conexión a GitHub tras el push.
+
 ## V112 — igualar modelo de animales en Taller de Sonidos / 2026-10-19
 
 Objetivo: dar a los dibujos de animales de las partidas el mismo acabado 3D suave que
@@ -23,9 +38,10 @@ Fixture sintético; no API operativa ni guardado de intentos. Error inicial EPER
 directorio temporal de Vitest evitado al asignar el temporal a una carpeta del proyecto;
 la ejecución repetida aprobó. `.gitignore` modificado antes de esta fase permanece fuera.
 
-Siguiente: revisar diff/secretos y referencia remota, publicar V112 por fast-forward en
-`dev`, verificar SHA y comprobar que Render sirve los cuatro WebP y el bundle esperado.
-Registrar ese resultado en una fase documental posterior.
+V112 `0ec870a9c455e939467e906f446132bf3b2159e9` se publicó por fast-forward en `dev`.
+GitHub confirmó `1c92646..0ec870a`; `HEAD` y `origin/dev` local quedaron alineados.
+Render verificado en la fase V113 con los recursos y límites indicados arriba. El cambio
+local preexistente `.gitignore` sigue fuera del commit.
 
 ## V111 — verificación de publicación del Taller de los Sonidos / 2026-10-19
 

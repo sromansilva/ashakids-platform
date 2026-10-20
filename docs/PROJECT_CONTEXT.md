@@ -11,9 +11,11 @@ Verificación local: 28 pruebas dirigidas al sonido, typecheck, `check:frontend`
 (432 archivos, máximo 495 líneas), build Vite (1968 módulos) y Graphify refresh/check.
 En el harness con perfil ficticio, las cuatro imágenes cargaron en exploración móvil
 (390 px, cuadrícula 2 × 2) y dos imágenes en identificación; sin escrituras reales.
-Cambios limitados al arte, catálogo central, créditos, herramienta de empaquetado y
-documentación de relevo. Publicación en `dev` y verificación pública pendientes al
-corte de esta entrada.
+V112 `0ec870a9c455e939467e906f446132bf3b2159e9` se publicó por fast-forward en `dev`.
+Render: index referencias coincidentes, health HTTP 200 y ocho JS/CSS/WebP públicos con
+SHA-256 exacto; evidencia en [render-live.json](evidence/sounds-v112/render-live.json).
+La consulta `ls-remote` posterior no conectó, pero el push confirmó `1c92646..0ec870a` y
+`origin/dev` local coincide con `HEAD`. Sin cambios de arquitectura, API, BD o permisos.
 
 ## V110 — identidad visual del Taller de los Sonidos / 2026-10-19
 
