@@ -1,7 +1,7 @@
 # Taller de los Sonidos — recursos
 
-Ilustraciones SVG originales creadas para ASHAKids, 2026-10-16. No son emojis ni
-imágenes remotas. El contenido y las rutas se centralizan en soundContent.ts.
+Ilustraciones originales creadas para ASHAKids. Las rutas activas de animales se
+centralizan en `soundContent.ts`; las imágenes se sirven desde este paquete local.
 
 Actualización visual 2026-10-16: modelado semitridimensional mediante gradientes,
 sombras de contacto y reflejos en los cuatro animales; escenario `garden.svg`
@@ -26,3 +26,10 @@ se limita a 0,7; sólo se reproduce tras una interacción. No se envían datos a
 proveedor de audio durante el juego.
 
 Las tarjetas del menú utilizan nuevas ilustraciones de actividades: [créditos](../games/CREDITS.md).
+
+Actualización V112, 2026-10-19: las fichas de los cuatro animales ahora usan
+ilustraciones WebP nuevas con modelo de juguete 3D suave, luz y proporciones
+coherentes entre sí y con las tarjetas del Taller. Las versiones anteriores SVG se
+conservan como material legado; las partidas cargan `cow-v112.webp`, `cat-v112.webp`,
+`dog-v112.webp` y `chick-v112.webp`. Los PNG de origen, prompts y hashes están en
+`docs/evidence/sounds-v112/`.

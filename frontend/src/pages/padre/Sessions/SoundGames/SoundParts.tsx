@@ -11,7 +11,7 @@ export function AnimalPicture({ animal }: { animal: SoundAnimal }) {
   const [failed, setFailed] = useState(false);
   const [loaded, setLoaded] = useState(false);
   return <span className={`sound-picture ${loaded ? 'is-loaded' : ''}`}>
-    {failed ? <span className="sound-image-error">Imagen no disponible: {animal.name}</span> : <img src={animal.image} alt="" width="240" height="210" draggable={false} onLoad={() => setLoaded(true)} onError={() => setFailed(true)}/>}
+    {failed ? <span className="sound-image-error">Imagen no disponible: {animal.name}</span> : <img src={animal.image} alt="" width="240" height="240" draggable={false} onLoad={() => setLoaded(true)} onError={() => setFailed(true)}/>}
   </span>;
 }
 export function AnimalCard({ animal, onClick, active, completed, incorrect, voice, disabled, onDrop, label }: {

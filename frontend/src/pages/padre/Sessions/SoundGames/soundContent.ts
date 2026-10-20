@@ -1,10 +1,10 @@
 export type AnimalId = 'cow' | 'cat' | 'dog' | 'chick';
 export interface SoundAnimal { id: AnimalId; name: string; image: string; audio: string; voice: string; color: string }
 export const animals: SoundAnimal[] = [
-  { id: 'cow', name: 'Vaca', voice: '¡Muuu!', color: '#E6DDFC', image: '/sounds/animals/cow.svg', audio: '/sounds/animals/cow.mp3' },
-  { id: 'cat', name: 'Gato', voice: '¡Miau!', color: '#FFE0D2', image: '/sounds/animals/cat.svg', audio: '/sounds/animals/cat.mp3' },
-  { id: 'dog', name: 'Perro', voice: '¡Guau!', color: '#CFF1EB', image: '/sounds/animals/dog.svg', audio: '/sounds/animals/dog.mp3' },
-  { id: 'chick', name: 'Pollito', voice: '¡Pío, pío!', color: '#FFF0B6', image: '/sounds/animals/chick.svg', audio: '/sounds/animals/chick.mp3' },
+  { id: 'cow', name: 'Vaca', voice: '¡Muuu!', color: '#E6DDFC', image: '/sounds/animals/cow-v112.webp', audio: '/sounds/animals/cow.mp3' },
+  { id: 'cat', name: 'Gato', voice: '¡Miau!', color: '#FFE0D2', image: '/sounds/animals/cat-v112.webp', audio: '/sounds/animals/cat.mp3' },
+  { id: 'dog', name: 'Perro', voice: '¡Guau!', color: '#CFF1EB', image: '/sounds/animals/dog-v112.webp', audio: '/sounds/animals/dog.mp3' },
+  { id: 'chick', name: 'Pollito', voice: '¡Pío, pío!', color: '#FFF0B6', image: '/sounds/animals/chick-v112.webp', audio: '/sounds/animals/chick.mp3' },
 ];
 export const animalById = (id: AnimalId) => animals.find(animal => animal.id === id)!;
 export const soundLevels = [

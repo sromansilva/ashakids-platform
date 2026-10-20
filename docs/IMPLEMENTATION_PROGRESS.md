@@ -1,3 +1,32 @@
+## V112 — igualar modelo de animales en Taller de Sonidos / 2026-10-19
+
+Objetivo: dar a los dibujos de animales de las partidas el mismo acabado 3D suave que
+las ilustraciones de las tarjetas del Taller. Rama `dev`; base V111
+`1c92646cd1d9b8a3e9fe2e338e59adb04f0a936b`. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Commit previsto:
+`V112_Unificar_Ilustraciones_Animales_Sonidos`.
+
+Vaca, gato, perro y pollito cambian desde los SVG anteriores a WebP transparentes
+384 × 384 con un modelo compartido. `AnimalPicture` mantiene la composición cuadrada;
+los nueve juegos que reutilizan el catálogo central muestran el nuevo arte sin alterar
+audio, reglas, progreso ni resultados. Se conservan los SVG previos. Nuevos archivos:
+`tools/audio/package_sound_animals.py`, cuatro fuentes PNG y prompts/hashes bajo
+`docs/evidence/sounds-v112/`, cuatro WebP versionados, `soundContent.ts`, `SoundParts.tsx`
+y créditos; también se actualizan contexto y relevo. Sin cambio de arquitectura, API,
+BD, permisos o dependencias de runtime.
+
+Comprobaciones locales: 28/28 pruebas de Sonidos; typecheck PASS; `check:frontend`
+432 archivos / máximo 495 líneas PASS; build de 1968 módulos PASS; Graphify check
+2942 nodos PASS. En harness de demostración local, 4/4 imágenes cargadas en explorar,
+2/2 en identificación, proporción completa y cuadrícula de dos columnas a 390 px.
+Fixture sintético; no API operativa ni guardado de intentos. Error inicial EPERM del
+directorio temporal de Vitest evitado al asignar el temporal a una carpeta del proyecto;
+la ejecución repetida aprobó. `.gitignore` modificado antes de esta fase permanece fuera.
+
+Siguiente: revisar diff/secretos y referencia remota, publicar V112 por fast-forward en
+`dev`, verificar SHA y comprobar que Render sirve los cuatro WebP y el bundle esperado.
+Registrar ese resultado en una fase documental posterior.
+
 ## V111 — verificación de publicación del Taller de los Sonidos / 2026-10-19
 
 Seguimiento de despliegue de V110; sin cambios de interfaz, lógica ni pruebas de juego.

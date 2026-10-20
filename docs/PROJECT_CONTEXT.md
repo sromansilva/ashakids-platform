@@ -1,3 +1,20 @@
+## V112 — modelo común para animales del Taller de los Sonidos / 2026-10-19
+
+Vaca, gato, perro y pollito usan ilustraciones nuevas de juguete 3D con la misma luz,
+volumen y acabado pulido de las tarjetas del Taller. `soundContent.ts` centraliza sus
+rutas versionadas, por lo que los nueve juegos reutilizan el mismo modelo en fichas,
+memoria, secuencias y retos. Se preservan audio, nombres, reglas y progreso. Los cuatro
+WebP transparentes son 384 × 384 y suman 100046 bytes; fuentes y hashes en
+`evidence/sounds-v112/`. Los SVG previos se conservan como legado.
+
+Verificación local: 28 pruebas dirigidas al sonido, typecheck, `check:frontend`
+(432 archivos, máximo 495 líneas), build Vite (1968 módulos) y Graphify refresh/check.
+En el harness con perfil ficticio, las cuatro imágenes cargaron en exploración móvil
+(390 px, cuadrícula 2 × 2) y dos imágenes en identificación; sin escrituras reales.
+Cambios limitados al arte, catálogo central, créditos, herramienta de empaquetado y
+documentación de relevo. Publicación en `dev` y verificación pública pendientes al
+corte de esta entrada.
+
 ## V110 — identidad visual del Taller de los Sonidos / 2026-10-19
 
 El Taller conserva sus nueve juegos por edad, sus reglas, sus sonidos, los controles
