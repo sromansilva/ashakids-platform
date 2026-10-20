@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, Check, CircleHelp, FileText, MessageCircle, Settings, Users, HeartHandshake } from 'lucide-react';
+import { ArrowRight, CalendarDays, Check, CircleHelp, FileText, MessageCircle, Settings, Users, HeartHandshake, Compass, Sparkles, AlertTriangle } from 'lucide-react';
 import { useFamilyTracking } from '@/hooks/useFamilyTracking';
 import { RemoteFeedback } from '@/components/common/RemoteFeedback';
 import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
@@ -26,7 +26,11 @@ const tools: { label: string; view: View; icon: typeof Users }[] = [
   { label: 'Agenda y sesiones', view: 'padre/agenda', icon: CalendarDays },
   { label: 'Mensajes', view: 'padre/mensajes', icon: MessageCircle },
   { label: 'Terapeutas', view: 'padre/psicologos', icon: HeartHandshake },
+  { label: 'Reportes', view: 'padre/reportes', icon: FileText },
   { label: 'Gestionar familia', view: 'padre/config', icon: Settings },
+  { label: 'Mundo ASHA', view: 'mundo-asha', icon: Sparkles },
+  { label: 'Mi Camino ASHA', view: 'padre/camino', icon: Compass },
+  { label: 'Incidencias', view: 'padre/incidencias', icon: AlertTriangle },
 ];
 export function FamilyAdultArea({ go, familyName }: { go: (view: View) => void; familyName?: string }) {
   return <div className="fc-adult">
