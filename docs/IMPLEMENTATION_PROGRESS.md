@@ -1,3 +1,36 @@
+## V110 — unificación visual del Taller de los Sonidos / 2026-10-19
+
+Objetivo: ordenar en 3×3 los nueve juegos y unificar sus pantallas conservando reglas,
+sonidos, controles y progreso. Rama `dev`; base V109 `da4a9ef3da886019f356de9cdd6d3a45dd0b22ba`.
+Repositorio: https://github.com/sromansilva/ashakids-platform . Commit de cierre:
+`V110_Unificar_Interfaz_Taller_Sonidos`.
+
+Cambios limitados a `frontend/src/pages/padre/Sessions/SoundGames/`: `SoundWorld.tsx`
+reserva alturas iguales y muestra la marca de juego visitado; `sound-ui.css` centraliza
+tokens y controles del mundo, cuadrícula 3 columnas sobre 1100 px / 2 debajo, ilustración
+completa con `contain`, diseño móvil y movimiento reducido; `SoundParts.tsx` agrega
+feedback reutilizable con icono y texto; `SoundActivities.tsx`, `SoundChallenges.tsx`
+y `SoundMemory.tsx` presentan estados visibles de selección, reintento y acierto.
+No cambian la Isla de las Palabras, backend, API, BD, audio ni asignaciones.
+
+Verificación: `npm test` 409/409 en 35 archivos; pruebas específicas de sonido 28/28;
+`npm run typecheck`, `npm run check:frontend` (432 archivos, máximo 495 líneas),
+`npm run build` (1968 módulos) y Graphify `refresh/check` (2942 nodos, 147 comunidades)
+PASS. En el harness sintético, los nueve juegos abren en 390×844, sus ilustraciones
+cargan y sus botones miden al menos 48 px; el menú no desborda a 320/360/390/768/900/
+1024/1280/1440 px. Los estados erróneo y correcto se comprobaron en identificación.
+Primera ejecución de `npm test` bloqueada por `EPERM` al renombrar la caché temporal
+del sandbox; la repetición con permisos ampliados pasó. Node mostró la advertencia
+experimental existente de `--experimental-strip-types` en pruebas de rutas.
+
+Vista local: `http://127.0.0.1:5175/tests/world-map-harness.html`; puerto 5174 ya estaba
+ocupado. Usa fixture de demostración y no guarda intentos. Sin pruebas contra cuentas,
+API, datos infantiles ni flujos clínicos. Revisión previa: `HEAD`, `origin/dev` y
+`ls-remote origin/dev` coincidían en la base V109; `git diff --check` y la búsqueda de
+patrones de credenciales no encontraron problemas. La modificación local preexistente
+de `.gitignore` quedó fuera del conjunto. Cerrar con commit V110, push fast-forward y
+comparación de SHA; comprobar recursos públicos de Render antes de afirmar despliegue.
+
 ## V108 — nueve juegos por edad y ampliación de Sonidos / 2026-10-19
 
 Objetivo solicitado: mostrar nueve juegos por edad en Palabras y Sonidos; llevar el

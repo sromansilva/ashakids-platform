@@ -1,3 +1,27 @@
+## V110 — identidad visual del Taller de los Sonidos / 2026-10-19
+
+El Taller conserva sus nueve juegos por edad, sus reglas, sus sonidos, los controles
+de escuchar/repetir y el progreso de la visita. `sound-ui.css` concentra una paleta,
+tarjetas, sombras, ilustraciones contenidas, botones y paneles de respuesta para este
+mundo; su alcance queda bajo `.sound-world`, sin cambiar la Isla de las Palabras.
+Escritorio usa tres columnas y tres filas; hasta 1100 px se adapta a dos columnas,
+con la novena tarjeta centrada. Misión e interacción comparten controles grandes,
+indicadores de acierto/error con iconos y texto, y movimiento breve que respeta
+`prefers-reduced-motion`. Se reutilizan las ilustraciones y componentes existentes.
+
+La vista previa local usa `tests/world-map-harness.html`, perfil ficticio y API
+interceptada; no lee datos reales ni guarda intentos. Verificación nueva: `npm test`
+409/409 en 35 archivos; 28 pruebas dirigidas al sonido; typecheck, `check:frontend`
+(432 archivos; máximo 495 líneas), build Vite (1968 módulos) y Graphify refresh/check
+(2942 nodos, 147 comunidades) correctos. Inspección del navegador: menú en
+320/360/390/768/900/1024/1280/1440 px; 3 columnas en escritorio amplio, 2 en tableta
+y móvil, sin desbordamiento horizontal; nueve partidas abiertas en móvil con imágenes
+cargadas y objetivos táctiles de al menos 48 px. Estados de reintento y acierto
+comprobados en identificación auditiva. La suite completa requirió permisos ampliados
+por un `EPERM` al renombrar la caché temporal del sandbox; bajo ejecución aprobada pasó.
+Los intentos usan sólo el fixture del navegador. No se modificó backend, API, BD ni
+asignaciones profesionales.
+
 ## V108 — nueve juegos por edad en Palabras y Sonidos / 2026-10-19
 
 Isla y Taller comparten cálculo de edad calendario en America/Lima y muestran nueve

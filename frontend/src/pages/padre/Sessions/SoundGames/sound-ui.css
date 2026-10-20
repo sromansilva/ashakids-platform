@@ -1,0 +1,139 @@
+/*A single sound-workshop palette, isolated from the shared WordGames styles.*/
+.sound-world { --sound-ink: #302347; --sound-purple: #7041ae; --sound-purple-dark: #573184; --sound-line: #d8c8e9; --sound-surface: #fff; --sound-lilac: #f2eafb; --sound-mint: #e8f6ef; --sound-sun: #fff5d9; --sound-good: #276747; --sound-good-line: #8bb99d; --sound-retry: #75461d; --sound-retry-line: #d7b878; }
+.sound-world .word-menu { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(408px, auto); align-items: stretch; gap: 20px; padding: 26px clamp(16px, 2.2vw, 30px); background: radial-gradient(ellipse at 50% 0, #fff 0, #f7f1fd 72%); }
+.sound-world .word-menu .word-game-card,
+.sound-world .word-menu .word-game-card:last-child { grid-column: auto; display: flex; width: 100%; height: 100%; min-height: 408px; padding: 16px; border: 2px solid #fff; border-bottom: 7px solid #b7a1ce; border-radius: 27px; background: linear-gradient(155deg, #ffffffb8, #ffffff38 46%), var(--card-color, var(--sound-lilac)); box-shadow: inset 0 2px 0 #fff, 0 4px 0 #c7b5d640, 0 12px 20px #50376b12; transition: transform 160ms ease, box-shadow 160ms ease; }
+.sound-world .word-menu .word-game-card:hover:not(:disabled) { transform: translateY(-3px); box-shadow: inset 0 2px 0 #fff, 0 6px 0 #c7b5d640, 0 16px 24px #50376b1b; }
+.sound-world .word-menu .word-game-card:active:not(:disabled) { transform: translateY(1px); }
+.sound-world .word-menu .word-game-art { display: flex; align-items: center; justify-content: center; flex: 0 0 154px; width: 100%; height: 154px; margin: 0 0 10px; padding: 8px; overflow: hidden; border: 1px solid #fff9; border-radius: 22px; background: #ffffff62; }
+.sound-world .word-menu .word-game-art img { display: block; width: auto; max-width: 100%; height: auto; max-height: 100%; object-fit: contain; filter: drop-shadow(0 5px 5px #45315a20); }
+.sound-world .word-menu .word-skill { display: inline-flex; align-items: center; justify-content: center; min-height: 25px; margin: 0 0 7px; padding: 3px 11px; border: 1px solid #ffffffb8; border-radius: 999px; background: #ffffffa6; color: #59416f; font-size: 12px; }
+.sound-world .word-menu .word-game-card h3 { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 2.45em; max-height: 2.45em; margin: 0 0 7px; overflow: hidden; font-size: clamp(17px, 1.5vw, 21px); line-height: 1.2; text-wrap: balance; }
+.sound-world .word-menu .word-game-card > p { display: -webkit-box; min-height: 4.2em; max-height: 4.2em; margin: 0 0 8px; overflow: hidden; color: #554865; font-size: 14px; line-height: 1.4; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.sound-world .word-menu .word-visited { min-height: 22px; margin: 0 0 7px; color: var(--sound-good); font-size: 11px; }
+.sound-world .word-menu .word-visited.is-empty { visibility: hidden; }
+.sound-world .word-menu .word-game-number.is-visited { background: #438363; color: #fff; }
+.sound-world .word-menu .word-game-action { min-height: 48px; border: 1px solid #fff; border-bottom: 4px solid #9d82b655; border-radius: 16px; background: linear-gradient(#fff, #f7f1fb); color: #604087; font-size: 15px; }
+.sound-world .sound-playground { padding: 20px clamp(14px, 3vw, 34px) 32px; background: radial-gradient(ellipse at 50% 0, #fff 0, #f5effb 65%); }
+.sound-world .sound-session-controls { align-items: center; gap: 8px 14px; padding-bottom: 6px; }
+.sound-world .sound-back,
+.sound-world .sound-control { min-height: 48px; padding: 9px 15px; border: 1px solid var(--sound-line); border-bottom: 4px solid #b6a0cd; border-radius: 16px; background: linear-gradient(#fff, #f6f0fb); color: #604087; font-size: 14px !important; line-height: 1.25; box-shadow: inset 0 1px 0 #fff; transition: background 140ms ease, transform 140ms ease; }
+.sound-world .sound-back:hover:not(:disabled),
+.sound-world .sound-control:hover:not(:disabled) { background: #ede4f6; }
+.sound-world .sound-back:active:not(:disabled),
+.sound-world .sound-control:active:not(:disabled) { transform: translateY(2px); }
+.sound-world .sound-control { background: linear-gradient(#fff, #e9def6); }
+.sound-world .sound-progress { min-height: 62px; gap: 10px 14px; padding: 14px 12px 20px; color: #57436d; }
+.sound-world .sound-progress-dots { gap: 7px; }
+.sound-world .sound-progress-dots > span { width: 30px; height: 30px; border-color: #cbb9dc; background: #fff; color: #5c4771; font-size: 13px; font-weight: 900; }
+.sound-world .sound-progress-dots > .is-done { border-color: #438363; background: #438363; color: #fff; }
+.sound-world .word-mission { max-width: 920px; gap: clamp(16px, 3vw, 28px); border: 2px solid #ded1eb; border-bottom: 6px solid #b9a4cf; border-radius: 27px; background: radial-gradient(ellipse at 10% 0, #fff, transparent 62%), #f3edf9; box-shadow: inset 0 2px 0 #fff, 0 7px 15px #50376b12; }
+.sound-world .word-mission > .word-game-art { display: flex; align-items: center; justify-content: center; width: 100%; height: 240px; margin: 0; padding: 12px; border: 1px solid #fff; border-radius: 23px; background: linear-gradient(145deg, #fff, #eee5f8); }
+.sound-world .word-mission > .word-game-art img { display: block; width: auto; max-width: 100%; height: auto; max-height: 100%; object-fit: contain; }
+.sound-world .word-mission-mode { display: inline-flex; min-height: 28px; align-items: center; padding: 4px 11px; border: 1px solid #d6c5e8; border-radius: 999px; background: #fff; color: #5b4373; }
+.sound-world .word-mission h3 { color: var(--sound-ink); }
+.sound-world .word-mission li > span { border: 2px solid #fff; background: #dff1e7; color: #276747; box-shadow: 0 2px 0 #b9d6c4; }
+.sound-world .word-kind-note { color: #665774; }
+.sound-world .word-mission-actions { align-items: stretch; }
+.sound-world .word-mission-actions .word-button { min-height: 50px; }
+.sound-world .sound-animal-grid { max-width: 960px; gap: 15px; padding: 16px; border: 2px solid #e0d4ed; border-bottom: 6px solid #c2b0d5; border-radius: 27px; background: linear-gradient(145deg, #fff, #f0e8f8); box-shadow: inset 0 2px 0 #fff, 0 7px 15px #4e326410; }
+.sound-world .sound-animal { min-height: 226px; padding: 18px 12px 14px; border: 2px solid #fff; border-bottom: 6px solid #a995ba; border-radius: 25px; background: linear-gradient(155deg, #ffffffad, #ffffff30 48%), var(--animal-soft, #eee4f8); box-shadow: inset 0 2px 0 #fff, 0 4px 0 #8c769b1c, 0 9px 14px #49365b10; }
+.sound-world .sound-animal.is-active { border-color: #7950a6; box-shadow: 0 0 0 3px #7950a633, inset 0 2px 0 #fff, 0 7px 12px #49365b16; }
+.sound-world .sound-animal.is-complete { border-color: var(--sound-good-line); border-bottom-color: #75a489; box-shadow: 0 0 0 3px #d9efe2, inset 0 2px 0 #fff, 0 7px 12px #326b4b16; }
+.sound-world .sound-animal.is-incorrect { border-color: #bd7771; border-bottom-color: #a45550; background: linear-gradient(145deg, #fff, #fff0ee); box-shadow: 0 0 0 3px #f5d9d5, inset 0 2px 0 #fff; }
+.sound-world .sound-card-check { width: 34px; height: 34px; color: #563c70; background: #fff; border-color: #d7c7e5; box-shadow: 0 2px 0 #b9a5cc66; }
+.sound-world .sound-animal.is-complete .sound-card-check { border-color: #438363; background: #438363; color: #fff; }
+.sound-world .sound-animal.is-incorrect .sound-card-check { border-color: #a45550; background: #a45550; color: #fff; }
+.sound-world .sound-card-caption { min-height: 24px; font-size: 14px; font-weight: 900; }
+.sound-world .sound-animal.is-incorrect .sound-card-caption { color: #7b3835; }
+.sound-world .sound-button { min-height: 50px; border: 2px solid #8054ad; border-bottom: 5px solid var(--sound-purple-dark); border-radius: 16px; background: linear-gradient(#8355b7, #7041ae); box-shadow: inset 0 1px 0 #ffffff52, 0 3px 5px #55367818; transition: transform 140ms ease, filter 140ms ease; }
+.sound-world .sound-button:hover:not(:disabled) { filter: brightness(1.04); }
+.sound-world .sound-button:active:not(:disabled) { transform: translateY(2px); }
+.sound-world .sound-button.is-secondary { border-color: #cbb8df; border-bottom-color: #a995ba; background: linear-gradient(#fff, #f2ebf8); color: #604087; }
+.sound-world .sound-feedback { display: flex; align-items: center; justify-content: center; gap: 10px; width: min(100%, 760px); min-height: 54px; margin: 16px auto 10px; padding: 10px 16px; border: 2px solid #d8c8e9; border-radius: 18px; background: #f4eefb; color: #594071; font-size: 16px; line-height: 1.45; text-align: left; animation: sound-feedback-in 180ms ease-out; }
+.sound-world .sound-feedback-icon { display: grid; place-items: center; flex: 0 0 30px; width: 30px; height: 30px; border-radius: 50%; background: #fff; }
+.sound-world .sound-feedback[data-tone='success'] { border-color: var(--sound-good-line); background: var(--sound-mint); color: #24593e; }
+.sound-world .sound-feedback[data-tone='retry'] { border-color: var(--sound-retry-line); background: var(--sound-sun); color: #68451f; }
+.sound-world .sound-feedback[data-tone='success'] .sound-feedback-icon { background: #438363; color: #fff; }
+.sound-world .sound-feedback[data-tone='retry'] .sound-feedback-icon { background: #fff; color: #75461d; }
+.sound-world .sound-symbol { min-height: 144px; border: 2px solid #d5c5e5; border-bottom: 6px solid #b5a0ce; border-radius: 24px; background: linear-gradient(#fff, #eee5f8); color: #574070; box-shadow: inset 0 2px 0 #fff, 0 5px 10px #50376b12; transition: transform 150ms ease, box-shadow 150ms ease; }
+.sound-world .sound-symbol:nth-child(even) { border-color: #b7d5c7; border-bottom-color: #8eb59f; background: linear-gradient(#fff, #e4f4ec); }
+.sound-world .sound-symbol:hover:not(:disabled) { transform: translateY(-2px); }
+.sound-world .sound-symbol.is-complete { border-color: var(--sound-good-line); background: var(--sound-mint); color: #24593e; }
+.sound-world .sound-symbol.is-incorrect { border-color: #bd7771; border-bottom-color: #a45550; background: linear-gradient(#fff, #fff0ee); color: #713d3a; }
+.sound-world .sound-listen { min-width: min(240px, 100%); min-height: 142px; border-radius: 30px; background: radial-gradient(ellipse at 30% 8%, #a984cf, #7445ba 67%, #62399d); }
+.sound-world .sound-memory-card { min-height: 174px; border: 2px solid #d1c0e2; border-bottom: 6px solid #ae99c7; border-radius: 23px; background: linear-gradient(145deg, #fff, #eee5f8); color: #594071; box-shadow: inset 0 2px 0 #fff, 0 5px 10px #50376b12; transition: transform 150ms ease, border-color 150ms ease; }
+.sound-world .sound-memory-card:nth-child(3n + 2) { background: linear-gradient(145deg, #fff, #e4f4ec); }
+.sound-world .sound-memory-card[aria-pressed='true'] { border-color: #7950a6; box-shadow: 0 0 0 3px #7950a633, inset 0 2px 0 #fff; }
+.sound-world .sound-memory-card.is-complete { border-color: var(--sound-good-line); background: linear-gradient(145deg, #fff, #e1f2e8); }
+.sound-world .sound-memory-card.is-mismatch { border-color: #bd7771; background: linear-gradient(145deg, #fff, #fff0ee); }
+.sound-world .sound-memory-card > span:last-child { min-height: 20px; font-size: 13px; font-weight: 900; }
+.sound-world .sound-celebration { max-width: 820px; margin: 18px auto 0; padding: 28px 20px; border: 2px solid #dfcd91; border-bottom: 6px solid #c7ae68; border-radius: 26px; background: radial-gradient(ellipse at 50% 0, #fffef5, #fff3ce); color: #5f4a22; }
+.sound-world .sound-celebration-stars { color: #9c6b20; }
+.sound-world .sound-continue { margin: 12px auto 0; }
+.sound-world .word-family { border-color: #ded1eb; }
+.sound-world .word-family summary { color: #594071; }
+.sound-world .word-family button { min-height: 46px; }
+.sound-world .sound-train li { border: 2px solid #cdbce0; border-bottom: 6px solid #a68fbe; border-radius: 22px; background: linear-gradient(#fff, #eee5f8); box-shadow: inset 0 2px 0 #fff, 0 5px 10px #50376b12; }
+.sound-world .sound-train li:nth-child(even) { background: linear-gradient(#fff, #e4f4ec); }
+.sound-world .sound-hint { border: 2px solid #e0c985; background: var(--sound-sun); color: #62491e; }
+@keyframes sound-feedback-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 1100px) {
+  .sound-world .word-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(386px, auto); gap: 16px; padding: 22px 18px; }
+  .sound-world .word-menu .word-game-card,
+  .sound-world .word-menu .word-game-card:last-child { min-height: 386px; padding: 14px; }
+  .sound-world .word-menu .word-game-card:last-child { grid-column: 1 / -1; width: calc(50% - 8px); justify-self: center; }
+  .sound-world .word-menu .word-game-art { flex-basis: 142px; height: 142px; }
+}
+@media (max-width: 640px) {
+  .sound-world .word-menu { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(352px, auto); gap: 12px; padding: 16px 12px; }
+  .sound-world .word-menu .word-game-card,
+  .sound-world .word-menu .word-game-card:last-child { min-height: 352px; padding: 11px 9px; border-radius: 22px; }
+  .sound-world .word-menu .word-game-card:last-child { width: calc(50% - 6px); }
+  .sound-world .word-menu .word-game-art { flex-basis: 112px; height: 112px; margin-bottom: 7px; padding: 5px; border-radius: 17px; }
+  .sound-world .word-menu .word-skill { min-height: 22px; margin-bottom: 5px; padding: 2px 8px; font-size: 11px; }
+  .sound-world .word-menu .word-game-card h3 { min-height: 2.4em; max-height: 2.4em; font-size: 16px; }
+  .sound-world .word-menu .word-game-card > p { min-height: 4.05em; max-height: 4.05em; font-size: 12px; line-height: 1.35; }
+  .sound-world .word-menu .word-visited { min-height: 19px; font-size: 10px; }
+  .sound-world .word-menu .word-game-action { min-height: 44px; padding: 7px 5px; font-size: 13px; }
+  .sound-world .sound-playground { padding: 12px 12px calc(96px + env(safe-area-inset-bottom, 0px)); }
+  .sound-world .sound-session-controls { justify-content: center; }
+  .sound-world .sound-session-controls .sound-back { flex: 1 1 140px; }
+  .sound-world .sound-progress { gap: 7px 9px; padding-inline: 3px; font-size: 12px; }
+  .sound-world .sound-progress-dots { gap: 4px; }
+  .sound-world .sound-progress-dots > span { width: 27px; height: 27px; font-size: 11px; }
+  .sound-world .sound-animal-grid { gap: 10px; padding: 11px; border-radius: 22px; }
+  .sound-world .sound-animal-grid.is-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .sound-world .sound-animal-grid.is-choices .sound-animal:last-child:nth-child(3) { grid-column: 1 / 3; width: calc(50% - 5px); justify-self: center; }
+  .sound-world .sound-animal { min-height: 205px; padding: 16px 8px 10px; border-radius: 21px; }
+  .sound-world .sound-picture { height: 116px; }
+  .sound-world .sound-animal strong { font-size: 18px; }
+  .sound-world .sound-card-caption { font-size: 12px; }
+  .sound-world .sound-feedback { gap: 8px; min-height: 50px; padding: 9px 12px; font-size: 14px; }
+  .sound-world .sound-symbol { min-height: 126px; padding: 12px; }
+  .sound-world .sound-symbol > strong { font-size: 14px; }
+  .sound-world .sound-memory { gap: 10px; }
+  .sound-world .sound-memory-card { min-height: 145px; padding: 10px; }
+  .sound-world .sound-memory-card .sound-picture,
+  .sound-world .sound-memory-card .sound-picture img { height: 92px; }
+  .sound-world .word-mission { grid-template-columns: 1fr; gap: 10px; padding: 17px 14px; border-radius: 23px; }
+  .sound-world .word-mission > .word-game-art { width: min(100%, 250px); height: 184px; justify-self: center; }
+  .sound-world .word-mission-actions { flex-direction: column; }
+  .sound-world .word-mission-actions button { width: 100%; }
+}
+@media (max-width: 360px) {
+  .sound-world .word-menu { gap: 9px; padding-inline: 9px; }
+  .sound-world .word-menu .word-game-card,
+  .sound-world .word-menu .word-game-card:last-child { min-height: 340px; padding-inline: 7px; }
+  .sound-world .word-menu .word-game-card:last-child { width: calc(50% - 5px); }
+  .sound-world .word-menu .word-game-card h3 { font-size: 15px; }
+  .sound-world .word-menu .word-game-card > p { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sound-world *,
+  .sound-world *::before,
+  .sound-world *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}
