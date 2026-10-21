@@ -2274,6 +2274,18 @@ No se ejecutaron pruebas de componentes ni revisión visual en navegador/disposi
 La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
 modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
 
+## V124 — verificar Render para Ritmo de las Palabras / 2026-10-21
+
+Repositorio https://github.com/sromansilva/ashakids-platform, rama `dev`, código V123
+`e2ba445`. Render desplegó después del push: health HTTP 200; manifiesto de voz y 89
+MP3, bundles de entrada y del mundo (JS/CSS), 94 recursos en total, comparados con los
+archivos de build por SHA-256 exacto (JSON canónico para el manifiesto). Verificador
+reproducible `tools/audio/verify_render_fluency.py`; evidencia
+`docs/evidence/fluency-v1/render-live.json`. Sólo son recursos estáticos públicos; no
+es lectura del SHA interno del despliegue ni verificación visual/auditiva, navegador,
+micrófono o dispositivo. No se ejecutaron pruebas nuevas. Integración V123 por
+fast-forward en `dev`; `.gitignore` local preexistente no se incluyó.
+
 ## V123 — crear minijuegos para Ritmo de las Palabras / 2026-10-21
 
 Objetivo: que FLUIDEZ tenga juegos explorables con escenas e instrucciones propias.
@@ -2293,9 +2305,9 @@ No usan micrófono, temporizador, puntuación, evaluación clínica ni intentos 
 el contador de visita sólo vive durante la sesión. No se cambió API/backend/BD, roles,
 dependencias o progreso guardado. Typecheck PASS; build Vite PASS (1980 módulos);
 Graphify refresh/check PASS (3009 nodos); `git diff --check` PASS. No se ejecutaron
-pruebas ni se inspeccionó navegador/dispositivo. Publicación en `dev` y verificación
-pública de Render pendientes al registrar este relevo. `.gitignore` conservó cambio
-local preexistente de `*.crt` y `*.pem`, fuera del commit.
+pruebas ni se inspeccionó navegador/dispositivo. V123 `e2ba445` se publicó por
+fast-forward en `dev`; V124 registra la verificación pública de Render. `.gitignore`
+conservó cambio local preexistente de `*.crt` y `*.pem`, fuera del commit.
 
 ## V122 — confirmar tutorial V121 en Render / 2026-10-21
 

@@ -1,3 +1,11 @@
+## V124 — publicación pública de Ritmo de las Palabras / 2026-10-21
+
+V123 `e2ba445` se sirve en https://ashakids.onrender.com. Health HTTP 200 y 94
+recursos públicos (4 bundles JS/CSS, manifiesto y 89 MP3) coinciden con el build local;
+comparación exacta SHA-256 para binarios y JSON canónico para manifiesto. Evidencia en
+`docs/evidence/fluency-v1/render-live.json`. Esto no consulta el SHA interno de Render
+ni verifica reproducción, navegación o tacto en un dispositivo.
+
 ## V123 — juegos propios para Ritmo de las Palabras / 2026-10-21
 
 FLUIDEZ abre ahora el mundo «Ritmo de las Palabras» con once minijuegos originales:
