@@ -2181,3 +2181,25 @@ rebasado sobre V114 y publicado por fast-forward en `dev`; sincronización confi
 ## V116 — sincronización de exploración del Taller de los Sonidos / 2026-10-21
 
 Cierre documental de V115, sin cambios funcionales ni pruebas nuevas. Commit V115_Explorar_Taller_Sonidos quedó publicado en rama dev, SHA 78a6c65e1c4ed87bb6f104d0a3d9115c0df7e62b; HEAD, origin/dev y git ls-remote origin refs/heads/dev coincidieron tras el push. Base de integración V114 Portal de Familia 979574eb056fd42be848ce5acbb289439c3d6207. El cambio local previo de .gitignore permanece sin publicar. No se verificó despliegue web ni gestos en dispositivo.
+## V117 — enseñar a jugar y sumar movimiento a Sonidos / 2026-10-21
+
+Objetivo: hacer más claras las instrucciones de voz, incorporar un tutorial visual
+interactivo y dar más movimiento a las partidas. Rama `dev`, base V116
+`f34db04ff58bebb32dcc0f4022c4a454efc62863`. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Commit previsto:
+`V117_Ensenar_Jugar_Sonidos`.
+
+Nuevo `SoundTutorial.tsx`: pasos específicos para cada juego, selector de pasos,
+ejemplo tocable del sonido del pollito. Al abrir un juego, ASHA lee el objetivo y sus
+pasos; también puede repetirse desde el tutorial o durante la partida. La narración
+estática existente ya contiene las instrucciones completas de los nueve juegos. La ficha
+de parejas se puede arrastrar en pantalla táctil tras escucharla; los toques siguen disponibles.
+Animación de onda al escuchar y saltito al acertar en componentes compartidos.
+Sin cambios backend/API/BD/permisos, dependencias o persistencia de intentos.
+
+Verificación: pruebas focalizadas de Sonidos 30/30 PASS; typecheck PASS; `check:frontend`
+435 archivos PASS; build Vite 1971 módulos PASS. Se guardó la clase por rol en una
+constante antes del estrechamiento en `DashLayout.tsx`, resolviendo el error TS de V114
+sin cambiar la interfaz. Graphify refresh/check PASS (2955 nodos, 137 comunidades).
+No hubo prueba en dispositivo.
+`.gitignore` previo permanece fuera de esta fase.

@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Check, Compass, RotateCcw, Shell, Sparkles, Spro
 import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
 import { soundGames, selectSoundGames } from './soundGames';
 import { SoundGamePicture } from './SoundParts';
+import { SoundTutorial } from './SoundTutorial';
 import { ExploreSounds, IdentifySounds, MatchSounds } from './SoundActivities';
 import { SoundChallenges } from './SoundChallenges';
 import { SoundMemory } from './SoundMemory';
@@ -25,7 +26,11 @@ export function SoundWorld({ back, legacy, birthDate }: { back: () => void; lega
   const markVisited = useCallback(() => { if (level) setVisited(previous => previous.includes(level) ? previous : [...previous, level]); }, [level]);
   useEffect(() => { if (level !== null) title.current?.focus(); else if (opener.current) buttons.current[opener.current]?.focus(); }, [level, run, started]);
   function stop() { audio.stop(); narration.stop(); }
-  function open(value: string | null) { stop(); setLevel(value); setStarted(false); setRun(value => value + 1); }
+  function open(value: string | null) {
+    stop(); setLevel(value); setStarted(false); setRun(previous => previous + 1);
+    const selected = soundGames.find(item => item.id === value);
+    if (selected && !audio.muted) narration.speak(`${selected.goal} ${selected.steps.join(' ')}`);
+  }
   function speak(text: string) { audio.stop(); if (!audio.muted) narration.speak(text); }
   const next = () => open(null);
   return <section className="sound-world word-world" aria-label="Juegos de sonidos" style={game ? { '--word-accent': game.color } as CSSProperties : undefined}>
@@ -44,8 +49,8 @@ export function SoundWorld({ back, legacy, birthDate }: { back: () => void; lega
       <p className="word-menu-note">Escucha, descubre y vuelve a jugar. Sin prisa y sin perder vidas.</p>
       <details className="word-family"><summary>Para la familia</summary><p>La fecha de nacimiento orienta nueve juegos para 4–5, 6–7 y 8 años en adelante. Son agrupaciones editoriales, no una evaluación del desarrollo. Ajusta las ayudas y acompaña al niño. Los mundos asignados por el terapeuta se conservan.</p>{selection.age === null && <p>No tenemos una fecha de nacimiento válida. Mostramos nueve actividades iniciales con ayuda.</p>}{selection.age !== null && selection.age < 4 && <p>Esta colección está pensada desde los 4 años. Consulta al profesional y acompaña la actividad.</p>}<button type="button" className="word-back" onClick={() => setCatalog(value => !value)}>{catalog ? 'Mostrar mis nueve juegos' : `Explorar los ${soundGames.length} juegos en familia`}</button><p>Sonidos reales de animales y narración suave. Esta práctica no guarda intentos, XP ni medallas. No es una evaluación clínica; la colección de visita se reinicia al salir o cambiar de niño.</p><button type="button" className="word-back" onClick={legacy}>Actividades con progreso guardado <ArrowRight size={18}/></button><a href="/sounds/animals/CREDITS.md" target="_blank" rel="noreferrer">Créditos de sonidos e ilustraciones</a><a href="/sounds/voice/CREDITS.md" target="_blank" rel="noreferrer">Créditos de la narración</a></details>
     </> : <div className="sound-playground">
-      {!started ? <section className="word-mission" aria-label="Antes de jugar"><SoundGamePicture src={game.image} title={game.title}/><div><p className="word-mission-mode">{challenge ? 'Un poquito más' : 'Primeros pasos'}</p><h3>{game.goal}</h3><ol>{game.steps.map((step, index) => <li key={step}><span>{index + 1}</span>{step}</li>)}</ol><p className="word-kind-note">Sin prisa. Puedes escuchar otra vez cuando quieras.</p><div className="word-mission-actions"><button type="button" className="word-button is-light" disabled={audio.muted} onClick={() => speak(`${game.goal} ${game.steps.join(' ')}`)}><Volume2 size={20}/> Escuchar cómo jugar</button><button type="button" className="word-button" onClick={() => { stop(); setStarted(true); }}>¡Vamos a jugar! <ArrowRight size={20}/></button></div></div></section> : <>
-        <div className="sound-session-controls"><button type="button" className="sound-back" onClick={() => { stop(); setRun(value => value + 1); }}><RotateCcw size={18}/> Empezar otra vez</button><button type="button" className="sound-back" disabled={audio.muted} onClick={() => speak(game.instruction)}><Volume2 size={18}/> Escuchar instrucciones</button></div>
+      {!started ? <div className="sound-first-steps"><div className="sound-first-steps-art"><SoundGamePicture src={game.image} title={game.title}/><p className="word-mission-mode">{challenge ? 'Un poquito más' : 'Primeros pasos'}</p></div><SoundTutorial title={game.title} goal={game.goal} steps={game.steps} audio={audio} onSpeak={() => speak(`${game.goal} ${game.steps.join(' ')}`)} onStart={() => { stop(); setStarted(true); }}/></div> : <>
+        <div className="sound-session-controls"><button type="button" className="sound-back" onClick={() => { stop(); setRun(value => value + 1); }}><RotateCcw size={18}/> Empezar otra vez</button><button type="button" className="sound-back" disabled={audio.muted} onClick={() => speak(`${game.goal} ${game.steps.join(' ')}`)}><Volume2 size={18}/> Repetir instrucciones</button></div>
         {level === 'explore' ? <ExploreSounds key={run} audio={audio} next={next} onComplete={markVisited}/> : level === 'identify' ? <IdentifySounds key={run} audio={audio} next={next} onComplete={markVisited}/> : level === 'pairs2' || level === 'pairs3' ? <MatchSounds key={run} audio={audio} count={level === 'pairs2' ? 2 : 3} next={next} onComplete={markVisited}/> : level === 'memory' ? <SoundMemory key={run} audio={audio} challenge={challenge} next={next} onComplete={markVisited}/> : <SoundChallenges key={run} kind={level as ChallengeKind} audio={audio} challenge={challenge} next={next} onComplete={markVisited}/>}
       </>}
     </div>}

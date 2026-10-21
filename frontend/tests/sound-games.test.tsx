@@ -5,7 +5,7 @@ import { animals, soundLevels } from '@/pages/padre/Sessions/SoundGames/soundCon
 
 let player: HTMLAudioElement;
 beforeEach(() => {
-  vi.stubGlobal('Audio', function () { player = document.createElement('audio'); return player; });
+  vi.stubGlobal('Audio', function (source?: string) { player = document.createElement('audio'); if (source) player.src = source; return player; });
 });
 function mount(level = 1) {
   const back = vi.fn(), legacy = vi.fn();
@@ -17,6 +17,28 @@ function mount(level = 1) {
 }
 async function endSound() { await act(async () => { fireEvent.playing(player); fireEvent.ended(player); }); }
 const currentAnimal = () => animals.find(a => player.src.endsWith(a.audio))!;
+function firePointer(target: Element, type: string, values: Record<string, string | number>) {
+  const event = new Event(type, { bubbles: true, cancelable: true });
+  for (const [key, value] of Object.entries(values)) Object.defineProperty(event, key, { value });
+  fireEvent(target, event);
+}
+
+it('guía cada juego con voz completa y un ejemplo de sonido que se puede tocar', async () => {
+  render(<SoundWorld back={vi.fn()} legacy={vi.fn()}/>);
+  fireEvent.click(screen.getByRole('button', { name: 'Explorar los 11 juegos en familia' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Jugar Toca y descubre' }));
+  expect(screen.getByRole('region', { name: 'Tutorial: Toca y descubre' })).toBeInTheDocument();
+  expect(player.src).toContain('/sounds/voice/v108/');
+  expect(screen.getByText('Mira y escucha con calma.')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Escuchar instrucciones' }));
+  expect(player.src).toContain('/sounds/voice/v108/');
+  fireEvent.click(screen.getByRole('button', { name: 'Ver paso 2' }));
+  expect(screen.getByText('Toca el dibujo o la ficha para jugar.')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Toca al pollito para escuchar un ejemplo' }));
+  expect(player.src).toContain('/chick.mp3');
+  fireEvent.click(screen.getByRole('button', { name: '¡Vamos a jugar!' }));
+  expect(screen.getByRole('button', { name: /Repetir instrucciones/ })).toBeInTheDocument();
+});
 
 it('cuenta audios terminados, permite repetir y limpia audio al salir', async () => {
   const view = mount();
@@ -100,6 +122,21 @@ it.each([2, 3] as const)('relaciona %i parejas en su propio juego y reinicia sin
   fireEvent.click(screen.getByRole('button', { name: 'Otra vez' }));
   expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '0');
   expect(within(screen.getByLabelText('Fichas de sonido')).getAllByRole('button')).toHaveLength(count);
+});
+
+it('permite arrastrar con tacto una ficha escuchada hasta su animal', async () => {
+  mount(3);
+  const token = within(screen.getByLabelText('Fichas de sonido')).getAllByRole('button')[0];
+  fireEvent.click(token);
+  const answer = currentAnimal(); await endSound();
+  const target = screen.getByRole('button', { name: `Relacionar con ${answer.name}` });
+  vi.spyOn(target, 'getBoundingClientRect').mockReturnValue({ left: 40, right: 100, top: 0, bottom: 80, width: 60, height: 80, x: 40, y: 0, toJSON: () => ({}) } as DOMRect);
+  const pointer = { pointerId: 7, pointerType: 'touch', clientX: 0, clientY: 0 };
+  firePointer(token, 'pointerdown', pointer);
+  firePointer(token, 'pointermove', { ...pointer, clientX: 60, clientY: 40 });
+  firePointer(token, 'pointerup', { ...pointer, clientX: 60, clientY: 40 });
+  expect(target).toBeDisabled();
+  expect(screen.getByText('¡Una pareja más!')).toBeInTheDocument();
 });
 
 it('evita completar por clics rápidos, al silenciar, reiniciar o desmontar', async () => {

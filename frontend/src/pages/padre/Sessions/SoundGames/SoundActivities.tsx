@@ -84,8 +84,11 @@ export function MatchSounds({ audio, next, count, onComplete }: ActivityProps & 
   const [feedback, setFeedback] = useState('Elige una ficha y escucha su sonido.');
   const [feedbackTone, setFeedbackTone] = useState<'neutral' | 'success' | 'retry'>('neutral');
   const [wrongTarget, setWrongTarget] = useState<AnimalId | null>(null);
+  const [dragging, setDragging] = useState<{ id: AnimalId; x: number; y: number } | null>(null);
   const current = useRef(true);
   const heardRef = useRef<AnimalId[]>([]);
+  const pointerDrag = useRef<{ id: AnimalId; pointer: number; x: number; y: number; dx: number; dy: number; moved: boolean } | null>(null);
+  const suppressClick = useRef(false);
   useEffect(() => { current.current = true; return () => { current.current = false; }; }, []);
   async function listen(id: AnimalId) {
     setSelected(id); setFeedback('Escucha y busca su animal.'); setFeedbackTone('neutral'); setWrongTarget(null);
@@ -98,6 +101,34 @@ export function MatchSounds({ audio, next, count, onComplete }: ActivityProps & 
     if (token === target) { setMatched(previous => [...previous, target]); setSelected(null); setWrongTarget(null); setFeedback('¡Una pareja más!'); setFeedbackTone('success'); }
     else { setSelected(null); setWrongTarget(target); setFeedback('Casi… toca la ficha para escuchar otra vez.'); setFeedbackTone('retry'); }
   }
+  function beginTouchDrag(event: PointerEvent<HTMLButtonElement>, id: AnimalId) {
+    if (event.pointerType === 'mouse' || !heardRef.current.includes(id) || matched.includes(id)) return;
+    pointerDrag.current = { id, pointer: event.pointerId, x: event.clientX, y: event.clientY, dx: 0, dy: 0, moved: false };
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+  }
+  function moveTouchDrag(event: PointerEvent<HTMLButtonElement>) {
+    const drag = pointerDrag.current;
+    if (!drag || drag.pointer !== event.pointerId) return;
+    const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+    const moved = drag.moved || Math.hypot(dx, dy) > 8;
+    pointerDrag.current = { ...drag, dx, dy, moved };
+    if (moved) setDragging({ id: drag.id, x: dx, y: dy });
+  }
+  function endTouchDrag(event: PointerEvent<HTMLButtonElement>) {
+    const drag = pointerDrag.current;
+    if (!drag || drag.pointer !== event.pointerId) return;
+    if (drag.moved) {
+      const target = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-sound-animal]')).find(node => {
+        const box = node.getBoundingClientRect();
+        return event.clientX >= box.left && event.clientX <= box.right && event.clientY >= box.top && event.clientY <= box.bottom;
+      });
+      const animal = target?.dataset.soundAnimal as AnimalId | undefined;
+      if (animal) match(animal, drag.id);
+      suppressClick.current = true;
+      window.setTimeout(() => { suppressClick.current = false; }, 0);
+    }
+    pointerDrag.current = null; setDragging(null);
+  }
   function reset() {
     audio.stop(); const values = shuffled(animals).slice(0, count); setSet(shuffled(values)); setTokens(shuffled(values)); setSelected(null); setHeard([]); heardRef.current = []; setMatched([]); setWrongTarget(null); setFeedback('Elige una ficha y escucha su sonido.'); setFeedbackTone('neutral');
   }
@@ -106,11 +137,11 @@ export function MatchSounds({ audio, next, count, onComplete }: ActivityProps & 
   return <>
     <SoundProgress label="Parejas encontradas" value={matched.length} total={set.length}/>
     <MatchDemo/>
-    <div className="sound-tokens" aria-label="Fichas de sonido">{tokens.map((animal, index) => <button type="button" key={animal.id} className={`sound-token ${selected === animal.id ? 'is-selected' : ''}`} aria-label={`Escuchar ficha ${index + 1}`} aria-pressed={selected === animal.id} disabled={matched.includes(animal.id)}
-      draggable={heard.includes(animal.id) && !matched.includes(animal.id)} onDragStart={event => { event.dataTransfer.setData('application/x-asha-sound', animal.id); event.dataTransfer.effectAllowed = 'move'; setSelected(animal.id); }} onClick={() => void listen(animal.id)}>
+    <div className="sound-tokens" aria-label="Fichas de sonido">{tokens.map((animal, index) => <button type="button" key={animal.id} className={`sound-token ${selected === animal.id ? 'is-selected' : ''} ${dragging?.id === animal.id ? 'is-dragging' : ''}`} style={dragging?.id === animal.id ? { transform: `translate(${dragging.x}px, ${dragging.y}px) scale(1.04)` } : undefined} aria-label={`Escuchar ficha ${index + 1}`} aria-pressed={selected === animal.id} disabled={matched.includes(animal.id)}
+      draggable={heard.includes(animal.id) && !matched.includes(animal.id)} onPointerDown={event => beginTouchDrag(event, animal.id)} onPointerMove={moveTouchDrag} onPointerUp={endTouchDrag} onPointerCancel={() => { pointerDrag.current = null; setDragging(null); }} onDragStart={event => { event.dataTransfer.setData('application/x-asha-sound', animal.id); event.dataTransfer.effectAllowed = 'move'; setSelected(animal.id); }} onClick={() => { if (!suppressClick.current) void listen(animal.id); }}>
       {matched.includes(animal.id) ? <Check size={32} aria-hidden="true"/> : <Volume2 size={32} aria-hidden="true"/>}<span>Sonido {index + 1}</span>{selected === animal.id && <small>Ahora toca su animal</small>}
     </button>)}</div>
-    <div className="sound-animal-grid is-choices">{set.map(animal => <AnimalCard key={animal.id} animal={animal} label={`Relacionar con ${animal.name}`} incorrect={wrongTarget === animal.id} active={matched.includes(animal.id)} completed={matched.includes(animal.id)} disabled={matched.includes(animal.id)} onClick={() => match(animal.id)}
+    <div className="sound-animal-grid is-choices">{set.map(animal => <AnimalCard key={animal.id} animal={animal} dataSoundAnimalId={animal.id} label={`Relacionar con ${animal.name}`} incorrect={wrongTarget === animal.id} active={matched.includes(animal.id)} completed={matched.includes(animal.id)} disabled={matched.includes(animal.id)} onClick={() => match(animal.id)}
       onDrop={event => { event.preventDefault(); const id = event.dataTransfer.getData('application/x-asha-sound'); if (tokens.some(t => t.id === id)) match(animal.id, id as AnimalId); }}/>)}</div>
     <SoundFeedback message={feedback} tone={feedbackTone}/>
   </>;

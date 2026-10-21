@@ -36,6 +36,7 @@ export function DashLayout({
   const [mob, setMob] = useState(false);
   const { user } = useAuth();
   const isFamily = role === 'padre';
+  const familySidebarClass = role === 'padre' ? ' family-sidebar' : '';
   const childCenter = isFamily && cur === 'padre';
   const mobileMenuButton = useRef<HTMLButtonElement>(null);
   const closeMobileMenu = () => { setMob(false); requestAnimationFrame(() => mobileMenuButton.current?.focus()); };
@@ -59,7 +60,7 @@ export function DashLayout({
 
       {mob && !isFamily && (
         <div className="md:hidden fixed inset-0 z-40 flex bg-black/50 backdrop-blur-sm">
-          <div className={`w-[84vw] max-w-none h-[100dvh] flex flex-col bg-white shadow-2xl flex-shrink-0 animate-in slide-in-from-left duration-200${role === "padre" ? " family-sidebar" : ""}`} style={{ position: "relative", isolation: "isolate", paddingTop: "max(59px, env(safe-area-inset-top))", paddingBottom: "env(safe-area-inset-bottom)" }}>
+          <div className={`w-[84vw] max-w-none h-[100dvh] flex flex-col bg-white shadow-2xl flex-shrink-0 animate-in slide-in-from-left duration-200${familySidebarClass}`} style={{ position: "relative", isolation: "isolate", paddingTop: "max(59px, env(safe-area-inset-top))", paddingBottom: "env(safe-area-inset-bottom)" }}>
             <div className="flex shrink-0 items-center justify-between px-4 pt-4 pb-3" style={{ position: "relative", zIndex: 1 }}>
               <div className="flex items-center gap-2">
                 <Isotipo size={38} />

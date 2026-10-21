@@ -1768,3 +1768,12 @@ animales flotan suavemente y se pueden desplazar con mouse o tacto; tocar una ta
 sigue reproduciendo el sonido. Hay una indicación visual para descubrir ambas acciones.
 La animación respeta `prefers-reduced-motion`. Se conservan las reglas, audio y progreso
 de visita existentes. Sin cambios de arquitectura, API, BD ni permisos.
+## V117 — tutorial interactivo y juego táctil en Sonidos / 2026-10-21
+
+Los nueve juegos del Taller presentan un tutorial por pasos con el objetivo y las
+indicaciones específicas de cada actividad. Al abrir un juego, ASHA lee la narración
+completa grabada; el niño puede cambiar de paso, repetir la voz y tocar al pollito para
+oír un ejemplo antes de comenzar. Durante la partida también puede repetir la voz. El
+juego de parejas admite arrastrar fichas con tacto y conserva selección por toques.
+Respuestas y sonidos reciben animación breve, con respeto a `prefers-reduced-motion`.
+Reglas, progreso, audios y guardado no cambian.
