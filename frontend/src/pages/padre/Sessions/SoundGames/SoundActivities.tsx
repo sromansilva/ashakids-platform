@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type PointerEvent } from 'react';
 import { ArrowRight, Check, Volume2 } from 'lucide-react';
 import { animals, identificationRounds, shuffled, type AnimalId } from './soundContent';
 import { AnimalCard, MatchDemo, SoundCelebration, SoundFeedback, SoundProgress } from './SoundParts';
@@ -20,8 +20,26 @@ export function ExploreSounds({ audio, next, onComplete }: ActivityProps) {
   if (celebrate) return <SoundCelebration onComplete={onComplete} title="¡Ya conoces sus sonidos!" repeat={() => { audio.stop(); setExplored([]); setLast(null); setCelebrate(false); }} next={next}>Tus cuatro amigos te esperan cuando quieras volver.</SoundCelebration>;
   return <>
     <SoundProgress label="Amigos escuchados" value={explored.length} total={animals.length}/>
-    <div className="sound-animal-grid">{animals.map(animal => <AnimalCard key={animal.id} animal={animal} onClick={() => void explore(animal.id)} active={audio.active === animal.id} completed={explored.includes(animal.id)} voice={last === animal.id}/>)}</div>
+    <p className="sound-explore-prompt"><span aria-hidden="true">✦</span> Toca a un amigo para escucharlo; también puedes moverlo por el taller.</p>
+    <div className="sound-animal-grid sound-explore-grid">{animals.map(animal => <ExplorationCard key={animal.id} animal={animal} onClick={() => void explore(animal.id)} active={audio.active === animal.id} completed={explored.includes(animal.id)} voice={last === animal.id}/>)}</div>
   </>;
+}
+
+function ExplorationCard({ animal, ...props }: React.ComponentProps<typeof AnimalCard>) {
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
+  const drag = useRef<{ pointer: number; x: number; y: number; left: number; top: number } | null>(null);
+  function start(event: PointerEvent<HTMLButtonElement>) {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    drag.current = { pointer: event.pointerId, x: event.clientX, y: event.clientY, left: offset.x, top: offset.y };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  }
+  function move(event: PointerEvent<HTMLButtonElement>) {
+    if (drag.current?.pointer !== event.pointerId) return;
+    setOffset({ x: Math.max(-44, Math.min(44, drag.current.left + event.clientX - drag.current.x)), y: Math.max(-30, Math.min(30, drag.current.top + event.clientY - drag.current.y)) });
+  }
+  return <div className="sound-explore-piece" style={{ transform: `translate(${offset.x}px, ${offset.y}px)` }}>
+    <AnimalCard animal={animal} {...props} onPointerDown={start} onPointerMove={move} onPointerUp={() => { drag.current = null; }} onPointerCancel={() => { drag.current = null; }}/>
+  </div>;
 }
 
 export function IdentifySounds({ audio, next, onComplete }: ActivityProps) {

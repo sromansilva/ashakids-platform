@@ -1761,3 +1761,10 @@ del usuario. No se ejecutó DDL ni se modificó la base compartida.
 ## Sistema visual: glassmorphism / V75
 
 La versión 1.1 de `docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md` documenta glass opt-in: 84% blanco, borde violeta 12%, blur 14px sobre fondos claros; fallback blanco y móvil opaco sin blur bajo 768px. Reservarlo para navegación, tarjetas ilustradas y paneles breves. Formularios y datos clínicos mantienen superficies sólidas. La landing ya aplica glass selectivamente; otros módulos no se consideran migrados por esta especificación. Contraste se revisa sobre el fondo final.
+## V115 — exploración táctil en el Taller de los Sonidos / 2026-10-21
+
+El juego «Descubrir sonidos» añade movimiento exploratorio: las tarjetas de los
+animales flotan suavemente y se pueden desplazar con mouse o tacto; tocar una tarjeta
+sigue reproduciendo el sonido. Hay una indicación visual para descubrir ambas acciones.
+La animación respeta `prefers-reduced-motion`. Se conservan las reglas, audio y progreso
+de visita existentes. Sin cambios de arquitectura, API, BD ni permisos.

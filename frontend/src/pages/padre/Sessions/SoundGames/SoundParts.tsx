@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
+import { useEffect, useState, type CSSProperties, type DragEvent, type PointerEventHandler, type ReactNode } from 'react';
 import { Check, CircleCheck, Hand, RotateCcw, Sparkles, Star, Volume2, X } from 'lucide-react';
 import type { SoundAnimal } from './soundContent';
 
@@ -14,12 +14,14 @@ export function AnimalPicture({ animal }: { animal: SoundAnimal }) {
     {failed ? <span className="sound-image-error">Imagen no disponible: {animal.name}</span> : <img src={animal.image} alt="" width="240" height="240" draggable={false} onLoad={() => setLoaded(true)} onError={() => setFailed(true)}/>}
   </span>;
 }
-export function AnimalCard({ animal, onClick, active, completed, incorrect, voice, disabled, onDrop, label }: {
+export function AnimalCard({ animal, onClick, active, completed, incorrect, voice, disabled, onDrop, label, onPointerDown, onPointerMove, onPointerUp, onPointerCancel }: {
   animal: SoundAnimal; onClick: () => void; active?: boolean; completed?: boolean; incorrect?: boolean; voice?: boolean;
   disabled?: boolean; onDrop?: (event: DragEvent<HTMLButtonElement>) => void; label?: string;
+  onPointerDown?: PointerEventHandler<HTMLButtonElement>; onPointerMove?: PointerEventHandler<HTMLButtonElement>;
+  onPointerUp?: PointerEventHandler<HTMLButtonElement>; onPointerCancel?: PointerEventHandler<HTMLButtonElement>;
 }) {
   return <button type="button" className={`sound-animal ${active ? 'is-active' : ''} ${completed ? 'is-complete' : ''} ${incorrect ? 'is-incorrect' : ''}`} style={{ '--animal-soft': animal.color } as CSSProperties}
-    aria-label={label ?? animal.name} aria-pressed={active} disabled={disabled} onClick={onClick} onDragOver={event => { if (onDrop) { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; } }} onDrop={onDrop}>
+    aria-label={label ?? animal.name} aria-pressed={active} disabled={disabled} onClick={onClick} onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerCancel} onDragOver={event => { if (onDrop) { event.preventDefault(); event.dataTransfer.dropEffect = 'move'; } }} onDrop={onDrop}>
     <span className="sound-card-check" aria-hidden="true">{incorrect ? <X size={18}/> : completed ? <Check size={18}/> : <Volume2 size={18}/>}</span>
     <AnimalPicture animal={animal}/><strong>{animal.name}</strong>
     <span className="sound-card-caption">{incorrect ? 'Intenta otra vez' : completed ? '¡Encontrado!' : active ? 'Seleccionado' : voice ? animal.voice : 'Toca aquí'}</span>

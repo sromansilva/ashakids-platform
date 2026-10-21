@@ -2158,3 +2158,22 @@ Corrección CSS de inputs, selects y textareas de ADMIN: contorno de teclado int
 ## V75 - Guía glassmorphism del sistema visual / 2026-10-11
 
 Se amplía `docs/design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md` a versión 1.1. Formaliza el alcance de `asha-glass`, tokens de opacidad/borde/desenfoque, contraste, superficies apropiadas, exclusiones para contenido clínico/formularios, fallback sólido, comportamiento móvil y movimiento reducido. Aclara que la landing ya usa glass selectivamente y que el kit completo no está adoptado globalmente. Cambio documental; no modifica UI de producción ni afirma verificación visual nueva. Commit local `8bf96b1`; publicación se completará con la integración concurrente de dev.
+## V115 — exploración táctil del Taller de los Sonidos / 2026-10-21
+
+Objetivo: hacer que «Descubrir sonidos» se sienta más exploratorio y dinámico. Rama
+`dev`, base V114 `979574eb056fd42be848ce5acbb289439c3d6207` (Portal de Familia), detectada al
+revisar origin/dev antes del cierre. Repositorio: https://github.com/sromansilva/ashakids-platform .
+
+`SoundActivities.tsx` permite mover las cuatro tarjetas de animales hasta 44 px en
+horizontal y 30 px en vertical con puntero/tacto, manteniendo su toque para escuchar.
+`sound-ui.css` suma flotación, destello de orientación y decoración; el movimiento queda
+desactivado por la regla existente `prefers-reduced-motion`. Contexto del proyecto
+actualizado. Sin cambios backend/API/BD/permisos/dependencias.
+
+Comprobaciones locales: typecheck PASS; `check:frontend` 432 archivos PASS; build Vite
+1968 módulos PASS; Graphify refresh/check PASS (2945 nodos, 129 comunidades).
+No se hizo recorrido visual en navegador ni prueba de gestos real en dispositivo.
+`.gitignore` ya estaba modificado y permanece fuera de este cambio.
+
+Cierre: revisión de diff y secretos completada. Commit `V115_Explorar_Taller_Sonidos`
+rebasado sobre V114 y listo para publicar por fast-forward en `dev`.
