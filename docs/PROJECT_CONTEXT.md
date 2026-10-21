@@ -1,3 +1,20 @@
+## V127 — integración de navegación del entorno familiar / 2026-10-21
+
+Integración y unificación de la navegación para el rol PADRE en dos niveles claros: Nivel 1
+(navbar global `FamilyTopNav`) con exactamente tres destinos ('Mi Mundo' -> `/padre?section=world`,
+'Mi Camino ASHA' -> `/padre?section=journey`, 'Para mi familia' -> `/padre?section=family`),
+con bienvenida canónica en `/padre/welcome` accesible mediante el botón de marca 'Centro Familiar'
+y oculta en la bienvenida misma; Nivel 2 (navbar contextual `FamilySubNav`) con siete
+botones en secuencia obligatoria persistente ('Para mi familia', 'Agenda y sesiones',
+'Mensajes', 'Terapeutas', 'Reportes', 'Gestionar familia', 'Incidencias').
+
+Se combinan e integran plenamente con los avances de «Mi mundo» (Palabras, Sonidos y
+Fluidez/Ritmo de las Palabras). Se eliminaron las herramientas redundantes `.fc-family-tools`
+de `FamilyAdultArea`, preservando el acceso a 'Ayuda' (`/padre/ayuda`) mediante `.fc-family-support`.
+Se corrigió la ruta obsoleta `/padre/camino` redirigiendo canónicamente a `/padre?section=journey`.
+Verificación local: enrutamiento, pruebas de componentes, typecheck, check-frontend y build
+aprobados. Sin cambios en backend, BD, modelos ni roles no familiares.
+
 ## V126 — publicación de voz silábica en Render / 2026-10-21
 
 V125 `30c874d5ba30ba8c6d00dab8e4ec3e1a4091df1c` quedó publicado en Render. Health
@@ -93,6 +110,7 @@ no tiene Playwright Python; la pestaña del navegador bloqueó localhost. No ver
 en un teléfono/tableta real ni en el sitio publicado. Próximo paso: revisión visual y
 de audio en dispositivo familiar tras la publicación de `dev`. `.gitignore` tenía un
 cambio local previo para `*.crt` y `*.pem`; se conservó fuera del commit.
+
 
 ## V112 — modelo común para animales del Taller de los Sonidos / 2026-10-19
 

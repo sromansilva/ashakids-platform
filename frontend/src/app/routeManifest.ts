@@ -36,6 +36,7 @@ export const routePaths = [
   "/session/active",
   "/session/end",
   "/padre",
+  "/padre/welcome",
   "/padre/camino",
   "/padre/ayuda",
   "/padre/recorrido",

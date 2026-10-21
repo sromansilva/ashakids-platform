@@ -10,9 +10,9 @@ import { DemoWorldPlayer } from '../Sessions/DemoWorldPlayer';
 import { worldArt } from '../Sessions/worldArt';
 import '../Sessions/world-map.css';
 
-export function FamilyWorlds({ patientId, progress, worldId, onOpen, onBack, onFamily }: {
+export function FamilyWorlds({ patientId, progress, worldId, onOpen, onBack, onFamily, birthDate }: {
   patientId: number; progress: ReturnType<typeof useRemote<GameProgress>>; worldId: string | null;
-  onOpen: (id: WorldArea) => void; onBack: () => void; onFamily: () => void;
+  onOpen: (id: WorldArea) => void; onBack: () => void; onFamily: () => void; birthDate?: string | null;
 }) {
   const { user } = useAuth();
   const client = useQueryClient();
@@ -22,7 +22,7 @@ export function FamilyWorlds({ patientId, progress, worldId, onOpen, onBack, onF
     <RemoteFeedback pending={progress.isPending} error={progress.error} retry={() => void progress.refetch()}/>
     {progress.isSuccess && !progress.error && <>
       {worldId && !selected && <p className="fc-notice" role="status">Este mundo no está disponible en tu perfil. Puedes elegir uno de tus mundos.</p>}
-      {selected ? <DemoWorldPlayer key={`${patientId}:${selected.id}`} world={selected} patientId={patientId} back={onBack} onSaved={value => client.setQueryData([user?.id_usuario, 'game-progress', patientId], value)}/> : assigned.length ? <ul className="fc-world-list" aria-label="Mis mundos asignados">
+      {selected ? <DemoWorldPlayer key={`${patientId}:${selected.id}`} world={selected} patientId={patientId} birthDate={birthDate} back={onBack} onSaved={value => client.setQueryData([user?.id_usuario, 'game-progress', patientId], value)}/> : assigned.length ? <ul className="fc-world-list" aria-label="Mis mundos asignados">
         {assigned.map(world => <li key={world.id} className="fc-glass">
           <PublicIllustration src={`/illustrations/world-${worldArt[world.id].image}-v54.png`} alt="" width={300} height={200}/>
           <h2>{world.name}</h2><button className="fc-button" type="button" onClick={() => onOpen(world.id)}>Explorar<ArrowRight size={20} aria-hidden="true"/></button>

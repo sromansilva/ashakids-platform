@@ -1,6 +1,7 @@
 import { areaLabels } from "./SessionPlan";
 import { IntroductionStatus } from "./IntroductionStatus";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowRight, CalendarDays, CheckCircle2, Circle, FileText, HeartPulse, RefreshCw, Sparkles, Target, Users } from "lucide-react";
 import { useFamilyTracking } from "@/hooks/useFamilyTracking";
 import { ApiError } from "@/api/client";
@@ -85,6 +86,7 @@ function History({ data, reportsOnly = false }: { data: Tracking; reportsOnly?: 
 }
 
 export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded = false }: { mode: "home" | "journey"; go: (view: View) => void; familyName?: string; embedded?: boolean }) {
+  const navigate = useNavigate();
   const data = useFamilyTracking();
   const [tab, setTab] = useState<typeof tabs[number]>("Resumen");
   const { patient, summary } = data;
@@ -121,7 +123,7 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded
           <div className="min-w-0">
             <div className="mb-4 flex flex-wrap items-center gap-2"><span className="rounded-full bg-white/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-violet-100">Perfil activo</span>{data.treatments.some(t => t.estado_tratamiento === "ACTIVO") && <span className="rounded-full bg-emerald-300/20 px-3 py-1 text-xs font-black text-emerald-100">● Plan en curso</span>}</div>
             <div className="flex items-center gap-4"><span className="grid h-16 w-16 shrink-0 place-items-center rounded-3xl bg-white/15 text-3xl shadow-inner shadow-white/10">{patient.nombres_paciente.charAt(0)}{patient.apellidos_paciente.charAt(0)}</span><div><h2 className="break-words text-2xl font-black sm:text-3xl">{patient.nombres_paciente} {patient.apellidos_paciente}</h2><p className="mt-1 text-sm font-semibold text-violet-100">Información guardada por tu equipo de ASHAKids.</p></div></div>
-            <div className="mt-6 flex flex-wrap gap-3"><Btn variant="outline" className="!border-transparent !bg-white !text-violet-800 hover:!bg-violet-50" onClick={() => go(mode === "home" ? "padre/camino" : "padre/agenda")}>{mode === "home" ? "Ver Mi Camino ASHA" : "Ir a agenda"}<ArrowRight size={16} /></Btn><Btn variant="outline" className="!border-white/30 !bg-white/10 !text-white hover:!bg-white/20" onClick={() => go("padre/config")}>Gestionar hijos</Btn></div>
+            <div className="mt-6 flex flex-wrap gap-3"><Btn variant="outline" className="!border-transparent !bg-white !text-violet-800 hover:!bg-violet-50" onClick={() => mode === "home" ? navigate("/padre?section=journey") : go("padre/agenda")}>{mode === "home" ? "Ver Mi Camino ASHA" : "Ir a agenda"}<ArrowRight size={16} /></Btn><Btn variant="outline" className="!border-white/30 !bg-white/10 !text-white hover:!bg-white/20" onClick={() => go("padre/config")}>Gestionar hijos</Btn></div>
           </div><div className="hidden shrink-0 lg:block"><Ashi size={124} mood="happy" /></div>
         </div>
       </section>}

@@ -1,6 +1,7 @@
 import type { View } from "@/types/navigation";
 export const titles: Partial<Record<View, string>> = {
     padre: "Inicio",
+    "padre/welcome": "Bienvenida",
     "padre/agenda": "Agenda",
     "padre/psicologos": "Terapeutas",
     "padre/compras": "Compras",

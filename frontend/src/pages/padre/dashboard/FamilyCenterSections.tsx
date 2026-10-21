@@ -1,4 +1,4 @@
-import { ArrowRight, CalendarDays, Check, CircleHelp, FileText, MessageCircle, Settings, Users, HeartHandshake, Compass, Sparkles, AlertTriangle } from 'lucide-react';
+import { ArrowRight, Check, CircleHelp } from 'lucide-react';
 import { useFamilyTracking } from '@/hooks/useFamilyTracking';
 import { RemoteFeedback } from '@/components/common/RemoteFeedback';
 import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
@@ -22,20 +22,11 @@ export function FamilyChildJourney({ onWorld, onFamily }: { onWorld: () => void;
   </div>;
 }
 
-const tools: { label: string; view: View; icon: typeof Users }[] = [
-  { label: 'Agenda y sesiones', view: 'padre/agenda', icon: CalendarDays },
-  { label: 'Mensajes', view: 'padre/mensajes', icon: MessageCircle },
-  { label: 'Terapeutas', view: 'padre/psicologos', icon: HeartHandshake },
-  { label: 'Reportes', view: 'padre/reportes', icon: FileText },
-  { label: 'Gestionar familia', view: 'padre/config', icon: Settings },
-  { label: 'Mundo ASHA', view: 'mundo-asha', icon: Sparkles },
-  { label: 'Mi Camino ASHA', view: 'padre/camino', icon: Compass },
-  { label: 'Incidencias', view: 'padre/incidencias', icon: AlertTriangle },
-];
 export function FamilyAdultArea({ go, familyName }: { go: (view: View) => void; familyName?: string }) {
   return <div className="fc-adult">
-    <nav className="fc-family-tools" aria-label="Herramientas para mi familia">{tools.map(tool => { const Icon = tool.icon; return <button className="fc-glass" key={tool.view} type="button" onClick={() => go(tool.view)}><Icon size={24} aria-hidden="true"/>{tool.label}<ArrowRight size={18} aria-hidden="true"/></button>; })}</nav>
     <FamilyTrackingPanel mode="journey" go={go} familyName={familyName} embedded/>
-    <nav className="fc-family-support" aria-label="Más opciones de familia"><button type="button" onClick={() => go('padre/reportes')}><FileText size={18} aria-hidden="true"/>Todos los reportes</button><button type="button" onClick={() => go('padre/ayuda')}><CircleHelp size={18} aria-hidden="true"/>Ayuda</button><button type="button" onClick={() => go('padre/incidencias')}>Incidencias</button></nav>
+    <nav className="fc-family-support" aria-label="Más opciones de familia">
+      <button type="button" onClick={() => go('padre/ayuda')}><CircleHelp size={18} aria-hidden="true"/>Ayuda</button>
+    </nav>
   </div>;
 }

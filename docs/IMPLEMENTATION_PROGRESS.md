@@ -1,3 +1,27 @@
+## V127 — integración de navegación del entorno familiar / 2026-10-21
+
+Objetivo: unificar la navegación del rol PADRE en dos niveles, establecer `/padre/welcome`
+como bienvenida canónica, integrar navbar contextual persistente de siete botones para
+las subsecciones familiares y eliminar cuadrículas y accesos duplicados.
+Rama `feat/nlavadom`. Repositorio: https://github.com/sromansilva/ashakids-platform.
+Commit: `V117_Normalizar_Navegacion_Portal_Familia`.
+
+Cambios realizados:
+- Frontend: `DashLayout.tsx`, `FamilyTopNav.tsx`, `FamilySubNav.tsx`, `family-sub-nav.css`,
+  `FamilyCenterSections.tsx`, `AppRouter.tsx`, `PadreWelcome.tsx`, `FamilyCenter.tsx`,
+  `paths.ts`, `routeManifest.ts`, `routeTitles.ts`, `routeCapabilities.ts`, `lazyPages.ts`,
+  `useSelectedFamilyPatient.ts`, `types/navigation.ts`, `PadreConsentimiento.tsx`, `MundoAshaHome.tsx`.
+- Pruebas: `tests/family-navigation-fase3.test.tsx`, `tests/family-tracking.test.tsx`,
+  `tests/login-destination.test.ts`.
+
+Verificación técnica:
+- Enrutamiento: 25/25 pruebas aprobadas.
+- Componentes e integración (Vitest): 419/419 pruebas aprobadas (36 archivos).
+- Typecheck: 0 errores (`tsc --noEmit`).
+- Estándares frontend: 438 archivos validados, máx 495 líneas (`check-frontend.mjs`).
+- Build de producción: 1973 módulos empaquetados sin errores (`vite build`).
+- Graphify: 2974 nodos actualizados y verificados.
+
 ## V113 — verificación de publicación de ilustraciones de Sonidos / 2026-10-19
 
 Seguimiento documental de V112, sin cambio funcional. Rama `dev`; build verificada del

@@ -1,0 +1,91 @@
+/* Navbar contextual secundario para el entorno familiar */
+.family-sub-nav {
+  display: block;
+  width: 100%;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid #e8e1f0;
+  box-shadow: 0 1px 3px rgba(91, 33, 182, 0.04);
+}
+
+.family-sub-nav-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2px 0;
+}
+
+.family-sub-nav-track::-webkit-scrollbar {
+  display: none;
+}
+
+.family-sub-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: 12px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #615274;
+  background: #ffffff;
+  border: 1px solid #e8e1f0;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.family-sub-nav-btn svg {
+  color: #7c3aed;
+  flex-shrink: 0;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.family-sub-nav-btn:hover {
+  background: #f5f3ff;
+  color: #5b21b6;
+  border-color: #cabaf5;
+}
+
+.family-sub-nav-btn:hover svg {
+  transform: scale(1.08);
+}
+
+.family-sub-nav-btn:focus-visible {
+  outline: 2px solid #7c3aed;
+  outline-offset: 2px;
+}
+
+.family-sub-nav-btn--active {
+  background: #7c3aed !important;
+  color: #ffffff !important;
+  border-color: #6d28d9 !important;
+  box-shadow: 0 2px 8px rgba(124, 58, 237, 0.25);
+}
+
+.family-sub-nav-btn--active svg {
+  color: #ffffff !important;
+}
+
+@media (max-width: 768px) {
+  .family-sub-nav {
+    padding: 6px 10px;
+  }
+  .family-sub-nav-track {
+    gap: 6px;
+  }
+  .family-sub-nav-btn {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+    gap: 5px;
+    border-radius: 10px;
+  }
+}
+

@@ -33,6 +33,7 @@ export const AshaSessionWaiting = lazy(() => import("@/pages/padre/SessionsMeeti
 export const AshaSessionActive = lazy(() => import("@/pages/padre/SessionsMeeting/AshaSessionActive").then(module => ({ default: module.AshaSessionActive })));
 export const AshaSessionEnd = lazy(() => import("@/pages/padre/SessionsMeeting/AshaSessionEnd").then(module => ({ default: module.AshaSessionEnd })));
 export const PadreHome = lazy(() => import("@/pages/padre/dashboard/PadreHome").then(module => ({ default: module.PadreHome })));
+export const PadreWelcome = lazy(() => import("@/pages/padre/dashboard/PadreWelcome").then(module => ({ default: module.PadreWelcome })));
 export const MiCaminoAsha = lazy(() => import("@/pages/padre/journey/camino/MiCaminoAsha").then(module => ({ default: module.MiCaminoAsha })));
 export const PadreAyuda = lazy(() => import("@/pages/padre/PadreAyuda").then(module => ({ default: module.PadreAyuda })));
 export const PadreRecorrido = lazy(() => import("@/pages/padre/journey/PadreRecorrido").then(module => ({ default: module.PadreRecorrido })));

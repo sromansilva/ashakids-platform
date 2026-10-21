@@ -1,6 +1,6 @@
 // Capability metadata; modules without a data source render empty states.
 const persisted = new Set([
-  "/padre", "/padre/dashboard", "/padre/camino", "/padre/mi-camino", "/padre/recorrido", "/padre/seguimiento",
+  "/padre", "/padre/welcome", "/padre/dashboard", "/padre/camino", "/padre/mi-camino", "/padre/recorrido", "/padre/seguimiento",
   "/padre/hijos", "/padre/pacientes", "/padre/progreso", "/padre/config", "/padre/perfil", "/padre/agenda", "/padre/reportes", "/padre/psicologos",
   "/padre/mensajes", "/terapeuta/mensajes", "/terapeuta/valoraciones",
   "/terapeuta/analiticas", "/terapeuta", "/terapeuta/agenda", "/terapeuta/pacientes", "/terapeuta/reportes",
