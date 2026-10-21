@@ -2,6 +2,9 @@ import { act, fireEvent, render, screen, waitFor, within } from '@testing-librar
 import { beforeEach, expect, it, vi } from 'vitest';
 import { SoundWorld } from '@/pages/padre/Sessions/SoundGames/SoundWorld';
 import { animals, soundLevels } from '@/pages/padre/Sessions/SoundGames/soundContent';
+import { SoundTutorialScene } from '@/pages/padre/Sessions/SoundGames/SoundTutorialScene';
+import { soundGames, type SoundGameId } from '@/pages/padre/Sessions/SoundGames/soundGames';
+import type { SoundAudio } from '@/pages/padre/Sessions/SoundGames/useSoundAudio';
 
 let player: HTMLAudioElement;
 beforeEach(() => {
@@ -23,7 +26,7 @@ function firePointer(target: Element, type: string, values: Record<string, strin
   fireEvent(target, event);
 }
 
-it('guía cada juego con voz completa y un ejemplo de sonido que se puede tocar', async () => {
+it('guía cada juego con voz completa y una escena de práctica propia', async () => {
   render(<SoundWorld back={vi.fn()} legacy={vi.fn()}/>);
   fireEvent.click(screen.getByRole('button', { name: 'Explorar los 11 juegos en familia' }));
   fireEvent.click(screen.getByRole('button', { name: 'Jugar Toca y descubre' }));
@@ -34,10 +37,45 @@ it('guía cada juego con voz completa y un ejemplo de sonido que se puede tocar'
   expect(player.src).toContain('/sounds/voice/v108/');
   fireEvent.click(screen.getByRole('button', { name: 'Ver paso 2' }));
   expect(screen.getByText('Toca el dibujo o la ficha para jugar.')).toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: 'Toca al pollito para escuchar un ejemplo' }));
-  expect(player.src).toContain('/chick.mp3');
+  fireEvent.click(screen.getByRole('button', { name: 'Vaca' }));
+  expect(player.src).toContain('/cow.mp3');
   fireEvent.click(screen.getByRole('button', { name: '¡Vamos a jugar!' }));
   expect(screen.getByRole('button', { name: /Repetir instrucciones/ })).toBeInTheDocument();
+});
+
+it.each(soundGames.map(game => [game.id, game.title] as const))('presenta una mecánica interactiva para %s (%s)', gameId => {
+  const audio = { play: vi.fn(async () => true), active: null, muted: false } as unknown as SoundAudio;
+  render(<SoundTutorialScene gameId={gameId as SoundGameId} audio={audio}/>);
+  expect(screen.getByTestId('sound-tutorial-scene')).toHaveClass(`sound-tutorial-demo-${gameId}`);
+  expect(screen.getAllByText(/Toca|Escucha|Pulsa|Mira|Voltea/).length).toBeGreaterThan(0);
+  if (gameId === 'sequence') expect(screen.getByRole('list', { name: 'Vagones del tren de sonidos' })).toBeInTheDocument();
+  if (gameId === 'pairs2' || gameId === 'pairs3') expect(screen.getByLabelText('Fichas con sonido')).toBeInTheDocument();
+  if (gameId === 'memory') expect(screen.getAllByRole('button', { name: /Voltear ficha/ })).toHaveLength(4);
+});
+
+it('permite practicar una unión, llenar el tren y encontrar una pareja de memoria', async () => {
+  const audio = { play: vi.fn(async () => true), active: null, muted: false, loading: false } as unknown as SoundAudio;
+  const pairing = render(<SoundTutorialScene gameId="pairs2" audio={audio}/>);
+  fireEvent.click(screen.getByRole('button', { name: 'Ficha 1' }));
+  await waitFor(() => expect(screen.getByText(/Ahora toca a/)).toBeInTheDocument());
+  fireEvent.click(screen.getByRole('button', { name: 'Vaca' }));
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Vaca' })).toBeDisabled());
+  pairing.unmount();
+
+  const train = render(<SoundTutorialScene gameId="sequence" audio={audio}/>);
+  fireEvent.click(screen.getByRole('button', { name: 'Escuchar el tren' }));
+  await waitFor(() => expect(screen.getByText(/Ahora toca los amigos/)).toBeInTheDocument());
+  fireEvent.click(screen.getByRole('button', { name: 'Vaca' }));
+  await waitFor(() => expect(screen.getByText(/busca al gato/)).toBeInTheDocument());
+  expect(screen.getByRole('img', { name: 'Vaca' })).toBeInTheDocument();
+  train.unmount();
+
+  const memory = render(<SoundTutorialScene gameId="memory" audio={audio}/>);
+  fireEvent.click(screen.getByRole('button', { name: 'Voltear ficha 1' }));
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Ficha 1: Vaca' })).toBeInTheDocument());
+  fireEvent.click(screen.getByRole('button', { name: 'Voltear ficha 3' }));
+  await waitFor(() => expect(screen.getByText('¡Son pareja! Busca otra.')).toBeInTheDocument());
+  memory.unmount();
 });
 
 it('cuenta audios terminados, permite repetir y limpia audio al salir', async () => {

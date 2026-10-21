@@ -1,23 +1,21 @@
 import { useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Hand, Volume2, VolumeX } from 'lucide-react';
-import { AnimalCard } from './SoundParts';
-import { animalById } from './soundContent';
+import { SoundTutorialScene } from './SoundTutorialScene';
+import type { SoundGameId } from './soundGames';
 import type { SoundAudio } from './useSoundAudio';
 
-export function SoundTutorial({ title, goal, steps, audio, onSpeak, onStart }: {
-  title: string; goal: string; steps: readonly string[]; audio: SoundAudio;
+export function SoundTutorial({ title, gameId, goal, steps, audio, onSpeak, onStart }: {
+  title: string; gameId: SoundGameId; goal: string; steps: readonly string[]; audio: SoundAudio;
   onSpeak: () => void; onStart: () => void;
 }) {
   const [step, setStep] = useState(0);
-  const example = animalById('chick');
   return <section className="sound-tutorial" aria-label={`Tutorial: ${title}`}>
     <header className="sound-tutorial-heading"><div><span>Antes de empezar</span><h3>¡Probemos juntos!</h3></div><button type="button" className="sound-button is-secondary" disabled={audio.muted} onClick={onSpeak}><Volume2 size={20}/> Escuchar instrucciones</button></header>
     <div className="sound-tutorial-body">
       <div className="sound-tutorial-scene">
-        <span className="sound-tutorial-scene-label">Ejemplo de sonido</span>
-        <div className={`sound-tutorial-orbit ${audio.active === example.id ? 'is-playing' : ''}`} aria-hidden="true"><i/><i/><i/></div>
-        <AnimalCard animal={example} active={audio.active === example.id} disabled={audio.muted} onClick={() => void audio.play(example.id)} label={audio.muted ? 'Activa el sonido para probar' : 'Toca al pollito para escuchar un ejemplo'}/>
-        <p>{audio.muted ? <><VolumeX size={16}/> Activa el sonido para probar</> : <><Hand size={16}/> Tócalo para escuchar</>}</p>
+        <span className="sound-tutorial-scene-label">Prueba cómo se juega</span>
+        <SoundTutorialScene gameId={gameId} audio={audio}/>
+        <p>{audio.muted ? <><VolumeX size={16}/> Activa el sonido para probar</> : <><Hand size={16}/> Toca y juega el ejemplo</>}</p>
       </div>
       <div className="sound-tutorial-guide">
         <div className="sound-tutorial-progress" role="group" aria-label="Pasos del tutorial">

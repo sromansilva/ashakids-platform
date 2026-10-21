@@ -91,11 +91,59 @@
 .sound-world .sound-tutorial-scene .sound-animal { position: relative; z-index: 1; width: min(100%, 220px); min-height: 194px; padding: 12px 8px; }
 .sound-world .sound-tutorial-scene .sound-picture { height: 116px; }
 .sound-world .sound-tutorial-scene > p { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; margin: 10px 0 0; color: #526e5d; font-size: 13px; font-weight: 800; }
-.sound-world .sound-tutorial-orbit { position: absolute; top: 48%; left: 50%; width: 174px; height: 174px; transform: translate(-50%, -50%); }
-.sound-world .sound-tutorial-orbit i { position: absolute; inset: 0; border: 2px solid #80b89775; border-radius: 50%; transform: scale(.7); opacity: 0; }
-.sound-world .sound-tutorial-orbit.is-playing i { animation: sound-tutorial-wave 1.4s ease-out infinite; }
-.sound-world .sound-tutorial-orbit.is-playing i:nth-child(2) { animation-delay: .35s; }
-.sound-world .sound-tutorial-orbit.is-playing i:nth-child(3) { animation-delay: .7s; }
+.sound-world .sound-tutorial-demo { position: relative; z-index: 1; width: 100%; display: grid; justify-items: center; gap: 10px; }
+.sound-world .sound-tutorial-demo-prompt { min-height: 38px; margin: 0; color: #405c4b; font-size: 14px; font-weight: 900; line-height: 1.35; text-align: center; }
+.sound-world .sound-tutorial-progress-note { color: #526e5d; font-size: 12px; font-weight: 900; text-align: center; }
+.sound-world .sound-tutorial-animal-grid { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.sound-world .sound-tutorial-animal-grid.is-compact { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.sound-world .sound-tutorial-scene .sound-tutorial-demo .sound-animal { width: 100%; min-width: 0; min-height: 112px; padding: 7px 5px; border-radius: 15px; }
+.sound-world .sound-tutorial-scene .sound-tutorial-demo .sound-picture { height: 58px; }
+.sound-world .sound-tutorial-scene .sound-tutorial-demo .sound-animal > strong { font-size: 12px; }
+.sound-world .sound-tutorial-scene .sound-tutorial-demo .sound-card-caption { font-size: 11px; }
+.sound-world .sound-tutorial-listen, .sound-world .sound-tutorial-answer, .sound-world .sound-tutorial-number, .sound-world .sound-tutorial-position { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; padding: 8px 12px; border: 2px solid #bfd8c8; border-bottom-width: 4px; border-radius: 15px; background: #fff; color: #354c3d; font: inherit; font-weight: 900; }
+.sound-world .sound-tutorial-listen:disabled, .sound-world .sound-tutorial-answer:disabled, .sound-world .sound-tutorial-number:disabled { opacity: .5; }
+.sound-world .sound-tutorial-listen.is-heard, .sound-world .sound-tutorial-answer:focus-visible, .sound-world .sound-tutorial-position.is-selected { border-color: #75a789; background: #e8f5ec; }
+.sound-world .sound-tutorial-sound-pair, .sound-world .sound-tutorial-answer-row, .sound-world .sound-tutorial-choice-row { display: flex; width: 100%; align-items: center; justify-content: center; flex-wrap: wrap; gap: 7px; }
+.sound-world .sound-tutorial-sound-pair > button { flex: 1; flex-direction: column; min-width: 86px; }
+.sound-world .sound-tutorial-sound-pair > button span { display: grid; gap: 2px; font-size: 11px; }
+.sound-world .sound-tutorial-sound-pair > button strong { font-size: 13px; }
+.sound-world .sound-tutorial-answer { flex: 1; min-width: 90px; }
+.sound-world .sound-tutorial-answer > span { font-size: 24px; font-weight: 900; }
+.sound-world .sound-tutorial-match-board { display: grid; width: 100%; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 8px; }
+.sound-world .sound-tutorial-token-list { display: grid; gap: 7px; }
+.sound-world .sound-tutorial-token { display: flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 6px; border: 2px solid #cdbce0; border-radius: 14px; background: #fff; color: #58406f; font-size: 12px; font-weight: 900; }
+.sound-world .sound-tutorial-token.is-selected { border-color: #7950a6; background: #f1e8fa; transform: scale(1.04); }
+.sound-world .sound-tutorial-token.is-complete { border-color: #74aa86; background: #e7f5eb; }
+.sound-world .sound-tutorial-train-wrap { display: flex; width: 100%; align-items: end; justify-content: center; gap: 4px; padding-bottom: 10px; border-bottom: 5px dashed #a6c2ae; }
+.sound-world .sound-tutorial-locomotive { display: grid; justify-items: center; min-width: 62px; color: #506b59; font-size: 32px; animation: sound-tutorial-train-bob 1.8s ease-in-out infinite; }
+.sound-world .sound-tutorial-locomotive small { margin-top: -3px; color: #6d7d62; font-size: 10px; font-weight: 900; }
+.sound-world .sound-tutorial-train { display: flex; min-width: 0; flex: 1; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.sound-world .sound-tutorial-train li { display: grid; flex: 1; min-width: 0; min-height: 77px; justify-items: center; align-content: center; gap: 3px; border: 2px solid #cdbce0; border-bottom: 5px solid #a68fbe; border-radius: 13px; background: linear-gradient(#fff, #eee5f8); color: #594071; font-size: 9px; font-weight: 900; }
+.sound-world .sound-tutorial-train li.is-filled { background: linear-gradient(#fff, #e4f4ec); border-color: #86b496; }
+.sound-world .sound-tutorial-train li img { width: 40px; height: 40px; object-fit: contain; }
+.sound-world .sound-tutorial-train li > span:first-child { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 50%; background: #fff; color: #49345d; font-size: 13px; }
+.sound-world .sound-tutorial-empty-car { display: grid; width: 36px; height: 36px; place-items: center; border: 2px dashed #c5b5d5; border-radius: 50%; color: #947eaa; font-size: 18px; }
+.sound-world .sound-tutorial-choice-row .sound-animal { flex: 1 1 68px; max-width: 100px; }
+.sound-world .sound-tutorial-undo { padding: 7px 12px; border: 0; border-radius: 12px; background: #fff4dc; color: #765526; font: inherit; font-size: 12px; font-weight: 900; }
+.sound-world .sound-tutorial-count-button { display: grid; width: 100%; justify-items: center; gap: 6px; color: #594071; font-size: 12px; font-weight: 900; }
+.sound-world .sound-tutorial-count-button .sound-animal { max-width: 90px; }
+.sound-world .sound-tutorial-count-dots { display: flex; gap: 7px; color: #bdabce; font-size: 22px; }
+.sound-world .sound-tutorial-count-dots i { font-style: normal; }
+.sound-world .sound-tutorial-count-dots i.is-on { color: #e5a92a; animation: sound-hop 320ms ease-out; }
+.sound-world .sound-tutorial-number { flex-direction: column; flex: 1; min-width: 55px; font-size: 24px; }
+.sound-world .sound-tutorial-number small { font-size: 10px; }
+.sound-world .sound-tutorial-memory-grid { display: grid; width: min(100%, 250px); grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.sound-world .sound-tutorial-memory-card { position: relative; display: grid; min-height: 86px; justify-items: center; align-content: center; gap: 3px; border: 2px solid #cdbce0; border-bottom: 5px solid #a68fbe; border-radius: 15px; background: linear-gradient(145deg, #fff, #eee5f8); color: #594071; font-size: 11px; font-weight: 900; }
+.sound-world .sound-tutorial-memory-card img { width: 57px; height: 55px; object-fit: contain; }
+.sound-world .sound-tutorial-memory-card.is-complete { border-color: #74aa86; background: #e7f5eb; }
+.sound-world .sound-tutorial-order-row, .sound-world .sound-tutorial-chorus { display: flex; width: 100%; justify-content: center; gap: 5px; }
+.sound-world .sound-tutorial-order-place, .sound-world .sound-tutorial-chorus > span { display: grid; flex: 1; min-width: 0; justify-items: center; align-content: center; gap: 4px; padding: 6px 3px; border: 2px solid #cdbce0; border-radius: 14px; background: #fff; color: #594071; font-size: 10px; font-weight: 900; }
+.sound-world .sound-tutorial-order-place:first-child { border-color: #e0be66; background: #fff8df; }
+.sound-world .sound-tutorial-order-place img, .sound-world .sound-tutorial-chorus img { width: 54px; height: 54px; object-fit: contain; }
+.sound-world .sound-tutorial-position { flex: 1; min-width: 90px; font-size: 11px; }
+.sound-world .sound-tutorial-chorus > span { font-size: 14px; }
+.sound-world .sound-tutorial-chorus img { width: 62px; height: 62px; }
+@keyframes sound-tutorial-train-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 .sound-world .sound-tutorial-guide { min-width: 0; }
 .sound-world .sound-tutorial-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
 .sound-world .sound-tutorial-progress button { display: grid; place-items: center; width: 42px; height: 42px; padding: 4px; border: 2px solid transparent; border-radius: 50%; background: transparent; color: #604b73; }
@@ -118,7 +166,6 @@
 .sound-world .sound-explore-piece:nth-child(even) .sound-animal { animation-delay: -1.7s; }
 @keyframes sound-friend-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-4px) rotate(.6deg); } }
 @keyframes sound-twinkle { 0%, 100% { opacity: .65; transform: scale(.9); } 50% { opacity: 1; transform: scale(1.16); } }
-@keyframes sound-tutorial-wave { 0% { transform: scale(.62); opacity: .68; } 100% { transform: scale(1.38); opacity: 0; } }
 @keyframes sound-listen-pulse { 0%, 100% { box-shadow: 0 0 0 0 #8255b744; } 50% { box-shadow: 0 0 0 10px #8255b700; } }
 @keyframes sound-feedback-in {
   from { opacity: 0; transform: translateY(5px); }
