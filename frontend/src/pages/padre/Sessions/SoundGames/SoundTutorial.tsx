@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, ArrowRight, Check, Hand, Volume2, VolumeX } from 'lucide-react';
 import { SoundTutorialScene } from './SoundTutorialScene';
 import type { SoundGameId } from './soundGames';
@@ -9,13 +9,14 @@ export function SoundTutorial({ title, gameId, goal, steps, audio, onSpeak, onSt
   onSpeak: () => void; onStart: () => void;
 }) {
   const [step, setStep] = useState(0);
+  useEffect(() => setStep(0), [gameId]);
   return <section className="sound-tutorial" aria-label={`Tutorial: ${title}`}>
-    <header className="sound-tutorial-heading"><div><span>Antes de empezar</span><h3>¡Probemos juntos!</h3></div><button type="button" className="sound-button is-secondary" disabled={audio.muted} onClick={onSpeak}><Volume2 size={20}/> Escuchar instrucciones</button></header>
+    <header className="sound-tutorial-heading"><div><span>Antes de empezar</span><h3>Así se juega: {title}</h3></div><button type="button" className="sound-button is-secondary" disabled={audio.muted} onClick={onSpeak}><Volume2 size={20}/> Escuchar instrucciones</button></header>
     <div className="sound-tutorial-body">
       <div className="sound-tutorial-scene">
-        <span className="sound-tutorial-scene-label">Prueba cómo se juega</span>
+        <span className="sound-tutorial-scene-label">Mira la demostración y luego inténtalo</span>
         <SoundTutorialScene gameId={gameId} audio={audio}/>
-        <p>{audio.muted ? <><VolumeX size={16}/> Activa el sonido para probar</> : <><Hand size={16}/> Toca y juega el ejemplo</>}</p>
+        <p>{audio.muted ? <><VolumeX size={16}/> Activa el sonido para probar</> : <><Hand size={16}/> La demostración se repite; también puedes tocar</>}</p>
       </div>
       <div className="sound-tutorial-guide">
         <div className="sound-tutorial-progress" role="group" aria-label="Pasos del tutorial">

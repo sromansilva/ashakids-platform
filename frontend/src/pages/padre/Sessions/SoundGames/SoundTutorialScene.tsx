@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Check, Equal, Volume2 } from 'lucide-react';
 import { AnimalCard } from './SoundParts';
 import { animalById, animals, type AnimalId } from './soundContent';
@@ -8,6 +8,19 @@ import type { SoundAudio } from './useSoundAudio';
 const animalsForPairing: AnimalId[] = ['cow', 'cat', 'dog'];
 const animalOptions: AnimalId[] = ['dog', 'cow', 'chick', 'cat'];
 const withArticle = (id: AnimalId) => id === 'cow' ? 'a la vaca' : `al ${animalById(id).name.toLowerCase()}`;
+const demoCues: Record<SoundGameId, readonly [string, string, string]> = {
+  explore: ['Mira a los amigos.', 'Toca uno para escucharlo.', 'Descubre los cuatro sonidos.'],
+  identify: ['Primero escucha la pista.', 'Busca quién hizo ese sonido.', 'Toca al animal correcto.'],
+  pairs2: ['Escucha una ficha.', 'Encuentra a su amigo.', 'Une las dos parejas.'],
+  pairs3: ['Escucha una ficha.', 'Encuentra a su amigo.', 'Une las tres parejas.'],
+  same: ['Escucha el primer sonido.', 'Ahora escucha el segundo.', 'Elige: ¿iguales o diferentes?'],
+  sequence: ['El tren escucha a sus amigos.', 'Recuerda quién sonó primero.', 'Después, llena los vagones en orden.'],
+  count: ['El pollito hace un sonido.', 'Cada sonido cuenta una vez.', 'Al final, elige cuántos oíste.'],
+  memory: ['Voltea una ficha y escucha.', 'Voltea otra para comparar.', 'Guarda en tu memoria cada pareja.'],
+  missing: ['Escucha a los amigos.', 'Recuerda quiénes sí sonaron.', 'Busca al que quedó en silencio.'],
+  order: ['Escucha la fila completa.', 'Fíjate quién aparece primero.', 'También puedes buscar al último.'],
+  odd: ['Escucha el coro.', 'Dos amigos repiten su sonido.', 'Encuentra al que suena distinto.'],
+};
 
 function Creature({ id, audio, label, ...props }: {
   id: AnimalId; audio: SoundAudio; label?: string; completed?: boolean; active?: boolean; disabled?: boolean; onClick?: () => void;
@@ -44,7 +57,7 @@ function PairingScene({ audio, count }: { audio: SoundAudio; count: 2 | 3 }) {
   const ids = animalsForPairing.slice(0, count);
   return <>
     <SmallPrompt>{matched.length === count ? '¡Todas las fichas llegaron a su amigo!' : selected ? `Ahora toca ${withArticle(selected)} para unir la pareja.` : 'Escucha una ficha y toca al amigo que hace ese sonido.'}</SmallPrompt>
-    <div className="sound-tutorial-match-board"><div className="sound-tutorial-token-list" aria-label="Fichas con sonido">{ids.map((id, index) => <button type="button" className={`sound-tutorial-token ${selected === id ? 'is-selected' : ''} ${matched.includes(id) ? 'is-complete' : ''}`} key={id} disabled={audio.muted || audio.loading || !!audio.active || matched.includes(id)} aria-pressed={selected === id} onClick={async () => { if (await audio.play(id)) setSelected(id); }}><Volume2 size={20}/><span>Ficha {index + 1}</span>{matched.includes(id) && <Check size={17}/>}</button>)}</div>
+    <div className="sound-tutorial-match-board"><svg className="sound-tutorial-match-thread" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M 37 26 C 47 18, 54 34, 64 28"/></svg><div className="sound-tutorial-token-list" aria-label="Fichas con sonido">{ids.map((id, index) => <button type="button" className={`sound-tutorial-token ${selected === id ? 'is-selected' : ''} ${matched.includes(id) ? 'is-complete' : ''}`} key={id} disabled={audio.muted || audio.loading || !!audio.active || matched.includes(id)} aria-pressed={selected === id} onClick={async () => { if (await audio.play(id)) setSelected(id); }}><Volume2 size={20}/><span>Ficha {index + 1}</span>{matched.includes(id) && <Check size={17}/>}</button>)}</div>
       <div className="sound-tutorial-animal-grid is-compact">{ids.map(id => <Creature key={id} id={id} audio={audio} disabled={audio.muted || !selected || matched.includes(id)} completed={matched.includes(id)} onClick={() => { if (!selected) return; if (selected === id) { setMatched(current => [...current, id]); setSelected(null); } else { setSelected(null); void audio.play(id); } }}/>)}</div></div>
   </>;
 }
@@ -134,12 +147,18 @@ function OddScene({ audio }: { audio: SoundAudio }) {
 }
 
 export function SoundTutorialScene({ gameId, audio }: { gameId: SoundGameId; audio: SoundAudio }) {
+  const [phase, setPhase] = useState(0);
+  useEffect(() => {
+    setPhase(0);
+    const timer = window.setInterval(() => setPhase(value => (value + 1) % 3), 2100);
+    return () => window.clearInterval(timer);
+  }, [gameId]);
   let scene: ReactNode;
   switch (gameId) {
     case 'explore': scene = <ExploreScene audio={audio}/>; break;
     case 'identify': scene = <IdentifyScene audio={audio}/>; break;
-    case 'pairs2': scene = <PairingScene audio={audio} count={2}/>; break;
-    case 'pairs3': scene = <PairingScene audio={audio} count={3}/>; break;
+    case 'pairs2': scene = <PairingScene key={gameId} audio={audio} count={2}/>; break;
+    case 'pairs3': scene = <PairingScene key={gameId} audio={audio} count={3}/>; break;
     case 'same': scene = <SameScene audio={audio}/>; break;
     case 'sequence': scene = <TrainScene audio={audio}/>; break;
     case 'count': scene = <CountScene audio={audio}/>; break;
@@ -148,5 +167,8 @@ export function SoundTutorialScene({ gameId, audio }: { gameId: SoundGameId; aud
     case 'order': scene = <OrderScene audio={audio}/>; break;
     case 'odd': scene = <OddScene audio={audio}/>; break;
   }
-  return <div className={`sound-tutorial-demo sound-tutorial-demo-${gameId}`} data-testid="sound-tutorial-scene">{scene}</div>;
+  return <div key={gameId} className={`sound-tutorial-demo sound-tutorial-demo-${gameId}`} data-demo-phase={phase} data-testid="sound-tutorial-scene">
+    <span className="sound-tutorial-auto-cue" aria-hidden="true"><span>Así se juega</span>{demoCues[gameId][phase]}</span>
+    {scene}
+  </div>;
 }

@@ -1,3 +1,24 @@
+## V121 — demostraciones que enseñan cada juego de Sonidos / 2026-10-21
+
+Se hace visible que el tutorial pertenece al juego seleccionado: el encabezado ahora
+incluye su nombre y el paso vuelve al inicio al cambiar de actividad. Cada una de las
+once variantes tiene tres indicaciones breves y una demostración visual que avanza sola
+cada 2.1 segundos mientras el ejemplo sigue aceptando toques. Explorar pasea el foco por
+los animales; identificar separa pista y elección; parejas anima fichas, animal y un
+hilo de unión; comparar recorre ambos sonidos; tren mueve el foco por locomotora y
+vagones; contar marca sonidos y respuesta; memoria señala la comparación de fichas;
+faltante, orden e intruso señalan, respectivamente, sonidos presentes/ausente, extremos
+de la fila y sonido diferente. No inicia audio automáticamente. Respeta
+`prefers-reduced-motion`.
+
+Archivos: `SoundTutorial.tsx`, `SoundTutorialScene.tsx` y `sound-ui.css`. Typecheck y
+build Vite aprobados (1972 módulos); Graphify refresh/check vigente (2973 nodos,
+139 comunidades); `git diff --check` aprobado. No se ejecutaron pruebas de componentes
+ni se inspeccionó la interfaz en navegador/dispositivo. No se afirma publicación en
+Render; el acceso al dashboard quedó pendiente de iniciar sesión, y la comprobación
+pública previa de esta fase aún mostraba bundles anteriores. Sin cambios backend, API,
+BD, permisos ni dependencias.
+
 ## V119 — práctica visual propia para cada juego del Taller de los Sonidos / 2026-10-21
 
 El tutorial usa una escena jugable que corresponde al juego elegido en las once

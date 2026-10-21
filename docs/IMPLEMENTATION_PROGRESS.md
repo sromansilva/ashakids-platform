@@ -2250,3 +2250,27 @@ nuevas. V119 ya está publicado en `dev` con SHA
 dispositivo no se completó por las limitaciones descritas en V119; no se afirma que la
 web pública ya muestre este cambio. Próximo paso: revisar apariencia, secuencias de voz
 y zonas táctiles en un navegador y dispositivo familiar después de la publicación.
+## V121 — demostraciones animadas propias para cada juego / 2026-10-21
+
+Objetivo: que el tutorial de cada juego se distinga y muestre visualmente cómo se juega
+sin exigir que el niño tenga que descubrir todo a base de clics. Rama `dev`, base V120
+`4d3565a660179e144ab8a720ef1763c4fe9f2e4c`. Repositorio:
+https://github.com/sromansilva/ashakids-platform .
+
+`SoundTutorial.tsx` ahora titula el ejemplo con el nombre de la actividad y reinicia el
+paso de voz/tutorial al cambiar de juego. `SoundTutorialScene.tsx` ofrece una secuencia
+automática de tres mensajes visuales para cada uno de los once tipos; CSS mueve el foco
+por los controles específicos de cada mecánica. En parejas, un hilo punteado dibuja la
+unión; en el tren se recorre locomotora/vagones; memoria voltea el foco entre cartas;
+contar, comparar, ausente, posición e intruso señalan su acción propia. La demostración
+no activa audio sola; el niño sigue pudiendo tocar. Se respeta `prefers-reduced-motion`.
+Sin cambios backend/API/BD/permisos/dependencias.
+
+Comprobaciones ejecutadas: `npm run typecheck` PASS; `npm run build` PASS, 1972 módulos;
+Graphify refresh/check PASS, mapa local de código 2973 nodos/139 comunidades;
+`git diff --check` PASS. No se ejecutaron pruebas de componentes ni revisión visual en
+navegador/dispositivo. El acceso al dashboard de Render requiere iniciar sesión; la
+respuesta pública comparada antes de este cambio todavía apuntaba a bundles anteriores.
+La publicación/verificación Render queda pendiente de tener la sesión autenticada.
+`.gitignore` mantiene su modificación local preexistente `*.crt`/`*.pem` fuera de esta
+fase.

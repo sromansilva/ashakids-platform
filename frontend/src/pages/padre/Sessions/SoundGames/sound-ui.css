@@ -92,6 +92,8 @@
 .sound-world .sound-tutorial-scene .sound-picture { height: 116px; }
 .sound-world .sound-tutorial-scene > p { position: relative; z-index: 1; display: flex; align-items: center; gap: 6px; margin: 10px 0 0; color: #526e5d; font-size: 13px; font-weight: 800; }
 .sound-world .sound-tutorial-demo { position: relative; z-index: 1; width: 100%; display: grid; justify-items: center; gap: 10px; }
+.sound-world .sound-tutorial-auto-cue { display: grid; min-height: 35px; justify-items: center; gap: 1px; color: #594071; font-size: 12px; font-weight: 900; text-align: center; }
+.sound-world .sound-tutorial-auto-cue > span { color: #78628b; font-size: 10px; font-weight: 800; }
 .sound-world .sound-tutorial-demo-prompt { min-height: 38px; margin: 0; color: #405c4b; font-size: 14px; font-weight: 900; line-height: 1.35; text-align: center; }
 .sound-world .sound-tutorial-progress-note { color: #526e5d; font-size: 12px; font-weight: 900; text-align: center; }
 .sound-world .sound-tutorial-animal-grid { display: grid; width: 100%; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
@@ -109,8 +111,12 @@
 .sound-world .sound-tutorial-sound-pair > button strong { font-size: 13px; }
 .sound-world .sound-tutorial-answer { flex: 1; min-width: 90px; }
 .sound-world .sound-tutorial-answer > span { font-size: 24px; font-weight: 900; }
-.sound-world .sound-tutorial-match-board { display: grid; width: 100%; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 8px; }
+.sound-world .sound-tutorial-match-board { position: relative; display: grid; width: 100%; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 8px; }
+.sound-world .sound-tutorial-match-thread { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.sound-world .sound-tutorial-match-thread path { fill: none; stroke: #70ae89; stroke-dasharray: 3 3; stroke-linecap: round; stroke-width: 1.5; opacity: 0; }
+.sound-world .sound-tutorial-demo-pairs2[data-demo-phase='1'] .sound-tutorial-match-thread path, .sound-world .sound-tutorial-demo-pairs3[data-demo-phase='1'] .sound-tutorial-match-thread path { opacity: 1; animation: sound-tutorial-thread-draw 1.2s ease-in-out infinite; }
 .sound-world .sound-tutorial-token-list { display: grid; gap: 7px; }
+.sound-world .sound-tutorial-token-list, .sound-world .sound-tutorial-match-board > .sound-tutorial-animal-grid { position: relative; z-index: 2; }
 .sound-world .sound-tutorial-token { display: flex; align-items: center; justify-content: center; gap: 5px; min-height: 44px; padding: 6px; border: 2px solid #cdbce0; border-radius: 14px; background: #fff; color: #58406f; font-size: 12px; font-weight: 900; }
 .sound-world .sound-tutorial-token.is-selected { border-color: #7950a6; background: #f1e8fa; transform: scale(1.04); }
 .sound-world .sound-tutorial-token.is-complete { border-color: #74aa86; background: #e7f5eb; }
@@ -143,6 +149,21 @@
 .sound-world .sound-tutorial-position { flex: 1; min-width: 90px; font-size: 11px; }
 .sound-world .sound-tutorial-chorus > span { font-size: 14px; }
 .sound-world .sound-tutorial-chorus img { width: 62px; height: 62px; }
+.sound-world .sound-tutorial-demo [data-demo-focus='true'] { animation: sound-tutorial-demo-focus 1.05s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-explore[data-demo-phase='0'] .sound-animal:nth-child(1), .sound-world .sound-tutorial-demo-explore[data-demo-phase='1'] .sound-animal:nth-child(2), .sound-world .sound-tutorial-demo-explore[data-demo-phase='2'] .sound-animal:nth-child(4) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-identify[data-demo-phase='0'] .sound-tutorial-listen, .sound-world .sound-tutorial-demo-missing[data-demo-phase='0'] .sound-tutorial-listen, .sound-world .sound-tutorial-demo-order[data-demo-phase='0'] .sound-tutorial-listen, .sound-world .sound-tutorial-demo-odd[data-demo-phase='0'] .sound-tutorial-listen { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-identify[data-demo-phase='1'] .sound-animal:nth-child(4), .sound-world .sound-tutorial-demo-identify[data-demo-phase='2'] .sound-animal:nth-child(4), .sound-world .sound-tutorial-demo-missing[data-demo-phase='2'] .sound-animal:nth-child(1), .sound-world .sound-tutorial-demo-odd[data-demo-phase='2'] .sound-animal:nth-child(1) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-pairs2[data-demo-phase='0'] .sound-tutorial-token:first-child, .sound-world .sound-tutorial-demo-pairs3[data-demo-phase='0'] .sound-tutorial-token:first-child, .sound-world .sound-tutorial-demo-pairs2[data-demo-phase='2'] .sound-tutorial-token:nth-child(2), .sound-world .sound-tutorial-demo-pairs3[data-demo-phase='2'] .sound-tutorial-token:nth-child(2) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-pairs2[data-demo-phase='1'] .sound-animal:first-child, .sound-world .sound-tutorial-demo-pairs3[data-demo-phase='1'] .sound-animal:first-child { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-same[data-demo-phase='0'] .sound-tutorial-sound-pair > button:first-child, .sound-world .sound-tutorial-demo-same[data-demo-phase='1'] .sound-tutorial-sound-pair > button:nth-child(2), .sound-world .sound-tutorial-demo-same[data-demo-phase='2'] .sound-tutorial-answer:last-child { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-sequence[data-demo-phase='0'] .sound-tutorial-locomotive, .sound-world .sound-tutorial-demo-sequence[data-demo-phase='1'] .sound-tutorial-train li:first-child, .sound-world .sound-tutorial-demo-sequence[data-demo-phase='2'] .sound-tutorial-train li:nth-child(2) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-count[data-demo-phase='0'] .sound-tutorial-count-button .sound-animal, .sound-world .sound-tutorial-demo-count[data-demo-phase='1'] .sound-tutorial-count-dots i:nth-child(2), .sound-world .sound-tutorial-demo-count[data-demo-phase='2'] .sound-tutorial-number:last-child { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-memory[data-demo-phase='0'] .sound-tutorial-memory-card:first-child, .sound-world .sound-tutorial-demo-memory[data-demo-phase='1'] .sound-tutorial-memory-card:nth-child(3), .sound-world .sound-tutorial-demo-memory[data-demo-phase='2'] .sound-tutorial-memory-card:first-child, .sound-world .sound-tutorial-demo-memory[data-demo-phase='2'] .sound-tutorial-memory-card:nth-child(3) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-missing[data-demo-phase='1'] .sound-animal:nth-child(2), .sound-world .sound-tutorial-demo-missing[data-demo-phase='1'] .sound-animal:nth-child(4) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-order[data-demo-phase='1'] .sound-tutorial-order-place:first-child, .sound-world .sound-tutorial-demo-order[data-demo-phase='2'] .sound-tutorial-order-place:last-child { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+.sound-world .sound-tutorial-demo-odd[data-demo-phase='1'] .sound-tutorial-chorus > span:first-child, .sound-world .sound-tutorial-demo-odd[data-demo-phase='1'] .sound-tutorial-chorus > span:last-child, .sound-world .sound-tutorial-demo-odd[data-demo-phase='2'] .sound-tutorial-chorus > span:nth-child(2) { animation: sound-tutorial-demo-focus 1s ease-in-out infinite; }
+@keyframes sound-tutorial-demo-focus { 0%, 100% { transform: translateY(0) scale(1); box-shadow: 0 2px 5px #46325512; } 50% { transform: translateY(-5px) scale(1.045); box-shadow: 0 8px 18px #65448b30; } }
+@keyframes sound-tutorial-thread-draw { from { stroke-dashoffset: 18; } to { stroke-dashoffset: 0; } }
 @keyframes sound-tutorial-train-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
 .sound-world .sound-tutorial-guide { min-width: 0; }
 .sound-world .sound-tutorial-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
