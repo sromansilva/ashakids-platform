@@ -59,6 +59,15 @@ Los catálogos draft-1 y demos históricos no representan este flujo persistente
 
 # ASHAKids — Plan de implementación por fases
 
+## Fluidez: Ritmo de las Palabras / V123 / 2026-10-21
+
+FLUIDEZ ya ofrece once minijuegos originales con selección inicial de nueve por edad,
+catálogo familiar, tutoriales visuales distintos e instrucciones habladas estáticas.
+Conserva niveles asignados y progreso anterior; la colección nueva sólo cuenta visitas
+en memoria y no usa micrófono ni evalúa habla. Queda pendiente ampliar gradualmente
+hacia aproximadamente treinta juegos por mundo y revisar selección/voz con familias.
+Véase V123 en [contexto](PROJECT_CONTEXT.md) y [relevo](IMPLEMENTATION_PROGRESS.md).
+
 ## Alcance actualizado de juegos / V108 / 2026-10-19
 
 Isla y Taller muestran nueve juegos iniciales por edad, desde los cuatro años,

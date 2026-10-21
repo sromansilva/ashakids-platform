@@ -1,3 +1,22 @@
+## V123 — juegos propios para Ritmo de las Palabras / 2026-10-21
+
+FLUIDEZ abre ahora el mundo «Ritmo de las Palabras» con once minijuegos originales:
+Tambor de sílabas, Islas para hacer una pausa, Pasa el turno, Tren de la conversación,
+Eco de palabras, Burbujas que conversan, Camino de palabras, Cuento compartido,
+Orejas que esperan, Puente entre ideas y Ronda de amigos. El tutorial se adapta al
+juego, avanza con demostraciones visuales automáticas y ofrece instrucciones habladas
+que se pueden repetir. El tren representa escuchar/esperar/responder; «Orejas que
+esperan» comprueba escucha con una escena y alternativas ilustradas. Las actividades
+son visitables, sin cronómetro, micrófono, evaluación ni guardado de intentos. Se
+conserva el acceso a los niveles asignados y a su progreso anterior.
+
+Selección inicial de nueve por edad con catálogo familiar de once; cuando falta una
+fecha válida se muestra una selección de apoyo y se explica. Voz estática pública
+Camila es-PE, 89 MP3 en `frontend/public/words/voice/fluency-v1/`; no hay TTS externo
+en el juego. Sin cambios backend/API/BD/permisos/dependencias. Ver avance V123 para
+comprobaciones, publicación y límites. Aproximadamente treinta juegos por mundo sigue
+pendiente.
+
 ## V122 — verificación pública del tutorial dinámico en Render / 2026-10-21
 
 V121 `98b82b6a78b90752118746ee2281bc8904dbfa1c` ya se sirve en

@@ -2274,6 +2274,29 @@ No se ejecutaron pruebas de componentes ni revisión visual en navegador/disposi
 La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
 modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
 
+## V123 — crear minijuegos para Ritmo de las Palabras / 2026-10-21
+
+Objetivo: que FLUIDEZ tenga juegos explorables con escenas e instrucciones propias.
+Rama `dev`, base V122 `7a174ff270897fa18fb473de08f3a3462bb2a020`. Repositorio:
+https://github.com/sromansilva/ashakids-platform . `DemoWorldPlayer.tsx` conecta el
+mundo asignado `FLUIDEZ` con `FluencyWorld.tsx`; el acceso «Abrir niveles asignados con
+progreso guardado» retorna al flujo previo. Catálogo editorial en
+`fluencyContent.ts` y selección por edad en `fluencySelection.ts`; escenas de práctica
+en `FluencyActivityScene.tsx`, demostraciones/tutorial en `FluencyGameDemo.tsx` y
+`FluencyWorld.tsx`, estilos en `fluency-world.css`. La actividad Orejas que esperan
+incluye escuchar una escena y elegir la imagen mencionada; el tren practica la secuencia
+escuchar, esperar y responder. Las demás mecánicas usan palmadas, pausas, burbujas,
+camino, cuento, puente y ronda de turnos. Las instrucciones Camila están en 89 MP3
+estáticos, con textos y hashes en `docs/evidence/fluency-v1/clips.json`.
+
+No usan micrófono, temporizador, puntuación, evaluación clínica ni intentos persistentes;
+el contador de visita sólo vive durante la sesión. No se cambió API/backend/BD, roles,
+dependencias o progreso guardado. Typecheck PASS; build Vite PASS (1980 módulos);
+Graphify refresh/check PASS (3009 nodos); `git diff --check` PASS. No se ejecutaron
+pruebas ni se inspeccionó navegador/dispositivo. Publicación en `dev` y verificación
+pública de Render pendientes al registrar este relevo. `.gitignore` conservó cambio
+local preexistente de `*.crt` y `*.pem`, fuera del commit.
+
 ## V122 — confirmar tutorial V121 en Render / 2026-10-21
 
 Repositorio https://github.com/sromansilva/ashakids-platform, rama `dev`, código
