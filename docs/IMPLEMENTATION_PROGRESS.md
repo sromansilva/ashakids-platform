@@ -2176,4 +2176,8 @@ No se hizo recorrido visual en navegador ni prueba de gestos real en dispositivo
 `.gitignore` ya estaba modificado y permanece fuera de este cambio.
 
 Cierre: revisión de diff y secretos completada. Commit `V115_Explorar_Taller_Sonidos`
-rebasado sobre V114 y listo para publicar por fast-forward en `dev`.
+rebasado sobre V114 y publicado por fast-forward en `dev`; sincronización confirmada.
+
+## V116 — sincronización de exploración del Taller de los Sonidos / 2026-10-21
+
+Cierre documental de V115, sin cambios funcionales ni pruebas nuevas. Commit V115_Explorar_Taller_Sonidos quedó publicado en rama dev, SHA 78a6c65e1c4ed87bb6f104d0a3d9115c0df7e62b; HEAD, origin/dev y git ls-remote origin refs/heads/dev coincidieron tras el push. Base de integración V114 Portal de Familia 979574eb056fd42be848ce5acbb289439c3d6207. El cambio local previo de .gitignore permanece sin publicar. No se verificó despliegue web ni gestos en dispositivo.
