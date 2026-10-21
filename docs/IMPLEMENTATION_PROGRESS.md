@@ -2186,8 +2186,8 @@ Cierre documental de V115, sin cambios funcionales ni pruebas nuevas. Commit V11
 Objetivo: hacer más claras las instrucciones de voz, incorporar un tutorial visual
 interactivo y dar más movimiento a las partidas. Rama `dev`, base V116
 `f34db04ff58bebb32dcc0f4022c4a454efc62863`. Repositorio:
-https://github.com/sromansilva/ashakids-platform . Commit previsto:
-`V117_Ensenar_Jugar_Sonidos`.
+https://github.com/sromansilva/ashakids-platform . Commit publicado:
+`V117_Ensenar_Jugar_Sonidos` (`56c4308f02e7e93a7176ef992f55999234411be6`).
 
 Nuevo `SoundTutorial.tsx`: pasos específicos para cada juego, selector de pasos,
 ejemplo tocable del sonido del pollito. Al abrir un juego, ASHA lee el objetivo y sus
@@ -2203,3 +2203,7 @@ constante antes del estrechamiento en `DashLayout.tsx`, resolviendo el error TS 
 sin cambiar la interfaz. Graphify refresh/check PASS (2955 nodos, 137 comunidades).
 No hubo prueba en dispositivo.
 `.gitignore` previo permanece fuera de esta fase.
+
+## V118 — publicación del tutorial interactivo de Sonidos / 2026-10-21
+
+Cierre documental de V117, sin cambios funcionales ni pruebas nuevas. Rama dev: el commit 56c4308f02e7e93a7176ef992f55999234411be6 fue publicado por fast-forward. Después del push, HEAD, origin/dev y git ls-remote origin refs/heads/dev coincidieron. Build, typecheck, check:frontend (435 archivos), 30 pruebas focalizadas de Sonidos y Graphify refresh/check se ejecutaron antes de publicar. No se verificó el despliegue público ni un dispositivo táctil real. El .gitignore local previo sigue sin publicarse.
