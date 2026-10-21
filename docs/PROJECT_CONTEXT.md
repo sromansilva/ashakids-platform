@@ -1,3 +1,11 @@
+## V125 — voz de cada sílaba en el tambor / 2026-10-21
+
+El niño toca cada tambor para escuchar «ma», «ri», «po» y «sa», con una invitación
+hablada a repetir el trocito si quiere. Puede escucharlo otra vez y avanzar cuando esté
+listo; al terminar, también oye «mariposa» completa y recibe una invitación opcional
+para repetirla. Son cinco frases nuevas Camila almacenadas como audio estático. No se
+usa ni graba micrófono. Ver avance V125 para la publicación y verificación.
+
 ## V124 — publicación pública de Ritmo de las Palabras / 2026-10-21
 
 V123 `e2ba445` se sirve en https://ashakids.onrender.com. Health HTTP 200 y 94

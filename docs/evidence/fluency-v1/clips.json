@@ -6,52 +6,82 @@
     "sha256": "f622c92108533d98698aca7f32026238b32d9df2e3b5dc262c0869db9968f192"
   },
   {
-    "file": "2b2ba79cc5032c23.mp3",
-    "text": "Explora los trocitos de una palabra, con palmas a tu ritmo.",
-    "bytes": 26352,
-    "sha256": "288eb864b0f162ea90b3c31b5b98556af84a8219cd30e48a859084337a72d4d9"
+    "file": "5b58c984145ddcc5.mp3",
+    "text": "Escucha: ma. Si quieres, repítela: ma.",
+    "bytes": 29952,
+    "sha256": "80468c3ddfb8d3476bdf877a05536ddc0d3a70e530cd5c2ef8d02e13d53b58f6"
   },
   {
-    "file": "734d22ef4980c6bc.mp3",
-    "text": "Explora los trocitos de una palabra, con palmas a tu ritmo. Escucha los trocitos de la palabra. Toca un tambor por cada trocito. Puedes ir tan despacio como quieras.",
-    "bytes": 76608,
-    "sha256": "869d219e48b3390faf546178c4dfd04735e994acd6d5219dfde011209ffc3987"
+    "file": "fbac6aaf05de6e7f.mp3",
+    "text": "Escucha: ri. Si quieres, repítela: ri.",
+    "bytes": 29808,
+    "sha256": "f60a85d9961d4c75ce5af87afd63f1204f8375fc2efbeff0ada8c8cfaf0399a7"
   },
   {
-    "file": "48ca7f756966f170.mp3",
-    "text": "Escucha los trocitos de la palabra.",
-    "bytes": 16992,
-    "sha256": "3912d3463b2b54b53a1b6abcfe975a009d88a0e5e7998244a58bd86bbb275c8d"
+    "file": "0a5a98d2b0ad0359.mp3",
+    "text": "Escucha: po. Si quieres, repítela: po.",
+    "bytes": 29664,
+    "sha256": "7ed09586378c951af549817c9202a4fb4381fe8fbeadec9fe45d4a3f580822a8"
   },
   {
-    "file": "2d74fa6d43bee0a9.mp3",
-    "text": "Toca un tambor por cada trocito.",
-    "bytes": 17136,
-    "sha256": "ab1613b412f55fb63ab7ec13001ae3b51673b4ec5b73cd64b5fca3dd142c349f"
+    "file": "777810ba6b77627b.mp3",
+    "text": "Escucha: sa. Si quieres, repítela: sa.",
+    "bytes": 34128,
+    "sha256": "c1bdc1b50330cf9526adf72dd9c5c7386b16d8331a5c9d9b1f3052af9ec77ed7"
   },
   {
-    "file": "2982c2f7f54f5fb0.mp3",
-    "text": "Puedes ir tan despacio como quieras.",
+    "file": "516a423ff74cd51b.mp3",
+    "text": "Escucha la palabra completa: mariposa. Si quieres, repítela: mariposa.",
+    "bytes": 41184,
+    "sha256": "e07ab47f2c985a29a0272b80da21aff77197d92e74a0a6767f3157ad7072e29c"
+  },
+  {
+    "file": "16d3cfd75752b5ff.mp3",
+    "text": "Escucha los trocitos de mariposa y marca cada uno en el tambor.",
+    "bytes": 27216,
+    "sha256": "7f0c9a7e591411353af3c7cbe8232c47a6e6fb3eb0af0d4e8a8560fa3524c773"
+  },
+  {
+    "file": "8201014dc14962ae.mp3",
+    "text": "Escucha los trocitos de mariposa y marca cada uno en el tambor. Toca un tambor para escuchar su trocito. Repítelo en voz alta si quieres. Avanza cuando estés listo.",
+    "bytes": 76176,
+    "sha256": "7d7999b3494078167379dbad836a86ff4ac9390d9fae61e1a926453e337d61a3"
+  },
+  {
+    "file": "54c07ec073887c47.mp3",
+    "text": "Toca un tambor para escuchar su trocito.",
     "bytes": 18144,
-    "sha256": "24239cf9234e0ba73638e9fc3390ad641e27b3b83bfb04072fc203693996301d"
+    "sha256": "58bed05120e9a7dbdfd52303487e3c2bd68ab69b03073765d1244737a8367dac"
   },
   {
-    "file": "1ae64594f743c806.mp3",
-    "text": "Mira los trocitos.",
-    "bytes": 13392,
-    "sha256": "930daf0944fe11b69fa53cd885218a1532a5b3bdd1650ee9ff707eb0d1829992"
+    "file": "d892c0e53ac5c3ac.mp3",
+    "text": "Repítelo en voz alta si quieres.",
+    "bytes": 17856,
+    "sha256": "484c9e2f2ef966ffe1bbb385382bbbcf63d895c45fabc9d416755eb45e6ad9f3"
   },
   {
-    "file": "05974b1d71f06846.mp3",
-    "text": "Toca un tambor por cada uno.",
-    "bytes": 16272,
-    "sha256": "ee24701b0337f7aececf6cb31ab6df7b4ef5eebadee238845965ffc3128317c7"
+    "file": "9aae6465fc956fd9.mp3",
+    "text": "Avanza cuando estés listo.",
+    "bytes": 14832,
+    "sha256": "8ab3798843bc44ec23d9302f57bbe8218c7bd41da1a387b540ca778e6a887c78"
   },
   {
-    "file": "581fb94bf050fd82.mp3",
-    "text": "Hazlo a tu ritmo.",
-    "bytes": 12240,
-    "sha256": "e44c05c6d3883122c9176f3740c40eb1d79327be822c809c2e0c39482884937e"
+    "file": "bb86f2ca09b47211.mp3",
+    "text": "Mira la palabra mariposa.",
+    "bytes": 15264,
+    "sha256": "7b4855d5101ff7aaef2e9895c36ff90fe71a4e9861804d13f9660e9d4a929754"
+  },
+  {
+    "file": "bad5e1863395cc1b.mp3",
+    "text": "Toca cada tambor y escucha su trocito.",
+    "bytes": 18720,
+    "sha256": "c2639633a6398d74373a95feeff1d6abadd0ef9670e132168df120fe10ea3959"
+  },
+  {
+    "file": "91074943d7903d45.mp3",
+    "text": "Repítelo si quieres; avanza a tu ritmo.",
+    "bytes": 21312,
+    "sha256": "d145411f3bcdabfee266b6dd2adffa368f02e188f86849b44098bd4f892a3991"
   },
   {
     "file": "71cc88970f05c0cc.mp3",

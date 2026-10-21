@@ -80,7 +80,7 @@ export function FluencyWorld({ back, legacy, birthDate }: { back: () => void; le
           <button type="button" className="fluency-secondary" onClick={repeat}><RotateCcw/> Otra vez</button><button type="button" className="fluency-action" onClick={() => open(null)}>Elegir otro juego <ArrowRight/></button>
         </section> : <>
           <div className="fluency-session-bar"><button type="button" className="fluency-secondary" onClick={repeat}><RotateCcw/> Empezar otra vez</button><button type="button" className="fluency-secondary" onClick={() => speech.speak(`${game!.goal} ${game!.steps.join(' ')}`)}><Volume2/> Repetir instrucciones</button></div>
-          <div className="fluency-activity-card"><FluencyActivityScene key={active} gameId={active} onComplete={finish}/></div>
+          <div className="fluency-activity-card"><FluencyActivityScene key={active} gameId={active} onComplete={finish} onSpeak={speech.speak}/></div>
         </>}
     </div>}
   </section>;

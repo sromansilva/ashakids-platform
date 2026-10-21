@@ -2274,6 +2274,21 @@ No se ejecutaron pruebas de componentes ni revisión visual en navegador/disposi
 La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
 modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
 
+## V125 — escuchar y repetir cada sílaba del tambor / 2026-10-21
+
+Se amplía «Tambor de sílabas»: tocar cada tambor reproduce audio estático con su unidad
+(ma/ri/po/sa) y una invitación a repetirla, si el niño quiere. Un botón permite oír la
+unidad de nuevo; puede pasar a la siguiente cuando esté listo. Al final puede escuchar
+«mariposa» completa, con otra invitación opcional a repetirla. La mecánica no activa ni
+graba el micrófono. `fluencyContent.ts` define instrucciones y frases; `BeatGame` conecta
+los tambores con el narrador estático. Se añadieron cinco clips Camila: cuatro sílabas y
+la palabra completa. Banco ahora contiene 94 frases/MP3.
+
+Base `dev` V124 `fb1a023fc0544571cde9d67d4f5e0b001c635f2f`; repositorio
+https://github.com/sromansilva/ashakids-platform . Typecheck PASS; build PASS (1980
+módulos). No se ejecutaron pruebas ni revisión en navegador/dispositivo. Pendiente
+publicar V125 y verificar Render.
+
 ## V124 — verificar Render para Ritmo de las Palabras / 2026-10-21
 
 Repositorio https://github.com/sromansilva/ashakids-platform, rama `dev`, código V123

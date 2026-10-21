@@ -3,6 +3,7 @@
 import concurrent.futures
 import hashlib
 import json
+import subprocess
 import time
 import urllib.request
 from datetime import datetime, timezone
@@ -55,7 +56,7 @@ def expected_assets() -> dict[str, bytes]:
 def main() -> None:
     assets = expected_assets()
     deadline = time.monotonic() + 900
-    print(f"Waiting for Render to serve {len(assets)} V123 assets with matching hashes.", flush=True)
+    print(f"Waiting for Render to serve {len(assets)} current Fluency assets with matching hashes.", flush=True)
     while time.monotonic() < deadline:
         try:
             with concurrent.futures.ThreadPoolExecutor(max_workers=12) as pool:
@@ -67,7 +68,7 @@ def main() -> None:
                 "checked_at_utc": datetime.now(timezone.utc).isoformat(),
                 "url": BASE,
                 "branch": "dev",
-                "commit": "e2ba445",
+                "commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
                 "health_http": health,
                 "voice_entries": len(json.loads((ROOT / "frontend/public/words/voice/fluency-v1/manifest.json").read_text(encoding="utf-8"))["entries"]),
                 "verified_assets": sorted(results, key=lambda item: item["path"]),
@@ -75,12 +76,12 @@ def main() -> None:
             }
             output = ROOT / "docs/evidence/fluency-v1/render-live.json"
             output.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-            print(f"PASS: Render health {health}; all {len(results)} public assets match V123.", flush=True)
+            print(f"PASS: Render health {health}; all {len(results)} public Fluency assets match the local build.", flush=True)
             return
         except Exception as error:
             print(f"Render deployment is still updating: {error}", flush=True)
             time.sleep(15)
-    raise RuntimeError("Render did not serve V123 hashes before timeout; do not claim deployment.")
+    raise RuntimeError("Render did not serve current hashes before timeout; do not claim deployment.")
 
 
 if __name__ == "__main__":
