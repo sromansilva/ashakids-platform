@@ -1,0 +1,38 @@
+{
+  "checked_at_utc": "2026-10-21T11:32:15.254577-05:00",
+  "url": "https://ashakids.onrender.com",
+  "branch": "dev",
+  "commit": "98b82b6a78b90752118746ee2281bc8904dbfa1c",
+  "health_http": 200,
+  "verified_assets": [
+    {
+      "path": "/assets/index-C-SuVlIg.css",
+      "http": 200,
+      "bytes": 132956,
+      "sha256": "7faf0959983b2b020740b2c6a25a15b4e3e1efa044b9cf929b69bf410e6964f7",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/assets/index-CZHIshHE.js",
+      "http": 200,
+      "bytes": 338730,
+      "sha256": "75b37f494574fbf163063e36f961fab0035704835106c95621723e88a5832d15",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/assets/world-map-DdPVmgNQ.js",
+      "http": 200,
+      "bytes": 145285,
+      "sha256": "dc2a7561f2d2a1815430ec03e39cf6f7fad6680423e54d354df94abc3be6be54",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/assets/world-map-uG6EouGs.css",
+      "http": 200,
+      "bytes": 92929,
+      "sha256": "b9b265635c076b0b978d7b93c3cf42880e06f50ba3ddb4548a6ce566e666bdd3",
+      "comparison": "exact SHA256"
+    }
+  ],
+  "limits": "Public static bundle SHA-256 comparison and health only. Render internal deploy SHA, browser playback, and child workflow were not checked."
+}

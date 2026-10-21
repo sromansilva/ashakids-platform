@@ -1,3 +1,13 @@
+## V122 — verificación pública del tutorial dinámico en Render / 2026-10-21
+
+V121 `98b82b6a78b90752118746ee2281bc8904dbfa1c` ya se sirve en
+https://ashakids.onrender.com: el 21 de octubre a las 11:32 America/Lima, health fue
+HTTP 200 y los bundles JS/CSS de entrada y de Mundo ASHA coincidieron exactamente con
+el build local por SHA-256. Evidencia sanitizada en
+`docs/evidence/sounds-v121/render-live.json`. Esto verifica los recursos públicos; no
+consulta el SHA interno del despliegue, ni prueba reproducción en navegador, tacto o el
+recorrido con perfil infantil. No se ejecutaron pruebas nuevas.
+
 ## V121 — demostraciones que enseñan cada juego de Sonidos / 2026-10-21
 
 Se hace visible que el tutorial pertenece al juego seleccionado: el encabezado ahora
@@ -13,11 +23,10 @@ de la fila y sonido diferente. No inicia audio automáticamente. Respeta
 
 Archivos: `SoundTutorial.tsx`, `SoundTutorialScene.tsx` y `sound-ui.css`. Typecheck y
 build Vite aprobados (1972 módulos); Graphify refresh/check vigente (2973 nodos,
-139 comunidades); `git diff --check` aprobado. No se ejecutaron pruebas de componentes
-ni se inspeccionó la interfaz en navegador/dispositivo. No se afirma publicación en
-Render; el acceso al dashboard quedó pendiente de iniciar sesión, y la comprobación
-pública previa de esta fase aún mostraba bundles anteriores. Sin cambios backend, API,
-BD, permisos ni dependencias.
+139 comunidades); `git diff --check` aprobado. El cambio se publicó después como V121;
+consulta V122 para la verificación pública de sus bundles. No se ejecutaron pruebas de
+componentes ni se inspeccionó la interfaz en navegador/dispositivo. Sin cambios backend,
+API, BD, permisos ni dependencias.
 
 ## V119 — práctica visual propia para cada juego del Taller de los Sonidos / 2026-10-21
 

@@ -2261,16 +2261,25 @@ https://github.com/sromansilva/ashakids-platform .
 paso de voz/tutorial al cambiar de juego. `SoundTutorialScene.tsx` ofrece una secuencia
 automática de tres mensajes visuales para cada uno de los once tipos; CSS mueve el foco
 por los controles específicos de cada mecánica. En parejas, un hilo punteado dibuja la
-unión; en el tren se recorre locomotora/vagones; memoria voltea el foco entre cartas;
+unión; en el tren se recorre locomotora/vagones; memoria guía la comparación entre cartas;
 contar, comparar, ausente, posición e intruso señalan su acción propia. La demostración
 no activa audio sola; el niño sigue pudiendo tocar. Se respeta `prefers-reduced-motion`.
 Sin cambios backend/API/BD/permisos/dependencias.
 
 Comprobaciones ejecutadas: `npm run typecheck` PASS; `npm run build` PASS, 1972 módulos;
 Graphify refresh/check PASS, mapa local de código 2973 nodos/139 comunidades;
-`git diff --check` PASS. No se ejecutaron pruebas de componentes ni revisión visual en
-navegador/dispositivo. El acceso al dashboard de Render requiere iniciar sesión; la
-respuesta pública comparada antes de este cambio todavía apuntaba a bundles anteriores.
-La publicación/verificación Render queda pendiente de tener la sesión autenticada.
-`.gitignore` mantiene su modificación local preexistente `*.crt`/`*.pem` fuera de esta
-fase.
+`git diff --check` PASS. Commit V121
+`98b82b6a78b90752118746ee2281bc8904dbfa1c` se publicó por fast-forward en dev.
+No se ejecutaron pruebas de componentes ni revisión visual en navegador/dispositivo.
+La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
+modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
+
+## V122 — confirmar tutorial V121 en Render / 2026-10-21
+
+Repositorio https://github.com/sromansilva/ashakids-platform, rama `dev`, código
+V121 `98b82b6a78b90752118746ee2281bc8904dbfa1c`. A las 11:32 America/Lima, URL pública
+`https://ashakids.onrender.com` dio health HTTP 200; JS y CSS de entrada y de Mundo ASHA
+respondieron 200 y coincidieron por SHA-256 exacto con `frontend/dist`. Evidencia:
+`docs/evidence/sounds-v121/render-live.json`. Es una comprobación de recursos estáticos,
+no una lectura del SHA interno de Render ni un recorrido UI/audio/dispositivo. Sin
+pruebas adicionales. `.gitignore` local preexistente sigue sin incluirse.
