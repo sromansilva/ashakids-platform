@@ -2207,3 +2207,46 @@ No hubo prueba en dispositivo.
 ## V118 — publicación del tutorial interactivo de Sonidos / 2026-10-21
 
 Cierre documental de V117, sin cambios funcionales ni pruebas nuevas. Rama dev: el commit 56c4308f02e7e93a7176ef992f55999234411be6 fue publicado por fast-forward. Después del push, HEAD, origin/dev y git ls-remote origin refs/heads/dev coincidieron. Build, typecheck, check:frontend (435 archivos), 30 pruebas focalizadas de Sonidos y Graphify refresh/check se ejecutaron antes de publicar. No se verificó el despliegue público ni un dispositivo táctil real. El .gitignore local previo sigue sin publicarse.
+
+## V119 — escenas de práctica propias para los juegos de Sonidos / 2026-10-21
+
+Objetivo: que los once juegos se expliquen con una pequeña acción y un escenario visual
+del mismo tipo de actividad. Rama `dev`, base V118
+`982cae09d644e9440e22603b8fc52944507a2afa`. Repositorio:
+https://github.com/sromansilva/ashakids-platform . Cambios: nuevo
+`SoundTutorialScene.tsx`; conexión del ID del juego desde `SoundWorld.tsx` y reemplazo
+del ejemplo genérico del pollito en `SoundTutorial.tsx`; escenas y estados táctiles
+estilizados en `sound-ui.css`; pruebas para los once tutoriales y acciones de parejas,
+tren y memoria en `frontend/tests/sound-games.test.tsx`.
+
+Las escenas reutilizan los audios e ilustraciones existentes: tocar animales para
+explorar; oír una pista y elegir; oír una ficha y unirla; escuchar dos sonidos y
+compararlos; escuchar varias veces y contar; voltear fichas hasta completar dos parejas;
+escuchar y elegir quién no sonó; escuchar una fila y elegir primero/último; y escuchar
+un coro para encontrar el sonido distinto. La actividad del tren muestra locomotora y
+tres vagones, permite escuchar la secuencia y coloca los animales en el orden elegido.
+La voz de ASHA conserva las instrucciones específicas ya existentes. Sin cambios de
+backend/API/BD/permisos/dependencias ni intentos persistentes.
+
+Verificación final: `npm run typecheck` PASS; `npm run check:frontend` PASS (436
+archivos, máximo 495 líneas); `npx vitest run tests/sound-games.test.tsx
+tests/sound-challenges.test.tsx` PASS (42/42); `npm run build` PASS (1972 módulos);
+Graphify refresh/check PASS (2972 nodos, 127 comunidades) con
+`.venv-graphify/Scripts/python.exe`. El Python global no satisface la versión requerida.
+La inspección visual en navegador quedó pendiente: la ayuda `with_server.py` no inició
+Vite desde la raíz de PowerShell y Python Playwright no está instalado; el navegador
+integrado bloqueó el localhost. Sin captura de navegador ni dispositivo táctil real.
+Revisión de diff, secretos, historial y referencias remotas: limpia; `git diff --check`
+PASS. V119 `V119_Tutoriales_Interactivos_Sonidos`, commit
+`d58e188229338c703ee25bfea6f3b764454d1394`, publicado por fast-forward en `dev`; después
+del push, `HEAD`, `origin/dev` y GitHub `refs/heads/dev` coincidieron. El cambio previo
+de `.gitignore` (`*.crt`, `*.pem`) sigue local y no se incluyó.
+
+## V120 — relevo documental de escenas para Sonidos / 2026-10-21
+
+Actualización de contexto y progreso para cerrar V119; sin código funcional ni pruebas
+nuevas. V119 ya está publicado en `dev` con SHA
+`d58e188229338c703ee25bfea6f3b764454d1394`. La inspección visual automatizada y en
+dispositivo no se completó por las limitaciones descritas en V119; no se afirma que la
+web pública ya muestre este cambio. Próximo paso: revisar apariencia, secuencias de voz
+y zonas táctiles en un navegador y dispositivo familiar después de la publicación.

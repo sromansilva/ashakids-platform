@@ -1,3 +1,27 @@
+## V119 — práctica visual propia para cada juego del Taller de los Sonidos / 2026-10-21
+
+El tutorial usa una escena jugable que corresponde al juego elegido en las once
+actividades. Explorar deja tocar y escuchar animales; identificación reproduce una
+pista antes de elegir; parejas permite oír fichas y unirlas con animales; comparación
+presenta dos sonidos; conteo practica escuchas repetidas; memoria voltea cuatro fichas
+y completa pares; sonido ausente, primero/último e intruso usan pistas que se pueden
+volver a escuchar. «El tren de sonidos» dibuja una locomotora con tres vagones, reproduce
+la secuencia y llena cada vagón cuando el niño toca al animal. Las instrucciones habladas
+existentes y los pasos del tutorial siguen contextualizados por juego. Los controles usan
+el audio actual, bloquean selecciones mientras suena un clip y respetan movimiento reducido.
+
+Frontend: `SoundTutorialScene.tsx`, integración en `SoundTutorial.tsx` y `SoundWorld.tsx`,
+estilos en `sound-ui.css` y pruebas en `sound-games.test.tsx`. Sin cambios de API,
+backend, BD, permisos, dependencias o guardado de intentos. V119
+`d58e188229338c703ee25bfea6f3b764454d1394` publicado y sincronizado en `dev`.
+Verificación: typecheck, check:frontend (436 archivos, máximo 495 líneas), build Vite
+(1972 módulos), 42 pruebas focalizadas de Sonidos y Graphify refresh/check
+(2972 nodos, 127 comunidades). No se obtuvo captura visual en navegador: el entorno
+no tiene Playwright Python; la pestaña del navegador bloqueó localhost. No verificado
+en un teléfono/tableta real ni en el sitio publicado. Próximo paso: revisión visual y
+de audio en dispositivo familiar tras la publicación de `dev`. `.gitignore` tenía un
+cambio local previo para `*.crt` y `*.pem`; se conservó fuera del commit.
+
 ## V112 — modelo común para animales del Taller de los Sonidos / 2026-10-19
 
 Vaca, gato, perro y pollito usan ilustraciones nuevas de juguete 3D con la misma luz,
