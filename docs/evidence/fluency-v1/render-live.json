@@ -1,10 +1,10 @@
 {
-  "checked_at_utc": "2026-10-21T16:54:18.554999+00:00",
+  "checked_at_utc": "2026-10-21T17:02:42.226677+00:00",
   "url": "https://ashakids.onrender.com",
   "branch": "dev",
-  "commit": "e2ba445",
+  "commit": "30c874d5ba30ba8c6d00dab8e4ec3e1a4091df1c",
   "health_http": 200,
-  "voice_entries": 89,
+  "voice_entries": 94,
   "verified_assets": [
     {
       "path": "/assets/index-C-SuVlIg.css",
@@ -14,24 +14,24 @@
       "comparison": "exact SHA256"
     },
     {
-      "path": "/assets/index-nwZd8chS.js",
+      "path": "/assets/index-CXlUSQUo.js",
       "http": 200,
       "bytes": 338794,
-      "sha256": "53fca9404a5c8c9674f2cfb4b7f32e464ce24eb64b5722b101e8968a2ed38934",
+      "sha256": "f01924b47aba6645f8fcfb7279af97795a7d73b6bca729b37b4171130e5bb851",
       "comparison": "exact SHA256"
     },
     {
-      "path": "/assets/world-map-CDqll1q3.css",
+      "path": "/assets/world-map-CbadARdU.js",
       "http": 200,
-      "bytes": 109063,
-      "sha256": "ff91efd494596c028f8a25e478faee1c780c0f3fcc92891787d71d70420f02f6",
+      "bytes": 179216,
+      "sha256": "19e9520933885789e5c8e98a1098156c9d9c43289fb4b27efa640b77c556a493",
       "comparison": "exact SHA256"
     },
     {
-      "path": "/assets/world-map-vwVIhwOT.js",
+      "path": "/assets/world-map-DDywNPxP.css",
       "http": 200,
-      "bytes": 176915,
-      "sha256": "09b0cf02ae90ef607b117e6809593a60075dac8881674e16129e6554a2b845b8",
+      "bytes": 109413,
+      "sha256": "6d94ba518619e45f410ae5130f9c86f044bb5e38388e657ccbad6c116e059547",
       "comparison": "exact SHA256"
     },
     {
@@ -63,17 +63,17 @@
       "comparison": "exact SHA256"
     },
     {
-      "path": "/words/voice/fluency-v1/05974b1d71f06846.mp3",
-      "http": 200,
-      "bytes": 16272,
-      "sha256": "ee24701b0337f7aececf6cb31ab6df7b4ef5eebadee238845965ffc3128317c7",
-      "comparison": "exact SHA256"
-    },
-    {
       "path": "/words/voice/fluency-v1/08df8201812201f3.mp3",
       "http": 200,
       "bytes": 15552,
       "sha256": "ad1111aa7c2dddeec6a7078e04e23581956e85d7aaeee06714d1ca6cd2a3e8f7",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/0a5a98d2b0ad0359.mp3",
+      "http": 200,
+      "bytes": 29664,
+      "sha256": "7ed09586378c951af549817c9202a4fb4381fe8fbeadec9fe45d4a3f580822a8",
       "comparison": "exact SHA256"
     },
     {
@@ -105,17 +105,17 @@
       "comparison": "exact SHA256"
     },
     {
+      "path": "/words/voice/fluency-v1/16d3cfd75752b5ff.mp3",
+      "http": 200,
+      "bytes": 27216,
+      "sha256": "7f0c9a7e591411353af3c7cbe8232c47a6e6fb3eb0af0d4e8a8560fa3524c773",
+      "comparison": "exact SHA256"
+    },
+    {
       "path": "/words/voice/fluency-v1/18daeabf6252fdaa.mp3",
       "http": 200,
       "bytes": 17136,
       "sha256": "7bf7ec3b49fa2a0536b488d3d72b06e51946bc08530cab6308016a0bf72adbf3",
-      "comparison": "exact SHA256"
-    },
-    {
-      "path": "/words/voice/fluency-v1/1ae64594f743c806.mp3",
-      "http": 200,
-      "bytes": 13392,
-      "sha256": "930daf0944fe11b69fa53cd885218a1532a5b3bdd1650ee9ff707eb0d1829992",
       "comparison": "exact SHA256"
     },
     {
@@ -133,31 +133,10 @@
       "comparison": "exact SHA256"
     },
     {
-      "path": "/words/voice/fluency-v1/2982c2f7f54f5fb0.mp3",
-      "http": 200,
-      "bytes": 18144,
-      "sha256": "24239cf9234e0ba73638e9fc3390ad641e27b3b83bfb04072fc203693996301d",
-      "comparison": "exact SHA256"
-    },
-    {
       "path": "/words/voice/fluency-v1/2af649eb8f164bda.mp3",
       "http": 200,
       "bytes": 14112,
       "sha256": "d7875e1b03637b1d5aef3f43394eb4d0118fa6407b89c4befb054a4e257018f3",
-      "comparison": "exact SHA256"
-    },
-    {
-      "path": "/words/voice/fluency-v1/2b2ba79cc5032c23.mp3",
-      "http": 200,
-      "bytes": 26352,
-      "sha256": "288eb864b0f162ea90b3c31b5b98556af84a8219cd30e48a859084337a72d4d9",
-      "comparison": "exact SHA256"
-    },
-    {
-      "path": "/words/voice/fluency-v1/2d74fa6d43bee0a9.mp3",
-      "http": 200,
-      "bytes": 17136,
-      "sha256": "ab1613b412f55fb63ab7ec13001ae3b51673b4ec5b73cd64b5fca3dd142c349f",
       "comparison": "exact SHA256"
     },
     {
@@ -231,13 +210,6 @@
       "comparison": "exact SHA256"
     },
     {
-      "path": "/words/voice/fluency-v1/48ca7f756966f170.mp3",
-      "http": 200,
-      "bytes": 16992,
-      "sha256": "3912d3463b2b54b53a1b6abcfe975a009d88a0e5e7998244a58bd86bbb275c8d",
-      "comparison": "exact SHA256"
-    },
-    {
       "path": "/words/voice/fluency-v1/49b1f4fdb6d85637.mp3",
       "http": 200,
       "bytes": 17568,
@@ -266,6 +238,13 @@
       "comparison": "exact SHA256"
     },
     {
+      "path": "/words/voice/fluency-v1/516a423ff74cd51b.mp3",
+      "http": 200,
+      "bytes": 41184,
+      "sha256": "e07ab47f2c985a29a0272b80da21aff77197d92e74a0a6767f3157ad7072e29c",
+      "comparison": "exact SHA256"
+    },
+    {
       "path": "/words/voice/fluency-v1/54b041f78e8b56dc.mp3",
       "http": 200,
       "bytes": 17136,
@@ -273,17 +252,17 @@
       "comparison": "exact SHA256"
     },
     {
+      "path": "/words/voice/fluency-v1/54c07ec073887c47.mp3",
+      "http": 200,
+      "bytes": 18144,
+      "sha256": "58bed05120e9a7dbdfd52303487e3c2bd68ab69b03073765d1244737a8367dac",
+      "comparison": "exact SHA256"
+    },
+    {
       "path": "/words/voice/fluency-v1/57eb974b94903a47.mp3",
       "http": 200,
       "bytes": 11664,
       "sha256": "9dee5036bab153653060b88dc099555102f3ce67e5c67cc8ebb166c9128c99a3",
-      "comparison": "exact SHA256"
-    },
-    {
-      "path": "/words/voice/fluency-v1/581fb94bf050fd82.mp3",
-      "http": 200,
-      "bytes": 12240,
-      "sha256": "e44c05c6d3883122c9176f3740c40eb1d79327be822c809c2e0c39482884937e",
       "comparison": "exact SHA256"
     },
     {
@@ -312,6 +291,13 @@
       "http": 200,
       "bytes": 16704,
       "sha256": "606aebd52eaca88a297f7216b5ea0831cad3bd524ad551b8d488dbbbb88762d8",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/5b58c984145ddcc5.mp3",
+      "http": 200,
+      "bytes": 29952,
+      "sha256": "80468c3ddfb8d3476bdf877a05536ddc0d3a70e530cd5c2ef8d02e13d53b58f6",
       "comparison": "exact SHA256"
     },
     {
@@ -357,10 +343,10 @@
       "comparison": "exact SHA256"
     },
     {
-      "path": "/words/voice/fluency-v1/734d22ef4980c6bc.mp3",
+      "path": "/words/voice/fluency-v1/777810ba6b77627b.mp3",
       "http": 200,
-      "bytes": 76608,
-      "sha256": "869d219e48b3390faf546178c4dfd04735e994acd6d5219dfde011209ffc3987",
+      "bytes": 34128,
+      "sha256": "c1bdc1b50330cf9526adf72dd9c5c7386b16d8331a5c9d9b1f3052af9ec77ed7",
       "comparison": "exact SHA256"
     },
     {
@@ -396,6 +382,13 @@
       "http": 200,
       "bytes": 13536,
       "sha256": "1316dc1050a0366c864615ba5d6b32203f43256ea84b00ff702d8733bc4cb737",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/8201014dc14962ae.mp3",
+      "http": 200,
+      "bytes": 76176,
+      "sha256": "7d7999b3494078167379dbad836a86ff4ac9390d9fae61e1a926453e337d61a3",
       "comparison": "exact SHA256"
     },
     {
@@ -438,6 +431,20 @@
       "http": 200,
       "bytes": 14688,
       "sha256": "6e72fd74802a8de3cebf75871bf1039c536d1690a5e29c5a8287038c187e0fe6",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/91074943d7903d45.mp3",
+      "http": 200,
+      "bytes": 21312,
+      "sha256": "d145411f3bcdabfee266b6dd2adffa368f02e188f86849b44098bd4f892a3991",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/9aae6465fc956fd9.mp3",
+      "http": 200,
+      "bytes": 14832,
+      "sha256": "8ab3798843bc44ec23d9302f57bbe8218c7bd41da1a387b540ca778e6a887c78",
       "comparison": "exact SHA256"
     },
     {
@@ -497,6 +504,20 @@
       "comparison": "exact SHA256"
     },
     {
+      "path": "/words/voice/fluency-v1/bad5e1863395cc1b.mp3",
+      "http": 200,
+      "bytes": 18720,
+      "sha256": "c2639633a6398d74373a95feeff1d6abadd0ef9670e132168df120fe10ea3959",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/bb86f2ca09b47211.mp3",
+      "http": 200,
+      "bytes": 15264,
+      "sha256": "7b4855d5101ff7aaef2e9895c36ff90fe71a4e9861804d13f9660e9d4a929754",
+      "comparison": "exact SHA256"
+    },
+    {
       "path": "/words/voice/fluency-v1/bdd66c78dfd0c58c.mp3",
       "http": 200,
       "bytes": 12528,
@@ -550,6 +571,13 @@
       "http": 200,
       "bytes": 16560,
       "sha256": "be9b53aa7a13edc23df0047efbc37438e34a6076092446acb802801aabd6d1a5",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/words/voice/fluency-v1/d892c0e53ac5c3ac.mp3",
+      "http": 200,
+      "bytes": 17856,
+      "sha256": "484c9e2f2ef966ffe1bbb385382bbbcf63d895c45fabc9d416755eb45e6ad9f3",
       "comparison": "exact SHA256"
     },
     {
@@ -651,6 +679,13 @@
       "comparison": "exact SHA256"
     },
     {
+      "path": "/words/voice/fluency-v1/fbac6aaf05de6e7f.mp3",
+      "http": 200,
+      "bytes": 29808,
+      "sha256": "f60a85d9961d4c75ce5af87afd63f1204f8375fc2efbeff0ada8c8cfaf0399a7",
+      "comparison": "exact SHA256"
+    },
+    {
       "path": "/words/voice/fluency-v1/fd3556eb4fb8150d.mp3",
       "http": 200,
       "bytes": 13536,
@@ -660,8 +695,8 @@
     {
       "path": "/words/voice/fluency-v1/manifest.json",
       "http": 200,
-      "bytes": 6931,
-      "sha256": "2aa98bd827af0339b8067ba297972275f2ea56b9980ca61223325f1a762a63bb",
+      "bytes": 7360,
+      "sha256": "14fd22ad808c1de6901956428aaf005840881f2bedc33a069a45653538c26e82",
       "comparison": "canonical JSON"
     }
   ],

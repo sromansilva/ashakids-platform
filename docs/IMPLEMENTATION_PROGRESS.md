@@ -2274,6 +2274,17 @@ No se ejecutaron pruebas de componentes ni revisión visual en navegador/disposi
 La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
 modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
 
+## V126 — verificar publicación de audio silábico en Render / 2026-10-21
+
+Repo https://github.com/sromansilva/ashakids-platform, rama `dev`; V125
+`30c874d5ba30ba8c6d00dab8e4ec3e1a4091df1c`. Render respondió health HTTP 200; 99
+recursos coinciden con el build: 4 bundles JS/CSS, manifiesto y 94 MP3 (JSON canónico
+para manifiesto, SHA-256 exacto para el resto). Evidencia
+`docs/evidence/fluency-v1/render-live.json`; verificador
+`tools/audio/verify_render_fluency.py`. Esta verificación cubre recursos públicos, no
+reproducción, navegación ni dispositivo. No se ejecutaron pruebas nuevas. Push V125 por
+fast-forward confirmado; `.gitignore` local anterior no se incluyó.
+
 ## V125 — escuchar y repetir cada sílaba del tambor / 2026-10-21
 
 Se amplía «Tambor de sílabas»: tocar cada tambor reproduce audio estático con su unidad
@@ -2286,8 +2297,8 @@ la palabra completa. Banco ahora contiene 94 frases/MP3.
 
 Base `dev` V124 `fb1a023fc0544571cde9d67d4f5e0b001c635f2f`; repositorio
 https://github.com/sromansilva/ashakids-platform . Typecheck PASS; build PASS (1980
-módulos). No se ejecutaron pruebas ni revisión en navegador/dispositivo. Pendiente
-publicar V125 y verificar Render.
+módulos). No se ejecutaron pruebas ni revisión en navegador/dispositivo. V125 se publicó
+en `dev` y Render; V126 registra la comprobación de sus recursos públicos.
 
 ## V124 — verificar Render para Ritmo de las Palabras / 2026-10-21
 

@@ -1,3 +1,10 @@
+## V126 — publicación de voz silábica en Render / 2026-10-21
+
+V125 `30c874d5ba30ba8c6d00dab8e4ec3e1a4091df1c` quedó publicado en Render. Health
+HTTP 200; 99 recursos públicos equivalentes al build local, incluidos 94 audios y los
+bundles de entrada/mundo. Evidencia y SHA-256 en
+`docs/evidence/fluency-v1/render-live.json`. No verifica reproducción real ni dispositivo.
+
 ## V125 — voz de cada sílaba en el tambor / 2026-10-21
 
 El niño toca cada tambor para escuchar «ma», «ri», «po» y «sa», con una invitación
