@@ -1,6 +1,6 @@
-import { useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronDown, Check, Users, LogOut, CalendarDays, MessageCircle, HeartHandshake, Settings, FileText, Sparkles, Compass, AlertTriangle, CircleHelp } from 'lucide-react';
+import { useRef, useEffect, useState } from 'react';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
+import { ChevronDown, Check, Users, LogOut, Sparkles, Compass } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useSelectedFamilyPatient } from '@/hooks/useSelectedFamilyPatient';
 import { getPacienteAvatarImage } from '@/config/avatars';
@@ -26,14 +26,18 @@ export function FamilyTopNav({
 }: FamilyTopNavProps) {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { children, patient, selectPatient } = useSelectedFamilyPatient();
   const pickerRef = useRef<HTMLDetailsElement>(null);
+  const [open, setOpen] = useState(false);
 
   // Cerrar selector al hacer click fuera
   useEffect(() => {
     const handleOutside = (event: PointerEvent) => {
       if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
         pickerRef.current.open = false;
+        setOpen(false);
       }
     };
     document.addEventListener('pointerdown', handleOutside);
@@ -42,39 +46,42 @@ export function FamilyTopNav({
 
   const displayName = padreUserName || (user ? `${user.nombres} ${user.apellidos}`.trim() : 'Familia / Tutor');
 
-  const navLinks: { label: string; view?: View; section?: 'world' | 'journey' | 'family'; icon: React.ElementType }[] = [
-    { label: 'Mi Mundo', section: 'world', icon: Sparkles },
-    { label: 'Mi Camino', section: 'journey', icon: Compass },
-    { label: 'Para mi familia', section: 'family', icon: Users },
-    { label: 'Agenda y sesiones', view: 'padre/agenda', icon: CalendarDays },
-    { label: 'Mensajes', view: 'padre/mensajes', icon: MessageCircle },
-    { label: 'Terapeutas', view: 'padre/psicologos', icon: HeartHandshake },
-    { label: 'Reportes', view: 'padre/reportes', icon: FileText },
-    { label: 'Gestionar familia', view: 'padre/config', icon: Settings },
-    { label: 'Incidencias', view: 'padre/incidencias', icon: AlertTriangle },
-    { label: 'Ayuda', view: 'padre/ayuda', icon: CircleHelp },
+  const navLinks: {
+    label: string;
+    path: string;
+    section: 'world' | 'journey' | 'family';
+    icon: React.ElementType;
+    key: string;
+  }[] = [
+    { label: 'Mi Mundo', path: '/padre?section=world', section: 'world', icon: Sparkles, key: 'world' },
+    { label: 'Mi Camino ASHA', path: '/padre?section=journey', section: 'journey', icon: Compass, key: 'journey' },
+    { label: 'Para mi familia', path: '/padre?section=family', section: 'family', icon: Users, key: 'family' },
   ];
+
+  const currentSection = activeSection || searchParams.get('section');
+  const isFamilySubmodule = location.pathname.startsWith('/padre/') && location.pathname !== '/padre/welcome';
 
   const handleNavClick = (item: typeof navLinks[number]) => {
     if (item.section) {
-      if (cur === 'padre' && onSelectSection) {
+      if (location.pathname === '/padre' && onSelectSection) {
         onSelectSection(item.section);
       } else {
-        navigate(`/padre?section=${item.section}`);
+        navigate(item.path);
       }
       return;
     }
-    if (item.view) {
-      go(item.view);
-    }
+    navigate(item.path);
   };
 
   const isItemActive = (item: typeof navLinks[number]) => {
-    if (item.section) {
-      return cur === 'padre' && activeSection === item.section;
+    if (item.section === 'world') {
+      return location.pathname === '/padre' && currentSection === 'world';
     }
-    if (item.view) {
-      return cur === item.view;
+    if (item.section === 'journey') {
+      return location.pathname === '/padre' && currentSection === 'journey';
+    }
+    if (item.section === 'family') {
+      return (location.pathname === '/padre' && currentSection === 'family') || isFamilySubmodule;
     }
     return false;
   };
@@ -86,12 +93,9 @@ export function FamilyTopNav({
         <button
           className="ftn-brand-btn"
           type="button"
+          aria-label="Volver al inicio"
           onClick={() => {
-            if (cur === 'padre' && onSelectSection) {
-              onSelectSection(null);
-            } else {
-              navigate('/padre');
-            }
+            navigate('/padre/welcome');
           }}
         >
           Centro Familiar
@@ -101,52 +105,81 @@ export function FamilyTopNav({
           <details
             className="fc-profile ftn-child-picker"
             ref={pickerRef}
+            open={open}
+            onToggle={(event) => {
+              setOpen(event.currentTarget.open);
+            }}
             onKeyDown={(event) => {
               if (event.key === 'Escape') {
                 pickerRef.current!.open = false;
+                setOpen(false);
                 pickerRef.current?.querySelector('summary')?.focus();
               }
             }}
           >
-            <summary aria-label={`Perfil activo: ${patient.nombres_paciente}`}>
+            <summary
+              className="ftn-child-summary"
+              aria-label={`Elegir perfil: ${patient.nombres_paciente} ${patient.apellidos_paciente}`}
+              onClick={(e) => {
+                e.preventDefault();
+                setOpen((prev) => !prev);
+              }}
+            >
               <img
                 src={getPacienteAvatarImage(patient.avatar_nombre)}
                 alt=""
                 width={40}
                 height={40}
               />
-              <strong className="ftn-child-name">{patient.nombres_paciente}</strong>
+              <strong className="ftn-child-name">
+                <span>{patient.nombres_paciente}</span>
+              </strong>
               <ChevronDown size={18} aria-hidden="true" />
             </summary>
-            <div className="fc-profile-menu">
-              <p>¿Quién va a explorar?</p>
-              {children.map((child) => (
-                <div
-                  role="button"
-                  tabIndex={0}
-                  key={child.id_paciente}
-                  className="ftn-child-option"
-                  aria-label={`Seleccionar perfil de ${child.nombres_paciente}`}
-                  aria-pressed={child.id_paciente === patient.id_paciente}
-                  onClick={() => {
-                    selectPatient(child.id_paciente);
-                    pickerRef.current!.open = false;
-                    pickerRef.current?.querySelector('summary')?.focus();
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
+            {open && (
+              <div className="fc-profile-menu">
+                <p>¿Quién va a explorar?</p>
+                {children.map((child) => (
+                  <button
+                    type="button"
+                    key={child.id_paciente}
+                    className="ftn-child-option"
+                    aria-label={`${child.nombres_paciente} ${child.apellidos_paciente}`}
+                    aria-pressed={child.id_paciente === patient.id_paciente}
+                    onClick={() => {
                       selectPatient(child.id_paciente);
-                      pickerRef.current!.open = false;
+                      if (searchParams.has('world')) {
+                        const nextParams = new URLSearchParams(searchParams);
+                        nextParams.delete('world');
+                        setSearchParams(nextParams, { replace: true });
+                      }
+                      setOpen(false);
+                      if (pickerRef.current) pickerRef.current.open = false;
                       pickerRef.current?.querySelector('summary')?.focus();
-                    }
-                  }}
-                >
-                  <span className="ftn-option-text">Perfil: {child.nombres_paciente}</span>
-                  {child.id_paciente === patient.id_paciente && <Check size={16} aria-hidden="true" />}
-                </div>
-              ))}
-            </div>
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectPatient(child.id_paciente);
+                        if (searchParams.has('world')) {
+                          const nextParams = new URLSearchParams(searchParams);
+                          nextParams.delete('world');
+                          setSearchParams(nextParams, { replace: true });
+                        }
+                        setOpen(false);
+                        if (pickerRef.current) pickerRef.current.open = false;
+                        pickerRef.current?.querySelector('summary')?.focus();
+                      }
+                    }}
+                  >
+                    <span className="ftn-option-text">
+                      {child.nombres_paciente} {child.apellidos_paciente}
+                    </span>
+                    {child.id_paciente === patient.id_paciente && <Check size={16} aria-hidden="true" />}
+                  </button>
+                ))}
+              </div>
+            )}
           </details>
         )}
 
@@ -194,4 +227,3 @@ export function FamilyTopNav({
     </header>
   );
 }
-

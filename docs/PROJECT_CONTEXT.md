@@ -1,3 +1,20 @@
+## V117 — normalización de navegación del entorno familiar / 2026-10-21
+
+Unificación de la navegación para el rol PADRE en dos niveles claros: Nivel 1 (navbar
+global `FamilyTopNav`) con exactamente tres destinos ('Mi Mundo' -> `/padre?section=world`,
+'Mi Camino ASHA' -> `/padre?section=journey`, 'Para mi familia' -> `/padre?section=family`),
+con bienvenida canónica en `/padre/welcome` accesible mediante el botón de marca 'Centro Familiar'
+y oculta en la bienvenida misma; Nivel 2 (navbar contextual `FamilySubNav`) con siete
+botones en secuencia obligatoria persistente ('Para mi familia', 'Agenda y sesiones',
+'Mensajes', 'Terapeutas', 'Reportes', 'Gestionar familia', 'Incidencias').
+
+Se eliminaron las herramientas redundantes `.fc-family-tools` de `FamilyAdultArea`,
+preservando el acceso a 'Ayuda' (`/padre/ayuda`) mediante `.fc-family-support`. Se corrigió
+la ruta obsoleta `/padre/camino` redirigiendo canónicamente a `/padre?section=journey`.
+Verificación local: 25/25 enrutamiento PASS, 419/419 pruebas en 36 archivos Vitest PASS,
+typecheck PASS, check-frontend (438 archivos, máx. 495 líneas) PASS, build Vite PASS,
+Graphify (2974 nodos) PASS. Sin cambios en backend, BD, modelos ni roles no familiares.
+
 ## V112 — modelo común para animales del Taller de los Sonidos / 2026-10-19
 
 Vaca, gato, perro y pollito usan ilustraciones nuevas de juguete 3D con la misma luz,

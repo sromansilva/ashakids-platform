@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { Video, X, Sparkles } from "lucide-react";
 import { B } from "@/theme/brand/B";
 import { View } from "@/types/navigation";
@@ -7,6 +8,7 @@ import { Isotipo } from "@/components/illustrations/Isotipo";
 import { MobileTopBar } from "@/components/common/MobileTopBar";
 import { Sidebar } from "@/app/layouts/Sidebar";
 import { FamilyTopNav } from "@/pages/padre/dashboard/FamilyTopNav";
+import { FamilySubNav } from "@/pages/padre/dashboard/FamilySubNav";
 import { AshhiFloat } from "@/components/assistant/AshhiFloat";
 import { useAuth } from '@/hooks/useAuth';
 import "@/pages/admin/admin.css";
@@ -35,8 +37,22 @@ export function DashLayout({
 }) {
   const [mob, setMob] = useState(false);
   const { user } = useAuth();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
   const isFamily = role === 'padre';
-  const childCenter = isFamily && cur === 'padre';
+  const isWelcome = isFamily && (location.pathname === '/padre/welcome' || cur === ('padre/welcome' as View));
+  const currentSection = searchParams.get('section');
+  const isFamilyContextual = isFamily && !isWelcome && (
+    (location.pathname === '/padre' && currentSection === 'family') ||
+    location.pathname.startsWith('/padre/agenda') ||
+    location.pathname.startsWith('/padre/mensajes') ||
+    location.pathname.startsWith('/padre/psicologos') ||
+    location.pathname.startsWith('/padre/reportes') ||
+    location.pathname.startsWith('/padre/config') ||
+    location.pathname.startsWith('/padre/perfil') ||
+    location.pathname.startsWith('/padre/incidencias')
+  );
+  const childCenter = isFamily && (cur === 'padre' || isWelcome);
   const mobileMenuButton = useRef<HTMLButtonElement>(null);
   const closeMobileMenu = () => { setMob(false); requestAnimationFrame(() => mobileMenuButton.current?.focus()); };
   useEffect(() => {
@@ -59,7 +75,7 @@ export function DashLayout({
 
       {mob && !isFamily && (
         <div className="md:hidden fixed inset-0 z-40 flex bg-black/50 backdrop-blur-sm">
-          <div className={`w-[84vw] max-w-none h-[100dvh] flex flex-col bg-white shadow-2xl flex-shrink-0 animate-in slide-in-from-left duration-200${role === "padre" ? " family-sidebar" : ""}`} style={{ position: "relative", isolation: "isolate", paddingTop: "max(59px, env(safe-area-inset-top))", paddingBottom: "env(safe-area-inset-bottom)" }}>
+          <div className="w-[84vw] max-w-none h-[100dvh] flex flex-col bg-white shadow-2xl flex-shrink-0 animate-in slide-in-from-left duration-200" style={{ position: "relative", isolation: "isolate", paddingTop: "max(59px, env(safe-area-inset-top))", paddingBottom: "env(safe-area-inset-bottom)" }}>
             <div className="flex shrink-0 items-center justify-between px-4 pt-4 pb-3" style={{ position: "relative", zIndex: 1 }}>
               <div className="flex items-center gap-2">
                 <Isotipo size={38} />
@@ -97,12 +113,13 @@ export function DashLayout({
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {role === 'admin' && <div className="admin-toolbar"><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
-        {isFamily && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
+        {isFamily && !isWelcome && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
         {role === 'terapeuta' && <div className="professional-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Terapeuta</span></span></div>}
         {!isFamily && <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />}
         <div className="flex-1 overflow-y-auto flex min-h-0">
           <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : role === "terapeuta" ? " professional-content" : ""}`}>
             {role === 'terapeuta' && <NotificationCenter key={user?.id_usuario} go={go}/>}
+            {isFamily && isFamilyContextual && <FamilySubNav go={go} />}
             {children}
           </div>
 

@@ -66,6 +66,7 @@ export function pathToView(pathname: string, userRole?: SemanticRole | null): Vi
   }
 
   // Aliases amigables
+  if (cleanPath === "/padre/welcome") return "padre/welcome" as View;
   if (cleanPath === "/padre/pacientes") return "padre/hijos" as View;
   if (cleanPath === "/padre/dashboard") return "padre";
   if (cleanPath === "/padre/perfil") return "padre/config" as View;
@@ -141,7 +142,9 @@ export function loginDestination(role: SemanticRole, from?: { pathname?: string;
   if (typeof path === 'string' && path.startsWith('/') && !path.startsWith('//') && !path.includes('\\') && getRequiredRoleForPath(path, role) === role) {
     const requested = path === '/mundo-asha' ? new URLSearchParams(from?.search).get('world') : null;
     const world = requested && ['HABLA','LENGUAJE','FLUIDEZ','VOZ','OROFACIAL'].includes(requested) ? `?world=${requested}` : '';
+    if (path === '/padre' && !from?.search) return '/padre/welcome';
+    if (path === '/padre/camino') return '/padre?section=journey';
     return path + world;
   }
-  return role === 'ADMIN' ? '/admin' : role === 'TERAPEUTA' ? '/terapeuta' : '/padre';
+  return role === 'ADMIN' ? '/admin' : role === 'TERAPEUTA' ? '/terapeuta' : '/padre/welcome';
 }

@@ -2,7 +2,7 @@
 
 export type View =
   | "landing" | "login"
-  | "padre" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes" | "padre/compras"
+  | "padre" | "padre/welcome" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes" | "padre/compras"
   | "padre/hijos" | "padre/progreso" | "padre/reportes" | "padre/config" | "padre/camino" | "padre/ayuda"
   | "padre/incidencias"
   | "terapeuta" | "terapeuta/agenda" | "terapeuta/pacientes" | "terapeuta/mensajes"

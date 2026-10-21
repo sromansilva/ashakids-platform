@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Award, Sparkles } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { View } from '@/types/navigation';
@@ -15,6 +15,7 @@ import { WorldMap } from './WorldMap';
 import './world-map.css';
 
 export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'exploracion' | 'familia' }) {
+  const navigate = useNavigate();
   const { user, role } = useAuth();
   const { patients, children, patient, selectPatient } = useSelectedFamilyPatient();
   const family = role === 'PADRE';
@@ -38,7 +39,7 @@ export function MundoAshaHome({ go }: { go: (view: View) => void; padrePlan?: 'e
       {!patients.error && !progress.error && progress.isSuccess && patient && (world ? <DemoWorldPlayer key={`${user?.id_usuario}:${patient.id_paciente}:${world.id}`} world={world} patientId={patient.id_paciente} birthDate={patient.fecha_nacimiento} onSaved={saved} back={() => { setWorldId(null); setSearch({}); }}/> : <section aria-label="Mundos asignados">
         <div className="asha-map-heading"><div><h2>Elige tu mundo, {patient.nombres_paciente}</h2><p>Explora una isla para ver sus niveles.</p></div><span>Mapa de aventuras</span></div>
         <WorldMap worlds={worlds} onOpen={setWorldId}/>
-        {!worlds.some(w => w.asignado) ? <div className="asha-world-notice"><h2>Mundos pendientes para {patient.nombres_paciente}</h2><p>El profesional puede asignar los cinco mundos desde el plan de este niño.</p><Btn onClick={() => go('padre/camino')}>Ver el recorrido de mi hijo</Btn></div> : worlds.some(w => !w.asignado) && <p className="asha-map-help">Los mundos pendientes se habilitan cuando el terapeuta los asigna en el plan de tu hijo.</p>}
+        {!worlds.some(w => w.asignado) ? <div className="asha-world-notice"><h2>Mundos pendientes para {patient.nombres_paciente}</h2><p>El profesional puede asignar los cinco mundos desde el plan de este niño.</p><Btn onClick={() => navigate('/padre?section=journey')}>Ver el recorrido de mi hijo</Btn></div> : worlds.some(w => !w.asignado) && <p className="asha-map-help">Los mundos pendientes se habilitan cuando el terapeuta los asigna en el plan de tu hijo.</p>}
       </section>)}
       {progress.data?.medallas.length ? <section className="asha-world-medals"><h2><Award size={22} aria-hidden="true"/> Medallas del perfil</h2><ul>{progress.data.medallas.map(m => <li key={m.codigo}>{m.nombre} · {new Date(m.fecha).toLocaleDateString('es-PE', { timeZone: 'America/Lima' })}</li>)}</ul></section> : null}
       {patients.isSuccess && children.length === 0 && <p>Aún no tienes hijos registrados.</p>}
