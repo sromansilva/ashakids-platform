@@ -2298,6 +2298,31 @@ No se ejecutaron pruebas de componentes ni revisión visual en navegador/disposi
 La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
 modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
 
+## V128 — tambor de sílabas: repetición y avance automáticos / 2026-10-22
+
+Objetivo: quitar la exigencia de tocar cada tambor y ampliar las palabras. Repositorio
+https://github.com/sromansilva/ashakids-platform . Base local rama `dev`, HEAD
+`e130160`; `origin/dev` avanzó a `89282c1` con cuatro commits (V115, V116, V117, V127),
+integrados por rebase antes de publicar. Se cambiaron
+`FluencyActivityScene.tsx`, `fluencyContent.ts`, `useFluencySpeech.ts`,
+`gameNarrator.ts`, `tools/audio/prepare_fluency_voice.cjs` y esta documentación.
+
+La ronda ahora presenta mariposa, manzana, conejo, pelota, casa y gato con sus sílabas.
+Para cada palabra se oye una frase segmentada, después se repite la palabra completa y
+el juego avanza al siguiente dibujo automáticamente al terminar el audio. Al terminar
+las seis palabras, el juego se completa sin pedir botón. Se reutilizan clips estáticos
+del banco V106, sin TTS runtime, micrófono, guardado de intentos ni cambios backend/API/
+BD/permisos/dependencias. Se intentó regenerar banco nuevo: el Python del entorno no
+tenía `edge_tts` y la instalación temporal no completó; no se agregaron assets nuevos.
+
+Verificación ejecutada antes y después de integrar: `npm run typecheck` PASS; `npm run
+build` PASS (1983 módulos integrados); los doce MP3 reutilizados existen y tienen más
+de 1 KB; Graphify refresh/check PASS (3026 nodos, 138 comunidades); `git diff --check`
+PASS.
+No se ejecutaron pruebas de componentes ni revisión visual/auditiva en navegador o
+dispositivo. El cambio reutiliza clips publicados de V106; hace falta revisión auditiva
+humana de las seis secuencias después de integrar/publicar.
+
 ## V126 — verificar publicación de audio silábico en Render / 2026-10-21
 
 Repo https://github.com/sromansilva/ashakids-platform, rama `dev`; V125

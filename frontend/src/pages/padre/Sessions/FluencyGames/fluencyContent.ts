@@ -1,5 +1,5 @@
 export const fluencyGames = [
-  { id: 'beat', title: 'Tambor de sílabas', detail: 'Escucha y repite los trocitos, si quieres.', action: 'Escuchar y marcar el ritmo', art: 'drum', color: '#F7C66A', goal: 'Escucha los trocitos de mariposa y marca cada uno en el tambor.', steps: ['Toca un tambor para escuchar su trocito.', 'Repítelo en voz alta si quieres.', 'Avanza cuando estés listo.'] },
+  { id: 'beat', title: 'Tambor de sílabas', detail: 'Escucha cómo suenan las palabras por partes.', action: 'Escuchar y marcar el ritmo', art: 'drum', color: '#F7C66A', goal: 'Escucha varias palabras y sus trocitos en el tambor.', steps: ['Escucha la palabra completa.', 'Oye sus trocitos y la palabra otra vez.', 'La ronda avanza solita.'] },
   { id: 'islands', title: 'Islas para hacer una pausa', detail: 'Un pequeño espacio entre ideas.', action: 'Encontrar pausas', art: 'boat', color: '#9EDBE0', goal: 'Descubre dónde una idea termina y otra puede comenzar.', steps: ['Mira la frase y sus dos ideas.', 'Pon una isla entre las ideas.', 'Cruza cuando estés listo.'] },
   { id: 'turns', title: 'Pasa el turno', detail: 'Escuchamos y compartimos.', action: 'Compartir turnos', art: 'rabbit', color: '#D4B6EF', goal: 'Acompaña una conversación escuchando y esperando tu turno.', steps: ['Escucha lo que cuenta tu amigo.', 'Espera a que termine.', 'Después puedes compartir tu idea.'] },
   { id: 'train', title: 'Tren de la conversación', detail: 'Cada momento tiene su vagón.', action: 'Armar el tren', art: 'car', color: '#B8D5F6', goal: 'Arma el tren: escuchar, esperar y responder.', steps: ['Busca el vagón para escuchar.', 'Después va el vagón de esperar.', 'Por último, llega tu respuesta.'] },
@@ -14,12 +14,18 @@ export const fluencyGames = [
 
 export type FluencyGameId = typeof fluencyGames[number]['id'];
 
-export const fluencyBeatSyllables = ['ma', 'ri', 'po', 'sa'] as const;
-export const fluencyBeatPrompts = fluencyBeatSyllables.map(syllable => `Escucha: ${syllable}. Si quieres, repítela: ${syllable}.`);
-export const fluencyBeatWordPrompt = 'Escucha la palabra completa: mariposa. Si quieres, repítela: mariposa.';
+export const fluencyBeatWords = [
+  { id: 'butterfly', word: 'mariposa', syllables: ['ma', 'ri', 'po', 'sa'] },
+  { id: 'apple', word: 'manzana', syllables: ['man', 'za', 'na'] },
+  { id: 'rabbit', word: 'conejo', syllables: ['co', 'ne', 'jo'] },
+  { id: 'ball', word: 'pelota', syllables: ['pe', 'lo', 'ta'] },
+  { id: 'house', word: 'casa', syllables: ['ca', 'sa'] },
+  { id: 'cat', word: 'gato', syllables: ['ga', 'to'] },
+] as const;
+export const fluencyBeatPrompts = fluencyBeatWords.map(({ word, syllables }) => `${word}: ${syllables.join(', ')}. Son ${syllables.length} trocitos.`);
 
 export const fluencyDemoCues: Record<FluencyGameId, readonly [string, string, string]> = {
-  beat: ['Mira la palabra mariposa.', 'Toca cada tambor y escucha su trocito.', 'Repítelo si quieres; avanza a tu ritmo.'],
+  beat: ['Mira la palabra.', 'Escucha sus trocitos.', 'La palabra vuelve a sonar y el tambor avanza.'],
   islands: ['Lee la primera idea.', 'Coloca una isla en medio.', 'Sigue con la otra idea.'],
   turns: ['Tu amigo está contando.', 'Primero escuchamos.', 'Después llega nuestro turno.'],
   train: ['Escuchar sube al primer vagón.', 'Esperar va en el siguiente.', 'Responder cierra el tren.'],

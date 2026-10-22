@@ -1,3 +1,13 @@
+## V128 — tambor de sílabas con avance automático y más palabras / 2026-10-22
+
+Tambor de sílabas recorre seis palabras ilustradas (mariposa, manzana, conejo, pelota,
+casa y gato). Para cada una se reproduce la palabra con su segmentación y luego la
+palabra completa otra vez; el audio terminado avanza automáticamente y al acabar la
+ronda se cierra el juego. Se quitaron los tambores clicables, el botón de siguiente y
+la ronda única de mariposa. Reutiliza clips estáticos ya existentes del banco V106 para
+las seis secuencias y nombres; no usa micrófono ni agrega dependencias ni audios nuevos.
+Typecheck y build aprobados; sin prueba de navegador/dispositivo. Ver V128 en progreso.
+
 ## V127 — integración de navegación del entorno familiar / 2026-10-21
 
 Integración y unificación de la navegación para el rol PADRE en dos niveles claros: Nivel 1

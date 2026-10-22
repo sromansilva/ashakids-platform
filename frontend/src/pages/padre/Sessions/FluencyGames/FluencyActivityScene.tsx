@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowRight, Ear, Drum, Heart, MessageCircle, Pause, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { WordPicture } from '../WordGames/WordParts';
-import { fluencyBeatPrompts, fluencyBeatSyllables, fluencyBeatWordPrompt, type FluencyGameId } from './fluencyContent';
+import { fluencyBeatPrompts, fluencyBeatWords, type FluencyGameId } from './fluencyContent';
 
 const turnSteps = [
   { id: 'listen', label: 'Escuchar', Icon: Ear },
@@ -9,20 +9,20 @@ const turnSteps = [
   { id: 'respond', label: 'Responder', Icon: MessageCircle },
 ] as const;
 
-function BeatGame({ complete, onSpeak }: { complete: () => void; onSpeak: (text: string) => void }) {
-  const [count, setCount] = useState(0);
-  const [heard, setHeard] = useState(false);
-  const [wordHeard, setWordHeard] = useState(false);
-  const current = fluencyBeatSyllables[count];
+function BeatGame({ complete, onSpeak }: { complete: () => void; onSpeak: (text: string, onEnded?: () => void) => void }) {
+  const [wordIndex, setWordIndex] = useState(0);
+  const current = fluencyBeatWords[wordIndex];
+  useEffect(() => {
+    if (!current) { complete(); return; }
+    onSpeak(fluencyBeatPrompts[wordIndex], () => onSpeak(current.word, () => setWordIndex(index => index + 1)));
+  }, [wordIndex, current, complete, onSpeak]);
   return <>
-    <div className="fluency-picture"><WordPicture id="butterfly" label/></div>
-    <p className="fluency-prompt">Toca el tambor para escuchar cada trocito. Después, repítelo en voz alta si quieres.</p>
-    <div className="fluency-syllable-row" aria-label={`Trocito ${Math.min(count + 1, fluencyBeatSyllables.length)} de ${fluencyBeatSyllables.length}`}>
-      {fluencyBeatSyllables.map((part, index) => <button className={`fluency-syllable-drum ${index < count ? 'is-done' : ''} ${index === count ? 'is-current' : ''}`} type="button" key={part} disabled={index !== count} aria-label={`Tambor ${index + 1}: escuchar ${part}`} onClick={() => { onSpeak(fluencyBeatPrompts[index]); setHeard(true); }}><Drum aria-hidden="true"/><span>{index < count ? part : index === count ? part : '· · ·'}</span></button>)}
+    <div className="fluency-picture">{current && <WordPicture id={current.id} label/>}</div>
+    <p className="fluency-prompt">Escucha la palabra, sus trocitos y la palabra otra vez. El tambor pasa solito a la siguiente.</p>
+    <div className="fluency-syllable-row" aria-label={current ? `Palabra ${wordIndex + 1} de ${fluencyBeatWords.length}` : 'Ronda terminada'}>
+      {current?.syllables.map((part, index) => <div className={`fluency-syllable-drum ${index === 0 ? 'is-current' : ''}`} key={`${current.word}-${part}-${index}`} aria-label={`Sílaba ${part}`}><Drum aria-hidden="true"/><span>{part}</span></div>)}
     </div>
-    {current && <p className="fluency-feedback" aria-live="polite">{heard ? `Ahora puedes repetir «${current}» en voz alta, si quieres.` : `Toca el tambor ${current} para escucharlo.`}</p>}
-    {current && heard && <div className="fluency-action-row"><button className="fluency-secondary" type="button" onClick={() => onSpeak(fluencyBeatPrompts[count])}><Volume2/> Escuchar «{current}» otra vez</button><button className="fluency-action" type="button" onClick={() => { setCount(value => value + 1); setHeard(false); }}><ArrowRight/> Siguiente trocito</button></div>}
-    {count === fluencyBeatSyllables.length && <><p className="fluency-feedback">¡Mariposa! Ya exploraste todos sus trocitos.</p><div className="fluency-action-row"><button className="fluency-secondary" type="button" onClick={() => { onSpeak(fluencyBeatWordPrompt); setWordHeard(true); }}><Volume2/> Escuchar «mariposa» completa</button><button className="fluency-secondary" type="button" onClick={() => { setCount(0); setHeard(false); setWordHeard(false); }}><RotateCcw/> Repetir la ronda</button></div><p className="fluency-feedback" aria-live="polite">{wordHeard ? 'Si quieres, repite «mariposa» completa.' : 'Puedes escuchar la palabra completa o terminar la ronda.'}</p><button className="fluency-action fluency-next" type="button" onClick={complete}>¡Terminé! <Heart/></button></>}
+    <p className="fluency-feedback" aria-live="polite">{current ? `Palabra ${wordIndex + 1} de ${fluencyBeatWords.length}: ${current.word}` : '¡Terminaste todas las palabras!'}</p>
   </>;
 }
 
@@ -136,7 +136,7 @@ function RoundGame({ complete }: { complete: () => void }) {
   </>;
 }
 
-export function FluencyActivityScene({ gameId, onComplete, onSpeak }: { gameId: FluencyGameId; onComplete: () => void; onSpeak: (text: string) => void }) {
+export function FluencyActivityScene({ gameId, onComplete, onSpeak }: { gameId: FluencyGameId; onComplete: () => void; onSpeak: (text: string, onEnded?: () => void) => void }) {
   switch (gameId) {
     case 'beat': return <BeatGame complete={onComplete} onSpeak={onSpeak}/>;
     case 'islands': return <PauseGame complete={onComplete}/>;
