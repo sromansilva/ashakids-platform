@@ -1,3 +1,9 @@
+## V129 — estabilidad del avance hablado del tambor / 2026-10-22
+
+La secuencia automática conserva callbacks estables al cambiar avisos de audio o
+actualizar el mundo, por lo que cada palabra empieza una sola vez y sus avisos no
+reinician la reproducción. Ver V129 en progreso.
+
 ## V128 — tambor de sílabas con avance automático y más palabras / 2026-10-22
 
 Tambor de sílabas recorre seis palabras ilustradas (mariposa, manzana, conejo, pelota,

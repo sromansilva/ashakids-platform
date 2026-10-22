@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowRight, Ear, Drum, Heart, MessageCircle, Pause, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
 import { WordPicture } from '../WordGames/WordParts';
 import { fluencyBeatPrompts, fluencyBeatWords, type FluencyGameId } from './fluencyContent';
@@ -12,10 +12,13 @@ const turnSteps = [
 function BeatGame({ complete, onSpeak }: { complete: () => void; onSpeak: (text: string, onEnded?: () => void) => void }) {
   const [wordIndex, setWordIndex] = useState(0);
   const current = fluencyBeatWords[wordIndex];
+  const handlers = useRef({ complete, onSpeak });
+  handlers.current = { complete, onSpeak };
   useEffect(() => {
+    const { complete, onSpeak } = handlers.current;
     if (!current) { complete(); return; }
     onSpeak(fluencyBeatPrompts[wordIndex], () => onSpeak(current.word, () => setWordIndex(index => index + 1)));
-  }, [wordIndex, current, complete, onSpeak]);
+  }, [wordIndex, current]);
   return <>
     <div className="fluency-picture">{current && <WordPicture id={current.id} label/>}</div>
     <p className="fluency-prompt">Escucha la palabra, sus trocitos y la palabra otra vez. El tambor pasa solito a la siguiente.</p>

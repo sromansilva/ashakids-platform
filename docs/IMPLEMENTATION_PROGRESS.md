@@ -2298,6 +2298,19 @@ No se ejecutaron pruebas de componentes ni revisión visual en navegador/disposi
 La comprobación Render quedó registrada por separado en V122. `.gitignore` mantiene su
 modificación local preexistente `*.crt`/`*.pem` fuera de esta fase.
 
+## V129 — estabilizar reproducción automática del tambor / 2026-10-22
+
+En la revisión posterior a V128, se observó que un cambio del aviso de audio podía
+volver a ejecutar el efecto de reproducción, porque el padre recrea sus callbacks en
+cada render. `BeatGame` ahora lee `complete` y `onSpeak` desde un ref actualizado y
+ejecuta la secuencia solo cuando cambia la palabra. Mantiene el flujo V128: seis
+palabras, voz segmentada, repetición de cada palabra y avance automático.
+
+Base `dev` V128 `0e2c259`; repo https://github.com/sromansilva/ashakids-platform .
+`npm run typecheck` PASS; `npm run build` PASS (1983 módulos); Graphify refresh/check
+PASS (3026 nodos, 138 comunidades); `git diff --check` PASS. No se ejecutaron pruebas
+ni revisión visual/auditiva en navegador o dispositivo. No se tocaron otras rutas ni datos.
+
 ## V128 — tambor de sílabas: repetición y avance automáticos / 2026-10-22
 
 Objetivo: quitar la exigencia de tocar cada tambor y ampliar las palabras. Repositorio
