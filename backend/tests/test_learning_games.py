@@ -49,27 +49,33 @@ async def test_free_levels_five_medals_and_persistence(clinical):
     clients, factory, key = await prepare(clinical)
     parent = clients['p90001']; url = f'/api/v1/pacientes/{key}/juegos'
     catalog = (await parent.get('/api/v1/juegos/catalogo')).json()
-    assert len(catalog) == 5 and all(len(w['levels']) == 3 for w in catalog)
+    level_counts = {world['id']: len(world['levels']) for world in catalog}
+    assert set(level_counts) == set(MUNDOS) and all(count >= 1 for count in level_counts.values())
     assert all('answer' not in l for w in catalog for l in w['levels'])
-    # Primero nivel 3: no completa niveles 1/2, ni exige requisitos previos.
-    response = await parent.post(url+'/HABLA/intentos', json=attempt('HABLA',3))
+    # Completar primero el último nivel no debe exigir niveles previos.
+    habla_last_level = level_counts['HABLA']
+    response = await parent.post(url+'/HABLA/intentos', json=attempt('HABLA', habla_last_level))
     assert response.status_code == 200, response.text
-    assert response.json()['resumen']['mundos'][0]['completados'] == [3]
+    assert response.json()['resumen']['mundos'][0]['completados'] == [habla_last_level]
     assert response.json()['resumen']['medallas'] == []
-    for code in MUNDOS:
-        for n in (3, 1, 2):
+    for code, count in level_counts.items():
+        for n in [count, *range(1, count + 1)]:
             response = await parent.post(url+f'/{code}/intentos',json=attempt(code,n))
             assert response.status_code == 200, response.text
     saved = (await parent.get(url)).json()
-    assert saved['experiencia'] == 2000 and saved['nivel'] == 11
-    assert len(saved['medallas']) == 5 and saved['intentos_totales'] == 16
+    total_levels = sum(level_counts.values())
+    expected_experience = total_levels * 100 + len(level_counts) * 100
+    assert saved['experiencia'] == expected_experience
+    assert saved['nivel'] == 1 + expected_experience // 200
+    assert len(saved['medallas']) == len(level_counts) and saved['intentos_totales'] == total_levels + 1
     again = (await parent.post(url+'/HABLA/intentos',json=attempt('HABLA',1))).json()
-    assert again['experiencia_otorgada'] == 0 and again['resumen']['experiencia'] == 2000
+    assert again['experiencia_otorgada'] == 0 and again['resumen']['experiencia'] == expected_experience
     async with factory() as db:
         profile = await db.scalar(select(Perfil).where(Perfil.id_paciente==key))
-        assert profile.experiencia == 2000 and profile.nivel == 11
-        assert profile.objetivos_completados == 5 and profile.actividades_desarrolladas_total == 15
-        assert await db.scalar(select(func.count()).select_from(PerfilLogro)) == 5
+        assert profile.experiencia == expected_experience and profile.nivel == 1 + expected_experience // 200
+        assert profile.objetivos_completados == len(level_counts)
+        assert profile.actividades_desarrolladas_total == total_levels
+        assert await db.scalar(select(func.count()).select_from(PerfilLogro)) == len(level_counts)
 
 
 @pytest.mark.asyncio
@@ -87,7 +93,8 @@ async def test_failed_attempt_idempotency_permissions_and_concurrency(clinical):
     assert (await clients['p90002'].post(url+'/HABLA/intentos',json=attempt('HABLA',1))).status_code==404
     assert (await clients['t90001'].post(url+'/HABLA/intentos',json=attempt('HABLA',1))).status_code==403
     assert (await parent.post(url+'/VOZ/intentos',json={**attempt('VOZ',1),'puntaje':100})).status_code==422
-    assert (await parent.post(url+'/VOZ/intentos',json={**attempt('VOZ',1),'nivel':4})).status_code==422
+    assert (await parent.post(url+'/HABLA/intentos',json={**attempt('HABLA',1),'nivel':len(MUNDOS['HABLA']['levels'])+1})).status_code==422
+    assert (await parent.post(url+'/VOZ/intentos',json={**attempt('VOZ',1),'nivel':6})).status_code==422
     responses=await asyncio.gather(*(parent.post(url+'/LENGUAJE/intentos',json=attempt('LENGUAJE',1)) for _ in range(2)))
     assert all(r.status_code==200 for r in responses), [r.text for r in responses]
     assert sum(r.json()['experiencia_otorgada'] for r in responses)==100
@@ -119,18 +126,20 @@ async def test_world_completion_inserts_final_reward_without_updating_attempts(c
     event.listen(engine, 'before_cursor_execute', capture)
     try:
         url = f'/api/v1/pacientes/{key}/juegos/{world}/intentos'
-        final_data = attempt(world, 3)
-        for number, data in [(1, attempt(world, 1)), (2, attempt(world, 2)), (3, final_data)]:
+        total_levels = len(MUNDOS[world]['levels'])
+        final_data = attempt(world, total_levels)
+        for number in range(1, total_levels + 1):
+            data = final_data if number == total_levels else attempt(world, number)
             response = await clients['p90001'].post(url, json=data)
             assert response.status_code == 200, response.text
-            assert response.json()['experiencia_otorgada'] == (200 if number == 3 else 100)
+            assert response.json()['experiencia_otorgada'] == (200 if number == total_levels else 100)
         repeat = await clients['p90001'].post(url, json=final_data)
         assert repeat.status_code == 200 and repeat.json()['repetido'] is True
         saved = repeat.json()['resumen']
-        assert saved['experiencia'] == 400 and len(saved['medallas']) == 1
-        assert saved['intentos_totales'] == 3
+        assert saved['experiencia'] == total_levels * 100 + 100 and len(saved['medallas']) == 1
+        assert saved['intentos_totales'] == total_levels
         async with factory() as db:
-            assert list(await db.scalars(select(ResultadoNivel.experiencia_otorgada).order_by(ResultadoNivel.id_resultado_nivel))) == [100, 100, 200]
+            assert list(await db.scalars(select(ResultadoNivel.experiencia_otorgada).order_by(ResultadoNivel.id_resultado_nivel))) == [100] * (total_levels - 1) + [200]
             assert await db.scalar(select(func.count()).select_from(PerfilLogro)) == 1
         assert statements == []
     finally:

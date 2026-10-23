@@ -14,6 +14,8 @@ jobs:
     name: frontend
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      TZ: America/Lima
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -57,8 +59,8 @@ jobs:
           --health-timeout 5s
           --health-retries 20
     env:
-      DATABASE_URL: postgresql+asyncpg://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci
-      ASHAKIDS_TEST_DATABASE_URL: postgresql+asyncpg://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci
+      DATABASE_URL: postgresql+asyncpg://ashakids_ci_runner:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci
+      ASHAKIDS_TEST_DATABASE_URL: postgresql+asyncpg://ashakids_ci_runner:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci
       ASHAKIDS_TEST_ADMIN_DATABASE_URL: postgresql+asyncpg://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci
       ASHAKIDS_ALLOW_SHARED_DB_TESTS: '0'
       ASHAKIDS_ALLOW_ISOLATED_LIVE_TESTS: '0'
@@ -78,8 +80,15 @@ jobs:
         run: |
           psql "postgresql://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci" --set ON_ERROR_STOP=1 \
             --command "CREATE ROLE ashakids_runtime NOLOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS NOINHERIT;"
+          # The test runner is confined to this throwaway database and is never used by the deployed service.
+          psql "postgresql://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci" --set ON_ERROR_STOP=1 \
+            --command "CREATE ROLE ashakids_ci_runner LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION BYPASSRLS NOINHERIT PASSWORD '${{ github.run_id }}-${{ github.run_attempt }}-ci';"
+          psql "postgresql://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci" --set ON_ERROR_STOP=1 \
+            --command "ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO ashakids_ci_runner; ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT USAGE, SELECT, UPDATE ON SEQUENCES TO ashakids_ci_runner;"
           psql "postgresql://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci" --set ON_ERROR_STOP=1 \
             --file backend/scripts/db_creation.sql
+          psql "postgresql://postgres:${{ github.run_id }}-${{ github.run_attempt }}-ci@127.0.0.1:5432/ashakids_test_ci" --set ON_ERROR_STOP=1 \
+            --command "GRANT USAGE ON SCHEMA public TO ashakids_ci_runner; GRANT SELECT, INSERT, UPDATE, DELETE, TRUNCATE ON ALL TABLES IN SCHEMA public TO ashakids_ci_runner; GRANT USAGE, SELECT, UPDATE ON ALL SEQUENCES IN SCHEMA public TO ashakids_ci_runner;"
       - name: Backend tests
         working-directory: backend
         run: python -m pytest -q

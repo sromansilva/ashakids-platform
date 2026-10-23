@@ -22,10 +22,12 @@ from app.models.clinica import Reserva, Sesion
 async def review_db():
     if not os.environ.get('ASHAKIDS_TEST_DATABASE_URL'):
         pytest.skip('Requiere PostgreSQL local ashakids_test_* explícito.')
-    url, _ = disposable_database_urls()
+    url, admin_url = disposable_database_urls()
+    admin_engine = create_async_engine(admin_url)
     engine = create_async_engine(url)
+    admin_factory = async_sessionmaker(admin_engine, expire_on_commit=False)
     factory = async_sessionmaker(engine, expire_on_commit=False)
-    async with engine.begin() as connection:
+    async with admin_engine.begin() as connection:
         # Only creates missing local fixtures. Existing tables are never dropped.
         names = ['usuarios', 'tutores', 'terapeutas', 'pacientes', 'expedientes', 'tratamientos', 'reservas', 'sesiones']
         await connection.run_sync(lambda c: Base.metadata.create_all(c, tables=[Base.metadata.tables[n] for n in names]))
@@ -33,7 +35,7 @@ async def review_db():
         raw = await connection.get_raw_connection()
         sql = (Path(__file__).parents[1] / 'scripts/migrations/011_valoraciones_sesion.sql').read_text(encoding='utf-8')
         await raw.driver_connection.execute(sql.replace('BEGIN;', '', 1).rsplit('COMMIT;',1)[0])
-    async with factory.begin() as db:
+    async with admin_factory.begin() as db:
         users = [Usuario(nombres='Cuenta',apellidos='Sintética',codigo_usuario=f'p{i:05d}',email=f'review-{i}@example.invalid',password_hash='No-login-fixture') for i in range(1,5)]
         db.add_all(users); await db.flush()
         tutor = Tutor(id_usuario=users[0].id_usuario)
@@ -43,7 +45,7 @@ async def review_db():
         db.add_all([tutor,other_tutor,therapist,other_therapist]); await db.flush()
         patient = Paciente(id_tutor=tutor.id_tutor,nombres_paciente='Prueba',apellidos_paciente='Aislada',fecha_nacimiento=date(2018,1,1),sexo='Otro')
         db.add(patient); await db.flush()
-        reservations = [Reserva(id_paciente=patient.id_paciente,id_terapeuta=t.id_terapeuta,fecha_hora_inicio=datetime(2020,1,6,13,tzinfo=timezone.utc),fecha_hora_fin=datetime(2020,1,6,14,tzinfo=timezone.utc),modalidad='PRESENCIAL',estado_reserva='COMPLETADA') for t in [therapist,other_therapist,therapist]]
+        reservations = [Reserva(id_paciente=patient.id_paciente,id_terapeuta=t.id_terapeuta,tipo_cita='INTRODUCTORIA',fecha_hora_inicio=datetime(2020,1,6,13,tzinfo=timezone.utc),fecha_hora_fin=datetime(2020,1,6,14,tzinfo=timezone.utc),modalidad='PRESENCIAL',estado_reserva='COMPLETADA') for t in [therapist,other_therapist,therapist]]
         db.add_all(reservations);await db.flush()
         sessions = [Sesion(id_reserva=r.id_reserva,estado_sesion='FINALIZADA',asistencia='ASISTIO' if index!=2 else 'NO_ASISTIO') for index,r in enumerate(reservations)]
         db.add_all(sessions);await db.flush()
@@ -59,6 +61,7 @@ async def review_db():
         app.dependency_overrides.pop(get_db,None)
         app.dependency_overrides.pop(get_current_user,None)
         await engine.dispose()
+        await admin_engine.dispose()
 
 
 @pytest.mark.asyncio
