@@ -67,7 +67,8 @@ async def test_free_levels_five_medals_and_persistence(clinical):
     expected_experience = total_levels * 100 + len(level_counts) * 100
     assert saved['experiencia'] == expected_experience
     assert saved['nivel'] == 1 + expected_experience // 200
-    assert len(saved['medallas']) == len(level_counts) and saved['intentos_totales'] == total_levels + 1
+    assert len(saved['medallas']) == len(level_counts)
+    assert saved['intentos_totales'] == total_levels + len(level_counts) + 1
     again = (await parent.post(url+'/HABLA/intentos',json=attempt('HABLA',1))).json()
     assert again['experiencia_otorgada'] == 0 and again['resumen']['experiencia'] == expected_experience
     async with factory() as db:
