@@ -34,7 +34,7 @@ it('detiene y descarga el audio anterior al repetir o cancelar', () => {
 it('recupera audio fallido con un aviso y permite reintentar', () => {
   const notice = vi.fn(), narrator = createWordNarrator(notice);
   narrator.speak('Gato'); Player.last.onerror?.();
-  expect(notice).toHaveBeenLastCalledWith(expect.stringContaining('Pulsa Escuchar'));
+  expect(notice).toHaveBeenLastCalledWith(expect.stringContaining('continuar con las imágenes'));
   narrator.speak('Gato'); expect(Player.last.play).toHaveBeenCalledOnce(); expect(notice).toHaveBeenLastCalledWith('');
 });
 it('no muestra avisos tardíos de un audio reemplazado', () => {
