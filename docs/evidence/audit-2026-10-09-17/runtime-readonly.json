@@ -1,0 +1,1196 @@
+{
+  "captured_utc": "2026-10-10T02:21:37.883807+00:00",
+  "role": "ashakids_runtime",
+  "success": true,
+  "role_attributes": {
+    "rolsuper": false,
+    "rolcreatedb": false,
+    "rolcreaterole": false,
+    "rolreplication": false,
+    "rolbypassrls": false,
+    "rolinherit": false,
+    "rolcanlogin": true
+  },
+  "memberships_as_member": [],
+  "owned_relations": 0,
+  "tls": {
+    "version": "TLSv1.3",
+    "verify_mode": "CERT_REQUIRED",
+    "check_hostname": true
+  },
+  "database_privileges": {
+    "connect": true,
+    "create": false,
+    "temporary": true
+  },
+  "public_schema": {
+    "usage": true,
+    "create": false
+  },
+  "tables": [
+    {
+      "relname": "actividades",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "administradores",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "auditoria_cambios",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "conversaciones",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "evaluaciones_ia",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "expedientes",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "logros",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "mensaje_adjuntos",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": false,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "mensajes",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "mundos",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": false,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "niveles",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": false,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "objetivos",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": false,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "pacientes",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "perfil_logros",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "perfiles",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "reportes_sesion",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "reservas",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "resultados_nivel",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "roles",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": false,
+        "UPDATE": false,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "sesiones",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "sesiones_autenticacion",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "terapeutas",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "tratamientos",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": false,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "tutores",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "usuario_roles",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    },
+    {
+      "relname": "usuarios",
+      "relrowsecurity": true,
+      "privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true,
+        "TRUNCATE": false,
+        "REFERENCES": false,
+        "TRIGGER": false,
+        "MAINTAIN": false
+      }
+    }
+  ],
+  "sequences": [
+    {
+      "table_name": "actividades",
+      "column_name": "id_actividad",
+      "sequence_name": "public.actividades_id_actividad_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "administradores",
+      "column_name": "id_administrador",
+      "sequence_name": "public.administradores_id_administrador_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "id_auditoria",
+      "sequence_name": "public.auditoria_cambios_id_auditoria_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "id_conversacion",
+      "sequence_name": "public.conversaciones_id_conversacion_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "column_name": "id_evaluacion_ia",
+      "sequence_name": "public.evaluaciones_ia_id_evaluacion_ia_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "id_expediente",
+      "sequence_name": "public.expedientes_id_expediente_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "logros",
+      "column_name": "id_logro",
+      "sequence_name": "public.logros_id_logro_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "column_name": "id_adjunto",
+      "sequence_name": "public.mensaje_adjuntos_id_adjunto_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "id_mensaje",
+      "sequence_name": "public.mensajes_id_mensaje_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "mundos",
+      "column_name": "id_mundo",
+      "sequence_name": "public.mundos_id_mundo_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "niveles",
+      "column_name": "id_nivel",
+      "sequence_name": "public.niveles_id_nivel_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "objetivos",
+      "column_name": "id_objetivo",
+      "sequence_name": "public.objetivos_id_objetivo_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "id_paciente",
+      "sequence_name": "public.pacientes_id_paciente_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "perfil_logros",
+      "column_name": "id_perfil_logro",
+      "sequence_name": "public.perfil_logros_id_perfil_logro_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "id_perfil",
+      "sequence_name": "public.perfiles_id_perfil_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "id_reporte_sesion",
+      "sequence_name": "public.reportes_sesion_id_reporte_sesion_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_reserva",
+      "sequence_name": "public.reservas_id_reserva_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "resultados_nivel",
+      "column_name": "id_resultado_nivel",
+      "sequence_name": "public.resultados_nivel_id_resultado_nivel_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "roles",
+      "column_name": "id_rol",
+      "sequence_name": "public.roles_id_rol_seq",
+      "usage": false,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "id_sesion",
+      "sequence_name": "public.sesiones_id_sesion_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "id_sesion_auth",
+      "sequence_name": "public.sesiones_autenticacion_id_sesion_auth_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "id_terapeuta",
+      "sequence_name": "public.terapeutas_id_terapeuta_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_tratamiento",
+      "sequence_name": "public.tratamientos_id_tratamiento_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "id_tutor",
+      "sequence_name": "public.tutores_id_tutor_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "id_usuario_rol",
+      "sequence_name": "public.usuario_roles_id_usuario_rol_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "id_usuario",
+      "sequence_name": "public.usuarios_id_usuario_seq",
+      "usage": true,
+      "update": false,
+      "select": false
+    }
+  ],
+  "policies": [
+    {
+      "tablename": "actividades",
+      "policyname": "ashakids_runtime_actividades_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "administradores",
+      "policyname": "ashakids_runtime_administradores_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "administradores",
+      "policyname": "ashakids_runtime_administradores_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "administradores",
+      "policyname": "ashakids_runtime_administradores_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "auditoria_cambios",
+      "policyname": "ashakids_runtime_auditoria_cambios_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "auditoria_cambios",
+      "policyname": "ashakids_runtime_auditoria_cambios_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "conversaciones",
+      "policyname": "ashakids_runtime_conversaciones_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "conversaciones",
+      "policyname": "ashakids_runtime_conversaciones_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "conversaciones",
+      "policyname": "ashakids_runtime_conversaciones_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "evaluaciones_ia",
+      "policyname": "ashakids_runtime_evaluaciones_ia_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "expedientes",
+      "policyname": "ashakids_runtime_expedientes_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "expedientes",
+      "policyname": "ashakids_runtime_expedientes_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "expedientes",
+      "policyname": "ashakids_runtime_expedientes_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "logros",
+      "policyname": "ashakids_runtime_logros_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "mensajes",
+      "policyname": "ashakids_runtime_mensajes_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "mensajes",
+      "policyname": "ashakids_runtime_mensajes_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "pacientes",
+      "policyname": "ashakids_runtime_pacientes_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "pacientes",
+      "policyname": "ashakids_runtime_pacientes_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "pacientes",
+      "policyname": "ashakids_runtime_pacientes_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "pacientes",
+      "policyname": "ashakids_runtime_pacientes_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "perfil_logros",
+      "policyname": "ashakids_runtime_perfil_logros_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "perfiles",
+      "policyname": "ashakids_runtime_perfiles_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "perfiles",
+      "policyname": "ashakids_runtime_perfiles_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "perfiles",
+      "policyname": "ashakids_runtime_perfiles_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "perfiles",
+      "policyname": "ashakids_runtime_perfiles_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "reportes_sesion",
+      "policyname": "ashakids_runtime_reportes_sesion_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "reportes_sesion",
+      "policyname": "ashakids_runtime_reportes_sesion_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "reportes_sesion",
+      "policyname": "ashakids_runtime_reportes_sesion_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "reservas",
+      "policyname": "ashakids_runtime_reservas_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "reservas",
+      "policyname": "ashakids_runtime_reservas_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "reservas",
+      "policyname": "ashakids_runtime_reservas_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "resultados_nivel",
+      "policyname": "ashakids_runtime_resultados_nivel_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "roles",
+      "policyname": "ashakids_runtime_roles_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "sesiones",
+      "policyname": "ashakids_runtime_sesiones_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "sesiones",
+      "policyname": "ashakids_runtime_sesiones_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "sesiones",
+      "policyname": "ashakids_runtime_sesiones_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "sesiones_autenticacion",
+      "policyname": "ashakids_runtime_sesiones_autenticacion_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "sesiones_autenticacion",
+      "policyname": "ashakids_runtime_sesiones_autenticacion_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "sesiones_autenticacion",
+      "policyname": "ashakids_runtime_sesiones_autenticacion_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "sesiones_autenticacion",
+      "policyname": "ashakids_runtime_sesiones_autenticacion_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "terapeutas",
+      "policyname": "ashakids_runtime_terapeutas_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "terapeutas",
+      "policyname": "ashakids_runtime_terapeutas_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "terapeutas",
+      "policyname": "ashakids_runtime_terapeutas_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "terapeutas",
+      "policyname": "ashakids_runtime_terapeutas_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "tratamientos",
+      "policyname": "ashakids_runtime_tratamientos_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "tratamientos",
+      "policyname": "ashakids_runtime_tratamientos_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "tratamientos",
+      "policyname": "ashakids_runtime_tratamientos_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "tutores",
+      "policyname": "ashakids_runtime_tutores_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "tutores",
+      "policyname": "ashakids_runtime_tutores_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "tutores",
+      "policyname": "ashakids_runtime_tutores_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "tutores",
+      "policyname": "ashakids_runtime_tutores_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "tablename": "usuario_roles",
+      "policyname": "ashakids_runtime_usuario_roles_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "usuario_roles",
+      "policyname": "ashakids_runtime_usuario_roles_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "usuario_roles",
+      "policyname": "ashakids_runtime_usuario_roles_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "usuarios",
+      "policyname": "ashakids_runtime_usuarios_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "usuarios",
+      "policyname": "ashakids_runtime_usuarios_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "tablename": "usuarios",
+      "policyname": "ashakids_runtime_usuarios_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "tablename": "usuarios",
+      "policyname": "ashakids_runtime_usuarios_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    }
+  ],
+  "callable_security_definer": [],
+  "schema_counts": {
+    "public_tables": 22,
+    "visible_columns": 154,
+    "foreign_keys": 34,
+    "primary_keys": 26
+  },
+  "mode": "READ ONLY; no denial DDL/DML probes reexecuted"
+}

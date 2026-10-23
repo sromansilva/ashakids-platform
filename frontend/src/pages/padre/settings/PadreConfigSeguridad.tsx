@@ -14,13 +14,17 @@ return (<div className="flex flex-col gap-5">
                     label="Contraseña actual"
                     type="password"
                     placeholder="Tu contraseña actual"
+                    maxLength={128}
                     value={pwCurrent}
                     onChange={setPwCurrent}
                   />
                   <Inp
                     label="Nueva contraseña"
                     type="password"
-                    placeholder="Mínimo 8 caracteres"
+                    placeholder="12–128 caracteres"
+                    hint="Usa entre 12 y 128 caracteres."
+                    minLength={12}
+                    maxLength={128}
                     value={pwNew}
                     onChange={setPwNew}
                   />
@@ -28,6 +32,8 @@ return (<div className="flex flex-col gap-5">
                     label="Confirmar contraseña"
                     type="password"
                     placeholder="Repite la nueva contraseña"
+                    minLength={12}
+                    maxLength={128}
                     value={pwConfirm}
                     onChange={setPwConfirm}
                   />

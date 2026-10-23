@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { pathToView, viewToPath, getRequiredRoleForPath } from "@/routes/paths";
+import { pathToView, viewToPath, loginDestination } from "@/routes/paths";
 import { B } from "@/theme/brand/B";
 import { appointments } from "@/mocks/demo";
 import type { View } from "@/types/navigation";
@@ -36,7 +36,7 @@ const handleTerapeutaRequestUpdate = (id: number, status: "confirmada" | "rechaz
       if (apt && status === "confirmada") {
         const label = apt.type === "presencial" ? "Presencial · Jr. Ricardo Treneman 252" : "Virtual · ASHA Session";
         setPadreExtraNotifs(prev => [{
-          icon: "✅",
+          icon: "âœ…",
           title: `Cita confirmada con ${apt.therapist}`,
           time: `${apt.date} · ${apt.time} · ${label}`,
           color: B.success,
@@ -51,14 +51,7 @@ const bookedSlots = parentAppointments
     .map(a => ({ therapist: a.therapist, date: a.date, time: a.time }));
 const handleLogin = (semanticRole: SemanticRole, plan: "exploracion" | "familia" = "familia") => {
     if (semanticRole === "PADRE") setPadrePlan(plan);
-    const from = location.state?.from?.pathname;
-    if (typeof from === "string" && from.startsWith("/") && !from.startsWith("//") && getRequiredRoleForPath(from, semanticRole) === semanticRole) {
-      navigate(from, { replace: true });
-      return;
-    }
-    if (semanticRole === "ADMIN") navigate("/admin");
-    else if (semanticRole === "TERAPEUTA") navigate("/terapeuta");
-    else navigate("/padre");
+    navigate(loginDestination(semanticRole, location.state?.from), { replace: true });
   };
 const handleLogout = async () => {
     try {

@@ -1,0 +1,112 @@
+{
+  "utc": "2026-10-10T18:03:13.647799+00:00",
+  "mode": "READ ONLY",
+  "models": [
+    {
+      "table": "logros",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "reservas",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "roles",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "sesiones",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "tratamientos",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "usuarios",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "administradores",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "auditoria_cambios",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "preferencias_notificacion",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "reportes_sesion",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "terapeutas",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "tutores",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "bloqueos_agenda",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "conversaciones",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "pacientes",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "turnos_semanales",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "usuario_roles",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "expedientes",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "mensajes",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "notificaciones",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "perfiles",
+      "select_limit_zero": "pass"
+    },
+    {
+      "table": "perfil_logros",
+      "select_limit_zero": "pass"
+    }
+  ],
+  "model_differences": [],
+  "new_table_policy_count": 12,
+  "external_table_access": {
+    "anon": [],
+    "authenticated": [],
+    "service_role": []
+  },
+  "identity_sequences": {
+    "turnos_semanales": true,
+    "bloqueos_agenda": true,
+    "notificaciones": true
+  },
+  "pending_weekly_publication": true,
+  "tls": "TLSv1.3"
+}

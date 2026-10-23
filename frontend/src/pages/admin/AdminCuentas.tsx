@@ -22,6 +22,7 @@ import {
   CrearPadrePayload,
   CrearTerapeutaPayload,
   CuentaItem,
+  RegistroHijo,
 } from "@/types/auth";
 import { PacienteItem } from "@/types/pacientes";
 import { getAvatarInfo } from "@/config/avatars";
@@ -32,11 +33,9 @@ import { AdminCuentasEditarModal } from "./AdminCuentasEditarModal";
 import { AdminCuentasDetalleModal } from "./AdminCuentasDetalleModal";
 import { AdminCuentasTable } from "./AdminCuentasTable";
 import { AdminCuentasStats } from "./AdminCuentasStats";
-
+import { emptyChild } from "./FamilyChildrenFields";
 // ─── Tipos Locales y Mapeos ────────────────────────────────────────────────────────
-
 export type TabRole = "PADRE" | "TERAPEUTA";
-
 // Compatibilidad hacia atrás (re-exportado por Admin.tsx)
 export type AccountRole = "familia" | "terapeuta";
 export type AccountStatus = "activa" | "pendiente" | "suspendida";
@@ -63,7 +62,6 @@ export const STATUS_COLOR: Record<AccountStatus, { bg: string; color: string }> 
   pendiente: { bg: "#FFFBEB", color: "#D97706" },
   suspendida: { bg: "#FEF2F2", color: "#DC2626" },
 };
-
 export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [tab, setTab] = useState<TabRole>("PADRE");
   const [cuentas, setCuentas] = useState<CuentaItem[]>([]);
@@ -72,13 +70,11 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [search, setSearch] = useState("");
   const [errorBanner, setErrorBanner] = useState<string | null>(null);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
-
   // Modales
   const [modal, setModal] = useState<
     "nueva" | "detail" | "editar" | "suspender" | "activar" | "eliminar" | null
   >(null);
   const [selected, setSelected] = useState<CuentaItem | null>(null);
-
   // Estado para gestión administrativa de hijos
   const [modalHijos, setModalHijos] = useState<boolean>(false);
   const [hijosPadre, setHijosPadre] = useState<PacienteItem[]>([]);
@@ -86,7 +82,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [errorHijos, setErrorHijos] = useState<string | null>(null);
   const [hijoAReactivar, setHijoAReactivar] = useState<PacienteItem | null>(null);
   const [reactivando, setReactivando] = useState<boolean>(false);
-
   // Formulario de Creación
   const [formPadre, setFormPadre] = useState<CrearPadrePayload>({
     nombres: "",
@@ -94,10 +89,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     email: "",
     password: "",
     parentesco: "Padre",
+    hijos: [],
     telefono: "",
     direccion: "",
+    tipo_documento: "DNI",
+    numero_documento: "",
   });
-
+  const [hijoEnEdicion, setHijoEnEdicion] = useState<RegistroHijo>(emptyChild());
   const [formTerapeuta, setFormTerapeuta] = useState<CrearTerapeutaPayload>({
     nombres: "",
     apellidos: "",
@@ -108,10 +106,8 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     idiomas: "Español",
     descripcion_profesional: "",
   });
-
   // Formulario de Edición
   const [editForm, setEditForm] = useState<ActualizarCuentaPayload>({});
-
   // Carga inicial y refresco de cuentas
   async function cargarCuentas() {
     setLoading(true);
@@ -127,11 +123,9 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setLoading(false);
     }
   }
-
   useEffect(() => {
     cargarCuentas();
   }, []);
-
   // Notificación temporal
   function showToast(msg: string) {
     setSuccessBanner(msg);
@@ -139,7 +133,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setSuccessBanner(null);
     }, 4000);
   }
-
   // Filtrado
   const visible = cuentas.filter(a => {
     const matchRole = a.rol === tab;
@@ -152,11 +145,9 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       a.codigo_usuario.toLowerCase().includes(term);
     return matchRole && matchSearch;
   });
-
   const famCount = cuentas.filter(a => a.rol === "PADRE").length;
   const terCount = cuentas.filter(a => a.rol === "TERAPEUTA").length;
   const suspCount = cuentas.filter(a => !a.activo).length;
-
   function formatDate(dStr: string) {
     try {
       return new Date(dStr).toLocaleDateString("es-PE", {
@@ -168,7 +159,6 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       return dStr;
     }
   }
-
   // Apertura de Modales
   function openNueva() {
     setFormPadre({
@@ -177,9 +167,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       email: "",
       password: "",
       parentesco: "Padre",
+      hijos: [],
       telefono: "",
       direccion: "",
+      tipo_documento: "DNI",
+      numero_documento: "",
     });
+    setHijoEnEdicion(emptyChild());
     setFormTerapeuta({
       nombres: "",
       apellidos: "",
@@ -193,12 +187,10 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     setErrorBanner(null);
     setModal("nueva");
   }
-
   function openDetail(acc: CuentaItem) {
     setSelected(acc);
     setModal("detail");
   }
-
   function openEditar(acc: CuentaItem) {
     setSelected(acc);
     if (acc.rol === "PADRE") {
@@ -224,20 +216,21 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     setErrorBanner(null);
     setModal("editar");
   }
-
   // Acciones CRUD
   async function handleCrear() {
     setSubmitting(true);
     setErrorBanner(null);
     try {
       if (tab === "PADRE") {
-        const res = await adminService.crearPadre(formPadre);
-        showToast(res.message);
+        const res = await adminService.registrarFamilia(formPadre);
+        setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
       } else {
         const res = await adminService.crearTerapeuta(formTerapeuta);
-        showToast(res.message);
+        setSuccessBanner(`${res.message} Debe crear su contraseña desde el enlace enviado al correo. ${correoEstado(res.correo_bienvenida)}`.trim());
       }
       setModal(null);
+      setFormPadre(f => ({ ...f, password: "" }));
+      setFormTerapeuta(f => ({ ...f, password: "" }));
       await cargarCuentas();
     } catch (err: unknown) {
       const msg = err instanceof ApiError ? err.message : "Error al crear la cuenta.";
@@ -246,7 +239,12 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setSubmitting(false);
     }
   }
-
+  function correoEstado(estado?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null) {
+    if (estado === "ENVIADO") return "Correo de bienvenida enviado.";
+    if (estado === "PENDIENTE") return "Cuenta creada; correo pendiente.";
+    if (estado === "NO_CONFIGURADO") return "Cuenta creada; correo no configurado.";
+    return "";
+  }
   async function handleGuardarEdicion() {
     if (!selected) return;
     setSubmitting(true);
@@ -352,7 +350,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   }
 
   return (
-    <div className="p-4 sm:p-6 max-w-4xl mx-auto">
+    <div className="admin-accounts p-4 sm:p-6 max-w-4xl mx-auto">
       {/* Notificación de éxito */}
       {successBanner && (
         <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl px-4 py-3 flex items-center justify-between text-sm font-bold shadow-sm">
@@ -380,16 +378,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       )}
 
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="admin-page-heading flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2.5">
             <h1 className="text-2xl font-black text-[#1C1135]">Gestión de Cuentas</h1>
-            <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-violet-100 text-violet-700">
-              FastAPI + PostgreSQL
-            </span>
           </div>
           <p className="text-sm text-[#7C6F9A] font-medium mt-1">
-            Sistema cerrado con control de acceso por roles, contraseñas Argon2id y auditoría centralizada.
+            Registra familias y terapeutas, consulta sus datos y administra el acceso.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -459,6 +454,8 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         formTerapeuta={formTerapeuta}
         setFormPadre={setFormPadre}
         setFormTerapeuta={setFormTerapeuta}
+        hijoEnEdicion={hijoEnEdicion}
+        setHijoEnEdicion={setHijoEnEdicion}
         submitting={submitting}
         onClose={() => setModal(null)}
         onCrear={handleCrear}

@@ -1,4 +1,12 @@
+Actualización documental vigente V74 (11/10/2026): [maestro](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md), base V73/09afec8; contrato local 87 operaciones. Los conteos V46 inferiores son históricos. Evidencia nueva sólo documental/PDF; no auditoría ni aceptación integral nueva.
+
 # ASHAKids — Entrega académica y evidencia
+
+Fuente documental actual V46 para el Avance2: [maestro de etapa](DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md)
+y [guía de flujo/pendientes](GUIA_FLUJO_ESTADO_Y_PENDIENTES.md). Base6204803/V45, catálogo
+READONLY30tablas207columnas41FK y OpenAPI3.1.0/69operaciones. Estado humano en Render hasta
+reserva/enlace Zoom, cierre/plan/continuidad pendiente. Las cifras/checklists inferiores son
+históricas por corte; no usarlas como una auditoría o resultado nuevo ni como modelo actual.
 
 Plazo confirmado: **2026-10-09 18:00 America/Lima**.
 Repositorio: https://github.com/sromansilva/ashakids-platform . Base común: dev.
@@ -6,6 +14,18 @@ El corte07 reproduce aplicación dev/e456294 (PR106 integrado), guion V11/8578ca
 evidencia V12_Auditoria_Nucleo_Integrado. Verificar PR/V13_Integracion_Aceptacion_Nucleo y
 SHA remoto antes de preparar la entrega. El corte05 está integrado por PR105/1398e70.
 Los apartados históricos conservan su estado de publicación original.
+
+## Evidencia vigente del backend y permisos, corte14
+
+[Informe14](audits/auditoria-2026-10-09-14.md) y [PDF](../output/pdf/Auditoria_BD_Permisos_AshaKids_2026-10-09-14.pdf): piero-dev, V22/dd71407a8e21f0bacf6904bf430784d1c3b26dda publicado en dev y feat/piero-dev. B02 aplicado y adoptado en API8000: runtime sin privilegios administrativos, ACL exactas en22 tablas,58 políticas dirigidas solo al rol y16 secuencias;6 denegaciones SQL42501. Candidato99 ASGI con SQL real y133HTTP finales correctos;114 backend sin BD/conftest. Datos AUDITORIA retenidos, sesiones nuevas revocadas y permisos de identidades anteriores conservados. Valoración técnica86/100; no nota oficial.
+
+V23 incorpora informe/PDF/evidencia final: verificar su SHA remoto efectivo en Git. Frontend257+25/tipos/build del corte13 es heredado; no nueva QA visual. PUBLIC CONNECT/TEMP permanecen; el aislamiento por familia sigue en FastAPI. Los otros clones requieren configurar su credencial runtime por canal privado. Hosting HTTPS, rotación de cuentas anteriores, backup/restauración/carga y DELETE físicos no certificados. No pagos ni cambios a datos preexistentes.
+
+## Evidencia previa del backend, corte13
+
+[Informe13](audits/auditoria-2026-10-09-13.md) y [PDF](../output/pdf/Auditoria_Backend_AshaKids_2026-10-09-13.pdf): rama piero-dev, SHA funcional b76a34a6125cae42614e9bee6da41ccc28163d7b, publicado en dev y feat/piero-dev. Arquitectura propia FastAPI, modelo físico real de26tablas, TLS verificado, usuarios/permisos y persistencia de nueva cohorteAUDITORIA autorizada. 114 pruebas backend sin BD,133 respuestas HTTP esperadas y53/55 operaciones positivas; regresión frontend257+25. Valoración técnica83/100, no puntuación oficial de la rúbrica. El cierre documental V21 conserva fuente/PDF/evidencias; comprobar SHA remoto efectivo en Git.
+
+B02 mínimo privilegio requiere aprobación específica; hostingHTTPS, rotación, backup/restauración, carga y DELETE físicos no certificados. No pagos, SupabaseAuth ni cambios a datos clínicos anteriores. El informe diferencia evidencia nueva, histórica y casos no ejecutados.
 
 ## Requisitos recibidos del profesor
 

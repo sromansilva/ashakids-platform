@@ -1,0 +1,100 @@
+/* Reference composition: confined to the public landing. */
+.asha-landing .landing-audience-container { margin-inline: auto; }
+.asha-landing { background: #fffefd; }
+.asha-landing .landing-wordmark > span:nth-child(2) { color: var(--asha-orange); }
+.asha-landing .landing-logo-rays { position: absolute; width: 22px; height: 28px; right: -26px; top: -7px; }
+.asha-landing .landing-logo-rays::before,.asha-landing .landing-logo-rays::after { content: ''; position: absolute; width: 5px; height: 13px; background: var(--asha-orange); border-radius: 8px; transform: rotate(30deg); }
+.asha-landing .landing-logo-rays::after { top: 14px; left: 9px; height: 10px; transform: rotate(75deg); }
+.asha-landing .landing-wordmark { position: relative; }
+.asha-landing .landing-hero-actions { display: flex; gap: 22px; }
+.asha-landing .landing-ashi-scene { position: relative; min-width: 0; }
+.asha-landing .landing-ashi-hero { width: 100%; height: auto; }
+.asha-landing .landing-ashi-bubble { position: absolute; top: 3%; right: 5%; display: flex; flex-direction: column; align-items: center; padding: 20px 24px 14px; border: 2px solid white; border-radius: 52px; background: linear-gradient(130deg,#fffefaed,#e5fcffee); box-shadow: 0 8px 40px #29c8cf12,inset 0 0 22px white; color: var(--asha-ink); }
+.asha-landing .landing-ashi-bubble::after { content: ''; position: absolute; bottom: -22px; left: 42px; width: 34px; height: 32px; background: #f2fdff; clip-path: polygon(0 0,100% 0,0 100%); }
+.asha-landing .landing-ashi-bubble strong { font-weight: 900; font-size: 30px; }
+.asha-landing .landing-ashi-bubble span { font-size: 20px; }
+.asha-landing .landing-voice-decoration { position: absolute; right: 21%; top: 31%; color: #16b8b5; }
+.asha-landing .landing-audience { position: relative; padding: 42px 0 50px; background: linear-gradient(120deg,#f8f5ff,#faf9ff); border-radius: 48% 52% 0 0 / 32px 32px 0 0; }
+.asha-landing .landing-audience h2 { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: clamp(30px,3.15vw,48px); white-space: nowrap; text-wrap: nowrap; }
+.asha-landing .landing-audience h2 > span:not(.landing-heading-rays) { margin-left: -3px; }
+.asha-landing .landing-heading-rays { position: relative; flex: 0 0 38px; height: 42px; }
+.asha-landing .landing-heading-rays::before,.asha-landing .landing-heading-rays::after { content: ''; position: absolute; width: 8px; height: 27px; background: #ff8a12; border-radius: 8px; left: 16px; top: 0; transform: rotate(-35deg); }
+.asha-landing .landing-heading-rays::after { width: 24px; height: 8px; top: 32px; left: 0; transform: rotate(8deg); }
+.asha-landing .landing-heading-rays:last-child { transform: scaleX(-1); }
+.asha-landing .landing-audience-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 32px; }
+.asha-landing.asha-ui .landing-audience-card { display: grid; grid-template-columns: 42% 1fr 40px; align-items: center; gap: 14px; height: 194px; padding: 16px 20px; text-align: left; border-radius: 24px; border-color: white; box-shadow: inset 0 1px 0 white,0 8px 32px #624ac509; cursor: pointer; transition: transform 180ms ease,box-shadow 180ms ease; }
+.asha-landing .landing-audience-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px #624ac51a; }
+.asha-landing .landing-audience-card img { width: 100%; height: 170px; object-fit: contain; }
+.asha-landing .landing-audience-copy strong { display: block; font-size: 27px; font-weight: 900; letter-spacing: -.04em; line-height: 1.2; }
+.asha-landing .landing-audience-copy > span { display: block; font-size: 17px; color: var(--asha-muted); line-height: 1.35; margin-top: 7px; }
+.asha-landing .landing-audience-arrow { display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; background: #eee5fc; color: var(--asha-primary-dark); }
+.asha-landing #landing-steps,.asha-landing #landing-faq { scroll-margin-top: 100px; }
+.asha-landing .landing-assistant-dock { position: fixed; right: 20px; bottom: 54px; z-index: 45; display: flex; flex-direction: column; gap: 20px; }
+.asha-landing .landing-dock-control { display: flex; flex-direction: column; align-items: center; text-decoration: none; gap: 0; }
+.asha-landing .landing-dock-ashi,.asha-landing .landing-dock-whatsapp { width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; box-shadow: 0 7px 16px #5b21b633,inset 0 2px 5px #ffffff80; }
+.asha-landing .landing-dock-ashi { background: linear-gradient(150deg,#b669ff,#7e20f4); }
+.asha-landing .landing-dock-ashi img { width: 78px; height: 78px; object-fit: contain; }
+.asha-landing .landing-dock-whatsapp { color: white; background: linear-gradient(140deg,#40e579,#07b952); box-shadow: 0 7px 16px #07b95233,inset 0 2px 5px #ffffff80; }
+.asha-landing .landing-dock-whatsapp svg { width: 60px; height: 60px; }
+.asha-landing .landing-dock-label { padding: 4px 14px; background: #ffffffe8; border-radius: 20px; box-shadow: 0 5px 14px #29164c12; font-size: 14px; font-weight: 800; color: var(--asha-ink); }
+@media (min-width: 1024px) {
+  .asha-landing > nav { border: 0; background: #fffefdde; }
+  .asha-landing > nav > div { max-width: 1416px; height: 88px; padding-inline: 24px; }
+  .asha-landing > nav .landing-brand > img { display: none !important; }
+  .asha-landing .landing-wordmark { font-size: 44px; letter-spacing: -2px; }
+  .asha-landing > nav > div > div:nth-child(2) { margin-left: -140px; gap: clamp(20px,4vw,60px); }
+  .asha-landing > nav .landing-nav-link { font-size: 18px; font-weight: 600; min-height: 44px; display: flex; align-items: center; color: var(--asha-ink); }
+  .asha-landing.asha-ui > nav .asha-btn { min-width: 173px; min-height: 48px; font-size: 20px; border-radius: 16px; }
+  .asha-landing .landing-container { width: min(1368px,calc(100% - 112px)); }
+  .asha-landing .landing-reference-hero { padding-top: 50px; background: #fffefd; overflow: hidden; }
+  .asha-landing .landing-reference-hero .landing-hero-layout { height: 520px; display: block; padding-bottom: 0; position: relative; }
+  .asha-landing .landing-reference-hero .landing-hero-copy { width: 58%; }
+  .asha-landing .landing-purpose { font-size: 16px; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 14px; color: #169b9c; }
+  .asha-landing .landing-reference-hero h1 { font-size: clamp(46px,4.3vw,66px); line-height: 1.02; letter-spacing: -.045em; white-space: nowrap; text-wrap: nowrap; }
+  .asha-landing .landing-reference-hero h1 > .landing-title-line { color: var(--asha-ink); }
+  .asha-landing .landing-reference-hero h1 > .landing-title-line > span { color: #8728ee; }
+  .asha-landing .landing-reference-hero .landing-intro { font-size: clamp(18px,1.6vw,24px); line-height: 1.35; max-width: none; margin: 25px 0 34px; letter-spacing: -.012em; }
+  .asha-landing.asha-ui .landing-hero-actions .asha-btn { height: 70px; padding-inline: 32px; font-size: clamp(16px,1.35vw,20px); border-radius: 18px; white-space: nowrap; }
+  .asha-landing .landing-primary { min-width: 328px; }
+  .asha-landing .landing-reference-hero .landing-benefits { padding: 36px 0 0; gap: 40px; }
+  .asha-landing .landing-benefits li { font-size: 18px; }
+  .asha-landing .landing-benefits svg { background: #18a4a4; color: white; }
+  .asha-landing .landing-ashi-scene { position: absolute; width: 800px; height: 600px; right: -80px; top: -76px; }
+  .asha-landing .landing-ashi-hero { width: 930px; max-width: none; height: 620px; object-fit: contain; position: absolute; left: -90px; top: 14px; }
+  .asha-landing .landing-ashi-bubble { top: 60px; right: 90px; }
+  .asha-landing .landing-voice-decoration { top: 218px; right: 220px; }
+  .asha-landing .landing-audience-container { width: min(1432px,calc(100% - 104px)); }
+  .asha-landing .landing-audience-grid { padding-right: 84px; }
+  .asha-landing .landing-audience-grid { margin-top: 24px; }
+  .asha-landing .landing-reference-hero .landing-intro { margin-bottom: 24px; }
+  .asha-landing.asha-ui .landing-hero-actions .asha-btn--outline { padding-inline: 26px; font-size: clamp(16px,1.35vw,20px); }
+  .asha-landing.asha-ui .landing-audience-card { grid-template-columns: 39% 1fr 40px; }
+  .asha-landing .landing-audience-copy strong { font-size: 26px; white-space: nowrap; }
+  .asha-landing .landing-audience-card img { transform: scale(1.12); }
+  .asha-landing .landing-audience-card:nth-child(2) img { transform: scale(1.4); }
+  .asha-landing.asha-ui .landing-hero-actions .landing-primary { background: linear-gradient(180deg,#aa45fc,#8521ef); }
+}
+@media (min-width: 1024px) and (max-width: 1350px) {
+  .asha-landing > nav > div > div:nth-child(2) { margin-left: 0; }
+  .asha-landing .landing-primary { min-width: 0; }
+  .asha-landing .landing-ashi-scene { width: 660px; right: -70px; }
+  .asha-landing .landing-ashi-hero { width: 760px; height: 580px; left: -65px; top: 28px; }
+  .asha-landing .landing-ashi-bubble { right: 30px; font-size: 24px; }
+  .asha-landing .landing-audience-copy strong { font-size: 23px; }
+  .asha-landing.asha-ui .landing-audience-card { grid-template-columns: 37% 1fr 32px; gap: 8px; padding-inline: 12px; }
+}
+@media (max-width: 1023px) {
+  .asha-landing .landing-hero-actions { flex-wrap: wrap; }
+  .asha-landing .landing-audience h2 { white-space: normal; text-wrap: balance; flex-wrap: wrap; }
+  .asha-landing .landing-audience-grid { grid-template-columns: 1fr; }
+  .asha-landing .landing-audience-card { max-width: 500px; width: 100%; margin-inline: auto; }
+  .asha-landing .landing-assistant-dock { right: 12px; bottom: 16px; gap: 12px; }
+  .asha-landing .landing-dock-ashi,.asha-landing .landing-dock-whatsapp { width: 56px; height: 56px; }
+  .asha-landing .landing-dock-ashi img,.asha-landing .landing-dock-whatsapp svg { width: 48px; height: 48px; }
+  .asha-landing .landing-ashi-bubble { padding: 10px 18px; }
+  .asha-landing .landing-ashi-bubble strong { font-size: 18px; }
+  .asha-landing .landing-ashi-bubble span { font-size: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .asha-landing .landing-audience-card { transition: none; }
+}

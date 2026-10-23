@@ -1,6 +1,163 @@
+## Catálogos de juegos por edad / V108 / 2026-10-19
+
+La Isla de las Palabras y el Taller de los Sonidos comparten el cálculo de edad
+calendario en America/Lima, a partir del nacimiento ya autorizado del paciente.
+Cada mundo muestra nueve de sus once juegos para las franjas editoriales 4–5,
+6–7 y 8+; «Para la familia» conserva el catálogo de once para explorar. La edad no
+se duplica ni se usa como permiso profesional.
+
+El Taller incorpora siete retos de escucha y memoria con tres rondas, ayuda visible
+y dos modos de dificultad. Comparar, ordenar, contar, recordar, buscar el sonido que
+falta, reconocer posiciones y detectar un sonido diferente complementan cuatro
+actividades existentes. Su narración comparte la voz estática es-PE-CamilaNeural de
+la Isla. Textos públicos se preparan durante autoría; MP3 e ilustraciones WebP se
+sirven desde el mismo origen. No hay TTS al jugar, peticiones nuevas, micrófono en
+HABLA, progreso persistente ni premios XP en estos retos. Las actividades básicas
+anteriores conservan su flujo.
+
+El catálogo ampliado llega a once actividades por mundo en este corte, no a los
+aproximadamente treinta solicitados. Selección, voz y contenido requieren aceptación
+humana; no son evaluación clínica ni normas de desarrollo.
+[ADR0028](decisions/0028-juegos-por-edad-y-taller-de-sonidos.md).
+
+## Narración natural estática en Palabras / 2026-10-19
+
+V106 sustituye Web Speech dentro de la Isla por230 MP3 locales con narradora
+sintética es-PE-CamilaNeural. Generación editorial previa, índice de texto en
+wordVoiceIndex y reproductor cancelable por instancia en wordNarrator. Sin TTS
+externo durante el uso, claves ni dependencia runtime nueva; herramientas de
+autoría en tools/audio. La voz histórica de otros mundos y reconocimiento del
+micrófono no cambian. [ADR0027](decisions/0027-narracion-estatica-palabras.md).
+
+## Selección de Palabras por edad y micrófono / 2026-10-19
+
+V105 pasa fecha_nacimiento del paciente autorizado de MundoAshaHome a WordWorld,
+calcula edad en America/Lima y elige ocho actividades entre once por bandas
+editoriales 4–5/6–7/8+. Catálogo completo dentro de Para la familia y modos de ayuda
+conservados; no cambia la asignación profesional ni crea permisos por edad.
+Nombra el dibujo reutiliza transcripción HTTP existente sin contexto de intento
+persistente. Grabación local con reproducción, límite10s/5MB, cancelación/limpieza,
+AbortSignal y respuesta máxima45s; confirmación textual o alternativa de imágenes.
+No mide pronunciación ni progreso clínico. Sin BD, nuevos endpoints o dependencias
+declaradas. [ADR0026](decisions/0026-seleccion-palabras-edad-y-voz-transitoria.md).
+
+## Colección de palabras en Mundo ASHA / 2026-10-16
+
+LENGUAJE aplica el mismo límite de práctica de la visita de ADR0025: diez juegos
+en WordGames, contenido/arte separados de las mecánicas y sin nuevos endpoints ni
+persistencia. El catálogo basica-1 queda disponible en «Para la familia», con sus
+permisos/progreso intactos. SpeechSynthesis opcional por interacción y cancelado al
+salir/ocultar la página. Arte WebP local, sin datos de pacientes en medios.
+V104 (2026-10-18) añade modos y bienvenida en WordWorld, bancos mezclados, apoyos
+compartidos en WordParts y StoryGame separado para secuencias ilustradas. Doce
+recursos nuevos de menú/vocabulario, sin endpoints ni cambio de decisión de persistencia.
+Ver [diseño preescolar](design/isla-palabras-prescolar.md).
+
+## Práctica de sonidos en Mundo ASHA / 2026-10-16
+
+HABLA presenta cuatro actividades independientes de animales como práctica de la
+visita (V102, 2026-10-18): explorar, identificar, unir dos parejas y unir tres.
+La celebración reemplaza al tablero; ninguna actividad encadena otra. Se mantienen
+el acceso familiar/asignación y las actividades `basica-1` con sus intentos y premios.
+No se reutilizan esos intentos para resultados de los juegos nuevos. Contenido y
+medios locales separados de la lógica; reproductor único con cancelación al salir.
+Sin BD ni API nueva. [ADR 0025](decisions/0025-practica-sonidos-sin-reinterpretar-intentos.md).
+
+## V56 - Frontera pública del catálogo / 2026-10-10
+
+Landing integra cinco mundos con metadata pública y conserva rutas de actividades.
+Catálogo anónimo entrega sólo metadatos/números de nivel; resumen de paciente entrega
+contenido únicamente en mundos asignados. Permisos y escritura server-side conservados.
+Sin cambios de tablas/BD. ADR [0022 catálogo público](decisions/0022_catalogo_publico_descriptivo.md) documenta el contrato y sus límites.
+WebP con hash/static hosting immutable; HTML no-cache y API no-store. Login retorna a
+ruta interna compatible usando helper compartido, sin otorgar permisos por la URL.
+
+## Adopción compartida del flujo — 2026-10-10 / ADR0018
+
+Migraciones002–006 adoptadas explícitamente con respaldo, sin DDL al arrancar.
+Runtime conserva B02 y TLS: cuatro tablas nuevas con operaciones mínimas,12 políticas
+RLS y tres secuencias. FastAPI mantiene autorización por identidad/paciente; no Supabase Auth.
+Esquema23modelos compatible, filas/ACL anteriores conservadas. Render V43 y recordatorios
+activados; Auto-Deploy observado activo, distinto de receta histórica. Evidencia deploy-v44.
+Readiness sigue siendo conectividad, no certificación de esquema ni del flujo completo.
+Los apartados inferiores conservan estado histórico de implementación local/restauración V26.
+
 # Arquitectura de ASHAKids
 
+## V52 — correo transaccional y boletín con doble confirmación
+
+Las altas administrativas conservan la transacción de cuenta y, después del commit,
+intentan enviar un correo de bienvenida mediante Gmail API server-side OAuth. El alcance
+requerido es `gmail.send`; los secretos y el refresh token solo viven en el entorno del
+backend. La respuesta indica `ENVIADO`, `PENDIENTE` o `NO_CONFIGURADO` y nunca incluye la
+contraseña inicial ni datos OAuth.
+
+El boletín usa `suscripciones_boletin` y tokens aleatorios almacenados únicamente como
+hashes. La API pública exige consentimiento, responde sin enumerar correos existentes,
+envía un enlace de confirmación y permite la baja con un token independiente. Gmail se
+usa para bajo volumen: no existe editor de campañas ni programación masiva. La migración
+`009_newsletter_subscriptions.sql` es explícita y debe ensayarse en una base aislada antes
+de adoptar el esquema compartido. Véase ADR0021.
+
+## V49 — duración de agenda y origen del enlace Zoom
+
+La duración de la cita se comparte entre disponibilidad, reserva y Zoom: 40 minutos en
+desarrollo/pruebas para cuentas Basic y 45 minutos en producción institucional, con posibilidad
+de configurar ambos valores de forma explícita. `CitaSalida` expone `zoom_origen` para distinguir
+un enlace creado automáticamente de un respaldo manual; el frontend abre siempre el `join_url`
+devuelto por FastAPI. El enlace manual no reemplaza una reunión automática existente.
+
+## V47 — consistencia clínica y reuniones Zoom
+
+El cierre P1 alinea la contraseña personal en 12–128 caracteres, verifica la contraseña actual
+en el cambio propio y revoca sesiones. Reportes de inasistencia no se guardan y un plan exige
+observaciones, objetivos o próximos pasos con contenido real. Las acciones de 2FA, autoeliminación
+y solicitud de edición de perfil permanecen marcadas como no disponibles porque no tienen contrato
+persistente.
+
+V46 añade una integración opcional de reuniones Zoom desde FastAPI mediante Server-to-Server OAuth.
+Solo las citas virtuales llaman al proveedor; el frontend recibe el enlace de participante y el
+enlace manual queda como recuperación autorizada. `ZOOM_ENABLED=false` mantiene el modo manual y
+las credenciales nunca se incluyen en frontend, respuestas o repositorio. Véase ADR0019.
+
 ## Flujo de datos
+
+V37 en codex/2do-intento: ADR0017 agrega bandeja/prefs por identidad TERAPEUTA mediante
+API propia, sin Supabase Auth. Dos tablas en migración005, eventos junto a cita/mensaje
+en la misma transacción y claves únicas. Recordatorios opcionales cada60s, consulta UI
+cada30s; exige proceso API activo. RLS habilitado, grants específicos por entorno pendientes
+de adopción. Sin DDL al iniciar, correos/push ni cambios de infraestructura compartida.
+
+V36 en codex/2do-intento: ADR0016 distingue asignación educativa persistida del avance
+demo por cuenta/niño/mundo en sessionStorage. Tres niveles por mundo no miden resultados
+clínicos ni escriben tablas educativas. Campo existente Reserva.zoom_join_url se modifica
+mediante API propia con permisos y URL HTTPS Zoom validada; reunión y asistencia separadas.
+Paneles/analíticas derivan registros propios; no añade infraestructura ni migraciones.
+
+V35 en codex/2do-intento: ADR0015 versiona Tratamiento desde Sesion con área y mundos
+JSONB acotados. No utiliza las tablas educativas legadas para almacenar progreso demo.
+Autorización clínica por vínculo de cita/atención; lectura de contexto explicitada por
+paciente, listas profesionales generales conservan ámbito propio. Solo autor publica plan.
+Migración004 añade columnas/índices sin políticas/grants ni cambio de datos V26.
+
+
+Avance V34 en codex/2do-intento: ADR0014 agrega turnos semanales y bloqueos persistidos,
+Reserva introductoria con plan nullable y confirmación inmediata. Directorio y calendario
+consultan API; la habilitación de terapia verifica asistencia introductoria/reporte/plan
+por niño. Migración003 solo local, posterior a002; revisar RLS/grants antes de adopción.
+
+
+Avance2026-10-10 en codex/2do-intento: ADR0013 añade activación obligatoria de cuentas
+nuevas y alta familiar transaccional. /auth/me admite identidad pendiente; todas las
+dependencias de negocio exigen contraseña definitiva. React presenta activación antes de
+cualquier ruta, con cambio real y sesión rotada. Migración002 solo ensayada localmente;
+el runtime compartido sigueV26 y exige adopción coordinada antes de actualizarse.
+
+Requisitos futuros del [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md), 2026-10-10: introducción
+por niño, profesional intercambiable y disponibilidad requieren revisar relaciones/autorización.
+Las opciones técnicas están pendientes de implementación/ADR; runtime y decisiones implementadas
+descritos abajo permanecen en V26 restaurado. No nueva decisión de arquitectura aplicada aquí.
+
 React/TypeScript + Vite (`frontend/`) -> HTTP/JSON -> FastAPI (`backend/`) -> SQLAlchemy asíncrono + asyncpg -> PostgreSQL gestionado en Supabase.
 
 La API controla autenticación propia y autorización. Supabase aporta infraestructura PostgreSQL; no se usa Supabase Auth. Las credenciales permanecen en `backend/.env`, excluido de Git.
@@ -194,3 +351,176 @@ reutilizando PG17.6 existente. SQL02 estructura requiere public idempotente en c
 Inspección de modelos incluye mensajería:19 tablas modeladas/0 diferencias. Supabase no se
 consultó ni cambió. Demo compat17 conservada/API8001 restaurada. No CI de producto nuevo
 atribuido a tests locales, E2E visual ni reproducción por otra persona; consultar auditoría07.
+
+## Seguridad del backend - corte 2026-10-09-13
+
+ADR0009 conserva las capas y la autenticación propias. TLS remoto valida cadena/nombre
+mediante CA privada configurada, sin fallback inseguro; CA2021 usa compatibilidad de formato
+explícita con Python3.13. Login tiene límites locales por IP/IP+código y ventana con recuperación;
+no es distribuido. Producción exige origenHTTPS explícito, transporteHTTPS y cookieSecure.
+Servicios administrativos se separan por responsabilidad con interfaz conservada. Contraseñas
+nuevas12..128 y escritura de sexo comparten validación; lectura no migra valores existentes.
+Errores de concurrencia409 y de disponibilidad503; rollback fallido no oculta el original.
+No hay DDL ni cambios de permisos en Supabase. B02 se propone en operations/B02_MINIMO_PRIVILEGIO.md.
+No hay hostingHTTPS ni producción publicados. Ver auditoría13 para resultados y límites reales.
+
+## Adopción del rol PostgreSQL del backend - corte14
+
+ADR0010 separa ashakids_runtime de la identidad propietaria. Tras autorización expresa,
+Supabase conserva RLS y usa 58 políticas TO ashakids_runtime para 22 tablas, con USAGE
+en 16 secuencias. El runtime no tiene superuser/BYPASSRLS/CREATEDB/CREATEROLE,
+replicación, propiedad ni pertenencia a otros roles. Los atributos, ACL y membresías
+anteriores se conservaron; no se revocaron derechos de PUBLIC ni de roles existentes.
+PUBLIC CONNECT/TEMP permanecen como defaults de la plataforma.
+
+La autorización de familias/terapeutas sigue en FastAPI: USING true del rol técnico
+no aporta aislamiento de familias dentro de PostgreSQL. ADMIN de AshaKids mantiene
+sus funciones; no se añadió Supabase Auth ni acceso SQL desde React. El candidato
+pasó con FastAPI ASGI y SQL real antes de adoptar la credencial en API8000; el recorrido
+HTTP real posterior y READ ONLY verifican persistencia y revocación de las cohortes
+nuevas. La conexión anterior queda en un respaldo privado ignorado para reversión.
+No hosting HTTPS, borrados físicos, bases descartables ni recuperación de backup.
+
+## Preparación de hosting de demostración - ADR0011
+
+Docker compila React Node22 y ejecuta FastAPI Python3.13. app.hosted monta solo dist
+después de API/health/docs y resuelve recarga SPA; app.main conserva API local.
+Web/API comparten origen HTTPS sin cambiar autenticación ni flujo HTTP/JSON.
+Render.yaml apunta a dev, Free y deploy manual; hosted_start exige producción, un
+worker y proxies explícitos sin '*' ni redes /0. Origen por CORS_ORIGINS/PUBLIC_ORIGIN
+o RENDER_EXTERNAL_URL. Supabase mantiene runtime B02, pooler sesión5432 por verificar
+en Render. Cuenta, secretos, ingreso/CA y aceptación HTTPS pendientes; sin DDL al arranque.
+
+## Hosting HTTPS publicado - corte15 / ADR0012
+
+Render Free Virginia sirve React y FastAPI bajo https://ashakids.onrender.com desde
+dev/V24/62905fc0480fffd21fb6b2d969592700608d64bb. Pooler sesión5432 IPv4 con runtime
+B02, CA2021 explícita, TLS verificado. Imagen Linux construida, readiness y recorrido
+HTTP real aceptados. Cookies Secure/HttpOnly/Lax; proxy confiable solo loopback bastó.
+ADR0012 registra la excepción SCRAM4096 del rol nuevo por Supavisor2.9.10 con menor
+coste offline autorizado; sin cambios de contraseña ni permisos. No Supabase Auth,
+nueva BD o DDL al arranque. Suspensión gratuita y límite de un worker siguen vigentes.
+Los apartados anteriores describen sus cortes históricos; hosting ya no está pendiente.
+
+## V50 — cinco mundos básicos persistentes / 2026-10-10
+
+Catálogo `basica-1`: HABLA (Taller de los Sonidos), LENGUAJE (La Isla de las Palabras),
+FLUIDEZ (Ritmo de las Palabras), VOZ (El Estudio de la Voz) y OROFACIAL (Laboratorio de
+los Gestos). Cada mundo tiene tres actividades básicas de selección/orden, con acceso
+libre a sus niveles. El profesional asigna uno o varios de los cinco mundos en el plan.
+Saltar al nivel 3 no completa los anteriores. El diseño definitivo sigue pendiente.
+
+El backend valida respuestas y guarda intentos correctos/incorrectos por niño, mundo,
+nivel y versión. Cada primer nivel correcto otorga 100 XP; completar los tres entrega
+una medalla y 100 XP adicionales una sola vez. Nivel del perfil = 1 + XP // 200.
+Reintentar una petición con el mismo UUID no duplica filas ni premios. La UI consulta
+el servidor al recargar/cambiar de hijo; Insignias y Perfil muestran estos contadores.
+
+Se reutilizan actividades, objetivos, mundos, niveles, resultados_nivel, perfiles,
+logros y perfil_logros. Migración 008 aplicada a la BD compartida con respaldo privado
+verificado y comparación de filas previas: conservadas; cinco medallas de catálogo
+nuevas. No se insertaron pacientes ni intentos reales para probar. Evidencia saneada:
+[adopción](evidence/games-v50/database-adoption.json), [verificación](evidence/games-v50/verification.md).
+ADR [0020](decisions/0020-juegos-basicos-persistentes.md). Sin conexión React/PostgreSQL.
+
+Los datos son simulación, no evaluación clínica ni inferencia de emociones. Quedan
+pendientes juegos finales, revisión profesional de contenidos, modelo ML/dataset con
+etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
+Los catálogos draft-1 y demos históricos no representan este flujo persistente.
+
+## V72 — valoraciones de sesiones atendidas / 2026-10-11
+
+FastAPI GET/POST /sesiones/{key}/valoracion y GET /valoraciones. Escritura PADRE
+de su familia, sólo FINALIZADA/ASISTIO, sin límite de antigüedad; lectura autorizada
+por reserva y listado TERAPEUTA/ADMIN. Una opinión por sesión, rating1–5/comentario1000,
+bloqueo de sesión, reintento idéntico y conflicto para segundo contenido. Sin edición
+ni borrado; listado devuelve autor/fecha, no datos del niño. UI desde agenda histórica.
+
+Migración011 explícita con UNIQUE/FK/CHECK, RLS y SELECT/INSERT runtime sin permisos
+públicos; autorización de dominio en backend. Ausencia de tabla:503/Próximamente.
+Adoptada con respaldo privado y32tablas anteriores conservadas; pruebas SQL sólo locales.
+ADR[0024](decisions/0024-valoraciones-sesion-atendida.md). Sin SupabaseAuth ni realtime;
+HTTP/JSON e invalidación local de consultas conservados, polling notificaciones30s.
+
+## V52 — adjuntos persistentes en mensajes / 2026-10-10
+
+PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar
+sus metadatos, visualizar imágenes/audio/video y descargarlo desde el chat. Formatos:
+JPG/PNG/GIF/WebP, MP3/WAV/OGG, MP4/WebM, PDF/TXT. Límite10MB por archivo y20envíos/hora
+por emisor. La comprobación de permisos usa participantes de la conversación; para
+nuevos envíos exige el vínculo vigente y chat abierto, como el texto existente.
+
+mensaje_adjuntos se conecta mediante ORM/FastAPI. Migración009 añade contenido BYTEA
+nullable, UUID de envío único y SHA256: mensaje+archivo se confirman en una transacción,
+reintento idéntico devuelve el mismo mensaje. Lecturas de historial cargan solo metadatos;
+contenido se lee mediante descarga autorizada y no se devuelve en JSON ni URL pública.
+El navegador carga medios al pulsar Ver archivo y revoca el blob al salir.
+
+Se elige almacenamiento binario acotado en PostgreSQL porque existe infraestructura
+persistente y solo una clave Supabase pública, insuficiente para un bucket privado.
+Evita guardar en disco efímero de Render; no añade claves ni cambia autenticación.
+Escala futura: mover archivos grandes a storage privado manteniendo el contrato.
+Migración009 adoptada en BD compartida con respaldo verificado y filas conservadas.
+No archivos/pacientes reales creados para pruebas; evidencia local sintética y metadatos
+saneados en [attachments-v52](evidence/attachments-v52/verification.md).
+ADR [0021](decisions/0021-adjuntos-pequenos-transaccionales.md). El contenido legada sin
+bytes no se recupera desde URLs externas. No antivirus/transcodificación ni extracción
+confiable de duración; se verifica formato por extensión y cabecera, no integridad total.
+
+## V55 — consulta administrativa de auditoría
+
+FastAPI GET /admin/auditoria requiere rol ADMIN y devuelve hasta 100 eventos recientes
+de auditoria_cambios, con total, actor, acción, tabla/entidad y fecha. La proyección
+no serializa datos_anteriores ni datos_nuevos para reducir exposición de datos personales.
+React presenta únicamente eventos guardados; no genera ejemplos ni modifica historial.
+
+
+## V56 — activación pública con enlace de alta
+
+Gmail ya no envía contraseña inicial. Cuatro altas generan secreto aleatorio Argon2id;
+publican enlace de24h firmado con HMAC sobre ID/expiración/propósito/correo y el hash privado
+como clave. POST/auth/create-password bloquea usuario, valida activo/pendiente/firma,
+cambia hash, revoca sesiones y completa activación transaccionalmente. No crea sesión.
+POST/auth/resend-activation envía solo a pendientes; respuesta genérica y límiteIP/código.
+React recibe el token en fragmento, lo retira de la barra y confirma contraseña12–128.
+No tabla/migración nueva ni SupabaseAuth. ADR [0022 activación por correo](decisions/0022-activacion-contrasena-correo.md) documenta consecuencias y límites.
+
+
+## V59 — incidencias y simplificación ADMIN
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base498df42/V58,
+codex/2do-intento y origin/dev coincidentes tras fetch. Nueva tabla incidencias con
+formulario compartido PADRE/TERAPEUTA: tipo, título120 y descripción600; UUID estable
+contra duplicados/concurrencia y permisos derivados de sesión. Lista paginada ADMIN
+y estados LEIDA/RESUELTA persistentes. Operación ahora se llama Incidencias, conserva
+URL anterior y elimina sesiones/reportes ficticios. Contenido y ML: Próximamente.
+Configuración informativa: React/TypeScript/Vite/Tailwind/Lucide, FastAPI/SQLAlchemy/
+asyncpg/PostgreSQL, Render/Supabase, permisos, Gmail/Zoom y herramientas; sin2FA.
+Auditoría sigue consultando auditoria_cambios real; aviso amarillo demo eliminado.
+Se alimenta con operaciones ya instrumentadas de cuentas/pacientes, no cada clic.
+
+ADR0023/migración010 adoptada en BD compartida con respaldo180614bytes verificado,
+31tablas previas conservadas, RLS/trespolíticas, grants mínimos runtime y sin acceso
+de identidades públicas. Sin usuarios/incidencias clínicas de prueba compartidos.
+Evidencia saneada docs/evidence/admin-incidents-v59/verification.md y JSON de adopción.
+6pruebasbackend SQL/HTTP aisladas;25rutas/287componentes del árbollocal, tipos,
+check346/máximo500 y build1905correctos; DEP0205heredado. DetectorUI[]. Navegador
+harnesssinbackend:escritorio1280 y formulario390, sin afirmar recorrido productivo.
+Fallos iniciales de conexión/puerto y unpackfixture corregidos y registrados.
+Graphifyrefresh/check al cierre. Cambio funcional, no auditoría/PDF nuevos.
+
+Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos fuera
+del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
+enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
+No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.
+
+## V76 — captura local de DNI y formulario ADMIN compartido
+
+El DNI de ocho dígitos existe únicamente en el estado del formulario de alta y se
+descarta antes de construir el payload HTTP. RENIEC no tiene integración activa y la
+tabla `tutores` conserva su estructura inicial, sin migración ni nuevos atributos ORM.
+
+En React, `AdminFormDialog` define el contenedor accesible y la presentación común para
+formularios administrativos simples. El alta de familia conserva un modal especializado
+de tres pasos por su captura compuesta de adulto e hijos. No cambian rutas, permisos,
+autenticación ni autoridad del backend.

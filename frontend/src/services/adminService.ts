@@ -15,6 +15,17 @@ import {
 import { HijoListResponse, OperacionHijoResponse } from "@/types/pacientes";
 
 export const adminService = {
+  async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
+    return apiClient.get("/admin/auditoria");
+  },
+  async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
+    const { password, hijos, tipo_documento: _tipoDocumento, numero_documento: _numeroDocumento, ...adulto } = payload;
+    return apiClient.post<OperacionCuentaResponse>("/admin/familias", {
+      ...adulto,
+      // edad se usa para validar la captura; el backend persiste la fecha de nacimiento.
+      hijos: (hijos ?? []).map(({ edad: _edad, ...hijo }) => hijo),
+    });
+  },
   /**
    * Consulta el perfil del administrador autenticado (GET /api/v1/admin/me).
    * Requiere sesión activa y rol ADMIN.
@@ -52,14 +63,16 @@ export const adminService = {
    * Crea una nueva cuenta de Padre/Tutor (POST /api/v1/admin/cuentas/padres).
    */
   async crearPadre(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
-    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/padres", payload);
+    const { password, ...account } = payload;
+    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/padres", account);
   },
 
   /**
    * Crea una nueva cuenta de Terapeuta (POST /api/v1/admin/cuentas/terapeutas).
    */
   async crearTerapeuta(payload: CrearTerapeutaPayload): Promise<OperacionCuentaResponse> {
-    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/terapeutas", payload);
+    const { password, ...account } = payload;
+    return apiClient.post<OperacionCuentaResponse>("/admin/cuentas/terapeutas", account);
   },
 
   /**
@@ -122,5 +135,14 @@ export const adminService = {
       { method: "PATCH" }
     );
   },
+};
+
+export type AuditoriaItem = {
+  id_auditoria: number;
+  actor: string | null;
+  nombre_tabla: string;
+  nombre_entidad: string;
+  accion: string;
+  fecha_evento: string;
 };
 

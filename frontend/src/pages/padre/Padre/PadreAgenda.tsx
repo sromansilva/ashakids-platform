@@ -1,15 +1,13 @@
 import { BookingDialog } from "@/components/common/BookingDialog";
 import { RemoteFeedback } from "@/components/common/RemoteFeedback";
-import { usePadreAgenda } from "@/pages/padre/Padre/usePadreAgenda";
-import { PadreAgendaMiAgenda } from "@/pages/padre/Padre/PadreAgendaMiAgenda";
-
+import { usePadreAgenda } from "./usePadreAgenda";
+import { PadreAgendaMiAgenda } from "./PadreAgendaMiAgenda";
 
 export function PadreAgenda(props: Parameters<typeof usePadreAgenda>[0]) {
-const { appointmentsQuery, cancel, go, apts, onAppointmentsChange, today, year, setYear, month, setMonth, selDay, setSelDay, setApts, showNew, setShowNew, cancelId, setCancelId, toast, setToast, timelineSel, setTimelineSel, expandedReservationIds, setExpandedReservationIds, newStep, setNewStep, newTherapist, setNewTherapist, newDay, setNewDay, newTime, setNewTime, newChild, setNewChild, newModality, setNewModality, daysInMonth, firstDay, SHORT_MONTHS, aptDays, prevMonth, nextMonth, selectedApts, pendingCount, confirmedApts, waitingApts, rejectedApts, cancelApt, confirmNew, bookSlots } = usePadreAgenda(props);
-return (
-    <><RemoteFeedback pending={appointmentsQuery.isPending} error={appointmentsQuery.error || cancel.error} retry={() => void appointmentsQuery.refetch()} />
-    {showNew && <BookingDialog close={() => setShowNew(false)} />}
-    <PadreAgendaMiAgenda toast={toast} setToast={setToast} cancelId={cancelId} cancelApt={cancelApt} setCancelId={setCancelId} month={month} year={year} pendingCount={pendingCount} setShowNew={setShowNew} setNewStep={setNewStep} prevMonth={prevMonth} nextMonth={nextMonth} firstDay={firstDay} daysInMonth={daysInMonth} today={today} aptDays={aptDays} selDay={selDay} setSelDay={setSelDay} selectedApts={selectedApts} waitingApts={waitingApts} setApts={setApts} rejectedApts={rejectedApts} go={go} confirmedApts={confirmedApts} expandedReservationIds={expandedReservationIds} setExpandedReservationIds={setExpandedReservationIds} timelineSel={timelineSel} setTimelineSel={setTimelineSel} showNew={false} newStep={newStep} setNewTherapist={setNewTherapist} newTherapist={newTherapist} setNewModality={setNewModality} newModality={newModality} setNewChild={setNewChild} newChild={newChild} setNewDay={setNewDay} newDay={newDay} bookSlots={bookSlots} setNewTime={setNewTime} newTime={newTime} confirmNew={confirmNew} /></>
-  );
-
+  const agenda = usePadreAgenda(props);
+  return <><RemoteFeedback pending={agenda.appointmentsQuery.isPending || agenda.patientsQuery.isPending} error={agenda.appointmentsQuery.error || agenda.patientsQuery.error || agenda.cancel.error} retry={() => { void agenda.appointmentsQuery.refetch(); void agenda.patientsQuery.refetch(); }}/>
+    {agenda.showNew && <BookingDialog patientId={agenda.patient?.id_paciente} close={() => agenda.setShowNew(false)}/>}
+    {agenda.patient && <label className="block max-w-6xl mx-auto px-4 sm:px-6 pt-5 text-sm font-bold">Hijo o hija<select className="block mt-2 w-full sm:max-w-md p-3 rounded-xl border border-[#E8E5F4] bg-white" value={agenda.patient.id_paciente} onChange={e => agenda.selectPatient(Number(e.target.value))}>{agenda.children.map(p => <option key={p.id_paciente} value={p.id_paciente}>{p.nombres_paciente} {p.apellidos_paciente}</option>)}</select></label>}
+    <PadreAgendaMiAgenda {...agenda}/>
+  </>;
 }

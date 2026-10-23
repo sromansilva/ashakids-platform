@@ -14,7 +14,7 @@ from app.schemas.mensajeria import MensajeCrear, ConversacionCrear
 from app.services import mensajeria as service
 
 NOW = datetime.now(timezone.utc)
-IDENTITY = (Row(id_usuario=7), ['PADRE'])
+IDENTITY = (Row(id_usuario=7, nombres='Tutor', apellidos='Sintético'), ['PADRE'])
 VIEW = dict(id_conversacion=12, id_tutor=3, id_terapeuta=4, estado='ACTIVA', ultima_actividad=NOW,
             puede_enviar=True, tutor_nombre='Tutor sintético', terapeuta_nombre='Profesional sintético',
             id_usuario_tutor=7, id_usuario_terapeuta=8)
@@ -118,6 +118,8 @@ async def test_closed_or_unassigned_chat_blocks_writes(db, monkeypatch, estado, 
 async def test_send_uses_authenticated_sender_and_locks_conversation(db, monkeypatch):
     visible = AsyncMock(return_value=Row(**VIEW, fecha_archivado=None))
     monkeypatch.setattr(service, 'visible', visible); db.scalar.return_value = Row(id_tutor=3)
+    # Este caso verifica el mensaje; el efecto real de aviso se verifica con SQL aislado.
+    monkeypatch.setattr(service, 'emitir', AsyncMock())
     row = await service.enviar(db, IDENTITY, 12, MensajeCrear(texto_mensaje='Niño 🎈'))
     assert row.id_usuario_emisor == 7 and row.id_conversacion == 12 and row.leido is False
     visible.assert_awaited_once_with(db, IDENTITY, 12, lock=True)

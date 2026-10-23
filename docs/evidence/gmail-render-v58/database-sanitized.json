@@ -1,0 +1,41 @@
+{
+  "database_role": "ashakids_runtime",
+  "table": {
+    "tabla": "suscripciones_boletin",
+    "rls_activo": true,
+    "schema": "public"
+  },
+  "columns": 11,
+  "grants": {
+    "SELECT": true,
+    "INSERT": true,
+    "UPDATE": true,
+    "DELETE": false
+  },
+  "sequence": true,
+  "policies": [
+    {
+      "policyname": "runtime_insert",
+      "roles": "{ashakids_runtime}",
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "policyname": "runtime_select",
+      "roles": "{ashakids_runtime}",
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "policyname": "runtime_update",
+      "roles": "{ashakids_runtime}",
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    }
+  ],
+  "insert_update_plans_without_dml": true,
+  "runtime_read": true
+}

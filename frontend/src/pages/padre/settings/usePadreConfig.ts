@@ -52,28 +52,16 @@ const [newCN, setNewCN] = useState("");
 const [newCA, setNewCA] = useState("");
 const [newCS, setNewCS] = useState("Lenguaje");
 const [newBirth, setNewBirth] = useState("");
-const [newAvatar, setNewAvatar] = useState("🐻");
+const [newAvatar, setNewAvatar] = useState("zorro");
 const avatarOptions = [
-    "🐻",
-    "🦊",
-    "🐼",
-    "🐨",
-    "🐸",
-    "🦁",
-    "🐙",
-    "🦋",
-    "🐬",
-    "🦄",
-    "🐧",
-    "🐺",
-    "🦝",
-    "🐱",
-    "🐶",
-    "🐹",
-    "🐰",
-    "🦔",
-    "🦜",
-    "🐳",
+    "oso",
+    "zorro",
+    "conejo",
+    "panda",
+    "leon",
+    "koala",
+    "tortuga",
+    "buho",
   ];
 const [notifs, setNotifs] = useState({
     citas: true,
@@ -119,8 +107,8 @@ const handleSavePassword = async () => {
     showToast("Ingresa tu contraseña actual.");
     return;
   }
-  if (!pwNew || pwNew.length < 8) {
-    showToast("La nueva contraseña debe tener al menos 8 caracteres.");
+  if (!pwNew || pwNew.length < 12 || pwNew.length > 128) {
+    showToast("La nueva contraseña debe tener entre 12 y 128 caracteres.");
     return;
   }
   if (pwNew !== pwConfirm) {
@@ -131,7 +119,7 @@ const handleSavePassword = async () => {
   try {
     const id = authUser?.id_usuario ?? profile.data?.user?.id_usuario;
     if (id) {
-      await usersService.edit(id, { password: pwNew });
+      await usersService.edit(id, { current_password: pwCurrent, password: pwNew });
     }
     setPwCurrent("");
     setPwNew("");

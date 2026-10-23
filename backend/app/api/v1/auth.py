@@ -4,11 +4,14 @@ from typing import List, Tuple
 from fastapi import APIRouter, Depends, HTTPException, Request, Response, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.deps import get_current_token, get_current_user
+from app.api.deps import get_current_token, get_session_user
 from app.core.config import settings
 from app.core.database import get_db
+from app.core.login_limiter import limit_login
 from app.models.auth import Usuario
-from app.schemas.auth import AuthResponse, LoginRequest, MessageResponse, UserResponse
+from app.schemas.auth import (ActivationRequest, AuthResponse, LoginRequest, MessageResponse, UserResponse,
+                              EmailActivationRequest, ResendActivationRequest)
+from app.services.email_activation import complete_email_activation, resend_activation
 from app.services.auth_service import (
     authenticate_user,
     create_user_session,
@@ -16,6 +19,23 @@ from app.services.auth_service import (
 )
 
 router = APIRouter(prefix="/auth", tags=["Autenticación"])
+
+
+
+@router.post("/create-password", response_model=MessageResponse)
+async def create_password(req: EmailActivationRequest, request: Request,
+                          db: AsyncSession = Depends(get_db, scope="function")):
+    limit_login(request, "email-activation")
+    await complete_email_activation(db, req.token, req.new_password)
+    return MessageResponse(message="Contraseña creada. Ya puedes iniciar sesión con tu código de usuario.")
+
+
+@router.post("/resend-activation", response_model=MessageResponse)
+async def resend_password_link(req: ResendActivationRequest, request: Request,
+                               db: AsyncSession = Depends(get_db, scope="function")):
+    limit_login(request, "resend:" + req.codigo_usuario.strip().lower())
+    await resend_activation(db, req.codigo_usuario)
+    return MessageResponse(message="Si la cuenta está pendiente de activación, recibirás un enlace en su correo. Revisa también spam.")
 
 
 def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
@@ -32,6 +52,7 @@ def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
         rol=main_role,
         roles=[r.upper() for r in roles],
         activo=user.activo,
+        password_change_required=getattr(user, "password_change_required", False) is True,
     )
 
 
@@ -44,8 +65,10 @@ def build_user_response(user: Usuario, roles: List[str]) -> UserResponse:
 async def login(
     req: LoginRequest,
     response: Response,
+    request: Request,
     db: AsyncSession = Depends(get_db, scope="function"),
 ):
+    limit_login(request, req.codigo_usuario)
     auth_result = await authenticate_user(db, req.codigo_usuario, req.password)
     if not auth_result:
         raise HTTPException(
@@ -59,7 +82,7 @@ async def login(
     raw_token, expires_at = await create_user_session(db, user.id_usuario)
 
     # Establecer cookie HttpOnly (protege contra XSS)
-    is_prod = settings.ENVIRONMENT.lower() == "production"
+    is_prod = settings.is_production
     response.set_cookie(
         key=settings.SESSION_COOKIE_NAME,
         value=raw_token,
@@ -95,6 +118,9 @@ async def logout(
     response.delete_cookie(
         key=settings.SESSION_COOKIE_NAME,
         path="/",
+        secure=settings.is_production,
+        httponly=True,
+        samesite="lax",
     )
     return MessageResponse(message="Sesión cerrada correctamente.")
 
@@ -106,7 +132,18 @@ async def logout(
     description="Retorna el perfil y roles reales del usuario correspondientes a la sesión activa en PostgreSQL.",
 )
 async def get_me(
-    current_data: Tuple[Usuario, List[str]] = Depends(get_current_user),
+    current_data: Tuple[Usuario, List[str]] = Depends(get_session_user),
 ):
     user, roles = current_data
     return build_user_response(user, roles)
+
+
+@router.post("/activate", response_model=AuthResponse, summary="Cambiar contraseña inicial")
+async def activate(
+    req: ActivationRequest,
+    response: Response,
+    request: Request,
+    identity: tuple = Depends(get_session_user),
+    db: AsyncSession = Depends(get_db, scope="function"),
+):
+    raise HTTPException(410, "Crea tu contraseña desde el enlace enviado al correo. Solicita otro enlace en /crear-contrasena.")

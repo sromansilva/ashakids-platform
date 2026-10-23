@@ -1,0 +1,25 @@
+{
+  "format": "SHA-256; PDF binary bytes; UTF-8 text CRLF normalized to LF; manifest excluded",
+  "files": {
+    "docs/evidence/audit-2026-10-09-13/backend-collection.txt": "31223220f20684a4bb5f3745730307c6d86dbac08af7ea74953dce5590c1db28",
+    "docs/evidence/audit-2026-10-09-13/backend-unit.txt": "4c76cceaed0ca4807430b1290bc03b643ab63fba4b6835a76fa7da9d58a1ce2f",
+    "docs/evidence/audit-2026-10-09-13/database-readonly.json": "90669cdda2644e2a03ce74dc12479218e9d259300f2a224b314ae520609d9d67",
+    "docs/evidence/audit-2026-10-09-13/diagnostics.json": "26defa2b4c55bf3768930f9e9349ed3ef2acad43179f0ba07a02c3a10cc79e2c",
+    "docs/evidence/audit-2026-10-09-13/followup-supabase-initial.json": "d0e95600f4d54e79aa21dc5dc00d50fd8cf8c00cb1767e6ac6ac01ce435f8803",
+    "docs/evidence/audit-2026-10-09-13/followup-supabase.json": "844b55d33907e85481d69a0768e4b97f22f9e6c4e9bc621fdf2dbfdbc3648126",
+    "docs/evidence/audit-2026-10-09-13/frontend-tests.txt": "9e45a4c2c29d3d9d8b9ebc25400da14584c8dfba4cd42e5b6177916a5f999ee7",
+    "docs/evidence/audit-2026-10-09-13/knowledge-check.txt": "0125657d6ce8c42b539a39effb09414c3e395a94451bd0fbe1ec6697996b1ea2",
+    "docs/evidence/audit-2026-10-09-13/knowledge-refresh.txt": "bccdba8fcac47d34651c8322d18687ebc35a0f9258b134dbdad1d147e5c2d39d",
+    "docs/evidence/audit-2026-10-09-13/live-supabase-initial-same-session.json": "e4c7b0cdd06d4a20b9ecb9ea693a822040a0dd92f24de80ffeb4a8934efd4e10",
+    "docs/evidence/audit-2026-10-09-13/live-supabase.json": "ce9ffc07c5f0a8e2c0f5212d1c6f9603a2248a67b6afa5c94337fcbfb4fdd73d",
+    "docs/evidence/audit-2026-10-09-13/operation-matrix.json": "10ef610d3c0bf540c27030f451ec847768dfcb62325645129be032f49e393f13",
+    "docs/evidence/audit-2026-10-09-13/operations.json": "6e07129808cb81388eac4a5902817950f553f8d03647d131f30a124da9b13ee9",
+    "docs/evidence/audit-2026-10-09-13/pdf-validation.json": "0704758560de5a72f87bdf2b07d793bc07f12366d0cc8bed709c0b3af45b9dd5",
+    "docs/evidence/audit-2026-10-09-13/persistence-readonly.json": "f29dc0c1e370cacb9c46eaefe2bd5f73a823ef9ddadff526241295ff63c8c4e7",
+    "docs/evidence/audit-2026-10-09-13/report-synthetic-initial.pdf": "e6c680cc0de3e973c927c2d611497734a6da00ff8f53acccbef4416919a43a61",
+    "docs/evidence/audit-2026-10-09-13/report-synthetic.pdf": "f80ebd2293a52ebde0e240c4369899805a7852936c9209abfd0dc2accd429a63",
+    "docs/evidence/audit-2026-10-09-13/system-http.json": "cd8861f07ae2daf6421801fe478edf97ed788f3c0e82d6566b8e1f196144d81a",
+    "output/pdf/Auditoria_Backend_AshaKids_2026-10-09-13.pdf": "e287f000621e9b3e7d605cf4c59c9c8bc792b78134257f3bb271a0ca95614902",
+    "docs/audits/auditoria-2026-10-09-13.md": "727a64d6790e75dd4f91e8f28baa1de00faa548cdfec74db4878126de2c92ab0"
+  }
+}

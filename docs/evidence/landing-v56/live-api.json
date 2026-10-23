@@ -1,0 +1,10 @@
+{
+  "catalogStatus": 200,
+  "count": 5,
+  "publicLevelKeys": [
+    "number"
+  ],
+  "preview": "127.0.0.1:5176",
+  "backend": "127.0.0.1:8002",
+  "scope": "GET public metadata only; no real login or DB writes"
+}

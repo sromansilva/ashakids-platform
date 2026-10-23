@@ -20,6 +20,7 @@ function api(options: { patients?: Patient[]; error?: boolean; emptyReport?: boo
     if (options.pending) return new Promise<Response>(() => {});
     if (options.error) return response({ detail: "Servidor de seguimiento no disponible" }, 503);
     if (path === "/pacientes") return response(options.patients ?? [patient, sibling]);
+    if (path.endsWith('/juegos')) return response({id_paciente:Number(path.split('/')[2]),mundos:[],experiencia:0,nivel:1,medallas:[],intentos_totales:0,experiencia_siguiente_nivel:200});
     if (path === "/citas") return response([appointment, session.cita]);
     if (path === "/sesiones") return response([{ ...session, reporte_disponible: !options.emptyReport }]);
     if (path === "/pacientes/1/tratamientos") return response([treatment]);
@@ -59,27 +60,27 @@ it("Does not mark reservation, therapy, attendance or report milestones without 
   expect(result.milestones.filter(m => m.done).map(m => m.title)).toEqual(["Perfil del hijo"]);
 });
 
-it("Home presents persisted reports and no invented progress, steps or professionals", async () => {
-  api(); renderRoute("/padre", "PADRE");
+it("The secondary family area presents persisted reports without invented progress", async () => {
+  api(); renderRoute("/padre?section=family", "PADRE");
   expect(await screen.findByText("Recomendación persistente")).toBeInTheDocument();
-  expect(screen.getByRole("combobox", { name: "Hijo o hija" })).toBeInTheDocument();
-  expect(screen.getByText("Sin medición")).toBeInTheDocument();
+  expect(screen.getByLabelText('Elegir perfil: Alex Primero')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Registros del hijo seleccionado')).not.toBeInTheDocument();
   expect(screen.queryByText(/Dra. Ana Ruiz|78%|8\/10|Racha 7|Paso 7|Mateo/)).not.toBeInTheDocument();
 });
 
 it("Switches siblings with identical names and retains selection after a new route mount", async () => {
-  api(); const first = renderRoute("/padre", "PADRE");
+  api(); const first = renderRoute("/padre?section=family", "PADRE");
   await screen.findByText("Recomendación persistente");
-  fireEvent.change(screen.getByRole("combobox"), { target: { value: "2" } });
-  await screen.findByText("Seguimiento de Alex Segundo");
+  fireEvent.click(screen.getByLabelText('Elegir perfil: Alex Primero'));
+  fireEvent.click(screen.getByRole('button',{name:'Alex Segundo'}));
   await screen.findByText("Todavía no hay reportes guardados para este hijo.");
   expect(screen.queryByText("Recomendación persistente")).not.toBeInTheDocument();
-  first.unmount(); renderRoute("/padre/camino", "PADRE");
-  expect(await screen.findByText("Seguimiento de Alex Segundo")).toBeInTheDocument();
+  first.unmount(); renderRoute("/padre/seguimiento", "PADRE");
+  expect(await screen.findByRole('combobox',{name:'Hijo o hija'})).toHaveValue('2');
 });
 
 it("Shows empty family state without falling back to fictional children", async () => {
-  api({ patients: [] }); renderRoute("/padre/camino", "PADRE");
+  api({ patients: [] }); renderRoute("/padre/seguimiento", "PADRE");
   expect(await screen.findByText("Aún no tienes hijos registrados")).toBeInTheDocument();
   expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
   expect(screen.queryByText(/Mateo|Gómez|78%|Dra. Ana Ruiz/)).not.toBeInTheDocument();
@@ -87,7 +88,7 @@ it("Shows empty family state without falling back to fictional children", async 
 
 it("Shows loading instead of synthetic or zero-value metrics", async () => {
   api({ pending: true }); renderRoute("/padre", "PADRE");
-  expect(await screen.findByText("Cargando seguimiento…")).toBeInTheDocument();
+  expect(await screen.findByText("Cargando datos…")).toBeInTheDocument();
   expect(screen.queryByLabelText("Registros del hijo seleccionado")).not.toBeInTheDocument();
 });
 
@@ -96,26 +97,27 @@ it("Keeps server failures visible and retries a read", async () => {
   expect(await screen.findByRole("alert")).toHaveTextContent("Servidor de seguimiento no disponible");
   expect(screen.queryByLabelText("Registros del hijo seleccionado")).not.toBeInTheDocument();
   api(); fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
+  fireEvent.click(await screen.findByRole('button',{name:'Para mi familia'}));
   expect(await screen.findByText("Recomendación persistente")).toBeInTheDocument();
 });
 
 it("Journey shows real treatments and sessions in its sections", async () => {
-  api(); renderRoute("/padre/camino", "PADRE");
+  api(); renderRoute("/padre/seguimiento", "PADRE");
   await screen.findByText("Recomendación persistente");
-  fireEvent.click(screen.getByRole("button", { name: /^Tratamientos$/ }));
+  fireEvent.click(screen.getByRole("button", { name: /^Planes$/ }));
   expect(await screen.findByText("Plan persistente")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: /^Sesiones$/ }));
   expect(await screen.findByText(/Sesión #1 ·/)).toBeInTheDocument();
 });
 
 it("Reports without rows do not invent recommendations", async () => {
-  api({ emptyReport: true }); renderRoute("/padre", "PADRE");
+  api({ emptyReport: true }); renderRoute("/padre?section=family", "PADRE");
   expect(await screen.findByText("Todavía no hay reportes guardados para este hijo.")).toBeInTheDocument();
   expect(screen.queryByText("Recomendación persistente")).not.toBeInTheDocument();
 });
 
 it("A failed report read offers retry without presenting a made-up report", async () => {
-  api({ reportError: true }); renderRoute("/padre/camino", "PADRE");
+  api({ reportError: true }); renderRoute("/padre/seguimiento", "PADRE");
   expect(await screen.findByRole("alert")).toHaveTextContent("Reporte no disponible");
   expect(screen.queryByText("Recomendación persistente")).not.toBeInTheDocument();
 });

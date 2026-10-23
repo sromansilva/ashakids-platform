@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Annotated, List, Optional, Union
 import urllib.parse
 import json
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 # Directorio base del backend para resolver .env de manera determinista
@@ -15,9 +15,54 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     PORT: int = Field(default=8000, ge=1, le=65535)
     ENVIRONMENT: str = "development"
+    # Activar explícitamente solo después de adoptar la migración de notificaciones.
+    NOTIFICATION_REMINDERS_ENABLED: bool = False
+
+    # Zoom Server-to-Server OAuth. Disabled by default so local/manual links remain usable.
+    ZOOM_ENABLED: bool = False
+    ZOOM_ACCOUNT_ID: str = ""
+    ZOOM_CLIENT_ID: str = ""
+    ZOOM_CLIENT_SECRET: str = ""
+    ZOOM_HOST_USER_ID: str = ""
+    ZOOM_API_BASE_URL: str = "https://api.zoom.us/v2"
+    # La duración se comparte entre agenda, reservas y Zoom para no ofrecer
+    # un turno más largo que la reunión que puede alojar la cuenta.
+    APPOINTMENT_DURATION_MINUTES: Optional[int] = Field(default=None, ge=40, le=45)
+    ZOOM_MEETING_DURATION_MINUTES: Optional[int] = Field(default=None, ge=40, le=45)
+
+    # Gmail API server-side OAuth. Los valores reales viven solo en el entorno.
+    GMAIL_ENABLED: bool = False
+    GMAIL_CLIENT_ID: str = ""
+    GMAIL_CLIENT_SECRET: str = ""
+    GMAIL_REFRESH_TOKEN: str = ""
+    GMAIL_SENDER_EMAIL: str = ""
+    GMAIL_SENDER_NAME: str = "ASHAKids"
+    GMAIL_API_BASE_URL: str = "https://gmail.googleapis.com/gmail/v1"
+    PUBLIC_ORIGIN: str = ""
+    NEWSLETTER_CONFIRMATION_TTL_HOURS: int = Field(default=48, ge=1, le=168)
+    NEWSLETTER_RATE_LIMIT: int = Field(default=5, ge=1, le=100)
+    NEWSLETTER_RATE_WINDOW_SECONDS: int = Field(default=3600, ge=60, le=86400)
+
+    # Reconocimiento de voz local con Whisper (faster-whisper)
+    WHISPER_MODEL_SIZE: str = "base"
+    WHISPER_DEVICE: str = "cpu"
+    WHISPER_COMPUTE_TYPE: str = "int8"
+    WHISPER_AUDIO_MAX_SECONDS: int = Field(default=30, ge=5, le=120)
+    WHISPER_AUDIO_MAX_BYTES: int = Field(default=5 * 1024 * 1024, ge=1024, le=25 * 1024 * 1024)
 
     # Conexión directa a PostgreSQL mediante DATABASE_URL
     DATABASE_URL: str = ""
+    DB_SSL_CA_FILE: Optional[str] = None
+    DB_SSL_LEGACY_CA: bool = False
+    DB_CONNECT_TIMEOUT: int = Field(default=10, ge=1, le=60)
+    DB_COMMAND_TIMEOUT: int = Field(default=15, ge=1, le=120)
+    DB_POOL_TIMEOUT: int = Field(default=10, ge=1, le=60)
+    LOGIN_IP_LIMIT: int = Field(default=30, ge=1, le=1000)
+    LOGIN_PAIR_LIMIT: int = Field(default=5, ge=1, le=100)
+    LOGIN_WINDOW_SECONDS: int = Field(default=300, ge=1, le=3600)
+    LOGIN_LIMITER_MAX_KEYS: int = Field(default=10000, ge=100, le=100000)
+    # La implementación en memoria exige un solo proceso hasta disponer de gateway compartido.
+    WEB_CONCURRENCY: int = Field(default=1, ge=1)
 
     # Parámetros individuales de PostgreSQL (Soporta mayúsculas y minúsculas)
     DB_USER: Optional[str] = None
@@ -49,6 +94,47 @@ class Settings(BaseSettings):
     # Credenciales de infraestructura Supabase (si se requieren para servicios adicionales)
     SUPABASE_URL: str = ""
     SUPABASE_KEY: str = ""
+
+    @property
+    def is_production(self) -> bool:
+        return self.ENVIRONMENT == "production"
+
+    @field_validator("ENVIRONMENT")
+    @classmethod
+    def known_environment(cls, value):
+        value = value.strip().lower()
+        if value not in {"development", "test", "production"}:
+            raise ValueError("ENVIRONMENT debe ser development, test o production.")
+        return value
+
+    @model_validator(mode="after")
+    def production_guardrails(self):
+        if self.DB_SSL_LEGACY_CA and not self.DB_SSL_CA_FILE:
+            raise ValueError("La compatibilidad CA legado exige DB_SSL_CA_FILE explícita.")
+        if any("*" in origin for origin in self.CORS_ORIGINS):
+            raise ValueError("CORS con credenciales exige orígenes explícitos.")
+        if self.is_production:
+            for origin in self.CORS_ORIGINS:
+                parsed = urllib.parse.urlsplit(origin)
+                if (parsed.scheme != "https" or not parsed.hostname or parsed.username
+                    or parsed.password or parsed.path or parsed.query or parsed.fragment):
+                    raise ValueError("Producción exige orígenes HTTPS explícitos sin rutas.")
+            if not self.CORS_ORIGINS or not self.effective_database_url:
+                raise ValueError("Producción exige BD y al menos un origen HTTPS.")
+            if self.WEB_CONCURRENCY != 1:
+                raise ValueError("El limitador local de login exige WEB_CONCURRENCY=1.")
+        return self
+
+    @model_validator(mode="after")
+    def duration_guardrails(self):
+        default = 45 if self.is_production else 40
+        appointment = self.APPOINTMENT_DURATION_MINUTES or default
+        zoom = self.ZOOM_MEETING_DURATION_MINUTES or appointment
+        if appointment != zoom:
+            raise ValueError("APPOINTMENT_DURATION_MINUTES y ZOOM_MEETING_DURATION_MINUTES deben coincidir.")
+        self.APPOINTMENT_DURATION_MINUTES = appointment
+        self.ZOOM_MEETING_DURATION_MINUTES = zoom
+        return self
 
     @property
     def effective_database_url(self) -> str:

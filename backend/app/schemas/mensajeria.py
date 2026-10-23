@@ -35,12 +35,21 @@ class MensajeCrear(Entrada):
         return value
 
 
+class AdjuntoSalida(Salida):
+    id_adjunto: int
+    nombre_archivo: str
+    mime_type: str
+    tamano_bytes: int
+    duracion_segundos: int | None
+
+
 class MensajeSalida(Salida):
     id_mensaje: int
     id_conversacion: int
     id_usuario_emisor: int | None
     texto_mensaje: str | None
     fecha_envio: datetime
+    adjuntos: list[AdjuntoSalida] = Field(default_factory=list)
 
 
 class MensajesPagina(Salida):

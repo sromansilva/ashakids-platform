@@ -1,0 +1,80 @@
+{
+  "tls_initial": {
+    "result": "SSLCertVerificationError",
+    "verify_code": 92,
+    "reason": "CA cert does not include key usage extension",
+    "resolution": "DB_SSL_LEGACY_CA opt-in; CERT_REQUIRED and hostname verification preserved; negative trust rejected"
+  },
+  "auth_unit_initial": {
+    "passed": 21,
+    "failed": 2,
+    "warnings": 17,
+    "reason": "Limiter budget shared across independent TestAuthAPI cases",
+    "resolution": "New limiter per test; no disabled runtime limiter or removed assertions"
+  },
+  "frontend_initial": {
+    "result": "spawn EPERM",
+    "resolution": "Authorized npm execution outside sandbox passed"
+  },
+  "api_start_attempt": {
+    "result": "Port8000 already in use (WinError10048)",
+    "resolution": "Second process exited; existing workspace Uvicorn --reload retained; live minLength12 and readiness200 confirmed"
+  },
+  "graph_query_initial": {
+    "result": "Unsupported --budget argument in project wrapper",
+    "resolution": "Project wrapper query uses configured1500-token budget"
+  },
+  "graph_refresh": {
+    "result": "Success;1950nodes at intermediate cut",
+    "warnings": [
+      "AST sequential fallback WinError5",
+      "12 source files without symbols"
+    ]
+  },
+  "initial_db_safe_tests": {
+    "passed": 89,
+    "warnings": 1,
+    "reason": "pytest cache write denied",
+    "resolution": "-p no:cacheprovider; selected final tests remain without DB/conftest"
+  },
+  "refactor_ast": {
+    "admin_original_functions": 14,
+    "admin_identical_bodies": 14,
+    "patient_original_functions": 13,
+    "patient_identical_bodies": 13
+  },
+  "dependency_check": {
+    "command": "backend/.venv313/Scripts/python.exe -m pip check",
+    "result": "No broken requirements found."
+  },
+  "frontend_other_checks": {
+    "typecheck": "PASS",
+    "check_frontend": "PASS:320 files;max495lines",
+    "build": "PASS:1887modules;main293.81kB/gzip92.95kB",
+    "build_warning": "Node DEP0205 module.register deprecated"
+  },
+  "scope": "No disposable DB created/executed; no TRUNCATE, DDL, privilege changes, physical deletes, real clinical data or old account edits.",
+  "git_author_initial": {
+    "result": "Author identity unknown; no commit created",
+    "resolution": "Per-command Piero identity matched published history; no global configuration changed"
+  },
+  "final_verification": {
+    "backend_passed": 114,
+    "backend_warnings": 19,
+    "backend_collected": 183,
+    "backend_not_executed": 69,
+    "http_expected": 133,
+    "http_failures": 0,
+    "positive_operations": 53,
+    "inventory_operations": 55,
+    "persistence_after_followup": "PASS; zero active new auth sessions",
+    "knowledge_check": "Knowledge map is current; see final refresh log"
+  },
+  "publication_review": {
+    "configured_and_generated_secrets_absent": true,
+    "staged_pdf_text_checked": true,
+    "private_files_staged": false,
+    "whitespace_initial": "Extra EOF blank line in npm log; removed without altering test results",
+    "manifest": "PDF raw bytes; text SHA256 normalizes CRLF to LF for portability"
+  }
+}

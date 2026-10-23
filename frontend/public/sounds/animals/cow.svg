@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="210" viewBox="0 0 240 210">
+ <defs>
+  <radialGradient id="cow-clay-0" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#9a91a0" />
+   <stop offset="43%" stop-color="#53435d" />
+   <stop offset="80%" stop-color="#44334f" />
+   <stop offset="100%" stop-color="#35283e" />
+  </radialGradient>
+  <radialGradient id="cow-clay-1" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#a39aa8" />
+   <stop offset="43%" stop-color="#63536b" />
+   <stop offset="80%" stop-color="#55445e" />
+   <stop offset="100%" stop-color="#423549" />
+  </radialGradient>
+  <radialGradient id="cow-clay-2" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#b6aac6" />
+   <stop offset="43%" stop-color="#836e9d" />
+   <stop offset="80%" stop-color="#786195" />
+   <stop offset="100%" stop-color="#5e4c74" />
+  </radialGradient>
+  <radialGradient id="cow-clay-3" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#b7abbe" />
+   <stop offset="43%" stop-color="#846f90" />
+   <stop offset="80%" stop-color="#796386" />
+   <stop offset="100%" stop-color="#5e4d69" />
+  </radialGradient>
+  <radialGradient id="cow-clay-4" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#dab8c4" />
+   <stop offset="43%" stop-color="#c0869a" />
+   <stop offset="80%" stop-color="#ba7b91" />
+   <stop offset="100%" stop-color="#916071" />
+  </radialGradient>
+  <radialGradient id="cow-clay-5" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#e6c1b8" />
+   <stop offset="43%" stop-color="#d49586" />
+   <stop offset="80%" stop-color="#d08c7b" />
+   <stop offset="100%" stop-color="#a26d60" />
+  </radialGradient>
+  <radialGradient id="cow-clay-6" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f4e0c4" />
+   <stop offset="43%" stop-color="#edca9b" />
+   <stop offset="80%" stop-color="#ebc592" />
+   <stop offset="100%" stop-color="#b79a72" />
+  </radialGradient>
+  <radialGradient id="cow-clay-7" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f6d7df" />
+   <stop offset="43%" stop-color="#f0bbc9" />
+   <stop offset="80%" stop-color="#efb5c4" />
+   <stop offset="100%" stop-color="#ba8d99" />
+  </radialGradient>
+  <radialGradient id="cow-clay-8" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#f9dbdf" />
+   <stop offset="43%" stop-color="#f4c2c9" />
+   <stop offset="80%" stop-color="#f3bdc4" />
+   <stop offset="100%" stop-color="#be9399" />
+  </radialGradient>
+  <radialGradient id="cow-clay-9" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#fae5ac" />
+   <stop offset="43%" stop-color="#f6d272" />
+   <stop offset="80%" stop-color="#f5ce66" />
+   <stop offset="100%" stop-color="#bfa150" />
+  </radialGradient>
+  <radialGradient id="cow-clay-10" cx="30%" cy="20%" r="85%">
+   <stop offset="0%" stop-color="#fffcf7" />
+   <stop offset="43%" stop-color="#fffaf2" />
+   <stop offset="80%" stop-color="#fffaf1" />
+   <stop offset="100%" stop-color="#c7c3bc" />
+  </radialGradient>
+  <filter id="cow-shadow" x="-25%" y="-25%" width="150%" height="165%">
+   <feDropShadow dx="0" dy="4" stdDeviation="2.5" flood-color="#443050" flood-opacity=".2" />
+  </filter>
+ </defs>
+ <ellipse cx="120" cy="190" rx="78" ry="10" fill="url(#cow-clay-2)" opacity=".12" />
+ <g stroke="#55445e" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" filter="url(#cow-shadow)">
+  <path d="M63 143Q28 123 31 155Q31 169 42 167" fill="none" />
+  <path d="M30 151q-12 9-5 19q13-1 14-13" fill="url(#cow-clay-1)" />
+  <path d="M67 130q-12 21-6 51h20l7-23h64l9 23h20q8-38-14-56" fill="url(#cow-clay-10)" />
+  <path d="M61 176h22v10H61zM159 176h23v10h-23" fill="url(#cow-clay-3)" />
+  <path d="M64 41q-17-26-12-30q16 0 22 24M166 35q8-24 23-24q5 10-11 33" fill="url(#cow-clay-6)" />
+  <path d="M72 46Q29 23 28 46q1 27 44 22M170 46q43-23 43 0q-1 27-43 22" fill="url(#cow-clay-10)" />
+  <path d="M60 52q-21-12-22-3q3 10 22 11M181 52q21-12 22-3q-3 10-22 11" fill="url(#cow-clay-7)" stroke="none" />
+  <path d="M60 87q-3-58 60-61q64 3 62 61l-8 47q-17 33-54 32q-44 0-55-32z" fill="url(#cow-clay-10)" />
+  <path d="M66 63q3-25 32-29q14 20-2 34q-17 16-30-5M154 30q25 10 26 39q-17 10-25-5q-7-17-1-34" fill="url(#cow-clay-3)" stroke="none" />
+  <ellipse cx="120" cy="126" rx="56" ry="33" fill="url(#cow-clay-8)" />
+  <path d="M102 30q2-19 18-16q-1 7-4 13q15-18 24-10l-8 14" fill="url(#cow-clay-10)" />
+  <ellipse cx="91" cy="84" rx="5" ry="7" fill="url(#cow-clay-0)" stroke="none" />
+  <ellipse cx="150" cy="84" rx="5" ry="7" fill="url(#cow-clay-0)" stroke="none" />
+  <circle cx="89" cy="82" r="1.5" fill="white" stroke="none" />
+  <circle cx="148" cy="82" r="1.5" fill="white" stroke="none" />
+  <ellipse cx="91" cy="121" rx="5" ry="7" fill="url(#cow-clay-4)" stroke="none" />
+  <ellipse cx="149" cy="121" rx="5" ry="7" fill="url(#cow-clay-4)" stroke="none" />
+  <path d="M105 140q15 11 30 0" fill="none" />
+  <path d="M96 158l9 12h31l10-12" fill="url(#cow-clay-5)" />
+  <circle cx="120" cy="168" r="5" fill="url(#cow-clay-9)" />
+ </g>
+ <g fill="#fff" opacity=".28" pointer-events="none">
+  <ellipse cx="108" cy="46" rx="18" ry="5" transform="rotate(-18 108 46)" />
+ </g>
+</svg>

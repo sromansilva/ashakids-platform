@@ -3,11 +3,12 @@ from fastapi import HTTPException
 from sqlalchemy import and_, or_, select, func
 from sqlalchemy.orm import aliased
 from app.models.auth import Usuario
-from app.models.clinica import Expediente, Tratamiento
+from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion
 from app.models.perfiles import Paciente, Tutor, Terapeuta
 from app.models.mensajeria import Conversacion, Mensaje
 from app.schemas.mensajeria import ConversacionSalida
 from app.services.acceso import exigir, roles_de
+from app.services.notificaciones import emitir
 
 
 def participantes(identity):
@@ -23,17 +24,23 @@ def participantes(identity):
 
 def asignaciones():
     parent, professional = aliased(Usuario), aliased(Usuario)
+    linked = select(Reserva.id_reserva).outerjoin(Sesion).where(
+        Reserva.id_paciente == Paciente.id_paciente, Reserva.id_terapeuta == Terapeuta.id_terapeuta,
+        or_(and_(Reserva.estado_reserva == 'CONFIRMADA', Reserva.fecha_hora_fin >= func.now()),
+            Sesion.estado_sesion == 'EN_CURSO',
+            and_(Sesion.estado_sesion == 'FINALIZADA', Sesion.asistencia == 'ASISTIO'))
+    ).correlate(Paciente, Terapeuta).exists()
     return (select(Tutor.id_tutor, Terapeuta.id_terapeuta,
                    (parent.nombres + ' ' + parent.apellidos).label('tutor_nombre'),
                    (professional.nombres + ' ' + professional.apellidos).label('terapeuta_nombre'))
             .select_from(Tutor).join(Paciente, Paciente.id_tutor == Tutor.id_tutor)
-            .join(Expediente, Expediente.id_paciente == Paciente.id_paciente)
-            .join(Tratamiento, Tratamiento.id_expediente == Expediente.id_expediente)
-            .join(Terapeuta, Terapeuta.id_terapeuta == Tratamiento.id_terapeuta)
+            .outerjoin(Expediente, Expediente.id_paciente == Paciente.id_paciente)
+            .outerjoin(Tratamiento, Tratamiento.id_expediente == Expediente.id_expediente)
+            .join(Terapeuta, or_(linked, and_(Terapeuta.id_terapeuta == Tratamiento.id_terapeuta,
+                Tratamiento.id_sesion_origen.is_(None), func.upper(Tratamiento.estado_tratamiento) == 'ACTIVO')))
             .join(parent, parent.id_usuario == Tutor.id_usuario)
             .join(professional, professional.id_usuario == Terapeuta.id_usuario)
-            .where(Paciente.activo.is_(True), parent.activo.is_(True), professional.activo.is_(True),
-                   func.upper(Tratamiento.estado_tratamiento) == 'ACTIVO'))
+            .where(Paciente.activo.is_(True), parent.activo.is_(True), professional.activo.is_(True)))
 
 
 def contactos(identity):
@@ -49,7 +56,7 @@ def visibles(identity):
 async def visible(db, identity, key, *, lock=False):
     stmt = visibles(identity).where(Conversacion.id_conversacion == key)
     if lock:
-        stmt = stmt.with_for_update(of=Conversacion)
+        stmt = stmt.with_for_update(of=Conversacion).execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         raise HTTPException(404, 'Conversación no encontrada.')
@@ -112,8 +119,13 @@ async def enviar(db, identity, key, data):
     if active is None:
         raise HTTPException(403, 'El envío requiere una asignación activa y participantes habilitados.')
     message = Mensaje(id_conversacion=key, id_usuario_emisor=identity[0].id_usuario,
-                      texto_mensaje=data.texto_mensaje, leido=False)
+                      texto_mensaje=data.texto_mensaje, leido=False, adjuntos=[])
     db.add(message)
     row.ultima_actividad = func.now()
     await db.flush()
+    if 'PADRE' in roles_de(identity):
+        target = await db.scalar(select(Terapeuta.id_usuario).where(Terapeuta.id_terapeuta == row.id_terapeuta))
+        await emitir(db, target, 'MENSAJE', 'Nuevo mensaje de una familia',
+                     f'{identity[0].nombres} {identity[0].apellidos} te envió un mensaje.',
+                     f'MENSAJE:{message.id_mensaje}', conversacion=key)
     return message

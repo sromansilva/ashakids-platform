@@ -1,0 +1,40 @@
+{
+  "checked_at_utc": "2026-10-20T02:14:36Z",
+  "url": "https://ashakids.onrender.com",
+  "branch": "dev",
+  "commit": "3c059680f981976edeb8d2eaa9fc5c17bb2ef6f9",
+  "index_http": 200,
+  "index_references_match": true,
+  "health_http": 200,
+  "verified_assets": [
+    {
+      "path": "/assets/index-CGaDQYZf.js",
+      "http": 200,
+      "bytes": 330272,
+      "sha256": "91c2a6d5cd1219e1c22f810ed066d746112b0c47ebf87099b1f9c1ab7a32d34b",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/assets/index-DPAfs7zB.css",
+      "http": 200,
+      "bytes": 130386,
+      "sha256": "24fccd81bfeaccf19c9037890eff30aa5b67d29993dab19cfac9c3d79e181eee",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/assets/world-map-D9fOCjJv.js",
+      "http": 200,
+      "bytes": 128611,
+      "sha256": "245ae54106a421c940b3a118b3c411b402d0cd134595d3839ff8899ce1ebc624",
+      "comparison": "exact SHA256"
+    },
+    {
+      "path": "/assets/world-map-CCNMk39U.css",
+      "http": 200,
+      "bytes": 74664,
+      "sha256": "85683e5a5b861c01256b8daced062ba71dd7de866c82a77c8859be86bdedb49c",
+      "comparison": "exact SHA256"
+    }
+  ],
+  "limits": "Verifica de respuestas públicas, HTML de entrada, health y bundles estáticos del build V110. No consulta un SHA privilegiado de despliegue en Render ni inicia sesión o recorre flujos de datos infantiles o clínicos."
+}

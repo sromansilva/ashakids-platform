@@ -1,0 +1,43 @@
+{
+  "environment": "isolated-local-postgresql",
+  "runtime_can_update_attempts": false,
+  "worlds": [
+    {
+      "world": "FLUIDEZ",
+      "attempts": 3,
+      "xp": 400,
+      "correct": 3
+    },
+    {
+      "world": "HABLA",
+      "attempts": 3,
+      "xp": 400,
+      "correct": 3
+    },
+    {
+      "world": "LENGUAJE",
+      "attempts": 3,
+      "xp": 400,
+      "correct": 3
+    },
+    {
+      "world": "OROFACIAL",
+      "attempts": 3,
+      "xp": 400,
+      "correct": 3
+    },
+    {
+      "world": "VOZ",
+      "attempts": 3,
+      "xp": 400,
+      "correct": 3
+    }
+  ],
+  "profiles": [
+    {
+      "nivel": 11,
+      "experiencia": 2000
+    }
+  ],
+  "medals": 5
+}

@@ -13,6 +13,7 @@ export interface User {
   rol: SemanticRole;
   roles: SemanticRole[];
   activo: boolean;
+  password_change_required?: boolean;
 }
 
 export interface LoginCredentials {
@@ -44,6 +45,8 @@ export interface TutorData {
   telefono: string | null;
   direccion: string | null;
 }
+
+export type TipoDocumento = "DNI";
 
 export interface PadreProfileResponse {
   user: User;
@@ -94,6 +97,7 @@ export interface CuentaListResponse {
 export interface OperacionCuentaResponse {
   message: string;
   cuenta?: CuentaItem | null;
+  correo_bienvenida?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null;
 }
 
 export interface CrearPadrePayload {
@@ -104,6 +108,18 @@ export interface CrearPadrePayload {
   parentesco?: string;
   telefono?: string;
   direccion?: string;
+  tipo_documento?: TipoDocumento;
+  numero_documento?: string;
+  hijos?: RegistroHijo[];
+}
+
+export interface RegistroHijo {
+  nombres_paciente: string;
+  apellidos_paciente: string;
+  fecha_nacimiento: string;
+  sexo: string;
+  /** Dato de captura administrativa; la edad clínica se deriva de la fecha. */
+  edad?: number;
 }
 
 export interface CrearTerapeutaPayload {

@@ -1,99 +1,90 @@
-import { useState } from "react";
-import { Shield } from "lucide-react";
-import { B } from "@/theme/brand/B";
+import { useEffect, useState } from "react";
+import { AlertTriangle, FilePlus2, FileText, Layers, Pencil, RefreshCw, Search, ShieldCheck, Trash2, Users } from "lucide-react";
+import { adminService, type AuditoriaItem } from "@/services/adminService";
+import { ApiError } from "@/api/client";
+import { PublicIllustration } from '@/components/illustrations/PublicIllustration';
+import { auditActions, auditCategory, auditDay, filterAudit, groupAudit, type AuditCategory } from './auditView';
+import './audit.css';
 
-// ─── Auditoría Operativa ──────────────────────────────────────────────────────
+const categories: { value: AuditCategory; label: string; icon: typeof Users }[] = [
+  { value: 'all', label: 'Todos', icon: Layers }, { value: 'users', label: 'Usuarios', icon: Users },
+  { value: 'patients', label: 'Pacientes', icon: FileText }, { value: 'other', label: 'Otros módulos', icon: ShieldCheck },
+];
+const moduleLabels = { users: 'Usuarios', patients: 'Pacientes', other: 'Otros módulos' };
+const actions = { INSERT: FilePlus2, UPDATE: Pencil, DELETE: Trash2 };
+function dayTitle(day: string) {
+  const today = auditDay(new Date().toISOString());
+  const yesterday = auditDay(new Date(Date.now() - 86400000).toISOString());
+  const date = new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(`${day}T12:00:00-05:00`));
+  return `${day === today ? 'Hoy, ' : day === yesterday ? 'Ayer, ' : ''}${date}`;
+}
 
 export function AdminAuditoria() {
-  const [filter, setFilter] = useState<"todos" | "acceso" | "cambio" | "excepcion">("todos");
-  const entries = [
-    { actor: "Dra. Ana Ruiz",     tipo: "acceso",    accion: "Lectura de expediente clínico",         fecha: "30 Jul 2026 · 10:14", resultado: "Autorizado", motivo: "Vinculación activa" },
-    { actor: "Laura Gómez",       tipo: "acceso",    accion: "Acceso a resumen compartido",            fecha: "30 Jul 2026 · 09:45", resultado: "Autorizado", motivo: "Acceso propio" },
-    { actor: "Admin · Sistema",   tipo: "cambio",    accion: "Verificación de estado de cuenta",       fecha: "30 Jul 2026 · 09:00", resultado: "Completado", motivo: "Soporte operativo" },
-    { actor: "ASHI · Sistema",    tipo: "acceso",    accion: "Lectura de datos de perfil operativo",   fecha: "29 Jul 2026 · 18:00", resultado: "Autorizado", motivo: "Contextual · mínimo necesario" },
-    { actor: "Admin · Sistema",   tipo: "cambio",    accion: "Modificación de estado de terapeuta",    fecha: "29 Jul 2026 · 16:45", resultado: "Completado", motivo: "Verificación de credenciales" },
-    { actor: "Lic. Carlos M.",    tipo: "acceso",    accion: "Lectura de expediente clínico",          fecha: "29 Jul 2026 · 11:20", resultado: "Autorizado", motivo: "Vinculación activa" },
-    { actor: "Admin · Soporte",   tipo: "excepcion", accion: "Acceso a log de sesión técnica",         fecha: "28 Jul 2026 · 15:30", resultado: "Autorizado", motivo: "Incidente técnico reportado · ticket #4821" },
-    { actor: "Admin · Sistema",   tipo: "cambio",    accion: "Desactivación de cuenta inactiva",       fecha: "28 Jul 2026 · 09:00", resultado: "Completado", motivo: "90 días sin actividad · aviso previo enviado" },
-    { actor: "ASHI · Sistema",    tipo: "acceso",    accion: "Análisis de métricas de plataforma",     fecha: "27 Jul 2026 · 08:00", resultado: "Autorizado", motivo: "Función operativa" },
-    { actor: "Admin · Sistema",   tipo: "cambio",    accion: "Activación de cuenta por reactivación",  fecha: "26 Jul 2026 · 14:15", resultado: "Completado", motivo: "Verificación de identidad superada" },
+  const [items, setItems] = useState<AuditoriaItem[]>([]);
+  const [total, setTotal] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [revision, setRevision] = useState(0);
+  const [category, setCategory] = useState<AuditCategory>('all');
+  const [search, setSearch] = useState('');
+  const [from, setFrom] = useState('');
+  const [to, setTo] = useState('');
+  useEffect(() => {
+    let active = true;
+    setLoading(true); setError('');
+    adminService.getAuditoria().then(result => {
+      if (active) { setItems(result.items); setTotal(result.total); }
+    }).catch((cause: unknown) => {
+      if (active) setError(cause instanceof ApiError && cause.status === 403
+        ? 'No tienes permiso para consultar estos registros.' : 'No se pudo cargar el registro. Intenta nuevamente.');
+    }).finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [revision]);
+  const invalidRange = !!from && !!to && from > to;
+  const filtered = invalidRange ? [] : filterAudit(items, category, search, from, to);
+  const groups = groupAudit(filtered);
+  const reset = () => { setCategory('all'); setSearch(''); setFrom(''); setTo(''); };
+  const stats = [
+    { label: 'Total de eventos', value: total, icon: FileText, tone: 'violet', note: 'En el sistema' },
+    { label: 'Creaciones', value: items.filter(i => i.accion === 'INSERT').length, icon: FilePlus2, tone: 'teal', note: 'En los eventos cargados' },
+    { label: 'Actualizaciones', value: items.filter(i => i.accion === 'UPDATE').length, icon: Pencil, tone: 'orange', note: 'En los eventos cargados' },
+    { label: 'Eliminaciones', value: items.filter(i => i.accion === 'DELETE').length, icon: Trash2, tone: 'red', note: 'En los eventos cargados' },
   ];
-
-  const filtered = filter === "todos" ? entries : entries.filter(e => e.tipo === filter);
-
-  const tipoColor: Record<string, { bg: string; color: string; label: string }> = {
-    acceso:    { bg: "#EDE9FE", color: "#7C3AED", label: "Acceso" },
-    cambio:    { bg: "#D1FAE5", color: "#059669", label: "Cambio" },
-    excepcion: { bg: "#FEF3C7", color: "#D97706", label: "Excepción" },
-  };
-
-  return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto">
-      {/* Notice */}
-      <div className="flex items-center gap-2.5 rounded-2xl px-4 py-3 mb-5 border" style={{ background: "#EFF6FF", borderColor: "#BFDBFE" }}>
-        <Shield size={14} className="text-blue-500 flex-shrink-0" />
-        <p className="text-xs font-medium text-blue-700">
-          <span className="font-extrabold">Registro operativo sin contenido clínico.</span> Solo se muestran actor, acción, fecha/hora, resultado y motivo de acceso. Los detalles clínicos están restringidos.
-        </p>
+  return <section className="admin-audit p-4 sm:p-6 max-w-6xl mx-auto">
+    <header className="audit-heading">
+      <div><h1>Auditoría y seguridad</h1><p>Consulta quién realizó cada operación y cuándo.</p>
+        <button className="audit-refresh" type="button" disabled={loading} onClick={() => setRevision(value => value + 1)}><RefreshCw size={16} aria-hidden="true"/>Actualizar eventos</button>
       </div>
-
-      <div className="flex items-start justify-between flex-wrap gap-3 mb-6">
-        <div>
-          <h2 className="text-2xl font-black text-[#1C1135]">Auditoría operativa</h2>
-          <p className="text-sm text-[#7C6F9A] font-medium">Registro de accesos y acciones · Datos simulados para demostración</p>
-        </div>
-        <span className="text-xs font-bold px-3 py-1.5 rounded-full border" style={{ background: B.orangeLight, color: B.orange, borderColor: "#FDBA74" }}>
-          ⚠️ Datos simulados
-        </span>
+      <div className="audit-art" aria-hidden="true"><ShieldCheck size={42}/><PublicIllustration src="/illustrations/team-care-v54.png" alt="" width={160} height={160}/></div>
+    </header>
+    <dl className="audit-stats">{stats.map(stat => { const Icon = stat.icon; return <div key={stat.label} className={`audit-stat audit-tone-${stat.tone}`}>
+      <span className="audit-icon"><Icon size={23} aria-hidden="true"/></span><div><dt>{stat.label}</dt><dd>{loading || error ? '—' : stat.value}</dd><p>{stat.note}</p></div>
+    </div>; })}</dl>
+    <div className="audit-controls">
+      <div className="audit-categories" role="group" aria-label="Filtrar por módulo">{categories.map(option => { const Icon = option.icon; return <button key={option.value} type="button" aria-pressed={category === option.value} onClick={() => setCategory(option.value)}>
+        <Icon size={16} aria-hidden="true"/>{option.label}<span>{loading || error ? '—' : option.value === 'all' ? items.length : items.filter(item => auditCategory(item.nombre_tabla) === option.value).length}</span>
+      </button>; })}</div>
+      <div className="audit-filter-fields">
+        <label className="audit-search"><span className="sr-only">Buscar eventos por actor, registro o acción</span><Search size={17} aria-hidden="true"/><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar actor, registro o acción…"/></label>
+        <label>Desde<input type="date" value={from} onChange={e => setFrom(e.target.value)}/></label>
+        <label>Hasta<input type="date" value={to} onChange={e => setTo(e.target.value)}/></label>
       </div>
-
-      {/* Filter chips */}
-      <div className="flex gap-2 flex-wrap mb-5">
-        {(["todos", "acceso", "cambio", "excepcion"] as const).map(f => (
-          <button key={f} onClick={() => setFilter(f)}
-            className="px-3 py-1.5 rounded-full text-xs font-bold transition-all"
-            style={{
-              background: filter === f ? B.violet : B.violetLight,
-              color: filter === f ? "white" : B.violet,
-            }}>
-            {f === "todos" ? "Todos" : tipoColor[f].label}
-          </button>
-        ))}
-      </div>
-
-      {/* Audit table */}
-      <div className="flex flex-col gap-2">
-        {filtered.map((entry, i) => (
-          <div key={i} className="rounded-2xl border border-[#E8E5F4] p-4 hover:bg-[#F5F3FF] transition-colors">
-            <div className="flex items-start gap-3 flex-wrap">
-              <span className="text-xs font-black px-2 py-0.5 rounded-md flex-shrink-0 mt-0.5"
-                style={{ background: tipoColor[entry.tipo].bg, color: tipoColor[entry.tipo].color }}>
-                {tipoColor[entry.tipo].label}
-              </span>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-2 flex-wrap mb-1">
-                  <p className="font-extrabold text-sm text-[#1C1135]">{entry.accion}</p>
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full flex-shrink-0"
-                    style={{ background: "#D1FAE5", color: "#059669" }}>
-                    {entry.resultado}
-                  </span>
-                </div>
-                <p className="text-xs text-[#4B4869] font-medium mb-0.5">
-                  Actor: <span className="font-bold">{entry.actor}</span>
-                </p>
-                <div className="flex items-center gap-3 flex-wrap">
-                  <p className="text-xs text-[#9E95B7] font-medium">{entry.fecha}</p>
-                  <p className="text-xs font-medium text-[#7C6F9A]">Motivo: {entry.motivo}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <p className="text-xs text-center text-[#9E95B7] font-medium mt-5 italic">
-        Política de retención del registro de auditoría: pendiente de aprobación. · {filtered.length} registros mostrados.
-      </p>
     </div>
-  );
+    {invalidRange && <p className="audit-error" role="alert">La fecha inicial debe ser anterior o igual a la fecha final.</p>}
+    {loading ? <p className="audit-empty" role="status">Cargando eventos…</p> : error ? <div className="audit-error" role="alert"><AlertTriangle size={20} aria-hidden="true"/><p>{error}</p><button type="button" onClick={() => setRevision(value => value + 1)}>Reintentar</button></div> : <>
+      <p className="audit-results" role="status">{filtered.length} eventos visibles de {items.length} cargados{total > items.length ? ` · ${total} en el sistema. Se consultan los 100 más recientes.` : ''}</p>
+      {!groups.length ? <div className="audit-empty"><ShieldCheck size={28} aria-hidden="true"/><h2>{items.length ? 'No hay eventos con estos filtros' : 'Todavía no hay operaciones registradas'}</h2>{items.length > 0 && <button type="button" onClick={reset}>Limpiar filtros</button>}</div> : <div className="audit-timeline">
+        {groups.map(([day, events]) => <section className="audit-day" key={day} aria-label={dayTitle(day)}><header><h2>{dayTitle(day)}</h2><span>{events.length} {events.length === 1 ? 'evento' : 'eventos'}</span></header>
+          <ol>{events.map(item => { const Icon = actions[item.accion as keyof typeof actions] ?? FileText; const module = auditCategory(item.nombre_tabla); return <li key={item.id_auditoria}>
+            <time dateTime={item.fecha_evento}>{new Intl.DateTimeFormat('es-PE', {timeZone:'America/Lima',hour:'2-digit',minute:'2-digit'}).format(new Date(item.fecha_evento))}</time>
+            <article className={`audit-event audit-action-${item.accion.toLowerCase()}`}><span className="audit-event-icon"><Icon size={20} aria-hidden="true"/></span>
+              <div className="audit-event-copy"><h3>{auditActions[item.accion] ?? item.accion}</h3><p>Actor: <strong>{item.actor ?? 'Cuenta eliminada'}</strong></p><p>{item.nombre_tabla} · Registro {item.nombre_entidad}</p></div>
+              <span className={`audit-module audit-module-${module}`}>{moduleLabels[module]}</span>
+              <details><summary>Ver detalle</summary><dl><div><dt>Evento</dt><dd>#{item.id_auditoria}</dd></div><div><dt>Acción</dt><dd>{item.accion}</dd></div><div><dt>Fecha y hora · Lima</dt><dd>{new Date(item.fecha_evento).toLocaleString('es-PE',{timeZone:'America/Lima'})}</dd></div></dl></details>
+            </article>
+          </li>; })}</ol>
+        </section>)}
+      </div>}
+    </>}
+  </section>;
 }

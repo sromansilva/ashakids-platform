@@ -1,0 +1,3629 @@
+{
+  "captured_utc": "2026-10-10T19:18:50.187517+00:00",
+  "base_sha": "62048038b70d2411234fb681284e327cf142d1b7",
+  "scope": "READ ONLY public catalog metadata; no application records",
+  "orm_tables": [
+    "administradores",
+    "auditoria_cambios",
+    "bloqueos_agenda",
+    "conversaciones",
+    "expedientes",
+    "logros",
+    "mensajes",
+    "notificaciones",
+    "pacientes",
+    "perfil_logros",
+    "perfiles",
+    "preferencias_notificacion",
+    "reportes_sesion",
+    "reservas",
+    "roles",
+    "sesiones",
+    "sesiones_autenticacion",
+    "terapeutas",
+    "tratamientos",
+    "turnos_semanales",
+    "tutores",
+    "usuario_roles",
+    "usuarios"
+  ],
+  "tables": [
+    {
+      "name": "actividades",
+      "rls": true
+    },
+    {
+      "name": "administradores",
+      "rls": true
+    },
+    {
+      "name": "auditoria_cambios",
+      "rls": true
+    },
+    {
+      "name": "bloqueos_agenda",
+      "rls": true
+    },
+    {
+      "name": "conversaciones",
+      "rls": true
+    },
+    {
+      "name": "evaluaciones_ia",
+      "rls": true
+    },
+    {
+      "name": "expedientes",
+      "rls": true
+    },
+    {
+      "name": "logros",
+      "rls": true
+    },
+    {
+      "name": "mensaje_adjuntos",
+      "rls": true
+    },
+    {
+      "name": "mensajes",
+      "rls": true
+    },
+    {
+      "name": "mundos",
+      "rls": true
+    },
+    {
+      "name": "niveles",
+      "rls": true
+    },
+    {
+      "name": "notificaciones",
+      "rls": true
+    },
+    {
+      "name": "objetivos",
+      "rls": true
+    },
+    {
+      "name": "pacientes",
+      "rls": true
+    },
+    {
+      "name": "perfil_logros",
+      "rls": true
+    },
+    {
+      "name": "perfiles",
+      "rls": true
+    },
+    {
+      "name": "preferencias_notificacion",
+      "rls": true
+    },
+    {
+      "name": "reportes_sesion",
+      "rls": true
+    },
+    {
+      "name": "reservas",
+      "rls": true
+    },
+    {
+      "name": "resultados_nivel",
+      "rls": true
+    },
+    {
+      "name": "roles",
+      "rls": true
+    },
+    {
+      "name": "sesiones",
+      "rls": true
+    },
+    {
+      "name": "sesiones_autenticacion",
+      "rls": true
+    },
+    {
+      "name": "terapeutas",
+      "rls": true
+    },
+    {
+      "name": "tratamientos",
+      "rls": true
+    },
+    {
+      "name": "turnos_semanales",
+      "rls": true
+    },
+    {
+      "name": "tutores",
+      "rls": true
+    },
+    {
+      "name": "usuario_roles",
+      "rls": true
+    },
+    {
+      "name": "usuarios",
+      "rls": true
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "actividades",
+      "name": "id_actividad",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "actividades",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "actividades",
+      "name": "nombre_actividad",
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "actividades",
+      "name": "descripcion",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "actividades",
+      "name": "fecha_asignacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "actividades",
+      "name": "estado_actividad",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "administradores",
+      "name": "id_administrador",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "administradores",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "administradores",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "id_auditoria",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "id_usuario_actor",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "nombre_tabla",
+      "type": "character varying(50)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "nombre_entidad",
+      "type": "character varying(50)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "accion",
+      "type": "character varying(12)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "datos_anteriores",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "datos_nuevos",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "fecha_evento",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "id_bloqueo",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "id_terapeuta",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "inicio",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "fin",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "id_conversacion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "id_tutor",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "id_terapeuta",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "estado",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "ultima_actividad",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "fecha_archivado",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "id_evaluacion_ia",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "id_reporte_sesion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "id_resultado_nivel",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "resultado_json_ia",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "recomendaciones",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "estado_revision",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "fecha_evaluacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "expedientes",
+      "name": "id_expediente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "expedientes",
+      "name": "historial_clinico",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "expedientes",
+      "name": "diagnostico_inicial",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "expedientes",
+      "name": "fecha_apertura",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "expedientes",
+      "name": "fecha_actualizacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "logros",
+      "name": "id_logro",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "logros",
+      "name": "nombre_logro",
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "logros",
+      "name": "experiencia_logro",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "logros",
+      "name": "requisito_logro",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "logros",
+      "name": "icono_logro",
+      "type": "character varying(255)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "id_adjunto",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "id_mensaje",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "url_archivo",
+      "type": "character varying(255)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "nombre_archivo",
+      "type": "character varying(255)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "mime_type",
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "tamano_bytes",
+      "type": "bigint",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "duracion_segundos",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensajes",
+      "name": "id_mensaje",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "id_conversacion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensajes",
+      "name": "id_usuario_emisor",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensajes",
+      "name": "texto_mensaje",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mensajes",
+      "name": "fecha_envio",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "mensajes",
+      "name": "leido",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": ""
+    },
+    {
+      "table_name": "mundos",
+      "name": "id_mundo",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "mundos",
+      "name": "id_actividad",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mundos",
+      "name": "nombre_mundo",
+      "type": "character varying(30)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mundos",
+      "name": "descripcion",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mundos",
+      "name": "objetivo",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "mundos",
+      "name": "activo",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "niveles",
+      "name": "id_nivel",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "niveles",
+      "name": "id_mundo",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "niveles",
+      "name": "nombre_nivel",
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "niveles",
+      "name": "orden",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "niveles",
+      "name": "objetivo",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "niveles",
+      "name": "activo",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "id_notificacion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "tipo",
+      "type": "character varying(30)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "titulo",
+      "type": "character varying(120)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "texto",
+      "type": "text",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "id_reserva",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "id_conversacion",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "clave_evento",
+      "type": "character varying(160)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "leida_en",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "objetivos",
+      "name": "id_objetivo",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "objetivos",
+      "name": "id_actividad",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "objetivos",
+      "name": "titulo",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "objetivos",
+      "name": "descripcion",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "objetivos",
+      "name": "resultados_objetivo",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "id_tutor",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "nombres_paciente",
+      "type": "character varying(60)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "apellidos_paciente",
+      "type": "character varying(80)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "fecha_nacimiento",
+      "type": "date",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "sexo",
+      "type": "character varying(10)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "activo",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "fecha_registro",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "pacientes",
+      "name": "avatar_nombre",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": "'zorro'::character varying",
+      "identity": ""
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "id_perfil_logro",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "id_perfil",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "id_logro",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "fecha_obtencion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "id_perfil",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "progreso",
+      "type": "numeric(5,2)",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "racha_dias",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "objetivos_totales",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "objetivos_completados",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "actividades_desarrolladas_total",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "sesiones_totales",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "fecha_ultima_sesion",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "experiencia",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "0",
+      "identity": ""
+    },
+    {
+      "table_name": "perfiles",
+      "name": "nivel",
+      "type": "integer",
+      "not_null": true,
+      "default_value": "1",
+      "identity": ""
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "nueva_cita",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "cancelacion",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "reprogramacion",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "recordatorio",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "mensajes",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "id_reporte_sesion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "id_sesion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "observaciones_iniciales",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "objetivos_trabajados",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "nivel_ayuda",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "proximos_pasos",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "id_reserva",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "reservas",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "id_terapeuta",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "id_tratamiento",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "fecha_hora_inicio",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "fecha_hora_fin",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "modalidad",
+      "type": "character varying(10)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "localizacion",
+      "type": "character varying(255)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "zoom_meeting_id",
+      "type": "character varying(8)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "zoom_join_url",
+      "type": "character varying(255)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "estado_reserva",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "reservas",
+      "name": "tipo_cita",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": "'TERAPIA'::character varying",
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "id_resultado_nivel",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "id_paciente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "id_nivel",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "numero_intento",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "puntaje",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "estrellas_obtenidas",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "detalle_resultados",
+      "type": "jsonb",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "fecha_realizacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "roles",
+      "name": "id_rol",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "roles",
+      "name": "nombre_rol",
+      "type": "character varying(12)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "roles",
+      "name": "descripcion",
+      "type": "character varying(150)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "roles",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones",
+      "name": "id_sesion",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "id_reserva",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones",
+      "name": "fecha_hora_inicio_real",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones",
+      "name": "fecha_hora_fin_real",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones",
+      "name": "asistencia",
+      "type": "character varying(20)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones",
+      "name": "estado_sesion",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "id_sesion_auth",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "token_hash",
+      "type": "character varying(255)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "fecha_emision",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "fecha_expiracion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "ultima_actividad",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "mfa_verificado",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "revocado",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": ""
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "fecha_cierre",
+      "type": "timestamp with time zone",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "id_terapeuta",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "especialidad",
+      "type": "character varying(100)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "anios_experiencia",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "idiomas",
+      "type": "character varying(50)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "descripcion_profesional",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "id_tratamiento",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "id_expediente",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "id_terapeuta",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "nombre_tratamiento",
+      "type": "character varying(100)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "descripcion",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "sesiones_recomendadas",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "estado_tratamiento",
+      "type": "character varying(20)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "fecha_inicio",
+      "type": "date",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "fecha_fin",
+      "type": "date",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "observaciones_cierre",
+      "type": "text",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "id_sesion_origen",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "area",
+      "type": "character varying(20)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "mundos_asignados",
+      "type": "jsonb",
+      "not_null": true,
+      "default_value": "'[]'::jsonb",
+      "identity": ""
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "id_turno",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "id_terapeuta",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "dia",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "hora",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tutores",
+      "name": "id_tutor",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "tutores",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tutores",
+      "name": "parentesco",
+      "type": "character varying(30)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tutores",
+      "name": "telefono",
+      "type": "character varying(12)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "tutores",
+      "name": "direccion",
+      "type": "character varying(200)",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "id_usuario_rol",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "id_rol",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "asignado_por",
+      "type": "integer",
+      "not_null": false,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "fecha_asignacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "activo",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "id_usuario",
+      "type": "integer",
+      "not_null": true,
+      "default_value": null,
+      "identity": "d"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "nombres",
+      "type": "character varying(60)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "apellidos",
+      "type": "character varying(80)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "codigo_usuario",
+      "type": "character varying(6)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "email",
+      "type": "character varying(150)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "password_hash",
+      "type": "character varying(255)",
+      "not_null": true,
+      "default_value": null,
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "activo",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "true",
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "fecha_creacion",
+      "type": "timestamp with time zone",
+      "not_null": true,
+      "default_value": "now()",
+      "identity": ""
+    },
+    {
+      "table_name": "usuarios",
+      "name": "password_change_required",
+      "type": "boolean",
+      "not_null": true,
+      "default_value": "false",
+      "identity": ""
+    }
+  ],
+  "constraints": [
+    {
+      "table_name": "actividades",
+      "name": "actividades_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_actividad)"
+    },
+    {
+      "table_name": "actividades",
+      "name": "fk_actividades_paciente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "administradores",
+      "name": "administradores_id_usuario_key",
+      "type": "u",
+      "definition": "UNIQUE (id_usuario)"
+    },
+    {
+      "table_name": "administradores",
+      "name": "administradores_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_administrador)"
+    },
+    {
+      "table_name": "administradores",
+      "name": "fk_administradores_usuario",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "auditoria_cambios_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_auditoria)"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "fk_auditoria_usuario_actor",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario_actor) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "bloqueos_agenda_check",
+      "type": "c",
+      "definition": "CHECK ((fin > inicio))"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "bloqueos_agenda_id_terapeuta_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON DELETE CASCADE"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "bloqueos_agenda_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_bloqueo)"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "conversaciones_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_conversacion)"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "fk_conversaciones_terapeuta",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "fk_conversaciones_tutor",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_tutor) REFERENCES tutores(id_tutor) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "evaluaciones_ia_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_evaluacion_ia)"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "fk_evaluaciones_ia_paciente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "fk_evaluaciones_ia_reporte",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_reporte_sesion) REFERENCES reportes_sesion(id_reporte_sesion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "fk_evaluaciones_ia_resultado",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_resultado_nivel) REFERENCES resultados_nivel(id_resultado_nivel) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "expedientes_id_paciente_key",
+      "type": "u",
+      "definition": "UNIQUE (id_paciente)"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "expedientes_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_expediente)"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "fk_expedientes_paciente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "logros",
+      "name": "chk_logros_experiencia",
+      "type": "c",
+      "definition": "CHECK ((experiencia_logro >= 0))"
+    },
+    {
+      "table_name": "logros",
+      "name": "logros_nombre_logro_key",
+      "type": "u",
+      "definition": "UNIQUE (nombre_logro)"
+    },
+    {
+      "table_name": "logros",
+      "name": "logros_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_logro)"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "chk_mensaje_adjuntos_duracion",
+      "type": "c",
+      "definition": "CHECK (((duracion_segundos IS NULL) OR (duracion_segundos >= 0)))"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "chk_mensaje_adjuntos_tamano",
+      "type": "c",
+      "definition": "CHECK ((tamano_bytes >= 0))"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "fk_mensaje_adjuntos_mensaje",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_mensaje) REFERENCES mensajes(id_mensaje) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "mensaje_adjuntos_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_adjunto)"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "fk_mensajes_conversacion",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_conversacion) REFERENCES conversaciones(id_conversacion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "fk_mensajes_usuario_emisor",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario_emisor) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "mensajes_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_mensaje)"
+    },
+    {
+      "table_name": "mundos",
+      "name": "fk_mundos_actividad",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "mundos",
+      "name": "mundos_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_mundo)"
+    },
+    {
+      "table_name": "niveles",
+      "name": "chk_niveles_orden",
+      "type": "c",
+      "definition": "CHECK ((orden > 0))"
+    },
+    {
+      "table_name": "niveles",
+      "name": "fk_niveles_mundo",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_mundo) REFERENCES mundos(id_mundo) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "niveles",
+      "name": "niveles_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_nivel)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "ck_notificacion_recurso",
+      "type": "c",
+      "definition": "CHECK (((((tipo)::text = 'MENSAJE'::text) AND (id_conversacion IS NOT NULL) AND (id_reserva IS NULL)) OR (((tipo)::text <> 'MENSAJE'::text) AND (id_reserva IS NOT NULL) AND (id_conversacion IS NULL))))"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_id_conversacion_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_conversacion) REFERENCES conversaciones(id_conversacion) ON DELETE CASCADE"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_id_reserva_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva) ON DELETE CASCADE"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_id_usuario_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_notificacion)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_tipo_check",
+      "type": "c",
+      "definition": "CHECK (((tipo)::text = ANY ((ARRAY['NUEVA_CITA'::character varying, 'CANCELACION'::character varying, 'REPROGRAMACION'::character varying, 'RECORDATORIO'::character varying, 'MENSAJE'::character varying])::text[])))"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "uq_notificacion_evento",
+      "type": "u",
+      "definition": "UNIQUE (id_usuario, clave_evento)"
+    },
+    {
+      "table_name": "objetivos",
+      "name": "fk_objetivos_actividad",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_actividad) REFERENCES actividades(id_actividad) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "objetivos",
+      "name": "objetivos_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_objetivo)"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "fk_pacientes_tutor",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_tutor) REFERENCES tutores(id_tutor) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "pacientes_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_paciente)"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "fk_perfil_logros_logro",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_logro) REFERENCES logros(id_logro) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "fk_perfil_logros_perfil",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_perfil) REFERENCES perfiles(id_perfil) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "perfil_logros_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_perfil_logro)"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "uq_perfil_logro",
+      "type": "u",
+      "definition": "UNIQUE (id_perfil, id_logro)"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_actividades",
+      "type": "c",
+      "definition": "CHECK ((actividades_desarrolladas_total >= 0))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_experiencia",
+      "type": "c",
+      "definition": "CHECK ((experiencia >= 0))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_nivel",
+      "type": "c",
+      "definition": "CHECK ((nivel >= 1))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_objetivos_completados",
+      "type": "c",
+      "definition": "CHECK ((objetivos_completados >= 0))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_objetivos_totales",
+      "type": "c",
+      "definition": "CHECK ((objetivos_totales >= 0))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_progreso",
+      "type": "c",
+      "definition": "CHECK (((progreso >= (0)::numeric) AND (progreso <= (100)::numeric)))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_racha",
+      "type": "c",
+      "definition": "CHECK ((racha_dias >= 0))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "chk_perfiles_sesiones",
+      "type": "c",
+      "definition": "CHECK ((sesiones_totales >= 0))"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "fk_perfiles_paciente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "perfiles_id_paciente_key",
+      "type": "u",
+      "definition": "UNIQUE (id_paciente)"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "perfiles_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_perfil)"
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "preferencias_notificacion_id_usuario_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON DELETE CASCADE"
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "preferencias_notificacion_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_usuario)"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "fk_reportes_sesion_sesion",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_sesion) REFERENCES sesiones(id_sesion) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "reportes_sesion_id_sesion_key",
+      "type": "u",
+      "definition": "UNIQUE (id_sesion)"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "reportes_sesion_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_reporte_sesion)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "chk_reservas_fechas",
+      "type": "c",
+      "definition": "CHECK ((fecha_hora_fin > fecha_hora_inicio))"
+    },
+    {
+      "table_name": "reservas",
+      "name": "fk_reservas_paciente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "reservas",
+      "name": "fk_reservas_terapeuta",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "reservas",
+      "name": "fk_reservas_tratamiento",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_tratamiento) REFERENCES tratamientos(id_tratamiento) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "reservas",
+      "name": "reservas_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_reserva)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "reservas_tipo_plan_ck",
+      "type": "c",
+      "definition": "CHECK (((((tipo_cita)::text = 'INTRODUCTORIA'::text) AND (id_tratamiento IS NULL)) OR (((tipo_cita)::text = 'TERAPIA'::text) AND (id_tratamiento IS NOT NULL))))"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "chk_resultados_estrellas",
+      "type": "c",
+      "definition": "CHECK (((estrellas_obtenidas IS NULL) OR (estrellas_obtenidas >= 0)))"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "chk_resultados_numero_intento",
+      "type": "c",
+      "definition": "CHECK ((numero_intento > 0))"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "chk_resultados_puntaje",
+      "type": "c",
+      "definition": "CHECK (((puntaje IS NULL) OR (puntaje >= 0)))"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "fk_resultados_nivel_nivel",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_nivel) REFERENCES niveles(id_nivel) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "fk_resultados_nivel_paciente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_paciente) REFERENCES pacientes(id_paciente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "resultados_nivel_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_resultado_nivel)"
+    },
+    {
+      "table_name": "roles",
+      "name": "roles_nombre_rol_key",
+      "type": "u",
+      "definition": "UNIQUE (nombre_rol)"
+    },
+    {
+      "table_name": "roles",
+      "name": "roles_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_rol)"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "chk_sesiones_fechas",
+      "type": "c",
+      "definition": "CHECK (((fecha_hora_fin_real IS NULL) OR (fecha_hora_inicio_real IS NULL) OR (fecha_hora_fin_real > fecha_hora_inicio_real)))"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "fk_sesiones_reserva",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_reserva) REFERENCES reservas(id_reserva) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "sesiones_id_reserva_key",
+      "type": "u",
+      "definition": "UNIQUE (id_reserva)"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "sesiones_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_sesion)"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "fk_sesiones_auth_usuario",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "sesiones_autenticacion_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_sesion_auth)"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "chk_terapeutas_experiencia",
+      "type": "c",
+      "definition": "CHECK (((anios_experiencia IS NULL) OR (anios_experiencia >= 0)))"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "fk_terapeutas_usuario",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "terapeutas_id_usuario_key",
+      "type": "u",
+      "definition": "UNIQUE (id_usuario)"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "terapeutas_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_terapeuta)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "chk_tratamientos_sesiones",
+      "type": "c",
+      "definition": "CHECK (((sesiones_recomendadas IS NULL) OR (sesiones_recomendadas >= 0)))"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "ck_plan_profesional",
+      "type": "c",
+      "definition": "CHECK (((id_sesion_origen IS NULL) OR ((area IS NOT NULL) AND ((area)::text = ANY ((ARRAY['FLUIDEZ'::character varying, 'HABLA'::character varying, 'LENGUAJE'::character varying])::text[])) AND (sesiones_recomendadas IS NOT NULL) AND ((sesiones_recomendadas >= 1) AND (sesiones_recomendadas <= 31)) AND (jsonb_typeof(mundos_asignados) = 'array'::text) AND ((jsonb_array_length(mundos_asignados) >= 1) AND (jsonb_array_length(mundos_asignados) <= 3)) AND (mundos_asignados <@ '[\"FLUIDEZ\", \"HABLA\", \"LENGUAJE\"]'::jsonb))))"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "fk_tratamientos_expediente",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_expediente) REFERENCES expedientes(id_expediente) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "fk_tratamientos_terapeuta",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "tratamientos_id_sesion_origen_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_sesion_origen) REFERENCES sesiones(id_sesion)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "tratamientos_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_tratamiento)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "uq_plan_sesion_origen",
+      "type": "u",
+      "definition": "UNIQUE (id_sesion_origen)"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_dia_check",
+      "type": "c",
+      "definition": "CHECK (((dia >= 0) AND (dia <= 5)))"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_hora_check",
+      "type": "c",
+      "definition": "CHECK (((hora >= 8) AND (hora <= 17)))"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_id_terapeuta_dia_hora_key",
+      "type": "u",
+      "definition": "UNIQUE (id_terapeuta, dia, hora)"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_id_terapeuta_fkey",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_terapeuta) REFERENCES terapeutas(id_terapeuta) ON DELETE CASCADE"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_turno)"
+    },
+    {
+      "table_name": "tutores",
+      "name": "fk_tutores_usuario",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "tutores",
+      "name": "tutores_id_usuario_key",
+      "type": "u",
+      "definition": "UNIQUE (id_usuario)"
+    },
+    {
+      "table_name": "tutores",
+      "name": "tutores_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_tutor)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "fk_usuario_roles_administrador",
+      "type": "f",
+      "definition": "FOREIGN KEY (asignado_por) REFERENCES administradores(id_administrador) ON UPDATE CASCADE ON DELETE SET NULL"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "fk_usuario_roles_rol",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_rol) REFERENCES roles(id_rol) ON UPDATE CASCADE ON DELETE RESTRICT"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "fk_usuario_roles_usuario",
+      "type": "f",
+      "definition": "FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario) ON UPDATE CASCADE ON DELETE CASCADE"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "uq_usuario_rol",
+      "type": "u",
+      "definition": "UNIQUE (id_usuario, id_rol)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "usuario_roles_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_usuario_rol)"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_codigo_usuario_key",
+      "type": "u",
+      "definition": "UNIQUE (codigo_usuario)"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_email_key",
+      "type": "u",
+      "definition": "UNIQUE (email)"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_pkey",
+      "type": "p",
+      "definition": "PRIMARY KEY (id_usuario)"
+    }
+  ],
+  "indexes": [
+    {
+      "table_name": "actividades",
+      "name": "actividades_pkey",
+      "definition": "CREATE UNIQUE INDEX actividades_pkey ON public.actividades USING btree (id_actividad)"
+    },
+    {
+      "table_name": "actividades",
+      "name": "idx_actividades_paciente",
+      "definition": "CREATE INDEX idx_actividades_paciente ON public.actividades USING btree (id_paciente)"
+    },
+    {
+      "table_name": "administradores",
+      "name": "administradores_id_usuario_key",
+      "definition": "CREATE UNIQUE INDEX administradores_id_usuario_key ON public.administradores USING btree (id_usuario)"
+    },
+    {
+      "table_name": "administradores",
+      "name": "administradores_pkey",
+      "definition": "CREATE UNIQUE INDEX administradores_pkey ON public.administradores USING btree (id_administrador)"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "auditoria_cambios_pkey",
+      "definition": "CREATE UNIQUE INDEX auditoria_cambios_pkey ON public.auditoria_cambios USING btree (id_auditoria)"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "idx_auditoria_fecha_evento",
+      "definition": "CREATE INDEX idx_auditoria_fecha_evento ON public.auditoria_cambios USING btree (fecha_evento)"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "idx_auditoria_tabla_entidad",
+      "definition": "CREATE INDEX idx_auditoria_tabla_entidad ON public.auditoria_cambios USING btree (nombre_tabla, nombre_entidad)"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "idx_auditoria_usuario_actor",
+      "definition": "CREATE INDEX idx_auditoria_usuario_actor ON public.auditoria_cambios USING btree (id_usuario_actor)"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "bloqueos_agenda_pkey",
+      "definition": "CREATE UNIQUE INDEX bloqueos_agenda_pkey ON public.bloqueos_agenda USING btree (id_bloqueo)"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "bloqueos_terapeuta_inicio_idx",
+      "definition": "CREATE INDEX bloqueos_terapeuta_inicio_idx ON public.bloqueos_agenda USING btree (id_terapeuta, inicio)"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "conversaciones_pkey",
+      "definition": "CREATE UNIQUE INDEX conversaciones_pkey ON public.conversaciones USING btree (id_conversacion)"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "idx_conversaciones_terapeuta",
+      "definition": "CREATE INDEX idx_conversaciones_terapeuta ON public.conversaciones USING btree (id_terapeuta)"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "idx_conversaciones_tutor",
+      "definition": "CREATE INDEX idx_conversaciones_tutor ON public.conversaciones USING btree (id_tutor)"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "evaluaciones_ia_pkey",
+      "definition": "CREATE UNIQUE INDEX evaluaciones_ia_pkey ON public.evaluaciones_ia USING btree (id_evaluacion_ia)"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "idx_evaluaciones_ia_paciente",
+      "definition": "CREATE INDEX idx_evaluaciones_ia_paciente ON public.evaluaciones_ia USING btree (id_paciente)"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "idx_evaluaciones_ia_reporte",
+      "definition": "CREATE INDEX idx_evaluaciones_ia_reporte ON public.evaluaciones_ia USING btree (id_reporte_sesion)"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "idx_evaluaciones_ia_resultado",
+      "definition": "CREATE INDEX idx_evaluaciones_ia_resultado ON public.evaluaciones_ia USING btree (id_resultado_nivel)"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "expedientes_id_paciente_key",
+      "definition": "CREATE UNIQUE INDEX expedientes_id_paciente_key ON public.expedientes USING btree (id_paciente)"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "expedientes_pkey",
+      "definition": "CREATE UNIQUE INDEX expedientes_pkey ON public.expedientes USING btree (id_expediente)"
+    },
+    {
+      "table_name": "logros",
+      "name": "logros_nombre_logro_key",
+      "definition": "CREATE UNIQUE INDEX logros_nombre_logro_key ON public.logros USING btree (nombre_logro)"
+    },
+    {
+      "table_name": "logros",
+      "name": "logros_pkey",
+      "definition": "CREATE UNIQUE INDEX logros_pkey ON public.logros USING btree (id_logro)"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "idx_mensaje_adjuntos_mensaje",
+      "definition": "CREATE INDEX idx_mensaje_adjuntos_mensaje ON public.mensaje_adjuntos USING btree (id_mensaje)"
+    },
+    {
+      "table_name": "mensaje_adjuntos",
+      "name": "mensaje_adjuntos_pkey",
+      "definition": "CREATE UNIQUE INDEX mensaje_adjuntos_pkey ON public.mensaje_adjuntos USING btree (id_adjunto)"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "idx_mensajes_conversacion",
+      "definition": "CREATE INDEX idx_mensajes_conversacion ON public.mensajes USING btree (id_conversacion)"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "idx_mensajes_emisor",
+      "definition": "CREATE INDEX idx_mensajes_emisor ON public.mensajes USING btree (id_usuario_emisor)"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "mensajes_pkey",
+      "definition": "CREATE UNIQUE INDEX mensajes_pkey ON public.mensajes USING btree (id_mensaje)"
+    },
+    {
+      "table_name": "mundos",
+      "name": "idx_mundos_actividad",
+      "definition": "CREATE INDEX idx_mundos_actividad ON public.mundos USING btree (id_actividad)"
+    },
+    {
+      "table_name": "mundos",
+      "name": "mundos_pkey",
+      "definition": "CREATE UNIQUE INDEX mundos_pkey ON public.mundos USING btree (id_mundo)"
+    },
+    {
+      "table_name": "niveles",
+      "name": "idx_niveles_mundo",
+      "definition": "CREATE INDEX idx_niveles_mundo ON public.niveles USING btree (id_mundo)"
+    },
+    {
+      "table_name": "niveles",
+      "name": "niveles_pkey",
+      "definition": "CREATE UNIQUE INDEX niveles_pkey ON public.niveles USING btree (id_nivel)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_conversacion_idx",
+      "definition": "CREATE INDEX notificaciones_conversacion_idx ON public.notificaciones USING btree (id_conversacion) WHERE (id_conversacion IS NOT NULL)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_pkey",
+      "definition": "CREATE UNIQUE INDEX notificaciones_pkey ON public.notificaciones USING btree (id_notificacion)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_reserva_idx",
+      "definition": "CREATE INDEX notificaciones_reserva_idx ON public.notificaciones USING btree (id_reserva) WHERE (id_reserva IS NOT NULL)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_sin_leer_idx",
+      "definition": "CREATE INDEX notificaciones_sin_leer_idx ON public.notificaciones USING btree (id_usuario) WHERE (leida_en IS NULL)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "notificaciones_usuario_fecha_idx",
+      "definition": "CREATE INDEX notificaciones_usuario_fecha_idx ON public.notificaciones USING btree (id_usuario, fecha_creacion DESC, id_notificacion DESC)"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "uq_notificacion_evento",
+      "definition": "CREATE UNIQUE INDEX uq_notificacion_evento ON public.notificaciones USING btree (id_usuario, clave_evento)"
+    },
+    {
+      "table_name": "objetivos",
+      "name": "idx_objetivos_actividad",
+      "definition": "CREATE INDEX idx_objetivos_actividad ON public.objetivos USING btree (id_actividad)"
+    },
+    {
+      "table_name": "objetivos",
+      "name": "objetivos_pkey",
+      "definition": "CREATE UNIQUE INDEX objetivos_pkey ON public.objetivos USING btree (id_objetivo)"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "idx_pacientes_tutor",
+      "definition": "CREATE INDEX idx_pacientes_tutor ON public.pacientes USING btree (id_tutor)"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "pacientes_pkey",
+      "definition": "CREATE UNIQUE INDEX pacientes_pkey ON public.pacientes USING btree (id_paciente)"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "idx_perfil_logros_logro",
+      "definition": "CREATE INDEX idx_perfil_logros_logro ON public.perfil_logros USING btree (id_logro)"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "idx_perfil_logros_perfil",
+      "definition": "CREATE INDEX idx_perfil_logros_perfil ON public.perfil_logros USING btree (id_perfil)"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "perfil_logros_pkey",
+      "definition": "CREATE UNIQUE INDEX perfil_logros_pkey ON public.perfil_logros USING btree (id_perfil_logro)"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "uq_perfil_logro",
+      "definition": "CREATE UNIQUE INDEX uq_perfil_logro ON public.perfil_logros USING btree (id_perfil, id_logro)"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "idx_perfiles_paciente",
+      "definition": "CREATE INDEX idx_perfiles_paciente ON public.perfiles USING btree (id_paciente)"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "perfiles_id_paciente_key",
+      "definition": "CREATE UNIQUE INDEX perfiles_id_paciente_key ON public.perfiles USING btree (id_paciente)"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "perfiles_pkey",
+      "definition": "CREATE UNIQUE INDEX perfiles_pkey ON public.perfiles USING btree (id_perfil)"
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "preferencias_notificacion_pkey",
+      "definition": "CREATE UNIQUE INDEX preferencias_notificacion_pkey ON public.preferencias_notificacion USING btree (id_usuario)"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "reportes_sesion_id_sesion_key",
+      "definition": "CREATE UNIQUE INDEX reportes_sesion_id_sesion_key ON public.reportes_sesion USING btree (id_sesion)"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "reportes_sesion_pkey",
+      "definition": "CREATE UNIQUE INDEX reportes_sesion_pkey ON public.reportes_sesion USING btree (id_reporte_sesion)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "idx_reservas_fecha_inicio",
+      "definition": "CREATE INDEX idx_reservas_fecha_inicio ON public.reservas USING btree (fecha_hora_inicio)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "idx_reservas_paciente",
+      "definition": "CREATE INDEX idx_reservas_paciente ON public.reservas USING btree (id_paciente)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "idx_reservas_terapeuta",
+      "definition": "CREATE INDEX idx_reservas_terapeuta ON public.reservas USING btree (id_terapeuta)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "idx_reservas_tratamiento",
+      "definition": "CREATE INDEX idx_reservas_tratamiento ON public.reservas USING btree (id_tratamiento)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "reservas_intro_pendiente_uq",
+      "definition": "CREATE UNIQUE INDEX reservas_intro_pendiente_uq ON public.reservas USING btree (id_paciente) WHERE (((tipo_cita)::text = 'INTRODUCTORIA'::text) AND ((estado_reserva)::text = ANY ((ARRAY['PENDIENTE'::character varying, 'CONFIRMADA'::character varying])::text[])))"
+    },
+    {
+      "table_name": "reservas",
+      "name": "reservas_pkey",
+      "definition": "CREATE UNIQUE INDEX reservas_pkey ON public.reservas USING btree (id_reserva)"
+    },
+    {
+      "table_name": "reservas",
+      "name": "reservas_recordatorio_idx",
+      "definition": "CREATE INDEX reservas_recordatorio_idx ON public.reservas USING btree (fecha_hora_inicio) WHERE ((estado_reserva)::text = 'CONFIRMADA'::text)"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "idx_resultados_nivel_nivel",
+      "definition": "CREATE INDEX idx_resultados_nivel_nivel ON public.resultados_nivel USING btree (id_nivel)"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "idx_resultados_nivel_paciente",
+      "definition": "CREATE INDEX idx_resultados_nivel_paciente ON public.resultados_nivel USING btree (id_paciente)"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "resultados_nivel_pkey",
+      "definition": "CREATE UNIQUE INDEX resultados_nivel_pkey ON public.resultados_nivel USING btree (id_resultado_nivel)"
+    },
+    {
+      "table_name": "roles",
+      "name": "roles_nombre_rol_key",
+      "definition": "CREATE UNIQUE INDEX roles_nombre_rol_key ON public.roles USING btree (nombre_rol)"
+    },
+    {
+      "table_name": "roles",
+      "name": "roles_pkey",
+      "definition": "CREATE UNIQUE INDEX roles_pkey ON public.roles USING btree (id_rol)"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "idx_sesiones_reserva",
+      "definition": "CREATE INDEX idx_sesiones_reserva ON public.sesiones USING btree (id_reserva)"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "sesiones_id_reserva_key",
+      "definition": "CREATE UNIQUE INDEX sesiones_id_reserva_key ON public.sesiones USING btree (id_reserva)"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "sesiones_pkey",
+      "definition": "CREATE UNIQUE INDEX sesiones_pkey ON public.sesiones USING btree (id_sesion)"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "idx_sesiones_auth_usuario",
+      "definition": "CREATE INDEX idx_sesiones_auth_usuario ON public.sesiones_autenticacion USING btree (id_usuario)"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "sesiones_autenticacion_pkey",
+      "definition": "CREATE UNIQUE INDEX sesiones_autenticacion_pkey ON public.sesiones_autenticacion USING btree (id_sesion_auth)"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "terapeutas_id_usuario_key",
+      "definition": "CREATE UNIQUE INDEX terapeutas_id_usuario_key ON public.terapeutas USING btree (id_usuario)"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "terapeutas_pkey",
+      "definition": "CREATE UNIQUE INDEX terapeutas_pkey ON public.terapeutas USING btree (id_terapeuta)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "idx_tratamientos_expediente",
+      "definition": "CREATE INDEX idx_tratamientos_expediente ON public.tratamientos USING btree (id_expediente)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "idx_tratamientos_terapeuta",
+      "definition": "CREATE INDEX idx_tratamientos_terapeuta ON public.tratamientos USING btree (id_terapeuta)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "tratamientos_pkey",
+      "definition": "CREATE UNIQUE INDEX tratamientos_pkey ON public.tratamientos USING btree (id_tratamiento)"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "uq_plan_profesional_activo",
+      "definition": "CREATE UNIQUE INDEX uq_plan_profesional_activo ON public.tratamientos USING btree (id_expediente) WHERE (((estado_tratamiento)::text = 'ACTIVO'::text) AND (id_sesion_origen IS NOT NULL))"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "uq_plan_sesion_origen",
+      "definition": "CREATE UNIQUE INDEX uq_plan_sesion_origen ON public.tratamientos USING btree (id_sesion_origen)"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_id_terapeuta_dia_hora_key",
+      "definition": "CREATE UNIQUE INDEX turnos_semanales_id_terapeuta_dia_hora_key ON public.turnos_semanales USING btree (id_terapeuta, dia, hora)"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "turnos_semanales_pkey",
+      "definition": "CREATE UNIQUE INDEX turnos_semanales_pkey ON public.turnos_semanales USING btree (id_turno)"
+    },
+    {
+      "table_name": "tutores",
+      "name": "tutores_id_usuario_key",
+      "definition": "CREATE UNIQUE INDEX tutores_id_usuario_key ON public.tutores USING btree (id_usuario)"
+    },
+    {
+      "table_name": "tutores",
+      "name": "tutores_pkey",
+      "definition": "CREATE UNIQUE INDEX tutores_pkey ON public.tutores USING btree (id_tutor)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "idx_usuario_roles_asignado_por",
+      "definition": "CREATE INDEX idx_usuario_roles_asignado_por ON public.usuario_roles USING btree (asignado_por)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "idx_usuario_roles_rol",
+      "definition": "CREATE INDEX idx_usuario_roles_rol ON public.usuario_roles USING btree (id_rol)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "idx_usuario_roles_usuario",
+      "definition": "CREATE INDEX idx_usuario_roles_usuario ON public.usuario_roles USING btree (id_usuario)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "uq_usuario_rol",
+      "definition": "CREATE UNIQUE INDEX uq_usuario_rol ON public.usuario_roles USING btree (id_usuario, id_rol)"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "usuario_roles_pkey",
+      "definition": "CREATE UNIQUE INDEX usuario_roles_pkey ON public.usuario_roles USING btree (id_usuario_rol)"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_codigo_casefold_uq",
+      "definition": "CREATE UNIQUE INDEX usuarios_codigo_casefold_uq ON public.usuarios USING btree (upper((codigo_usuario)::text))"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_codigo_usuario_key",
+      "definition": "CREATE UNIQUE INDEX usuarios_codigo_usuario_key ON public.usuarios USING btree (codigo_usuario)"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_email_key",
+      "definition": "CREATE UNIQUE INDEX usuarios_email_key ON public.usuarios USING btree (email)"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "usuarios_pkey",
+      "definition": "CREATE UNIQUE INDEX usuarios_pkey ON public.usuarios USING btree (id_usuario)"
+    }
+  ],
+  "policies": [
+    {
+      "table_name": "actividades",
+      "name": "ashakids_runtime_actividades_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "administradores",
+      "name": "ashakids_runtime_administradores_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "administradores",
+      "name": "ashakids_runtime_administradores_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "administradores",
+      "name": "ashakids_runtime_administradores_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "ashakids_runtime_auditoria_cambios_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "name": "ashakids_runtime_auditoria_cambios_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "runtime_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "runtime_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "bloqueos_agenda",
+      "name": "runtime_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "ashakids_runtime_conversaciones_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "ashakids_runtime_conversaciones_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "conversaciones",
+      "name": "ashakids_runtime_conversaciones_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "evaluaciones_ia",
+      "name": "ashakids_runtime_evaluaciones_ia_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "expedientes",
+      "name": "ashakids_runtime_expedientes_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "expedientes",
+      "name": "ashakids_runtime_expedientes_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "expedientes",
+      "name": "ashakids_runtime_expedientes_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "logros",
+      "name": "ashakids_runtime_logros_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "mensajes",
+      "name": "ashakids_runtime_mensajes_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "mensajes",
+      "name": "ashakids_runtime_mensajes_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "runtime_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "runtime_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "notificaciones",
+      "name": "runtime_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "ashakids_runtime_pacientes_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "pacientes",
+      "name": "ashakids_runtime_pacientes_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "pacientes",
+      "name": "ashakids_runtime_pacientes_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "pacientes",
+      "name": "ashakids_runtime_pacientes_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "perfil_logros",
+      "name": "ashakids_runtime_perfil_logros_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "perfiles",
+      "name": "ashakids_runtime_perfiles_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "perfiles",
+      "name": "ashakids_runtime_perfiles_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "perfiles",
+      "name": "ashakids_runtime_perfiles_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "perfiles",
+      "name": "ashakids_runtime_perfiles_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "runtime_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "runtime_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "preferencias_notificacion",
+      "name": "runtime_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "ashakids_runtime_reportes_sesion_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "ashakids_runtime_reportes_sesion_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "reportes_sesion",
+      "name": "ashakids_runtime_reportes_sesion_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "reservas",
+      "name": "ashakids_runtime_reservas_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "reservas",
+      "name": "ashakids_runtime_reservas_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "reservas",
+      "name": "ashakids_runtime_reservas_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "resultados_nivel",
+      "name": "ashakids_runtime_resultados_nivel_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "roles",
+      "name": "ashakids_runtime_roles_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "sesiones",
+      "name": "ashakids_runtime_sesiones_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "sesiones",
+      "name": "ashakids_runtime_sesiones_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "sesiones",
+      "name": "ashakids_runtime_sesiones_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "ashakids_runtime_sesiones_autenticacion_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "ashakids_runtime_sesiones_autenticacion_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "ashakids_runtime_sesiones_autenticacion_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "name": "ashakids_runtime_sesiones_autenticacion_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "ashakids_runtime_terapeutas_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "ashakids_runtime_terapeutas_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "ashakids_runtime_terapeutas_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "terapeutas",
+      "name": "ashakids_runtime_terapeutas_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "ashakids_runtime_tratamientos_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "ashakids_runtime_tratamientos_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "tratamientos",
+      "name": "ashakids_runtime_tratamientos_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "runtime_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "runtime_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "turnos_semanales",
+      "name": "runtime_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "tutores",
+      "name": "ashakids_runtime_tutores_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "tutores",
+      "name": "ashakids_runtime_tutores_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "tutores",
+      "name": "ashakids_runtime_tutores_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "tutores",
+      "name": "ashakids_runtime_tutores_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "ashakids_runtime_usuario_roles_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "ashakids_runtime_usuario_roles_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "usuario_roles",
+      "name": "ashakids_runtime_usuario_roles_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "usuarios",
+      "name": "ashakids_runtime_usuarios_delete",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "DELETE",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "usuarios",
+      "name": "ashakids_runtime_usuarios_insert",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "INSERT",
+      "qual": null,
+      "with_check": "true"
+    },
+    {
+      "table_name": "usuarios",
+      "name": "ashakids_runtime_usuarios_select",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "SELECT",
+      "qual": "true",
+      "with_check": null
+    },
+    {
+      "table_name": "usuarios",
+      "name": "ashakids_runtime_usuarios_update",
+      "roles": [
+        "ashakids_runtime"
+      ],
+      "cmd": "UPDATE",
+      "qual": "true",
+      "with_check": "true"
+    }
+  ]
+}

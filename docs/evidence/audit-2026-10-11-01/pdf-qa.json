@@ -1,0 +1,8 @@
+{
+  "pages": 7,
+  "renderer": "ReportLab / tools/reports/build_backend_audit_pdf.py",
+  "visual_renderer": "pypdfium2 scale1.4",
+  "review": "All final pages inspected in contact sheet; pages3 and6 inspected individually before last spacing polish. Section breaks corrected; no orphan heading/table headers or clipping observed.",
+  "sha256": "df86754492b30782fc8e47954be74fa43e52a465c7d1465d4339c0329da8b471",
+  "responsive_review": false
+}

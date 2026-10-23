@@ -1,0 +1,20 @@
+{
+  "code_sha": "66754c57aa7a7c38c0733acde5d149b0b3d0a017",
+  "render_deploy": "dep-db5fq4jrjlhs73aoh0d0",
+  "render_status": "Live",
+  "render_duration": "38.5s",
+  "/health/ready": {
+    "status": 200,
+    "body": {
+      "status": "ready",
+      "database": "reachable"
+    }
+  },
+  "/openapi.json": {
+    "status": 200,
+    "body": {
+      "create_password": true,
+      "resend_activation": true
+    }
+  }
+}

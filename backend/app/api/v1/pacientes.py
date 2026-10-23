@@ -7,6 +7,7 @@ from app.models.clinica import Expediente, Tratamiento
 from app.models.perfiles import Paciente, Terapeuta
 from app.schemas.clinica import PacienteCrear, PacienteDatos, PacienteSalida, TratamientoCrear, TratamientoSalida
 from app.services import pacientes as service
+from app.services.citas import recorrido
 from app.services.acceso import es_familia, paciente_visible, pacientes_visibles, roles_de
 
 router = APIRouter(tags=["Pacientes y tratamientos"])
@@ -34,6 +35,11 @@ async def detalle(key: int, db: DB, identity: Identity):
     return await paciente_visible(db, identity, key)
 
 
+@router.get("/pacientes/{key}/recorrido")
+async def estado_recorrido(key: int, db: DB, identity: Identity):
+    return await recorrido(db, identity, key)
+
+
 @router.put("/pacientes/{key}", response_model=PacienteSalida)
 async def editar(key: int, data: PacienteDatos, db: DB, identity: Identity):
     return await service.editar_paciente(db, identity, key, data)
@@ -46,10 +52,8 @@ async def desactivar(key: int, db: DB, identity: Identity):
 
 @router.get("/pacientes/{key}/tratamientos", response_model=list[TratamientoSalida])
 async def tratamientos(key: int, db: DB, identity: Identity, response: Response, limit: Limit = 20, offset: Offset = 0):
-    patient = await paciente_visible(db, identity, key)
+    await paciente_visible(db, identity, key)
     stmt = select(Tratamiento).join(Expediente).where(Expediente.id_paciente == key)
-    if "ADMIN" not in roles_de(identity) and not await es_familia(db, identity, patient):
-        stmt = stmt.join(Terapeuta).where(Terapeuta.id_usuario == identity[0].id_usuario)
     rows = await presentacion.pagina(db, stmt.order_by(Tratamiento.id_tratamiento), response, limit, offset)
     return await presentacion.tratamientos(db, rows)
 

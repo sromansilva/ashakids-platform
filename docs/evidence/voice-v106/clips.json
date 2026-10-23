@@ -1,0 +1,1382 @@
+[
+  {
+    "file": "ab46d3aa6ec63b49.mp3",
+    "text": "Hola. Vamos a descubrir palabras juntos. Escucha y juega a tu ritmo.",
+    "bytes": 41328,
+    "sha256": "339cceff86bc6291c68aea4577ace2192948e9df1694c1711c4099fd6ff94971"
+  },
+  {
+    "file": "b0f9af5cdf87a45b.mp3",
+    "text": "Explora tres dibujos y di cómo se llaman.",
+    "bytes": 20736,
+    "sha256": "14dbf11291b1269979bf247bd7edaa2790b9afffd1b65e76c694f59934352c2d"
+  },
+  {
+    "file": "f597ed4f8a195bc7.mp3",
+    "text": "Explora tres dibujos y di cómo se llaman. Mira el dibujo y escucha su nombre. Pulsa el micrófono y di la palabra. Escucha tu grabación y sigue a tu ritmo.",
+    "bytes": 72576,
+    "sha256": "a971302aa161f0279d93add5e571952b52926f3326614567c76773a4be7c70d6"
+  },
+  {
+    "file": "f5d4af5b642604b7.mp3",
+    "text": "Encuentra tres tesoros para tu cofre.",
+    "bytes": 18144,
+    "sha256": "f192b3188a562ab3f1245c03311269044a448ab7bcd92a3bc497e6e36cbb3c1d"
+  },
+  {
+    "file": "83b05e8e1e24c60c.mp3",
+    "text": "Encuentra tres tesoros para tu cofre. Escucha la pista. Toca la imagen que buscas. Guarda tu tesoro y sigue.",
+    "bytes": 59040,
+    "sha256": "cd1e52a9277d2ea097936d50c89a7ecbf10e99475dae7f511185615a8b257a92"
+  },
+  {
+    "file": "5e6a44a041784c07.mp3",
+    "text": "Ayuda a cada dibujo a encontrar su pareja.",
+    "bytes": 20736,
+    "sha256": "610d1d7afe81d68cd14729d50b3c730499dd4c2a46379e0a4438e6e2f29620fd"
+  },
+  {
+    "file": "94ffa504145731ba.mp3",
+    "text": "Ayuda a cada dibujo a encontrar su pareja. Mira los dibujos antes de empezar. Da la vuelta a dos cartas. Busca los dibujos iguales.",
+    "bytes": 68112,
+    "sha256": "866ebef06ea1eeec1129f462f22e0a1b48bdee8abe503cb11afee7ecc49df75c"
+  },
+  {
+    "file": "dd0edd779b3faaae.mp3",
+    "text": "Lleva cada dibujo a su familia.",
+    "bytes": 16992,
+    "sha256": "6638ba8fa2d099649f932aad7d6e29cdfacfe3302ea05d05685a17da38a6a846"
+  },
+  {
+    "file": "607bb6666ceaaffe.mp3",
+    "text": "Lleva cada dibujo a su familia. Mira un dibujo. Busca una cesta con dibujos parecidos. Toca la cesta o arrastra el dibujo.",
+    "bytes": 64656,
+    "sha256": "d15ebc20cb6485f1129e5a852b4a8fc2c6cebb8623267e18408100b2e5ccd61e"
+  },
+  {
+    "file": "54d588136e1c5031.mp3",
+    "text": "Descubre qué pasa primero, después y al final.",
+    "bytes": 22032,
+    "sha256": "7839e4d10acf4418f33dfb48b8bd6a96caa869018e305390a999ab2d4a421f0d"
+  },
+  {
+    "file": "b7cd0d73ed74777e.mp3",
+    "text": "Descubre qué pasa primero, después y al final. Mira las tres imágenes. Tócalas en el orden de la historia. Escucha la historia que has creado.",
+    "bytes": 69264,
+    "sha256": "9549229f52481ed2726001379255e672c2211eed6e8fe4c363ff185a51cc24bc"
+  },
+  {
+    "file": "7d1067e5b407fe80.mp3",
+    "text": "Encuentra tres parejas de contrarios.",
+    "bytes": 18720,
+    "sha256": "1bf7d674d771090a76daf5533da1cfd80f68667aeeb384552490eae5270ddbb9"
+  },
+  {
+    "file": "ae2710c67b6bb289.mp3",
+    "text": "Encuentra tres parejas de contrarios. Mira el dibujo de arriba. Busca lo contrario entre los dibujos. Escucha cómo se llaman.",
+    "bytes": 62928,
+    "sha256": "d298a027309981f2048c3914dc9d1c6c2904f311cb62ec18f3a775d978f0c9e3"
+  },
+  {
+    "file": "e4a90f557d8dbc39.mp3",
+    "text": "Escucha las palabras y juega con sus trocitos.",
+    "bytes": 21168,
+    "sha256": "972cd98e497e9d9e4ba7315f317d4afc17a9b6b65953b2b2c5a5cf43c03a2d42"
+  },
+  {
+    "file": "c971afd62fcb51b3.mp3",
+    "text": "Escucha las palabras y juega con sus trocitos. Escucha una palabra por partes. Da una palmada por cada trocito. Comprueba tus palmadas.",
+    "bytes": 69408,
+    "sha256": "847f96e09ec11c6a3fd6e5da89301a7669e0318406ae4ba89c905f7aeb117f73"
+  },
+  {
+    "file": "f739b740e3fff9c2.mp3",
+    "text": "Prepara la merienda sin que falte ni sobre fruta.",
+    "bytes": 21600,
+    "sha256": "3266902851b1c84246f072c6054b28e1a9b8f056f635e84dcdce36f777d9a6de"
+  },
+  {
+    "file": "b4122eea0fbf5582.mp3",
+    "text": "Prepara la merienda sin que falte ni sobre fruta. Mira cuántos amigos vienen. Pon una fruta para cada amigo. Comprueba si todos tienen merienda.",
+    "bytes": 69264,
+    "sha256": "88caeba6fc9fa67b70a737c45749fb26ed0f5f3d616cba50e51bc8668ea1c4e7"
+  },
+  {
+    "file": "64ceab241543556b.mp3",
+    "text": "Ayuda a tu amigo a encontrar su lugar.",
+    "bytes": 18720,
+    "sha256": "8dd38843a1935a99c7f718877e5bf4200055b3870bfd6b49ab777adfbd322a76"
+  },
+  {
+    "file": "3fb55fcbf74834be.mp3",
+    "text": "Ayuda a tu amigo a encontrar su lugar. Escucha dónde quiere estar. Toca un lugar o arrastra a tu amigo. Mira dónde ha quedado.",
+    "bytes": 62496,
+    "sha256": "1e6a4a7402a57757cdaa8ff5e527458881163055b3c74ba724c7c4ef99ae8f22"
+  },
+  {
+    "file": "5b2ac931bc84bc4f.mp3",
+    "text": "Encuentra tres parejas que suenan parecido al final.",
+    "bytes": 21888,
+    "sha256": "08bf68e5ca363d136736716117147bfb465fb4f2bd42badbc21817d5216f68d6"
+  },
+  {
+    "file": "91679ebe69848679.mp3",
+    "text": "Encuentra tres parejas que suenan parecido al final. Escucha la primera palabra. Escucha los dibujos de abajo. Elige la que termina parecido.",
+    "bytes": 67248,
+    "sha256": "409848cff34c96b1fc01445e8c9e743c2d896d9f983b7a9efc2d875c49322816"
+  },
+  {
+    "file": "903ace9f864d9158.mp3",
+    "text": "Construye tres frases en el tren.",
+    "bytes": 16992,
+    "sha256": "ea44a771dad32aac63042fbb8c980714b1222994e21beb3ef1d360378a03568b"
+  },
+  {
+    "file": "c4b1b94c451aa0ae.mp3",
+    "text": "Construye tres frases en el tren. Escucha lo que pasa. Elige quién, qué hace y dónde o qué. Escucha tu frase completa.",
+    "bytes": 62784,
+    "sha256": "ca310fe865109cb48882d470b1efcf00c327c8a287538508b96d2122668a917a"
+  },
+  {
+    "file": "e726711b2f32f9bf.mp3",
+    "text": "Escucha las palabras y juega con sus trocitos. Escucha la palabra por partes. Toca los trocitos en orden. Escucha la palabra que has construido.",
+    "bytes": 68832,
+    "sha256": "b20a02dbb63697eecd1f4d66735e1180f9cbb0d3c7c6590c654f979c65b33c33"
+  },
+  {
+    "file": "d4e8973e04e657a4.mp3",
+    "text": "Gato",
+    "bytes": 11232,
+    "sha256": "e19b495c33bb4a916a1234c82f2cb2d8961cda8cd9fe4cc4ff5bb466c34d96c5"
+  },
+  {
+    "file": "8fc9c94f022d84cf.mp3",
+    "text": "Perro",
+    "bytes": 11232,
+    "sha256": "f47b9f7c107f257d982c6d0eaf50ce6e0915e65754ffea6b0a082d899bd58710"
+  },
+  {
+    "file": "5795b07249101ff3.mp3",
+    "text": "Manzana",
+    "bytes": 11232,
+    "sha256": "7009cdde2b44acfdeaa36605742c47458791fbaa529961844ba67b4aaad297c4"
+  },
+  {
+    "file": "b493d48364afe44d.mp3",
+    "text": "Banana",
+    "bytes": 11232,
+    "sha256": "0b5d5a84d4d888482302d0b0a76961638b46c0666bf94bc1ae6735fd4a5162f1"
+  },
+  {
+    "file": "962f4bfe003208a9.mp3",
+    "text": "Pelota",
+    "bytes": 11232,
+    "sha256": "99e847a29fa6b153ff0c10cf48adea7ed0b6b94ec313e31de0722b8766b8565c"
+  },
+  {
+    "file": "8c03df8328afbf14.mp3",
+    "text": "Carro",
+    "bytes": 11232,
+    "sha256": "448a68ff990b6d7e39c2645ca2928366b24ed329a1bbbb4151b5c3cd2c457766"
+  },
+  {
+    "file": "04d63c116d50c7a9.mp3",
+    "text": "Barco",
+    "bytes": 9360,
+    "sha256": "c234efba5d8648abea0208188c979e4ffb5051ba2568cbc87ef752edd57cfcd6"
+  },
+  {
+    "file": "a7a42630ce1932dd.mp3",
+    "text": "Árbol",
+    "bytes": 11232,
+    "sha256": "b0432def84a146b13aa3cf462a1725e2f419653cccc0f74be2936a12b72ca167"
+  },
+  {
+    "file": "b3813027ed2150ec.mp3",
+    "text": "Casa",
+    "bytes": 11232,
+    "sha256": "7736893530ae4432d96c8d0078dd8ba7cd3afb02383f3fc98afe52b23314ab03"
+  },
+  {
+    "file": "8db59feb4d217f26.mp3",
+    "text": "Sol",
+    "bytes": 11232,
+    "sha256": "75990eeb02c6d462c0a4b109b287e28c6e9b8972c8168c5b098f30ba2cfaafd2"
+  },
+  {
+    "file": "970ec274ca867815.mp3",
+    "text": "Luna",
+    "bytes": 11232,
+    "sha256": "df26840fe08a58619fe178aee80735ddea8e2d9efce999ad14f90e2bb81b3706"
+  },
+  {
+    "file": "1aedac41cf160ca5.mp3",
+    "text": "Flor",
+    "bytes": 11232,
+    "sha256": "f0370f5b29856233f5466e292bd8f82e9f96b674e9dc5218b99bf0d454fb7786"
+  },
+  {
+    "file": "a8fa60a3db5e414e.mp3",
+    "text": "Zapato",
+    "bytes": 11232,
+    "sha256": "d2a9ab0358ce49ce6866541636e39bd9414e0d8669936e625a2df2a89fe1a6c3"
+  },
+  {
+    "file": "4a1e8c16a9623653.mp3",
+    "text": "Libro",
+    "bytes": 11232,
+    "sha256": "e1baf2586401c78b6c9a87da5fac84646bac0094003a983c1d5e0c8fcc07e161"
+  },
+  {
+    "file": "472353467f2c5636.mp3",
+    "text": "Pez",
+    "bytes": 11232,
+    "sha256": "c0c3fc5f10690a0258b426c483310176a0fe5729c0a141fde86951691dace3a8"
+  },
+  {
+    "file": "dd3a4ef485a08a30.mp3",
+    "text": "Pájaro",
+    "bytes": 11232,
+    "sha256": "cbbb81fb54b28f55f176040c8d21d4dd7313a492180bdc3cbe6b79193a0f9ceb"
+  },
+  {
+    "file": "407428be759228ef.mp3",
+    "text": "Conejo",
+    "bytes": 11232,
+    "sha256": "ad5c71e20dc9f97f3b94dbb97a93c148f3eaef7e4424f11531c2edd4eb111997"
+  },
+  {
+    "file": "3817abcffcb4e957.mp3",
+    "text": "zanahoria",
+    "bytes": 11376,
+    "sha256": "d4bf594f4eeeaa9cc6d69254bbb31553a38be26772ad270b9b01eb93774f9dba"
+  },
+  {
+    "file": "d9078313c20e8294.mp3",
+    "text": "Estrella",
+    "bytes": 11232,
+    "sha256": "7d98d32c0e8dbfec0b0925a489da650d4f2ea864e124f8e7819b36dc06c18803"
+  },
+  {
+    "file": "a17312e77236a137.mp3",
+    "text": "Mariposa",
+    "bytes": 11232,
+    "sha256": "995814e6a9f46e0b6a5bd9e10fe7a24b62a16b844011b2c6aa232b069801fd22"
+  },
+  {
+    "file": "a4f6433a1b183ba0.mp3",
+    "text": "Mochila",
+    "bytes": 11232,
+    "sha256": "1340064b951da7c3e982fe53639e83685592a20f4ccb3dd77932509ced2538bc"
+  },
+  {
+    "file": "a619c02c7f5ce6c7.mp3",
+    "text": "Taza",
+    "bytes": 11232,
+    "sha256": "d56f878ab23c4ea9d4237fc31904fdcafa44553cfec42ed266e0ebc8ece2a020"
+  },
+  {
+    "file": "cea70552116071b4.mp3",
+    "text": "Tomate",
+    "bytes": 11232,
+    "sha256": "b9f647a065f569c921f994689da389a9f25cc363e7360fedc72f3410536482fa"
+  },
+  {
+    "file": "edf87c4003071d31.mp3",
+    "text": "Uvas",
+    "bytes": 11232,
+    "sha256": "e750e109c7caeac186aeb9e9be67e0b9fa88cf94f8c6a4962b0f2a85a4099c52"
+  },
+  {
+    "file": "046ffe59ddbc352b.mp3",
+    "text": "Caracol",
+    "bytes": 11232,
+    "sha256": "d24b3cf22f57ffc8c75cc29c478fb693eaec00927a0393ffb54d47fb93bb90c5"
+  },
+  {
+    "file": "dd07a8f293af2d6d.mp3",
+    "text": "Tambor",
+    "bytes": 11232,
+    "sha256": "96f24095e58eb1ea3810fd70bc15b48f11a63423feac2239ef175b222cdb48af"
+  },
+  {
+    "file": "7cdd85cd374c5c22.mp3",
+    "text": "Busca al gato. ¡Dice miau!",
+    "bytes": 21024,
+    "sha256": "f110b948ead6f418aac4e399e13eb29996a9c0371ff374b22b14fe1f562976e9"
+  },
+  {
+    "file": "1f0fe97482b267e7.mp3",
+    "text": "Tiene bigotes y dice miau.",
+    "bytes": 14544,
+    "sha256": "44e46dd8f27a61cb9ba3f53f7e25f92c25c1db658639fa191f06cad4d02979b6"
+  },
+  {
+    "file": "1d8427b59fb6cbe0.mp3",
+    "text": "Busca lo que viaja por el agua.",
+    "bytes": 15120,
+    "sha256": "5d36885a48e930684fe3f8409be7558bbdb0c5767da055614b3828c670eaf990"
+  },
+  {
+    "file": "2e14bd2f4972fb4b.mp3",
+    "text": "Un barco flota en el agua.",
+    "bytes": 14832,
+    "sha256": "51529f66375d70fe4884ffe83cba32e1d1e5c274eb6471353ebbbda93ccedcfb"
+  },
+  {
+    "file": "49a85fb7f095e348.mp3",
+    "text": "Busca la flor del jardín.",
+    "bytes": 14688,
+    "sha256": "7f7a7d9f61c547bbea79933127cc575c98497da3e3a2ae34c16797e67e18e08c"
+  },
+  {
+    "file": "27959d67dec0102c.mp3",
+    "text": "Tiene pétalos y un tallo verde.",
+    "bytes": 16416,
+    "sha256": "2539eb80377202a8aaa521f859ab3dbf77f44c0a32d2242fc821bae13653b05b"
+  },
+  {
+    "file": "351c17e7d9bb1a07.mp3",
+    "text": "¿Qué te pones en el pie?",
+    "bytes": 13392,
+    "sha256": "88594bfd45fd6d9d46f5c4c496202f38ceca0bce9180c57b8d1d35cf6e3cb356"
+  },
+  {
+    "file": "c031d615c32f63cc.mp3",
+    "text": "El zapato cuida tu pie cuando caminas.",
+    "bytes": 19296,
+    "sha256": "4ac5ba2972deddf429d7aec44b1276d074a37f70da0a89fc3b9b69c17bc0aedd"
+  },
+  {
+    "file": "1e59eea131b1e467.mp3",
+    "text": "¿Dónde encontramos cuentos?",
+    "bytes": 15264,
+    "sha256": "55557a8f5293c727babd45b59d4462105273b0022f480ad83f56974e9f49e9c4"
+  },
+  {
+    "file": "c01b65120caf43fc.mp3",
+    "text": "Abrimos sus páginas para ver historias.",
+    "bytes": 19296,
+    "sha256": "33820475c01dbd11f66c7f6df6a6fd467a56f854493b67f1a353a94fd4795d08"
+  },
+  {
+    "file": "2ec4637e1c7fab5e.mp3",
+    "text": "Busca lo que le gusta comer al conejo.",
+    "bytes": 18144,
+    "sha256": "ec12c03ed846ffdd37aaef63914c3119a1191a9bc93115d6229a67e5f50d9a9a"
+  },
+  {
+    "file": "e82def483e670f89.mp3",
+    "text": "Es una verdura naranja y alargada.",
+    "bytes": 17568,
+    "sha256": "3ee241aa7b9c3718a1b48fbc6b3a43d246c3ec48292009aa9acb485258efee6b"
+  },
+  {
+    "file": "b71030a65abb1b10.mp3",
+    "text": "Busca lo que nos ilumina de día.",
+    "bytes": 16272,
+    "sha256": "88c5df65c0ab05e641c65c09b2fe85ece77289190df68d57724ae29284b5c6d5"
+  },
+  {
+    "file": "d0299c92098246e8.mp3",
+    "text": "El sol se ve en el cielo durante el día.",
+    "bytes": 19296,
+    "sha256": "bfb8027fb87643566c343f60a4ac49fa794e1e9cf31ad7b00ecf707cf075b997"
+  },
+  {
+    "file": "0da698450e78eeb3.mp3",
+    "text": "Busca lo que rueda y rebota.",
+    "bytes": 15696,
+    "sha256": "280a22c432baebaf164c6dabd7a17c3b3b0ef99d1c0d1be2b539495b6fdea72a"
+  },
+  {
+    "file": "9e4d6c08db0182f6.mp3",
+    "text": "La pelota es redonda y puedes jugar con ella.",
+    "bytes": 20160,
+    "sha256": "fb43b201c6f20b0dc48e04bd773bea13b8204b26c22b4924cd119ebeabb32d5c"
+  },
+  {
+    "file": "0174cf0a057a7a08.mp3",
+    "text": "Escucha: Gato. Busca una palabra que termine parecido.",
+    "bytes": 31536,
+    "sha256": "c8e4b3682c433d38593c1aa04d0620edc978a310dede3b6f3c877bcf6af9667e"
+  },
+  {
+    "file": "5152549d8e0c40b7.mp3",
+    "text": "Gato y Zapato terminan en ato.",
+    "bytes": 16560,
+    "sha256": "802daa253538427072ce8dae3f93c739688575031c47e15ef11287e0ef0e8fbc"
+  },
+  {
+    "file": "f965cafc8ca3c1e8.mp3",
+    "text": "Gato. Zapato.",
+    "bytes": 18288,
+    "sha256": "0b007e5cdc0b8cb9ce5fb3f4d81d0a85586e680a408fce5f4581cb0b8f6e4637"
+  },
+  {
+    "file": "1f0c329596005105.mp3",
+    "text": "Gato. Manzana.",
+    "bytes": 18720,
+    "sha256": "8a7cf5efe3aa5dc84cea1708fe85806ae5670bd8837053ca639c303b2a11bd32"
+  },
+  {
+    "file": "f933d6ed1a287c53.mp3",
+    "text": "Gato. Libro.",
+    "bytes": 17280,
+    "sha256": "ab4d23b11c42aa09fdac344c68f58f0a9f753678ced00e5d17ef9eefcf64eaf0"
+  },
+  {
+    "file": "43567cf76aedc6d2.mp3",
+    "text": "Escucha: Sol. Busca una palabra que termine parecido.",
+    "bytes": 31680,
+    "sha256": "7eaf117e80f5086627a1c69bd66092234955d5266fdd993ab8d1ecd938088bd8"
+  },
+  {
+    "file": "37d35b72fdd2b0f2.mp3",
+    "text": "Sol y Caracol terminan en ol.",
+    "bytes": 16128,
+    "sha256": "455ab583fb90c0f5e0666723c1e1d9b0f1bc85d39f7a88aa899b33828ceac173"
+  },
+  {
+    "file": "f6e2a398883f58f8.mp3",
+    "text": "Sol. Caracol.",
+    "bytes": 18000,
+    "sha256": "d471198478f758696fea83fec2d30a03f06003112f31ac0ee376a17ae7d55719"
+  },
+  {
+    "file": "a5d86400eb8b4368.mp3",
+    "text": "Sol. Perro.",
+    "bytes": 16992,
+    "sha256": "329ff0d157f7deb8031313eb2d13cf703450f15df550c52a29003c2336dabda8"
+  },
+  {
+    "file": "d216391b5a0f6bfa.mp3",
+    "text": "Sol. Taza.",
+    "bytes": 17424,
+    "sha256": "af752f359d561c8d10ebec9a36af748aa3d6705a9a60b63edc4e9cba12f6a388"
+  },
+  {
+    "file": "7ab5373cb34e7fb9.mp3",
+    "text": "Escucha: Flor. Busca una palabra que termine parecido.",
+    "bytes": 31968,
+    "sha256": "55fbd19244d7f13dcc3a3ab7c1b5a7c72ca52c7febf803bbc7e9c40a3974f94a"
+  },
+  {
+    "file": "87f43ed20fc50bcb.mp3",
+    "text": "Flor y Tambor terminan en or.",
+    "bytes": 15984,
+    "sha256": "3d062454dc5599871853569b2d4e81d97923b6fd0aaba7dc3dbc006fe40c5143"
+  },
+  {
+    "file": "4b05bcd5ba77498f.mp3",
+    "text": "Flor. Tambor.",
+    "bytes": 17280,
+    "sha256": "84ff7463844cab68f16a59d4ee38497e244472e88739b1cf74d79eaf3d59137e"
+  },
+  {
+    "file": "26987769fc188ca2.mp3",
+    "text": "Flor. Carro.",
+    "bytes": 16560,
+    "sha256": "27d45079b6af1fa9f6b379ebfa89623253d7599a3094f3e8d94263a6dec5b315"
+  },
+  {
+    "file": "6ce1e09b3dcaea6f.mp3",
+    "text": "Flor. Banana.",
+    "bytes": 17712,
+    "sha256": "8395ad976672d4d62331df8a97dd5df6f035df70c9ec1325082dc022bf5454da"
+  },
+  {
+    "file": "95be165bb3fc048d.mp3",
+    "text": "Escucha: Manzana. Busca una palabra que termine parecido.",
+    "bytes": 32832,
+    "sha256": "831efd7a63b75735d2fcb21fc78e75847749a9e3a57e6a1a603bc57261f42f0a"
+  },
+  {
+    "file": "3af912d1542ebe18.mp3",
+    "text": "Manzana y Banana terminan en ana.",
+    "bytes": 17424,
+    "sha256": "32b95860dc1b4d95f329dadc36739f831e57a8c50bc2f15dad70496924f602ff"
+  },
+  {
+    "file": "c75d549a91008904.mp3",
+    "text": "Manzana. Banana.",
+    "bytes": 19584,
+    "sha256": "09dc5d63a2949fa852767025f0a7e8545c006faed267afb32aef5b0a8c03bd65"
+  },
+  {
+    "file": "f152cddb337c9000.mp3",
+    "text": "Manzana. Perro.",
+    "bytes": 18576,
+    "sha256": "4707986848e80e809f3262f7f36db4dcd36aa4a94a6b266b181795f1372c8a93"
+  },
+  {
+    "file": "b0feaed76e9dc065.mp3",
+    "text": "Manzana. Taza.",
+    "bytes": 19008,
+    "sha256": "23e106e97f65575b2666008b0b941d76907f536d8a3250392bcf6507cd6ff1d7"
+  },
+  {
+    "file": "34ca6bb1036d148d.mp3",
+    "text": "Grande",
+    "bytes": 11232,
+    "sha256": "6412267200bafce992a0fd884f6f2aa875969b1482e3c3ce785608d9bcbbccee"
+  },
+  {
+    "file": "8d34b7b6ceef2e25.mp3",
+    "text": "Pequeño",
+    "bytes": 11232,
+    "sha256": "c4e48c8540b6fb454ffb0a49365612cd97a0ffd8e1eba5e8497b28ef096dac5a"
+  },
+  {
+    "file": "361e9014a20b41dd.mp3",
+    "text": "La pelota grande y la pelota pequeña son contrarias.",
+    "bytes": 23904,
+    "sha256": "f684d6c49233a7174b5a2b417df2bf8c95a6d694ad42c0d87939571bfa4e9dd8"
+  },
+  {
+    "file": "bde67d6bdcc70be6.mp3",
+    "text": "Mira: Grande. Busca lo contrario.",
+    "bytes": 24480,
+    "sha256": "0de468d60bd115cdb55604f3200ee09e9b7efa35e7acb17a1c868e0cddc66239"
+  },
+  {
+    "file": "bfbf44740f41554d.mp3",
+    "text": "Día",
+    "bytes": 11232,
+    "sha256": "3d546745b95bd6bc9d163ece4dbcfbe3ecd104089b7751249d23369f5dc6e32d"
+  },
+  {
+    "file": "89a1392ae723292d.mp3",
+    "text": "Noche",
+    "bytes": 11232,
+    "sha256": "391b6c166467b16daef532e8054df0a2bdb8ed7044e0f9d26ee146a7c8b05b0f"
+  },
+  {
+    "file": "596a5855ea3550e8.mp3",
+    "text": "De día vemos el sol. Por la noche vemos la luna.",
+    "bytes": 27360,
+    "sha256": "e786039ff8c80b42b61624f3a85b604e8025de04e1e83262cb437bb99f6571a4"
+  },
+  {
+    "file": "0b3a29af2fa1e4f2.mp3",
+    "text": "Mira: Día. Busca lo contrario.",
+    "bytes": 24048,
+    "sha256": "391fb98aa194b233129907c7cab6a07f484bf4935de12566d3855d0bd174ebf6"
+  },
+  {
+    "file": "bd6ad98f1a8f2e36.mp3",
+    "text": "Arriba",
+    "bytes": 11232,
+    "sha256": "10c042a558f1bca97c69cad31225590cc0f09939bedc0886f8cf49334ff0e7bc"
+  },
+  {
+    "file": "f89d50de5ef394eb.mp3",
+    "text": "Abajo",
+    "bytes": 11232,
+    "sha256": "e578a507932eedc06d40ed0fa1d7880ecd25561d7498cd1fb5578a19656ce805"
+  },
+  {
+    "file": "3c5ce814a83e09a8.mp3",
+    "text": "Un pájaro está arriba y el otro está abajo.",
+    "bytes": 20592,
+    "sha256": "c89921b90bae7898da65af1c3aede7eec0dae8da5e652df7167bc93b8f9e8e06"
+  },
+  {
+    "file": "47f9a82951fe1145.mp3",
+    "text": "Mira: Arriba. Busca lo contrario.",
+    "bytes": 25200,
+    "sha256": "f7e07168b38918323f8f60c7dcf47621ffd74b2c531d8b1c1c1c4f9f60a3fc3d"
+  },
+  {
+    "file": "ffa885732d53ee04.mp3",
+    "text": "Mira dónde están los dibujos iguales. Cuando estés listo, toca Ya las vi.",
+    "bytes": 36144,
+    "sha256": "04dd66b0aa2bf91286743d722dd508e6724a1380bd322e623855260620cee19d"
+  },
+  {
+    "file": "7fc0f6574430762c.mp3",
+    "text": "Toca dos cartas y busca los dibujos iguales.",
+    "bytes": 21744,
+    "sha256": "2cc6135dbfa457288c4cdb86ebc9cfc9a9eb11f6895b817853217a5f51b490c0"
+  },
+  {
+    "file": "03920f623ef613f1.mp3",
+    "text": "¿Dónde va gato? Toca su cesta.",
+    "bytes": 22176,
+    "sha256": "eb431a316afde7f4a06b016882461f0d19fbbbdcf8d51e9a45f761fd0b8b91f2"
+  },
+  {
+    "file": "01e7a5ee09a3853c.mp3",
+    "text": "Gato va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 30240,
+    "sha256": "8f67c2d4de9b9a65a59538dc567f0ed3b28947db111ce1eeb071541613d40a31"
+  },
+  {
+    "file": "de72e107d987d0e2.mp3",
+    "text": "¿Dónde va perro? Toca su cesta.",
+    "bytes": 22176,
+    "sha256": "b5c252b7d9c2f3c72ea5f2ff13fec0cf099b7bf95d5763750062d160b80ef481"
+  },
+  {
+    "file": "f83a6ce6dae307c9.mp3",
+    "text": "Perro va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 29808,
+    "sha256": "ddc8debc984d60e621c899f970173ca26c89fd1dcd40c49bce5fcfd08b3b465b"
+  },
+  {
+    "file": "724c9b54b1fdcf20.mp3",
+    "text": "¿Dónde va manzana? Toca su cesta.",
+    "bytes": 23616,
+    "sha256": "14cb85ae22330118fbe5ba37f40fbf27f19ccaff4557d99f5037fe5c8875a2bd"
+  },
+  {
+    "file": "463991b6d3c62c2e.mp3",
+    "text": "Manzana va con frutas. Mira el dibujo de esa cesta.",
+    "bytes": 30096,
+    "sha256": "5c523640985bbd91b84329f659500b25d009811a20c3185d4a220d5e54b82582"
+  },
+  {
+    "file": "ea15dab0ea7ec87c.mp3",
+    "text": "¿Dónde va banana? Toca su cesta.",
+    "bytes": 23040,
+    "sha256": "380255f2acff9f3fa1bbff82e61e794f05d9f9317b8181860bfc7848cc818f94"
+  },
+  {
+    "file": "0befd4c51cf708db.mp3",
+    "text": "Banana va con frutas. Mira el dibujo de esa cesta.",
+    "bytes": 30528,
+    "sha256": "4a0bb33a8fc4970f26b86795d3bc8b54f0e9453bf3021bb59a7786686df0faea"
+  },
+  {
+    "file": "0a53b5b002eaba56.mp3",
+    "text": "¿Dónde va carro? Toca su cesta.",
+    "bytes": 21888,
+    "sha256": "ce4c37c4f30b5e63cf53979142038658592b08ab7588ed7a334a20973c3f1940"
+  },
+  {
+    "file": "b6378bcdb1a66c35.mp3",
+    "text": "Carro va con transportes. Mira el dibujo de esa cesta.",
+    "bytes": 30384,
+    "sha256": "afcc141b2acfe9fd31bffeadf2474e9e073b973ec311259b1a2d00f499e07d3d"
+  },
+  {
+    "file": "b08d3903aa05192b.mp3",
+    "text": "¿Dónde va barco? Toca su cesta.",
+    "bytes": 21888,
+    "sha256": "cd2919765e25809cf8e828fd5ba9882d009b97da1e2d3007bc44d0a9a7b12b38"
+  },
+  {
+    "file": "200d5a0fb798e662.mp3",
+    "text": "Barco va con transportes. Mira el dibujo de esa cesta.",
+    "bytes": 31536,
+    "sha256": "5384aadb98ac23a0979b128ffcfdb2f7239f0ae003123804ea226e24ac732cb5"
+  },
+  {
+    "file": "4aab9df370276ae3.mp3",
+    "text": "¿Dónde va pez? Toca su cesta.",
+    "bytes": 22464,
+    "sha256": "a2cafc7bd504f357328e9bb93f0ed5204f933b375d30b9a7af23cd90a6c218c8"
+  },
+  {
+    "file": "bcfda7795f18f609.mp3",
+    "text": "Pez va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 29808,
+    "sha256": "b05969e5b824eb7b70a59d8cd5404d49960522610439eff52a241b3650566a4e"
+  },
+  {
+    "file": "68876b19ef03ff59.mp3",
+    "text": "¿Dónde va pájaro? Toca su cesta.",
+    "bytes": 22896,
+    "sha256": "0761cdbaa606ef81dd05825c3309e93ac2a72e0ee3189847330a700c3f000110"
+  },
+  {
+    "file": "91f5d46948178074.mp3",
+    "text": "Pájaro va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 30384,
+    "sha256": "a4623d3315685e20350164b64f7bc145a7e9537ce859b8a98147f031eaccd1b0"
+  },
+  {
+    "file": "5a0f564963be53fa.mp3",
+    "text": "¿Dónde va conejo? Toca su cesta.",
+    "bytes": 22896,
+    "sha256": "a52fccaf8a168d08ca9d3cd6fb2820ada2336dc237694da40e9636023c183760"
+  },
+  {
+    "file": "c31dddd72ce6aada.mp3",
+    "text": "Conejo va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 30672,
+    "sha256": "5c8cd9dc0d8795514afa2a392c9e345c5c38a60e76b970c1544683759eaf20ea"
+  },
+  {
+    "file": "f30ad476026375ff.mp3",
+    "text": "¿Dónde va mariposa? Toca su cesta.",
+    "bytes": 23904,
+    "sha256": "99876281c97bdc652ac9a9e3d7cd5d1740406ce0b959c229a1f5bb8e0cf1e0aa"
+  },
+  {
+    "file": "c7191e68607acc7c.mp3",
+    "text": "Mariposa va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 31968,
+    "sha256": "fbebe576774267704e5e17eba73946e4a7856b1a3f0fe998cdb7724e8bd9afaf"
+  },
+  {
+    "file": "b87bd64495733dad.mp3",
+    "text": "¿Dónde va uvas? Toca su cesta.",
+    "bytes": 22608,
+    "sha256": "3403e28a72c38dadbaf4c18e4db62aa2f06cec4201ba47ca476de81d1a43bdb9"
+  },
+  {
+    "file": "40dc3cb8350ae521.mp3",
+    "text": "Uvas va con frutas. Mira el dibujo de esa cesta.",
+    "bytes": 28944,
+    "sha256": "ddaf703ef17a490a18321f3ff7f64fcbac519feac3ad39460241064d400ac860"
+  },
+  {
+    "file": "bf089a3c6221ab91.mp3",
+    "text": "¿Dónde va caracol? Toca su cesta.",
+    "bytes": 23184,
+    "sha256": "9161b44290763eb166e7d64e4171fdffb90029f55a278c9987fb5ffcaf501253"
+  },
+  {
+    "file": "0979c85e24fcec68.mp3",
+    "text": "Caracol va con animales. Mira el dibujo de esa cesta.",
+    "bytes": 31104,
+    "sha256": "a456c97da7bf36eed9eed88b194636c3211e45af3d3b3d2df646129ace6ba9a0"
+  },
+  {
+    "file": "f796aa9c86afabf9.mp3",
+    "text": "¡Todos los dibujos están en su familia!",
+    "bytes": 18576,
+    "sha256": "13f200d71464be8886ec44e21565651191a64d8adbe2e06ffbe7f8261c86007e"
+  },
+  {
+    "file": "344d7bff487684ae.mp3",
+    "text": "Hay 2 amigos. Necesitamos 2 piezas de merienda: una para cada uno.",
+    "bytes": 38016,
+    "sha256": "3d610e40d8661b5c217b1789b0a18e04066e71beb4d3ce0f824a6a74f621fe37"
+  },
+  {
+    "file": "93f9f80f90e69f89.mp3",
+    "text": "Vienen 2 amigos. Pon una pieza de merienda para cada uno.",
+    "bytes": 32544,
+    "sha256": "686c4e51111cd8479b6c0a41a241cf7eefad823733abf77e1554028a29dc584e"
+  },
+  {
+    "file": "c59df690a0f4f6a7.mp3",
+    "text": "Hay 3 amigos. Necesitamos 3 piezas de merienda: una para cada uno.",
+    "bytes": 38448,
+    "sha256": "ffa126572435974dd6af3fd3239d3f756e424a231ef3287f0a8c38236b851056"
+  },
+  {
+    "file": "69bb9cfd643157f5.mp3",
+    "text": "Vienen 3 amigos. Pon una pieza de merienda para cada uno.",
+    "bytes": 32544,
+    "sha256": "c178cff9b4671b98e4f8ad2d0c16003a44d4c4676231ed55f127362b54a50802"
+  },
+  {
+    "file": "ff0dab825d88a9e6.mp3",
+    "text": "Hay 4 amigos. Necesitamos 4 piezas de merienda: una para cada uno.",
+    "bytes": 38880,
+    "sha256": "e984765c983e2fccc7a12feccb69d6acbc0589c4ce5829eb0fb26719273b5cd6"
+  },
+  {
+    "file": "1e2ba294fd8d3718.mp3",
+    "text": "Vienen 4 amigos. Pon una pieza de merienda para cada uno.",
+    "bytes": 32688,
+    "sha256": "f86b884e9d825c1092cd2ed42f4255993d196e6756c3b6aaeb7ce946e5d5e6a8"
+  },
+  {
+    "file": "c5eb33980b2d12f2.mp3",
+    "text": "Hay 5 amigos. Necesitamos 5 piezas de merienda: una para cada uno.",
+    "bytes": 38736,
+    "sha256": "09763353d600449b91b53735e864d8314d916e5b561bb5615012402e31ad4de1"
+  },
+  {
+    "file": "39bf63cfabb2ea29.mp3",
+    "text": "Vienen 5 amigos. Pon una pieza de merienda para cada uno.",
+    "bytes": 33120,
+    "sha256": "34fceff4584b1e42950539c1d73f920476a1e52e976954f59948499ae77bdbf1"
+  },
+  {
+    "file": "177f451cfd90af5e.mp3",
+    "text": "El conejo quiere estar dentro de la caja. Llévalo allí.",
+    "bytes": 29232,
+    "sha256": "d2a6c6a50981c88c7a6942cce71473df5ed7c14a9fd8ae2a6f1e3cf02f2edff7"
+  },
+  {
+    "file": "d5ed4a9bd2caa72f.mp3",
+    "text": "Mira el ejemplo: tu amigo está dentro de la caja.",
+    "bytes": 23904,
+    "sha256": "c0f1f2f54f5d3fc41fdbaf611f34efd7b3da970cba8439997e7c83861655aa17"
+  },
+  {
+    "file": "651f24177548ddfd.mp3",
+    "text": "El pájaro quiere estar encima de la caja. Llévalo allí.",
+    "bytes": 29376,
+    "sha256": "6ee67a83767d8ef1efe7d7f4b44b1ab9f9716637fb246fcba717f181255cfa58"
+  },
+  {
+    "file": "0f55f81e00498f46.mp3",
+    "text": "Mira el ejemplo: tu amigo está encima de la caja.",
+    "bytes": 23904,
+    "sha256": "a3939eb0e107c1a5ce7c8728d2e2c15d12d9c2ff2d5dabe6342bdc2575cb1d98"
+  },
+  {
+    "file": "e9e347ba00d38b03.mp3",
+    "text": "El gato quiere estar debajo de la caja. Llévalo allí.",
+    "bytes": 28656,
+    "sha256": "1431d0cbc37fa1f8c99872321f5d9dd525eb77f518d02e767c67296a46b12a14"
+  },
+  {
+    "file": "3f597d571bfa5c1c.mp3",
+    "text": "Mira el ejemplo: tu amigo está debajo de la caja.",
+    "bytes": 24048,
+    "sha256": "f8c527325719bab562c46d53b940ec80d35870417b566f68bcd99b89c0732f10"
+  },
+  {
+    "file": "0aee9bac82a0a1ce.mp3",
+    "text": "El perro quiere estar fuera de la caja. Llévalo allí.",
+    "bytes": 28368,
+    "sha256": "20eb3c099f7bf4e21a873ae9df8c3241efd4d4e0cf01facf98036992398a8c8e"
+  },
+  {
+    "file": "04887a925dbc62ef.mp3",
+    "text": "Mira el ejemplo: tu amigo está fuera de la caja.",
+    "bytes": 23760,
+    "sha256": "92b6c1182169df38c9af54cb13226284fb202709fe360839d0507283c68918a4"
+  },
+  {
+    "file": "4b1f98becc7f6347.mp3",
+    "text": "El conejo quiere estar a la izquierda de la caja. Llévalo allí.",
+    "bytes": 30816,
+    "sha256": "f7649aa60209b26e72afc4927c208c0d4a425477f9bea70bcbbf86a560023b06"
+  },
+  {
+    "file": "4f1d131423b109ea.mp3",
+    "text": "Mira el ejemplo: tu amigo está a la izquierda de la caja.",
+    "bytes": 26064,
+    "sha256": "ce97ba133f11d95cb1be7c15ae2350be06e5f905eb62be8c4a9a198d6eb0a1fb"
+  },
+  {
+    "file": "9e68d226286e1e3c.mp3",
+    "text": "El gato quiere estar a la derecha de la caja. Llévalo allí.",
+    "bytes": 29520,
+    "sha256": "534cbfa4ceaf576b2c38bb7c16bbe3f46f8cf04475d3bd3f2eeedbe5b4d875a4"
+  },
+  {
+    "file": "52f2f189a182f904.mp3",
+    "text": "Mira el ejemplo: tu amigo está a la derecha de la caja.",
+    "bytes": 25776,
+    "sha256": "efb0271cfbd76d373ba93149b34a5b4f379095f3a00c61bac2e3c87e660508dd"
+  },
+  {
+    "file": "f52d63231eb0dbaa.mp3",
+    "text": "ga",
+    "bytes": 11232,
+    "sha256": "574bc7ff4bd5b8df5ad629be068c2534595035acbde7fe0ca6872376b767cfc7"
+  },
+  {
+    "file": "663ea1bfffe5038f.mp3",
+    "text": "to",
+    "bytes": 11232,
+    "sha256": "de1916311a832271bdccf1b525440703bb141952b3fecf8490ced98043035485"
+  },
+  {
+    "file": "81a40ebdf4a411f4.mp3",
+    "text": "Escucha Gato. Toca una palmada por cada trocito de la palabra.",
+    "bytes": 32544,
+    "sha256": "1b362f973201c9684f128b315fe96792a2bcbce5327784f064a67091b46a91f2"
+  },
+  {
+    "file": "c58d24e6819d02c4.mp3",
+    "text": "ga. to.",
+    "bytes": 15408,
+    "sha256": "40d31904896aaff826bebbb34ccde50b5503348998d68393aa1bb2071eba6436"
+  },
+  {
+    "file": "6d1628fa9b80ceec.mp3",
+    "text": "Gato: ga, to. Son 2 trocitos.",
+    "bytes": 27936,
+    "sha256": "8dc1983e900a4519941ac374986e4350d9135d0981edff8e56c41647e30f4cbc"
+  },
+  {
+    "file": "aa180bec86b9af2b.mp3",
+    "text": "Escucha por partes: ga. to. Junta los trocitos para formar Gato.",
+    "bytes": 40896,
+    "sha256": "e99dcc7373aa4cc1013c3aa300775490667ad9fe133b027650e0360d70dbaa58"
+  },
+  {
+    "file": "fcaa12e666fc0da9.mp3",
+    "text": "Gato se forma así: ga, to.",
+    "bytes": 19152,
+    "sha256": "92715872ea5488deff47be1641c35649ef2defa81e346af0288ff0cbe97831b0"
+  },
+  {
+    "file": "6959097001d10501.mp3",
+    "text": "ca",
+    "bytes": 11232,
+    "sha256": "4e7d85ce4341f960032a550cf9f3fc6b2a195944888292d2320aae71c8e7c3cd"
+  },
+  {
+    "file": "4cf6829aa93728e8.mp3",
+    "text": "sa",
+    "bytes": 11232,
+    "sha256": "234dcbcc0810f4cf50ca32bb1252262289180cef63911874d58bda64a32a59eb"
+  },
+  {
+    "file": "cbdb24f03c6f6c44.mp3",
+    "text": "Escucha Casa. Toca una palmada por cada trocito de la palabra.",
+    "bytes": 32544,
+    "sha256": "1f25dddc28dbe3fe2061ed2cdf1bba4f999b2953868e27a23befb58118573450"
+  },
+  {
+    "file": "e6fed18c5e26bbc8.mp3",
+    "text": "ca. sa.",
+    "bytes": 17712,
+    "sha256": "0f22e265aa80a454590e9aea52c2cdcebfbf493139d44e2e3a3f2b44282d30b1"
+  },
+  {
+    "file": "058dc18f71d15dfc.mp3",
+    "text": "Casa: ca, sa. Son 2 trocitos.",
+    "bytes": 29952,
+    "sha256": "b20f8b6d4e4dcfd9ae205aa49e3eb4e33f59d05edecca50e778fee2aa4335369"
+  },
+  {
+    "file": "f2c29cc2a98e749c.mp3",
+    "text": "Escucha por partes: ca. sa. Junta los trocitos para formar Casa.",
+    "bytes": 36288,
+    "sha256": "681dfbbbf3554223515bd352dd6befb97837f5324faaa00f4fabcbfdc4ca5ac9"
+  },
+  {
+    "file": "4cfd664016b3aff4.mp3",
+    "text": "Casa se forma así: ca, sa.",
+    "bytes": 20448,
+    "sha256": "029a5b5ecca2fc4e8a2090b17e0bad82c01d6865df7d4ed41317c68bec4233f3"
+  },
+  {
+    "file": "cdf69b25a417e257.mp3",
+    "text": "pe",
+    "bytes": 11232,
+    "sha256": "3095d45dc34268c4e530f05d9382e1aa4e2f15261c8461f2380d2feb761e3b43"
+  },
+  {
+    "file": "9294ab38039f60d2.mp3",
+    "text": "lo",
+    "bytes": 11232,
+    "sha256": "1d4f82142cf7129beea81815c830c41a89f29c42e32695a291dc179cb9cbb9c3"
+  },
+  {
+    "file": "76592b9de6d38238.mp3",
+    "text": "ta",
+    "bytes": 11232,
+    "sha256": "aa5f3a6b6be29ff83d336f54845f114df613f266438d9bbd8875c27e2a74cba7"
+  },
+  {
+    "file": "fedd61903a00c4aa.mp3",
+    "text": "Escucha Pelota. Toca una palmada por cada trocito de la palabra.",
+    "bytes": 33264,
+    "sha256": "332f0cc512c3901ee0ac615693776a106e846ca3a4b4ed18c050adba30779d08"
+  },
+  {
+    "file": "f66d5dc3e94b9a73.mp3",
+    "text": "pe. lo. ta.",
+    "bytes": 23184,
+    "sha256": "6fb1949a809972ba5a918648cc96305775355a110c4c107433dbcd595dcb86cf"
+  },
+  {
+    "file": "b3e183c14e136a48.mp3",
+    "text": "Pelota: pe, lo, ta. Son 3 trocitos.",
+    "bytes": 31536,
+    "sha256": "c8dea095f6274f99c003277694890db1cdcc1d9b81333fb21bab70bd9ee8441a"
+  },
+  {
+    "file": "3671f07f640a9fed.mp3",
+    "text": "Escucha por partes: pe. lo. ta. Junta los trocitos para formar Pelota.",
+    "bytes": 49680,
+    "sha256": "64783100326a22da67d71dbfa6a8f16c207b86cca5534c668dd27e8fa7978a6c"
+  },
+  {
+    "file": "82e8da8416645dd9.mp3",
+    "text": "Pelota se forma así: pe, lo, ta.",
+    "bytes": 22464,
+    "sha256": "b5fe7f7f15c9d04e063e5705dd04a03ca3c062e804555fe6a40bf767356d3315"
+  },
+  {
+    "file": "48b676e2b107da67.mp3",
+    "text": "man",
+    "bytes": 11232,
+    "sha256": "f5b38d6498769c7604cf102ee9ebc033ee9ff18c5eae41eb589f7553b7546efd"
+  },
+  {
+    "file": "3c42d9ac9807bbf9.mp3",
+    "text": "za",
+    "bytes": 11232,
+    "sha256": "152cb0f95a6523a9ec433d08dc74252f5f64cc337a11b71d4a47cc911ec5638d"
+  },
+  {
+    "file": "3d9fc4bde7ceef05.mp3",
+    "text": "na",
+    "bytes": 11232,
+    "sha256": "b229db3f09a2fb292e84df25e0948f358569065441380b8e1c707d517f709cbb"
+  },
+  {
+    "file": "520900fbbba38009.mp3",
+    "text": "Escucha Manzana. Toca una palmada por cada trocito de la palabra.",
+    "bytes": 33696,
+    "sha256": "ed71549bb35406a48d291bbd5c10fe07f8226d648277554b965579db71eba503"
+  },
+  {
+    "file": "0eb3f26f3a5988a1.mp3",
+    "text": "man. za. na.",
+    "bytes": 24192,
+    "sha256": "1f9340d60d0bc502c8cc1cf05071546dea869a6ceb892102541960dbf637726f"
+  },
+  {
+    "file": "665b328346b4550e.mp3",
+    "text": "Manzana: man, za, na. Son 3 trocitos.",
+    "bytes": 33120,
+    "sha256": "c3f3cdf2e488459a72d2833f408063e1c1cb983a816992815480f6b7e0537336"
+  },
+  {
+    "file": "fc61abf0f282d6af.mp3",
+    "text": "Escucha por partes: man. za. na. Junta los trocitos para formar Manzana.",
+    "bytes": 50832,
+    "sha256": "b5697dff9c88ffbeb16b5c8b45efa07428bd0ee102641bd5d50e4274ffc6fc2d"
+  },
+  {
+    "file": "33b874821993ac08.mp3",
+    "text": "Manzana se forma así: man, za, na.",
+    "bytes": 23760,
+    "sha256": "2948c1552fee339e15cb042f272f7a7abcb5d46f9c8e97d9e0ee9eeafaa2a589"
+  },
+  {
+    "file": "c330ec504d82c24f.mp3",
+    "text": "co",
+    "bytes": 11232,
+    "sha256": "f2b9f5a58ecf75fda554d6b7e08be14466f6a612fd076e06cb97f724e28f3121"
+  },
+  {
+    "file": "cb58e4600bf0142c.mp3",
+    "text": "ne",
+    "bytes": 11232,
+    "sha256": "a10be20b71c2359bbf436ecb8da43b4a1716b37cf028a80202b03ceb28ab5258"
+  },
+  {
+    "file": "c278ec5a69c34aac.mp3",
+    "text": "jo",
+    "bytes": 11232,
+    "sha256": "704a284183324cce59a1b1d37f680b668cd34cb9c2f3ab0b016a58c5abe72bda"
+  },
+  {
+    "file": "7495be3bf1a359fb.mp3",
+    "text": "Escucha Conejo. Toca una palmada por cada trocito de la palabra.",
+    "bytes": 33408,
+    "sha256": "c83f09955af64c3631503eb938a8952c0dbf9ae87b67fb2256d373a324ba8519"
+  },
+  {
+    "file": "48102fdb93603a41.mp3",
+    "text": "co. ne. jo.",
+    "bytes": 17712,
+    "sha256": "c2dd8d07c270fd252f162b5a5213d1ad1ebeaee65a3ac9d9744c4ac4956f582e"
+  },
+  {
+    "file": "3c5145b4d511cf70.mp3",
+    "text": "Conejo: co, ne, jo. Son 3 trocitos.",
+    "bytes": 33120,
+    "sha256": "2b270685adb09a740a0a1e8ce4eb6dda3bf34776f285f50cc9909a1f897817f0"
+  },
+  {
+    "file": "ecbae4dccb191bab.mp3",
+    "text": "Escucha por partes: co. ne. jo. Junta los trocitos para formar Conejo.",
+    "bytes": 44064,
+    "sha256": "548a2f2ac947820260b1171ec666b25dadffed80bf8ae326ac5123542285b93f"
+  },
+  {
+    "file": "0b61f4a8657cc611.mp3",
+    "text": "Conejo se forma así: co, ne, jo.",
+    "bytes": 23904,
+    "sha256": "14fb05e966ef04192ec2f7fd0d912a9a121b9ccfac2a78ed175abffea32cd45b"
+  },
+  {
+    "file": "3c44c3e1b8b78447.mp3",
+    "text": "ma",
+    "bytes": 11232,
+    "sha256": "3c0e159a2f935b16a58134ea894394582be8619cb05d6b192cb200e7b00f46e0"
+  },
+  {
+    "file": "396a14ab206e2b44.mp3",
+    "text": "ri",
+    "bytes": 11232,
+    "sha256": "f1432ca2f96d5d3f15e8e86558c8c19409e610212dfc397fbf63143ffa5b4452"
+  },
+  {
+    "file": "6199aecf23aba7e8.mp3",
+    "text": "po",
+    "bytes": 11232,
+    "sha256": "2812d73dbe586d1992ca826d972f406a50f6d87a3ce5fa90d34f430e4b74cefb"
+  },
+  {
+    "file": "af9a837fe7179606.mp3",
+    "text": "Escucha Mariposa. Toca una palmada por cada trocito de la palabra.",
+    "bytes": 34128,
+    "sha256": "d04fc3adb91c3a9f851542959197adc7332d5444f5082474ced1ec778809b3b9"
+  },
+  {
+    "file": "e147db7c6d60d638.mp3",
+    "text": "ma. ri. po. sa.",
+    "bytes": 26352,
+    "sha256": "7f7f3d5af378bf5ad092e312fbc9bfe05b46bc10741c38bd5dcf839f0ca3478d"
+  },
+  {
+    "file": "dd319d3aff8db8b1.mp3",
+    "text": "Mariposa: ma, ri, po, sa. Son 4 trocitos.",
+    "bytes": 37296,
+    "sha256": "6c8c0d9be323689824f7792b28c5f807d476ea0c363400cbc200b447996195ab"
+  },
+  {
+    "file": "dbc61a469e8d8154.mp3",
+    "text": "Escucha por partes: ma. ri. po. sa. Junta los trocitos para formar Mariposa.",
+    "bytes": 45360,
+    "sha256": "5f8bcbdf7f7701fdacd10624812371c5dc0a984daf02c5ec1f11640c11d7a8c9"
+  },
+  {
+    "file": "828c460f613c375e.mp3",
+    "text": "Mariposa se forma así: ma, ri, po, sa.",
+    "bytes": 27360,
+    "sha256": "c9b163b3f40814266919e14f9aafe674eb8846119b3b4816dc79010ddc670d9b"
+  },
+  {
+    "file": "acb73764fbd46764.mp3",
+    "text": "El gato duerme en casa.",
+    "bytes": 14400,
+    "sha256": "cd73f29712d71ffab45d7d84f3a64e0f2db31783a01463bf973fb62cf3d9c1b0"
+  },
+  {
+    "file": "b7860db99d8459f6.mp3",
+    "text": "El gato",
+    "bytes": 11232,
+    "sha256": "a2614cbedda69b75d35b87f63c9f11f180c9704e351ff009a9598e822005a98a"
+  },
+  {
+    "file": "92346c77168028dc.mp3",
+    "text": "duerme",
+    "bytes": 11232,
+    "sha256": "f3ffe8a478d9b4ce83f49b0340f128634101124c33a7b4118be0685516531bd2"
+  },
+  {
+    "file": "d1b6e00f8d365041.mp3",
+    "text": "en casa",
+    "bytes": 11232,
+    "sha256": "17674cf0f417f928de641f08e89dbebab647298aca4fa67c2ed07e7462f0ab1d"
+  },
+  {
+    "file": "73f3bc04274f7cd5.mp3",
+    "text": "Vamos a contar: El gato duerme en casa. Elige primero quién, después qué hace y al final dónde o qué.",
+    "bytes": 45648,
+    "sha256": "e800ec3cca03b802bfeef8e0bf0bc2f7661f71bbc17cf5a84e9ec9802a177462"
+  },
+  {
+    "file": "3adedc802ebe7cda.mp3",
+    "text": "Primero el gato, después duerme, al final en casa.",
+    "bytes": 23904,
+    "sha256": "59ac19c9aadc1b952ada68b71d4da4d3b480131fb518ab15c217ec833598b25b"
+  },
+  {
+    "file": "0ac097c83fcfeac8.mp3",
+    "text": "El pájaro vuela por el cielo.",
+    "bytes": 15552,
+    "sha256": "8fc6dfa3d07e43f0d0577634e21ac273e98ffa81f95b86b694c49a94c863cfa9"
+  },
+  {
+    "file": "6b544391eede7bfd.mp3",
+    "text": "El pájaro",
+    "bytes": 11232,
+    "sha256": "fe23fd5e30e6a04dab38148af4903d2777ba6fab9f78968ae6137f25f8c2a4bc"
+  },
+  {
+    "file": "4e90ca9a0f26dbd3.mp3",
+    "text": "vuela",
+    "bytes": 9360,
+    "sha256": "21e517df744cd2808179d4ddcba1dcda6ddd57171a83ecb99d3a8ac7e8016036"
+  },
+  {
+    "file": "d233680ff2e1a7be.mp3",
+    "text": "por el cielo",
+    "bytes": 11232,
+    "sha256": "17c2b5e4a3e6b379211d6a27b489416f416998dbb0559784bfbf9a8468851b55"
+  },
+  {
+    "file": "5670e579217aa69b.mp3",
+    "text": "Vamos a contar: El pájaro vuela por el cielo. Elige primero quién, después qué hace y al final dónde o qué.",
+    "bytes": 47520,
+    "sha256": "2da5098e300fe14d744392ff956c2662d23b29c2c2d6791b5c9be719c62587f5"
+  },
+  {
+    "file": "bb4b31a260aa0ef8.mp3",
+    "text": "Primero el pájaro, después vuela, al final por el cielo.",
+    "bytes": 25056,
+    "sha256": "453fdc9349e4dcb53eb70c67eacbdecc779dccb1d853b292f573367fdaa51c47"
+  },
+  {
+    "file": "077c28caeaf1c001.mp3",
+    "text": "El conejo come zanahoria.",
+    "bytes": 15552,
+    "sha256": "0e79dd53b70e157ed0712aad8a3bc6f2059e566724e7ea6f3d8f6165369b0026"
+  },
+  {
+    "file": "4eba463c60b56036.mp3",
+    "text": "El conejo",
+    "bytes": 11232,
+    "sha256": "75e6b29f5def1d18f30b08cf1735d74c743787d188444f97bdf4f66d5f92a528"
+  },
+  {
+    "file": "9c19636ddea25f0a.mp3",
+    "text": "come",
+    "bytes": 11232,
+    "sha256": "cc8cb7a6c39257dcbf43f9df1c7fb76fd3675a7bc18bed2a29a10c08aec285a1"
+  },
+  {
+    "file": "d1bdabe87aa4c739.mp3",
+    "text": "Vamos a contar: El conejo come zanahoria. Elige primero quién, después qué hace y al final dónde o qué.",
+    "bytes": 46800,
+    "sha256": "ad3154d8ba0aeff61084c7d145963eca75c36c3d1772995d65be9bb7454e6d99"
+  },
+  {
+    "file": "e021ca91db7f7f7b.mp3",
+    "text": "Primero el conejo, después come, al final zanahoria.",
+    "bytes": 25200,
+    "sha256": "7bd209ff366100cf20073fc6e1e2d9b818e1189507f6fd5fb37a55b40655efdb"
+  },
+  {
+    "file": "ca1f79cb70ed67c7.mp3",
+    "text": "El perro juega con la pelota.",
+    "bytes": 15696,
+    "sha256": "643fc775f37c66049af673fae46db557502ebca8ca9b3f95a73f5529a1920211"
+  },
+  {
+    "file": "cccb324f6ddee9f5.mp3",
+    "text": "El perro",
+    "bytes": 11232,
+    "sha256": "2eb76ca44edffe63eb7425a45d584014f6631e1da8c4cd799456e0eebc143e31"
+  },
+  {
+    "file": "9cd56ddf3a59148c.mp3",
+    "text": "juega",
+    "bytes": 11232,
+    "sha256": "f847b46fa1642cb28644cf7c9ae4c33f174915b48063c09cd19c16dd568615b5"
+  },
+  {
+    "file": "c7040bc8f1f1e0b0.mp3",
+    "text": "con la pelota",
+    "bytes": 11232,
+    "sha256": "8694ab2c7fbd392ef9c18b99c1b463ab01813c142daa75bf6a40215af1d8d0b5"
+  },
+  {
+    "file": "4150f13aa77d2775.mp3",
+    "text": "Vamos a contar: El perro juega con la pelota. Elige primero quién, después qué hace y al final dónde o qué.",
+    "bytes": 47520,
+    "sha256": "5a235e1006838564493a9e5ee6fd5ca1538869b62abf7742d00d56404ba28dbd"
+  },
+  {
+    "file": "7e0f3fab262bae4b.mp3",
+    "text": "Primero el perro, después juega, al final con la pelota.",
+    "bytes": 25344,
+    "sha256": "a21945507ca27dc3d4983b11ecb6eccbb70ddf32900252ef91022db332343c38"
+  },
+  {
+    "file": "a5d2332589767618.mp3",
+    "text": "con un libro",
+    "bytes": 11232,
+    "sha256": "eedef37ceb6985cdf2ee6ba58d7c6ae2a6ccb62c7bc9f2869c34414d018802de"
+  },
+  {
+    "file": "b5cb3e6011575e9b.mp3",
+    "text": "Plantamos la semilla",
+    "bytes": 13536,
+    "sha256": "03a47a2455bc7359b1051331cf5cdab5a059e44472687a07a0830761fb0e2803"
+  },
+  {
+    "file": "f5e4f0d51605b5be.mp3",
+    "text": "Regamos con agua",
+    "bytes": 12096,
+    "sha256": "60b2e1176ec2af98e6747455e75290c98a246af5f0f7b458556a9b3229a37ba3"
+  },
+  {
+    "file": "c5f1f19bc4605077.mp3",
+    "text": "Crece una flor",
+    "bytes": 12096,
+    "sha256": "1d8685371974986693351e914f4d819a71e20c15c4636fd43287af5e23e0238e"
+  },
+  {
+    "file": "902c6f0739cd61db.mp3",
+    "text": "La flor del jardín. Mira las tres imágenes. ¿Qué pasa primero, después y al final?",
+    "bytes": 46080,
+    "sha256": "55cb89a73733d2b39a1f9c612dd7255c2239f24e9535d5b5a2d5da299f674661"
+  },
+  {
+    "file": "1a20621fee48ac56.mp3",
+    "text": "Primero, plantamos la semilla. Después, regamos con agua. Al final, crece una flor.",
+    "bytes": 50112,
+    "sha256": "92064f386f91fc8e32144e8c230966d6a3e4362543415cb2842230d212d5b3bc"
+  },
+  {
+    "file": "9105bf26138a1335.mp3",
+    "text": "Guardamos los juguetes",
+    "bytes": 14256,
+    "sha256": "e17aaf55e70a8d88f32e5c0b92635fb722f2adc9e5fef71e536814cc63ca6696"
+  },
+  {
+    "file": "14fbc4494321300f.mp3",
+    "text": "Leemos un cuento",
+    "bytes": 12816,
+    "sha256": "266aeac0233e8072ac36656e244acd860c08dfaf08a113c2e084f8f67a44a4c1"
+  },
+  {
+    "file": "f972c3acdfdfac5c.mp3",
+    "text": "Nos acostamos",
+    "bytes": 12672,
+    "sha256": "a2bb9eccf8cfc45bdfdf60c8257bb669878141c380286b313e700a09a5a2eec8"
+  },
+  {
+    "file": "9bfff2ce73d44de0.mp3",
+    "text": "¡A dormir!. Mira las tres imágenes. ¿Qué pasa primero, después y al final?",
+    "bytes": 42768,
+    "sha256": "743e8fc6122ef56bc9379535e6dc50ce17615b3f65be45c122e6596b4d14a238"
+  },
+  {
+    "file": "9e3d4864b3fa6855.mp3",
+    "text": "Primero, guardamos los juguetes. Después, leemos un cuento. Al final, nos acostamos.",
+    "bytes": 50976,
+    "sha256": "437733d551e7aec88268cac57e29cebff5e4c6ad2da90377b68c365d4b4eed4e"
+  },
+  {
+    "file": "bb058cd771a6bea5.mp3",
+    "text": "Lavamos la manzana",
+    "bytes": 13104,
+    "sha256": "6c7bccbada74d0b9a825b6b003176b882ae431c61b92f628e3bac4b66ddaa994"
+  },
+  {
+    "file": "39e9ab7bb8cf38e2.mp3",
+    "text": "La ponemos en la cesta",
+    "bytes": 13968,
+    "sha256": "88cb35f04999f6aa708123e23ce25410ac8fe32d5acb851e8f5895d153b73d2f"
+  },
+  {
+    "file": "de24b0efad352e71.mp3",
+    "text": "Compartimos la merienda",
+    "bytes": 14112,
+    "sha256": "324861e591618f544983f8088a33e95824af8909e5d1e0b14dfb59d9da714e9d"
+  },
+  {
+    "file": "f791b342d5a7be7d.mp3",
+    "text": "Una merienda para compartir. Mira las tres imágenes. ¿Qué pasa primero, después y al final?",
+    "bytes": 48528,
+    "sha256": "10ae61fdae0dfa81eec5611532ddefdf520ee0b7e0978222fcf344f5ac3b0447"
+  },
+  {
+    "file": "1451d0a1fab085df.mp3",
+    "text": "Primero, lavamos la manzana. Después, la ponemos en la cesta. Al final, compartimos la merienda.",
+    "bytes": 52704,
+    "sha256": "7972e3a08a39f48c1f004c269e5be77fdc1441e5d9018ebcdd9b7668d19b2ae9"
+  }
+]

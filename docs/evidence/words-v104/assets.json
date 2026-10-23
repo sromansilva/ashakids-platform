@@ -1,0 +1,122 @@
+[
+  {
+    "id": "treasure",
+    "path": "frontend/public/words/games/treasure-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 35914,
+    "sha256": "1aecf023502e9c552f5103889132b8b19127abcbdca4603afd8f44debfe4339a"
+  },
+  {
+    "id": "memory",
+    "path": "frontend/public/words/games/memory-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 38506,
+    "sha256": "e82ca40b67333c4aa13d30c2fede3f901fad007271064394d1d8efec47623bfa"
+  },
+  {
+    "id": "sort",
+    "path": "frontend/public/words/games/sort-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 34174,
+    "sha256": "1e65e052545e434a771099c2c4d24734db73e1a24887812d4bf017aab04806e0"
+  },
+  {
+    "id": "story",
+    "path": "frontend/public/words/games/story-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 32022,
+    "sha256": "4dd7182e02c72b3d233d6cb8239c36b106b995191e060f7c690809a4640a74e7"
+  },
+  {
+    "id": "opposites",
+    "path": "frontend/public/words/games/opposites-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 33424,
+    "sha256": "a857252ce82fa61cf7e2658271c1d2d33bb18e03e51595312eb28a03b38679a0"
+  },
+  {
+    "id": "syllables",
+    "path": "frontend/public/words/games/syllables-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 35824,
+    "sha256": "8cf8f927235f8ac68d8513c4db7589cc3b5b6c889d92cbe857f78087200a506b"
+  },
+  {
+    "id": "count",
+    "path": "frontend/public/words/games/count-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 39214,
+    "sha256": "5bef7e9f80926c151ba60c36f62a93e02427e8b846e0f0654ad690d898d49f8a"
+  },
+  {
+    "id": "positions",
+    "path": "frontend/public/words/games/positions-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 23204,
+    "sha256": "f8335fe533120152b17da96c459fe17a552e1a77a9385677fb77e49cd0a08826"
+  },
+  {
+    "id": "rhymes",
+    "path": "frontend/public/words/games/rhymes-v104.webp",
+    "size": [
+      384,
+      384
+    ],
+    "bytes": 32486,
+    "sha256": "04cd2647b913a1d5822d2fb0e6d51e3dc2ab1a88790362987545cd23f24099f0"
+  },
+  {
+    "id": "sentence",
+    "path": "frontend/public/words/games/sentence-v104.webp",
+    "size": [
+      384,
+      256
+    ],
+    "bytes": 23396,
+    "sha256": "555bc856892c8204184aa24c11739a6ea71c8bbc61febf05160560215e923423"
+  },
+  {
+    "id": "snail",
+    "path": "frontend/public/words/island/snail.webp",
+    "size": [
+      288,
+      240
+    ],
+    "bytes": 19254,
+    "sha256": "7d38a98749aff6323208a25278ea345546c41c276baccc43fa5a3be93ba311e4"
+  },
+  {
+    "id": "drum",
+    "path": "frontend/public/words/island/drum.webp",
+    "size": [
+      288,
+      240
+    ],
+    "bytes": 19044,
+    "sha256": "7ac6e8fe74e91194b1e6ccba440f88b3513ee5ab19a7995d8d6d7c1b5f173f22"
+  }
+]

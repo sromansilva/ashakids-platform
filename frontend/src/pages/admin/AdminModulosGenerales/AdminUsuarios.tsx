@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Eye, Search, CheckCircle, X, RefreshCw, Trash2 } from "lucide-react";
 import { B } from "@/theme/brand/B";
@@ -76,6 +77,7 @@ export function AdminUsuarios() {
         <h2 className="text-2xl font-black text-[#1C1135] mb-1">Gestión de Usuarios</h2>
         <p className="text-sm text-[#7C6F9A] font-medium">{list.data?.total ?? "—"} usuarios en la plataforma</p>
       </div>
+      <div className="mb-5 space-y-3"><p className="text-sm text-[#4B4264]">Registra al padre y sus hijos juntos en Gestión de Cuentas. El código se genera automáticamente y el padre activa su contraseña al ingresar.</p><Link to="/admin/cuentas" className="inline-flex px-5 py-3 rounded-xl bg-violet-700 font-bold text-white">Registrar familias y cuentas</Link></div>
       <div className="flex flex-col sm:flex-row gap-3 mb-5">
         <div className="relative flex-1">
           <Search size={15} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E95B7]" />

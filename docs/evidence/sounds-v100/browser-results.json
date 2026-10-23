@@ -1,0 +1,232 @@
+{
+  "cases": [
+    "explore: cancellation, four real clips, completion",
+    "mute and actual network failure recover without false completion",
+    "five real-audio identification rounds, friendly retry, no answer text",
+    "native drag-and-drop and click matching, two then three pairs",
+    "keyboard start, heading focus, return focus, reduced motion, navigation cleanup",
+    "mobile touch-to-match"
+  ],
+  "decoded": [
+    {
+      "id": "cow",
+      "duration": 2.1942708333333334,
+      "channels": 1,
+      "rms": 0.08967679557354953,
+      "peak": 0.3864683210849762
+    },
+    {
+      "id": "cat",
+      "duration": 0.7787916666666667,
+      "channels": 1,
+      "rms": 0.06879692430822804,
+      "peak": 0.3689410090446472
+    },
+    {
+      "id": "dog",
+      "duration": 2.9198333333333335,
+      "channels": 1,
+      "rms": 0.09692412429469996,
+      "peak": 0.581071674823761
+    },
+    {
+      "id": "chick",
+      "duration": 3,
+      "channels": 1,
+      "rms": 0.12883356654936287,
+      "peak": 0.9339970350265503
+    }
+  ],
+  "layouts": [
+    {
+      "label": "levels-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 329.09375,
+        "width": 978,
+        "height": 946.1875,
+        "top": 329.09375,
+        "right": 1254,
+        "bottom": 1275.28125,
+        "left": 276
+      }
+    },
+    {
+      "label": "explore-1366",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 236.09375,
+        "width": 978,
+        "height": 743.28125,
+        "top": 236.09375,
+        "right": 1254,
+        "bottom": 979.375,
+        "left": 276
+      }
+    },
+    {
+      "label": "levels-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 300.59375,
+        "width": 432,
+        "height": 1084.5,
+        "top": 300.59375,
+        "right": 708,
+        "bottom": 1385.09375,
+        "left": 276
+      }
+    },
+    {
+      "label": "explore-768",
+      "width": 768,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": 112.59375,
+        "width": 432,
+        "height": 1016.9375,
+        "top": 112.59375,
+        "right": 708,
+        "bottom": 1129.53125,
+        "left": 276
+      }
+    },
+    {
+      "label": "levels-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 102.59375,
+        "width": 358,
+        "height": 1253.578125,
+        "top": 102.59375,
+        "right": 374,
+        "bottom": 1356.171875,
+        "left": 16
+      }
+    },
+    {
+      "label": "explore-390",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 102.59375,
+        "width": 358,
+        "height": 973.046875,
+        "top": 102.59375,
+        "right": 374,
+        "bottom": 1075.640625,
+        "left": 16
+      }
+    },
+    {
+      "label": "levels-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 102.59375,
+        "width": 288,
+        "height": 1399.96875,
+        "top": 102.59375,
+        "right": 304,
+        "bottom": 1502.5625,
+        "left": 16
+      }
+    },
+    {
+      "label": "explore-320",
+      "width": 320,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": 102.59375,
+        "width": 288,
+        "height": 1052.546875,
+        "top": 102.59375,
+        "right": 304,
+        "bottom": 1155.140625,
+        "left": 16
+      }
+    },
+    {
+      "label": "identify-desktop",
+      "width": 1366,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 276,
+        "y": -122.90625,
+        "width": 978,
+        "height": 1051.78125,
+        "top": -122.90625,
+        "right": 1254,
+        "bottom": 928.875,
+        "left": 276
+      }
+    },
+    {
+      "label": "match-touch",
+      "width": 390,
+      "overflow": false,
+      "broken": [],
+      "small": [],
+      "world": {
+        "x": 16,
+        "y": -289.40625,
+        "width": 358,
+        "height": 1118.046875,
+        "top": -289.40625,
+        "right": 374,
+        "bottom": 828.640625,
+        "left": 16
+      }
+    }
+  ],
+  "errors": [],
+  "apiRequests": [
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/901/juegos"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes"
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/pacientes/901/juegos"
+    }
+  ],
+  "realDatabaseWrites": 0
+}

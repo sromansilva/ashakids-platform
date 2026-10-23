@@ -27,16 +27,16 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
   return <div className="p-4 sm:p-6 max-w-7xl mx-auto">
     <div className="mb-5 flex flex-wrap items-center justify-between gap-3"><div><h2 className="mb-1 text-2xl font-black text-[#1C1135]">Reportes</h2><p className="text-sm font-medium text-[#7C6F9A]">Editor profesional de reportes clínicos</p></div><Btn variant="primary" size="sm" onClick={() => setNewReportOpen(true)} disabled={sessions.isPending || !!sessions.error}><Plus size={13}/> Nuevo reporte</Btn></div>
     <RemoteFeedback pending={sessions.isPending} error={sessions.error} retry={() => void sessions.refetch()}/>
-    <div className="grid gap-5 lg:grid-cols-3"><div className="flex flex-col gap-3">
-      <p className="px-1 text-xs font-bold uppercase tracking-wider text-[#9E95B7]">Reportes</p>
+    <div className="professional-report-layout grid gap-5 lg:grid-cols-3"><div className="flex flex-col gap-3">
+
       {reports.map(s => <button key={s.id_sesion} className="rounded-2xl border p-4 text-left transition-all" style={{ background: selected?.id_sesion === s.id_sesion ? B.violetLight : 'white', borderColor: selected?.id_sesion === s.id_sesion ? B.violet : B.border }} onClick={() => setSelectedId(s.id_sesion)}>
         <p className="mb-1 text-sm font-extrabold leading-snug text-[#1C1135]">Reporte de sesión #{s.id_sesion} — {s.cita.paciente_nombre}</p><div className="flex items-center justify-between gap-2"><p className="text-xs font-medium text-[#9E95B7]">{dateLabel(s)}</p><span className="rounded-full px-2 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-700">Guardado</span></div>
       </button>)}
       {sessions.isSuccess && !sessions.error && reports.length === 0 && <p className="text-sm text-[#7C6F9A]">No hay reportes guardados en tus sesiones autorizadas.</p>}
-      <div className="mt-2"><p className="mb-2 px-1 text-xs font-bold uppercase tracking-wider text-[#9E95B7]">Plantillas descargables</p><p className="px-1 text-xs text-[#7C6F9A]">Plantillas en blanco, no son reportes clínicos guardados.</p>
+      <div className="mt-2"><p className="mb-2 px-1 text-sm font-extrabold text-[#4B4264]">Plantillas descargables</p><p className="px-1 text-xs text-[#7C6F9A]">Plantillas en blanco, no son reportes clínicos guardados.</p>
         {templates.map(template => <button key={template} onClick={() => downloadPdf(`${template.toLowerCase().replaceAll(' ', '-')}.pdf`, template, ['Plantilla en blanco ASHAKids - no constituye un reporte guardado', '', 'Paciente: _____________________', 'Fecha: ________________________', '', 'Observaciones: _________________', '', 'Objetivos: _____________________', '', 'Nivel de ayuda: _________________', '', 'Proximos pasos: _________________'])} className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-xs font-bold text-[#7C6F9A] transition-colors hover:bg-[#F5F3FF]"><Download size={12}/> {template}</button>)}
       </div>
-    </div><div className="lg:col-span-2"><Crd className="overflow-hidden">
+    </div><div className="professional-report-editor lg:col-span-2"><Crd className="overflow-hidden">
       {selected && !sessions.error ? <><div className="flex flex-wrap items-center justify-between gap-3 border-b p-5" style={{ borderColor: B.border }}><div><p className="mb-0.5 text-xs font-medium text-[#9E95B7]">Sesión clínica · {selected.cita.paciente_nombre}</p><h3 className="font-extrabold text-[#1C1135]">Reporte de sesión #{selected.id_sesion}</h3></div><div className="flex flex-wrap gap-2"><Btn size="sm" variant="ghost" onClick={() => setPreviewOpen(true)} disabled={!selected.reporte_disponible}><Eye size={12}/> Vista previa</Btn><Btn size="sm" variant="ghost" disabled title="No existe API de envío por correo"><Send size={12}/> Enviar</Btn><Btn size="sm" variant="primary" disabled title="No existe API de firma digital"><Edit size={12}/> Firmar</Btn></div></div>
         <ReportWorkspace key={selected.id_sesion} session={selected}/></> : <div className="p-6 text-sm text-[#7C6F9A]">Selecciona un reporte o una sesión para comenzar.</div>}
     </Crd></div></div>

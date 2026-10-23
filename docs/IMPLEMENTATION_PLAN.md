@@ -1,8 +1,177 @@
+Actualización V105 (2026-10-19): primera entrega de ocho juegos por edad y micrófono
+en Palabras, con once actividades disponibles. Ver ADR0026 y evidencia words-v105.
+Pendiente ampliar gradualmente hacia unos treinta juegos por cada mundo; revisar
+franjas con profesional y voz humana antes de extender. Personalización profesional
+persistente y nuevo guardado de práctica no están implementados.
+
+Actualización V75 (2026-10-11): el sistema visual v1.1 documenta reglas glassmorphism en [ASHAKIDS_DESIGN_SYSTEM.md](design/ashakids-ui-kit-v1/ASHAKIDS_DESIGN_SYSTEM.md).
+
+## V52 — adjuntos persistentes en mensajes / 2026-10-10
+
+PADRE y TERAPEUTA pueden enviar un archivo por mensaje, con texto opcional, consultar
+sus metadatos, visualizar imágenes/audio/video y descargarlo desde el chat. Formatos:
+JPG/PNG/GIF/WebP, MP3/WAV/OGG, MP4/WebM, PDF/TXT. Límite10MB por archivo y20envíos/hora
+por emisor. La comprobación de permisos usa participantes de la conversación; para
+nuevos envíos exige el vínculo vigente y chat abierto, como el texto existente.
+
+mensaje_adjuntos se conecta mediante ORM/FastAPI. Migración009 añade contenido BYTEA
+nullable, UUID de envío único y SHA256: mensaje+archivo se confirman en una transacción,
+reintento idéntico devuelve el mismo mensaje. Lecturas de historial cargan solo metadatos;
+contenido se lee mediante descarga autorizada y no se devuelve en JSON ni URL pública.
+El navegador carga medios al pulsar Ver archivo y revoca el blob al salir.
+
+Se elige almacenamiento binario acotado en PostgreSQL porque existe infraestructura
+persistente y solo una clave Supabase pública, insuficiente para un bucket privado.
+Evita guardar en disco efímero de Render; no añade claves ni cambia autenticación.
+Escala futura: mover archivos grandes a storage privado manteniendo el contrato.
+Migración009 adoptada en BD compartida con respaldo verificado y filas conservadas.
+No archivos/pacientes reales creados para pruebas; evidencia local sintética y metadatos
+saneados en [attachments-v52](evidence/attachments-v52/verification.md).
+ADR [0021](decisions/0021-adjuntos-pequenos-transaccionales.md). El contenido legada sin
+bytes no se recupera desde URLs externas. No antivirus/transcodificación ni extracción
+confiable de duración; se verifica formato por extensión y cabecera, no integridad total.
+
+## V50 — cinco mundos básicos persistentes / 2026-10-10
+
+Catálogo `basica-1`: HABLA (Taller de los Sonidos), LENGUAJE (La Isla de las Palabras),
+FLUIDEZ (Ritmo de las Palabras), VOZ (El Estudio de la Voz) y OROFACIAL (Laboratorio de
+los Gestos). Cada mundo tiene tres actividades básicas de selección/orden, con acceso
+libre a sus niveles. El profesional asigna uno o varios de los cinco mundos en el plan.
+Saltar al nivel 3 no completa los anteriores. El diseño definitivo sigue pendiente.
+
+El backend valida respuestas y guarda intentos correctos/incorrectos por niño, mundo,
+nivel y versión. Cada primer nivel correcto otorga 100 XP; completar los tres entrega
+una medalla y 100 XP adicionales una sola vez. Nivel del perfil = 1 + XP // 200.
+Reintentar una petición con el mismo UUID no duplica filas ni premios. La UI consulta
+el servidor al recargar/cambiar de hijo; Insignias y Perfil muestran estos contadores.
+
+Se reutilizan actividades, objetivos, mundos, niveles, resultados_nivel, perfiles,
+logros y perfil_logros. Migración 008 aplicada a la BD compartida con respaldo privado
+verificado y comparación de filas previas: conservadas; cinco medallas de catálogo
+nuevas. No se insertaron pacientes ni intentos reales para probar. Evidencia saneada:
+[adopción](evidence/games-v50/database-adoption.json), [verificación](evidence/games-v50/verification.md).
+ADR [0020](decisions/0020-juegos-basicos-persistentes.md). Sin conexión React/PostgreSQL.
+
+Los datos son simulación, no evaluación clínica ni inferencia de emociones. Quedan
+pendientes juegos finales, revisión profesional de contenidos, modelo ML/dataset con
+etiquetas y reporte/certificado mensual. Duración y ayudas son declaradas por el cliente.
+Los catálogos draft-1 y demos históricos no representan este flujo persistente.
+
 # ASHAKids — Plan de implementación por fases
 
-Actualizado: 2026-10-09. Entrega confirmada: 2026-10-09 18:00 America/Lima. Personas por asignar.
+## Fluidez: Ritmo de las Palabras / V125 / 2026-10-21
+
+FLUIDEZ ya ofrece once minijuegos originales con selección inicial de nueve por edad,
+catálogo familiar, tutoriales visuales distintos e instrucciones habladas estáticas.
+Conserva niveles asignados y progreso anterior; la colección nueva sólo cuenta visitas
+en memoria y no usa micrófono ni evalúa habla. Queda pendiente ampliar gradualmente
+hacia aproximadamente treinta juegos por mundo y revisar selección/voz con familias.
+Tambor de sílabas ya reproduce cada unidad y palabra completa con invitación opcional
+a repetir, sin usar micrófono. Véase V125 en [contexto](PROJECT_CONTEXT.md) y
+[relevo](IMPLEMENTATION_PROGRESS.md).
+
+## Alcance actualizado de juegos / V108 / 2026-10-19
+
+Isla y Taller muestran nueve juegos iniciales por edad, desde los cuatro años,
+usando fecha de nacimiento autorizada y bandas editoriales 4–5/6–7/8+. Cada uno
+ofrece once actividades en este corte y catálogo familiar. Aproximadamente treinta
+por mundo sigue siendo una meta de ampliación gradual, no una función completa.
+El Taller suma siete mecánicas y comparte la narración estática cálida de la Isla.
+Véase ADR0028 y relevo V108 para el alcance, comprobaciones y límites.
+
+Actualizado: 2026-10-10. Entrega confirmada: 2026-10-09 18:00 America/Lima. Personas por asignar.
 Alcance: [contexto maestro](PROJECT_CONTEXT.md). Ejecución: [avance y relevos](IMPLEMENTATION_PROGRESS.md).
 La numeración es nueva y no equivale a las fases históricas de refactorización.
+
+## Estado del nuevo flujo,2026-10-10
+
+## V49 — duración Basic y contrato visible de Zoom / 2026-10-10
+
+La agenda, la reserva y la reunión Zoom comparten duración: 40 minutos en desarrollo/pruebas y
+45 minutos en producción institucional, con configuración explícita y validación de igualdad.
+`CitaSalida.zoom_origen` permite que PADRE, TERAPEUTA y ADMIN distingan enlace automático de
+respaldo manual. Las vistas abren el `zoom_join_url` real; no construyen IDs ni enlaces.
+
+## V47 — cierre P1 e integración Zoom / 2026-10-10
+
+Implementación local preparada sobre `dev`: reglas de contraseña y cambio propio con verificación,
+guardas de reportes/planes, mensajes honestos para funciones simuladas y creación opcional de
+reuniones Zoom en `POST /api/v1/citas`. La migración `backend/scripts/migrations/007_zoom_meetings.sql`
+queda sin ejecutar, con respaldo y verificación indicados para una base aislada. Las credenciales
+Zoom permanecen pendientes y `ZOOM_ENABLED=false` conserva el enlace manual autorizado.
+
+Validación ejecutada: backend `159 passed, 75 skipped`; frontend `281 passed`; typecheck, build,
+compilación Python y knowledge map `check` correctos. No se tocó `.env`, la base compartida ni se
+publicó la rama.
+
+V46 incorpora fuente técnica Avance2 y guía actual para equipo: DOCUMENTACION_MAESTRA_ETAPA_ACTUAL.md
+y GUIA_FLUJO_ESTADO_Y_PENDIENTES.md, con PDF exports. Usuario confirma ahora alta/acceso
+terapeuta y padre, disponibilidad, reserva y enlace Zoom en Render. Pendiente aceptación
+humana del tramo cierre/reporte/plan/continuidad, no alta terapeuta. Documentación sin nueva
+lógica/BD/usuarios; propuestas PIN4/WSP/Zoom/diagnósticos no implementadas. Catálogo actual
+30tablas207columnas41FK, contrato público69operaciones; evidencia por procedencia.
+Índice de avance documental tiene denominadores explícitos; no es porcentaje de certificación.
+REGISTRO_INCONSISTENCIAS_Y_CRITERIOS.md conserva 9 inconsistencias y 3 decisiones abiertas;
+usarlo para estandarizar mensajes, validaciones y contratos antes de futuros cambios.
+
+V45 registra V44Live/1fc19b3 y confirmación humana de creación/ingreso PADRE. Alta TERAPEUTA
+ya existe y su formulario se abrió en Render sin enviar; pendiente verificar alta/activación/
+ingreso, no implementar otra pantalla. Cierre documental, evidencia deploy-v44.
+
+V44 adopta002–006 en BD compartida con respaldo, filas/ACL originales preservadas y runtime
+restringido. V43UI y flujo nuevo ya desplegados; ADMIN login confirmado. Tutor/terapeuta
+requieren sus credenciales vigentes para confirmar ingreso; turnos deben publicarse.
+Las menciones inferiores a migraciones exclusivamente locales son históricas. ADR0018.
+
+V43 completa diseño web de terapeuta, pruebas y revisión acotada: evidencia therapist-v43.
+Siguiente prioridad autorizada: actualizar BD compartida con respaldo y migraciones002–005,
+ACL runtime mínimo y verificación del flujo desplegado. Render V42 conecta a la BD pero
+su esquema antiguo impide el login; no declarar adopción ni despliegue funcional por push.
+
+V40 extiende diseño a login y V41 a administración: UI exclusivamente, evidencia login-v40/admin-v41.
+Acceso DEV solo local; publicación por sección en dev y codex/2do-intento.
+Prioridad actual del usuario: escritorio; responsive diferido para próximos cambios.
+V42 extiende UI web de padre/tutor, responsive diferido. Siguiente: terapeuta UI con commit propio
+y diagnóstico Render/BD tras cambios de esquema. Evidencia family-v42; sin adopción compartida de migraciones.
+
+Autorización posterior: publicar todo V33–V38 en dev, integración fast-forward sin conflictos.
+V39 actualiza continuidad documental; codex/2do-intento se sincroniza con dev.
+Las restricciones de dev citadas en cortes inferiores son históricas. Supabase/hosting no
+cambian; feat/piero-dev permanece V32. Evidencia heredada por corte, sin pruebas nuevas.
+
+V38 rediseña únicamente la landing: glass/luz difuminada, arte CSS y microinteracciones.
+Construcción directa y evidencia landing-v38; siguientes roles por separado, un commit por rol.
+El usuario excluye la regla de anticipación semanal; disponibilidad actual se conserva.
+
+V37 extiende el núcleo con notificaciones profesionales y preferencias persistidas;
+ADR0017/migración005 únicamente local, evidencia notifications-v37. Esta primera mejora
+no declara funcionales los demás campos demostrativos. La anticipación fue excluida después.
+
+V36 paneles/agenda por niño, enlace externo y mundos demo implementados y mostrados
+en navegador local con dos niños y continuidad profesional. Evidencia flow-v36 y ADR0016.
+V33 registro/activación, V34 agenda/introducción y V35 planes/historial implementados
+solo en codex/2do-intento y PostgreSQL local. Profesional define plan desde atención;
+asignación administrativa anterior solo referencia histórica. Núcleo demostrado en
+desktop/móvil, PDF, reingreso y demo completa; nueva contraseña enviada solo por API. No
+integrar dev/feat/piero-dev ni Supabase sin aprobación posterior. Extensiones diferidas
+no se declaran terminadas para cerrar una fase.
+
+## Prioridad vigente después de las auditorías16 y17
+
+**Actualización documental 2026-10-10:** el nuevo [flujo maestro](FLUJO_MAESTRO_ACTUALIZADO.md)
+define alcance posterior a restaurar V26: introducción por niño, disponibilidad, reserva automática,
+elección libre de terapeuta y plan profesional. Prioridad: contratos/recorrido real de tres roles,
+pulido de sus pantallas y juegos mínimos. Códigos de 6 caracteres A/P/T; DNI solo contraseña inicial con cambio
+obligatorio. Secuencia y aceptación en el maestro; fases inferiores conservan contexto histórico.
+No reactivar propuestas V27–V30 ni dar por implementado el nuevo flujo por este corte documental.
+
+La revisión final HTTPS entrega Word separados y PDF, frontend91/100 y backend91/100.
+No declara completas todas las extensiones de las siete fases. Las entradas de abajo
+conservan su fecha histórica; el hosting gratuito ya está operativo en V24.
+Orden validado:entregar auditorías; corregir guardado de reportes existentes y accesibilidad
+(editor/login); verificar; preparar propuesta visual y validarla antes de implementar UX/UI;
+aplicar por módulos y aceptar desktop/móvil. Separar cuatro campos editables de metadatos
+al enviar el reporte; mantener backend estricto. No ampliar pagos, IA, juegos o permisos.
 
 ## Principios de implementación
 
@@ -10,7 +179,8 @@ Conservar React -> HTTP/JSON -> FastAPI -> SQLAlchemy/asyncpg -> PostgreSQL.
 Frontend: vistas/hooks -> services -> api/client.ts. Backend: api/schemas -> services -> models/core.
 Autenticación propia, autorización por recurso y transacciones antes de responder éxito.
 No conectar React a PostgreSQL ni introducir Supabase Auth. La tabla reservas se expone como citas.
-ADMIN asigna tratamiento; familia consulta sus hijos; profesional consulta sus asignados.
+En el flujo vigente, asesor ADMIN registra familias; el profesional publica planes desde
+sus atenciones. Familia consulta sus hijos y profesional consulta el contexto autorizado.
 
 Reutilizar primero los contratos existentes. Para cambiar tablas, acordar contrato y migración
 con backend; no ejecutar DDL al arrancar. Seguir architecture.md y ADR 0002/0003.
@@ -291,3 +461,58 @@ para mañana. Aplicar [DELIVERY_CHECKLIST.md](DELIVERY_CHECKLIST.md).
 
 Esos horarios intermedios son propuesta de organización. IA, WebRTC, voz, correo y otras
 extensiones no exigidas por los criterios recibidos se difieren; registrar límites de entrega.
+
+## Correcciones backend sobre V19 - corte13
+
+B01 TLS, B04 límites locales de login y B05 contratos corregidos; pruebas114backend
+y133HTTP reales (99 núcleo+29 complemento+5 sistema) con nueva cohorteAUDITORIA autorizada;53/55 operaciones positivas. V20/b76a34a publicado en dev y feat/piero-dev; informe13/PDF y evidencia en cierreV21, valoración83/100. B02 requiere aprobación de rol/
+políticas; B03 pendiente de rotación/HTTPS; B06 probado en concurrencia acotada, no carga/
+backup/caída real. Conservar límites de autorización y evidencia por corte. Sin bases
+descartables ni DELETE físico en esta continuación. No ampliar módulos ni pagos.
+
+## Adopción B02 - corte14
+
+B02 aplicado y verificado con autorización expresa: rol exclusivo,22 tablas/58 políticas/
+16 secuencias, sin privilegios de administración ni permisos de identidades anteriores
+alterados. Candidato99 ASGI/SQL real y133HTTP tras adoptar API8000;114 backend sin BD.
+Conservar datos AUDITORIA y documentar fuente/PDF/evidencias del corte. Próxima prioridad:
+hostingHTTPS/proxy/cookies, coordinación de credenciales runtime para clones y respaldo/
+recuperación. No se amplía alcance, no pagos ni DELETE físicos.
+
+
+## Ajuste V56 — alta mediante correo
+
+La petición actual reemplaza el primer login con DNI por enlace de alta para crear contraseña.
+Implementados formulario público, enlace24h de un uso, correoHTML y reenvío a pendientes.
+Verificación local descrita en relevoV56; integraciónSQL omitida sin base aislada configurada.
+Configuración privadaGmail guardada en Render con autorización expresa; recepción pendiente.
+No cambia recuperación de cuentas ya activadas ni amplía newsletter/pagos.
+
+
+## V59 — incidencias y simplificación ADMIN
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . Base498df42/V58,
+codex/2do-intento y origin/dev coincidentes tras fetch. Nueva tabla incidencias con
+formulario compartido PADRE/TERAPEUTA: tipo, título120 y descripción600; UUID estable
+contra duplicados/concurrencia y permisos derivados de sesión. Lista paginada ADMIN
+y estados LEIDA/RESUELTA persistentes. Operación ahora se llama Incidencias, conserva
+URL anterior y elimina sesiones/reportes ficticios. Contenido y ML: Próximamente.
+Configuración informativa: React/TypeScript/Vite/Tailwind/Lucide, FastAPI/SQLAlchemy/
+asyncpg/PostgreSQL, Render/Supabase, permisos, Gmail/Zoom y herramientas; sin2FA.
+Auditoría sigue consultando auditoria_cambios real; aviso amarillo demo eliminado.
+Se alimenta con operaciones ya instrumentadas de cuentas/pacientes, no cada clic.
+
+ADR0023/migración010 adoptada en BD compartida con respaldo180614bytes verificado,
+31tablas previas conservadas, RLS/trespolíticas, grants mínimos runtime y sin acceso
+de identidades públicas. Sin usuarios/incidencias clínicas de prueba compartidos.
+Evidencia saneada docs/evidence/admin-incidents-v59/verification.md y JSON de adopción.
+6pruebasbackend SQL/HTTP aisladas;25rutas/287componentes del árbollocal, tipos,
+check346/máximo500 y build1905correctos; DEP0205heredado. DetectorUI[]. Navegador
+harnesssinbackend:escritorio1280 y formulario390, sin afirmar recorrido productivo.
+Fallos iniciales de conexión/puerto y unpackfixture corregidos y registrados.
+Graphifyrefresh/check al cierre. Cambio funcional, no auditoría/PDF nuevos.
+
+Publicar cierre en dev y codex/2do-intento preservando adjuntos locales previos fuera
+del commit. SHA/push efectivo consultables en Git; aceptación humana siguiente:
+enviar formulario autorizado en Render y comprobar lista/lectura/resolución con ADMIN.
+No ampliar pagos,ML ni gestión de contenido. No nuevas pruebas reales de Gmail/Zoom.

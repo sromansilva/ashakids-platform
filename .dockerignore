@@ -1,0 +1,20 @@
+# Only application sources enter the Docker context; never local credentials/evidence.
+**
+!Dockerfile
+!frontend/
+!frontend/**
+!backend/
+!backend/requirements.txt
+!backend/app/
+!backend/app/**
+**/node_modules
+**/dist
+**/.env
+**/.env.*
+**/*.env
+**/*.local
+**/__pycache__
+**/*.pyc
+**/*.log
+frontend/tests
+frontend/scripts

@@ -2,14 +2,14 @@
 
 export type View =
   | "landing" | "login"
-  | "padre" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes" | "padre/compras"
+  | "padre" | "padre/welcome" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes" | "padre/compras"
   | "padre/hijos" | "padre/progreso" | "padre/reportes" | "padre/config" | "padre/camino" | "padre/ayuda"
   | "padre/incidencias"
   | "terapeuta" | "terapeuta/agenda" | "terapeuta/pacientes" | "terapeuta/mensajes"
   | "terapeuta/reportes" | "terapeuta/analiticas" | "terapeuta/ingresos"
   | "terapeuta/valoraciones" | "terapeuta/config" | "terapeuta/datos-actividad"
   | "terapeuta/incidencias"
-  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/terapeutas" | "admin/operacion" | "admin/pagos"
+  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/operacion" | "admin/pagos"
   | "admin/contenido" | "admin/ml" | "admin/auditoria" | "admin/config"
   | "admin/reportes" | "admin/usuarios" | "admin/pacientes" | "admin/citas" | "admin/sesiones"
   | "admin/analiticas" | "admin/mensajes" | "admin/moderacion" | "admin/solicitudes" | "admin/core"

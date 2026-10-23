@@ -1,0 +1,22 @@
+[
+  {
+    "file": "explore-v103.webp",
+    "bytes": 32446,
+    "sha256": "7ff818e4f8644ca02590e03512e8b2d6371af1bfe6cfea607f56f1ed20669100"
+  },
+  {
+    "file": "identify-v103.webp",
+    "bytes": 41216,
+    "sha256": "17676d3671410a2197f91f8793005efea907862c5072e33d5e7ea1f10b4d13f3"
+  },
+  {
+    "file": "pairs-three-v103.webp",
+    "bytes": 24282,
+    "sha256": "55b42436ec4b080be6196e5bcf8a9430741df0549dd0490d538fe9393cc5e499"
+  },
+  {
+    "file": "pairs-two-v103.webp",
+    "bytes": 26544,
+    "sha256": "c121a146eeee1c17eb09d84f75bb03c1e92c58380721d05d55a67bdd58c3ca23"
+  }
+]

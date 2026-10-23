@@ -1,0 +1,10 @@
+{
+  "auth_method": 10,
+  "password_transmitted": false,
+  "tls_verified": true,
+  "challenge_iterations": 4096,
+  "challenge_salt_length": 16,
+  "stored_iterations": 4096,
+  "salt_matches_catalog": true,
+  "pooler_version": "2.9.10"
+}

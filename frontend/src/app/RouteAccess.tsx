@@ -1,19 +1,21 @@
 import { Navigate, useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { getRequiredRoleForPath } from "@/routes/paths";
+import { getRequiredRoleForPath, loginDestination } from "@/routes/paths";
 import { RouteLoading } from "@/app/RouteLoading";
+import { AccountActivation } from "@/auth/AccountActivation";
 
 export function RouteAccess({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const { role, isAuthenticated, isLoading, sessionError, refreshUser } = useAuth();
+  const { user, role, isAuthenticated, isLoading, sessionError, refreshUser } = useAuth();
   const required = getRequiredRoleForPath(location.pathname, role);
   const home = role === "ADMIN" ? "/admin" : role === "TERAPEUTA" ? "/terapeuta" : "/padre";
-  if (sessionError && required) return <main className="p-8" role="alert"><p>{sessionError}</p><button onClick={() => void refreshUser()}>Reintentar verificación</button></main>;
-  if (isLoading && (required || location.pathname === "/login" || location.pathname === "/mundo-asha")) {
+  if (sessionError && (required || user?.password_change_required)) return <main className="p-8" role="alert"><p>{sessionError}</p><button onClick={() => void refreshUser()}>Reintentar verificación</button></main>;
+  if (isLoading && (required || isAuthenticated || location.pathname === "/login" || location.pathname === "/mundo-asha")) {
     return <RouteLoading label="Verificando sesión segura…" />;
   }
   if (required && !isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
+  if (user?.password_change_required && location.pathname !== "/crear-contrasena") return <AccountActivation />;
   if (required && required !== role) return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <section className="max-w-md rounded-3xl border p-8 text-center bg-white">
@@ -23,6 +25,6 @@ export function RouteAccess({ children }: { children: ReactNode }) {
       </section>
     </main>
   );
-  if (location.pathname === "/login" && isAuthenticated) return <Navigate to={home} replace />;
+  if (location.pathname === "/login" && isAuthenticated) return <Navigate to={loginDestination(role!, location.state?.from)} replace />;
   return <>{children}</>;
 }

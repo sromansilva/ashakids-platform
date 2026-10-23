@@ -1,0 +1,53 @@
+# Arte de la Isla — 2026-10-18
+
+Herramienta: ImageGen integrada, doce llamadas independientes. Transparencia solicitada;
+sin imágenes de referencia, CLI ni APIkey. Originales PNG en source/; exportación RGBA
+WebP para frontend (384px portadas, 288px vocabulario).
+
+## treasure
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A delightful open golden treasure chest with turquoise trim, containing three chunky picture tiles: a red apple, a yellow star and a green leaf. One small purple magnifying glass leaning against the chest. Represents discovering words from picture clues.
+
+## memory
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A small playful arrangement of four rounded toy memory cards: two face-up cards showing identical raised yellow stars, and two lavender face-down cards decorated with a simple turquoise spiral. All four cards clearly separate. Represents finding matching picture pairs.
+
+## sort
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. Exactly three colorful little toy sorting baskets arranged together, lavender, coral and turquoise. One basket holds a toy apple, one holds a yellow star-shaped block and one holds a little toy car. A few thick rims and woven clay details. Represents putting objects in the right group.
+
+## story
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A charming open lavender storybook with exactly three miniature picture panels across its pages: a planted seed, a little turquoise watering can, and a blooming yellow flower. A small coral bookmark ribbon. Clearly a picture-sequence storybook, no written words.
+
+## opposites
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A pair of delightful contrasting toy balls on a small rounded turquoise plinth: one LARGE lavender ball and one SMALL coral ball. A golden sun token and a lavender moon token tucked behind as a small second visual. Visually obvious big and small opposites, simple uncluttered arrangement.
+
+## syllables
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A little lavender word-building toy workbench with three big rounded interlocking sound blocks colored turquoise, coral and golden yellow, each carrying one raised simple sound-wave symbol rather than any writing. A pair of small curved musical notes floating above. Represents hearing syllable pieces and building a word, no letters.
+
+## count
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A cheerful small turquoise picnic basket containing exactly three glossy toy apples, red, coral and golden yellow, with a folded lavender picnic cloth peeking out. Small rounded counting beads on the basket rim. Cozy counting-and-snack play, no digits.
+
+## positions
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A chunky open lavender toy box with a turquoise lid tilted behind. One bright coral ball sits INSIDE the box, one small yellow star block beside the box. Clear spatial relationship inside/outside, simple tactile preschool shapes.
+
+## rhymes
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. Two colorful little toy loudspeakers, one lavender and one turquoise, joined by a curved golden musical ribbon. Above both speakers float two IDENTICAL coral musical notes, suggesting sounds that end alike. Compact balanced sound-matching emblem, no letters.
+
+## sentence
+
+Use case: stylized-concept. Asset type: ONE transparent cutout illustration for a preschool ASHAKids educational game menu, ages 4 and up. Charming premium 3D clay toy render matching an existing colorful word-learning island: rounded chunky smooth shapes, tactile plastic/clay, tiny crafted details, rich lavender purple, turquoise teal, warm yellow and coral accents, gentle studio lighting upper left, soft contact shading, clear silhouette. Centered compact square composition, 12% transparent padding. Large readable forms at 180px. No background, no white rectangle, no text, no letters, no digits, no logos, no people, no faces. A charming toy sentence train: a lavender locomotive pulling exactly three chunky little wagons, turquoise, yellow and coral. Each wagon carries a large rounded picture tile, showing a sun, a flower and a small house respectively. Clear three-car composition, playful rounded wheels. No writing.
+
+## snail
+
+Use case: stylized-concept. ONE transparent preschool vocabulary illustration for ASHAKids. Premium charming rounded 3D clay toy, tactile smooth plastic, soft studio lighting, gentle highlights and contact shading, centered single isolated object with transparent margin, no background or rectangle, no letters/digits/logos, matches warm colorful children's game assets. A friendly little garden snail with a bright golden spiral shell, turquoise body, two short soft antennae and small kind eyes. A single complete cute snail, three-quarter view.
+
+## drum
+
+Use case: stylized-concept. ONE transparent preschool vocabulary illustration for ASHAKids. Premium charming rounded 3D clay toy, tactile smooth plastic, soft studio lighting, gentle highlights and contact shading, centered single isolated object with transparent margin, no background or rectangle, no letters/digits/logos, matches warm colorful children's game assets. A cheerful small toy drum with coral body, turquoise bands and lavender drumsticks resting across its top, round soft edges and tiny golden accents. Compact balanced three-quarter view, no person.

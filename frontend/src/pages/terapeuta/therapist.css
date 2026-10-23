@@ -1,0 +1,63 @@
+.professional-toolbar { display: none; }
+@media (min-width: 768px) {
+  .asha-professional { color: #1c1135; background: radial-gradient(ellipse at 80% 0%,#ede9fe,transparent 58%),radial-gradient(ellipse at 70% 85%,#ccfbf140,transparent 60%),#fafaf9 !important; }
+  .asha-professional ::selection { background: #ddd6fe; color: #2d1b69; }
+  .asha-professional :is(input,textarea) { caret-color: #6d28d9; }
+  .asha-professional :is(button,a,input,textarea,select):focus-visible { outline: 3px solid #5b21b6; outline-offset: 3px; }
+  .asha-professional button { transition: color .18s,background-color .18s,box-shadow .18s; }
+  .asha-professional button:disabled { cursor: not-allowed; }
+  .asha-professional :is(h1,h2) { letter-spacing: -.025em; text-wrap: balance; }
+  .asha-professional > aside { background: #ffffffb3 !important; backdrop-filter: blur(18px); border-right: 1px solid #e8e1f0; }
+  .asha-professional > aside > div:first-child { padding: 30px 24px; }
+  .asha-professional > aside nav { padding: 0 16px; gap: 4px; }
+  .asha-professional > aside nav button { min-height: 46px; border-radius: 12px; color: #615274; }
+  .asha-professional > aside nav button[aria-current=page] { color: #fff; background: #6d28d9; box-shadow: 0 5px 14px #6d28d91a; }
+  .asha-professional > aside nav button[aria-current=page] svg { color: #fff; }
+  .asha-professional > aside nav button:not([aria-current]):hover { color: #5b21b6; background: #ede9fe80; }
+  .asha-professional > aside > div:last-child { padding: 20px; border-top: 1px solid #e8e1f0; }
+  .professional-toolbar { display: flex; align-items: center; justify-content: space-between; min-height: 74px; padding: 16px 36px; background: #ffffff80; backdrop-filter: blur(18px); border-bottom: 1px solid #e8e1f0; font-size: .87rem; font-weight: 800; }
+  .professional-toolbar > p { color: #615274; }
+  .professional-toolbar > span { text-align: right; }
+  .professional-toolbar > span > span { display: block; font-size: .72rem; color: #615274; margin-top: 3px; }
+  .professional-content { padding: 0 88px 36px 12px; }
+  .professional-content > :is(div,section):not(.professional-notifications) { max-width: 1220px; padding: 24px; margin: 0 auto; }
+  .professional-content :is(.text-\[\#7C6F9A\],.text-\[\#9E95B7\]) { color: #615274; }
+  .professional-content :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { min-height: 44px; border-radius: 10px; background-color: #fff; border-color: #c8c2dc; }
+  .professional-content ::placeholder { color: #756585; opacity: 1; }
+  .professional-content button:not([role=switch]):not(.calendar-slot) { min-height: 44px; }
+  .professional-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #fff; border-radius: 16px; border-color: #e8e1f0; box-shadow: 0 5px 20px #45247806; }
+  .professional-content .fixed .bg-white { background: #fff; border-radius: 20px; box-shadow: 0 22px 70px #1c113526; }
+  .asha-professional:has([role=dialog]) > :is(a,button),.asha-professional:has([role=dialog]) > div.fixed { visibility: hidden; }
+  .professional-notifications { padding: 14px 24px 0; }
+  .professional-notifications > div:first-child > button { background: #ffffffb3; color: #5b21b6; border: 1px solid #e8e1f0; padding: 0 16px; }
+  .professional-notifications > div:first-child > button:hover { background: #ede9fe; }
+  .professional-notifications > div[id] { background: #fff; max-width: none; box-shadow: 0 8px 28px #4524780a; }
+  .asha-professional .operational-heading h1 { font-size: 1.9rem; line-height: 1.25; }
+  .asha-professional .operational-actions { gap: 10px; }
+  .asha-professional .operational-actions button { border-radius: 12px !important; background: #ffffffcc !important; color: #5b21b6 !important; border: 1px solid #e8e1f0; }
+  .asha-professional .operational-actions button:hover { background: #ede9fe !important; }
+  .asha-professional .operational-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; background: #ffffffb3; border-radius: 16px; box-shadow: 0 8px 24px #45247808; }
+  .asha-professional .professional-content .operational-stats > div { background: transparent; box-shadow: none; border: none; border-radius: 0; padding: 24px; }
+  .asha-professional .operational-stats > div + div { border-left: 1px solid #e8e1f0; }
+  .asha-professional .operational-stats dd { font-size: 2rem; }
+  .asha-professional .operational-workspace { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1.2fr); gap: 24px; }
+  .asha-professional .operational-workspace > section { min-width: 0; padding: 24px; background: #ffffffb3; border-radius: 16px; box-shadow: 0 8px 24px #45247808; }
+  .asha-professional .operational-workspace ul > li { border: none; background: transparent; border-bottom: 1px solid #e8e1f0; border-radius: 0; box-shadow: none; padding: 16px 0; }
+  .asha-professional .operational-note { max-width: 75ch; line-height: 1.7; }
+  .professional-config-layout { grid-template-columns: 190px minmax(0,1fr); }
+  .professional-config-nav { flex-direction: column; flex-wrap: nowrap; gap: 8px; }
+  .professional-config-nav button { border-radius: 12px; }
+  .professional-config-content { grid-column: auto; min-width: 0; }
+  .professional-patient-summary { background: radial-gradient(ellipse at right top,#ccfbf180,transparent 70%),#ffffffcc !important; border-color: transparent !important; border-radius: 16px; box-shadow: 0 8px 24px #45247808; }
+  .professional-report-layout { grid-template-columns: minmax(200px,.7fr) minmax(0,1.3fr); }
+  .professional-report-editor { grid-column: auto; min-width: 0; }
+  .professional-report-meta { grid-template-columns: repeat(auto-fit,minmax(min(100%,150px),1fr)); }
+  .professional-report-meta > div { min-width: 0; overflow-wrap: anywhere; }
+  .professional-content table { font-variant-numeric: tabular-nums; }
+  .professional-content table thead { background: #f5f3ff; }
+  .professional-content table td { vertical-align: middle; }
+  .professional-content table tbody tr:hover { background: #faf8ff; }
+  .professional-content .overflow-y-auto { scrollbar-width: thin; scrollbar-color: #c4b5d5 transparent; }
+}
+@supports not (backdrop-filter: blur(1px)) { @media(min-width:768px) { .asha-professional > aside,.professional-toolbar { background: #fafaf9 !important; } } }
+@media (prefers-reduced-motion: reduce) { .asha-professional * { transition: none !important; animation: none !important; scroll-behavior: auto !important; } }

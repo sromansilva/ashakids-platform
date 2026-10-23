@@ -1,0 +1,75 @@
+{
+  "hash_basis": "raw bytes; text UTF-8/LF",
+  "files": [
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/backend-tests.txt",
+      "bytes": 994,
+      "sha256": "7b91e75d129e8feea6f8f539e1f20f188ad143ab8eab8d2e6a5dcb02c6b2b7b0"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/commands.md",
+      "bytes": 3047,
+      "sha256": "d1d5f6f3e15434c545f92c88ecc85ed566be20f880773ed16a4294183c1c3abe"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/extra.json",
+      "bytes": 101586,
+      "sha256": "ac617f83d3b05b2747ba8967be2378611986e751c2da3f3ae598db9465ee09a2"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/followup.json",
+      "bytes": 5730,
+      "sha256": "2daa81983199ab1d2b20d3110d027ee163704a82f07009a401a0d74c46206514"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/harness/extra.py",
+      "bytes": 4102,
+      "sha256": "4bb0cf79f5aebe7a2b1abf1752192337fc4ecba0aea66631ef6128573b96f30d"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/harness/followup.py",
+      "bytes": 4449,
+      "sha256": "969661eaad4dca4298890f16f74f8091d4d3abb99df1e95be745e7134e488805"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/harness/persistence.py",
+      "bytes": 2600,
+      "sha256": "d4d2f007427fe2fa93fc0bd226ad861e90b198e136e827450366c12b41d00c80"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/harness/run_hosted_journey.py",
+      "bytes": 4071,
+      "sha256": "72c51874988b01c3c8c04ba44687e5b4a9c4c1eca73cfebd968b1eaa66538850"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/harness/runtime_readonly.py",
+      "bytes": 7481,
+      "sha256": "151a8f139e7ac2bc86d59a83cd693c1c6bd6aade4c6d934e81258ee028591f8c"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/journey.json",
+      "bytes": 25589,
+      "sha256": "ebaa6da9ab71cc598c599b2a478399050ddcabf6d7124ab2bc84fdaf510d7133"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/operation-matrix.json",
+      "bytes": 6392,
+      "sha256": "adf76f16b814bd7d187f30a3794d6ca04b25e1ee0f9c83bf859b078bfc20c96e"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/persistence.json",
+      "bytes": 424,
+      "sha256": "1d63f375aeee983eb82a0f1a9390171da04bbd1784085426b06a6d777fcb2d95"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/runtime-readonly.json",
+      "bytes": 29086,
+      "sha256": "e2a4f13b662258555cb76a9c5f8889d8c7f8b2fe3eca6ac0060fe7a63d8041c2"
+    },
+    {
+      "path": "docs/evidence/audit-2026-10-09-17/synthetic-report.pdf",
+      "bytes": 42536,
+      "sha256": "63d641f1648d337ee69eeff0bb05c714515a263c8e44fc643cb171f48eca3ac4"
+    }
+  ]
+}

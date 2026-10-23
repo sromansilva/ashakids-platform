@@ -1,0 +1,3 @@
+# El despliegue de dev no debe indexarse en buscadores.
+User-agent: *
+Disallow: /

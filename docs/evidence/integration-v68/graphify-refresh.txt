@@ -1,0 +1,18 @@
+[graphify extract] --force --code-only: full AST re-scan, existing semantic layer preserved (no semantic pass this run)
+[graphify extract] --force: full re-scan, semantic cache reads skipped
+[graphify extract] scanning C:\Users\HP\ashakids-platform
+[graphify extract] --code-only: skipping 76 non-code file(s) (20 docs, 0 papers, 56 images) — no LLM extraction
+[graphify extract] found 466 code, 0 docs, 0 papers, 0 images
+[graphify extract] 22 file(s) not classified (no supported extension or shebang), skipped: .dockerignore, .gitattributes, .gitignore, .graphifyignore, Dockerfile, Index.css (+16 more)
+[graphify extract] AST extraction on 466 code files...
+  AST extraction: 100/348 uncached files (28%) [20 workers]
+  AST extraction: 200/348 uncached files (57%) [20 workers]
+  AST extraction: 300/348 uncached files (86%) [20 workers]
+  AST extraction: 348/348 uncached files (100%) [20 workers]
+  warning: 14 code file(s) yielded no symbols (0.01 MB) — a data file, or source this extractor models no symbols for: backend/app/models/__init__.py, backend/app/schemas/__init__.py, backend/app/services/__init__.py, backend/tests/__init__.py, frontend/postcss.config.mjs (+9 more)
+[graphify extract] wrote C:\Users\HP\ashakids-platform\graphify-out\graph.json — 2468 nodes, 8576 edges (no clustering)
+Loading existing graph...
+Graph: 2469 nodes, 8278 edges
+Re-clustering...
+Done - 123 communities. GRAPH_REPORT.md, graph.json and graph.html updated.
+Knowledge map ready: 2469 nodes. Local code-only extraction.

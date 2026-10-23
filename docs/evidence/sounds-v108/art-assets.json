@@ -1,0 +1,86 @@
+[
+  {
+    "id": "sound-same",
+    "source": "docs/evidence/sounds-v108/art-source/sound-same.png",
+    "sourceSha256": "af93126a82804cd78160cb572685b8335e1887731459113da073aceeec861f46",
+    "output": "frontend/public/sounds/games/sound-same-v108.webp",
+    "outputSha256": "a9b5661cfdd3aab0dbe991dbb7fce792f8a839ae981c4bd58f252b89816736f6",
+    "bytes": 35118,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Tres bocinas de juguete con una vaca, un gato y un pollito; lupa para comparar sus sonidos.",
+    "alt": "Bocinas de juguete con una vaca, un gato y un pollito para comparar sonidos",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "sound-sequence",
+    "source": "docs/evidence/sounds-v108/art-source/sound-sequence.png",
+    "sourceSha256": "995c6cc6004edd310647fa788e3a15b92f26c0327499943df45053913a84771e",
+    "output": "frontend/public/sounds/games/sound-sequence-v108.webp",
+    "outputSha256": "cb8f1d15d55728350c388192fa1a6448e67eac71c3d9c9f3dd95fa4c7421e109",
+    "bytes": 29182,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Tren de juguete pastel con una vaca, un gato y un pollito en sus vagones.",
+    "alt": "Tren de juguete con una vaca, un gato y un pollito",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "sound-count",
+    "source": "docs/evidence/sounds-v108/art-source/sound-count.png",
+    "sourceSha256": "a46722db13add23ca303006632494c202ef83c6dc694acc51fe948a8b6df6537",
+    "output": "frontend/public/sounds/games/sound-count-v108.webp",
+    "outputSha256": "9b838989cfed03e3f206ed8fc6e9ba421ce290b214ff583a6d8980d8337b7238",
+    "bytes": 28954,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Gato naranja junto a una radio infantil y tres cuentas musicales de colores.",
+    "alt": "Gato de juguete junto a una radio y tres cuentas de colores para contar sonidos",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "sound-memory",
+    "source": "docs/evidence/sounds-v108/art-source/sound-memory.png",
+    "sourceSha256": "59856c618db4e4a8009b19858e18c9226f068a1fac4692804f0a6d9d34442ec2",
+    "output": "frontend/public/sounds/games/sound-memory-v108.webp",
+    "outputSha256": "637b47f0337026b0322183c155328807837c3b1fae8b742706c3af80d26f382f",
+    "bytes": 33346,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Cuatro tarjetas acolchadas: dos pollitos y dos notas musicales para parejas de memoria.",
+    "alt": "Tarjetas suaves con pollitos y notas musicales para encontrar parejas",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "sound-missing",
+    "source": "docs/evidence/sounds-v108/art-source/sound-missing.png",
+    "sourceSha256": "261cc6676159f0d654cfaa5fcd0def13c26ff064f71c5f7d4c241122c1df21f5",
+    "output": "frontend/public/sounds/games/sound-missing-v108.webp",
+    "outputSha256": "395c94108b19b47a506ee7141b12d2d208984807941d2cc258a84f439c4fac90",
+    "bytes": 24764,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Vaca y gato de juguete junto a un hueco con forma de pollito y la pieza del pollito.",
+    "alt": "Rompecabezas de sonidos con una vaca, un gato y la pieza del pollito que falta",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "sound-order",
+    "source": "docs/evidence/sounds-v108/art-source/sound-order.png",
+    "sourceSha256": "1461f117f933654d5e85a802e3980aa37a170b6d3ada913d45eaedb2492f993e",
+    "output": "frontend/public/sounds/games/sound-order-v108.webp",
+    "outputSha256": "32ba38ae7167e5cab3f2c7c16da6f5c773142c001ba8408764a09b113954ae42",
+    "bytes": 32952,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Camino de piedras de colores con un gato, un perro, un pollito y una bandera de meta.",
+    "alt": "Camino de colores para ordenar los sonidos de un gato, un perro y un pollito",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "sound-odd",
+    "source": "docs/evidence/sounds-v108/art-source/sound-odd.png",
+    "sourceSha256": "824d2a61b3c3533dfc3ffc818c339efaf905bf7146c0fb55420540da0970b6d0",
+    "output": "frontend/public/sounds/games/sound-odd-v108.webp",
+    "outputSha256": "7a007de8dfaf05688604c5218d35223c7201da3bc4feb4eb0f4c81f8e1caeda3",
+    "bytes": 33112,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Gato amigable y bocina redonda con tres perforaciones musicales de colores.",
+    "alt": "Gato naranja junto a una bocina musical de juguete para descubrir el sonido diferente",
+    "generation": "Generated illustration for ASHAKids Sound Workshop, 2026-10-19."
+  }
+]

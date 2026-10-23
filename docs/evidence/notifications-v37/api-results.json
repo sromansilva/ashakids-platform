@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-10",
+  "environment": "QA sint\u00e9tica local, API8002/PG6544",
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/citas",
+      "status": 201,
+      "reservation_id": 5,
+      "trigger": "Reserva real por HTTP sint\u00e9tico"
+    },
+    {
+      "method": "GET",
+      "path": "/notificaciones",
+      "status": 200,
+      "total": 2,
+      "sin_leer": 2,
+      "types": [
+        "NUEVA_CITA",
+        "RECORDATORIO"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/notificaciones/preferencias",
+      "status": 200,
+      "nueva_cita": false,
+      "origin": "Guardada desde UI y recargada"
+    },
+    {
+      "method": "POST",
+      "path": "/citas",
+      "status": 201,
+      "reservation_id": 6,
+      "notice_suppressed": true,
+      "total_before": 2,
+      "total_after": 2
+    },
+    {
+      "method": "GET",
+      "path": "/notificaciones",
+      "status": 200,
+      "read_state_persisted": true,
+      "sin_leer": 1
+    }
+  ]
+}

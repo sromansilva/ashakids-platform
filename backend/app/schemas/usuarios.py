@@ -1,8 +1,7 @@
-from typing import Annotated, Literal
-from pydantic import EmailStr, Field, StringConstraints, model_validator
+from typing import Literal
+from pydantic import EmailStr, Field, model_validator
 from app.schemas.clinica import Entrada, Salida
-
-Password = Annotated[str, StringConstraints(strip_whitespace=False, min_length=12, max_length=128)]
+from app.schemas.reglas import Password
 
 
 class UsuarioCrear(Entrada):
@@ -10,7 +9,7 @@ class UsuarioCrear(Entrada):
     apellidos: str = Field(min_length=1, max_length=80)
     email: EmailStr = Field(max_length=150)
     codigo_usuario: str = Field(pattern=r"^[a-zA-Z0-9]{6}$")
-    password: Password
+    password: Password | None = None
     rol: Literal["PADRE", "TERAPEUTA", "ADMIN"]
 
 
@@ -20,6 +19,7 @@ class UsuarioEditar(Entrada):
     email: EmailStr | None = Field(default=None, max_length=150)
     activo: bool | None = None
     password: Password | None = None
+    current_password: str | None = Field(default=None, min_length=1, max_length=128)
 
     @model_validator(mode="after")
     def sin_nulos(self):
@@ -38,3 +38,4 @@ class UsuarioSalida(Salida):
     roles: list[str]
     id_tutor: int | None = None
     id_terapeuta: int | None = None
+    correo_bienvenida: str | None = None

@@ -1,0 +1,46 @@
+[
+  {
+    "id": "cow",
+    "source": "docs/evidence/sounds-v112/art-source/cow.png",
+    "sourceSha256": "0147a2f52717f6018ff4421e17579ccb99fed59d9b5884d1eccda1e3505f8ebf",
+    "output": "frontend/public/sounds/animals/cow-v112.webp",
+    "outputSha256": "521d46a879667a1d6dd744a95ef71b46fea90646fbc47d6eb860806f5aba4a39",
+    "bytes": 25718,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Vaca de juguete blanca con manchas, hocico rosado y campanita dorada.",
+    "generation": "Generated character illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "cat",
+    "source": "docs/evidence/sounds-v112/art-source/cat.png",
+    "sourceSha256": "b736f5018bd37923a46e5764d7aacd602b6a30d834cb5c261f6927ca336e8100",
+    "output": "frontend/public/sounds/animals/cat-v112.webp",
+    "outputSha256": "d94c3d9feb63850b0dfb16765719f17ffb1f6f7949c3b4eab4c8e380f9d5c7e1",
+    "bytes": 26306,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Gato naranja de juguete con rayas suaves y cola curva.",
+    "generation": "Generated character illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "dog",
+    "source": "docs/evidence/sounds-v112/art-source/dog.png",
+    "sourceSha256": "bf1743d2bd573c8761d998d6e8e9fbbe102cb09be2d2a7d7e109d3619a465e6c",
+    "output": "frontend/public/sounds/animals/dog-v112.webp",
+    "outputSha256": "bccb498db74f824fcf1cc395df3beff454d749a9373f293dbd3aca03d66fa892",
+    "bytes": 25644,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Perro crema de juguete con orejas caídas, mancha caramelo y lengua sonriente.",
+    "generation": "Generated character illustration for ASHAKids Sound Workshop, 2026-10-19."
+  },
+  {
+    "id": "chick",
+    "source": "docs/evidence/sounds-v112/art-source/chick.png",
+    "sourceSha256": "65ec6df30efa3bde824f411a4ddcdb6fc109f6bdf4a4632574d2bf564c3337e5",
+    "output": "frontend/public/sounds/animals/chick-v112.webp",
+    "outputSha256": "bbaa4399fe8486acde9586209abb4f1646664e14b0904c75cc63cb8165d9a467",
+    "bytes": 22378,
+    "dimensions": "384x384 RGBA WebP",
+    "description": "Pollito amarillo de juguete con pico y patas naranjas.",
+    "generation": "Generated character illustration for ASHAKids Sound Workshop, 2026-10-19."
+  }
+]

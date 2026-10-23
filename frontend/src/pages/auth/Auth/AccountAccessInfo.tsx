@@ -18,13 +18,13 @@ export function AccountAccessInfo({ go, mode = "registration", audience }: {
     <p className="text-base text-[#4B4264] leading-relaxed mb-5">{recovery
       ? "La recuperación por correo todavía no está disponible. Contacta a la administración del proyecto para recuperar el acceso."
       : mode === "verification"
-        ? "ASHAKids todavía no envía enlaces de verificación. No hay un correo de activación pendiente desde esta pantalla."
+        ? "Revisa tu correo y pulsa Crear mi contraseña. El enlace vence en 24 horas. Si no llegó, solicita otro enlace en la página de creación de contraseña."
         : `Las cuentas${audience ? ` de ${audience}` : " de familias y terapeutas"} se crean desde administración. El registro público todavía no está disponible.`}</p>
     <div className="rounded-2xl bg-violet-50 p-5 mb-6 text-base leading-relaxed">
       <h2 className="font-extrabold mb-2">Cómo continuar</h2>
       <ol className="list-decimal pl-5 space-y-2">
         <li>Contacta al integrante responsable de administrar las cuentas.</li>
-        <li>{recovery ? "Solicita el restablecimiento por el canal acordado con el equipo." : "Solicita una cuenta con el rol correspondiente y recibe tu código de usuario."}</li>
+        <li>{recovery ? "Solicita el restablecimiento por el canal acordado con el equipo." : "Solicita una cuenta, recibe tu código de usuario y crea tu contraseña desde el botón enviado al correo."}</li>
         <li>Inicia sesión con tu código y contraseña.</li>
       </ol>
     </div>

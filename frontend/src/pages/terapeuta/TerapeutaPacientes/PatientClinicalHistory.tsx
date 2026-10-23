@@ -11,7 +11,7 @@ import { B } from '@/theme/brand/B';
 export function PatientClinicalHistory({ patientId, reportsOnly = false }: { patientId: number; reportsOnly?: boolean }) {
   const [expanded, setExpanded] = useState<number | null>(null);
   const query = useRemote(['patient-clinical-history', patientId], signal =>
-    readAllPages(offset => sessionsService.list({ id_paciente: patientId, limit: 100, offset }, signal), signal));
+    readAllPages(offset => sessionsService.list({ paciente: patientId, contexto: true, limit: 100, offset }, signal), signal));
   const rows = query.error ? [] : (query.data ?? []).filter(s => !reportsOnly || s.reporte_disponible);
   return <div className="flex flex-col gap-3">
     <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />

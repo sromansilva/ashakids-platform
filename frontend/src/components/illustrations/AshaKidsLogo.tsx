@@ -1,4 +1,4 @@
-import ashaKidsLogo from "@/assets/ashakids-logo-final-transparent-1.png";
+import ashaKidsLogo from "@/assets/ashakids-logo-96.png";
 import { LogoVariant } from "@/theme/brand/logo";
 import { LOGO_PX } from "@/theme/brand/logo";
 import { LOGO_TEXT } from "@/theme/brand/logo";

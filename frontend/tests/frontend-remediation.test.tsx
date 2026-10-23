@@ -84,7 +84,14 @@ describe('Reportes profesionales persistentes, sin rediseño', () => {
     finish(response(report)); await screen.findByText('Reporte guardado en el servidor.');
   });
   it('muestra desconexión y reintento sin recurrir a mocks', async () => {
-    mockApi(); vi.mocked(fetch).mockRejectedValueOnce(new TypeError('Failed to fetch'));
+    mockApi(); const originalRead = vi.mocked(fetch).getMockImplementation()!;
+    let failed = false;
+    vi.mocked(fetch).mockImplementation((input, init) => {
+      if (!failed && new URL(String(input)).pathname.endsWith('/sesiones')) {
+        failed = true; return Promise.reject(new TypeError('Failed to fetch'));
+      }
+      return originalRead(input, init);
+    });
     renderRoute('/terapeuta/reportes', 'TERAPEUTA');
     expect(await screen.findByRole('alert')).toHaveTextContent('No hay conexión');
     fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }));
@@ -124,24 +131,25 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
     expect(screen.queryByText('42 ms')).not.toBeInTheDocument();
     expect(calls.mock.calls.some(([url]) => String(url).includes('/sesiones'))).toBe(true);
   });
-  it('los accesos clínicos administrativos son alcanzables desde Operación', async () => {
-    mockApi(); renderRoute('/admin/operacion', 'ADMIN');
-    fireEvent.click(await screen.findByRole('button', { name: 'Sesiones y reportes' }));
-    expect(await screen.findByRole('heading', { name: 'Sesiones · ASHA Session' })).toBeInTheDocument();
+  it('Incidencias sustituye Operación y excluye las sesiones simuladas', async () => {
+    mockApi(path => path === '/admin/incidencias' ? response({ items: [], total: 0 }) : undefined);
+    renderRoute('/admin/operacion', 'ADMIN');
+    expect(await screen.findByText('No hay incidencias en esta página')).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Sesiones y reportes' })).not.toBeInTheDocument();
   });
   it('un terapeuta sin asignaciones no recibe pacientes demostrativos', async () => {
     mockApi(); renderRoute('/terapeuta/pacientes', 'TERAPEUTA');
-    expect(await screen.findByText(/Sin pacientes asignados/)).toBeInTheDocument();
+    expect(await screen.findByText(/Sin pacientes autorizados/)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Abrir expediente' })).not.toBeInTheDocument();
   });
   it('el expediente consulta sesiones por el identificador real, nunca por el índice', async () => {
     const calls = mockApi(path => path === '/pacientes' ? response([{ id_paciente: 12, nombres_paciente: 'AUDITORIA', apellidos_paciente: 'Paciente', fecha_nacimiento: '2020-01-01', activo: true }]) : undefined);
     renderRoute('/terapeuta/pacientes', 'TERAPEUTA');
     fireEvent.click(await screen.findByRole('button', { name: 'Abrir expediente' }));
-    expect(screen.getByRole('note')).toHaveTextContent('Prototipo ilustrativo');
+    expect(screen.getByText(/Consulta el reporte y el plan de cada atención/)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /^Sesiones$/ }));
     expect(await screen.findByRole('button', { name: /Sesión #9/ })).toBeInTheDocument();
-    expect(calls.mock.calls.some(([url]) => String(url).includes('id_paciente=12'))).toBe(true);
+    expect(calls.mock.calls.some(([url]) => String(url).includes('paciente=12') && String(url).includes('contexto=true'))).toBe(true);
     expect(screen.queryByText('28 Jul 2026')).not.toBeInTheDocument();
   });
   it.each([['M', 'Masculino'], ['F', 'Femenino'], ['OTRO', 'Otro'], ['Otro', 'Otro'], ['Masculino', 'Masculino'], ['Femenino', 'Femenino'], ['desconocido', ''], ['', '']])('normaliza %s sin asignar un sexo distinto', (input, expected) => expect(normalizePatientSex(input)).toBe(expected));
@@ -173,7 +181,8 @@ describe('Coherencia de identidad, permisos y vocabulario', () => {
   });
   it('cuentas reales no reciben el aviso genérico y configuración distingue sus límites', () => {
     expect(capabilityNotice('/admin/cuentas')).toBeNull();
-    expect(capabilityNotice('/terapeuta/config')).toContain('Identidad y perfil');
+    expect(capabilityNotice('/terapeuta/config')).toContain('La disponibilidad se guarda al publicar');
+    expect(capabilityNotice('/terapeuta/config')).toContain('preferencias de notificaciones');
     expect(capabilityNotice('/mundo-asha/juegos')).toContain('prototipos');
   });
 });

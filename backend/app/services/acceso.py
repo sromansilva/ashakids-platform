@@ -1,9 +1,9 @@
 """Autorización por recurso: el rol por sí solo no habilita datos de otra familia."""
 from fastapi import HTTPException
-from sqlalchemy import false, or_, select
+from sqlalchemy import false, or_, select, and_, func
 
 from app.models.auth import Usuario
-from app.models.clinica import Expediente, Tratamiento
+from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion
 from app.models.perfiles import Paciente, Terapeuta, Tutor
 
 
@@ -20,7 +20,7 @@ async def obtener(db, model, key, *, lock=False):
     pk = model.__mapper__.primary_key[0]
     stmt = select(model).where(pk == key)
     if lock:
-        stmt = stmt.with_for_update()
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         raise HTTPException(404, "Recurso no encontrado.")
@@ -37,15 +37,22 @@ def pacientes_visibles(identity):
         clauses.append(Paciente.id_tutor.in_(select(Tutor.id_tutor).where(Tutor.id_usuario == user.id_usuario)))
     if "TERAPEUTA" in roles:
         assigned = (select(Expediente.id_paciente).join(Tratamiento)
-                    .join(Terapeuta).where(Terapeuta.id_usuario == user.id_usuario))
+                    .join(Terapeuta).where(Terapeuta.id_usuario == user.id_usuario,
+                                           Tratamiento.id_sesion_origen.is_(None)))
         clauses.append(Paciente.id_paciente.in_(assigned))
+        linked = (select(Reserva.id_paciente).join(Terapeuta).outerjoin(Sesion).where(
+            Terapeuta.id_usuario == user.id_usuario, or_(
+                and_(Reserva.estado_reserva == "CONFIRMADA", Reserva.fecha_hora_fin >= func.now()),
+                Sesion.estado_sesion == "EN_CURSO",
+                and_(Sesion.estado_sesion == "FINALIZADA", Sesion.asistencia == "ASISTIO"))))
+        clauses.append(Paciente.id_paciente.in_(linked))
     return select(Paciente).where(or_(*clauses) if clauses else false())
 
 
 async def paciente_visible(db, identity, key, *, lock=False):
     stmt = pacientes_visibles(identity).where(Paciente.id_paciente == key)
     if lock:
-        stmt = stmt.with_for_update()
+        stmt = stmt.with_for_update().execution_options(populate_existing=True)
     row = await db.scalar(stmt)
     if row is None:
         # No revelar si existe un paciente ajeno.

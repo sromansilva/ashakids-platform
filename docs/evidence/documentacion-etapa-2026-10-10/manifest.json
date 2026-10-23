@@ -1,0 +1,25 @@
+{
+  "base_sha": "62048038b70d2411234fb681284e327cf142d1b7",
+  "captured_utc": "2026-10-10T19:18:50.187517+00:00",
+  "source_pdf_name": "AVANCE DEL PROYECTO FINAL 2.pdf",
+  "source_pdf_sha256": "d6a263dea282438ac4e1eede9a7e5afdba082e8b40536b855e3dfbc0e7310235",
+  "source_pdf_pages": 5,
+  "tables": 30,
+  "columns": 207,
+  "pg_constraints": 113,
+  "foreign_keys": 41,
+  "indexes": 87,
+  "rls_policies": 70,
+  "orm_tables": 23,
+  "openapi_version": "3.1.0",
+  "api_version": "0.1.0",
+  "api_operations": 69,
+  "public_read_http": {
+    "/openapi.json": 200,
+    "/health": 200,
+    "/health/ready": 200
+  },
+  "functional_test_execution": "none in this documentation cut",
+  "real_application_records_read": "none",
+  "database_writes": "none"
+}

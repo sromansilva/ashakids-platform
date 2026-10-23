@@ -1,0 +1,466 @@
+{
+  "captured_utc": "2026-10-09T22:24:00.139119+00:00",
+  "role": "ashakids_runtime",
+  "scope": "New role/explicit grants/role-only RLS; no clinical DML or old role changes",
+  "success": true,
+  "tables": {
+    "usuarios": "SELECT INSERT UPDATE DELETE",
+    "usuario_roles": "SELECT INSERT DELETE",
+    "administradores": "SELECT INSERT DELETE",
+    "tutores": "SELECT INSERT UPDATE DELETE",
+    "terapeutas": "SELECT INSERT UPDATE DELETE",
+    "roles": "SELECT",
+    "sesiones_autenticacion": "SELECT INSERT UPDATE DELETE",
+    "pacientes": "SELECT INSERT UPDATE DELETE",
+    "perfiles": "SELECT INSERT UPDATE DELETE",
+    "expedientes": "SELECT INSERT UPDATE",
+    "tratamientos": "SELECT INSERT UPDATE",
+    "reservas": "SELECT INSERT UPDATE",
+    "sesiones": "SELECT INSERT UPDATE",
+    "reportes_sesion": "SELECT INSERT UPDATE",
+    "conversaciones": "SELECT INSERT UPDATE",
+    "mensajes": "SELECT INSERT",
+    "auditoria_cambios": "SELECT INSERT",
+    "logros": "SELECT",
+    "perfil_logros": "SELECT",
+    "actividades": "SELECT",
+    "resultados_nivel": "SELECT",
+    "evaluaciones_ia": "SELECT"
+  },
+  "policies": [
+    {
+      "table": "usuarios",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_usuarios_select"
+    },
+    {
+      "table": "usuarios",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_usuarios_insert"
+    },
+    {
+      "table": "usuarios",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_usuarios_update"
+    },
+    {
+      "table": "usuarios",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_usuarios_delete"
+    },
+    {
+      "table": "usuario_roles",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_usuario_roles_select"
+    },
+    {
+      "table": "usuario_roles",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_usuario_roles_insert"
+    },
+    {
+      "table": "usuario_roles",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_usuario_roles_delete"
+    },
+    {
+      "table": "administradores",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_administradores_select"
+    },
+    {
+      "table": "administradores",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_administradores_insert"
+    },
+    {
+      "table": "administradores",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_administradores_delete"
+    },
+    {
+      "table": "tutores",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_tutores_select"
+    },
+    {
+      "table": "tutores",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_tutores_insert"
+    },
+    {
+      "table": "tutores",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_tutores_update"
+    },
+    {
+      "table": "tutores",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_tutores_delete"
+    },
+    {
+      "table": "terapeutas",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_terapeutas_select"
+    },
+    {
+      "table": "terapeutas",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_terapeutas_insert"
+    },
+    {
+      "table": "terapeutas",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_terapeutas_update"
+    },
+    {
+      "table": "terapeutas",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_terapeutas_delete"
+    },
+    {
+      "table": "roles",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_roles_select"
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_sesiones_autenticacion_select"
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_sesiones_autenticacion_insert"
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_sesiones_autenticacion_update"
+    },
+    {
+      "table": "sesiones_autenticacion",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_sesiones_autenticacion_delete"
+    },
+    {
+      "table": "pacientes",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_pacientes_select"
+    },
+    {
+      "table": "pacientes",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_pacientes_insert"
+    },
+    {
+      "table": "pacientes",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_pacientes_update"
+    },
+    {
+      "table": "pacientes",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_pacientes_delete"
+    },
+    {
+      "table": "perfiles",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_perfiles_select"
+    },
+    {
+      "table": "perfiles",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_perfiles_insert"
+    },
+    {
+      "table": "perfiles",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_perfiles_update"
+    },
+    {
+      "table": "perfiles",
+      "operation": "DELETE",
+      "name": "ashakids_runtime_perfiles_delete"
+    },
+    {
+      "table": "expedientes",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_expedientes_select"
+    },
+    {
+      "table": "expedientes",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_expedientes_insert"
+    },
+    {
+      "table": "expedientes",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_expedientes_update"
+    },
+    {
+      "table": "tratamientos",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_tratamientos_select"
+    },
+    {
+      "table": "tratamientos",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_tratamientos_insert"
+    },
+    {
+      "table": "tratamientos",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_tratamientos_update"
+    },
+    {
+      "table": "reservas",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_reservas_select"
+    },
+    {
+      "table": "reservas",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_reservas_insert"
+    },
+    {
+      "table": "reservas",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_reservas_update"
+    },
+    {
+      "table": "sesiones",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_sesiones_select"
+    },
+    {
+      "table": "sesiones",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_sesiones_insert"
+    },
+    {
+      "table": "sesiones",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_sesiones_update"
+    },
+    {
+      "table": "reportes_sesion",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_reportes_sesion_select"
+    },
+    {
+      "table": "reportes_sesion",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_reportes_sesion_insert"
+    },
+    {
+      "table": "reportes_sesion",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_reportes_sesion_update"
+    },
+    {
+      "table": "conversaciones",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_conversaciones_select"
+    },
+    {
+      "table": "conversaciones",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_conversaciones_insert"
+    },
+    {
+      "table": "conversaciones",
+      "operation": "UPDATE",
+      "name": "ashakids_runtime_conversaciones_update"
+    },
+    {
+      "table": "mensajes",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_mensajes_select"
+    },
+    {
+      "table": "mensajes",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_mensajes_insert"
+    },
+    {
+      "table": "auditoria_cambios",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_auditoria_cambios_select"
+    },
+    {
+      "table": "auditoria_cambios",
+      "operation": "INSERT",
+      "name": "ashakids_runtime_auditoria_cambios_insert"
+    },
+    {
+      "table": "logros",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_logros_select"
+    },
+    {
+      "table": "perfil_logros",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_perfil_logros_select"
+    },
+    {
+      "table": "actividades",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_actividades_select"
+    },
+    {
+      "table": "resultados_nivel",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_resultados_nivel_select"
+    },
+    {
+      "table": "evaluaciones_ia",
+      "operation": "SELECT",
+      "name": "ashakids_runtime_evaluaciones_ia_select"
+    }
+  ],
+  "sequences": [
+    {
+      "table_name": "administradores",
+      "column_name": "id_administrador",
+      "sequence_name": "public.administradores_id_administrador_seq"
+    },
+    {
+      "table_name": "auditoria_cambios",
+      "column_name": "id_auditoria",
+      "sequence_name": "public.auditoria_cambios_id_auditoria_seq"
+    },
+    {
+      "table_name": "conversaciones",
+      "column_name": "id_conversacion",
+      "sequence_name": "public.conversaciones_id_conversacion_seq"
+    },
+    {
+      "table_name": "expedientes",
+      "column_name": "id_expediente",
+      "sequence_name": "public.expedientes_id_expediente_seq"
+    },
+    {
+      "table_name": "mensajes",
+      "column_name": "id_mensaje",
+      "sequence_name": "public.mensajes_id_mensaje_seq"
+    },
+    {
+      "table_name": "pacientes",
+      "column_name": "id_paciente",
+      "sequence_name": "public.pacientes_id_paciente_seq"
+    },
+    {
+      "table_name": "perfiles",
+      "column_name": "id_perfil",
+      "sequence_name": "public.perfiles_id_perfil_seq"
+    },
+    {
+      "table_name": "reportes_sesion",
+      "column_name": "id_reporte_sesion",
+      "sequence_name": "public.reportes_sesion_id_reporte_sesion_seq"
+    },
+    {
+      "table_name": "reservas",
+      "column_name": "id_reserva",
+      "sequence_name": "public.reservas_id_reserva_seq"
+    },
+    {
+      "table_name": "sesiones",
+      "column_name": "id_sesion",
+      "sequence_name": "public.sesiones_id_sesion_seq"
+    },
+    {
+      "table_name": "sesiones_autenticacion",
+      "column_name": "id_sesion_auth",
+      "sequence_name": "public.sesiones_autenticacion_id_sesion_auth_seq"
+    },
+    {
+      "table_name": "terapeutas",
+      "column_name": "id_terapeuta",
+      "sequence_name": "public.terapeutas_id_terapeuta_seq"
+    },
+    {
+      "table_name": "tratamientos",
+      "column_name": "id_tratamiento",
+      "sequence_name": "public.tratamientos_id_tratamiento_seq"
+    },
+    {
+      "table_name": "tutores",
+      "column_name": "id_tutor",
+      "sequence_name": "public.tutores_id_tutor_seq"
+    },
+    {
+      "table_name": "usuario_roles",
+      "column_name": "id_usuario_rol",
+      "sequence_name": "public.usuario_roles_id_usuario_rol_seq"
+    },
+    {
+      "table_name": "usuarios",
+      "column_name": "id_usuario",
+      "sequence_name": "public.usuarios_id_usuario_seq"
+    }
+  ],
+  "preservation_before": {
+    "roles": {
+      "count": 29,
+      "sha256": "5519c88f2d42cb83d07a6c27a0d65ac16afdc0d17c334a4b5f704b220621a1c8"
+    },
+    "memberships": {
+      "count": 19,
+      "sha256": "5448588f62d386936dc93321d001bbe3aec88b6ace7b8c77f9097dd0e63b7852"
+    },
+    "objects": {
+      "count": 52,
+      "sha256": "f8f935f2e24650d2df3e9ffc93f728effe57d2ea4ecdb7505349a564fdd6e32b"
+    },
+    "object_acl": {
+      "count": 1144,
+      "sha256": "273fcac3c22b92a027c1adea66b96e10a103833cb4923a8fc214093c66448d95"
+    },
+    "namespace_acl": {
+      "count": 274,
+      "sha256": "9e6a572c4247ba0e3154d1c4435aa2e4b169b527cf110d88d8069e11762061a8"
+    },
+    "database_acl": {
+      "count": 17,
+      "sha256": "57d58212ff94948b9744d85f737f94f26afd7ed4fa18f68254792293ec192b33"
+    },
+    "policies_existing": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "preservation_after": {
+    "roles": {
+      "count": 29,
+      "sha256": "5519c88f2d42cb83d07a6c27a0d65ac16afdc0d17c334a4b5f704b220621a1c8"
+    },
+    "memberships": {
+      "count": 19,
+      "sha256": "5448588f62d386936dc93321d001bbe3aec88b6ace7b8c77f9097dd0e63b7852"
+    },
+    "objects": {
+      "count": 52,
+      "sha256": "f8f935f2e24650d2df3e9ffc93f728effe57d2ea4ecdb7505349a564fdd6e32b"
+    },
+    "object_acl": {
+      "count": 1144,
+      "sha256": "273fcac3c22b92a027c1adea66b96e10a103833cb4923a8fc214093c66448d95"
+    },
+    "namespace_acl": {
+      "count": 274,
+      "sha256": "9e6a572c4247ba0e3154d1c4435aa2e4b169b527cf110d88d8069e11762061a8"
+    },
+    "database_acl": {
+      "count": 17,
+      "sha256": "57d58212ff94948b9744d85f737f94f26afd7ed4fa18f68254792293ec192b33"
+    },
+    "policies_existing": {
+      "count": 0,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "existing_roles_and_permissions_preserved": true,
+  "committed": true
+}

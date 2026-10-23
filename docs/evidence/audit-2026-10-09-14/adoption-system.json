@@ -1,0 +1,49 @@
+{
+  "captured_utc": "2026-10-09T22:34:02.918476+00:00",
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/",
+      "actor": "anonymous",
+      "case": "system after B02 adoption",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health",
+      "actor": "anonymous",
+      "case": "system after B02 adoption",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "method": "GET",
+      "path": "/health/ready",
+      "actor": "anonymous",
+      "case": "system after B02 adoption",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "method": "GET",
+      "path": "/openapi.json",
+      "actor": "anonymous",
+      "case": "system after B02 adoption",
+      "expected": 200,
+      "obtained": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/auth/me",
+      "actor": "anonymous",
+      "case": "system after B02 adoption",
+      "expected": 401,
+      "obtained": 401
+    }
+  ],
+  "other_runtime_connections": 2,
+  "runtime_connections_last_commit": 2,
+  "previous_role_attributes_preserved": true,
+  "success": true
+}

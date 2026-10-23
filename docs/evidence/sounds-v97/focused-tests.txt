@@ -1,0 +1,8 @@
+
+ RUN  v4.1.11 C:/Users/HP/ashakids-platform/frontend
+
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  16:44:38
+   Duration  11.56s (transform 2.58s, setup 1.62s, import 2.76s, tests 10.46s, environment 3.08s)

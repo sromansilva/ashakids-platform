@@ -1,0 +1,23 @@
+{
+  "mode": "READ ONLY session pooler, no login sessions or patient rows",
+  "host_source": "Supabase Connect UI: Session pooler",
+  "host": "aws-1-us-east-1.pooler.supabase.com",
+  "port": 5432,
+  "database_role": "ashakids_runtime",
+  "read_only": "on",
+  "role_flags": {
+    "rolsuper": false,
+    "rolbypassrls": false,
+    "rolcreatedb": false,
+    "rolcreaterole": false
+  },
+  "tls": {
+    "version": "TLSv1.3",
+    "verify_mode": "CERT_REQUIRED",
+    "hostname_verified": true,
+    "system_ca_sufficient": false,
+    "explicit_ca": true,
+    "legacy_ca": true
+  },
+  "success": true
+}

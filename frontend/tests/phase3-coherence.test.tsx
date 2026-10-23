@@ -17,7 +17,9 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
     if (options.pending) return new Promise<Response>(() => {});
     if (options.error) return response({ detail: "Panel no disponible" }, 503);
     const path = new URL(String(input), "http://localhost").pathname.replace(/^\/api\/v1/, "");
+    if (path === "/terapeutas") return response([{ id_terapeuta: 1, nombres: "Profesional", apellidos: "Uno", especialidad: "Lenguaje" }]);
     if (path === "/pacientes") return response(options.children ?? [child, sibling]);
+    if (/^\/pacientes\/\d+\/juegos$/.test(path)) return response({ id_paciente: Number(path.split('/')[2]), mundos: [], experiencia: 0, nivel: 1, medallas: [], intentos_totales: 0, experiencia_siguiente_nivel: 200 });
     if (path === "/citas") return response([future, completed.cita, { ...future, id_reserva: 3, estado_reserva: "CANCELADA" }, { ...future, id_reserva: 4, fecha_hora_fin: "2020-01-01T00:00:00Z" }]);
     if (path === "/sesiones") return response([completed, { ...completed, id_sesion: 2, asistencia: "NO_ASISTIO" }]);
     if (path === "/pacientes/1/tratamientos") return response([{ id_tratamiento: 1, id_paciente: 1, nombre_tratamiento: "Tratamiento autorizado", terapeuta_nombre: "Profesional Uno", estado_tratamiento: "ACTIVO" }]);
@@ -56,7 +58,11 @@ it("Family settings expose both siblings without a plan restriction and describe
 });
 it("Settings security, privacy and notification tabs do not fake writes", async () => {
   api(); renderRoute("/padre/config", "PADRE");
-  for (const name of ["Seguridad", "Privacidad", "Notificaciones"]) {
+  fireEvent.click(await screen.findByRole("button", { name: /^Seguridad$/ }));
+  expect(await screen.findByLabelText("Nueva contraseña")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Cambiar contraseña" })).toBeInTheDocument();
+  expect(screen.queryByText(/Contraseña actualizada/)).not.toBeInTheDocument();
+  for (const name of ["Privacidad", "Notificaciones"]) {
     fireEvent.click(await screen.findByRole("button", { name: new RegExp(`^${name}$`) }));
     expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Guardar|Eliminar cuenta|Activar 2FA/ })).not.toBeInTheDocument();
@@ -76,18 +82,18 @@ it("A failed patient create keeps form values and never announces success", asyn
   expect(screen.getByLabelText("Nombres")).toHaveValue("Hijo sintético");
   expect(screen.queryByText("Hijo registrado en el servidor")).not.toBeInTheDocument();
 });
-it("Family professionals are treatment assignments, not a mock directory", async () => {
+it("Family directory displays active professionals before a treatment is assigned", async () => {
   api(); renderRoute("/padre/psicologos", "PADRE");
-  await screen.findByText("Tratamiento autorizado");
-  expect(screen.getByRole("button", { name: /^Reservar cita$/ })).toBeInTheDocument();
+  await screen.findByRole('heading', { name: 'Profesional Uno' });
+  expect(screen.getByRole("button", { name: 'Ver horarios y reservar' })).toBeInTheDocument();
   expect(screen.queryByText(/Dra. Ana Ruiz|Solicitud enviada|Pago/)).not.toBeInTheDocument();
-  fireEvent.change(screen.getByRole("combobox", { name: "Hijo o hija" }), { target: { value: "2" } });
-  await screen.findByText(/Este hijo todavía no tiene un tratamiento asignado/);
-  expect(screen.queryByRole("button", { name: /^Reservar cita$/ })).not.toBeInTheDocument();
+  expect(screen.queryByText('Tratamiento autorizado')).not.toBeInTheDocument();
 });
 it.each(["/padre/recorrido", "/padre/seguimiento"])("%s reuses the persisted tracking model", async path => {
   api(); renderRoute(path, "PADRE");
-  await screen.findByText("Seguimiento de Alex Uno");
+  expect(await screen.findByRole('combobox',{name:'Hijo o hija'})).toHaveValue('1');
+  fireEvent.click(await screen.findByRole('button',{name:'Planes'}));
+  expect(await screen.findByText('Profesional Uno · ACTIVO')).toBeInTheDocument();
   expect(screen.queryByText(/60%|6\/10|Dra. Ana Ruiz|Correo electrónico verificado/)).not.toBeInTheDocument();
 });
 it("Therapist dashboard counts authorised data and never requests administrator accounts", async () => {
@@ -117,26 +123,31 @@ it("Dashboard failure hides aggregates and can be retried", async () => {
   api(); fireEvent.click(screen.getByRole("button", { name: "Reintentar panel" }));
   await screen.findByText("Profesional Uno · CONFIRMADA");
 });
-it("Mundo ASHA uses the selected child ID and exposes proposals rather than fabricated mastery", async () => {
+it("Mundo ASHA consulta el plan del hijo seleccionado y no inventa asignación", async () => {
   api(); renderRoute("/mundo-asha", "PADRE");
   const select = await screen.findByRole("combobox", { name: "Hijo o hija" });
   fireEvent.change(select, { target: { value: "2" } });
-  expect(await screen.findByText("Avance educativo de Alex Dos: sin seguimiento conectado.")).toBeInTheDocument();
-  fireEvent.click(screen.getAllByRole("button", { name: /Ver propuesta de niveles/ })[1]);
-  await screen.findByRole("heading", { name: "Aventura de la R" });
-  expect(screen.getAllByText(/En preparación · Requiere revisión profesional/)).toHaveLength(8);
-  expect(screen.queryByText(/47|Racha|Asignada por tu terapeuta|Mateo/)).not.toBeInTheDocument();
-  expect(vi.mocked(fetch).mock.calls.every(([url]) => String(url).includes("/pacientes"))).toBe(true);
+  expect(await screen.findByRole('heading',{name:'Mundos pendientes para Alex'})).toBeInTheDocument();
+  expect(select).toHaveValue('2');
+  expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes('/pacientes/2/juegos'))).toBe(true);
+  expect(screen.queryByRole('button',{name:/Jugar nivel/})).not.toBeInTheDocument();
+  expect(screen.queryByText(/Racha|Mateo/)).not.toBeInTheDocument();
 });
 it("Mundo ASHA has an honest empty family state", async () => {
   api({ children: [] }); renderRoute("/mundo-asha", "PADRE");
   await screen.findByText(/Aún no tienes hijos registrados/);
   expect(screen.queryByRole("combobox")).not.toBeInTheDocument();
 });
-it.each(["/mundo-asha/academia", "/mundo-asha/retos", "/mundo-asha/insignias", "/mundo-asha/perfil"])("%s does not claim verified rewards or completed levels", async path => {
+it.each(["/mundo-asha/academia", "/mundo-asha/retos"])("%s remains pending", async path => {
   renderRoute(path, "PADRE");
-  await screen.findByText(/El progreso educativo por hijo todavía no está conectado/);
+  await screen.findByRole('heading', { name: 'Próximamente' });
   expect(screen.queryByText(/Mateo|47|80%|60%|100%/)).not.toBeInTheDocument();
+});
+it.each(["/mundo-asha/insignias", "/mundo-asha/perfil"])("%s displays persisted profile counters", async path => {
+  api(); renderRoute(path, "PADRE");
+  await screen.findByText(/Nivel 1 · 0 XP · 0 medallas/);
+  expect(screen.getByText(/0 intentos/)).toBeInTheDocument();
+  expect(screen.queryByText(/Mateo|80%|60%|100%/)).not.toBeInTheDocument();
 });
 
 const world = LEARNING_WORLDS[0];

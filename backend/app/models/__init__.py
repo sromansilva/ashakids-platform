@@ -1,3 +1,5 @@
+from app.models.incidencias import Incidencia
+from app.models.valoraciones import Valoracion
 from app.models.auditoria import AuditoriaCambios
 from app.models.auth import (
     Administrador,
