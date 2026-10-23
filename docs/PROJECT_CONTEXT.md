@@ -1907,3 +1907,31 @@ oír un ejemplo antes de comenzar. Durante la partida también puede repetir la 
 juego de parejas admite arrastrar fichas con tacto y conserva selección por toques.
 Respuestas y sonidos reciben animación breve, con respeto a `prefers-reduced-motion`.
 Reglas, progreso, audios y guardado no cambian.
+
+## V130 — CI/CD y separación de producción / 2026-10-23
+
+Repositorio: https://github.com/sromansilva/ashakids-platform . La rama `dev`
+queda como integración y `main` como producción. El workflow `.github/workflows/ci.yml`
+ejecuta frontend (tests, tipos, `check:frontend`, build), backend sobre PostgreSQL
+efímera y compilación Docker. GitHub exige esos tres checks y PR en ambas ramas;
+`main` requiere aprobación independiente del último push. Protecciones aplicadas y
+verificadas; sin force-push ni borrado de rama.
+
+El PR #110 integró CI en `dev` (merge `0684b21505a637713c4f582b5ae2df5bb7e7418e`);
+los tres checks pasaron. `render.yaml` conserva `branch: dev` y `autoDeployTrigger: off`
+durante la transición. No se verificó el panel Render porque falta iniciar sesión:
+la pausa del servicio existente no está confirmada. No declarar despliegue ni cambiar a
+`main` hasta promover el release.
+
+El PR #112 (`dev` → `main`) está abierto para revisión, con 132 commits y 1.982 archivos.
+No fusionar sin CI del PR y aprobación de una persona independiente. El commit de merge
+#108 permanece en `main`, que es la base de este PR. GitGuardian marcó seis posibles
+secretos en la historia de esos 132 commits; valores no expuestos y hallazgos pendientes
+de revisión en su panel antes de la aprobación.
+
+El tramo de `dev` añade 12 scripts SQL versionados (`002`–`012`, con dos archivos `009`).
+La imagen ejecuta `app.hosted_start`; no se encontró aplicación de migraciones al arranque.
+La CI inicializa el esquema versionado en PostgreSQL efímera, no toca la BD compartida.
+Validar los scripts contra la BD objetivo y respaldo vigente; aplicar sólo de forma
+explícita y autorizada. Los cambios locales sin confirmar y artefactos de QA del checkout
+original se preservan fuera del release.
