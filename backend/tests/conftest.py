@@ -11,7 +11,8 @@ from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from scripts.testing_database import disposable_database_urls
 
-from app.core import database
+from app.core import database, login_limiter
+from app.core.login_limiter import LoginLimiter
 from app.core.security import hash_password
 from app.main import app
 from app.models.auth import Administrador, Rol, Usuario, UsuarioRol
@@ -43,7 +44,11 @@ async def clinical():
     cleanup_engine = create_async_engine(admin_url)
     factory = async_sessionmaker(engine, expire_on_commit=False, autoflush=False)
     previous = database.async_session_factory
+    previous_limiter = login_limiter.login_limiter
     database.async_session_factory = factory
+    # Every fixture seeds five users from the same test IP; keep that setup
+    # independent from the application-wide in-memory login budget.
+    login_limiter.login_limiter = LoginLimiter()
     clients = {}
     try:
         async with cleanup_engine.begin() as conn:
@@ -74,6 +79,7 @@ async def clinical():
         for client in clients.values():
             await client.aclose()
         database.async_session_factory = previous
+        login_limiter.login_limiter = previous_limiter
         async with cleanup_engine.begin() as conn:
             await conn.execute(text("TRUNCATE usuarios RESTART IDENTITY CASCADE"))
         await cleanup_engine.dispose()

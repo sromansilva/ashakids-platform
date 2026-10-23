@@ -99,6 +99,8 @@ async def registrar(db, identity, patient_id, code, data):
         return dict(id_intento=prior.id_resultado_nivel, correcto=prior.puntaje == 100,
                     experiencia_otorgada=prior.experiencia_otorgada, repetido=True,
                     resumen=await resumen(db, identity, patient_id))
+    if data.nivel > len(MUNDOS[code]["levels"]):
+        raise HTTPException(422, "El nivel no está disponible en este mundo.")
     level_content = MUNDOS[code]["levels"][data.nivel - 1]
     if code == "VOZ":
         if any(len(a) > 300 for a in data.respuestas):

@@ -5,6 +5,7 @@ from uuid import UUID
 from fastapi import HTTPException
 from sqlalchemy import select, func, text
 from sqlalchemy.orm import selectinload, undefer
+from app.core.config import settings
 from app.models.mensajeria import Mensaje, MensajeAdjunto
 from app.schemas.mensajeria import MensajeCrear
 from app.services import mensajeria
@@ -101,11 +102,42 @@ class LimiteAdjuntos:
         if scope['type'] != 'http' or scope['method'] != 'POST' or not scope['path'].endswith('/mensajes/adjunto'):
             return await self.app(scope, receive, send)
         size = 0
+        exceeded = False
         async def limited():
-            nonlocal size
+            nonlocal size, exceeded
+            if exceeded:
+                return {'type': 'http.request', 'body': b'', 'more_body': False}
             event = await receive()
             size += len(event.get('body', b''))
             if size > MAX_BODY:
-                raise HTTPException(413, 'El archivo supera el límite de 10 MB.')
+                exceeded = True
+                return {'type': 'http.request', 'body': b'', 'more_body': False}
             return event
-        await self.app(scope, limited, send)
+        async def suppress_response_after_limit(message):
+            if not exceeded:
+                await send(message)
+        try:
+            await self.app(scope, limited, suppress_response_after_limit)
+        except Exception:
+            if not exceeded:
+                raise
+        if exceeded:
+            from starlette.responses import JSONResponse
+            headers = {
+                'Cache-Control': 'no-store',
+                'X-Content-Type-Options': 'nosniff',
+                'Content-Security-Policy': "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: blob:; font-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src 'self'; media-src 'self' blob:",
+                'Referrer-Policy': 'strict-origin-when-cross-origin',
+                'X-Frame-Options': 'DENY',
+                'Permissions-Policy': 'camera=(), geolocation=(self), microphone=()',
+            }
+            request_headers = dict(scope.get('headers', []))
+            origin = request_headers.get(b'origin', b'').decode('latin1')
+            if origin in settings.CORS_ORIGINS:
+                headers.update({'Access-Control-Allow-Origin': origin,
+                                'Access-Control-Allow-Credentials': 'true', 'Vary': 'Origin'})
+            if settings.is_production and scope.get('scheme') == 'https':
+                headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+            response = JSONResponse(status_code=413, content={'detail': 'El archivo supera el límite de 10 MB.'},
+                headers=headers)
+            await response(scope, receive, send)

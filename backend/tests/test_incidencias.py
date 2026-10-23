@@ -27,7 +27,7 @@ async def test_persistence_permissions_retry_and_states(clinical):
     clients, factory = clinical
     # clinical valida que la conexión sea local ashakids_test_* antes de cederla.
     async with factory.begin() as db:
-        await db.execute(text('TRUNCATE incidencias RESTART IDENTITY'))
+        await db.execute(text('DELETE FROM incidencias'))
     parent, therapist, admin = (clients[c] for c in ('p90001','t90001','a90001'))
     body = dict(envio_id=str(uuid4()), tipo='Funcional', titulo='Guardar no responde', descripcion='Prueba sintética de soporte.')
     first, concurrent = await asyncio.gather(*(parent.post('/api/v1/incidencias', json=body) for _ in range(2)))

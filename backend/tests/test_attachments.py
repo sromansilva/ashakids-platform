@@ -41,6 +41,10 @@ async def test_roundtrip_access_retry_and_validation(clinical):
             ('body.txt', b'x'*(11*1024*1024), 413)]:
         result = await parent.post(path, data={'clave_envio': str(uuid4())}, files={'archivo': (name, content, 'application/octet-stream')})
         assert result.status_code == status, result.text
+        if name == 'body.txt':
+            assert result.headers['cache-control'] == 'no-store'
+            assert result.headers['x-content-type-options'] == 'nosniff'
+            assert 'content-security-policy' in result.headers
     assert (await other.post(path, data={'clave_envio': str(uuid4())}, files=file)).status_code == 404
     async with factory() as db:
         assert await db.scalar(select(func.count()).select_from(MensajeAdjunto)) == 1

@@ -9,6 +9,7 @@ from app.main import app
 from app.models.auth import SesionAutenticacion, Usuario
 from app.models.clinica import ReporteSesion, Reserva
 from app.models.perfiles import Paciente
+from app.services.email_activation import activation_token
 from tests.clinical_helpers import PATIENT, appointment_due, journey, session_journey
 
 
@@ -45,16 +46,22 @@ async def test_patient_invalid_or_foreign(clinical, payload, status):
 async def test_admin_users_create_update_revoke(clinical):
     clients, factory = clinical
     admin = clients["a90001"]
+    initial_password = " Nueva-Clave-Prueba-2026 "
     payload = {"nombres": "Nuevo", "apellidos": "Sintético", "email": "nuevo@example.com",
-               "codigo_usuario": "p90003", "password": " Nueva-Clave-Prueba-2026 ", "rol": "PADRE"}
+               "codigo_usuario": "p90003", "rol": "PADRE"}
     response = await admin.post("/api/v1/usuarios", json=payload)
     assert response.status_code == 201, response.text
     key = response.json()["id_usuario"]
     assert response.json()["id_tutor"] is not None
     assert "password" not in response.text
+    async with factory() as db:
+        token = activation_token(await db.get(Usuario, key))
     async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://test") as fresh:
+        activation = await fresh.post("/api/v1/auth/create-password", json={
+            "token": token, "new_password": initial_password})
+        assert activation.status_code == 200, activation.text
         login = await fresh.post("/api/v1/auth/login", json={
-            "codigo_usuario": payload["codigo_usuario"], "password": payload["password"]})
+            "codigo_usuario": payload["codigo_usuario"], "password": initial_password})
         assert login.status_code == 200, "Las contraseñas no deben recortarse al guardar."
         changed = await admin.patch(f"/api/v1/usuarios/{key}", json={"password": "Otra-Clave-Prueba-2026"})
         assert changed.status_code == 200
