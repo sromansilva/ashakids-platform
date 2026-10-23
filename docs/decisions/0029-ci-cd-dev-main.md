@@ -27,8 +27,8 @@ por sorpresa contra la base de producción.
 ## Consecuencias y pendientes
 
 El PR #112 está abierto y no debe fusionarse hasta que pasen sus checks y haya aprobación
-independiente. GitGuardian reportó seis posibles secretos en los 132 commits del PR; revisar
-los hallazgos sin copiar valores y resolver su validez antes de autorizar el release. La
+independiente. GitGuardian reportó hallazgos de secretos en la historia del release candidate.
+Revisar su validez sin copiar valores antes de autorizar. La
 sesión del panel Render requiere autenticación y su pausa real todavía no está confirmada.
 La revisión de migraciones queda limitada al esquema versionado; no se aplicó DDL a la BD
 compartida ni a producción.

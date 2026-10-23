@@ -1923,11 +1923,11 @@ durante la transición. No se verificó el panel Render porque falta iniciar ses
 la pausa del servicio existente no está confirmada. No declarar despliegue ni cambiar a
 `main` hasta promover el release.
 
-El PR #112 (`dev` → `main`) está abierto para revisión, con 132 commits y 1.982 archivos.
+El PR #112 (`dev` → `main`) está abierto para revisión.
 No fusionar sin CI del PR y aprobación de una persona independiente. El commit de merge
-#108 permanece en `main`, que es la base de este PR. GitGuardian marcó seis posibles
-secretos en la historia de esos 132 commits; valores no expuestos y hallazgos pendientes
-de revisión en su panel antes de la aprobación.
+#108 permanece en `main`, que es la base de este PR. GitGuardian reportó hallazgos de secretos
+en la historia del release candidate; no se exponen los valores y se revisan en su panel
+antes de aprobar.
 
 El tramo de `dev` añade 12 scripts SQL versionados (`002`–`012`, con dos archivos `009`).
 La imagen ejecuta `app.hosted_start`; no se encontró aplicación de migraciones al arranque.
