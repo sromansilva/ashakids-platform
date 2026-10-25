@@ -2,7 +2,7 @@
 from uuid import uuid4
 import pytest
 from sqlalchemy import select, func
-from app.models.mensajeria import MensajeAdjunto, Conversacion
+from app.modules.comunicacion.domain.mensajeria_models import MensajeAdjunto, Conversacion
 from tests.test_learning_games import prepare
 
 

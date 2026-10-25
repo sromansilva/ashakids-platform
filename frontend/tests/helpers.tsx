@@ -1,9 +1,9 @@
 import { vi } from "vitest";
 import { render } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { AuthContext } from "@/auth/AuthContext";
-import type { SemanticRole, User } from "@/types/auth";
-import AppRouter from "@/app/AppRouter";
+import { AuthContext } from "@/modules/auth/application/AuthContext";
+import type { SemanticRole, User } from "@/modules/auth/domain/auth";
+import AppRouter from "@/core/router/AppRouter";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 
 export function renderRoute(path: string, role: SemanticRole | null, loading = false) {

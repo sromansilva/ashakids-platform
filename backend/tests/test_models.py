@@ -14,8 +14,8 @@ if str(BACKEND_DIR) not in sys.path:
 
 from sqlalchemy import inspect
 from sqlalchemy.orm import configure_mappers
-from app.models.auth import Usuario, Rol, Administrador, UsuarioRol, SesionAutenticacion
-from app.models.perfiles import Paciente, Perfil, Logro, PerfilLogro
+from app.modules.auth.domain.models import Usuario, Rol, Administrador, UsuarioRol, SesionAutenticacion
+from app.modules.cuentas.domain.perfiles_models import Paciente, Perfil, Logro, PerfilLogro
 
 
 class TestModels(unittest.TestCase):

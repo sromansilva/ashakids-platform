@@ -1,11 +1,11 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { IncidentForm } from '@/components/common/IncidentForm';
-import { AdminOperacion } from '@/pages/admin/AdminOperacion';
-import { incidenciasService } from '@/services/incidenciasService';
-import { capabilityNotice } from '@/app/routeCapabilities';
+import { IncidentForm } from '@/shared/presentation/components/common/IncidentForm';
+import { AdminOperacion } from '@/modules/admin/presentation/AdminOperacion';
+import { incidenciasService } from '@/modules/comunicacion/infrastructure/incidenciasService';
+import { capabilityNotice } from '@/core/router/routeCapabilities';
 
-vi.mock('@/services/incidenciasService', () => ({
+vi.mock('@/modules/comunicacion/infrastructure/incidenciasService', () => ({
   tiposIncidencia: ['Funcional','Otro'],
   incidenciasService: { crear: vi.fn(), listar: vi.fn(), estado: vi.fn() },
 }));

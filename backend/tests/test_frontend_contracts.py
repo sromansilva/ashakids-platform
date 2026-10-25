@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from app.models.clinica import ReporteSesion
+from app.modules.clinica.domain.clinica_models import ReporteSesion
 from tests.clinical_helpers import session_journey
 
 

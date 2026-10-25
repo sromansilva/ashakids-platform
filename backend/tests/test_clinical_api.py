@@ -6,10 +6,10 @@ import pytest
 from sqlalchemy import func, select, text
 
 from app.main import app
-from app.models.auth import SesionAutenticacion, Usuario
-from app.models.clinica import ReporteSesion, Reserva
-from app.models.perfiles import Paciente
-from app.services.email_activation import activation_token
+from app.modules.auth.domain.models import SesionAutenticacion, Usuario
+from app.modules.clinica.domain.clinica_models import ReporteSesion, Reserva
+from app.modules.cuentas.domain.perfiles_models import Paciente
+from app.modules.auth.application.email_activation import activation_token
 from tests.clinical_helpers import PATIENT, appointment_due, journey, session_journey
 
 

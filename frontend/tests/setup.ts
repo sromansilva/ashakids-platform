@@ -1,6 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { afterEach, beforeEach, vi } from "vitest";
-import { queryClient } from "@/app/providers/queryClient";
+import { queryClient } from "@/core/providers/queryClient";
 import { cleanup, configure } from "@testing-library/react";
 // Real lazy imports can exceed one second on a loaded Windows/CI machine.
 configure({ asyncUtilTimeout: 5000 });

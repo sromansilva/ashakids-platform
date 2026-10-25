@@ -4,7 +4,7 @@ import httpx
 import pytest
 from pydantic import ValidationError
 from app.main import app
-from app.schemas.incidencias import IncidenciaCrear
+from app.modules.comunicacion.domain.incidencias_schemas import IncidenciaCrear
 from sqlalchemy import text
 
 

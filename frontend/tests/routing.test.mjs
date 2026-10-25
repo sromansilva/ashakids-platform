@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 
 // Importamos la lógica de rutas compilada o evaluable directamente
 // Para independizar del bundle de Vite en este test, importamos o testeamos las funciones directas
-import { pathToView, viewToPath, getRequiredRoleForPath } from '../src/routes/paths.ts';
+import { pathToView, viewToPath, getRequiredRoleForPath } from '../src/core/router/paths.ts';
 
 describe('ASHAKids Frontend Routing Tests', () => {
 

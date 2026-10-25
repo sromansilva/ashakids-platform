@@ -3,7 +3,7 @@ import asyncio
 import httpx
 from sqlalchemy import select
 from app.main import app
-from app.models.clinica import Tratamiento
+from app.modules.clinica.domain.clinica_models import Tratamiento
 from tests.clinical_helpers import appointment_due
 from tests.test_new_agenda import child, publish, intro, next_start
 from tests.conftest import TEST_PASSWORD

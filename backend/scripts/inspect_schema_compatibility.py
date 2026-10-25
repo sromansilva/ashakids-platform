@@ -15,7 +15,10 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import settings
 from app.core.database import Base
-from app.models import auth, auditoria, clinica, mensajeria, perfiles  # Registrar modelos; sin consultas.
+from app.modules.auth.domain import models as auth
+from app.modules.cuentas.domain import auditoria_models as auditoria, perfiles_models as perfiles
+from app.modules.clinica.domain import clinica_models as clinica
+from app.modules.comunicacion.domain import mensajeria_models as mensajeria  # Registrar modelos; sin consultas.
 
 COLUMNS = """SELECT table_name,column_name,data_type,udt_name,is_nullable,
  character_maximum_length,numeric_precision,numeric_scale,column_default,is_identity

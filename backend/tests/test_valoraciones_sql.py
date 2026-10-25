@@ -11,11 +11,11 @@ from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from scripts.testing_database import disposable_database_urls
 from app.main import app
-from app.api.deps import get_current_user
+from app.shared.presentation.deps import get_current_user
 from app.core.database import Base, get_db
-from app.models.auth import Usuario
-from app.models.perfiles import Paciente, Terapeuta, Tutor
-from app.models.clinica import Reserva, Sesion
+from app.modules.auth.domain.models import Usuario
+from app.modules.cuentas.domain.perfiles_models import Paciente, Terapeuta, Tutor
+from app.modules.clinica.domain.clinica_models import Reserva, Sesion
 
 
 @pytest_asyncio.fixture

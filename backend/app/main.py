@@ -9,15 +9,20 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.api.v1.admin import router as admin_router
-from app.api.v1.auth import router as auth_router
-from app.api.v1.padres import router as padres_router
-from app.api.v1.terapeutas import router as terapeutas_router
+from app.modules.cuentas.presentation.admin import router as admin_router
+from app.modules.auth.presentation.router import router as auth_router
+from app.modules.cuentas.presentation.padres import router as padres_router
+from app.modules.cuentas.presentation.terapeutas import router as terapeutas_router
 from app.core.config import settings
 from app.core import database
-from app.api.v1 import citas, pacientes, sesiones, usuarios, mensajeria, notificaciones, juegos, newsletter, adjuntos, incidencias, valoraciones, voz
-from app.services.adjuntos import LimiteAdjuntos
-from app.services.recordatorios import ejecutar as ejecutar_recordatorios
+from app.modules.agenda.presentation import citas
+from app.modules.pacientes.presentation import router as pacientes
+from app.modules.clinica.presentation import sesiones, valoraciones
+from app.modules.cuentas.presentation import usuarios
+from app.modules.comunicacion.presentation import mensajeria, notificaciones, newsletter, adjuntos, incidencias
+from app.modules.mundo_asha.presentation import juegos, voz
+from app.modules.comunicacion.application.adjuntos import LimiteAdjuntos
+from app.modules.agenda.application.recordatorios import ejecutar as ejecutar_recordatorios
 
 
 @asynccontextmanager

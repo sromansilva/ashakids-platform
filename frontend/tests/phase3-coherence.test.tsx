@@ -1,9 +1,9 @@
 import { beforeEach, expect, it, vi } from "vitest";
 import { fireEvent, screen, waitFor } from "@testing-library/react";
 import { renderRoute } from "./helpers";
-import { LEARNING_WORLDS, deriveWorldProgress, type VerifiedLearningAttempt } from "@/services/learningWorlds";
-import { capabilityNotice } from "@/app/routeCapabilities";
-import type { Patient, Appointment, Session } from "@/types/clinical";
+import { LEARNING_WORLDS, deriveWorldProgress, type VerifiedLearningAttempt } from "@/modules/mundo_asha/application/learningWorlds";
+import { capabilityNotice } from "@/core/router/routeCapabilities";
+import type { Patient, Appointment, Session } from "@/modules/clinica/domain/clinical";
 
 const child: Patient = { id_paciente: 1, id_tutor: 1, nombres_paciente: "Alex", apellidos_paciente: "Uno", fecha_nacimiento: "2020-01-01", sexo: "Otro", activo: true, fecha_registro: "2026-01-01" };
 const sibling: Patient = { ...child, id_paciente: 2, apellidos_paciente: "Dos" };

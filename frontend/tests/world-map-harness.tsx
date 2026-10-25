@@ -3,8 +3,8 @@
 import { createRoot } from 'react-dom/client';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AuthContext } from '@/auth/AuthContext';
-import AppRouter from '@/app/AppRouter';
+import { AuthContext } from '@/modules/auth/application/AuthContext';
+import AppRouter from '@/core/router/AppRouter';
 import '@/Index.css';
 
 if (import.meta.env.DEV) {

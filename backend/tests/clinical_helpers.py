@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import update
-from app.models.clinica import Reserva, Expediente, Tratamiento
+from app.modules.clinica.domain.clinica_models import Reserva, Expediente, Tratamiento
 from app.core import database
 from app.core.config import settings
 from zoneinfo import ZoneInfo

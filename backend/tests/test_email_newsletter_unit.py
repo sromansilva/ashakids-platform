@@ -6,9 +6,9 @@ import pytest
 from pydantic import ValidationError
 
 from app.core.config import settings
-from app.schemas.newsletter import NewsletterSubscriptionRequest
-from app.services import gmail
-from app.services.newsletter import check_rate_limit
+from app.modules.comunicacion.domain.newsletter_schemas import NewsletterSubscriptionRequest
+from app.modules.auth.infrastructure import gmail
+from app.modules.comunicacion.application.newsletter import check_rate_limit
 
 
 def test_gmail_disabled_is_controlled(monkeypatch):
@@ -57,7 +57,7 @@ def test_newsletter_requires_consent_and_valid_email():
 def test_newsletter_rate_limit_is_bounded(monkeypatch):
     monkeypatch.setattr(settings, "NEWSLETTER_RATE_LIMIT", 2)
     monkeypatch.setattr(settings, "NEWSLETTER_RATE_WINDOW_SECONDS", 3600)
-    from app.services import newsletter
+    from app.modules.comunicacion.application import newsletter
     newsletter._ip_buckets.clear()
     assert check_rate_limit("127.0.0.1")
     assert check_rate_limit("127.0.0.1")

@@ -15,8 +15,8 @@ from app.core import database, login_limiter
 from app.core.login_limiter import LoginLimiter
 from app.core.security import hash_password
 from app.main import app
-from app.models.auth import Administrador, Rol, Usuario, UsuarioRol
-from app.models.perfiles import Terapeuta, Tutor
+from app.modules.auth.domain.models import Administrador, Rol, Usuario, UsuarioRol
+from app.modules.cuentas.domain.perfiles_models import Terapeuta, Tutor
 
 TEST_PASSWORD = "Solo-Pruebas-Aisladas-2026"
 API_EVIDENCE = set()

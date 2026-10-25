@@ -29,7 +29,7 @@ if str(BACKEND_DIR) not in sys.path:
     sys.path.insert(0, str(BACKEND_DIR))
 
 from app.core.database import init_db, async_session_factory
-from app.schemas.pacientes import ALLOWED_AVATARS, ALLOWED_SEXO
+from app.modules.pacientes.domain.schemas import ALLOWED_AVATARS, ALLOWED_SEXO
 
 BASE_URL = ""  # Se asigna únicamente después de validar el entorno descartable.
 

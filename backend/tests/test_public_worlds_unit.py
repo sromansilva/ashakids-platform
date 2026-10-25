@@ -6,10 +6,10 @@ from types import SimpleNamespace
 from unittest.mock import AsyncMock,patch,MagicMock
 from fastapi import FastAPI,HTTPException
 import httpx
-from app.api.v1.juegos import router
+from app.modules.mundo_asha.presentation.juegos import router
 from app.core.database import get_db
-from app.services import juegos
-from app.services.juegos_catalogo import catalogo_publico
+from app.modules.mundo_asha.application import juegos
+from app.modules.mundo_asha.application.juegos_catalogo import catalogo_publico
 
 class PublicWorldTests(unittest.IsolatedAsyncioTestCase):
     def test_public_metadata_has_no_exercises_or_answers(self):

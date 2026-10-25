@@ -6,11 +6,11 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from fastapi import HTTPException
 from app.main import app
-from app.api.deps import get_current_user
-from app.models.auth import Usuario
-from app.schemas.voz import EstadoTranscripcion
-from app.services.comparador_texto import comparar_frases, normalizar_texto, tokenizar
-from app.services.reconocimiento_voz import validar_audio_bytes, procesar_audio
+from app.shared.presentation.deps import get_current_user
+from app.modules.auth.domain.models import Usuario
+from app.modules.mundo_asha.domain.voz_schemas import EstadoTranscripcion
+from app.modules.mundo_asha.application.comparador_texto import comparar_frases, normalizar_texto, tokenizar
+from app.modules.mundo_asha.infrastructure.reconocimiento_voz import validar_audio_bytes, procesar_audio
 
 
 def generar_audio_wav_sintetico(duracion: float = 1.0, frecuencia: float = 440.0) -> bytes:
@@ -132,7 +132,7 @@ async def test_procesar_audio_con_mock(monkeypatch):
     async def fake_obtener_modelo():
         return FakeModel()
 
-    monkeypatch.setattr("app.services.reconocimiento_voz.obtener_modelo", fake_obtener_modelo)
+    monkeypatch.setattr("app.modules.mundo_asha.infrastructure.reconocimiento_voz.obtener_modelo", fake_obtener_modelo)
 
     wav_bytes = generar_audio_wav_sintetico(duracion=1.0)
     respuesta = await procesar_audio(
@@ -162,7 +162,7 @@ async def test_procesar_audio_silencio_retorna_vacio(monkeypatch):
     async def fake_obtener_modelo():
         return FakeModel()
 
-    monkeypatch.setattr("app.services.reconocimiento_voz.obtener_modelo", fake_obtener_modelo)
+    monkeypatch.setattr("app.modules.mundo_asha.infrastructure.reconocimiento_voz.obtener_modelo", fake_obtener_modelo)
 
     wav_bytes = generar_audio_wav_sintetico(duracion=1.0)
     respuesta = await procesar_audio(
@@ -223,7 +223,7 @@ async def test_endpoint_transcribir_autenticado(monkeypatch):
     async def fake_obtener_modelo():
         return FakeModel()
 
-    monkeypatch.setattr("app.services.reconocimiento_voz.obtener_modelo", fake_obtener_modelo)
+    monkeypatch.setattr("app.modules.mundo_asha.infrastructure.reconocimiento_voz.obtener_modelo", fake_obtener_modelo)
 
     try:
         transport = ASGITransport(app=app)
@@ -269,7 +269,7 @@ async def test_integracion_whisper_real_con_audio_sintetico():
 # ============================================================================
 
 def test_catalogo_voz_cinco_niveles():
-    from app.services.juegos_catalogo import MUNDOS, catalogo_publico, catalogo
+    from app.modules.mundo_asha.application.juegos_catalogo import MUNDOS, catalogo_publico, catalogo
     voz = MUNDOS["VOZ"]
     assert len(voz["levels"]) == 5
 
@@ -308,8 +308,8 @@ def test_catalogo_voz_cinco_niveles():
 
 
 def test_comparacion_progresiva_cinco_niveles():
-    from app.services.juegos_catalogo import MUNDOS
-    from app.services.comparador_texto import comparar_frases
+    from app.modules.mundo_asha.application.juegos_catalogo import MUNDOS
+    from app.modules.mundo_asha.application.comparador_texto import comparar_frases
     for i, lvl in enumerate(MUNDOS["VOZ"]["levels"], 1):
         frase = lvl["answer"][0]
         # Frase exacta

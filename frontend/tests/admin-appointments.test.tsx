@@ -1,10 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { AdminCitas } from '@/pages/admin/AdminModulosGenerales/AdminCitas';
-import { useAppointments } from '@/hooks/useAppointments';
+import { AdminCitas } from '@/modules/admin/presentation/AdminModulosGenerales/AdminCitas';
+import { useAppointments } from '@/shared/application/hooks/useAppointments';
 
-vi.mock('@/hooks/useAppointments', () => ({ useAppointments: vi.fn() }));
-vi.mock('@/components/common/SessionActions', () => ({ SessionActions: ({ appointmentId }: { appointmentId: number }) => <p>Detalle de cita {appointmentId}</p> }));
+vi.mock('@/shared/application/hooks/useAppointments', () => ({ useAppointments: vi.fn() }));
+vi.mock('@/shared/presentation/components/common/SessionActions', () => ({ SessionActions: ({ appointmentId }: { appointmentId: number }) => <p>Detalle de cita {appointmentId}</p> }));
 const appointment = (id: number, therapist: number, modality: string, start: string, status = 'CONFIRMADA') => ({
   id_reserva: id, paciente_nombre: `Paciente ${id}`, id_terapeuta: therapist,
   terapeuta_nombre: `Terapeuta ${therapist}`, modalidad: modality, fecha_hora_inicio: start,

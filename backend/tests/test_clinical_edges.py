@@ -11,8 +11,8 @@ from sqlalchemy.exc import IntegrityError
 from app.core import database
 from app.core.config import settings
 from app.main import app
-from app.models.auth import Rol, SesionAutenticacion, Usuario, UsuarioRol
-from app.models.clinica import Reserva, Sesion
+from app.modules.auth.domain.models import Rol, SesionAutenticacion, Usuario, UsuarioRol
+from app.modules.clinica.domain.clinica_models import Reserva, Sesion
 from tests.clinical_helpers import PATIENT, journey, session_journey
 
 
@@ -51,7 +51,7 @@ async def test_commit_failure_returns_conflict_and_rolls_back(clinical, monkeypa
     assert response.status_code == 409
     async with factory() as db:
         assert await db.scalar(select(func.count()).select_from(Reserva)) == 0
-        from app.models.perfiles import Paciente
+        from app.modules.cuentas.domain.perfiles_models import Paciente
         assert await db.scalar(select(func.count()).select_from(Paciente)) == 0
 
 

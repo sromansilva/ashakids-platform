@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { MemoryRouter } from "react-router-dom";
-import { AuthContext } from "@/auth/AuthContext";
-import type { SemanticRole, User } from "@/types/auth";
-import AppRouter from "@/app/AppRouter";
-import { routePaths } from "@/app/routeManifest";
+import { AuthContext } from "@/modules/auth/application/AuthContext";
+import type { SemanticRole, User } from "@/modules/auth/domain/auth";
+import AppRouter from "@/core/router/AppRouter";
+import { routePaths } from "@/core/router/routeManifest";
 import "@/Index.css";
 import { QueryClient, QueryClientProvider, onlineManager } from "@tanstack/react-query";
 // This legacy render harness must never contact the operational API.

@@ -12,9 +12,9 @@ from sqlalchemy import select, text, update
 from scripts.testing_database import disposable_database_urls
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 from app.core.security import hash_password
-from app.models.auth import Administrador, Rol, Usuario, UsuarioRol
-from app.models.perfiles import Terapeuta, Tutor
-from app.models.clinica import Reserva
+from app.modules.auth.domain.models import Administrador, Rol, Usuario, UsuarioRol
+from app.modules.cuentas.domain.perfiles_models import Terapeuta, Tutor
+from app.modules.clinica.domain.clinica_models import Reserva
 
 PASSWORD = "Auditoria-Sintetica-2026!"
 IDENTITIES = [("a90001", "ADMIN"), ("p90001", "PADRE"), ("p90002", "PADRE"),

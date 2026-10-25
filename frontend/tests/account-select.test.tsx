@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { AccountSelect } from '../src/pages/admin/AccountSelect';
+import { AccountSelect } from '../src/modules/admin/presentation/AccountSelect';
 
 describe('AccountSelect', () => {
   it('selects by keyboard and consumes Escape before the modal', () => {

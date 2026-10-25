@@ -13,10 +13,10 @@ from pypdf import PdfReader
 from sqlalchemy import select, text, update
 from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio import create_async_engine
-from app.models.clinica import Reserva, Tratamiento
-from app.models.mensajeria import Conversacion
-from app.models.auth import SesionAutenticacion
-from app.services.auth_service import hash_session_token
+from app.modules.clinica.domain.clinica_models import Reserva, Tratamiento
+from app.modules.comunicacion.domain.mensajeria_models import Conversacion
+from app.modules.auth.domain.models import SesionAutenticacion
+from app.modules.auth.application.auth_service import hash_session_token
 from scripts.phase2_sandbox import PASSWORD
 from tests.live_environment import isolated_live_api
 

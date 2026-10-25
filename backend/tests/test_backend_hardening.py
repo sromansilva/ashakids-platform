@@ -15,11 +15,11 @@ from app.core.config import Settings
 from app.core.database_transport import engine_options
 from app.core.login_limiter import LoginLimiter
 from app.main import app
-from app.schemas.admin import CrearPadreRequest, CrearTerapeutaRequest
-from app.schemas.auth import LoginRequest
-from app.schemas.clinica import PacienteDatos, PacienteSalida
-from app.schemas.pacientes import CrearHijoRequest, ActualizarHijoRequest
-from app.schemas.usuarios import UsuarioCrear, UsuarioEditar
+from app.modules.cuentas.domain.admin_schemas import CrearPadreRequest, CrearTerapeutaRequest
+from app.modules.auth.domain.schemas import LoginRequest
+from app.modules.clinica.domain.clinica_schemas import PacienteDatos, PacienteSalida
+from app.modules.pacientes.domain.schemas import CrearHijoRequest, ActualizarHijoRequest
+from app.modules.cuentas.domain.usuarios_schemas import UsuarioCrear, UsuarioEditar
 
 
 def config(**kwargs):
@@ -178,7 +178,7 @@ async def test_commit_errors_are_safe_even_if_rollback_fails(monkeypatch, error,
 @pytest.mark.asyncio
 async def test_http_login_limit_recovery_and_production_transport(monkeypatch):
     from app.core import login_limiter
-    from app.api.v1 import auth
+    from app.modules.auth.presentation import router as auth
     now = [0]
     gate = LoginLimiter(config(LOGIN_PAIR_LIMIT=1, LOGIN_WINDOW_SECONDS=10), lambda: now[0])
     monkeypatch.setattr(login_limiter, "login_limiter", gate)
@@ -202,7 +202,7 @@ async def test_http_login_limit_recovery_and_production_transport(monkeypatch):
 @pytest.mark.asyncio
 async def test_production_cookie_and_origin_checks_use_https(monkeypatch):
     from app.core import login_limiter
-    from app.api.v1 import auth
+    from app.modules.auth.presentation import router as auth
     monkeypatch.setattr(login_limiter, "login_limiter", LoginLimiter())
     monkeypatch.setattr(auth.settings, "ENVIRONMENT", "production")
     monkeypatch.setattr(auth.settings, "CORS_ORIGINS", ["https://web.example.invalid"])

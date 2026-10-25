@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { childAge } from '../src/pages/admin/childAge';
+import { childAge } from '../src/modules/admin/presentation/childAge';
 
 describe('child age in Lima', () => {
   it('uses completed years at birthdays and the Lima calendar date', () => {

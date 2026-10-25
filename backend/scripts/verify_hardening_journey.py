@@ -19,7 +19,7 @@ from sqlalchemy import text
 
 from app.core import database
 from app.core.config import BACKEND_DIR
-from app.services.auth_service import hash_session_token
+from app.modules.auth.application.auth_service import hash_session_token
 
 ROOT = BACKEND_DIR.parent
 BASE = "http://127.0.0.1:8000"

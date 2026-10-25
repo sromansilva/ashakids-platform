@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { screen, waitFor, fireEvent } from "@testing-library/react";
-import { routePaths } from "@/app/routeManifest";
-import { getRequiredRoleForPath } from "@/routes/paths";
+import { routePaths } from "@/core/router/routeManifest";
+import { getRequiredRoleForPath } from "@/core/router/paths";
 import { renderRoute } from "./helpers";
 
 describe("Every declared destination renders", () => {

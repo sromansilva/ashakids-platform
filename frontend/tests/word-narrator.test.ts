@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { createWordNarrator, narratorPreview, voiceKey } from '@/pages/padre/Sessions/WordGames/wordNarrator';
-import { wordVoiceFiles } from '@/pages/padre/Sessions/WordGames/wordVoiceIndex';
-import { wordGames, words } from '@/pages/padre/Sessions/WordGames/wordContent';
+import { createWordNarrator, narratorPreview, voiceKey } from '@/modules/padre/presentation/Sessions/WordGames/wordNarrator';
+import { wordVoiceFiles } from '@/modules/padre/presentation/Sessions/WordGames/wordVoiceIndex';
+import { wordGames, words } from '@/modules/padre/presentation/Sessions/WordGames/wordContent';
 
 class Player {
   static last: Player;

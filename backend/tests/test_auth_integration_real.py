@@ -21,7 +21,7 @@ if str(BACKEND_DIR) not in sys.path:
 from app.core.config import settings
 from app.core import database
 from app.main import app
-from app.models.auth import SesionAutenticacion, Usuario
+from app.modules.auth.domain.models import SesionAutenticacion, Usuario
 
 
 class TestAuthIntegrationReal(unittest.IsolatedAsyncioTestCase):

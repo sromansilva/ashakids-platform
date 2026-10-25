@@ -6,8 +6,8 @@ import pytest
 from fastapi import HTTPException
 from pydantic import ValidationError
 from app.core.config import settings
-from app.schemas.agenda import DisponibilidadDatos, TurnoDatos
-from app.services import agenda
+from app.modules.agenda.domain.schemas import DisponibilidadDatos, TurnoDatos
+from app.modules.agenda.application import agenda
 
 
 def sunday():

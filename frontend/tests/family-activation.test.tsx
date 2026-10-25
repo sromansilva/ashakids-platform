@@ -1,17 +1,17 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router-dom";
-import { AuthContext } from "@/auth/AuthContext";
-import { RouteAccess } from "@/app/RouteAccess";
-import { CreatePassword } from "@/pages/auth/Auth/CreatePassword";
-import { AccountActivation } from "@/auth/AccountActivation";
-import { authService } from "@/services/authService";
-import { adminService } from "@/services/adminService";
-import { ApiError } from "@/api/client";
-import { FamilyChildrenFields } from "@/pages/admin/FamilyChildrenFields";
-import type { User } from "@/types/auth";
+import { AuthContext } from "@/modules/auth/application/AuthContext";
+import { RouteAccess } from "@/core/router/RouteAccess";
+import { CreatePassword } from "@/modules/auth/presentation/Auth/CreatePassword";
+import { AccountActivation } from "@/modules/auth/presentation/AccountActivation";
+import { authService } from "@/modules/auth/infrastructure/authService";
+import { adminService } from "@/modules/admin/infrastructure/adminService";
+import { ApiError } from "@/core/api/client";
+import { FamilyChildrenFields } from "@/modules/admin/presentation/FamilyChildrenFields";
+import type { User } from "@/modules/auth/domain/auth";
 import { useState } from "react";
-import type { RegistroHijo } from "@/types/auth";
+import type { RegistroHijo } from "@/modules/auth/domain/auth";
 
 const user: User = { id_usuario: 10, email: "family@example.com", nombres: "Familia", apellidos: "Prueba", codigo_usuario: "P00010", rol: "PADRE", roles: ["PADRE"], activo: true, password_change_required: true };
 function withSession(element: React.ReactNode, path = "/padre") {

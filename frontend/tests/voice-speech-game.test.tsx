@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { VoiceSpeechGame } from '@/pages/padre/Sessions/VoiceSpeechGame';
-import { voiceService, type TranscripcionRespuesta } from '@/services/voiceService';
+import { VoiceSpeechGame } from '@/modules/padre/presentation/Sessions/VoiceSpeechGame';
+import { voiceService, type TranscripcionRespuesta } from '@/modules/mundo_asha/infrastructure/voiceService';
 
 // Mock de MediaStreamTrack y MediaStream
 class MockMediaStreamTrack {

@@ -4,10 +4,10 @@ from uuid import uuid4
 import asyncio
 import pytest
 from sqlalchemy import select, func, event
-from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion
-from app.models.perfiles import Paciente, Perfil, PerfilLogro
-from app.models.juegos import ResultadoNivel
-from app.services.juegos_catalogo import MUNDOS, VERSION
+from app.modules.clinica.domain.clinica_models import Expediente, Tratamiento, Reserva, Sesion
+from app.modules.cuentas.domain.perfiles_models import Paciente, Perfil, PerfilLogro
+from app.modules.mundo_asha.domain.models import ResultadoNivel
+from app.modules.mundo_asha.application.juegos_catalogo import MUNDOS, VERSION
 
 
 @pytest.fixture(autouse=True)

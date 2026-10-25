@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
-import type { CrearTerapeutaPayload } from '../src/types/auth';
-import { TherapistProfileExtras } from '../src/pages/admin/TherapistProfileExtras';
+import type { CrearTerapeutaPayload } from '../src/modules/auth/domain/auth';
+import { TherapistProfileExtras } from '../src/modules/admin/presentation/TherapistProfileExtras';
 
 it('adds distinct languages and skills while preserving the professional description', () => {
   function Form() {

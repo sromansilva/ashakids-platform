@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
-import { apiClient, invalidateIdentityRequests } from '@/api/client';
-import { ReportDownload } from '@/components/common/ReportDownload';
+import { apiClient, invalidateIdentityRequests } from '@/core/api/client';
+import { ReportDownload } from '@/shared/presentation/components/common/ReportDownload';
 import { renderRoute } from './helpers';
 
 const pdf = () => new Response('%PDF-1.4\nsynthetic-test', { headers: { 'Content-Type': 'application/pdf' } });

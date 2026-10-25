@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import pytest
 
 from app.core.config import settings
-from app.services import zoom
+from app.modules.agenda.infrastructure import zoom
 
 
 @pytest.mark.asyncio

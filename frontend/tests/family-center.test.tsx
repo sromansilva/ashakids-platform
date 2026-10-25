@@ -1,10 +1,10 @@
 import { beforeEach, expect, it, vi } from 'vitest';
 import { fireEvent, screen, within, waitFor } from '@testing-library/react';
 import { renderRoute } from './helpers';
-import type { Patient } from '@/types/clinical';
-import type { GameProgress } from '@/services/learningGames';
-import { learningGames } from '@/services/learningGames';
-import { appointmentsService } from '@/services/clinicalService';
+import type { Patient } from '@/modules/clinica/domain/clinical';
+import type { GameProgress } from '@/modules/mundo_asha/infrastructure/learningGames';
+import { learningGames } from '@/modules/mundo_asha/infrastructure/learningGames';
+import { appointmentsService } from '@/modules/clinica/infrastructure/clinicalService';
 
 const child: Patient = {id_paciente:21,id_tutor:1,nombres_paciente:'Leo',apellidos_paciente:'Ejemplo',fecha_nacimiento:'2020-01-01',sexo:'Masculino',activo:true,fecha_registro:'2026-01-01'};
 const sibling: Patient = {...child,id_paciente:22,nombres_paciente:'Luna'};

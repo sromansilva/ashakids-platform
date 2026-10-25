@@ -8,10 +8,10 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 from sqlalchemy.dialects import postgresql
 from app.main import app
-from app.api.deps import get_current_user
+from app.shared.presentation.deps import get_current_user
 from app.core.database import get_db
-from app.schemas.mensajeria import MensajeCrear, ConversacionCrear
-from app.services import mensajeria as service
+from app.modules.comunicacion.domain.mensajeria_schemas import MensajeCrear, ConversacionCrear
+from app.modules.comunicacion.application import mensajeria as service
 
 NOW = datetime.now(timezone.utc)
 IDENTITY = (Row(id_usuario=7, nombres='Tutor', apellidos='Sintético'), ['PADRE'])

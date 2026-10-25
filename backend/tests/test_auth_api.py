@@ -15,8 +15,8 @@ from app.core.config import settings
 from app.core.database import get_db
 from app.core.security import hash_password
 from app.main import app
-from app.models.auth import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
-from app.models.perfiles import Terapeuta, Tutor
+from app.modules.auth.domain.models import Administrador, Rol, SesionAutenticacion, Usuario, UsuarioRol
+from app.modules.cuentas.domain.perfiles_models import Terapeuta, Tutor
 class MockScalarResult:
     """Resultado simulado para métodos scalar_one_or_none de SQLAlchemy."""
     def __init__(self, val):

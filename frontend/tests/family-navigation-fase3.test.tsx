@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
-import type { Patient } from '@/types/clinical';
-import type { GameProgress } from '@/services/learningGames';
-import { FAMILY_SUBNAV_ITEMS } from '@/pages/padre/dashboard/FamilySubNav';
+import type { Patient } from '@/modules/clinica/domain/clinical';
+import type { GameProgress } from '@/modules/mundo_asha/infrastructure/learningGames';
+import { FAMILY_SUBNAV_ITEMS } from '@/modules/padre/presentation/dashboard/FamilySubNav';
 
 const child: Patient = {
   id_paciente: 21,

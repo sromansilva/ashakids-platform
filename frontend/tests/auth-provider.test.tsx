@@ -1,10 +1,10 @@
 import { it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { AuthProvider } from "@/auth/AuthContext";
-import { useAuth } from "@/hooks/useAuth";
-import { authService } from "@/services/authService";
-import type { User } from "@/types/auth";
-vi.mock("@/services/authService", () => ({ authService: { getCurrentUser: vi.fn(), login: vi.fn(), logout: vi.fn() } }));
+import { AuthProvider } from "@/modules/auth/application/AuthContext";
+import { useAuth } from "@/modules/auth/application/useAuth";
+import { authService } from "@/modules/auth/infrastructure/authService";
+import type { User } from "@/modules/auth/domain/auth";
+vi.mock("@/modules/auth/infrastructure/authService", () => ({ authService: { getCurrentUser: vi.fn(), login: vi.fn(), logout: vi.fn() } }));
 const user: User = { id_usuario: 1, codigo_usuario: "test", nombres: "Prueba", apellidos: "Local", email: "test@example.invalid", rol: "PADRE", roles: ["PADRE"], activo: true };
 function Probe() {
   const auth = useAuth();

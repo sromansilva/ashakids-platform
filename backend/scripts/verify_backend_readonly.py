@@ -16,7 +16,10 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from app.core.config import settings
 from app.core.database_transport import engine_options
 from app.core.database import Base
-from app.models import auth, auditoria, clinica, mensajeria, perfiles
+from app.modules.auth.domain import models as auth
+from app.modules.cuentas.domain import auditoria_models as auditoria, perfiles_models as perfiles
+from app.modules.clinica.domain import clinica_models as clinica
+from app.modules.comunicacion.domain import mensajeria_models as mensajeria
 from scripts.inspect_schema_compatibility import COLUMNS, TABLES, CONSTRAINTS, INDEXES, model_differences
 
 

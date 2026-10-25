@@ -1,10 +1,10 @@
 import { it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { AppProviders } from "@/app/providers/AppProviders";
-import AppRouter from "@/app/AppRouter";
-import { authService } from "@/services/authService";
-import type { SemanticRole, User } from "@/types/auth";
-vi.mock("@/services/authService", () => ({ authService: {
+import { AppProviders } from "@/core/providers/AppProviders";
+import AppRouter from "@/core/router/AppRouter";
+import { authService } from "@/modules/auth/infrastructure/authService";
+import type { SemanticRole, User } from "@/modules/auth/domain/auth";
+vi.mock("@/modules/auth/infrastructure/authService", () => ({ authService: {
   getCurrentUser: vi.fn(), login: vi.fn(), logout: vi.fn(),
 } }));
 beforeEach(() => vi.clearAllMocks());

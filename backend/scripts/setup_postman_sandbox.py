@@ -12,10 +12,10 @@ from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
 from app.core.security import hash_password
-from app.models.auth import Administrador, Rol, Usuario, UsuarioRol
-from app.models.perfiles import Terapeuta, Tutor
-from app.models.perfiles import Paciente
-from app.models.clinica import Expediente, Reserva, Sesion, Tratamiento
+from app.modules.auth.domain.models import Administrador, Rol, Usuario, UsuarioRol
+from app.modules.cuentas.domain.perfiles_models import Terapeuta, Tutor
+from app.modules.cuentas.domain.perfiles_models import Paciente
+from app.modules.clinica.domain.clinica_models import Expediente, Reserva, Sesion, Tratamiento
 
 PASSWORD = "Postman-Synthetic-Only-2026"
 USERS = (("a90001", "ADMIN"), ("p90001", "PADRE"), ("t90001", "TERAPEUTA"))

@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
-import { appointmentsService, patientsService, sessionsService, treatmentsService, usersService } from '@/services/clinicalService';
-import { apiClient, invalidateIdentityRequests } from '@/api/client';
+import { appointmentsService, patientsService, sessionsService, treatmentsService, usersService } from '@/modules/clinica/infrastructure/clinicalService';
+import { apiClient, invalidateIdentityRequests } from '@/core/api/client';
 
 const patient = { id_paciente: 12, id_tutor: 7, nombres_paciente: 'Paciente', apellidos_paciente: 'Aislado', fecha_nacimiento: '2019-02-01', sexo: 'M', activo: true, fecha_registro: '2026-01-01' };
 const account = { id_usuario: 17, id_tutor: 7, id_terapeuta: null, nombres: 'Tutor', apellidos: 'Aislado', codigo_usuario: 'p90001', email: 'test@example.invalid', roles: ['PADRE'], activo: true };

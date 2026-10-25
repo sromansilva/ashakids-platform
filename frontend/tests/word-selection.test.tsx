@@ -1,7 +1,7 @@
 import { expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { ageInLima, selectWordGames } from '@/pages/padre/Sessions/WordGames/wordSelection';
-import { WordWorld } from '@/pages/padre/Sessions/WordGames/WordWorld';
+import { ageInLima, selectWordGames } from '@/modules/padre/presentation/Sessions/WordGames/wordSelection';
+import { WordWorld } from '@/modules/padre/presentation/Sessions/WordGames/WordWorld';
 
 const today = new Date('2026-10-19T15:00:00Z');
 it('calcula cumpleaños en Lima sin adelantarlo por UTC, valida fechas y no inventa edad', () => {

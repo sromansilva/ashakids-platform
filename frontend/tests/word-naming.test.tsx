@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { NamingGame } from '@/pages/padre/Sessions/WordGames/NamingGame';
-import { voiceService, type TranscripcionRespuesta } from '@/services/voiceService';
+import { NamingGame } from '@/modules/padre/presentation/Sessions/WordGames/NamingGame';
+import { voiceService, type TranscripcionRespuesta } from '@/modules/mundo_asha/infrastructure/voiceService';
 
 class Recorder {
   static last: Recorder;

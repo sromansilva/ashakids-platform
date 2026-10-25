@@ -3,8 +3,8 @@ import asyncio
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from sqlalchemy import func, select
-from app.models.agenda import TurnoSemanal
-from app.models.clinica import Reserva
+from app.modules.agenda.domain.models import TurnoSemanal
+from app.modules.clinica.domain.clinica_models import Reserva
 from app.core.config import settings
 from tests.clinical_helpers import PATIENT, appointment_due, session_journey
 

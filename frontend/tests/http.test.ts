@@ -1,5 +1,5 @@
 import { it, expect, vi, afterEach } from "vitest";
-import { apiClient, ApiError } from "@/api/client";
+import { apiClient, ApiError } from "@/core/api/client";
 afterEach(() => vi.unstubAllGlobals());
 it("API requests carry session cookies", async () => {
   const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify({ ok: true }), { headers: { "Content-Type": "application/json" } }));

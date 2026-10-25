@@ -1,10 +1,10 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
-import { SoundWorld } from '@/pages/padre/Sessions/SoundGames/SoundWorld';
-import { animals, soundLevels } from '@/pages/padre/Sessions/SoundGames/soundContent';
-import { SoundTutorialScene } from '@/pages/padre/Sessions/SoundGames/SoundTutorialScene';
-import { soundGames, type SoundGameId } from '@/pages/padre/Sessions/SoundGames/soundGames';
-import type { SoundAudio } from '@/pages/padre/Sessions/SoundGames/useSoundAudio';
+import { SoundWorld } from '@/modules/padre/presentation/Sessions/SoundGames/SoundWorld';
+import { animals, soundLevels } from '@/modules/padre/presentation/Sessions/SoundGames/soundContent';
+import { SoundTutorialScene } from '@/modules/padre/presentation/Sessions/SoundGames/SoundTutorialScene';
+import { soundGames, type SoundGameId } from '@/modules/padre/presentation/Sessions/SoundGames/soundGames';
+import type { SoundAudio } from '@/modules/padre/presentation/Sessions/SoundGames/useSoundAudio';
 
 let player: HTMLAudioElement;
 beforeEach(() => {

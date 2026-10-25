@@ -2,7 +2,7 @@ import { lazy } from "react";
 import { it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { PageBoundary } from "@/app/PageBoundary";
+import { PageBoundary } from "@/core/router/PageBoundary";
 it("An unresolved page chunk displays a loading indicator", () => {
   const Pending = lazy(() => new Promise<{ default: () => null }>(() => {}));
   render(<MemoryRouter><PageBoundary><Pending /></PageBoundary></MemoryRouter>);

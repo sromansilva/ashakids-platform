@@ -1,7 +1,7 @@
 import { beforeEach,expect,it,vi } from 'vitest';
 import { fireEvent,render,screen } from '@testing-library/react';
-import { WordWorld } from '@/pages/padre/Sessions/WordGames/WordWorld';
-import { wordGames,type WordPlayMode } from '@/pages/padre/Sessions/WordGames/wordContent';
+import { WordWorld } from '@/modules/padre/presentation/Sessions/WordGames/WordWorld';
+import { wordGames,type WordPlayMode } from '@/modules/padre/presentation/Sessions/WordGames/wordContent';
 beforeEach(()=>{
  vi.spyOn(Math,'random').mockReturnValue(.999);
  vi.stubGlobal('speechSynthesis',{speak:vi.fn(),cancel:vi.fn(),getVoices:()=>[]});

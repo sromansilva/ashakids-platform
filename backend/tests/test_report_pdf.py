@@ -7,12 +7,12 @@ import httpx
 import pytest
 from fastapi import HTTPException
 from pypdf import PdfReader
-from app.api.deps import get_current_user
+from app.shared.presentation.deps import get_current_user
 from app.core.database import get_db
 from app.main import app
-from app.services import sesiones
-from app.services import presentacion
-from app.services.report_pdf import build_report_pdf
+from app.modules.clinica.application import sesiones
+from app.shared.application import presentacion
+from app.modules.clinica.infrastructure.report_pdf import build_report_pdf
 
 
 def fixtures(**fields):

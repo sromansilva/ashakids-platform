@@ -1,8 +1,8 @@
 import { beforeEach, expect, it, vi } from "vitest";
 import { fireEvent, screen } from "@testing-library/react";
 import { renderRoute } from "./helpers";
-import { summarizeFamily } from "@/services/familyTracking";
-import type { Appointment, Patient, Report, Session, Treatment } from "@/types/clinical";
+import { summarizeFamily } from "@/modules/padre/application/familyTracking";
+import type { Appointment, Patient, Report, Session, Treatment } from "@/modules/clinica/domain/clinical";
 
 const now = Date.parse("2026-10-09T12:00:00Z");
 const patient: Patient = { id_paciente: 1, id_tutor: 1, nombres_paciente: "Alex", apellidos_paciente: "Primero", fecha_nacimiento: "2020-01-01", sexo: "Otro", activo: true, fecha_registro: "2026-01-01" };

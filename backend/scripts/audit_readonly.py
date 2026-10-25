@@ -12,9 +12,9 @@ import httpx
 from sqlalchemy import select, text
 from app.core import database
 from app.main import app
-from app.models.clinica import Expediente, Tratamiento, Reserva, Sesion, ReporteSesion
-from app.models.auth import Usuario, Rol, UsuarioRol, SesionAutenticacion, Administrador
-from app.models.perfiles import Paciente, Tutor, Terapeuta, Perfil, Logro, PerfilLogro
+from app.modules.clinica.domain.clinica_models import Expediente, Tratamiento, Reserva, Sesion, ReporteSesion
+from app.modules.auth.domain.models import Usuario, Rol, UsuarioRol, SesionAutenticacion, Administrador
+from app.modules.cuentas.domain.perfiles_models import Paciente, Tutor, Terapeuta, Perfil, Logro, PerfilLogro
 
 
 async def audit():

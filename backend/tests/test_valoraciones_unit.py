@@ -8,10 +8,10 @@ from fastapi import HTTPException
 from pydantic import ValidationError
 from sqlalchemy.dialects import postgresql
 from app.main import app
-from app.schemas.valoraciones import ValoracionCrear
-from app.models.valoraciones import Valoracion
-from app.services import valoraciones as service
-from app.services.citas import citas_visibles
+from app.modules.clinica.domain.valoraciones_schemas import ValoracionCrear
+from app.modules.clinica.domain.valoraciones_models import Valoracion
+from app.modules.clinica.application import valoraciones as service
+from app.modules.agenda.application.citas import citas_visibles
 
 
 @pytest.mark.parametrize('data', [{'calificacion': 0}, {'calificacion': 6}, {'calificacion': True}, {'calificacion': 4.5}, {'calificacion': '5'}, {'calificacion': 5, 'comentario': 'x'*1001}, {'calificacion': 5, 'id_usuario': 99}])

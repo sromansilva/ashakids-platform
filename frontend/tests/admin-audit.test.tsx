@@ -1,8 +1,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { expect, it, vi } from 'vitest';
-import { AdminAuditoria } from '../src/pages/admin/AdminAuditoria';
-import { adminService, type AuditoriaItem } from '../src/services/adminService';
-import { auditDay, filterAudit, groupAudit } from '../src/pages/admin/auditView';
+import { AdminAuditoria } from '../src/modules/admin/presentation/AdminAuditoria';
+import { adminService, type AuditoriaItem } from '../src/modules/admin/infrastructure/adminService';
+import { auditDay, filterAudit, groupAudit } from '../src/modules/admin/presentation/auditView';
 
 const items: AuditoriaItem[] = [
   {id_auditoria:1,actor:'Ana',nombre_tabla:'usuarios',nombre_entidad:'10',accion:'INSERT',fecha_evento:'2026-10-11T04:30:00Z'},

@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
-import { normalizePatientSex } from '@/types/patientSex';
-import { capabilityNotice } from '@/app/routeCapabilities';
+import { normalizePatientSex } from '@/shared/domain/types/patientSex';
+import { capabilityNotice } from '@/core/router/routeCapabilities';
 
 const appointment = { id_reserva: 45, id_paciente: 12, id_tratamiento: 5, id_terapeuta: 4,
   paciente_nombre: 'AUDITORIA Paciente', terapeuta_nombre: 'AUDITORIA Profesional',

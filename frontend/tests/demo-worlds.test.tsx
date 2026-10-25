@@ -1,7 +1,7 @@
 import { beforeEach, it, expect, vi } from 'vitest';
 import { fireEvent, screen, within } from '@testing-library/react';
 import { renderRoute } from './helpers';
-import type { GameProgress } from '@/services/learningGames';
+import type { GameProgress } from '@/modules/mundo_asha/infrastructure/learningGames';
 
 const names = ['Taller de los Sonidos','La Isla de las Palabras','Ritmo de las Palabras','El Estudio de la Voz','Laboratorio de los Gestos'];
 const codes = ['HABLA','LENGUAJE','FLUIDEZ','VOZ','OROFACIAL'] as const;

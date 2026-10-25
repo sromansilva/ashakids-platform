@@ -3,9 +3,9 @@ import asyncio
 from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException
 from sqlalchemy import select, update
-from app.models.clinica import Reserva, Sesion
-from app.models.notificaciones import Notificacion
-from app.services.notificaciones import recordatorios
+from app.modules.clinica.domain.clinica_models import Reserva, Sesion
+from app.modules.comunicacion.domain.notificaciones_models import Notificacion
+from app.modules.comunicacion.application.notificaciones import recordatorios
 from tests.clinical_helpers import journey
 
 PATH = '/api/v1/notificaciones'
@@ -84,7 +84,7 @@ async def test_disabled_preferences_affect_only_future_notifications(clinical):
 
 
 async def test_event_and_reservation_rollback_together(clinical, monkeypatch):
-    from app.services import citas as service
+    from app.modules.agenda.application import citas as service
     clients, _ = clinical
     _, _, cita, _ = await journey(clients)
     original = service.avisar_cita

@@ -7,9 +7,9 @@ import pytest
 from fastapi import HTTPException
 from pydantic import ValidationError
 
-from app.services import email_activation as service
-from app.services.auth_service import authenticate_user
-from app.schemas.auth import EmailActivationRequest
+from app.modules.auth.application import email_activation as service
+from app.modules.auth.application.auth_service import authenticate_user
+from app.modules.auth.domain.schemas import EmailActivationRequest
 from app.core.security import hash_password, verify_password
 
 

@@ -7,14 +7,14 @@ import pytest
 from sqlalchemy import func, select
 
 from app.main import app
-from app.models.auth import SesionAutenticacion, Usuario
-from app.models.auditoria import AuditoriaCambios
-from app.models.perfiles import Paciente
+from app.modules.auth.domain.models import SesionAutenticacion, Usuario
+from app.modules.cuentas.domain.auditoria_models import AuditoriaCambios
+from app.modules.cuentas.domain.perfiles_models import Paciente
 from app.core.security import verify_password
 from app.core.config import settings
 from app.core import login_limiter
-from app.services.email_activation import activation_token
-from app.services.auth_service import create_user_session
+from app.modules.auth.application.email_activation import activation_token
+from app.modules.auth.application.auth_service import create_user_session
 
 
 @pytest.fixture(autouse=True)
@@ -107,7 +107,7 @@ async def test_only_admin_and_unique_codes_under_concurrency(clinical):
 
 async def test_transaction_rolls_back_partial_family(clinical, monkeypatch):
     clients, factory = clinical
-    import app.services.familias as families
+    import app.modules.cuentas.application.familias as families
     async def failing_audit(**kwargs):
         raise RuntimeError("Fallo sintético después del primer hijo")
     monkeypatch.setattr(families, "registrar_auditoria", failing_audit)

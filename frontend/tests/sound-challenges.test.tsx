@@ -1,9 +1,9 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, expect, it, vi } from 'vitest';
-import { SoundWorld } from '@/pages/padre/Sessions/SoundGames/SoundWorld';
-import { selectSoundGames } from '@/pages/padre/Sessions/SoundGames/soundGames';
-import { soundRounds, type ChallengeKind } from '@/pages/padre/Sessions/SoundGames/soundRounds';
-import { selectWordGames } from '@/pages/padre/Sessions/WordGames/wordSelection';
+import { SoundWorld } from '@/modules/padre/presentation/Sessions/SoundGames/SoundWorld';
+import { selectSoundGames } from '@/modules/padre/presentation/Sessions/SoundGames/soundGames';
+import { soundRounds, type ChallengeKind } from '@/modules/padre/presentation/Sessions/SoundGames/soundRounds';
+import { selectWordGames } from '@/modules/padre/presentation/Sessions/WordGames/wordSelection';
 
 let player: HTMLAudioElement;
 const click = (name: string | RegExp) => fireEvent.click(screen.getByRole('button', { name }));
