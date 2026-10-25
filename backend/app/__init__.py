@@ -1,1 +1,0 @@
-"""ASHAKids Backend Application Package."""

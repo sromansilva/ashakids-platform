@@ -7,12 +7,12 @@
     "build": "vite build",
     "dev": "vite",
     "test": "npm run test:routing && npm run test:components",
-    "test:routing": "node --experimental-strip-types --test tests/routing.test.mjs",
+    "test:routing": "node --experimental-strip-types --test ../tests/frontend/routing.test.mjs",
     "test:components": "vitest run",
     "check:frontend": "node scripts/check-frontend.mjs",
     "typecheck": "tsc --noEmit",
-    "qa:e2e": "playwright test",
-    "qa:a11y": "playwright test e2e/accessibility.spec.ts",
+    "qa:e2e": "playwright test ../tests/e2e",
+    "qa:a11y": "playwright test ../tests/e2e/accessibility.spec.ts",
     "qa:lighthouse": "node scripts/run-lighthouse.mjs"
   },
   "dependencies": {
