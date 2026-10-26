@@ -58,7 +58,7 @@ export class PacientesService {
           ...row,
           codigo_paciente: `PAC-${String(row.id_paciente).padStart(3, '0')}`,
           historial: [
-            { fecha: '2026-10-15', nota: 'Evaluación clínica inicial completada en Supabase.' },
+            { fecha: '2026-10-15', nota: 'Evaluación clínica inicial completada en PostgreSQL.' },
           ],
         };
       }

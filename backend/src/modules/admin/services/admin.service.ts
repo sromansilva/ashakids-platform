@@ -42,7 +42,7 @@ export class AdminService {
         total: result.rows.length,
       };
     } catch (err) {
-      console.warn('[AdminService] Supabase fallback para getCuentas:', err);
+      console.warn('[AdminService] Fallback para getCuentas:', err);
       return {
         items: [
           { id_usuario: 1, codigo_usuario: 'a00001', nombres: 'Administrador', apellidos: 'Sistema', email: 'admin@ashakids.test', rol: 'ADMIN', activo: true },
@@ -140,7 +140,7 @@ export class AdminService {
         [dto.nombres, dto.apellidos, dto.email, dto.activo, id]
       );
     } catch (err) {
-      console.warn('[AdminService] Error al actualizar cuenta en Supabase:', err);
+      console.warn('[AdminService] Error al actualizar cuenta en PostgreSQL:', err);
     }
 
     return {

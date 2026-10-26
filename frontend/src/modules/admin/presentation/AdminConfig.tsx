@@ -6,7 +6,7 @@ const tools = [
   { name: 'Node.js & Express', logo: 'typescript', area: 'API', detail: 'API REST modular por capas y DTOs' },
   { name: 'Whisper AI', logo: 'typescript', area: 'API', detail: 'Reconocimiento y evaluación de voz' },
   { name: 'PostgreSQL', logo: 'postgresql', area: 'Datos', detail: 'Registros y relaciones' },
-  { name: 'Supabase', logo: 'supabase', area: 'Datos', detail: 'Alojamiento de PostgreSQL' },
+  { name: 'PostgreSQL Local', logo: 'postgresql', area: 'Datos', detail: 'Servidor de base de datos relacional local' },
   { name: 'Render / AWS', logo: 'render', area: 'Despliegue', detail: 'Infraestructura cloud bajo HTTPS' },
   { name: 'Gmail', logo: 'gmail', area: 'Integraciones', detail: 'Correo de alta y boletín', note: 'Según configuración del servicio' },
   { name: 'Zoom', logo: 'zoom', area: 'Integraciones', detail: 'Enlaces de videollamada', note: 'Creación automática según configuración' },

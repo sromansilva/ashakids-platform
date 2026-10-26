@@ -14,7 +14,7 @@ export class AuthService {
     }
 
     try {
-      // 1. Consultar usuario real desde Supabase PostgreSQL
+      // 1. Consultar usuario real desde PostgreSQL local
       const query = `
         SELECT 
           u.id_usuario, 
@@ -138,7 +138,7 @@ export class AuthService {
       };
     } catch (err: any) {
       if (err.status) throw err;
-      console.error('[AuthService] Error de conexión a Supabase:', err);
+      console.error('[AuthService] Error de conexión a PostgreSQL:', err);
 
       // Si falla la conexión a la base de datos y estamos en modo test o dev, permitir fallback controlado
       if (settings.ENVIRONMENT !== 'production') {
@@ -236,10 +236,10 @@ export class AuthService {
         token,
         user,
         usuario: user,
-        message: 'Usuario registrado exitosamente en Supabase',
+        message: 'Usuario registrado exitosamente en PostgreSQL',
       };
     } catch (err: any) {
-      console.error('[AuthService] Error al registrar en Supabase:', err);
+      console.error('[AuthService] Error al registrar en PostgreSQL:', err);
       // Fallback
       const prefix = dto.rol === 'ADMIN' ? 'a' : dto.rol === 'TERAPEUTA' ? 't' : 'p';
       const codigo_usuario = dto.codigo_usuario || `${prefix}${Math.floor(10000 + Math.random() * 90000)}`;
