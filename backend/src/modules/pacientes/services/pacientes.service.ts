@@ -165,17 +165,26 @@ export class PacientesService {
       const atendida = res.rows.some(r => r.estado_sesion === 'FINALIZADA' || r.estado_reserva === 'COMPLETADA');
       const pendienteRow = res.rows.find(r => r.estado_reserva === 'PENDIENTE' || r.estado_reserva === 'CONFIRMADA');
 
+      const planRes = await pool.query(
+        `SELECT t.id_tratamiento
+         FROM tratamientos t
+         JOIN expedientes e ON t.id_expediente = e.id_expediente
+         WHERE e.id_paciente = $1 AND t.estado_tratamiento = 'ACTIVO';`,
+        [id]
+      );
+      const hasPlan = planRes.rows.length > 0;
+
       return {
-        introduccion_atendida: atendida || true, // default to true so full interface unlocks
+        introduccion_atendida: atendida,
         introduccion_pendiente: pendienteRow?.id_reserva ?? null,
-        terapia_habilitada: true,
+        terapia_habilitada: atendida && hasPlan,
       };
     } catch (err) {
       console.warn('[PacientesService] Fallback recorrido:', err);
       return {
-        introduccion_atendida: true,
+        introduccion_atendida: false,
         introduccion_pendiente: null,
-        terapia_habilitada: true,
+        terapia_habilitada: false,
       };
     }
   }
