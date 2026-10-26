@@ -1,3 +1,0 @@
-$kind: collection
-name: ASHAKids Backend Local Verification
-description: Prueba local de todas las operaciones OpenAPI contra PostgreSQL aislado. No usar con Supabase.

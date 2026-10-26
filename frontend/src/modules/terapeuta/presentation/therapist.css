@@ -1,0 +1,35 @@
+/* therapist.css - Clean Asha Therapist Theme */
+.professional-toolbar { display: none; }
+
+@media (min-width: 768px) {
+  .asha-professional {
+    color: #1C1135;
+    background: #F8F7FC !important;
+  }
+  .asha-professional ::selection {
+    background: #EDE9FE;
+    color: #4C1D95;
+  }
+  .asha-professional :is(input, textarea) {
+    caret-color: #6B46FE;
+  }
+  .asha-professional :is(button, a, input, textarea, select):focus-visible {
+    outline: 2px solid #6B46FE;
+    outline-offset: 2px;
+  }
+  .professional-content {
+    padding: 0;
+  }
+  .professional-content .overflow-y-auto {
+    scrollbar-width: thin;
+    scrollbar-color: #D1D5DB transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .asha-professional * {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

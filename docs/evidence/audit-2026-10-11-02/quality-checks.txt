@@ -1,2 +1,0 @@
-Knowledge map is current.
-Graphify refresh: AST local/no LLM, 2656 nodos, 133 comunidades. git diff --check: PASS. PDF: 6 páginas Poppler inspeccionadas; pdf-qa.json.

@@ -1,6 +1,0 @@
-{
-  "catalogHTTP": 200,
-  "cards": 5,
-  "errors": [],
-  "scope": "Public GET catalog only, no sign-in or mutation"
-}

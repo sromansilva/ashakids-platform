@@ -1,1 +1,0 @@
-Logos: React, TypeScript, Vite, Tailwind CSS, Python, FastAPI, PostgreSQL, Supabase y GitHub de https://github.com/devicons/devicon (MIT). Gmail, Zoom y Render de https://github.com/simple-icons/simple-icons (CC0; marcas de sus propietarios). SVG locales, sin solicitudes externas en runtime.

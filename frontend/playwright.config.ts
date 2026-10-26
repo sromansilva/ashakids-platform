@@ -4,7 +4,7 @@ const baseURL = process.env.E2E_BASE_URL || "http://127.0.0.1:5174";
 const startServer = process.env.E2E_START_SERVER === "true";
 
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: "../tests/e2e",
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,

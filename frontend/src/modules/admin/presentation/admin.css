@@ -1,0 +1,62 @@
+.asha-admin {
+  --admin-ink: #1c1135;
+  --admin-muted: #615274;
+  --admin-border: #e8e5f4;
+  --admin-violet: #6b46fe;
+  background: #f7f8fc !important;
+  color: #1c1135;
+}
+
+.asha-admin ::selection {
+  color: #2d1b69;
+  background: #ddd6fe;
+}
+
+.asha-admin :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid #6b46fe;
+  outline-offset: 2px;
+}
+
+.asha-admin :is(input, textarea) {
+  caret-color: #6b46fe;
+}
+
+.asha-admin button {
+  transition-duration: 0.18s;
+}
+
+.asha-admin button:disabled {
+  cursor: not-allowed;
+}
+
+.admin-support-rail {
+  display: none;
+}
+
+.admin-content {
+  padding: 16px 20px 40px;
+}
+
+.admin-content > :is(div, section):not([role="note"]) {
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+/* Custom scrollbars */
+.asha-admin ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.asha-admin ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.asha-admin ::-webkit-scrollbar-thumb {
+  background: #d8cfea;
+  border-radius: 9999px;
+}
+
+.asha-admin ::-webkit-scrollbar-thumb:hover {
+  background: #b8a9d8;
+}

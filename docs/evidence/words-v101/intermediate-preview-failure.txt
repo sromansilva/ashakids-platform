@@ -1,5 +1,0 @@
-page.goto: Timeout 15000ms exceeded.
-Call log:
-[2m  - navigating to "http://127.0.0.1:5175/tests/world-map-harness.html?verify=1", waiting until "load"[22m
-
-    at C:\Users\HP\ashakids-platform\docs\evidence\words-v101\verify-browser.cjs:26:14

@@ -29,7 +29,8 @@ function visit(file) {
   }
 }
 visit(path.join(src, 'main.tsx'));
-for (const file of walk(path.join(root, 'tests')).filter(f => /\.(tsx?|mjs)$/.test(f))) visit(file);
+const testsDir = fs.existsSync(path.join(root, 'tests')) ? path.join(root, 'tests') : path.resolve(root, '..', 'tests');
+for (const file of walk(testsDir).filter(f => /\.(tsx?|mjs)$/.test(f))) visit(file);
 // API contracts and adapters deliberately reserved for the next backend task.
 for (const file of files.filter(f => f.includes(path.sep + 'services' + path.sep) || f.includes(path.sep + 'types' + path.sep) || f.endsWith('.d.ts'))) visit(file);
 const unused = files.filter(f => /\.(ts|tsx|css)$/.test(f) && !seen.has(f));
