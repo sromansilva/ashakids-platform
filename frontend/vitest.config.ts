@@ -12,8 +12,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
-      "@testing-library/jest-dom/vitest": fileURLToPath(new URL("./node_modules/@testing-library/jest-dom/dist/vitest.js", import.meta.url)),
-      "@testing-library/jest-dom": fileURLToPath(new URL("./node_modules/@testing-library/jest-dom", import.meta.url)),
+      "@testing-library/jest-dom/vitest": fileURLToPath(new URL("./node_modules/@testing-library/jest-dom/dist/vitest.mjs", import.meta.url)),
     },
   },
   test: {
