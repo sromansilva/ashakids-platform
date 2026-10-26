@@ -5,6 +5,7 @@ dist/
 .git/
 .github/
 .env
+.env.*
 */.env
 *.local
 tests/

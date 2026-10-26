@@ -10,7 +10,7 @@ export function errorHandler(
   if (err instanceof ZodError) {
     res.status(400).json({
       error: 'Error de validación en la petición.',
-      detalles: err.errors.map((e) => ({
+      detalles: err.issues.map((e) => ({
         campo: e.path.join('.'),
         mensaje: e.message,
       })),
