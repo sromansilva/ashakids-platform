@@ -59,7 +59,19 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
 - **Diseño Responsivo**: Todas las vistas deben funcionar de forma fluida en Mobile (<640px), Tablet (640px-1024px) y Desktop (>1024px).
 - **Consistencia de Ilustraciones 3D**: Usar las ilustraciones de Ashi ubicadas en `frontend/public/illustrations/` (`ashi-hero-v1.png`, `ashi-folder.png`, `ashi-tablet.png`, etc.).
 
-### Regla 3: Flujo de Versionado y Git
+### Regla 3: Flujo de Versionado, Commits y Git
+- **Nomenclatura Oficial Obligatoria para Commits y Pull Requests**:
+  Todos los commits y títulos de Pull Requests deben seguir estrictamente el patrón oficial con prefijo de versión y guiones bajos:
+  `V<Número>_<Descripción_Camel_Case_O_Con_Guiones_Bajos>`
+  - Ejemplos de referencia estándar en el repositorio:
+    - `V06_Auditoria_Reportes_PDF`
+    - `V17_Entrega_Academica_Rubrica_Hosting`
+    - `V130_Documentar_CI_CD_Ramas_y_Release`
+    - `V131_Actualizar_Contexto_CI_CD`
+    - `V132_Arquitectura_Modular_TypeScript_Vistas_Completas`
+- **Flujo de Ramas**:
+  - El desarrollo se integra vía PRs desde ramas temáticas (`feat/<nombre>`) hacia `dev`.
+  - Las promociones a producción se gestionan mediante Pull Requests desde `dev` hacia `main`.
 - **Nunca ejecutar commits automáticos** sin la confirmación explícita del usuario.
 - Mantener limpios los archivos temporales. Archivos grandes (`*.rar`, `*.zip`, carpetas de mockups como `mockups_extracted/`) deben permanecer en `.gitignore`.
 - Verificar siempre con `git status` antes y después de hacer cambios.
