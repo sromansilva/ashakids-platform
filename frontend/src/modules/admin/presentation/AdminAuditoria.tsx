@@ -143,6 +143,7 @@ export function AdminAuditoria() {
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
+            aria-label="Buscar eventos por actor, registro o acción"
             placeholder="Buscar actor, registro o acción..."
             className="flex-1 bg-transparent text-sm font-medium text-[#1C1135] placeholder-[#8C82A8] outline-none"
           />
@@ -180,7 +181,7 @@ export function AdminAuditoria() {
           Cargando eventos…
         </div>
       ) : error ? (
-        <div className="bg-red-50 border border-red-200 rounded-3xl p-6 text-red-900 flex items-center justify-between gap-4 mb-6">
+        <div role="alert" className="bg-red-50 border border-red-200 rounded-3xl p-6 text-red-900 flex items-center justify-between gap-4 mb-6">
           <div className="flex items-center gap-3">
             <AlertTriangle size={20} className="text-red-500 shrink-0" />
             <p className="text-sm font-bold">{error}</p>
@@ -284,7 +285,7 @@ export function AdminAuditoria() {
 
                             <details className="mt-2 text-xs text-[#615274]">
                               <summary className="cursor-pointer font-bold text-[#6B46FE] hover:underline">
-                                ▸ Ver detalle
+                                Ver detalle
                               </summary>
                               <div className="mt-2 p-3 bg-white rounded-xl border border-[#E8E5F4] flex flex-wrap gap-4 text-xs">
                                 <div><span className="font-bold">ID Evento:</span> #{item.id_auditoria}</div>

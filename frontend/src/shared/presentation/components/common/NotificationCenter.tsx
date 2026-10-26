@@ -60,7 +60,13 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
       >
         <Bell size={15} />
         <span>Notificaciones</span>
-        <span className="tabular-nums font-black">{count} sin leer</span>
+        {query.error ? (
+          <span className="text-red-700 font-bold">Sin conexión</span>
+        ) : query.isPending ? (
+          <span>Cargando…</span>
+        ) : (
+          <span className="tabular-nums font-black">{count} sin leer</span>
+        )}
         <ChevronDown size={14} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
 
@@ -147,7 +153,7 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
                           onClick={() => void read.submit(item.id_notificacion)}
                         >
                           <Check size={12} className="mr-1" />
-                          Leída
+                          Marcar como leída
                         </Btn>
                       )}
                     </div>

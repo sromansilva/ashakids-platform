@@ -29,13 +29,14 @@ export function FamilyTopNav({
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { children, patient, selectPatient } = useSelectedFamilyPatient();
-  const pickerRef = useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState(false);
+  const pickerRef = useRef<HTMLDetailsElement>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     const handleOutside = (event: MouseEvent) => {
       if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
-        setOpen(false);
+        pickerRef.current.open = false;
+        setPickerOpen(false);
       }
     };
     document.addEventListener('mousedown', handleOutside);
@@ -44,15 +45,10 @@ export function FamilyTopNav({
 
   const displayName = padreUserName || (user ? `${user.nombres} ${user.apellidos || ''}`.trim() : 'Piero Anticona');
 
-  const navLinks: {
-    label: string;
-    path: string;
-    section: 'world' | 'journey' | 'family';
-    icon: React.ElementType;
-  }[] = [
-    { label: 'Mi mundo', path: '/padre?section=world', section: 'world', icon: Sparkles },
-    { label: 'Mi camino ASHA', path: '/padre?section=journey', section: 'journey', icon: Compass },
-    { label: 'Para mi familia', path: '/padre?section=family', section: 'family', icon: Users },
+  const navLinks = [
+    { label: 'Mi Mundo', path: '/padre?section=world', section: 'world' as const, icon: Sparkles },
+    { label: 'Mi Camino ASHA', path: '/padre?section=journey', section: 'journey' as const, icon: Compass },
+    { label: 'Para mi familia', path: '/padre?section=family', section: 'family' as const, icon: Users },
   ];
 
   const currentSection = activeSection || searchParams.get('section');
@@ -82,76 +78,84 @@ export function FamilyTopNav({
 
   return (
     <header className="flex items-center justify-between px-6 py-3 bg-white/90 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20" role="banner">
-      {/* Left side: Brand + Child picker if NO sidebar */}
-      {!hasSidebar ? (
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={() => navigate('/padre/welcome')}
-            className="flex items-center gap-2.5 text-left focus:outline-hidden"
+      {/* Left side: Brand + Child picker */}
+      <div className="flex items-center gap-4">
+        <button
+          type="button"
+          aria-label="Volver al inicio"
+          onClick={() => {
+            navigate('/padre/welcome');
+          }}
+          className="flex items-center gap-2.5 text-left focus:outline-hidden cursor-pointer"
+        >
+          <Isotipo size={34} />
+          <span className="font-black text-[#1C1135] text-xl tracking-tight hidden sm:inline">AshaKids</span>
+          <span className="text-xs font-bold text-[#8C82A8] border-l border-[#E8E5F4] pl-2.5 hidden md:inline">Centro Familiar</span>
+        </button>
+
+        {patient && (
+          <details
+            className="relative"
+            ref={pickerRef}
+            open={pickerOpen}
+            onToggle={(e) => {
+              if (e.currentTarget.open !== pickerOpen) {
+                setPickerOpen(e.currentTarget.open);
+              }
+            }}
           >
-            <Isotipo size={34} />
-            <span className="font-black text-[#1C1135] text-xl tracking-tight hidden sm:inline">AshaKids</span>
-            <span className="text-xs font-bold text-[#8C82A8] border-l border-[#E8E5F4] pl-2.5 hidden md:inline">Centro Familiar</span>
-          </button>
+            <summary
+              aria-label={`Elegir perfil: ${patient.nombres_paciente}${patient.apellidos_paciente ? ` ${patient.apellidos_paciente}` : ''}`}
+              onClick={(e) => {
+                e.preventDefault();
+                setPickerOpen(!pickerOpen);
+              }}
+              className="flex items-center gap-2 bg-[#FFF7EE] hover:bg-[#FFEED8] border border-[#FFDFC0] rounded-full px-3 py-1.5 transition-colors shadow-xs list-none cursor-pointer"
+            >
+              <img
+                src={getPacienteAvatarImage(patient.avatar_nombre)}
+                alt=""
+                className="w-7 h-7 rounded-full object-cover bg-orange-100 p-0.5"
+              />
+              <span className="font-extrabold text-sm text-[#1C1135]">{patient.nombres_paciente}</span>
+              <ChevronDown size={15} className={`text-[#8C82A8] transition-transform ${pickerOpen ? 'rotate-180' : ''}`} />
+            </summary>
 
-          {patient && (
-            <div className="relative" ref={pickerRef}>
-              <button
-                type="button"
-                onClick={() => setOpen(!open)}
-                className="flex items-center gap-2 bg-[#FFF7EE] hover:bg-[#FFEED8] border border-[#FFDFC0] rounded-full px-3 py-1.5 transition-colors shadow-xs"
-              >
-                <img
-                  src={getPacienteAvatarImage(patient.avatar_nombre)}
-                  alt=""
-                  className="w-7 h-7 rounded-full object-cover bg-orange-100 p-0.5"
-                />
-                <span className="font-extrabold text-sm text-[#1C1135]">{patient.nombres_paciente}</span>
-                <ChevronDown size={15} className={`text-[#8C82A8] transition-transform ${open ? 'rotate-180' : ''}`} />
-              </button>
-
-              {open && (
-                <div className="absolute left-0 top-full mt-1.5 bg-white rounded-2xl border border-[#E8E5F4] py-1.5 z-50 shadow-xl min-w-[200px]">
-                  <p className="px-3.5 py-1 text-[10px] font-bold text-[#8C82A8] uppercase tracking-wider">Perfiles de la familia</p>
-                  {children.map((child) => (
-                    <button
-                      key={child.id_paciente}
-                      type="button"
-                      onClick={() => {
-                        selectPatient(child.id_paciente);
-                        if (searchParams.has('world')) {
-                          const nextParams = new URLSearchParams(searchParams);
-                          nextParams.delete('world');
-                          setSearchParams(nextParams, { replace: true });
-                        }
-                        setOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between px-3.5 py-2 text-left hover:bg-violet-50 transition-colors ${
-                        child.id_paciente === patient.id_paciente ? 'bg-violet-50 font-bold' : ''
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <img src={getPacienteAvatarImage(child.avatar_nombre)} alt="" className="w-6 h-6 rounded-full" />
-                        <span className="text-xs text-[#1C1135]">{child.nombres_paciente} {child.apellidos_paciente}</span>
-                      </div>
-                      {child.id_paciente === patient.id_paciente && <Check size={14} className="text-[#6B46FE]" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex items-center gap-2 text-sm font-bold text-[#625779] md:hidden">
-          <Isotipo size={28} />
-          <span className="text-[#1C1135] font-black">AshaKids</span>
-        </div>
-      )}
+            {pickerOpen && (
+              <div className="absolute left-0 top-full mt-1.5 bg-white rounded-2xl border border-[#E8E5F4] py-1.5 z-50 shadow-xl min-w-[200px]">
+                <p className="px-3.5 py-1 text-[10px] font-bold text-[#8C82A8] uppercase tracking-wider">Perfiles de la familia</p>
+                {children.map((child) => (
+                  <button
+                    key={child.id_paciente}
+                    type="button"
+                    onClick={() => {
+                      selectPatient(child.id_paciente);
+                      if (searchParams.has('world')) {
+                        const nextParams = new URLSearchParams(searchParams);
+                        nextParams.delete('world');
+                        setSearchParams(nextParams, { replace: true });
+                      }
+                      setPickerOpen(false);
+                    }}
+                    className={`w-full flex items-center justify-between px-3.5 py-2 text-left hover:bg-violet-50 transition-colors cursor-pointer ${
+                      child.id_paciente === patient.id_paciente ? 'bg-violet-50 font-bold' : ''
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <img src={getPacienteAvatarImage(child.avatar_nombre)} alt="" className="w-6 h-6 rounded-full" />
+                      <span className="text-xs text-[#1C1135]">{child.nombres_paciente} {child.apellidos_paciente}</span>
+                    </div>
+                    {child.id_paciente === patient.id_paciente && <Check size={14} className="text-[#6B46FE]" />}
+                  </button>
+                ))}
+              </div>
+            )}
+          </details>
+        )}
+      </div>
 
       {/* Center Nav Pills */}
-      <nav className="flex items-center gap-1.5 sm:gap-2" aria-label="Secciones del Centro Familiar">
+      <nav className="flex items-center gap-1.5 sm:gap-2" aria-label="Navegación del Centro Familiar">
         {navLinks.map((item) => {
           const Icon = item.icon;
           const active = isItemActive(item);
@@ -159,6 +163,7 @@ export function FamilyTopNav({
             <button
               key={item.label}
               type="button"
+              aria-label={`Ir a ${item.label}`}
               onClick={() => handleNavClick(item)}
               className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-all duration-150 ${
                 active

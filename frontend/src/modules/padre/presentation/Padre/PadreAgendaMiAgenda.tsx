@@ -226,6 +226,9 @@ export function PadreAgendaMiAgenda({
                       </div>
                       <Bdg color="orange">Por confirmar</Bdg>
                     </div>
+                    <p className="mt-3 text-xs font-medium text-orange-800">
+                      La confirmación corresponde al terapeuta asignado. El estado se actualizará desde el servidor.
+                    </p>
                   </div>
                 ))}
 

@@ -43,9 +43,11 @@ export function PadreAgenda(props: Parameters<typeof usePadreAgenda>[0]) {
       {/* Child selector */}
       {agenda.patient && (
         <div className="mb-6">
-          <label className="block text-xs font-bold text-[#8C82A8] mb-1.5">Hijo o hija</label>
+          <label htmlFor="child-agenda-select" className="block text-xs font-bold text-[#8C82A8] mb-1.5">Hijo o hija</label>
           <div className="relative max-w-xs">
             <select
+              id="child-agenda-select"
+              aria-label="Hijo o hija"
               className="w-full p-2.5 pr-8 rounded-2xl border border-[#E8E5F4] bg-white text-sm font-extrabold text-[#1C1135] shadow-xs focus:outline-hidden focus:border-[#6B46FE]"
               value={agenda.patient.id_paciente}
               onChange={(e) => agenda.selectPatient(Number(e.target.value))}

@@ -76,15 +76,15 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     incidenciasService.listar(0, controller.signal)
       .then(result => {
         if (!controller.signal.aborted) {
-          if (Array.isArray(result.items) && result.items.length > 0) {
+          if (Array.isArray(result.items)) {
             setItems(result.items.map((it, idx) => ({
               ...it,
-              codigo: `INC-${String(idx + 1).padStart(3, '0')}`,
+              codigo: (it as { codigo?: string }).codigo || `INC-${String(idx + 1).padStart(3, '0')}`,
               tipo: it.tipo || 'Funcionalidad',
-              estado: it.estado === 'NUEVA' ? 'ABIERTA' : it.estado === 'LEIDA' ? 'EN_REVISION' : 'RESUELTA',
+              estado: it.estado,
             })));
           } else {
-            setItems(demoIncidencias);
+            setItems([]);
           }
         }
       })
@@ -108,7 +108,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
       await incidenciasService.estado(id, estado);
       setItems(current => current.map(item =>
         item.id_incidencia === id
-          ? { ...item, estado: estado === 'LEIDA' ? 'EN_REVISION' : 'RESUELTA' }
+          ? { ...item, estado }
           : item
       ));
     } catch (cause) {
@@ -118,13 +118,13 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   };
 
-  const countAbiertas = items.filter(i => i.estado === 'ABIERTA').length;
-  const countEnRevision = items.filter(i => i.estado === 'EN_REVISION').length;
+  const countAbiertas = items.filter(i => ['ABIERTA', 'NUEVA'].includes(i.estado)).length;
+  const countEnRevision = items.filter(i => ['EN_REVISION', 'LEIDA'].includes(i.estado)).length;
   const countResueltas = items.filter(i => i.estado === 'RESUELTA').length;
 
   const filteredItems = items.filter(i => {
-    if (filterEstado === 'ABIERTA' && i.estado !== 'ABIERTA') return false;
-    if (filterEstado === 'EN_REVISION' && i.estado !== 'EN_REVISION') return false;
+    if (filterEstado === 'ABIERTA' && !['ABIERTA', 'NUEVA'].includes(i.estado)) return false;
+    if (filterEstado === 'EN_REVISION' && !['EN_REVISION', 'LEIDA'].includes(i.estado)) return false;
     if (filterEstado === 'RESUELTA' && i.estado !== 'RESUELTA') return false;
     if (filterRol === 'PADRE' && i.rol !== 'PADRE') return false;
     if (filterRol === 'TERAPEUTA' && i.rol !== 'TERAPEUTA') return false;
@@ -299,7 +299,14 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E8E5F4] text-sm">
-              {filteredItems.map(item => {
+              {filteredItems.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center text-sm font-bold text-[#615274]">
+                    No hay incidencias en esta página
+                  </td>
+                </tr>
+              ) : (
+                filteredItems.map(item => {
                 const isSelected = selected === item.id_incidencia;
                 return (
                   <tr
@@ -311,9 +318,13 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                       <span className="font-mono text-xs font-bold text-[#6B46FE] block mb-0.5">
                         {item.codigo || `INC-${item.id_incidencia}`}
                       </span>
-                      <p className="font-extrabold text-sm text-[#1C1135]">
+                      <button
+                        type="button"
+                        onClick={() => setSelected(isSelected ? null : item.id_incidencia)}
+                        className="font-extrabold text-sm text-[#1C1135] text-left hover:text-[#6B46FE] cursor-pointer"
+                      >
                         {item.titulo}
-                      </p>
+                      </button>
                     </td>
 
                     {/* Reportado por */}
@@ -334,16 +345,16 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
 
                     {/* Estado */}
                     <td className="py-4 px-6">
-                      {item.estado === 'ABIERTA' && (
+                      {['ABIERTA', 'NUEVA'].includes(item.estado) && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FEE2E2] text-[#DC2626]">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
-                          Abierta
+                          {item.estado === 'NUEVA' ? 'Nueva' : 'Abierta'}
                         </span>
                       )}
-                      {item.estado === 'EN_REVISION' && (
+                      {['EN_REVISION', 'LEIDA'].includes(item.estado) && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FEF3C7] text-[#D97706]">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
-                          En revisión
+                          {item.estado === 'LEIDA' ? 'Leída' : 'En revisión'}
                         </span>
                       )}
                       {item.estado === 'RESUELTA' && (
@@ -371,7 +382,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                     </td>
                   </tr>
                 );
-              })}
+              }))}
             </tbody>
           </table>
         </div>
@@ -415,7 +426,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                   )}
                 </div>
               </div>
-              {actionError && <p className="mt-2 text-xs text-red-600 font-bold">{actionError}</p>}
+              {actionError && <p role="alert" className="mt-2 text-xs text-red-600 font-bold">{actionError}</p>}
             </div>
           );
         })()}

@@ -41,7 +41,7 @@ export function FamilyWorlds({
   worldId,
   onOpen,
   onBack,
-  onFamily: _onFamily,
+  onFamily,
   birthDate,
 }: {
   patientId: number;
@@ -54,8 +54,8 @@ export function FamilyWorlds({
 }) {
   const { user } = useAuth();
   const client = useQueryClient();
-  const allWorlds = progress.data?.mundos ?? [];
-  const selected = allWorlds.find((w) => w.id === worldId);
+  const assigned = progress.data?.mundos.filter((world) => world.asignado) ?? [];
+  const selected = assigned.find((w) => w.id === worldId);
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
@@ -78,65 +78,52 @@ export function FamilyWorlds({
               back={onBack}
               onSaved={(value) => client.setQueryData([user?.id_usuario, 'game-progress', patientId], value)}
             />
-          ) : (
+          ) : assigned.length > 0 ? (
             <div className="space-y-6">
-              {/* Top Row: 3 Worlds */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {worldCardsData.slice(0, 3).map((w) => (
-                  <div
-                    key={w.id}
-                    className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs flex flex-col items-center text-center justify-between min-h-[380px] hover:border-violet-300 transition-all group"
-                  >
-                    <div className="w-full flex items-center justify-center py-4 flex-1">
-                      <img
-                        src={w.image}
-                        alt={w.name}
-                        className="w-56 h-44 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200 select-none"
-                      />
-                    </div>
-                    <div className="w-full mt-2">
-                      <h2 className="text-2xl font-black text-[#1C1135] mb-5">{w.name}</h2>
-                      <button
-                        type="button"
-                        onClick={() => onOpen(w.id)}
-                        className="w-full flex items-center justify-center gap-2 bg-[#6B46FE] hover:bg-[#5835E5] text-white py-3.5 px-6 rounded-2xl font-black text-sm shadow-md shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
-                      >
-                        <span>Explorar</span>
-                        <ArrowRight size={17} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom Row: 2 Worlds (Centered) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                {worldCardsData.slice(3, 5).map((w) => (
-                  <div
-                    key={w.id}
-                    className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs flex flex-col items-center text-center justify-between min-h-[380px] hover:border-violet-300 transition-all group"
-                  >
-                    <div className="w-full flex items-center justify-center py-4 flex-1">
-                      <img
-                        src={w.image}
-                        alt={w.name}
-                        className="w-56 h-44 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200 select-none"
-                      />
-                    </div>
-                    <div className="w-full mt-2">
-                      <h2 className="text-2xl font-black text-[#1C1135] mb-5">{w.name}</h2>
-                      <button
-                        type="button"
-                        onClick={() => onOpen(w.id)}
-                        className="w-full flex items-center justify-center gap-2 bg-[#6B46FE] hover:bg-[#5835E5] text-white py-3.5 px-6 rounded-2xl font-black text-sm shadow-md shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
-                      >
-                        <span>Explorar</span>
-                        <ArrowRight size={17} />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="Mis mundos asignados">
+                {assigned.map((w) => {
+                  const card = worldCardsData.find((item) => item.id === w.id);
+                  const image = card?.image || '/illustrations/optimized/world-lenguaje-v54-640-6f46efcc02.webp';
+                  return (
+                    <li
+                      key={w.id}
+                      className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs flex flex-col items-center text-center justify-between min-h-[380px] hover:border-violet-300 transition-all group"
+                    >
+                      <div className="w-full flex items-center justify-center py-4 flex-1">
+                        <img
+                          src={image}
+                          alt=""
+                          className="w-56 h-44 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200 select-none"
+                        />
+                      </div>
+                      <div className="w-full mt-2">
+                        <h2 className="text-2xl font-black text-[#1C1135] mb-5">{w.name}</h2>
+                        <button
+                          type="button"
+                          onClick={() => onOpen(w.id)}
+                          className="w-full flex items-center justify-center gap-2 bg-[#6B46FE] hover:bg-[#5835E5] text-white py-3.5 px-6 rounded-2xl font-black text-sm shadow-md shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
+                        >
+                          <span>Explorar</span>
+                          <ArrowRight size={17} />
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <img src="/illustrations/family-storybook-v88.png" alt="" className="w-40 h-40 object-contain mb-4" />
+              <h2 className="text-2xl font-black text-[#1C1135] mb-2">Tu aventura se está preparando</h2>
+              <p className="text-sm font-bold text-[#615274] mb-6">Tu familia y tu terapeuta te ayudarán a empezar.</p>
+              <button
+                type="button"
+                onClick={onFamily}
+                className="px-6 py-3 rounded-2xl border-2 border-[#6B46FE] text-[#6B46FE] hover:bg-violet-50 font-black text-sm transition-all"
+              >
+                Ir con mi familia
+              </button>
             </div>
           )}
         </>

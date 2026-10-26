@@ -198,7 +198,7 @@ export function Sidebar({
           const active =
             cur === item.view ||
             (item.view === "admin/dashboard" && (cur === "admin" || cur === "admin/dashboard")) ||
-            (item.view === "admin/operacion" && (cur === "admin/incidencias" || cur === "admin/operacion"));
+            (item.view === "admin/operacion" && ((cur as string) === "admin/incidencias" || cur === "admin/operacion"));
           return (
             <button
               key={item.view}

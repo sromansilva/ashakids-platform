@@ -25,7 +25,7 @@ export function PadreReportesundefined({ tab, setTab, sessions, openSession, set
           <div>
             <p className="text-xs font-bold text-[#8C82A8]">Sesiones totales</p>
             <p className="text-2xl font-black text-[#6B46FE] mt-0.5">
-              {ready ? String(sessions.length) : '0'}
+              {ready ? String(sessions.length) : 'Sin datos'}
             </p>
           </div>
         </div>

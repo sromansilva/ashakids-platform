@@ -74,7 +74,6 @@ export function DashLayout({
       }}
     >
       {!isFamily && <Sidebar role={role} cur={cur} go={go} logout={logout} padreUserName={padreUserName} padrePlan={padrePlan} />}
-      {isFamily && isFamilyContextual && <FamilySidebar go={go} />}
 
       {mob && !isFamily && (
         <div className="md:hidden fixed inset-0 z-40 flex bg-black/50 backdrop-blur-sm">
@@ -164,6 +163,7 @@ export function DashLayout({
         {!isFamily && <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />}
         <div className="flex-1 overflow-y-auto flex min-h-0">
           <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : role === "terapeuta" ? " professional-content" : ""}`}>
+            {isFamily && isFamilyContextual && <FamilySubNav go={go} />}
             {children}
           </div>
 

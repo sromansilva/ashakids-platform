@@ -155,7 +155,7 @@ export function ClinicalReportEditor({
       </p>
 
       <RemoteFeedback error={save.error} />
-      {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">✓ Reporte guardado en el servidor.</p>}
+      {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">Reporte guardado en el servidor.</p>}
       {dirty && <p role="status" className="text-xs font-bold text-[#D97706]">● Cambios sin guardar.</p>}
 
       <div className="flex justify-end pt-2">
@@ -165,7 +165,7 @@ export function ClinicalReportEditor({
           className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-extrabold text-sm shadow-md transition-all active:scale-[.98] disabled:opacity-50 cursor-pointer"
         >
           <Save size={16} />
-          {save.isPending ? 'Guardando reporte…' : 'Guardar cambios'}
+          {save.isPending ? 'Guardando reporte…' : 'Guardar reporte'}
         </button>
       </div>
     </form>

@@ -80,8 +80,8 @@ export function TerapeutaDatosActividad({ go }: { go: (v: View) => void }) {
               >
                 <option value="Juan Anticona">Juan Anticona</option>
                 {patients.data?.map((p) => (
-                  <option key={p.id_paciente} value={`${p.nombres} ${p.apellidos}`}>
-                    {p.nombres} {p.apellidos}
+                  <option key={p.id_paciente} value={`${p.nombres_paciente} ${p.apellidos_paciente}`}>
+                    {p.nombres_paciente} {p.apellidos_paciente}
                   </option>
                 ))}
               </select>

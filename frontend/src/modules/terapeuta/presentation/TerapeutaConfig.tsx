@@ -129,10 +129,12 @@ export function TerapeutaConfig() {
             {/* 2-Column Fields Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-bold text-[#615274] mb-1.5">Nombre completo</label>
+                <label htmlFor="therapist-profile-0" className="block text-xs font-bold text-[#615274] mb-1.5">Nombre completo</label>
                 <div className="relative">
                   <UserRound size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                   <input
+                    id="therapist-profile-0"
+                    aria-label="Nombre completo"
                     readOnly
                     value={fullName}
                     className="w-full pl-11 pr-4 py-3 rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] text-xs font-extrabold text-[#1C1135] focus:outline-none"
@@ -141,10 +143,12 @@ export function TerapeutaConfig() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#615274] mb-1.5">Correo electrónico</label>
+                <label htmlFor="therapist-profile-1" className="block text-xs font-bold text-[#615274] mb-1.5">Correo electrónico</label>
                 <div className="relative">
                   <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                   <input
+                    id="therapist-profile-1"
+                    aria-label="Correo electrónico"
                     readOnly
                     value={email}
                     className="w-full pl-11 pr-4 py-3 rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] text-xs font-extrabold text-[#1C1135] focus:outline-none"
@@ -153,10 +157,12 @@ export function TerapeutaConfig() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#615274] mb-1.5">Especialidad principal</label>
+                <label htmlFor="therapist-profile-2" className="block text-xs font-bold text-[#615274] mb-1.5">Especialidad principal</label>
                 <div className="relative">
                   <GraduationCap size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                   <input
+                    id="therapist-profile-2"
+                    aria-label="Especialidad principal"
                     readOnly
                     value={specialty}
                     className="w-full pl-11 pr-4 py-3 rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] text-xs font-extrabold text-[#1C1135] focus:outline-none"
@@ -165,10 +171,12 @@ export function TerapeutaConfig() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-[#615274] mb-1.5">Años de experiencia</label>
+                <label htmlFor="therapist-profile-3" className="block text-xs font-bold text-[#615274] mb-1.5">Años de experiencia</label>
                 <div className="relative">
                   <Sliders size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
                   <input
+                    id="therapist-profile-3"
+                    aria-label="Años de experiencia"
                     readOnly
                     value={experience}
                     className="w-full pl-11 pr-4 py-3 rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] text-xs font-extrabold text-[#1C1135] focus:outline-none"
@@ -234,7 +242,7 @@ export function TerapeutaConfig() {
                       <Camera size={13} />
                       Cambiar foto
                     </button>
-                    <p className="text-[10px] text-[#9E95B7] mt-1">Formatos: JPG, PNG. Máx. 2 MB.</p>
+                    <p className="text-[10px] text-[#9E95B7] mt-1">Próximamente</p>
                   </div>
                 </div>
               </div>
@@ -244,7 +252,7 @@ export function TerapeutaConfig() {
                 <p className="text-xs font-extrabold text-[#1C1135] mb-3">Teléfono</p>
                 <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-dashed border-[#C8C2DC] bg-white text-xs text-[#9E95B7]">
                   <Phone size={14} />
-                  <span>Sin registrar</span>
+                  <span>Próximamente</span>
                 </div>
               </div>
 
@@ -253,7 +261,7 @@ export function TerapeutaConfig() {
                 <p className="text-xs font-extrabold text-[#1C1135] mb-3">Cédula profesional</p>
                 <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-dashed border-[#C8C2DC] bg-white text-xs text-[#9E95B7]">
                   <CreditCard size={14} />
-                  <span>Sin registrar</span>
+                  <span>Próximamente</span>
                 </div>
               </div>
             </div>

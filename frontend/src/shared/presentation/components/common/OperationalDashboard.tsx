@@ -115,11 +115,11 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
       ) : (
         <>
           {/* Row 1: KPI Metrics Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+          <div aria-label="Resumen de registros" className={`grid grid-cols-1 sm:grid-cols-2 ${admin ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-5 mb-6`}>
             {[
               {
                 label: admin ? "Pacientes activos" : "Pacientes atendidos",
-                count: admin ? patients.data?.length ?? 9 : Math.max(1, attendedPatients.size),
+                count: admin ? (patients.data?.length ?? 0) : attendedPatients.size,
                 icon: Users,
                 bg: "bg-[#F3E8FF]",
                 color: "text-[#6B46FE]",
@@ -141,6 +141,18 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
                 color: "text-[#EA580C]",
                 watermark: "orange",
               },
+              ...(admin
+                ? [
+                    {
+                      label: "Cuentas activas",
+                      count: (accounts.data ?? []).filter((a) => a.activo).length,
+                      icon: Users,
+                      bg: "bg-[#E6FFFA]",
+                      color: "text-[#00A389]",
+                      watermark: "teal",
+                    },
+                  ]
+                : []),
             ].map((stat) => (
               <div
                 key={stat.label}
@@ -299,7 +311,8 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
                       <li key={a.id_reserva} className="p-3.5 bg-[#F8F7FC] rounded-2xl border border-[#E8E5F4] flex items-center justify-between">
                         <div>
                           <p className="font-extrabold text-sm text-[#1C1135]">{a.paciente_nombre}</p>
-                          <p className="text-xs text-[#615274] mt-0.5">
+                          <p className="text-xs text-[#615274] mt-0.5">{a.terapeuta_nombre} · {a.estado_reserva}</p>
+                          <p className="text-xs text-[#9E95B7]">
                             {familyDate(a.fecha_hora_inicio)} · {familyTime(a.fecha_hora_inicio)} · {a.modalidad}
                           </p>
                         </div>
