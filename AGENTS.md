@@ -1,98 +1,118 @@
-# ASHAKids: instrucciones compartidas para agentes
+# Guía de Arquitectura y Reglas para Agentes (agents.md)
 
-## Cierre obligatorio de fases (instrucción del usuario, 2026-10-09)
-- Al finalizar cada fase, crear un commit con versión y objetivo corto, más una descripción
-  breve; revisar la secuencia existente. Integrar/publicar en dev y verificar la sincronización
-  de la rama del usuario. Se permite usar PR para hacer la integración revisable.
-- Esta autorización es independiente de la señal de tokens bajos. La señal sigue sirviendo
-  para preparar un relevo anticipado, incluso si la fase no terminó. No esperar la señal
-  para publicar una fase cerrada. No usar force-push ni ocultar errores de permisos/CI.
-- Antes de publicar revisar diff, secretos, evidencia, referencias remotas y conflictos.
-  No marcar como completa una extensión diferida solo para crear un commit.
+Este documento define las directrices arquitectónicas, los flujos operativos y las reglas de verificación obligatorias para que tanto agentes de IA como el equipo de desarrollo mantengan la coherencia, calidad e integridad de la plataforma **Ashakids**.
 
-## Señal de relevo acordada por el usuario
-- Si el usuario escribe "tokens bajos dejar todo listo para siguiente desarollador",
-  priorizar el relevo antes de ampliar funciones: guardar avances, pendientes, errores,
-  comandos/resultados y siguiente tarea en contexto/progreso, incluso a mitad de una fase.
-- La señal autoriza revisar e integrar ese avance en dev y hacer commit/push identificables.
-  Comprobar rama/SHA, diff, secretos y referencias remotas; preservar trabajo existente,
-  continuar la secuencia de versiones vigente y resolver conflictos sin force-push.
-- Entregar estado real del commit/push y un prompt de continuación con tarea, archivos,
-  entorno y límites. Si algo impide integrar/publicar, registrar el bloqueo y el avance local.
-- No esperar al agotamiento total ni prometer un push que no ocurrió. Mantener documentación
-  de cada corte; publicar también al cerrar fases según la instrucción anterior.
+---
 
-## Antes de modificar el proyecto
-- Leer `docs/PROJECT_CONTEXT.md`; consultar `docs/architecture.md` si afecta la estructura.
-- Usar `python tools/knowledge/manage.py check`. Si falta el entorno, ejecutar `setup`; si el mapa está obsoleto, ejecutar `refresh`.
-- Para investigar relaciones, usar la skill `.agents/skills/graphify/SKILL.md` y el entorno `.venv-graphify`. En este proyecto los comandos de `tools/knowledge/manage.py` sustituyen la instalación global y los ejemplos bash del proveedor.
-- Consultar símbolos concretos: `python tools/knowledge/manage.py query "authenticate_user create_user_session"`. El presupuesto inicial es 1500 tokens. No cargar todo `graph.json` o todo el informe en una conversación.
-- Confirmar los hallazgos leyendo los archivos y líneas relevantes. Las relaciones inferidas no garantizan llamadas reales ni conexiones HTTP entre lenguajes. Si la consulta no encuentra resultados, buscar en código.
+## 1. Visión General del Sistema
 
-## Arquitectura y límites
-- Frontend React -> HTTP/JSON -> FastAPI -> SQLAlchemy/PostgreSQL. No conectar el frontend directamente a PostgreSQL ni implementar autenticación con Supabase Auth.
-- Graphify es una herramienta de desarrollo; no añadirlo al runtime, dependencias de frontend o `backend/requirements.txt`.
-- Usar análisis AST local (`--code-only`) y etiquetas sin LLM (`--no-label`) por defecto. No analizar credenciales, archivos de pacientes, logs ni datos reales; respetar `.graphifyignore`.
-- No crear usuarios ni modificar tablas reales para pruebas sin una petición explícita. Las pruebas de integración existentes crean sesiones de desarrollo; ejecutarlas solo cuando corresponde y reportar advertencias.
+**Ashakids** es una plataforma integral de telerehabilitación e intervención clínica/educativa infantil para habla, lenguaje, fluidez, voz y motricidad orofacial.
 
-## Al terminar cambios importantes
-- Actualizar `docs/PROJECT_CONTEXT.md` cuando cambien funciones, pendientes o limitaciones.
-- Actualizar `docs/architecture.md` y crear un ADR en `docs/decisions/` cuando cambie una decisión de arquitectura; no inventar decisiones pasadas.
-- Ejecutar `python tools/knowledge/manage.py refresh` después de modificar fuentes y `check` antes de entregar. El mapa generado no se versiona: cada clon lo genera con la misma configuración.
-- Ejecutar las pruebas pertinentes, reportando fallos, advertencias y alcance realmente verificado. No afirmar cobertura de todas las pantallas por una compilación exitosa.
+El sistema opera con tres roles principales:
+- **`ADMIN` (Administración)**: Gestión de cuentas familiares y terapeutas, supervisión clínica, soporte, analíticas globales y auditoría.
+- **`TERAPEUTA` (Especialistas)**: Agenda clínica, atención presencial o vía Zoom, expedientes, generación de reportes clínicos estructurados, analíticas y seguimiento de actividad educativa.
+- **`PADRE` (Familias y Pacientes)**: Centro familiar (*Mi mundo*, *Mi camino ASHA*, *Para mi familia*), selector de hijos activos, agendamiento de citas, reportes de evolución, pagos y juegos educativos del Mundo ASHA.
 
+---
 
-## Entrega académica y continuidad del equipo
-- Fecha límite confirmada: 2026-10-09 a las 18:00, America/Lima. Priorizar el núcleo
-  funcional y la evidencia de la rúbrica antes de ampliar módulos.
-- Base compartida confirmada por el usuario: dev. Este clon puede estar en piero-dev;
-  comprobar rama/SHA y cambios locales antes de integrar, preservando trabajo existente.
-- Leer docs/IMPLEMENTATION_PLAN.md y el último relevo de docs/IMPLEMENTATION_PROGRESS.md.
-  Registrar objetivo, rama/SHA, archivos, comprobaciones reales, errores y siguiente acción.
-  Si no hubo commit/push, indicarlo: otro equipo no recibe los cambios solo por actualizar el chat.
+## 2. Estructura del Monorepo
 
-## Commits e informe: observación del profesor
-- Convención compartida para los commits del usuario, compañeros y agentes:
-  `VNN_Accion_Modulos`, con título corto que identifique el trabajo realmente realizado.
-  Referencias del usuario: `V01_Auditoria_Modulos_Front`, `V02_Revision_UX/UI`,
-  `V03_Auditoria_Actividades_Mensajes_Reportes`. Los números son ejemplos: antes de
-  crear un commit, revisar git log y continuar la secuencia publicada sin reiniciarla.
-- Nombrar la acción y los módulos afectados (por ejemplo, Seguimiento, Paneles,
-  Autenticacion, Mensajes o Reportes). Evitar títulos genéricos como `V01_Fase3`,
-  `V02_AuditoriaFase3` o `V03_IntegrarFase3`: el profesor debe entender el contenido
-  sin conocer las fases internas. Aplicar también a títulos de PR y commits de merge.
-- Añadir una descripción breve con los cambios concretos. No usar "Auditoria" o
-  "Revision_UX/UI" si ese trabajo no se realizó; no atribuir módulos sin cambios.
-  Usar un commit por avance coherente y revisable. No renumerar ni reescribir commits
-  publicados en dev; conservar sus SHA para los clones y evidencias del equipo.
-- Para documentación usar títulos habituales del desarrollo, como
-  `VNN_Actualizacion_Documentacion_Equipo` o `VNN_Documentacion_Arquitectura`.
-  Describir el contenido real del cambio, sin referencias a instrucciones del chat
-  ni atribuir cambios funcionales a una actualización documental.
-- El profesor excluye pagos del alcance: no implementar pasarelas, cobros, suscripciones
-  ni facturación reales, ni abrir nuevas tareas o commits dedicados a pagos simulados.
-  La simulación visual ya existente puede conservarse rotulada como demostración;
-  no convertirla en requisito de reserva, sesión o reporte. La instrucción actual
-  reemplaza la tarea de implementación de pagos que aparecía en el plan inicial.
-- Incluir el enlace del repositorio en cada informe académico o de auditoría:
-  https://github.com/sromansilva/ashakids-platform . Añadir rama y SHA auditado;
-  no confundir versiones en mensajes de commit con la versión de la API.
-- La rúbrica recibida exige evidencias de arquitectura/backend, modelo físico y
-  relaciones/operaciones de BD, seguridad/usuarios/permisos y pruebas funcionales
-  y no funcionales. Consultar docs/DELIVERY_CHECKLIST.md. La imagen es parcial:
-  no inferir criterios o puntuaciones que no estén visibles.
+El repositorio se organiza estrictamente en dos capas desacopladas:
 
-## Entregable obligatorio por auditoría
-- Seguir docs/audits/README.md y docs/audits/AUDIT_TEMPLATE.md. Cada auditoría nueva
-  entrega PDF con estructura y presentación equivalente al PDF de referencia:
-  docs/evidence/backend-2026-10-08/Auditoria_Backend_AshaKids_2026-10-08.pdf .
-- Guardar fuente editable Markdown en docs/audits/, PDF en output/pdf/ y evidencias
-  sanitizadas en docs/evidence/. Registrar fecha, ID/version de corte, rama/SHA,
-  entorno, alcance, comandos/casos y resultados, fallos, advertencias y omisiones.
-- Actualizar índice de auditorías, contexto y relevo en el mismo conjunto de cambios.
-  Conservar informes anteriores. Nunca reutilizar cifras de una auditoría previa
-  como si se hubieran obtenido nuevamente; marcar explícitamente evidencia heredada.
-- Usar la skill PDF para generar y renderizar, inspeccionar las páginas y corregir
-  problemas de formato antes de entregar el enlace al PDF. Sin secretos o datos reales.
-- Una revisión documental o incorporación de evidencia previa no es una auditoría
-  técnica nueva: registrarla como tal, sin declarar pruebas nuevas ni inventar resultados.
+```text
+ashakids-platform/
+├── backend/                  # API REST en TypeScript + Express + Drizzle ORM
+│   └── src/
+│       ├── core/             # Configuración (Zod env), conexión a PostgreSQL, middleware de cookies
+│       ├── infrastructure/   # Integraciones externas: Zoom OAuth/API, Mailer/Gmail, Reconocimiento de Voz Whisper
+│       └── modules/          # Módulos de dominio (agenda, auth, clinica, comunicacion, cuentas, mundo_asha, pacientes)
+├── frontend/                 # SPA en React 18 + TypeScript + Vite + Tailwind CSS
+│   └── src/
+│       ├── core/             # Router (AppRouter, lazyPages), Layouts (DashLayout, Sidebar, FamilySidebar), Cliente HTTP
+│       ├── modules/          # Vistas y casos de uso por dominio (admin, auth, clinica, padre, terapeuta, public, etc.)
+│       └── shared/           # Componentes comunes (BookingDialog, IncidentForm, MessagesCenter, NotificationCenter), tokens de marca
+├── tests/                    # Pruebas automatizadas (backend/ y frontend/)
+└── scripts/                  # Scripts de mantenimiento y utilidades
+```
+
+---
+
+## 3. Reglas Críticas para Agentes y Desarrolladores
+
+Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
+
+### Regla 1: Integridad de Contratos de API y Servicios Externos
+- **Zoom Service** (`backend/src/infrastructure/zoom/zoom.service.ts`):
+  - No modificar la firma de `createMeeting` ni eliminar los fallbacks cuando las credenciales no estén configuradas. El backend debe seguir funcionando en modo desarrollo sin lanzar excepciones no controladas.
+- **Servicios de Correo / Gmail**:
+  - Las variables y firmas en `backend/src/core/config.ts` y auth deben mantenerse backward-compatible.
+- **Base de Datos y PostgreSQL**:
+  - Respetar la integridad referencial. Si se prueba la reserva de citas para un paciente (ej. `id_paciente: 3`), verificar que existan su `expediente` y su `tratamiento` activo para evitar violaciones de clave foránea (`fk_reservas_paciente`, `fk_reservas_tratamiento`).
+
+### Regla 2: Fidelidad de Diseño UI (Sistema ASHA)
+- Seguir la paleta y componentes de diseño oficiales:
+  - **Color Primario / Acento**: Violeta `#6B46FE` (hover: `#5833EA`, fondos suaves: `#EDE9FE` / `#F8F7FC`).
+  - **Texto Principal**: `#1C1135`.
+  - **Texto Secundario**: `#615274` o `#9E95B7`.
+  - **Bordes**: `#E8E5F4`.
+  - **Contenedores**: Esquinas redondeadas `rounded-3xl` o `rounded-2xl` con sombras suaves `shadow-sm`.
+- **Diseño Responsivo**: Todas las vistas deben funcionar de forma fluida en Mobile (<640px), Tablet (640px-1024px) y Desktop (>1024px).
+- **Consistencia de Ilustraciones 3D**: Usar las ilustraciones de Ashi ubicadas en `frontend/public/illustrations/` (`ashi-hero-v1.png`, `ashi-folder.png`, `ashi-tablet.png`, etc.).
+
+### Regla 3: Flujo de Versionado y Git
+- **Nunca ejecutar commits automáticos** sin la confirmación explícita del usuario.
+- Mantener limpios los archivos temporales. Archivos grandes (`*.rar`, `*.zip`, carpetas de mockups como `mockups_extracted/`) deben permanecer en `.gitignore`.
+- Verificar siempre con `git status` antes y después de hacer cambios.
+
+### Regla 4: Batería de Pruebas Obligatoria
+Antes de dar por terminada cualquier tarea o entrega, se deben ejecutar y aprobar satisfactoriamente las siguientes tres comprobaciones:
+
+```bash
+# 1. Pruebas de integración del backend (12/12 passing)
+npm --prefix backend run test
+
+# 2. Pruebas de enrutamiento y guardias de seguridad del frontend (25/25 passing)
+npm --prefix frontend run test:routing
+
+# 3. Compilación de producción en TypeScript y Vite (0 errores)
+npm --prefix frontend run build
+```
+
+---
+
+## 4. Arquitectura de las Vistas por Rol
+
+### A. Rol PADRE (Centro Familiar)
+- **Rutas clave**: `/padre/welcome`, `/padre/camino`, `/padre/agenda`, `/padre/psicologos`, `/padre/reportes`, `/padre/config`.
+- **Layout**: Utiliza `FamilySidebar.tsx` (con selector de niño activo en la cabecera) y `FamilyTopNav.tsx` (con las tres pastillas: *Mi mundo*, *Mi camino ASHA*, *Para mi familia*).
+- **Componentes clave**:
+  - `BookingDialog.tsx`: Modal para agendar citas. Debe tolerar pacientes con o sin plan previo (`id_tratamiento: null`).
+  - `FamilyWorlds.tsx`: Cuadrícula 3D de los 5 mundos educativos (3 arriba, 2 abajo centrados).
+
+### B. Rol TERAPEUTA
+- **Rutas clave**: `/terapeuta`, `/terapeuta/agenda`, `/terapeuta/pacientes`, `/terapeuta/reportes`, `/terapeuta/analiticas`, `/terapeuta/datos-actividad`, `/terapeuta/config`, `/terapeuta/incidencias`.
+- **Layout**: Utiliza la barra lateral `Sidebar.tsx` y el encabezado unificado en `DashLayout.tsx` con la píldora desplegable de notificaciones (`NotificationCenter.tsx`) y tarjeta de usuario.
+- **Componentes clave**:
+  - `OperationalDashboard.tsx`: Panel principal con 3 KPIs, accesos rápidos y estado de sesión en curso / próximas citas.
+  - `TerapeutaPacientes.tsx`: Fila de paciente interactiva y estado de expediente con Ashi y carpeta clínica.
+  - `TerapeutaAgenda.tsx`: Agenda semanal (08:00 a 17:00) con selector Día/Semana.
+  - `TerapeutaReportes.tsx` + `ClinicalReportEditor.tsx`: Editor clínico estructurado con observaciones, objetivos, nivel de ayuda 1–5 y generación de reportes descargables.
+  - `TerapeutaDatosActividad.tsx`: Seguimiento demostrativo de participación lúdica por mundo con gráfico donut.
+
+### C. Rol ADMIN
+- **Rutas clave**: `/admin`, `/admin/cuentas`, `/admin/citas`, `/admin/sesiones`, `/admin/auditoria`, `/admin/config`.
+- **Layout**: Utiliza `Sidebar.tsx` con accesos operativos y cabecera de administración.
+- **Componentes clave**:
+  - `AdminCuentas.tsx`: Gestión integral de tutores y terapeutas, validación de contraseñas y activación.
+
+---
+
+## 5. Procedimiento para Implementar Nuevas Funcionalidades
+
+Cuando un agente o desarrollador deba implementar una nueva pantalla o modificar un servicio:
+1. **Inspeccionar contratos existentes**: Revisar el cliente API en `frontend/src/core/api/client.ts` y los servicios en `modules/<dominio>/infrastructure/`.
+2. **Revisar mockups de referencia**: Verificar la estructura visual requerida antes de codificar estilos.
+3. **No romper estilos globales**: Evitar reglas invasivas en archivos `.css` globales; priorizar clases utilitarias de Tailwind CSS.
+4. **Verificar tipado estricto**: No utilizar `any` injustificado; definir interfaces en `domain/` o `types/`.
+5. **Ejecutar la suite completa de pruebas** (`test`, `test:routing` y `build`).
+

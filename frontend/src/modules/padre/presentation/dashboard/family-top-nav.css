@@ -1,0 +1,199 @@
+/* Navbar moderno unificado para el portal familiar */
+.ftn-header {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid #e8e1f0;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ftn-top-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.ftn-brand-btn {
+  font-size: 1.15rem;
+  font-weight: 900;
+  color: #5b21b6;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 12px;
+  transition: background-color 0.15s ease;
+  white-space: nowrap;
+}
+
+.ftn-brand-btn:hover {
+  background: #ede9fe;
+}
+
+.ftn-child-picker summary {
+  min-height: 44px;
+  padding: 2px 12px 2px 4px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6ef;
+}
+
+.ftn-child-picker summary img {
+  width: 36px;
+  height: 36px;
+}
+
+.ftn-child-name {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1c1135;
+  max-width: 140px;
+}
+
+.ftn-user-section {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ftn-parent-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  line-height: 1.2;
+}
+
+.ftn-parent-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #7c6f9a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ftn-parent-name {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #1c1135;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ftn-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ftn-logout-btn:hover {
+  background: #fecaca;
+  color: #991b1b;
+  transform: translateY(-1px);
+}
+
+.ftn-logout-btn:active {
+  transform: translateY(0);
+}
+
+.ftn-nav-bar {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.ftn-nav-scroll {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: max-content;
+}
+
+.ftn-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #615274;
+  background: #fff;
+  border: 1px solid #e8e1f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ftn-nav-btn svg {
+  color: #7c3aed;
+  transition: transform 0.15s ease;
+}
+
+.ftn-nav-btn:hover {
+  background: #f5f3ff;
+  color: #5b21b6;
+  border-color: #cabaf5;
+}
+
+.ftn-nav-btn:hover svg {
+  transform: scale(1.1);
+}
+
+.ftn-nav-btn--active {
+  background: #7c3aed !important;
+  color: #fff !important;
+  border-color: #6d28d9 !important;
+  box-shadow: 0 4px 12px rgba(109, 40, 217, 0.25);
+}
+
+.ftn-nav-btn--active svg {
+  color: #fff !important;
+}
+
+@media (max-width: 768px) {
+  .ftn-header {
+    padding: 10px 14px;
+    gap: 10px;
+  }
+  .ftn-top-row {
+    gap: 10px;
+  }
+  .ftn-brand-btn {
+    font-size: 1rem;
+    padding: 4px 8px;
+  }
+  .ftn-parent-info {
+    display: none;
+  }
+  .ftn-logout-text {
+    display: none;
+  }
+  .ftn-logout-btn {
+    padding: 8px;
+  }
+  .ftn-nav-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    gap: 6px;
+  }
+}
+

@@ -1,0 +1,57 @@
+@media (min-width: 768px) {
+  .asha-family { color: #1c1135; }
+  .asha-family ::selection { background: #ddd6fe; color: #2d1b69; }
+  .asha-family :is(button,a,input,textarea,select):focus-visible { outline: 3px solid #5b21b6; outline-offset: 3px; }
+  .asha-family :is(input,textarea) { caret-color: #7c3aed; }
+  .asha-family button { transition: background-color .18s,box-shadow .18s,color .18s; }
+  .asha-family button:disabled { cursor: not-allowed; }
+  .family-content { padding: 0; }
+  .asha-family:has([role=dialog]) :is(a[aria-label="Contactar a AshaKids por WhatsApp"],button[aria-label="Abrir asistente ASHI"]) { visibility: hidden; }
+  .family-heading { margin-bottom: 26px; }
+  .family-heading p { font-size: 1rem; max-width: 70ch; }
+  .family-child-picker { max-width: none; }
+  .family-child-picker select { border-color: #d6cceb; font-weight: 750; box-shadow: 0 3px 12px #45247805; }
+  .asha-family .family-summary { border-radius: 32px; padding: 32px; background: linear-gradient(125deg,#2d1b69 0%,#4c1d95 58%,#7c3aed 100%) !important; color: #fff; box-shadow: 0 18px 42px #45247820,inset 0 1px 0 #ffffff30; }
+  .family-summary h2 { font-size: 1.55rem; }
+  .family-summary p { color: #ede9fe; }
+  .family-summary button { min-height: 44px; border-radius: 12px; }
+  .family-summary button:first-child { background: #6d28d9 !important; border-color: transparent !important; color: white !important; }
+  .family-summary button:first-child:hover { background: #5b21b6 !important; }
+  .family-summary > div:last-child { padding: 0; }
+  .family-panel > section[aria-label="Primer paso de este niño"] { border-color: #ddd6fe; border-radius: 32px; padding: 24px; }
+  .family-plan { padding: 24px; background: #ffffffa6; border-radius: 16px; box-shadow: 0 7px 24px #45247807; }
+  .family-plan > div { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px 20px; }
+  .family-plan > div > p { grid-column: 1; }
+  .family-plan > div > button { grid-column: 2; grid-row: 1 / 4; align-self: center; }
+  .family-stats { gap: 12px; background: transparent; border-radius: 0; padding: 0; }
+  .family-stats > div { border: 1px solid #eee9f8 !important; border-radius: 24px; box-shadow: 0 8px 24px #4524780b !important; background: #ffffffd9 !important; padding: 18px; }
+  .family-stats dd { font-variant-numeric: tabular-nums; }
+  .family-milestones { padding-block: 12px; }
+  .family-milestones ol { gap: 12px; }
+  .family-milestones .family-milestone-card { border-radius: 24px; padding: 18px; }
+  .family-milestones li p:last-child { font-size: .82rem; line-height: 1.6; }
+  .family-workspace { gap: 24px; }
+  .family-content .bg-white:has([aria-label="Último reporte"]),
+  .family-content section[aria-label="Reportes guardados"] .bg-white,
+  .family-content section[aria-label="Historial de sesiones"] .bg-white,
+  .family-content .bg-white:has(button[aria-controls^="session-detail-"]) { background: #fff; }
+  .family-workspace > div { padding: 26px; }
+  .family-worlds { background: transparent !important; }
+  .family-worlds > div { max-width: 1160px; }
+  .family-worlds > div > p[role=note] { background: #ffffffa6; border-radius: 12px; padding: 18px 22px; font-size: .9rem; line-height: 1.7; }
+  .family-world-list { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; border: 0; }
+  .family-world-list > li { padding: 26px; border: 0 !important; border-radius: 16px; background: radial-gradient(ellipse at 100% 0%,#ccfbf180,transparent 70%),#ffffffbf; box-shadow: 0 9px 28px #4524780a; display: flex; flex-direction: column; align-items: start; gap: 22px; transition: box-shadow .18s,background-color .18s; }
+  .family-world-list > li:nth-child(2n) { background: radial-gradient(ellipse at 100% 0%,#fed7aa80,transparent 70%),#ffffffbf; }
+  .family-world-list > li:hover { box-shadow: 0 14px 34px #45247815; }
+  .family-world-list h3 { max-width: 20ch; font-size: 1.35rem; }
+  .family-world-list > li > svg { color: #5b21b6; }
+  .family-world-list > li > button { margin-top: auto; min-height: 44px; }
+  .family-professionals { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 22px; }
+  .family-professionals > li { margin-top: 0 !important; padding: 26px; }
+  .asha-family table th { color: #615274; }
+  .asha-family table td { padding-block: 16px; }
+  @supports not (backdrop-filter: blur(16px)) { .asha-family .family-sidebar,.family-toolbar { background: #fff !important; } }
+  @media (prefers-reduced-motion: reduce) { .asha-family * { animation: none !important; transition: none !important; } .asha-family button:active { transform: none !important; } }
+}
+.family-toolbar { display: none; }
+@media (min-width: 768px) { .family-toolbar { display: flex; } }

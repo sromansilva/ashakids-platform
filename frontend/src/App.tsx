@@ -1,1 +1,1 @@
-export { default } from "@/app/AppRouter";
+export { default } from "@/core/router/AppRouter";

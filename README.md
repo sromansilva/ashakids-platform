@@ -1,118 +1,84 @@
 # ASHAKids Platform
 
-Plataforma de telerehabilitación e intervención infantil.
-
-## Arquitectura
-
-La plataforma sigue una arquitectura desacoplada donde el frontend nunca se conecta directamente a la base de datos:
-
-```
-React + TypeScript + Vite (Frontend)
-          │
-          │ HTTP / JSON
-          ▼
-   Python + FastAPI (Backend)
-          │
-          │ PostgreSQL
-          ▼
- Supabase / PostgreSQL (Database)
-```
-
-### Componentes
-
-- **Frontend (`frontend/`)**: React 18, TypeScript, Vite, React Router y Tailwind CSS; UI modular propia por rol.
-- **Backend (`backend/`)**: Python, FastAPI, Uvicorn, Pydantic. Responsable de la lógica de negocio, autenticación propia, autorización, operaciones clínicas y acceso a datos.
-- **Database**: Supabase como infraestructura de PostgreSQL gestionado. La base de datos es la fuente de verdad. ASHAKids utiliza **autenticación propia** (sin Supabase Auth).
+Plataforma de telerehabilitación e intervención infantil organizada únicamente en **`frontend/`** y **`backend/`**, cada uno estructurado bajo una **Arquitectura Modular por Capas** alineada al flujo operativo completo de la plataforma.
 
 ---
 
-## Ejecución del proyecto
+## Estructura General
 
-### 1. Frontend
-
-El frontend se gestiona con `npm`.
-
-```bash
-# Navegar al directorio del frontend
-cd frontend
-
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo (http://localhost:5173)
-npm run dev
-
-# Compilar para producción
-npm run build
+```text
+ashakids-platform/
+├── backend/                  # API REST en Python + FastAPI + SQLAlchemy
+│   └── app/
+│       ├── main.py
+│       ├── core/             # Configuración, base de datos, seguridad, limitadores
+│       ├── shared/           # Dependencias, contratos, filtros y reglas transversales por capa
+│       └── modules/          # Módulos de dominio (presentation, application, domain, infrastructure)
+└── frontend/                 # SPA en React 18 + TypeScript + Vite + Tailwind CSS
+    └── src/
+        ├── App.tsx
+        ├── main.tsx
+        ├── core/             # Cliente HTTP, router, providers, layouts, configuración
+        ├── shared/           # Componentes comunes, hooks transversales, tipos y tema por capa
+        └── modules/          # Módulos por dominio/rol (presentation, application, domain, infrastructure)
 ```
 
-### 2. Backend
+---
 
-El backend requiere Python 3.10+ (verificado con Python 3.13).
+## 1. Backend (`backend/app/`) — Arquitectura Modular por Capas
 
-```bash
-# Navegar al directorio del backend
+Cada módulo en `backend/app/modules/<modulo>/` separa sus responsabilidades en hasta 4 capas:
+- **`presentation/`**: Routers FastAPI (`/api/v1/...`), validación de entrada HTTP y respuestas.
+- **`application/`**: Casos de uso, servicios de negocio y orquestación del flujo clínico/operativo.
+- **`domain/`**: Modelos SQLAlchemy y esquemas/contratos Pydantic del dominio.
+- **`infrastructure/`**: Adaptadores externos (Gmail SMTP/OAuth, Zoom, generación de PDF con ReportLab, reconocimiento de voz).
+
+### Módulos del Backend según el Flujo de la Plataforma
+1. **`modules/auth/`**: Inicio/cierre de sesión con cookie `HttpOnly` y activación de cuenta por correo.
+2. **`modules/cuentas/`**: Alta de familias (con hijo inicial) y terapeutas por el administrador/asesor, perfiles y auditoría.
+3. **`modules/pacientes/`**: Gestión familiar de hijos, selección de niño activo y expedientes clínicos.
+4. **`modules/agenda/`**: Disponibilidad de terapeutas, reserva de consulta introductoria obligatoria y citas posteriores (presencial o Zoom).
+5. **`modules/clinica/`**: Atención de sesiones, registro de asistencia, reportes clínicos de 4 campos + descarga PDF, planes de trabajo y valoraciones (1–5 estrellas).
+6. **`modules/mundo_asha/`**: 5 mundos educativos con niveles, progreso XP, medallas y práctica de pronunciación/voz.
+7. **`modules/comunicacion/`**: Mensajería autorizada tutor-terapeuta con adjuntos, notificaciones, incidencias y newsletter.
+
+---
+
+## 2. Frontend (`frontend/src/`) — Arquitectura Modular por Capas
+
+Cada módulo en `frontend/src/modules/<modulo>/` está organizado por capas:
+- **`presentation/`**: Vistas (`pages`) y componentes visuales específicos del módulo.
+- **`application/`**: Contextos, hooks de estado y casos de uso del módulo.
+- **`domain/`**: Contratos TypeScript y modelos del módulo.
+- **`infrastructure/`**: Servicios de integración con la API que consumen exclusivamente `src/core/api/client.ts`.
+
+### Módulos del Frontend
+1. **`modules/auth/`**: Login, activación de cuenta por correo, onboarding y sesión activa.
+2. **`modules/public/`**: Sitio público, catálogo de especialistas, recursos e información institucional.
+3. **`modules/padre/`**: Centro Familiar, selección de niño, reserva de citas, seguimiento del plan, reportes PDF y Mundo ASHA.
+4. **`modules/terapeuta/`**: Panel clínico, disponibilidad, pacientes, cierre de sesiones, reportes, planes de trabajo y reseñas.
+5. **`modules/admin/`**: Gestión de cuentas familiares/terapeutas, bandeja de incidencias, auditoría y operación.
+6. **`modules/pacientes/`**: Contratos y servicios de expedientes infantiles.
+7. **`modules/clinica/`**: Contratos y servicios de citas, sesiones, reportes y planes clínicos.
+8. **`modules/mundo_asha/`**: Catálogo de los 5 mundos educativos, progreso de juegos y servicio de voz.
+9. **`modules/comunicacion/`**: Servicios de mensajería con adjuntos, notificaciones e incidencias.
+
+---
+
+## Ejecución en Local
+
+### Backend (`http://localhost:8000`)
+```powershell
 cd backend
-
-# Crear entorno virtual
 python -m venv .venv
-
-# Activar entorno virtual
-# En Windows (PowerShell):
 .\.venv\Scripts\Activate.ps1
-# En Linux / macOS:
-# source .venv/bin/activate
-
-# Instalar dependencias
 pip install -r requirements.txt
-
-# Configurar variables de entorno (copiar ejemplo)
-cp .env.example .env
-
-# Iniciar servidor FastAPI (http://localhost:8000)
 uvicorn app.main:app --reload --port 8000
 ```
 
-#### Comprobación de salud del Backend
-
-Una vez iniciado el backend, verificar en:
-
-- Health check: `http://localhost:8000/health`
-- Documentación OpenAPI interactiva: `http://localhost:8000/docs`
-## Conocimiento compartido para el equipo
-
-Guía progresiva: [contexto maestro](docs/PROJECT_CONTEXT.md),
-[plan por fases](docs/IMPLEMENTATION_PLAN.md) y [avance/relevos](docs/IMPLEMENTATION_PROGRESS.md).
-Pagos: solo maqueta existente; sin desarrollo ni commits nuevos de pagos, según el profesor.
-Registrar el estado en Git al cambiar de integrante o asistente.
-Entrega: 2026-10-09 18:00 Lima. Ver [lista de entrega](docs/DELIVERY_CHECKLIST.md) y
-[protocolo de auditorías](docs/audits/README.md).
-
-
-Leer [contexto actual](docs/PROJECT_CONTEXT.md), [arquitectura](docs/architecture.md) y [flujo Graphify](docs/knowledge-workflow.md). La skill está en `.agents/skills/graphify/`; las instrucciones para agentes están en `AGENTS.md`.
-
-```sh
-python tools/knowledge/manage.py setup
-python tools/knowledge/manage.py query "authenticate_user"
-python tools/knowledge/manage.py refresh
+### Frontend (`http://localhost:5173`)
+```powershell
+cd frontend
+npm install
+npm run dev
 ```
-
-El entorno y mapa son regenerables y no se versionan. Graphify es tooling de desarrollo separado del frontend y backend.
-
-## Entrega Académica y Demostración
-
-Plazo de entrega confirmado: **2026-10-09 a las 18:00 (America/Lima)**.  
-Repositorio oficial: [https://github.com/sromansilva/ashakids-platform](https://github.com/sromansilva/ashakids-platform) (Rama: `dev`).
-
-- 📄 **[Informe de Entrega y Evidencia para la Rúbrica](docs/academic/INFORME_ENTREGA_RUBRICA.md):** Detalle técnico de Arquitectura Backend, Integración con Base de Datos (26 tablas), Seguridad/RBAC y resultados de 376 pruebas automatizadas (0 fallos).
-- 🎙️ **[Guion de Sustentación Académica en Vivo](docs/acceptance/GUION_SUSTENTACION_ACADEMICA.md):** Guion paso a paso (8-10 min) para la demostración ante el profesor con los tres roles (`ADMIN`, `TERAPEUTA`, `PADRE`), descarga de PDF oficial y persistencia comprobada.
-- ☁️ **[Análisis Comparativo de Hosting Gratuito](docs/academic/COMPARATIVA_HOSTING_GRATUITO.md):** Evaluación de alternativas (Vercel + Render vs Railway) y resolución técnica de cookies HttpOnly Same-Origin.
-- 📋 **[Lista de Salida y Criterios de Calidad](docs/DELIVERY_CHECKLIST.md):** Verificación de cierre de entrega.
-
-### Credenciales Sintéticas de Demostración
-
-Contraseña para todos los roles: `Auditoria-Sintetica-2026!`
-- **Administrador:** `a90001` $\rightarrow$ Accede a `/admin` (Gobernanza, usuarios, asignación clínica).
-- **Terapeuta:** `t90001` $\rightarrow$ Accede a `/terapeuta` (Agenda, 4 campos de reporte clínico, mensajería).
-- **Padre de familia:** `p90001` $\rightarrow$ Accede a `/padre` (Progreso, consulta de reporte, descarga de PDF, mensajería).
-

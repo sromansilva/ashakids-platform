@@ -7,7 +7,9 @@ node_modules/
 dist/
 dist-ssr/
 build/
+out/
 *.local
+*.tsbuildinfo
 
 # Environment variables and secrets
 .env
@@ -16,11 +18,16 @@ build/
 !.env.example
 !*/.env.example
 
+# Design assets, archives and mockups
+*.rar
+*.zip
+*.7z
+*.tar.gz
+mockups_extracted/
 
 # Python
 .venv/
 .venv*/
-graphify-out/
 venv/
 ENV/
 env/
@@ -42,14 +49,36 @@ pnpm-debug.log*
 # Editor and OS files
 .DS_Store
 Thumbs.db
+desktop.ini
 *.bak
 .idea/
 .vscode/
 ~$*
-# Development knowledge tooling (generated independently in each clone)
+*.sublime-workspace
+*.sublime-project
+.antigravity/
+.gemini/
+.claude/
+
+# Development knowledge tooling
 .venv-graphify/
 graphify-out/
 .graphify_cache/
 
-# Temporary verification outputs; final reports are kept in output/ and docs/evidence/.
+# Temporary and cache directories
 /tmp/
+tmp/
+*.tmp
+*.temp
+
+# QA & Testing artifacts
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+coverage/
+.nyc_output/
+
+# Local databases
+*.sqlite
+*.sqlite3

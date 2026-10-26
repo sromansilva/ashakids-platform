@@ -1,0 +1,130 @@
+/* Design system v1: only the tokens and controls used by the public landing. */
+
+.asha-landing.asha-ui {
+  --asha-primary: #7C3AED;
+  --asha-primary-top: #8240ED;
+  --asha-primary-hover: #6D28D9;
+  --asha-primary-dark: #5B21B6;
+  --asha-teal: #0F766E;
+  --asha-teal-dark: #115E59;
+  --asha-teal-soft: #E6F5F2;
+  --asha-orange: #F97316;
+  --asha-orange-hover: #EA580C;
+  --asha-orange-dark: #9A3412;
+  --asha-orange-ink: #351604;
+  --asha-orange-soft: #FFF1E6;
+  --asha-lavender: #EDE9FE;
+  --asha-lavender-soft: #F5F3FF;
+  --asha-bg: #FAFAF9;
+  --asha-white: #FFFFFF;
+  --asha-ink: #1C1135;
+  --asha-muted: #615274;
+  --asha-border: #DDD6EF;
+  --asha-control-border: #86749E;
+  --asha-error: #B42318;
+  --asha-error-soft: #FFF1F2;
+  --asha-disabled-bg: #E7DFF6;
+  --asha-disabled-text: #675779;
+  --asha-whatsapp: #25D366;
+  --asha-glass: rgb(255 255 255 / 84%);
+  --asha-glass-border: rgb(124 58 237 / 12%);
+  --asha-font: "Nunito", system-ui, sans-serif;
+  --asha-space-1: 4px;
+  --asha-space-2: 8px;
+  --asha-space-3: 12px;
+  --asha-space-4: 16px;
+  --asha-space-6: 24px;
+  --asha-space-8: 32px;
+  --asha-space-12: 48px;
+  --asha-space-16: 64px;
+  --asha-space-24: 96px;
+  --asha-radius-control: 14px;
+  --asha-radius-card: 24px;
+  --asha-shadow: 0 8px 24px rgb(28 17 53 / 6%);
+  --asha-shadow-raised: 0 12px 28px rgb(28 17 53 / 10%);
+  --asha-duration-press: 120ms;
+  --asha-duration-ui: 180ms;
+  --asha-ease: cubic-bezier(.22, 1, .36, 1);
+  --asha-fixed-bottom: 0px; /* Altura real de navegación inferior, si existe. */
+  --asha-z-sticky: 20;
+  --asha-z-help: 40;
+  --asha-z-chat: 50;
+  --asha-z-modal: 80;
+  color: var(--asha-ink);
+  background: var(--asha-bg);
+  font: 400 16px/1.6 var(--asha-font);
+  color-scheme: light;
+  accent-color: var(--asha-primary);
+  caret-color: var(--asha-primary-dark);
+  scrollbar-color: var(--asha-control-border) var(--asha-lavender-soft);
+  text-underline-offset: .2em;
+}
+.asha-landing.asha-ui, .asha-landing.asha-ui *, .asha-landing.asha-ui *::before, .asha-landing.asha-ui *::after { box-sizing: border-box; }
+.asha-landing.asha-ui :where(button, input, textarea, select) { font: inherit; }
+.asha-landing.asha-ui :where(h1, h2, h3, p) { margin: 0; }
+.asha-landing.asha-ui :where(img, svg) { max-width: 100%; }
+.asha-landing.asha-ui :where(button, a, input, select, textarea, [tabindex]):focus-visible {
+  outline: 3px solid var(--asha-primary-dark);
+  outline-offset: 3px;
+}
+.asha-landing.asha-ui ::selection { background: var(--asha-lavender); color: var(--asha-ink); }
+.asha-landing.asha-ui .asha-container { width: min(1200px, calc(100% - 48px)); margin-inline: auto; }
+.asha-landing.asha-ui .asha-stack { display: flex; flex-direction: column; gap: var(--asha-space-4); }
+.asha-landing.asha-ui .asha-row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--asha-space-3); }
+.asha-landing.asha-ui .asha-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: var(--asha-space-6); }
+.asha-landing.asha-ui .asha-hero-title { font-size: clamp(36px, 4.5vw, 64px); font-weight: 900; line-height: 1.08; letter-spacing: -.03em; text-wrap: balance; }
+.asha-landing.asha-ui .asha-title { font-size: 40px; font-weight: 800; line-height: 1.15; letter-spacing: -.025em; text-wrap: balance; }
+.asha-landing.asha-ui .asha-subtitle { font-size: 24px; font-weight: 700; line-height: 1.25; letter-spacing: -.015em; }
+.asha-landing.asha-ui .asha-card-title { font-size: 20px; font-weight: 800; line-height: 1.3; }
+.asha-landing.asha-ui .asha-muted { color: var(--asha-muted); }
+.asha-landing.asha-ui .asha-label { font-size: 14px; font-weight: 700; line-height: 1.4; }
+.asha-landing.asha-ui .asha-help { color: var(--asha-muted); font-size: 14px; line-height: 1.5; }
+.asha-landing.asha-ui .asha-link { color: var(--asha-primary-dark); text-decoration: underline; font-weight: 700; }
+.asha-landing.asha-ui .asha-numeric { font-variant-numeric: tabular-nums; }
+.asha-landing.asha-ui .asha-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Botones: el relieve se reserva en el padding y no cambia el layout. */
+.asha-landing.asha-ui .asha-btn {
+  --button-bg: linear-gradient(180deg, var(--asha-primary-top), var(--asha-primary));
+  --button-hover: var(--asha-primary-hover);
+  --button-text: var(--asha-white);
+  --button-edge: var(--asha-primary-dark);
+  --button-border: transparent;
+  --button-depth: 4px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 48px; padding: 10px 24px calc(10px + var(--button-depth));
+  border: 2px solid var(--button-border); border-radius: var(--asha-radius-control);
+  background: var(--button-bg); color: var(--button-text);
+  box-shadow: inset 0 calc(-1 * var(--button-depth)) 0 var(--button-edge), 0 3px 6px rgb(28 17 53 / 8%);
+  font-size: 16px; font-weight: 800; line-height: 1.35;
+  text-align: center; text-decoration: none; cursor: pointer; user-select: none;
+  transition: transform var(--asha-duration-press) var(--asha-ease), box-shadow var(--asha-duration-press) var(--asha-ease), background-color var(--asha-duration-ui) ease;
+}
+.asha-landing.asha-ui .asha-btn--outline { --button-bg: var(--asha-white); --button-hover: var(--asha-lavender-soft); --button-text: var(--asha-primary-dark); --button-border: var(--asha-primary); --button-depth: 0px; box-shadow: none; }
+.asha-landing.asha-ui .asha-btn--secondary { --button-bg: var(--asha-lavender); --button-hover: #DDD6FE; --button-text: var(--asha-primary-dark); --button-edge: #C4B5FD; --button-depth: 2px; }
+.asha-landing.asha-ui .asha-btn--ghost { --button-bg: transparent; --button-hover: var(--asha-lavender-soft); --button-text: var(--asha-primary-dark); --button-depth: 0px; box-shadow: none; }
+.asha-landing.asha-ui .asha-btn--success { --button-bg: var(--asha-teal); --button-hover: var(--asha-teal-dark); --button-edge: var(--asha-teal-dark); }
+.asha-landing.asha-ui .asha-btn--play { --button-bg: var(--asha-orange); --button-hover: var(--asha-orange-hover); --button-text: var(--asha-orange-ink); --button-edge: var(--asha-orange-dark); }
+.asha-landing.asha-ui .asha-btn--danger { --button-bg: var(--asha-error); --button-hover: #912018; --button-edge: #7A1B13; }
+.asha-landing.asha-ui .asha-btn--sm { min-height: 44px; padding-inline: 16px; font-size: 14px; }
+.asha-landing.asha-ui .asha-btn--lg { min-height: 56px; padding-inline: 28px; }
+.asha-landing.asha-ui .asha-btn--icon { width: 48px; padding-inline: 0; flex-shrink: 0; }
+.asha-landing.asha-ui .asha-btn svg { width: 20px; height: 20px; flex-shrink: 0; }
+@media (hover: hover) {
+  .asha-landing.asha-ui .asha-btn:not(:disabled):not([aria-disabled="true"]):not([aria-busy="true"]):hover { background: var(--button-hover); }
+}
+.asha-landing.asha-ui .asha-btn:not(:disabled):not([aria-disabled="true"]):not([aria-busy="true"]):active { transform: translateY(2px); box-shadow: inset 0 -1px 0 var(--button-edge); }
+.asha-landing.asha-ui .asha-btn:disabled, .asha-landing.asha-ui .asha-btn[aria-disabled="true"] {
+  background: var(--asha-disabled-bg); color: var(--asha-disabled-text);
+  border-color: transparent; box-shadow: none; cursor: not-allowed; transform: none;
+}
+.asha-landing.asha-ui .asha-btn[aria-busy="true"] { cursor: progress; }
+.asha-landing.asha-ui[data-density="calm"] .asha-btn { --button-depth: 0px; box-shadow: none; }
+
+/* Superficies y navegación. Cristal acotado a fondos claros. */
+.asha-landing.asha-ui .asha-card { min-width: 0; padding: 24px; border: 1px solid var(--asha-border); border-radius: var(--asha-radius-card); background: var(--asha-white); }
+.asha-landing.asha-ui .asha-glass { border-color: var(--asha-glass-border); background: var(--asha-glass); box-shadow: inset 0 1px 0 var(--asha-white), var(--asha-shadow); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px); }
+.asha-landing.asha-ui .asha-card--interactive { display: block; text-decoration: none; color: inherit; transition: transform var(--asha-duration-ui) var(--asha-ease), box-shadow var(--asha-duration-ui) ease; }
+@media (hover: hover) {
+  .asha-landing.asha-ui .asha-card--interactive:hover { transform: translateY(-2px); box-shadow: var(--asha-shadow-raised); }
+}
