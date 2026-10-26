@@ -40,7 +40,7 @@ services:
       DB_SSL_ENABLED: "false"
       SESSION_COOKIE_NAME: ashakids_session
       SESSION_TTL_HOURS: 24
-      CORS_ORIGINS: https://${APP_DOMAIN:?Set APP_DOMAIN in .env.ec2}
+      CORS_ORIGINS: https://${APP_HOST:?Set APP_HOST in .env.ec2}
     expose:
       - "8000"
     depends_on:
@@ -64,16 +64,16 @@ services:
       - internal
 
   caddy:
-    image: caddy:2-alpine
+    image: caddy:2.11.7-alpine
     restart: unless-stopped
     environment:
-      APP_DOMAIN: ${APP_DOMAIN:?Set APP_DOMAIN in .env.ec2}
+      APP_HOST: ${APP_HOST:?Set APP_HOST in .env.ec2}
     ports:
       - "80:80"
       - "443:443"
       - "443:443/udp"
     volumes:
-      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./deploy/Caddyfile.${TLS_MODE:-domain}:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
     depends_on:

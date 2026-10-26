@@ -1,0 +1,9 @@
+{$APP_HOST} {
+	encode zstd gzip
+	reverse_proxy app:8000
+	tls {
+		issuer acme {
+			profile shortlived
+		}
+	}
+}
