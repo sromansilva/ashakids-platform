@@ -18,6 +18,15 @@ export function errorHandler(
     return;
   }
 
+  const statusCode = (err as any).status || 500;
+  if (statusCode < 500) {
+    res.status(statusCode).json({
+      error: err.message,
+      mensaje: err.message,
+    });
+    return;
+  }
+
   console.error('[API Error]:', err);
   res.status(500).json({
     error: 'Error interno del servidor.',
