@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
 import { settings } from './core/config.js';
 import { pool } from './core/database.js';
 import { securityHeaders } from './core/middleware/security.middleware.js';
@@ -32,6 +34,10 @@ import { mundoAshaRouter } from './modules/mundo_asha/routes/mundo_asha.routes.j
 
 export function createApp() {
   const app = express();
+  const frontendDistPath =
+    process.env.FRONTEND_DIST_DIR || path.resolve(process.cwd(), '../frontend-dist');
+  const frontendIndexPath = path.join(frontendDistPath, 'index.html');
+  const servesFrontend = existsSync(frontendIndexPath);
 
   // Basic security and parsing middlewares
   app.use(securityHeaders);
@@ -47,6 +53,10 @@ export function createApp() {
   app.use(cookieParser());
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+  if (servesFrontend) {
+    app.use(express.static(frontendDistPath));
+  }
 
   // Root & Health check
   app.get('/', (_req, res) => {
@@ -99,6 +109,21 @@ export function createApp() {
   app.use(`${settings.API_V1_PREFIX}/clinica`, clinicaRouter);
   app.use(`${settings.API_V1_PREFIX}/comunicacion`, comunicacionRouter);
   app.use(`${settings.API_V1_PREFIX}/mundo-asha`, mundoAshaRouter);
+
+  if (servesFrontend) {
+    app.get(/.*/, (req, res, next) => {
+      if (
+        req.path.startsWith(`${settings.API_V1_PREFIX}/`) ||
+        req.path === '/health' ||
+        req.path.startsWith('/health/') ||
+        !req.accepts('html')
+      ) {
+        return next();
+      }
+
+      return res.sendFile(frontendIndexPath);
+    });
+  }
 
   // Error handling
   app.use(notFoundHandler);

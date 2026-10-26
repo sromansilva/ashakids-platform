@@ -1,6 +1,6 @@
 # Despliegue de ASHAKids en EC2
 
-La configuración de EC2 está en `docker-compose.ec2.yml`. Ejecuta PostgreSQL 18 en una red privada de Docker, la API sin puerto público y Caddy como entrada HTTP/HTTPS. Caddy obtiene y renueva el certificado TLS. Puedes usar el IPv4 público de la instancia directamente (certificado IP de corta duración) o un dominio propio.
+La configuración de EC2 está en `docker-compose.ec2.yml`. Ejecuta PostgreSQL 18 en una red privada de Docker, la aplicación sirve la SPA y la API en el mismo origen, y Caddy proporciona la entrada HTTP/HTTPS. Caddy obtiene y renueva el certificado TLS. Puedes usar el IPv4 público de la instancia directamente (certificado IP de corta duración) o un dominio propio.
 
 ## Requisitos de AWS
 
