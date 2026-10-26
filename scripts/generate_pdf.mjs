@@ -688,3 +688,4 @@ generate().catch(err => {
   console.error('Error al generar PDF:', err);
   process.exit(1);
 });
+
