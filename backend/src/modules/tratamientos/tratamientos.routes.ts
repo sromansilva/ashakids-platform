@@ -12,3 +12,4 @@ tratamientosRouter.post('/', async (req: Request, res: Response, next: NextFunct
     next(err);
   }
 });
+

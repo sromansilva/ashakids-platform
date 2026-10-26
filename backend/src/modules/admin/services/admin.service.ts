@@ -123,9 +123,9 @@ export class AdminService {
       console.warn('[AdminService] Fallback getCuentas:', err);
       return {
         items: [
-          { id_usuario: 1, codigo_usuario: 'a00001', nombres: 'Administrador', apellidos: 'Sistema', email: 'admin@ashakids.pe', rol: 'ADMIN', activo: true, id_tutor: null, id_terapeuta: null },
-          { id_usuario: 14, codigo_usuario: 't00002', nombres: 'Sergei', apellidos: 'Ramirez', email: 'sergei04@gmail.com', rol: 'TERAPEUTA', activo: true, id_tutor: null, id_terapeuta: 1 },
-          { id_usuario: 87, codigo_usuario: 'p00001', nombres: 'Nicolas', apellidos: 'Lavado', email: '1@gmail.com', rol: 'PADRE', activo: true, id_tutor: 1, id_terapeuta: null },
+          { id_usuario: 1, codigo_usuario: 'a00001', nombres: 'Admin', apellidos: 'Local', email: 'admin.local@ashakids.test', rol: 'ADMIN', activo: true, id_tutor: null, id_terapeuta: null },
+          { id_usuario: 2, codigo_usuario: 't00001', nombres: 'Terapeuta', apellidos: 'Local', email: 'terapeuta.local@ashakids.test', rol: 'TERAPEUTA', activo: true, id_tutor: null, id_terapeuta: 1 },
+          { id_usuario: 3, codigo_usuario: 'p00001', nombres: 'Tutor', apellidos: 'Local', email: 'padre.local@ashakids.test', rol: 'PADRE', activo: true, id_tutor: 1, id_terapeuta: null },
         ],
         total: 3,
       };

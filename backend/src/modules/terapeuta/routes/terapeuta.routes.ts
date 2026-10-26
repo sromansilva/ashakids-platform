@@ -20,7 +20,7 @@ terapeutaRouter.get('/', async (req: Request, res: Response, next: NextFunction)
 // GET /api/v1/terapeutas/me
 terapeutaRouter.get('/me', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 14;
+    const userId = (req as any).user?.id_usuario || 2;
     const profile = await terapeutaService.getMe(userId);
     res.json(profile);
   } catch (err) {

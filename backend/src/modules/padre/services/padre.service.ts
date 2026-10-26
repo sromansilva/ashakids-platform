@@ -1,13 +1,13 @@
 import { pool } from '../../../core/database.js';
 
 export class PadreService {
-  async getMe(userId: number = 87) {
+  async getMe(userId: number = 3) {
     try {
       const res = await pool.query(
         `SELECT u.id_usuario, u.codigo_usuario, u.email, u.nombres, u.apellidos, u.activo,
-                t.id_tutor, t.telefono, t.direccion, t.documento_identidad
+                t.id_tutor, t.telefono, t.direccion
          FROM usuarios u
-         JOIN tutores t ON u.id_usuario = t.id_usuario
+         LEFT JOIN tutores t ON u.id_usuario = t.id_usuario
          WHERE u.id_usuario = $1 LIMIT 1;`,
         [userId]
       );
@@ -22,15 +22,15 @@ export class PadreService {
             apellidos: r.apellidos,
             activo: r.activo,
             roles: ['PADRE'],
-            id_tutor: r.id_tutor,
+            id_tutor: r.id_tutor ?? 1,
             id_terapeuta: null,
           },
           perfil_padre: {
-            id_tutor: r.id_tutor,
+            id_tutor: r.id_tutor ?? 1,
             telefono: r.telefono || '999888777',
             direccion: r.direccion || 'Lima, Perú',
             parentesco: 'PADRE',
-            documento_identidad: r.documento_identidad || '45678912',
+            documento_identidad: '45678912',
           },
         };
       }
@@ -40,11 +40,11 @@ export class PadreService {
 
     return {
       user: {
-        id_usuario: 87,
+        id_usuario: 3,
         codigo_usuario: 'p00001',
-        email: '1@gmail.com',
-        nombres: 'Nicolas',
-        apellidos: 'Lavado',
+        email: 'padre.local@ashakids.test',
+        nombres: 'Tutor',
+        apellidos: 'Local',
         activo: true,
         roles: ['PADRE'],
         id_tutor: 1,
@@ -60,7 +60,7 @@ export class PadreService {
     };
   }
 
-  async getHijos(userId: number = 87) {
+  async getHijos(_userId?: number) {
     try {
       const sql = `
         SELECT 
@@ -91,22 +91,7 @@ export class PadreService {
       return { items, total: items.length };
     } catch (err) {
       console.warn('[PadreService] Fallback getHijos:', err);
-      return {
-        items: [
-          {
-            id_paciente: 1,
-            id_tutor: 1,
-            nombres_paciente: 'Liam',
-            apellidos_paciente: 'García',
-            fecha_nacimiento: '2020-05-15',
-            sexo: 'M',
-            avatar_nombre: 'zorro',
-            activo: true,
-            fecha_registro: new Date().toISOString(),
-          },
-        ],
-        total: 1,
-      };
+      return { items: [], total: 0 };
     }
   }
 
@@ -115,11 +100,19 @@ export class PadreService {
     return items.find(p => p.id_paciente === id) ?? items[0] ?? null;
   }
 
-  async crearHijo(userId: number = 87, data: any) {
+  async crearHijo(userId: number = 3, data: any) {
     try {
       let idTutor = 1;
       const tutRes = await pool.query(`SELECT id_tutor FROM tutores WHERE id_usuario = $1 LIMIT 1;`, [userId]);
-      if (tutRes.rows.length > 0) idTutor = tutRes.rows[0].id_tutor;
+      if (tutRes.rows.length > 0) {
+        idTutor = tutRes.rows[0].id_tutor;
+      } else {
+        const createTut = await pool.query(
+          `INSERT INTO tutores (id_usuario, parentesco, telefono, direccion) VALUES ($1, 'PADRE', '999888777', 'Lima, Perú') RETURNING id_tutor;`,
+          [userId]
+        );
+        idTutor = createTut.rows[0].id_tutor;
+      }
 
       const res = await pool.query(
         `INSERT INTO pacientes (id_tutor, nombres_paciente, apellidos_paciente, fecha_nacimiento, sexo, avatar_nombre, activo, fecha_registro)
@@ -141,7 +134,7 @@ export class PadreService {
       };
       return { message: 'Hijo creado correctamente', paciente };
     } catch (err) {
-      console.warn('[PadreService] Fallback crearHijo:', err);
+      console.warn('[PadreService] Error crearHijo en PostgreSQL:', err);
       const paciente = {
         id_paciente: Date.now(),
         id_tutor: 1,

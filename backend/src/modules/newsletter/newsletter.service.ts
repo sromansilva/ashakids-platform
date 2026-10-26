@@ -65,3 +65,4 @@ export class NewsletterService {
 }
 
 export const newsletterService = new NewsletterService();
+

@@ -129,7 +129,7 @@ export class TerapeutaService {
     return slots;
   }
 
-  async getMe(userId: number = 14) {
+  async getMe(userId: number = 2) {
     try {
       const res = await pool.query(
         `SELECT u.id_usuario, u.codigo_usuario, u.email, u.nombres, u.apellidos, u.activo,
@@ -168,11 +168,11 @@ export class TerapeutaService {
 
     return {
       user: {
-        id_usuario: 14,
-        codigo_usuario: 't00002',
-        email: 'sergei04@gmail.com',
-        nombres: 'Sergei',
-        apellidos: 'Ramirez',
+        id_usuario: 2,
+        codigo_usuario: 't00001',
+        email: 'terapeuta.local@ashakids.test',
+        nombres: 'Terapeuta',
+        apellidos: 'Local',
         activo: true,
         roles: ['TERAPEUTA'],
         id_terapeuta: 1,
@@ -182,7 +182,7 @@ export class TerapeutaService {
         id_terapeuta: 1,
         especialidad: 'Terapia del Lenguaje y Fonología',
         anios_experiencia: 5,
-        idiomas: 'Español, Inglés',
+        idiomas: 'Español',
         descripcion_profesional: 'Especialista en fonoaudiología y comunicación infantil.',
       },
     };

@@ -5,3 +5,4 @@ export const newsletterSubscriptionSchema = z.object({
 });
 
 export type NewsletterSubscriptionDTO = z.infer<typeof newsletterSubscriptionSchema>;
+

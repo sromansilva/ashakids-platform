@@ -36,3 +36,4 @@ newsletterRouter.get('/baja', async (req, res, next) => {
     next(err);
   }
 });
+

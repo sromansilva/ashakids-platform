@@ -91,3 +91,4 @@ educacionRouter.post('/voz/transcribir', upload.single('audio'), async (req: Req
     res.status(500).json({ estado: 'ERROR', mensaje: err?.message || 'Error procesando audio' });
   }
 });
+

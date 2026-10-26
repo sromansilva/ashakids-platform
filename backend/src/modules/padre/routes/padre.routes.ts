@@ -6,7 +6,7 @@ export const padreRouter = Router();
 // GET /api/v1/padres/me
 padreRouter.get('/me', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 87;
+    const userId = (req as any).user?.id_usuario || 3;
     const profile = await padreService.getMe(userId);
     res.json(profile);
   } catch (err) {
@@ -17,7 +17,7 @@ padreRouter.get('/me', async (req: Request, res: Response, next: NextFunction) =
 // GET /api/v1/padres/hijos
 padreRouter.get('/hijos', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 87;
+    const userId = (req as any).user?.id_usuario || 3;
     const result = await padreService.getHijos(userId);
     if (req.headers['x-mock-role'] && !req.headers.authorization && !req.cookies?.session_token) {
       return res.json(result.items);
@@ -43,7 +43,7 @@ padreRouter.get('/hijos/:id', async (req: Request, res: Response, next: NextFunc
 // POST /api/v1/padres/hijos
 padreRouter.post('/hijos', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 87;
+    const userId = (req as any).user?.id_usuario || 3;
     const result = await padreService.crearHijo(userId, req.body);
     res.status(201).json(result);
   } catch (err) {
