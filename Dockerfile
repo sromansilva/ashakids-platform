@@ -40,3 +40,4 @@ USER ashakids
 EXPOSE 8000
 WORKDIR /app/backend
 CMD ["node", "dist/index.js"]
+

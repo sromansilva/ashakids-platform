@@ -1,6 +1,7 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
+
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -8,7 +9,13 @@ export default defineConfig({
       allow: [".."],
     },
   },
-  resolve: { alias: { "@": fileURLToPath(new URL("./src", import.meta.url)) } },
+  resolve: {
+    alias: {
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@testing-library/jest-dom/vitest": fileURLToPath(new URL("./node_modules/@testing-library/jest-dom/dist/vitest.js", import.meta.url)),
+      "@testing-library/jest-dom": fileURLToPath(new URL("./node_modules/@testing-library/jest-dom", import.meta.url)),
+    },
+  },
   test: {
     environment: "jsdom",
     setupFiles: [fileURLToPath(new URL("../tests/frontend/setup.ts", import.meta.url))],
