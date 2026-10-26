@@ -125,40 +125,60 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
     : `${DAY_NAMES_SHORT[selDate.getDay()]}, ${selDate.getDate()} de ${MONTHS_ES_FULL[selDate.getMonth()]} ${selDate.getFullYear()}`;
 
   return (
-    <div className="p-4 sm:p-6 max-w-6xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
       <RemoteFeedback pending={query.isPending} error={query.error || update.error} retry={() => void query.refetch()} />
-      <p className="text-xs text-[#7C6F9A] mb-2">Horarios en America/Lima</p>
+      <p className="text-xs font-bold text-[#615274] mb-1">Horarios en America/Lima</p>
       {/* ── Top bar ── */}
-      <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
+      <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
         <div>
-          <h2 className="text-2xl font-black text-[#1C1135] mb-1">Agenda</h2>
-          <p className="text-sm text-[#7C6F9A] font-medium">{headerLabel}</p>
+          <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Agenda</h1>
+          <p className="text-sm font-bold text-[#615274] mt-0.5">{headerLabel}</p>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-3 flex-wrap">
           {/* Día / Semana toggle */}
-          <div className="flex rounded-2xl overflow-hidden border" style={{ borderColor: B.border }}>
-            {(["dia","semana"] as const).map(v => (
-              <button key={v}
-                className="px-4 py-2 text-sm font-bold transition-all"
-                style={{ background: agView === v ? B.violet : "white", color: agView === v ? "white" : B.textMid }}
-                onClick={() => setAgView(v)}>
+          <div className="flex bg-[#F8F7FC] p-1 rounded-2xl border border-[#E8E5F4]">
+            {(["dia", "semana"] as const).map(v => (
+              <button
+                key={v}
+                className={`px-5 py-2 text-xs font-extrabold rounded-xl transition-all cursor-pointer ${
+                  agView === v ? "bg-[#6B46FE] text-white shadow-sm" : "text-[#615274] hover:text-[#1C1135]"
+                }`}
+                onClick={() => setAgView(v)}
+              >
                 {v === "dia" ? "Día" : "Semana"}
               </button>
             ))}
           </div>
           {/* Prev / Hoy / Next */}
-          <div className="flex items-center gap-0.5 bg-white border border-[#E8E5F4] rounded-2xl px-1 py-1">
-            <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-violet-50 text-[#7C6F9A] transition-colors" aria-label="Anterior">
+          <div className="flex items-center gap-1 bg-white border border-[#E8E5F4] rounded-2xl px-2 py-1 shadow-sm">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-1.5 rounded-xl hover:bg-violet-50 text-[#615274] transition-colors cursor-pointer"
+              aria-label="Anterior"
+            >
               <ChevronLeft size={16} />
             </button>
-            <button onClick={() => setSelDate(DEMO_TODAY)} className="px-2.5 py-1 text-xs font-bold text-[#7C6F9A] hover:bg-violet-50 rounded-lg transition-colors">
+            <button
+              onClick={() => setSelDate(DEMO_TODAY)}
+              className="px-3 py-1 text-xs font-extrabold text-[#615274] hover:bg-violet-50 rounded-lg transition-colors cursor-pointer"
+            >
               Hoy
             </button>
-            <button onClick={() => navigate(1)} className="p-1.5 rounded-xl hover:bg-violet-50 text-[#7C6F9A] transition-colors" aria-label="Siguiente">
+            <button
+              onClick={() => navigate(1)}
+              className="p-1.5 rounded-xl hover:bg-violet-50 text-[#615274] transition-colors cursor-pointer"
+              aria-label="Siguiente"
+            >
               <ChevronRight size={16} />
             </button>
           </div>
-          <Btn variant="outline" size="sm" onClick={() => go("terapeuta/config")}><Clock size={13} /> Horarios</Btn>
+          <button
+            onClick={() => go("terapeuta/config")}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-white border border-[#E8E5F4] text-xs font-extrabold text-[#1C1135] hover:bg-violet-50 shadow-sm transition-all cursor-pointer"
+          >
+            <Clock size={14} className="text-[#6B46FE]" />
+            Horarios
+          </button>
         </div>
       </div>
 

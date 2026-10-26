@@ -2,11 +2,6 @@ import React from "react";
 import { Loader2, Pencil } from "lucide-react";
 import type { CuentaItem } from "@/modules/auth/domain/auth";
 
-const B = {
-  violet: "#7C3AED",
-  teal: "#0D9488",
-};
-
 interface AdminCuentasTableProps {
   loading: boolean;
   visible: CuentaItem[];
@@ -23,98 +18,108 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
   formatDate,
 }) => {
   return (
-    <div className="admin-account-list flex flex-col gap-2.5">
+    <div className="bg-white rounded-3xl border border-[#E8E5F4] shadow-sm overflow-hidden">
       {loading && (
-        <div className="flex items-center justify-center py-16 gap-3 text-[#7C6F9A]">
-          <Loader2 className="animate-spin text-violet-600" size={24} />
-          <span className="text-sm font-extrabold">Cargando cuentas desde FastAPI…</span>
+        <div className="flex items-center justify-center py-16 gap-3 text-[#615274]">
+          <Loader2 className="animate-spin text-[#6B46FE]" size={24} />
+          <span className="text-sm font-extrabold">Cargando cuentas…</span>
         </div>
       )}
 
       {!loading && visible.length === 0 && (
-        <div className="text-center py-16 text-[#9E95B7] font-medium text-sm bg-white border border-[#E8E5F4] rounded-2xl">
+        <div className="text-center py-16 text-[#8C82A8] font-medium text-sm">
           Sin cuentas que coincidan con los criterios.
         </div>
       )}
 
-      {!loading &&
-        visible.map((acc) => {
-          const initials = `${acc.nombres[0] || ""}${acc.apellidos[0] || ""}`.toUpperCase();
-          return (
-            <div
-              key={acc.id_usuario}
-              className="admin-account-row w-full bg-white border border-[#E8E5F4] rounded-2xl px-4 py-3.5 flex items-center gap-4 hover:border-violet-300 hover:shadow-sm transition-all"
-            >
-              {/* Avatar */}
-              <button
-                onClick={() => openDetail(acc)}
-                className="w-11 h-11 rounded-2xl flex items-center justify-center font-black text-sm text-white flex-shrink-0 shadow-sm"
-                style={{ background: acc.rol === "PADRE" ? B.violet : B.teal }}
-              >
-                {initials}
-              </button>
+      {!loading && visible.length > 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse min-w-[700px]">
+            <thead>
+              <tr className="border-b border-[#E8E5F4] bg-[#F8F7FD] text-xs font-extrabold text-[#615274]">
+                <th className="py-4 px-6">Usuario</th>
+                <th className="py-4 px-6">Código</th>
+                <th className="py-4 px-6">Correo</th>
+                <th className="py-4 px-6">Estado</th>
+                <th className="py-4 px-6">Registro</th>
+                <th className="py-4 px-6 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-[#E8E5F4] text-sm">
+              {visible.map((acc) => {
+                const initials = `${acc.nombres[0] || ""}${acc.apellidos[0] || ""}`.toUpperCase();
+                return (
+                  <tr
+                    key={acc.id_usuario}
+                    className="hover:bg-[#F9F8FD] transition-colors"
+                  >
+                    {/* Usuario */}
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-[#6B46FE] text-white flex items-center justify-center font-black text-sm shrink-0 shadow-sm">
+                          {initials}
+                        </div>
+                        <span className="font-extrabold text-[#1C1135]">
+                          {acc.nombres} {acc.apellidos}
+                        </span>
+                      </div>
+                    </td>
 
-              {/* Información Principal */}
-              <button
-                type="button"
-                onClick={() => openDetail(acc)}
-                className="admin-account-person flex-1 min-w-0 cursor-pointer text-left"
-              >
-                <div className="flex items-center gap-2">
-                  <p className="font-extrabold text-sm text-[#1C1135] truncate hover:text-violet-700 transition-colors">
-                    {acc.nombres} {acc.apellidos}
-                  </p>
-                  <span className="font-mono text-[11px] font-black px-1.5 py-0.5 rounded bg-gray-100 text-gray-700">
-                    {acc.codigo_usuario}
-                  </span>
-                </div>
-                <p className="text-xs text-[#9E95B7] font-medium truncate">{acc.email}</p>
-              </button>
+                    {/* Código */}
+                    <td className="py-4 px-6">
+                      <span className="inline-block px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 font-mono text-xs font-bold uppercase">
+                        {acc.codigo_usuario}
+                      </span>
+                    </td>
 
-              {/* Especialidad de terapeuta si existe */}
-              {acc.rol === "TERAPEUTA" && acc.terapeuta?.especialidad && (
-                <span
-                  className="hidden sm:inline-block text-[11px] font-extrabold px-2.5 py-1 rounded-full"
-                  style={{ background: "#F0FDFA", color: B.teal }}
-                >
-                  {acc.terapeuta.especialidad}
-                </span>
-              )}
+                    {/* Correo */}
+                    <td className="py-4 px-6 text-[#615274] font-medium">
+                      {acc.email}
+                    </td>
 
-              {/* Badge de estado Activo / Suspendido */}
-              <span
-                className={`admin-account-status text-[10px] font-extrabold px-2.5 py-1 rounded-full flex-shrink-0 ${
-                  acc.activo
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                    : "bg-red-50 text-red-700 border border-red-200"
-                }`}
-              >
-                {acc.activo ? "Activa" : "Suspendida"}
-              </span>
+                    {/* Estado */}
+                    <td className="py-4 px-6">
+                      <span
+                        className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
+                          acc.activo
+                            ? "bg-[#ECFDF5] text-[#059669]"
+                            : "bg-[#FEF2F2] text-[#DC2626]"
+                        }`}
+                      >
+                        {acc.activo ? "Activa" : "Suspendida"}
+                      </span>
+                    </td>
 
-              <p className="hidden md:block text-[11px] text-[#C4BDD8] font-medium flex-shrink-0">
-                {formatDate(acc.fecha_creacion)}
-              </p>
+                    {/* Registro */}
+                    <td className="py-4 px-6 text-[#615274]">
+                      {formatDate(acc.fecha_creacion)}
+                    </td>
 
-              {/* Acciones Rápidas */}
-              <div className="admin-account-actions flex items-center gap-1">
-                <button
-                  onClick={() => openEditar(acc)}
-                  title="Editar cuenta"
-                  className="p-2 rounded-xl text-violet-700 hover:text-violet-800 hover:bg-violet-50 transition-colors"
-                >
-                  <Pencil size={15} />
-                </button>
-                <button
-                  onClick={() => openDetail(acc)}
-                  className="text-xs font-bold px-3 py-1.5 rounded-xl border border-[#E8E5F4] text-[#7C6F9A] hover:bg-violet-50 hover:text-violet-700 transition-colors"
-                >
-                  Ver
-                </button>
-              </div>
-            </div>
-          );
-        })}
+                    {/* Acciones */}
+                    <td className="py-4 px-6 text-right">
+                      <div className="inline-flex items-center gap-2 justify-end">
+                        <button
+                          onClick={() => openEditar(acc)}
+                          title="Editar cuenta"
+                          className="w-9 h-9 rounded-xl border border-[#E8E5F4] text-[#6B46FE] hover:bg-violet-50 transition flex items-center justify-center cursor-pointer"
+                        >
+                          <Pencil size={15} />
+                        </button>
+                        <button
+                          onClick={() => openDetail(acc)}
+                          className="px-3.5 h-9 rounded-xl border border-[#E8E5F4] font-bold text-xs text-[#1C1135] hover:bg-violet-50 transition flex items-center justify-center cursor-pointer"
+                        >
+                          Ver
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };

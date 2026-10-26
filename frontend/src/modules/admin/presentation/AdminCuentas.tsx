@@ -350,7 +350,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   }
 
   return (
-    <div className="admin-accounts p-4 sm:p-6 max-w-4xl mx-auto">
+    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
       {/* Notificación de éxito */}
       {successBanner && (
         <div className="mb-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-2xl px-4 py-3 flex items-center justify-between text-sm font-bold shadow-sm">
@@ -378,30 +378,27 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       )}
 
       {/* Header */}
-      <div className="admin-page-heading flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <div className="flex items-center gap-2.5">
-            <h1 className="text-2xl font-black text-[#1C1135]">Gestión de Cuentas</h1>
-          </div>
-          <p className="text-sm text-[#7C6F9A] font-medium mt-1">
+          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1C1135] tracking-tight">Gestión de Cuentas</h1>
+          <p className="text-sm sm:text-base text-[#615274] font-medium mt-1">
             Registra familias y terapeutas, consulta sus datos y administra el acceso.
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <button
             onClick={cargarCuentas}
             disabled={loading}
             title="Actualizar listado"
-            className="p-2.5 rounded-2xl border border-[#E8E5F4] bg-white text-[#7C6F9A] hover:bg-[#F5F3FF] transition-colors"
+            className="w-11 h-11 rounded-2xl border border-[#E8E5F4] bg-white text-[#615274] hover:bg-[#F5F3FF] transition-colors flex items-center justify-center shadow-sm cursor-pointer"
           >
-            <RefreshCw size={16} className={loading ? "animate-spin" : ""} />
+            <RefreshCw size={18} className={loading ? "animate-spin" : ""} />
           </button>
           <button
             onClick={openNueva}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl font-extrabold text-sm text-white shadow-md hover:opacity-95 transition-all"
-            style={{ background: `linear-gradient(135deg, ${B.violet}, ${B.violetDark})` }}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-extrabold text-sm text-white bg-[#6B46FE] hover:bg-[#5833EA] shadow-md shadow-violet-200 transition-all active:scale-[.98] cursor-pointer"
           >
-            <Plus size={16} /> Nueva cuenta
+            <Plus size={18} /> Nueva cuenta
           </button>
         </div>
       </div>

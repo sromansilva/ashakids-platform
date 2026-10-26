@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, FileText, Settings, Target } from 'lucide-react';
 import { incidenciasService, tiposIncidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
-import { Btn } from '@/shared/presentation/components/common/Btn';
 
 export function IncidentForm() {
   const [tipo, setTipo] = useState('');
@@ -11,49 +10,239 @@ export function IncidentForm() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState<number | null>(null);
   const [error, setError] = useState('');
-  const fields = 'block w-full rounded-2xl border border-[#E8E5F4] bg-white px-4 py-3 text-sm text-[#1C1135] focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-600 disabled:opacity-60';
-  const changed = () => { setEnvio(crypto.randomUUID()); setError(''); };
-  return <section className="max-w-xl mx-auto px-4 py-8">
-    <h1 className="text-2xl font-black text-[#1C1135] mb-2">Reportar incidencia</h1>
-    <p className="text-sm text-[#625779] mb-6">Cuéntanos qué problema encontraste. El administrador recibirá tu reporte.</p>
-    {sent !== null ? <div role="status" className="rounded-2xl bg-green-50 p-5 text-green-800">
-      <CheckCircle size={24} aria-hidden="true" className="mb-2" />
-      <h2 className="font-extrabold">Reporte #{sent} enviado</h2>
-      <p className="text-sm mt-2">Tu incidencia se guardó y está disponible para administración.</p>
-      <button type="button" className="mt-4 font-bold underline focus-visible:outline-2" onClick={() => {
-        setSent(null); setTipo(''); setTitulo(''); setDescripcion(''); changed();
-      }}>Enviar otro reporte</button>
-    </div> : <form className="space-y-5" onSubmit={async e => {
-      e.preventDefault();
-      if (sending || !tipo || !titulo.trim() || !descripcion.trim()) return;
-      setSending(true); setError('');
-      try {
-        const result = await incidenciasService.crear({ envio_id: envio, tipo, titulo: titulo.trim(), descripcion: descripcion.trim() });
-        setSent(result.id_incidencia);
-      } catch (cause) { setError(cause instanceof Error ? cause.message : 'No se pudo enviar el reporte. Intenta nuevamente.'); }
-      finally { setSending(false); }
-    }}>
-      <div>
-        <label htmlFor="incident-type" className="block text-sm font-bold text-[#1C1135] mb-2">Tipo de incidencia</label>
-        <select id="incident-type" required disabled={sending} value={tipo} className={fields} onChange={e => { setTipo(e.target.value); changed(); }}>
-          <option value="" disabled>Selecciona el tipo de problema</option>
-          {tiposIncidencia.map(t => <option key={t}>{t}</option>)}
-        </select>
+
+  const fieldStyle =
+    'block w-full rounded-2xl border border-[#E8E5F4] bg-white px-4 py-3.5 text-sm text-[#1C1135] placeholder:text-[#9E95B7] focus:outline-hidden focus:border-[#6B46FE] focus:ring-3 focus:ring-[#6B46FE]/15 disabled:opacity-60 transition-all';
+
+  const changed = () => {
+    setEnvio(crypto.randomUUID());
+    setError('');
+  };
+
+  const isValid = !!tipo && !!titulo.trim() && !!descripcion.trim();
+
+  return (
+    <section className="max-w-5xl mx-auto p-4 sm:p-8" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+      {/* Page Title & Subtitle */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Reportar incidencia</h1>
+        <p className="text-sm font-medium text-[#6B5E8A] mt-1.5 max-w-2xl leading-relaxed">
+          Cuéntanos qué problema encontraste. El administrador recibirá tu reporte.
+        </p>
       </div>
-      <div>
-        <label htmlFor="incident-title" className="block text-sm font-bold text-[#1C1135] mb-2">Título</label>
-        <input id="incident-title" required maxLength={120} disabled={sending} value={titulo} className={fields}
-          placeholder="Ej.: El botón de guardar no responde" onChange={e => { setTitulo(e.target.value); changed(); }} />
+
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-8 items-start">
+        {/* Left Side: Form */}
+        <div className="bg-white rounded-3xl border border-[#E8E5F4] p-6 sm:p-8 shadow-xs">
+          {sent !== null ? (
+            <div role="status" className="rounded-2xl bg-emerald-50 border border-emerald-200 p-6 text-emerald-900">
+              <CheckCircle size={28} className="text-emerald-600 mb-2" aria-hidden="true" />
+              <h2 className="font-black text-xl">Reporte #{sent} enviado</h2>
+              <p className="text-sm mt-1 text-emerald-800">
+                Tu incidencia se guardó y está disponible para administración. Te responderemos a la brevedad.
+              </p>
+              <button
+                type="button"
+                className="mt-5 font-bold text-sm text-[#6B46FE] underline hover:text-[#5835E5]"
+                onClick={() => {
+                  setSent(null);
+                  setTipo('');
+                  setTitulo('');
+                  setDescripcion('');
+                  changed();
+                }}
+              >
+                Enviar otro reporte
+              </button>
+            </div>
+          ) : (
+            <form
+              className="space-y-6"
+              onSubmit={async (e) => {
+                e.preventDefault();
+                if (sending || !isValid) return;
+                setSending(true);
+                setError('');
+                try {
+                  const result = await incidenciasService.crear({
+                    envio_id: envio,
+                    tipo,
+                    titulo: titulo.trim(),
+                    descripcion: descripcion.trim(),
+                  });
+                  setSent(result.id_incidencia);
+                } catch (cause) {
+                  setError(
+                    cause instanceof Error
+                      ? cause.message
+                      : 'No se pudo enviar el reporte. Intenta nuevamente.'
+                  );
+                } finally {
+                  setSending(false);
+                }
+              }}
+            >
+              <div>
+                <label
+                  htmlFor="incident-type"
+                  className="block text-xs font-bold text-[#1C1135] mb-2"
+                >
+                  Tipo de incidencia
+                </label>
+                <select
+                  id="incident-type"
+                  required
+                  disabled={sending}
+                  value={tipo}
+                  className={fieldStyle}
+                  onChange={(e) => {
+                    setTipo(e.target.value);
+                    changed();
+                  }}
+                >
+                  <option value="" disabled>
+                    Selecciona el tipo de problema
+                  </option>
+                  {tiposIncidencia.map((t) => (
+                    <option key={t} value={t}>
+                      {t}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="incident-title"
+                  className="block text-xs font-bold text-[#1C1135] mb-2"
+                >
+                  Título
+                </label>
+                <input
+                  id="incident-title"
+                  required
+                  maxLength={120}
+                  disabled={sending}
+                  value={titulo}
+                  className={fieldStyle}
+                  placeholder="Ej.: El botón de guardar no responde"
+                  onChange={(e) => {
+                    setTitulo(e.target.value);
+                    changed();
+                  }}
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="incident-description"
+                  className="block text-xs font-bold text-[#1C1135] mb-2"
+                >
+                  Descripción breve
+                </label>
+                <textarea
+                  id="incident-description"
+                  required
+                  maxLength={600}
+                  rows={5}
+                  disabled={sending}
+                  value={descripcion}
+                  className={`${fieldStyle} resize-y`}
+                  aria-describedby="incident-help"
+                  placeholder="Indica la sección, qué ocurrió y qué esperabas."
+                  onChange={(e) => {
+                    setDescripcion(e.target.value);
+                    changed();
+                  }}
+                />
+                <div className="flex items-center justify-between text-xs text-[#8C82A8] mt-2 font-medium">
+                  <span id="incident-help">Hasta 600 caracteres. Evita incluir contraseñas o información clínica.</span>
+                  <span>{descripcion.length}/600</span>
+                </div>
+              </div>
+
+              {error && (
+                <p role="alert" className="text-sm text-red-800 bg-red-50 border border-red-200 p-4 rounded-2xl">
+                  {error} Tu borrador se conserva.
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={sending || !isValid}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-2xl font-black text-sm text-white transition-all shadow-md active:scale-[.98] disabled:bg-[#C8C2DC] disabled:shadow-none bg-[#6B46FE] hover:bg-[#5835E5] shadow-[#6B46FE]/20"
+              >
+                {sending ? 'Enviando…' : 'Enviar a administración'}
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Right Side: Guía informativa */}
+        <div className="bg-gradient-to-b from-[#FFF7EE] to-white rounded-3xl border border-[#FFE8D1] p-6 sm:p-7 shadow-xs">
+          <div className="flex justify-center mb-2">
+            <img
+              src="/illustrations/optimized/step-account-v54-640-9a7c8a92d7.webp"
+              alt="Ayuda"
+              className="w-40 h-auto object-contain drop-shadow-sm select-none"
+            />
+          </div>
+
+          <h2 className="text-xl font-black text-[#1C1135] text-center mb-1">
+            ¡Nos ayudas a mejorar!
+          </h2>
+          <p className="text-xs text-[#6B5E8A] text-center font-medium mb-6">
+            Cuéntanos un poco más para que podamos revisar tu reporte.
+          </p>
+
+          <div className="space-y-4">
+            {/* Step 1 */}
+            <div className="bg-white rounded-2xl border border-[#F0EEF8] p-3.5 flex items-start gap-3 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-violet-100 text-[#6B46FE] flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                1
+              </div>
+              <div>
+                <p className="font-extrabold text-xs text-[#1C1135] flex items-center gap-1.5">
+                  <FileText size={14} className="text-[#6B46FE]" /> Indica la sección
+                </p>
+                <p className="text-[11px] text-[#6B5E8A] font-medium mt-0.5 leading-snug">
+                  Menciona en qué parte de la plataforma ocurrió el problema.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 2 */}
+            <div className="bg-white rounded-2xl border border-[#F0EEF8] p-3.5 flex items-start gap-3 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-teal-100 text-[#0D9488] flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                2
+              </div>
+              <div>
+                <p className="font-extrabold text-xs text-[#1C1135] flex items-center gap-1.5">
+                  <Settings size={14} className="text-[#0D9488]" /> Describe qué ocurrió
+                </p>
+                <p className="text-[11px] text-[#6B5E8A] font-medium mt-0.5 leading-snug">
+                  Cuéntanos qué pasó con el mayor detalle posible.
+                </p>
+              </div>
+            </div>
+
+            {/* Step 3 */}
+            <div className="bg-white rounded-2xl border border-[#F0EEF8] p-3.5 flex items-start gap-3 shadow-2xs">
+              <div className="w-8 h-8 rounded-xl bg-orange-100 text-[#EA580C] flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                3
+              </div>
+              <div>
+                <p className="font-extrabold text-xs text-[#1C1135] flex items-center gap-1.5">
+                  <Target size={14} className="text-[#EA580C]" /> Explica qué esperabas
+                </p>
+                <p className="text-[11px] text-[#6B5E8A] font-medium mt-0.5 leading-snug">
+                  Indica qué debería haber sucedido.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <label htmlFor="incident-description" className="block text-sm font-bold text-[#1C1135] mb-2">Descripción breve</label>
-        <textarea id="incident-description" required maxLength={600} rows={4} disabled={sending} value={descripcion}
-          className={`${fields} resize-y`} aria-describedby="incident-help"
-          placeholder="Indica la sección, qué ocurrió y qué esperabas." onChange={e => { setDescripcion(e.target.value); changed(); }} />
-        <p id="incident-help" className="mt-2 text-xs text-[#625779]">Hasta 600 caracteres. Evita incluir contraseñas o información clínica.</p>
-      </div>
-      {error && <p role="alert" className="text-sm text-red-800 bg-red-50 p-3 rounded-xl">{error} Tu borrador se conserva.</p>}
-      <Btn type="submit" disabled={sending || !tipo || !titulo.trim() || !descripcion.trim()}>{sending ? 'Enviando…' : 'Enviar a administración'}</Btn>
-    </form>}
-  </section>;
+    </section>
+  );
 }

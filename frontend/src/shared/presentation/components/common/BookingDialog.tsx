@@ -34,17 +34,18 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   const plans = useRemote(['treatments', patient], s => readAllPages(o => treatmentsService.list(patient, { limit: 100, offset: o }, s), s), !!patient && !appointment);
   const slots = useRemote(['slots', therapist, day], s => agendaService.slots(therapist, day, s), !!therapist && !!day);
   const type = appointment?.tipo_cita ?? (journey.data?.terapia_habilitada ? 'TERAPIA' : 'INTRODUCTORIA');
-  const selectedPlan = treatment || plans.data?.find(t => t.estado_tratamiento === 'ACTIVO')?.id_tratamiento;
+  const activePlans = plans.data?.filter(t => t.estado_tratamiento === 'ACTIVO') ?? [];
+  const selectedPlan = treatment || activePlans[0]?.id_tratamiento;
   const selected = slots.data?.find(s => s.inicio === start && s.disponible);
   const durationMinutes = slots.data?.[0] ? Math.round((Date.parse(slots.data[0].fin) - Date.parse(slots.data[0].inicio)) / 60000) : 40;
   const blocked = !appointment && (journey.isPending || !!journey.error || !!journey.data?.introduccion_pendiente ||
     (!!journey.data?.introduccion_atendida && !journey.data.terapia_habilitada));
-  const ready = !!patient && !!therapist && !!selected && !blocked && !slots.error && (type === 'INTRODUCTORIA' || !!selectedPlan);
+  const ready = !!patient && !!therapist && !!selected && !blocked && !slots.error && (type === 'INTRODUCTORIA' || activePlans.length === 0 || !!selectedPlan);
   const save = useWrite(() => {
     if (!selected) throw new Error('Vuelve a seleccionar un horario disponible.');
     const body = { fecha_hora_inicio: selected.inicio, fecha_hora_fin: selected.fin, modalidad: mode, localizacion: location };
     return appointment ? appointmentsService.reschedule(appointment.id_reserva, body) : appointmentsService.create({ ...body,
-      id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? selectedPlan : null, tipo_cita: type });
+      id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? (selectedPlan || null) : null, tipo_cita: type });
   }, close);
   const change = () => { setStart(''); setReview(false); };
   const selectedChild = family.children.find(p => p.id === patient);
@@ -67,7 +68,15 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
             <label className="block">Hijo o hija<select required className={field} value={patient || ''} onChange={e => { setPatient(Number(e.target.value)); setTreatment(0); change(); }}><option value="">Selecciona un niño</option>{family.children.map(p => <option key={p.id} value={p.id}>{p.name} {p.surname}</option>)}</select></label>
             {!!patient && <><RemoteFeedback pending={journey.isPending} error={journey.error || plans.error} retry={() => { void journey.refetch(); void plans.refetch(); }} />
               <p className="rounded-2xl bg-violet-50 p-3 text-violet-950">{journey.data?.introduccion_pendiente ? 'Este niño ya tiene una introducción reservada. Consúltala en la agenda.' : journey.data?.introduccion_atendida && !journey.data.terapia_habilitada ? 'El profesional debe guardar el plan antes de reservar terapia.' : type === 'INTRODUCTORIA' ? 'Consulta introductoria: el primer paso para este niño. Todavía no necesita un plan.' : 'Sesión de terapia: puedes elegir cualquier profesional disponible.'}</p>
-              {type === 'TERAPIA' && <label className="block">Plan vigente<select required className={field} value={selectedPlan ?? ''} onChange={e => { setTreatment(Number(e.target.value)); setReview(false); }}>{plans.data?.filter(t => t.estado_tratamiento === 'ACTIVO').map(t => <option key={t.id_tratamiento} value={t.id_tratamiento}>{t.nombre_tratamiento}</option>)}</select></label>}
+              {type === 'TERAPIA' && (
+                activePlans.length > 0 ? (
+                  <label className="block">Plan vigente<select required className={field} value={selectedPlan ?? ''} onChange={e => { setTreatment(Number(e.target.value)); setReview(false); }}>{activePlans.map(t => <option key={t.id_tratamiento} value={t.id_tratamiento}>{t.nombre_tratamiento}</option>)}</select></label>
+                ) : (
+                  <div className="rounded-2xl border border-violet-100 bg-violet-50/60 p-3 text-xs text-violet-900">
+                    <span className="font-bold">Plan de trabajo:</span> Se registrará como sesión general de seguimiento.
+                  </div>
+                )
+              )}
             </>}
           </>}
           <RemoteFeedback pending={professionals.isPending} error={professionals.error} retry={() => void professionals.refetch()} />

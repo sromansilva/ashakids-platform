@@ -1,11 +1,11 @@
 import { useRef, useEffect, useState } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
-import { ChevronDown, Check, Users, LogOut, Sparkles, Compass } from 'lucide-react';
+import { ChevronDown, Check, Users, LogOut, Sparkles, Compass, User } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
 import { getPacienteAvatarImage } from '@/core/config/avatars';
+import { Isotipo } from '@/shared/presentation/components/illustrations/Isotipo';
 import type { View } from '@/shared/domain/types/navigation';
-import './family-top-nav.css';
 
 export interface FamilyTopNavProps {
   cur?: View;
@@ -17,8 +17,8 @@ export interface FamilyTopNavProps {
 }
 
 export function FamilyTopNav({
-  cur,
-  go,
+  cur: _cur,
+  go: _go,
   logout,
   padreUserName,
   activeSection,
@@ -29,48 +29,42 @@ export function FamilyTopNav({
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const { children, patient, selectPatient } = useSelectedFamilyPatient();
-  const pickerRef = useRef<HTMLDetailsElement>(null);
+  const pickerRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
-  // Cerrar selector al hacer click fuera
   useEffect(() => {
-    const handleOutside = (event: PointerEvent) => {
+    const handleOutside = (event: MouseEvent) => {
       if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
-        pickerRef.current.open = false;
         setOpen(false);
       }
     };
-    document.addEventListener('pointerdown', handleOutside);
-    return () => document.removeEventListener('pointerdown', handleOutside);
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
   }, []);
 
-  const displayName = padreUserName || (user ? `${user.nombres} ${user.apellidos}`.trim() : 'Familia / Tutor');
+  const displayName = padreUserName || (user ? `${user.nombres} ${user.apellidos || ''}`.trim() : 'Piero Anticona');
 
   const navLinks: {
     label: string;
     path: string;
     section: 'world' | 'journey' | 'family';
     icon: React.ElementType;
-    key: string;
   }[] = [
-    { label: 'Mi Mundo', path: '/padre?section=world', section: 'world', icon: Sparkles, key: 'world' },
-    { label: 'Mi Camino ASHA', path: '/padre?section=journey', section: 'journey', icon: Compass, key: 'journey' },
-    { label: 'Para mi familia', path: '/padre?section=family', section: 'family', icon: Users, key: 'family' },
+    { label: 'Mi mundo', path: '/padre?section=world', section: 'world', icon: Sparkles },
+    { label: 'Mi camino ASHA', path: '/padre?section=journey', section: 'journey', icon: Compass },
+    { label: 'Para mi familia', path: '/padre?section=family', section: 'family', icon: Users },
   ];
 
   const currentSection = activeSection || searchParams.get('section');
   const isFamilySubmodule = location.pathname.startsWith('/padre/') && location.pathname !== '/padre/welcome';
+  const hasSidebar = isFamilySubmodule || (location.pathname === '/padre' && (currentSection === 'family' || !currentSection));
 
   const handleNavClick = (item: typeof navLinks[number]) => {
-    if (item.section) {
-      if (location.pathname === '/padre' && onSelectSection) {
-        onSelectSection(item.section);
-      } else {
-        navigate(item.path);
-      }
-      return;
+    if (location.pathname === '/padre' && onSelectSection) {
+      onSelectSection(item.section);
+    } else {
+      navigate(item.path);
     }
-    navigate(item.path);
   };
 
   const isItemActive = (item: typeof navLinks[number]) => {
@@ -81,85 +75,50 @@ export function FamilyTopNav({
       return location.pathname === '/padre' && currentSection === 'journey';
     }
     if (item.section === 'family') {
-      return (location.pathname === '/padre' && currentSection === 'family') || isFamilySubmodule;
+      return (location.pathname === '/padre' && (currentSection === 'family' || !currentSection)) || isFamilySubmodule;
     }
     return false;
   };
 
   return (
-    <header className="ftn-header" role="banner">
-      {/* Fila Superior: Centro Familiar / Selector Niño / Nombre Padre / Salir */}
-      <div className="ftn-top-row">
-        <button
-          className="ftn-brand-btn"
-          type="button"
-          aria-label="Volver al inicio"
-          onClick={() => {
-            navigate('/padre/welcome');
-          }}
-        >
-          Centro Familiar
-        </button>
-
-        {patient && (
-          <details
-            className="fc-profile ftn-child-picker"
-            ref={pickerRef}
-            open={open}
-            onToggle={(event) => {
-              setOpen(event.currentTarget.open);
-            }}
-            onKeyDown={(event) => {
-              if (event.key === 'Escape') {
-                pickerRef.current!.open = false;
-                setOpen(false);
-                pickerRef.current?.querySelector('summary')?.focus();
-              }
-            }}
+    <header className="flex items-center justify-between px-6 py-3 bg-white/90 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20" role="banner">
+      {/* Left side: Brand + Child picker if NO sidebar */}
+      {!hasSidebar ? (
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => navigate('/padre/welcome')}
+            className="flex items-center gap-2.5 text-left focus:outline-hidden"
           >
-            <summary
-              className="ftn-child-summary"
-              aria-label={`Elegir perfil: ${patient.nombres_paciente} ${patient.apellidos_paciente}`}
-              onClick={(e) => {
-                e.preventDefault();
-                setOpen((prev) => !prev);
-              }}
-            >
-              <img
-                src={getPacienteAvatarImage(patient.avatar_nombre)}
-                alt=""
-                width={40}
-                height={40}
-              />
-              <strong className="ftn-child-name">
-                <span>{patient.nombres_paciente}</span>
-              </strong>
-              <ChevronDown size={18} aria-hidden="true" />
-            </summary>
-            {open && (
-              <div className="fc-profile-menu">
-                <p>¿Quién va a explorar?</p>
-                {children.map((child) => (
-                  <button
-                    type="button"
-                    key={child.id_paciente}
-                    className="ftn-child-option"
-                    aria-label={`${child.nombres_paciente} ${child.apellidos_paciente}`}
-                    aria-pressed={child.id_paciente === patient.id_paciente}
-                    onClick={() => {
-                      selectPatient(child.id_paciente);
-                      if (searchParams.has('world')) {
-                        const nextParams = new URLSearchParams(searchParams);
-                        nextParams.delete('world');
-                        setSearchParams(nextParams, { replace: true });
-                      }
-                      setOpen(false);
-                      if (pickerRef.current) pickerRef.current.open = false;
-                      pickerRef.current?.querySelector('summary')?.focus();
-                    }}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
+            <Isotipo size={34} />
+            <span className="font-black text-[#1C1135] text-xl tracking-tight hidden sm:inline">AshaKids</span>
+            <span className="text-xs font-bold text-[#8C82A8] border-l border-[#E8E5F4] pl-2.5 hidden md:inline">Centro Familiar</span>
+          </button>
+
+          {patient && (
+            <div className="relative" ref={pickerRef}>
+              <button
+                type="button"
+                onClick={() => setOpen(!open)}
+                className="flex items-center gap-2 bg-[#FFF7EE] hover:bg-[#FFEED8] border border-[#FFDFC0] rounded-full px-3 py-1.5 transition-colors shadow-xs"
+              >
+                <img
+                  src={getPacienteAvatarImage(patient.avatar_nombre)}
+                  alt=""
+                  className="w-7 h-7 rounded-full object-cover bg-orange-100 p-0.5"
+                />
+                <span className="font-extrabold text-sm text-[#1C1135]">{patient.nombres_paciente}</span>
+                <ChevronDown size={15} className={`text-[#8C82A8] transition-transform ${open ? 'rotate-180' : ''}`} />
+              </button>
+
+              {open && (
+                <div className="absolute left-0 top-full mt-1.5 bg-white rounded-2xl border border-[#E8E5F4] py-1.5 z-50 shadow-xl min-w-[200px]">
+                  <p className="px-3.5 py-1 text-[10px] font-bold text-[#8C82A8] uppercase tracking-wider">Perfiles de la familia</p>
+                  {children.map((child) => (
+                    <button
+                      key={child.id_paciente}
+                      type="button"
+                      onClick={() => {
                         selectPatient(child.id_paciente);
                         if (searchParams.has('world')) {
                           const nextParams = new URLSearchParams(searchParams);
@@ -167,63 +126,77 @@ export function FamilyTopNav({
                           setSearchParams(nextParams, { replace: true });
                         }
                         setOpen(false);
-                        if (pickerRef.current) pickerRef.current.open = false;
-                        pickerRef.current?.querySelector('summary')?.focus();
-                      }
-                    }}
-                  >
-                    <span className="ftn-option-text">
-                      {child.nombres_paciente} {child.apellidos_paciente}
-                    </span>
-                    {child.id_paciente === patient.id_paciente && <Check size={16} aria-hidden="true" />}
-                  </button>
-                ))}
-              </div>
-            )}
-          </details>
-        )}
-
-        <div className="ftn-user-section">
-          <div className="ftn-parent-info" title={displayName}>
-            <span className="ftn-parent-label">Tutor / Familia</span>
-            <span className="ftn-parent-name">{displayName}</span>
-          </div>
-
-          <button
-            type="button"
-            className="ftn-logout-btn"
-            onClick={logout}
-            aria-label="Cerrar sesión"
-            title="Cerrar sesión"
-          >
-            <LogOut size={20} aria-hidden="true" />
-            <span className="ftn-logout-text">Salir</span>
-          </button>
+                      }}
+                      className={`w-full flex items-center justify-between px-3.5 py-2 text-left hover:bg-violet-50 transition-colors ${
+                        child.id_paciente === patient.id_paciente ? 'bg-violet-50 font-bold' : ''
+                      }`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <img src={getPacienteAvatarImage(child.avatar_nombre)} alt="" className="w-6 h-6 rounded-full" />
+                        <span className="text-xs text-[#1C1135]">{child.nombres_paciente} {child.apellidos_paciente}</span>
+                      </div>
+                      {child.id_paciente === patient.id_paciente && <Check size={14} className="text-[#6B46FE]" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
-      </div>
-
-      {/* Fila Inferior: Navbar de Navegación Rápida */}
-      <nav className="ftn-nav-bar" aria-label="Navegación del Centro Familiar">
-        <div className="ftn-nav-scroll">
-          {navLinks.map((item) => {
-            const Icon = item.icon;
-            const active = isItemActive(item);
-            return (
-              <button
-                key={item.label}
-                type="button"
-                className={`ftn-nav-btn ${active ? 'ftn-nav-btn--active' : ''}`}
-                aria-current={active ? 'page' : undefined}
-                aria-label={`Ir a ${item.label}`}
-                onClick={() => handleNavClick(item)}
-              >
-                <Icon size={18} aria-hidden="true" />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+      ) : (
+        <div className="flex items-center gap-2 text-sm font-bold text-[#625779] md:hidden">
+          <Isotipo size={28} />
+          <span className="text-[#1C1135] font-black">AshaKids</span>
         </div>
+      )}
+
+      {/* Center Nav Pills */}
+      <nav className="flex items-center gap-1.5 sm:gap-2" aria-label="Secciones del Centro Familiar">
+        {navLinks.map((item) => {
+          const Icon = item.icon;
+          const active = isItemActive(item);
+          return (
+            <button
+              key={item.label}
+              type="button"
+              onClick={() => handleNavClick(item)}
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-all duration-150 ${
+                active
+                  ? 'bg-[#F3EFFE] text-[#6B46FE] shadow-xs'
+                  : 'text-[#625779] hover:bg-violet-50/70 hover:text-[#6B46FE]'
+              }`}
+            >
+              <Icon size={17} className={active ? 'text-[#6B46FE]' : 'text-[#8C82A8]'} />
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </nav>
+
+      {/* Right side: User Profile Badge + Salir Button */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          <div className="w-9 h-9 rounded-full bg-violet-100/80 border border-violet-200 flex items-center justify-center text-[#6B46FE] font-black text-sm shrink-0">
+            <User size={18} />
+          </div>
+          <div className="text-left hidden lg:block">
+            <p className="text-xs sm:text-sm font-extrabold text-[#1C1135] leading-tight truncate max-w-[150px]">
+              {displayName}
+            </p>
+            <p className="text-[11px] font-semibold text-[#8C82A8]">Tutor / Familia</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={logout}
+          aria-label="Cerrar sesión"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 text-xs font-extrabold transition-colors"
+        >
+          <LogOut size={15} />
+          <span className="hidden sm:inline">Salir</span>
+        </button>
+      </div>
     </header>
   );
 }

@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { Video, X, Sparkles } from "lucide-react";
+import { Video, X, Sparkles, ChevronDown } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
 import { Isotipo } from "@/shared/presentation/components/illustrations/Isotipo";
 import { MobileTopBar } from "@/shared/presentation/components/common/MobileTopBar";
 import { Sidebar } from "@/core/layouts/Sidebar";
+import { FamilySidebar } from "@/core/layouts/FamilySidebar";
 import { FamilyTopNav } from "@/modules/padre/presentation/dashboard/FamilyTopNav";
 import { FamilySubNav } from "@/modules/padre/presentation/dashboard/FamilySubNav";
 import { AshhiFloat } from "@/shared/presentation/components/assistant/AshhiFloat";
@@ -73,6 +74,7 @@ export function DashLayout({
       }}
     >
       {!isFamily && <Sidebar role={role} cur={cur} go={go} logout={logout} padreUserName={padreUserName} padrePlan={padrePlan} />}
+      {isFamily && isFamilyContextual && <FamilySidebar go={go} />}
 
       {mob && !isFamily && (
         <div className="md:hidden fixed inset-0 z-40 flex bg-black/50 backdrop-blur-sm">
@@ -113,14 +115,55 @@ export function DashLayout({
       )}
 
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        {role === 'admin' && <div className="admin-toolbar"><span>{user?.nombres} {user?.apellidos}<span>Administración</span></span></div>}
+        {role === "admin" && (
+          <header className="flex items-center justify-between px-6 sm:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20">
+            <div className="flex items-center gap-2 text-sm font-bold text-[#625779]">
+              <span className="text-[#1C1135]">Inicio</span>
+              {cur !== "admin" &&
+                cur !== "admin/dashboard" && (
+                  <>
+                    <span className="text-[#9E95B7]">›</span>
+                    <span className="text-[#1C1135] font-extrabold capitalize">
+                      {cur.replace("admin/", "").replace("operacion", "incidencias").replace("ml", "machine learning")}
+                    </span>
+                  </>
+                )}
+            </div>
+            <div className="flex items-center gap-3 bg-white px-4 py-1.5 rounded-2xl border border-[#E8E5F4] shadow-sm">
+              <div className="text-right">
+                <p className="text-xs sm:text-sm font-extrabold text-[#1C1135] leading-tight">
+                  {user?.nombres
+                    ? `${user.nombres} ${user.apellidos || ""}`
+                    : "Administrador Sistema"}
+                </p>
+                <p className="text-[11px] font-semibold text-[#8C82A8]">
+                  Administración
+                </p>
+              </div>
+              <ChevronDown size={16} className="text-[#6B46FE]" />
+            </div>
+          </header>
+        )}
         {isFamily && !isWelcome && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
-        {role === 'terapeuta' && <div className="professional-toolbar"><p>{title}</p><span>{user?.nombres} {user?.apellidos}<span>Terapeuta</span></span></div>}
+        {role === "terapeuta" && (
+          <header className="hidden md:flex h-16 bg-white border-b border-[#E8E5F4] px-8 items-center justify-between shrink-0">
+            <p className="text-sm font-extrabold text-[#1C1135]">{title}</p>
+            <div className="flex items-center gap-5">
+              <NotificationCenter go={go} />
+              <div className="text-right">
+                <p className="text-xs font-black text-[#1C1135] leading-none">
+                  {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "PieroT Anticona"}
+                </p>
+                <p className="text-[11px] font-bold text-[#615274] leading-tight mt-0.5">
+                  Terapeuta
+                </p>
+              </div>
+            </div>
+          </header>
+        )}
         {!isFamily && <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />}
         <div className="flex-1 overflow-y-auto flex min-h-0">
           <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : role === "terapeuta" ? " professional-content" : ""}`}>
-            {role === 'terapeuta' && <NotificationCenter key={user?.id_usuario} go={go}/>}
-            {isFamily && isFamilyContextual && <FamilySubNav go={go} />}
             {children}
           </div>
 

@@ -38,14 +38,14 @@ function MessagesWorkspace({ mode }: { mode: Mode }) {
   const visibleRows = rows.filter(row => counterpart(row).toLocaleLowerCase().includes(searchQuery.trim().toLocaleLowerCase()));
   const initials = (name?: string) => name?.split(/\s+/).filter(Boolean).map(word => word[0]).join('').slice(0, 2).toUpperCase() || 'AS';
   const roleLabel = mode === 'PADRE' ? 'Terapeuta asignado' : 'Familia asignada';
-  return <div className="messages-center p-4 sm:p-6 max-w-6xl mx-auto pb-24" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-    <header className="messages-page-header mb-5">
+  return <div className="messages-center p-4 sm:p-8 max-w-6xl mx-auto pb-24" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+    <header className="messages-page-header mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
         <p className="messages-eyebrow"><MessageSquare size={15} aria-hidden="true" /> Comunicación familiar</p>
-        <h1 className="text-2xl sm:text-3xl font-black text-[#1C1135] mt-2">Mensajes</h1>
-        <p className="text-base text-[#4B4264] mt-2">Un espacio seguro para conversar y compartir con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}.</p>
+        <h1 className="text-3xl font-black text-[#1C1135] tracking-tight mt-1">Mensajes</h1>
+        <p className="text-sm font-medium text-[#6B5E8A] mt-1">Un espacio seguro para conversar y compartir con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}.</p>
       </div>
-      <div className="messages-page-status"><span className="messages-status-dot" aria-hidden="true" /> Canal protegido</div>
+      <div className="messages-page-status shrink-0"><span className="messages-status-dot" aria-hidden="true" /> Canal protegido</div>
     </header>
     <div className="messages-workspace messages-shell grid md:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(0,1fr)_220px] bg-white border border-[#E8E5F4] rounded-3xl overflow-hidden">
       <aside aria-label="Conversaciones" className={`messages-sidebar ${showList ? 'block' : 'hidden'} md:block min-w-0`}>
@@ -66,7 +66,16 @@ function MessagesWorkspace({ mode }: { mode: Mode }) {
         </div>
       </aside>
       <section aria-label="Chat seleccionado" className={`messages-thread-panel ${showList ? 'hidden' : 'block'} md:block min-w-0`}>
-        {activeId === null ? <div className="message-welcome"><div className="message-welcome-art"><MessageCircle size={32} aria-hidden="true" /></div><p className="messages-panel-kicker">Tu espacio de acompañamiento</p><h2>Conecta con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}</h2><p>Selecciona una conversación o inicia una con una asignación activa.</p><div className="message-welcome-note"><ShieldCheck size={17} aria-hidden="true" /><span>Tus mensajes y archivos se guardan de forma segura en cada conversación.</span></div></div> :
+        {activeId === null ? <div className="message-welcome">
+          <img src="/illustrations/optimized/family-ashi-wave-v88-640-7b2299d9a4.webp" alt="Ashi" className="w-36 h-auto mb-4 drop-shadow-md select-none" />
+          <p className="messages-panel-kicker">Tu espacio de acompañamiento</p>
+          <h2 className="text-2xl font-black text-[#1C1135] mt-1">Conecta con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}</h2>
+          <p className="text-sm text-[#6B5E8A] mt-1">Selecciona una conversación o inicia una con una asignación activa.</p>
+          <div className="message-welcome-note mt-6">
+            <ShieldCheck size={17} className="text-emerald-600 shrink-0" aria-hidden="true" />
+            <span>Tus mensajes y archivos se guardan de forma segura en cada conversación.</span>
+          </div>
+        </div> :
           <MessageThread key={`${user?.id_usuario}-${activeId}`} id={activeId} conversationSummary={activeConversation} draft={drafts[activeId] ?? ''} setDraft={value => setDrafts(current => ({ ...current, [activeId]: value }))} onBack={() => setShowList(true)} />}
       </section>
       <aside aria-label="Detalles de la conversación" className="messages-context hidden xl:flex">

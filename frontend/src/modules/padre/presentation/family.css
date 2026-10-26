@@ -1,31 +1,11 @@
 @media (min-width: 768px) {
-  .asha-family { background: radial-gradient(ellipse at 80% 0%,#ede9fe,transparent 54%),radial-gradient(ellipse at 30% 65%,#ffedd580,transparent 60%),#fafaf9 !important; color: #1c1135; }
+  .asha-family { color: #1c1135; }
   .asha-family ::selection { background: #ddd6fe; color: #2d1b69; }
   .asha-family :is(button,a,input,textarea,select):focus-visible { outline: 3px solid #5b21b6; outline-offset: 3px; }
   .asha-family :is(input,textarea) { caret-color: #7c3aed; }
-  .asha-family :is(h1,h2) { letter-spacing: -.025em; text-wrap: balance; }
-  .asha-family h1 { font-size: 1.9rem; line-height: 1.25; }
   .asha-family button { transition: background-color .18s,box-shadow .18s,color .18s; }
   .asha-family button:disabled { cursor: not-allowed; }
-  .asha-family .family-sidebar { background: #ffffffb3 !important; backdrop-filter: blur(18px); border-right: 1px solid #e8e1f0; }
-  .asha-family .family-sidebar > div:first-child { padding: 30px 24px; }
-  .asha-family .family-sidebar nav { padding: 0 16px; gap: 5px; }
-  .asha-family .family-sidebar nav button { min-height: 46px; border-radius: 12px; padding: 12px; color: #615274; }
-  .asha-family .family-sidebar nav button[aria-current=page] { color: #fff; background: #6d28d9; box-shadow: 0 5px 14px #6d28d91a; }
-  .asha-family .family-sidebar nav button[aria-current=page] svg { color: #fff; }
-  .asha-family .family-sidebar nav button:not([aria-current]):hover { color: #5b21b6; background: #ede9fe80; }
-  .asha-family .family-sidebar > div:last-child { padding: 20px; border-top: 1px solid #e8e1f0; }
-  .family-toolbar { display: flex; align-items: center; justify-content: space-between; min-height: 74px; padding: 16px 36px; background: #ffffff80; backdrop-filter: blur(18px); border-bottom: 1px solid #e8e1f0; font-size: .87rem; font-weight: 800; }
-  .family-toolbar > p { color: #615274; }
-  .family-toolbar > span { text-align: right; }
-  .family-toolbar > span > span { display: block; color: #615274; font-size: .72rem; margin-top: 2px; }
-  .family-content { padding: 12px 88px 36px 12px; }
-  .family-content > :is(div,section) { max-width: 1220px; padding: 24px; }
-  .family-content .text-\[\#7C6F9A\],.family-content .text-\[\#9E95B7\],.family-content .text-\[\#C4BDD8\] { color: #615274; }
-  .family-content :is(input,select,textarea) { background: #fff; border-radius: 10px; min-height: 44px; }
-  .family-content :is(input,textarea)::placeholder { color: #756585; }
-  .family-content .bg-white:is(.rounded-2xl,.rounded-3xl) { background: #ffffffbf; border-color: transparent; border-radius: 16px; box-shadow: 0 7px 24px #45247808,inset 0 1px 0 #fff; }
-  .family-content .fixed .bg-white { background: #fff; box-shadow: 0 22px 70px #1c113526; }
+  .family-content { padding: 0; }
   .asha-family:has([role=dialog]) :is(a[aria-label="Contactar a AshaKids por WhatsApp"],button[aria-label="Abrir asistente ASHI"]) { visibility: hidden; }
   .family-heading { margin-bottom: 26px; }
   .family-heading p { font-size: 1rem; max-width: 70ch; }

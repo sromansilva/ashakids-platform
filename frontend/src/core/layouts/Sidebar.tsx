@@ -178,10 +178,10 @@ export function Sidebar({
             color: B.teal,
           }
         : {
-            name: padreUserName,
+            name: "Administrador Sistema",
             sub: "Admin",
             av: "AD",
-            color: B.orange,
+            color: "#FF8A00",
           };
 
   return (
@@ -193,9 +193,12 @@ export function Sidebar({
         <div className="flex items-center gap-2.5"><Isotipo size={36} /><span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span></div>
       </div>}
 
-      <nav className={`flex-1 min-h-0 overflow-y-auto py-2 flex flex-col gap-0.5 px-3`} style={{ position: "relative", zIndex: 1 }}>
+      <nav className={`flex-1 min-h-0 overflow-y-auto py-2 flex flex-col gap-1 px-3`} style={{ position: "relative", zIndex: 1 }}>
         {nav.map((item) => {
-          const active = cur === item.view || (item.view === "admin/dashboard" && cur === "admin");
+          const active =
+            cur === item.view ||
+            (item.view === "admin/dashboard" && (cur === "admin" || cur === "admin/dashboard")) ||
+            (item.view === "admin/operacion" && (cur === "admin/incidencias" || cur === "admin/operacion"));
           return (
             <button
               key={item.view}
@@ -204,31 +207,33 @@ export function Sidebar({
               className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98]
                 ${
                   active
-                    ? "bg-violet-700 text-white shadow-sm shadow-violet-200"
-                    : "text-[#7C6F9A] hover:bg-violet-50 hover:text-violet-700"
+                    ? "bg-[#6B46FE] text-white shadow-md shadow-violet-200"
+                    : "text-[#5C5378] hover:bg-violet-50 hover:text-[#6B46FE]"
                 }`}
             >
               <item.icon
-                size={17}
-                className={`flex-shrink-0 transition-colors ${active ? "text-white" : "text-[#9E95B7]"}`}
+                size={18}
+                className={`flex-shrink-0 transition-colors ${active ? "text-white" : "text-[#7C6F9A]"}`}
               />
               <span className="truncate">{item.label}</span>
               {active && (
-                <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white/60 flex-shrink-0" />
+                <div className="ml-auto w-2 h-2 rounded-full bg-white flex-shrink-0" />
               )}
             </button>
           );
         })}
       </nav>
 
-      <div className={`shrink-0 px-4 py-4 ${mobile ? "pb-[calc(1rem+env(safe-area-inset-bottom))]" : ""}`} style={{ position: "relative", zIndex: 1 }}>
+      <div className={`shrink-0 px-4 py-4 border-t border-[#E8E5F4] ${mobile ? "pb-[calc(1rem+env(safe-area-inset-bottom))]" : ""}`} style={{ position: "relative", zIndex: 1 }}>
         <div className="flex items-center gap-3 min-w-0">
-          <Av initials={user.av} color={user.color} size="sm" />
+          <div className="w-10 h-10 rounded-full bg-[#FF8A00] flex items-center justify-center text-white font-extrabold text-sm shrink-0">
+            {user.av}
+          </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-bold text-[#1C1135] leading-snug truncate">{user.name}</p>
-            {user.sub && <p className="text-xs font-extrabold truncate" style={{ color: user.color }}>{user.sub}</p>}
+            {user.sub && <p className="text-xs font-black truncate text-[#FF8A00]">{user.sub}</p>}
           </div>
-          <button onClick={logout} className="shrink-0 h-11 px-3 inline-flex items-center gap-1.5 rounded-xl text-sm text-[#7C6F9A] hover:bg-red-50 hover:text-red-500 transition-colors font-medium" aria-label="Cerrar sesión">
+          <button onClick={logout} className="shrink-0 h-10 w-10 flex items-center justify-center rounded-xl text-[#7C6F9A] hover:bg-red-50 hover:text-red-500 transition-colors" aria-label="Cerrar sesión">
             <LogOut size={18} />
           </button>
         </div>

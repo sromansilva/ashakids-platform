@@ -1,6 +1,5 @@
 import React from "react";
 import { AudioLines, Search, ShieldCheck, ShieldOff, Users } from "lucide-react";
-import { B } from "@/shared/presentation/theme/brand/B";
 import type { TabRole } from "./AdminCuentas";
 
 interface AdminCuentasStatsProps {
@@ -27,55 +26,55 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
   return (
     <>
       {/* Stats Cards */}
-      <div className="admin-account-stats grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Familias", value: famCount, icon: Users, bg: B.violetLight, color: B.violet },
-          { label: "Terapeutas", value: terCount, icon: AudioLines, bg: "#F0FDFA", color: B.teal },
-          { label: "Total activas", value: activasCount, icon: ShieldCheck, bg: "#FFFBEB", color: B.orange },
-          { label: "Suspendidas", value: suspCount, icon: ShieldOff, bg: "#FEF2F2", color: "#DC2626" },
+          { label: "Familias", value: famCount, icon: Users, bg: "bg-[#F3E8FF]", color: "text-[#6B46FE]" },
+          { label: "Terapeutas", value: terCount, icon: AudioLines, bg: "bg-[#E6FFFA]", color: "text-[#00A389]" },
+          { label: "Total activas", value: activasCount, icon: ShieldCheck, bg: "bg-[#FFF4E5]", color: "text-[#FF8A00]" },
+          { label: "Suspendidas", value: suspCount, icon: ShieldOff, bg: "bg-[#FEE2E2]", color: "text-[#EF4444]" },
         ].map((s) => (
           <div
             key={s.label}
-            className="rounded-2xl p-4 flex items-center gap-3 border border-[#E8E5F4]/60 bg-white"
-            style={{ background: s.bg }}
+            className="rounded-2xl p-5 flex items-center gap-4 border border-[#E8E5F4] bg-white shadow-sm"
           >
-            <s.icon size={22} strokeWidth={1.7} style={{color:s.color}} aria-hidden="true"/>
+            <div className={`w-12 h-12 rounded-2xl ${s.bg} ${s.color} flex items-center justify-center shrink-0`}>
+              <s.icon size={22} />
+            </div>
             <div>
-              <p className="text-xl font-black" style={{ color: s.color }}>
+              <p className="text-3xl font-black text-[#1C1135] leading-none mb-1 tabular-nums">
                 {s.value}
               </p>
-              <p className="text-xs font-bold text-[#7C6F9A]">{s.label}</p>
+              <p className="text-xs font-bold text-[#615274]">{s.label}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Tabs + Search */}
-      <div className="admin-account-filters flex flex-col sm:flex-row gap-3 mb-4">
-        <div className="flex rounded-2xl border border-[#E8E5F4] bg-white overflow-hidden p-1 gap-1">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-6">
+        <div className="inline-flex rounded-2xl border border-[#E8E5F4] bg-white p-1 gap-1 shadow-sm shrink-0">
           {(["PADRE", "TERAPEUTA"] as TabRole[]).map((t) => (
             <button
               key={t}
               onClick={() => onTabChange(t)}
-              className={`flex-1 px-5 py-2 rounded-xl text-sm font-extrabold transition-all ${
+              className={`px-6 py-2.5 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
                 tab === t
-                  ? "text-white shadow-sm"
-                  : "text-[#7C6F9A] hover:bg-violet-50 hover:text-violet-700"
+                  ? "bg-[#6B46FE] text-white shadow-md shadow-violet-200"
+                  : "text-[#615274] hover:bg-violet-50 hover:text-[#6B46FE]"
               }`}
-              style={tab === t ? { background: `linear-gradient(135deg, ${B.violet}, ${B.violetDark})` } : {}}
             >
               {t === "PADRE" ? "Familias / Padres" : "Terapeutas"}
             </button>
           ))}
         </div>
-        <div className="flex-1 flex items-center gap-2 bg-white border border-[#E8E5F4] rounded-2xl px-3 shadow-sm">
-          <Search size={15} className="text-[#9E95B7]" />
+        <div className="flex-1 flex items-center gap-3 bg-white border border-[#E8E5F4] rounded-2xl px-4 py-2.5 shadow-sm">
+          <Search size={18} className="text-[#8C82A8] shrink-0" />
           <input
             aria-label="Buscar cuentas"
             value={search}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Buscar por código (ej. p00001), nombre o email…"
-            className="flex-1 bg-transparent text-sm font-medium text-[#1C1135] placeholder-[#C4BDD8] py-2.5 outline-none"
+            placeholder="Buscar por código (ej. p00001), nombre o email..."
+            className="flex-1 bg-transparent text-sm font-medium text-[#1C1135] placeholder-[#8C82A8] outline-none"
           />
         </div>
       </div>
