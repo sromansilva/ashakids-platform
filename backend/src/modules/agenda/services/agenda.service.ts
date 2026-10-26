@@ -1,4 +1,5 @@
 import { pool } from '../../../core/database.js';
+import { ZoomService } from '../../../infrastructure/zoom/zoom.service.js';
 import type { AgendarCitaDTO, CambiarEstadoCitaDTO } from '../dtos/agenda.dto.js';
 
 export class AgendaService {
@@ -64,17 +65,31 @@ export class AgendaService {
   async agendar(dto: AgendarCitaDTO) {
     try {
       const fechaHora = `${dto.fecha}T${dto.hora_inicio}:00Z`;
+      let zoomMeetingId: string | null = null;
+      let zoomJoinUrl: string | null = null;
+
+      const zoom = await ZoomService.createMeeting({
+        topic: 'AshaKids · Consulta de Agenda',
+        startTime: fechaHora,
+        durationMinutes: 40,
+      });
+      if (zoom) {
+        zoomMeetingId = zoom.id;
+        zoomJoinUrl = zoom.join_url;
+      }
+
       const res = await pool.query(
-        `INSERT INTO reservas (id_paciente, id_terapeuta, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion)
-         VALUES ($1, $2, $3::timestamptz, ($3::timestamptz + INTERVAL '40 minutes'), 'ONLINE', 'INTRODUCTORIA', 'CONFIRMADA', NOW())
-         RETURNING id_reserva, id_paciente, id_terapeuta, fecha_hora_inicio, estado_reserva;`,
-        [dto.id_paciente, dto.id_terapeuta, fechaHora]
+        `INSERT INTO reservas (id_paciente, id_terapeuta, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, zoom_meeting_id, zoom_join_url)
+         VALUES ($1, $2, $3::timestamptz, ($3::timestamptz + INTERVAL '40 minutes'), 'ONLINE', 'INTRODUCTORIA', 'CONFIRMADA', NOW(), $4, $5)
+         RETURNING id_reserva, id_paciente, id_terapeuta, fecha_hora_inicio, estado_reserva, zoom_join_url;`,
+        [dto.id_paciente, dto.id_terapeuta, fechaHora, zoomMeetingId, zoomJoinUrl]
       );
       const row = res.rows[0];
       return {
         id_cita: row.id_reserva,
         ...dto,
         estado: row.estado_reserva,
+        zoom_join_url: row.zoom_join_url,
         creado_en: new Date().toISOString(),
       };
     } catch (err) {

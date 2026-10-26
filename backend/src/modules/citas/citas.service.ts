@@ -1,4 +1,5 @@
 import { pool } from '../../core/database.js';
+import { ZoomService } from '../../infrastructure/zoom/zoom.service.js';
 
 export interface CitaRow {
   id_reserva: number;
@@ -123,29 +124,60 @@ export class CitasService {
     try {
       const fechaInicio = data.fecha_hora_inicio;
       const fechaFin = data.fecha_hora_fin || new Date(new Date(fechaInicio).getTime() + 40 * 60000).toISOString();
+      const modalidad = data.modalidad === 'PRESENCIAL' ? 'PRESENCIAL' : 'VIRTUAL';
+
+      let zoomMeetingId: string | null = null;
+      let zoomJoinUrl: string | null = null;
+
+      if (modalidad === 'VIRTUAL') {
+        const topic = `AshaKids · ${data.tipo_cita === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria'}`;
+        const zoom = await ZoomService.createMeeting({
+          topic,
+          startTime: fechaInicio,
+          durationMinutes: 40,
+        });
+        if (zoom) {
+          zoomMeetingId = zoom.id;
+          zoomJoinUrl = zoom.join_url;
+        }
+      }
+
       const res = await pool.query(
-        `INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion)
-         VALUES ($1, $2, $3, $4::timestamptz, $5::timestamptz, 'ONLINE', COALESCE($6, 'INTRODUCTORIA'), 'CONFIRMADA', NOW())
+        `INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, zoom_meeting_id, zoom_join_url)
+         VALUES ($1, $2, $3, $4::timestamptz, $5::timestamptz, $6, COALESCE($7, 'INTRODUCTORIA'), 'CONFIRMADA', NOW(), $8, $9)
          RETURNING *;`,
-        [data.id_paciente, data.id_terapeuta, data.id_tratamiento ?? null, fechaInicio, fechaFin, data.tipo_cita]
+        [data.id_paciente, data.id_terapeuta, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita, zoomMeetingId, zoomJoinUrl]
       );
       const row = res.rows[0];
+
+      const detailRes = await pool.query(
+        `SELECT CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) as paciente_nombre,
+                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre
+         FROM reservas r
+         LEFT JOIN pacientes p ON r.id_paciente = p.id_paciente
+         LEFT JOIN terapeutas t ON r.id_terapeuta = t.id_terapeuta
+         LEFT JOIN usuarios u ON t.id_usuario = u.id_usuario
+         WHERE r.id_reserva = $1;`,
+        [row.id_reserva]
+      );
+      const names = detailRes.rows[0];
+
       return {
         id_reserva: row.id_reserva,
         id_paciente: row.id_paciente,
         id_terapeuta: row.id_terapeuta,
         id_tratamiento: row.id_tratamiento,
         tipo_cita: row.tipo_cita,
-        paciente_nombre: 'Paciente Registrado',
-        terapeuta_nombre: 'Terapeuta Especialista',
+        paciente_nombre: names?.paciente_nombre?.trim() || 'Paciente Registrado',
+        terapeuta_nombre: names?.terapeuta_nombre?.trim() || 'Terapeuta Especialista',
         fecha_hora_inicio: new Date(row.fecha_hora_inicio).toISOString(),
         fecha_hora_fin: new Date(row.fecha_hora_fin).toISOString(),
-        modalidad: 'VIRTUAL',
+        modalidad: (row.modalidad === 'ONLINE' ? 'VIRTUAL' : row.modalidad),
         estado_reserva: row.estado_reserva,
         id_sesion: null,
         puede_editar: true,
         zoom_join_url: row.zoom_join_url,
-        zoom_origen: null,
+        zoom_origen: row.zoom_meeting_id ? 'AUTOMATICA' : (row.zoom_join_url ? 'MANUAL' : null),
       };
     } catch (err) {
       console.warn('[CitasService] Fallback crear:', err);
