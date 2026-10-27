@@ -46,6 +46,7 @@ const envSchema = z.object({
   GMAIL_REFRESH_TOKEN: z.string().optional().default(''),
   GMAIL_SENDER_EMAIL: z.string().optional().default(''),
   GMAIL_SENDER_NAME: z.string().optional().default('Ashakids'),
+  PUBLIC_ORIGIN: z.string().optional().default('https://ashakids.life'),
   CORS_ORIGINS: z.string().default('http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174')
     .transform((val) => val.split(',').map((s) => s.trim())),
 }).superRefine((env, ctx) => {
