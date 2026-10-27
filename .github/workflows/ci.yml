@@ -150,9 +150,9 @@ jobs:
             echo "El checkout de producción tiene cambios locales rastreados; se cancela para no sobrescribirlos." >&2
             exit 1
           fi
-          git fetch --no-tags origin main
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
           git cat-file -e "$DEPLOY_SHA"
-          git merge-base --is-ancestor "$DEPLOY_SHA" origin/main
+          git merge-base --is-ancestor "$DEPLOY_SHA" refs/remotes/origin/main
           DEPLOY_SCRIPT="$(mktemp)"
           trap 'rm -f "$DEPLOY_SCRIPT"' EXIT
           git show "$DEPLOY_SHA:scripts/deploy-ec2-update.sh" > "$DEPLOY_SCRIPT"
