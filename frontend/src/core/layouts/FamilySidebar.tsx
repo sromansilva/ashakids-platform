@@ -41,9 +41,9 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
   };
 
   return (
-    <aside className="hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4] flex-col bg-white overflow-y-auto flex-shrink-0 w-64 z-30">
+    <aside className="family-role-sidebar hidden md:flex h-full min-h-0 sticky top-0 border-r border-[#E8E5F4] flex-col bg-white overflow-y-auto flex-shrink-0 w-64 z-30" aria-label="Navegación familiar">
       {/* Brand Header */}
-      <div className="flex items-center gap-2.5 px-6 py-5 shrink-0">
+      <div className="family-sidebar-brand flex items-center gap-2.5 px-6 py-5 shrink-0">
         <Isotipo size={34} />
         <span className="font-black text-[#1C1135] text-xl tracking-tight">AshaKids</span>
         <span className="text-xs font-bold text-[#8C82A8] border-l border-[#E8E5F4] pl-2.5">Centro Familiar</span>
@@ -51,7 +51,7 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
 
       {/* Child Selector Pill */}
       {patient && (
-        <div className="px-5 mb-4 relative shrink-0" ref={pickerRef}>
+        <div className="family-sidebar-picker px-5 mb-4 relative shrink-0" ref={pickerRef}>
           <button
             type="button"
             onClick={() => setOpen(!open)}
@@ -105,6 +105,7 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
             <button
               key={item.label}
               type="button"
+              aria-current={active ? 'page' : undefined}
               onClick={() => {
                 if (item.path.startsWith('/padre?')) {
                   navigate(item.path);

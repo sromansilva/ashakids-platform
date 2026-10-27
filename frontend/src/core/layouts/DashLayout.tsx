@@ -67,7 +67,7 @@ export function DashLayout({
   }, [mob]);
   return (
     <div
-      className={`flex h-screen overflow-hidden${role === "admin" ? " asha-admin" : role === "padre" ? " asha-family" : role === "terapeuta" ? " asha-professional" : ""}${isFamily ? ' family-center-layout' : ''}`}
+      className={`flex h-screen overflow-hidden${isFamily ? " flex-col" : " flex-row"}${role === "admin" ? " asha-admin" : role === "padre" ? " asha-family" : role === "terapeuta" ? " asha-professional" : ""}${isFamily ? ' family-center-layout' : ''}`}
       style={{
         background: B.bg,
         fontFamily: '"Nunito", system-ui, sans-serif',
@@ -113,6 +113,10 @@ export function DashLayout({
         </div>
       )}
 
+      {isFamily && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
+
+      <div className={isFamily ? "flex flex-1 min-h-0 overflow-hidden" : "contents"}>
+      {isFamily && isFamilyContextual && <FamilySidebar go={go} />}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {role === "admin" && (
           <header className="flex items-center justify-between px-6 sm:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20">
@@ -143,7 +147,6 @@ export function DashLayout({
             </div>
           </header>
         )}
-        {isFamily && !isWelcome && <FamilyTopNav cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
         {role === "terapeuta" && (
           <header className="hidden md:flex h-16 bg-white border-b border-[#E8E5F4] px-8 items-center justify-between shrink-0">
             <p className="text-sm font-extrabold text-[#1C1135]">{title}</p>
@@ -445,6 +448,7 @@ export function DashLayout({
           )}
         </div>
       </main>
+      </div>
       {role === 'admin' && <div className="admin-support-rail">Ayuda y asistente</div>}
       {!childCenter && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
     </div>
