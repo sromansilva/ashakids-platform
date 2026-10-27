@@ -18,7 +18,8 @@ RUN npm run build
 # Stage 3: Production Runtime
 FROM node:22-bookworm-slim AS runtime
 ENV NODE_ENV=production \
-    PORT=8000
+    PORT=8000 \
+    FRONTEND_DIST_DIR=/app/frontend-dist
 WORKDIR /app
 
 # Install only production backend dependencies
@@ -29,7 +30,7 @@ RUN cd backend && npm ci --omit=dev
 COPY --from=backend-builder /app/backend/dist ./backend/dist
 COPY backend/certs ./backend/certs
 
-# Copy frontend static build for static serving or reverse proxying
+# Serve the frontend build from Express on the same origin as the API
 COPY --from=frontend-builder /app/frontend/dist ./frontend-dist
 
 # Create unprivileged runtime user

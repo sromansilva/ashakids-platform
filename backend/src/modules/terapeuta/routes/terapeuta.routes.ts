@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { terapeutaService } from '../services/terapeuta.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
+import { settings } from '../../../core/config.js';
 
 export const terapeutaRouter = Router();
 
@@ -17,8 +18,14 @@ terapeutaRouter.get('/', async (req: Request, res: Response, next: NextFunction)
   }
 });
 
+// The public therapist directory remains available; personal and operational routes require a session in production.
+terapeutaRouter.use((req, res, next) => {
+  if (settings.ENVIRONMENT === 'production' || req.headers['x-mock-role']) return authenticate(req, res, next);
+  next();
+});
+
 // GET /api/v1/terapeutas/me
-terapeutaRouter.get('/me', async (req: Request, res: Response, next: NextFunction) => {
+terapeutaRouter.get('/me', requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user?.id_usuario || 2;
     const profile = await terapeutaService.getMe(userId);
@@ -29,7 +36,7 @@ terapeutaRouter.get('/me', async (req: Request, res: Response, next: NextFunctio
 });
 
 // GET /api/v1/terapeutas/disponibilidad (para terapeuta autenticado y tests)
-terapeutaRouter.get('/disponibilidad', authenticate, requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
+terapeutaRouter.get('/disponibilidad', requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const userId = (req as any).user?.id_usuario || 1;
     const disp = await terapeutaService.getDisponibilidad(userId);
@@ -59,7 +66,7 @@ terapeutaRouter.get('/:key/disponibilidad', async (req: Request, res: Response, 
 });
 
 // PUT /api/v1/terapeutas/:key/disponibilidad
-terapeutaRouter.put('/:key/disponibilidad', async (req: Request, res: Response, next: NextFunction) => {
+terapeutaRouter.put('/:key/disponibilidad', requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
     const disp = await terapeutaService.updateDisponibilidad(key, req.body);
