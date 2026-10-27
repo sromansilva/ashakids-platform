@@ -97,7 +97,7 @@ it("Keeps server failures visible and retries a read", async () => {
   expect(await screen.findByRole("alert")).toHaveTextContent("Servidor de seguimiento no disponible");
   expect(screen.queryByLabelText("Registros del hijo seleccionado")).not.toBeInTheDocument();
   api(); fireEvent.click(screen.getByRole("button", { name: "Reintentar" }));
-  fireEvent.click(await screen.findByRole('button',{name:'Para mi familia'}));
+  fireEvent.click(await screen.findByRole('button',{name:/^Ir a Para mi familia$|^Para mi familia$/}));
   expect(await screen.findByText("Recomendación persistente")).toBeInTheDocument();
 });
 

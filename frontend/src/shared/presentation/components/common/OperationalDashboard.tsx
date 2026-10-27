@@ -71,9 +71,9 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
   const running = (sessions.data ?? []).filter((s) => s.estado_sesion === "EN_CURSO");
 
   return (
-    <section className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
+    <section className={`operational-dashboard ${admin ? "operational-dashboard--admin" : "operational-dashboard--therapist"} p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]`}>
       {/* Hero Welcome Banner */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E5F4] shadow-sm mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+      <div className="operational-dashboard__hero bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E5F4] shadow-sm mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="max-w-xl z-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1C1135] tracking-tight">
             {admin ? "Panel de administración" : "Panel del terapeuta"}
@@ -113,9 +113,9 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
           <p className="text-sm font-bold text-[#615274]">Cargando registros del panel…</p>
         </div>
       ) : (
-        <>
+        <div className="operational-dashboard__body">
           {/* Row 1: KPI Metrics Cards */}
-          <div aria-label="Resumen de registros" className={`grid grid-cols-1 sm:grid-cols-2 ${admin ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-5 mb-6`}>
+          <div aria-label="Resumen de registros" className={`operational-dashboard__metrics grid grid-cols-1 sm:grid-cols-2 ${admin ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-5 mb-6`}>
             {[
               {
                 label: admin ? "Pacientes activos" : "Pacientes atendidos",
@@ -177,7 +177,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
 
           {/* Row 2: Quick Action Cards */}
           {admin ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div className="operational-dashboard__actions grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               {[
                 { label: "Registrar familias y cuentas", view: "admin/cuentas" as View, icon: Users, bg: "bg-[#F3E8FF]", color: "text-[#6B46FE]" },
                 { label: "Pacientes", view: "admin/pacientes" as View, icon: ClipboardList, bg: "bg-[#E6FFFA]", color: "text-[#00A389]" },
@@ -202,7 +202,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+            <div className="operational-dashboard__actions grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
               {[
                 {
                   label: "Ver pacientes",
@@ -246,7 +246,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
           )}
 
           {/* Row 3: Workspace 2 Columns */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="operational-dashboard__workspace grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Sesión en curso */}
             <div className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E8E5F4] shadow-sm flex flex-col justify-between min-h-[300px]">
               <div>
@@ -338,7 +338,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
               )}
             </div>
           </div>
-        </>
+        </div>
       )}
     </section>
   );
