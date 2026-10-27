@@ -1,6 +1,13 @@
 /* therapist.css - Clean Asha Therapist Theme */
 .professional-toolbar { display: none; }
 
+.asha-professional {
+  color: #1c1135;
+  background:
+    radial-gradient(ellipse at 85% 2%, rgb(237 233 254 / 60%), transparent 42%),
+    #f7f8fc !important;
+}
+
 @media (min-width: 768px) {
   .asha-professional {
     color: #1C1135;
@@ -20,10 +27,78 @@
   .professional-content {
     padding: 0;
   }
+  .professional-content > :is(section, div) { scroll-margin-top: 84px; }
   .professional-content .overflow-y-auto {
     scrollbar-width: thin;
     scrollbar-color: #D1D5DB transparent;
   }
+}
+
+@media (min-width: 768px) {
+  .asha-professional > aside {
+    width: 252px !important;
+    height: calc(100vh - 20px);
+    margin: 10px 0 10px 10px;
+    border: 1px solid #e8e5f4;
+    border-radius: 24px;
+    box-shadow: 0 14px 36px rgb(48 33 87 / 7%);
+  }
+
+  .asha-professional > aside > div:first-child { padding: 22px 18px 18px; }
+  .asha-professional > aside nav { padding-inline: 12px; }
+  .asha-professional > aside nav button { min-height: 46px; border-radius: 15px; }
+  .asha-professional > aside nav button[aria-current="page"] {
+    background: linear-gradient(125deg, #6b46fe, #824eff);
+    box-shadow: 0 8px 18px rgb(107 70 254 / 20%);
+  }
+
+  .asha-professional > main > header {
+    min-height: 72px;
+    background: rgb(255 255 255 / 92%);
+    box-shadow: 0 3px 16px rgb(48 33 87 / 3%);
+  }
+}
+
+.professional-content :is(.bg-white.rounded-2xl.border, .bg-white.rounded-3xl.border, .rounded-2xl.bg-white.border, .rounded-3xl.bg-white.border) {
+  border-color: #e8e5f4;
+  box-shadow: 0 8px 24px rgb(48 33 87 / 5%);
+}
+
+.professional-content :is(input, select, textarea) {
+  border-color: #ded8ec;
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.professional-content :is(input, select, textarea):focus {
+  border-color: #9c85f7;
+  box-shadow: 0 0 0 4px rgb(107 70 254 / 10%);
+}
+
+.professional-content table thead { background: #f8f6ff; }
+.professional-content table th { color: #615274; font-weight: 800; }
+.professional-content table tbody tr { transition: background-color .16s ease; }
+.professional-content table tbody tr:hover { background: #faf9ff; }
+
+@media (max-width: 767px) {
+  .professional-content { padding: 0; }
+  .professional-content > :is(section, div) { scroll-margin-top: 64px; }
+}
+
+.asha-professional .operational-dashboard__body { display: flex; flex-direction: column; }
+.asha-professional .operational-dashboard__metrics { order: 1; }
+.asha-professional .operational-dashboard__actions { order: 2; }
+.asha-professional .operational-dashboard__workspace { order: 3; }
+.asha-professional .operational-dashboard__hero { min-height: 220px; background: linear-gradient(115deg, #fff 0%, #fff 60%, #fbf9ff 100%); }
+.asha-professional .operational-dashboard__hero h1 { font-size: clamp(32px, 3.1vw, 46px); line-height: 1.12; }
+.asha-professional .operational-dashboard__metrics > div { min-height: 142px; border-radius: 26px; }
+.asha-professional .operational-dashboard__actions > button { min-height: 126px; border-radius: 24px; }
+.asha-professional .operational-dashboard__workspace > div { min-height: 320px; }
+
+@media (max-width: 767px) {
+  .asha-professional .operational-dashboard__hero { min-height: 0; }
+  .asha-professional .operational-dashboard__metrics > div { min-height: 102px; }
+  .asha-professional .operational-dashboard__actions > button { min-height: 92px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

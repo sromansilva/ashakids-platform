@@ -55,3 +55,62 @@
 }
 .family-toolbar { display: none; }
 @media (min-width: 768px) { .family-toolbar { display: flex; } }
+
+/* Centro familiar: barra superior completa y navegación lateral bajo la barra. */
+.asha-family.family-center-layout {
+  background:
+    radial-gradient(ellipse at 88% 16%, rgb(204 251 241 / 46%), transparent 44%),
+    radial-gradient(ellipse at 12% 74%, rgb(237 233 254 / 72%), transparent 48%),
+    #f8f7fc !important;
+}
+
+.asha-family .ftn-header { flex-shrink: 0; }
+.asha-family .family-content { min-height: 100%; background: transparent; }
+.asha-family .family-content > :is(section, div) { scroll-margin-top: 88px; }
+
+.family-role-sidebar {
+  width: 264px;
+  flex: 0 0 264px;
+  padding: 14px 0;
+  margin: 10px 0 10px 10px;
+  border: 1px solid #e8e5f4;
+  border-radius: 24px;
+  background: rgb(255 255 255 / 96%);
+  box-shadow: 0 14px 36px rgb(48 33 87 / 7%);
+}
+
+.family-role-sidebar .family-sidebar-brand,
+.family-role-sidebar .family-sidebar-picker { display: none; }
+.family-role-sidebar nav { padding: 8px 12px; }
+.family-role-sidebar nav button { min-height: 46px; border-radius: 15px; }
+.family-role-sidebar nav button[aria-current="page"] {
+  background: linear-gradient(135deg, #f4efff, #eee9ff);
+  box-shadow: inset 0 0 0 1px #e7defb;
+}
+.family-role-sidebar nav button[aria-current="page"] svg { color: #6b46fe; }
+.family-role-sidebar > div:last-child { margin: auto 12px 0; border-color: #eeeaf6; }
+.family-role-sidebar > div:last-child button { min-height: 46px; border-radius: 14px; }
+
+.family-content :is(.bg-white.rounded-2xl.border, .bg-white.rounded-3xl.border, .rounded-2xl.bg-white.border, .rounded-3xl.bg-white.border) {
+  border-color: #e8e5f4;
+  box-shadow: 0 8px 24px rgb(48 33 87 / 5%);
+}
+
+.family-content :is(input, select, textarea) {
+  border-color: #ded8ec;
+  border-radius: 12px;
+  background-color: #fff;
+}
+
+.family-content :is(input, select, textarea):focus {
+  border-color: #9c85f7;
+  box-shadow: 0 0 0 4px rgb(107 70 254 / 10%);
+}
+
+.family-content table thead { background: #f8f6ff; }
+.family-content table th { color: #615274; font-weight: 800; }
+
+@media (max-width: 767px) {
+  .asha-family .family-content > :is(section, div) { scroll-margin-top: 118px; }
+  .asha-family .family-content { overflow-x: hidden; }
+}
