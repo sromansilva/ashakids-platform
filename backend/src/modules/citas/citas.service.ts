@@ -1,5 +1,7 @@
 import { pool } from '../../core/database.js';
 import { ZoomService } from '../../infrastructure/zoom/zoom.service.js';
+import { GmailService } from '../../infrastructure/mailer/gmail.service.js';
+import { settings } from '../../core/config.js';
 
 export interface CitaRow {
   id_reserva: number;
@@ -162,6 +164,54 @@ export class CitasService {
       );
       const names = detailRes.rows[0];
 
+      // Enviar confirmación por correo electrónico
+      try {
+        const contactRes = await pool.query(
+          `SELECT u.email as tutor_email, u.nombres as tutor_nombre, p.nombres_paciente,
+                  ut.email as terapeuta_email, ut.nombres as terapeuta_nombre
+           FROM pacientes p
+           LEFT JOIN tutores tu ON p.id_tutor = tu.id_tutor
+           LEFT JOIN usuarios u ON tu.id_usuario = u.id_usuario
+           LEFT JOIN terapeutas t ON t.id_terapeuta = $2
+           LEFT JOIN usuarios ut ON t.id_usuario = ut.id_usuario
+           WHERE p.id_paciente = $1;`,
+          [data.id_paciente, data.id_terapeuta]
+        );
+        const contacts = contactRes.rows[0];
+        const dateObj = new Date(row.fecha_hora_inicio);
+        const dateStr = dateObj.toLocaleDateString('es-PE', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Lima' });
+        const timeStr = dateObj.toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: 'America/Lima' });
+
+        // Si el correo del tutor es de prueba (@ashakids.test), enviamos la copia a GMAIL_SENDER_EMAIL para que el usuario pueda comprobarlo en su bandeja
+        const tutorRecipient = (contacts?.tutor_email && !contacts.tutor_email.endsWith('@ashakids.test'))
+          ? contacts.tutor_email
+          : settings.GMAIL_SENDER_EMAIL;
+
+        if (tutorRecipient) {
+          void GmailService.sendAppointmentConfirmation({
+            to: tutorRecipient,
+            patientOrTherapistName: contacts?.nombres_paciente || contacts?.tutor_nombre || 'Familia ASHAKids',
+            topic: `Sesión de ${data.tipo_cita === 'TERAPIA' ? 'Terapia' : 'Consulta Introductoria'}`,
+            date: dateStr,
+            time: timeStr,
+            zoomJoinUrl: row.zoom_join_url || undefined,
+          }).catch((e) => console.warn('[CitasService] Error enviando correo de cita al tutor:', e));
+        }
+
+        if (contacts?.terapeuta_email && !contacts.terapeuta_email.endsWith('@ashakids.test')) {
+          void GmailService.sendAppointmentConfirmation({
+            to: contacts.terapeuta_email,
+            patientOrTherapistName: `Terapeuta ${contacts.terapeuta_nombre}`,
+            topic: `Cita con ${contacts?.nombres_paciente || 'paciente'}`,
+            date: dateStr,
+            time: timeStr,
+            zoomJoinUrl: row.zoom_join_url || undefined,
+          }).catch((e) => console.warn('[CitasService] Error enviando correo de cita al terapeuta:', e));
+        }
+      } catch (errEmail) {
+        console.warn('[CitasService] Error obteniendo datos para enviar correo de cita:', errEmail);
+      }
+
       return {
         id_reserva: row.id_reserva,
         id_paciente: row.id_paciente,
@@ -243,4 +293,3 @@ export class CitasService {
 }
 
 export const citasService = new CitasService();
-
