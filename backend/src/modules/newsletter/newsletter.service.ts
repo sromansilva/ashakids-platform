@@ -1,5 +1,7 @@
 import crypto from 'node:crypto';
 import { pool } from '../../core/database.js';
+import { GmailService } from '../../infrastructure/mailer/gmail.service.js';
+import { settings } from '../../core/config.js';
 
 export class NewsletterService {
   async subscribe(email: string): Promise<{ message: string; estado: string }> {
@@ -17,6 +19,16 @@ export class NewsletterService {
              fecha_actualizacion = NOW();`,
         [cleanEmail, tokenHash]
       );
+
+      const origin = (settings.PUBLIC_ORIGIN || 'https://ashakids.life').replace(/\/+$/, '');
+      const confirmationUrl = `${origin}/api/v1/newsletter/confirm?token=${token}`;
+      const unsubscribeUrl = `${origin}/api/v1/newsletter/unsubscribe?token=${token}`;
+
+      void GmailService.sendNewsletterConfirmation({
+        to: cleanEmail,
+        confirmationUrl,
+        unsubscribeUrl,
+      }).catch((e) => console.warn('[NewsletterService] Error despachando correo:', e));
 
       return {
         message: 'Si el correo es válido, recibirás un enlace para confirmar tu suscripción.',
@@ -65,4 +77,3 @@ export class NewsletterService {
 }
 
 export const newsletterService = new NewsletterService();
-

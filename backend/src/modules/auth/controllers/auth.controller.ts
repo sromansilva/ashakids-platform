@@ -3,6 +3,7 @@ import { loginSchema, registerSchema, forgotPasswordSchema } from '../dtos/auth.
 import { authService } from '../services/auth.service.js';
 import { settings } from '../../../core/config.js';
 import { getSessionToken } from '../../../core/middleware/auth.middleware.js';
+import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
 
 function setSessionCookie(res: Response, token: string): void {
   res.cookie(settings.SESSION_COOKIE_NAME, token, {
@@ -18,11 +19,9 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const dto = loginSchema.parse(req.body);
-      const result = await authService.login(dto);
-
-      setSessionCookie(res, result.token);
-
-      res.json(result);
+      const { user, token } = await authService.login(dto);
+      setSessionCookie(res, token);
+      res.json({ message: 'Inicio de sesión exitoso', token, user });
     } catch (err) {
       next(err);
     }
@@ -31,9 +30,9 @@ export class AuthController {
   async register(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const dto = registerSchema.parse(req.body);
-      const result = await authService.register(dto);
-      setSessionCookie(res, result.token);
-      res.status(201).json(result);
+      const { user, token } = await authService.register(dto);
+      setSessionCookie(res, token);
+      res.status(201).json({ message: 'Usuario registrado exitosamente', token, user });
     } catch (err) {
       next(err);
     }
@@ -60,7 +59,17 @@ export class AuthController {
   async forgotPassword(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const dto = forgotPasswordSchema.parse(req.body);
-      res.json({ message: `Si ${dto.email} está registrado, recibirá instrucciones de recuperación.` });
+      const recipient = dto.email || '';
+      if (recipient) {
+        const origin = (settings.PUBLIC_ORIGIN || 'https://ashakids.life').replace(/\/+$/, '');
+        const resetUrl = `${origin}/login?reset=1`;
+        void GmailService.sendPasswordResetEmail({
+          to: recipient,
+          resetUrl,
+        }).catch((e) => console.warn('[AuthController] Error enviando correo de reseteo:', e));
+      }
+
+      res.json({ message: `Si ${dto.email || dto.codigo_usuario} está registrado, recibirá instrucciones de recuperación.` });
     } catch (err) {
       next(err);
     }
@@ -68,4 +77,3 @@ export class AuthController {
 }
 
 export const authController = new AuthController();
-
