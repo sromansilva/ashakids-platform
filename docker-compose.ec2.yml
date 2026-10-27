@@ -1,0 +1,92 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env.ec2}
+      POSTGRES_DB: ashakids
+      APP_DB_USER: ${APP_DB_USER:?Set APP_DB_USER in .env.ec2}
+      APP_DB_PASSWORD: ${APP_DB_PASSWORD:?Set APP_DB_PASSWORD in .env.ec2}
+    volumes:
+      - ashakids-pgdata:/var/lib/postgresql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+      - ./docker/20-create-app-user.sql:/docker-entrypoint-initdb.d/20-create-app-user.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ashakids"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - internal
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: production
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8000
+      API_V1_PREFIX: /api/v1
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: ashakids
+      DB_USER: ${APP_DB_USER:?Set APP_DB_USER in .env.ec2}
+      DB_PASSWORD: ${APP_DB_PASSWORD:?Set APP_DB_PASSWORD in .env.ec2}
+      DB_SSL_ENABLED: "false"
+      SESSION_COOKIE_NAME: ashakids_session
+      SESSION_TTL_HOURS: 24
+      CORS_ORIGINS: https://${APP_HOST:?Set APP_HOST in .env.ec2}
+    expose:
+      - "8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:8000/health/ready').then((r) => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 45s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - internal
+
+  caddy:
+    image: caddy:2.11.7-alpine
+    restart: unless-stopped
+    environment:
+      APP_HOST: ${APP_HOST:?Set APP_HOST in .env.ec2}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./deploy/Caddyfile.${TLS_MODE:-domain}:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      app:
+        condition: service_healthy
+    networks:
+      - internal
+
+volumes:
+  ashakids-pgdata:
+  caddy-data:
+  caddy-config:
+
+networks:
+  internal:
+    driver: bridge
