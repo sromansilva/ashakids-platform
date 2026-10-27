@@ -48,6 +48,30 @@ jobs:
     name: backend
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      ENVIRONMENT: test
+      DB_HOST: 127.0.0.1
+      DB_PORT: '5432'
+      DB_NAME: ashakids
+      DB_USER: postgres
+      DB_PASSWORD: ci-only-password
+      DB_SSL_ENABLED: 'false'
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: ashakids
+        ports:
+          - 5432:5432
+        volumes:
+          - ${{ github.workspace }}/docker/init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ashakids"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
