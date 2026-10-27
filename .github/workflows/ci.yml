@@ -65,8 +65,6 @@ jobs:
           POSTGRES_DB: ashakids
         ports:
           - 5432:5432
-        volumes:
-          - ${{ github.workspace }}/docker/init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
         options: >-
           --health-cmd "pg_isready -U postgres -d ashakids"
           --health-interval 10s
@@ -74,6 +72,14 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v4
+      - name: Initialize PostgreSQL test database
+        run: |
+          container_id="$(docker ps --filter 'ancestor=postgres:18-alpine' --format '{{.ID}}' | head -n 1)"
+          test -n "$container_id"
+          docker exec -i "$container_id" psql \
+            --set ON_ERROR_STOP=1 \
+            --username postgres \
+            --dbname ashakids < docker/init.sql
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -203,4 +209,5 @@ jobs:
 
           echo "SSM no terminó dentro del límite de espera. CommandId: ${command_id}" >&2
           exit 1
+
 
