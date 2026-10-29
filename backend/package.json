@@ -9,7 +9,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test ../tests/backend/backend.test.ts ../tests/backend/whisper.test.ts",
+    "test": "node --experimental-strip-types --test ../tests/backend/backend.test.ts ../tests/backend/whisper.test.ts ../tests/backend/gmail.test.ts",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push"
   },
@@ -19,11 +19,11 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
-    "drizzle-orm": "^0.39.3",
+    "drizzle-orm": "^0.45.4",
     "express": "^4.21.2",
     "multer": "^2.5.0",
     "pg": "^8.13.3",
-    "zod": "^3.24.2"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.8",
@@ -31,7 +31,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.4",
     "@types/pg": "^8.11.11",
-    "drizzle-kit": "^0.30.4",
+    "drizzle-kit": "^0.31.11",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3"
   }

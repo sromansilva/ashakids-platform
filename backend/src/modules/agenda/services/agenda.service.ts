@@ -1,5 +1,7 @@
 import { pool } from '../../../core/database.js';
 import { ZoomService } from '../../../infrastructure/zoom/zoom.service.js';
+import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
+import { settings } from '../../../core/config.js';
 import type { AgendarCitaDTO, CambiarEstadoCitaDTO } from '../dtos/agenda.dto.js';
 
 export class AgendaService {
@@ -85,6 +87,36 @@ export class AgendaService {
         [dto.id_paciente, dto.id_terapeuta, fechaHora, zoomMeetingId, zoomJoinUrl]
       );
       const row = res.rows[0];
+
+      // Enviar confirmación por correo electrónico
+      try {
+        const contactRes = await pool.query(
+          `SELECT u.email as tutor_email, u.nombres as tutor_nombre, p.nombres_paciente
+           FROM pacientes p
+           LEFT JOIN tutores tu ON p.id_tutor = tu.id_tutor
+           LEFT JOIN usuarios u ON tu.id_usuario = u.id_usuario
+           WHERE p.id_paciente = $1;`,
+          [dto.id_paciente]
+        );
+        const contacts = contactRes.rows[0];
+        const tutorRecipient = (contacts?.tutor_email && !contacts.tutor_email.endsWith('@ashakids.test'))
+          ? contacts.tutor_email
+          : settings.GMAIL_SENDER_EMAIL;
+
+        if (tutorRecipient) {
+          void GmailService.sendAppointmentConfirmation({
+            to: tutorRecipient,
+            patientOrTherapistName: contacts?.nombres_paciente || contacts?.tutor_nombre || 'Familia ASHAKids',
+            topic: 'Consulta de Agenda ASHAKids',
+            date: dto.fecha,
+            time: dto.hora_inicio,
+            zoomJoinUrl: row.zoom_join_url || undefined,
+          }).catch((e) => console.warn('[AgendaService] Error enviando correo de cita:', e));
+        }
+      } catch (e) {
+        console.warn('[AgendaService] Error obteniendo datos para enviar correo de cita:', e);
+      }
+
       return {
         id_cita: row.id_reserva,
         ...dto,

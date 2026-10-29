@@ -6,6 +6,7 @@ import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelecte
 import { getPacienteAvatarImage } from '@/core/config/avatars';
 import { Isotipo } from '@/shared/presentation/components/illustrations/Isotipo';
 import type { View } from '@/shared/domain/types/navigation';
+import './family-top-nav.css';
 
 export interface FamilyTopNavProps {
   cur?: View;
@@ -77,16 +78,16 @@ export function FamilyTopNav({
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-white/90 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20" role="banner">
+    <header className="ftn-header flex items-center justify-between px-6 py-3 bg-white/90 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20" role="banner">
       {/* Left side: Brand + Child picker */}
-      <div className="flex items-center gap-4">
+      <div className="ftn-top-row flex items-center gap-4">
         <button
           type="button"
           aria-label="Volver al inicio"
           onClick={() => {
             navigate('/padre/welcome');
           }}
-          className="flex items-center gap-2.5 text-left focus:outline-hidden cursor-pointer"
+          className="ftn-brand-btn flex items-center gap-2.5 text-left focus:outline-hidden cursor-pointer"
         >
           <Isotipo size={34} />
           <span className="font-black text-[#1C1135] text-xl tracking-tight hidden sm:inline">AshaKids</span>
@@ -95,7 +96,7 @@ export function FamilyTopNav({
 
         {patient && (
           <details
-            className="relative"
+            className="ftn-child-picker relative"
             ref={pickerRef}
             open={pickerOpen}
             onToggle={(e) => {
@@ -110,14 +111,14 @@ export function FamilyTopNav({
                 e.preventDefault();
                 setPickerOpen(!pickerOpen);
               }}
-              className="flex items-center gap-2 bg-[#FFF7EE] hover:bg-[#FFEED8] border border-[#FFDFC0] rounded-full px-3 py-1.5 transition-colors shadow-xs list-none cursor-pointer"
+              className="ftn-child-summary flex items-center gap-2 bg-[#FFF7EE] hover:bg-[#FFEED8] border border-[#FFDFC0] rounded-full px-3 py-1.5 transition-colors shadow-xs list-none cursor-pointer"
             >
               <img
                 src={getPacienteAvatarImage(patient.avatar_nombre)}
                 alt=""
                 className="w-7 h-7 rounded-full object-cover bg-orange-100 p-0.5"
               />
-              <span className="font-extrabold text-sm text-[#1C1135]">{patient.nombres_paciente}</span>
+              <span className="ftn-child-name font-extrabold text-sm text-[#1C1135]">{patient.nombres_paciente}</span>
               <ChevronDown size={15} className={`text-[#8C82A8] transition-transform ${pickerOpen ? 'rotate-180' : ''}`} />
             </summary>
 
@@ -155,7 +156,8 @@ export function FamilyTopNav({
       </div>
 
       {/* Center Nav Pills */}
-      <nav className="flex items-center gap-1.5 sm:gap-2" aria-label="Navegación del Centro Familiar">
+      <nav className="ftn-nav-bar flex items-center gap-1.5 sm:gap-2" aria-label="Navegación del Centro Familiar">
+        <div className="ftn-nav-scroll">
         {navLinks.map((item) => {
           const Icon = item.icon;
           const active = isItemActive(item);
@@ -165,7 +167,7 @@ export function FamilyTopNav({
               type="button"
               aria-label={`Ir a ${item.label}`}
               onClick={() => handleNavClick(item)}
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-all duration-150 ${
+              className={`ftn-nav-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-all duration-150 ${active ? 'ftn-nav-btn--active' : ''} ${
                 active
                   ? 'bg-[#F3EFFE] text-[#6B46FE] shadow-xs'
                   : 'text-[#625779] hover:bg-violet-50/70 hover:text-[#6B46FE]'
@@ -176,19 +178,20 @@ export function FamilyTopNav({
             </button>
           );
         })}
+        </div>
       </nav>
 
       {/* Right side: User Profile Badge + Salir Button */}
-      <div className="flex items-center gap-3">
+      <div className="ftn-user-section flex items-center gap-3">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-full bg-violet-100/80 border border-violet-200 flex items-center justify-center text-[#6B46FE] font-black text-sm shrink-0">
             <User size={18} />
           </div>
-          <div className="text-left hidden lg:block">
-            <p className="text-xs sm:text-sm font-extrabold text-[#1C1135] leading-tight truncate max-w-[150px]">
+          <div className="ftn-parent-info text-left hidden lg:block">
+            <p className="ftn-parent-name text-xs sm:text-sm font-extrabold text-[#1C1135] leading-tight truncate max-w-[150px]">
               {displayName}
             </p>
-            <p className="text-[11px] font-semibold text-[#8C82A8]">Tutor / Familia</p>
+            <p className="ftn-parent-label text-[11px] font-semibold text-[#8C82A8]">Tutor / Familia</p>
           </div>
         </div>
 
@@ -196,10 +199,10 @@ export function FamilyTopNav({
           type="button"
           onClick={logout}
           aria-label="Cerrar sesión"
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 text-xs font-extrabold transition-colors"
+          className="ftn-logout-btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-red-200 text-red-500 hover:bg-red-50 text-xs font-extrabold transition-colors"
         >
           <LogOut size={15} />
-          <span className="hidden sm:inline">Salir</span>
+          <span className="ftn-logout-text hidden sm:inline">Salir</span>
         </button>
       </div>
     </header>

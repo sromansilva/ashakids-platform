@@ -2,7 +2,12 @@
 -- PostgreSQL database dump
 --
 
-\restrict qc6gxzJh2SGc5U2MatgMJve0q1nToZ6beLcH197yGswvbwGM859ktceuDYCHyO0
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'ashakids_runtime') THEN
+    CREATE ROLE ashakids_runtime;
+  END IF;
+END $$;
 
 -- Dumped from database version 18.6
 -- Dumped by pg_dump version 18.6
@@ -3648,6 +3653,4 @@ ALTER TABLE public.valoraciones_sesion ENABLE ROW LEVEL SECURITY;
 --
 -- PostgreSQL database dump complete
 --
-
-\unrestrict qc6gxzJh2SGc5U2MatgMJve0q1nToZ6beLcH197yGswvbwGM859ktceuDYCHyO0
 

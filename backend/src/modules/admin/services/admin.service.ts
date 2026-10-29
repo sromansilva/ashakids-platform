@@ -1,4 +1,5 @@
 import { pool } from '../../../core/database.js';
+import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
 
 export interface CuentaItem {
   id_usuario: number;

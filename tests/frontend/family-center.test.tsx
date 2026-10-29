@@ -34,10 +34,10 @@ it('starts with two child destinations, keeps clinical information secondary and
   expect(screen.queryByRole('button',{name:'Dashboard'})).not.toBeInTheDocument();
   expect(screen.queryByLabelText('Registros del hijo seleccionado')).not.toBeInTheDocument();
   expect(vi.mocked(fetch).mock.calls.every(([url])=>!/\/(citas|sesiones|tratamientos)/.test(String(url)))).toBe(true);
-  fireEvent.click(screen.getByRole('button',{name:'Para mi familia'}));
-  await screen.findByRole('navigation',{name:'Herramientas para mi familia'});
-  expect(screen.getByRole('button',{name:'Agenda y sesiones'})).toBeInTheDocument();
-  expect(await screen.findByRole('button',{name:'Planes'})).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button',{name:/^Ir a Para mi familia$|^Para mi familia$/}));
+  const subNav = await screen.findByRole('navigation',{name:'Herramientas para mi familia'});
+  expect(within(subNav).getByRole('button',{name:'Agenda y sesiones'})).toBeInTheDocument();
+  expect(within(subNav).getByRole('button',{name:/^Planes$|^Reportes$/})).toBeInTheDocument();
   const refresh = await screen.findByRole('button',{name:'Actualizar seguimiento'});
   await waitFor(()=>expect(refresh).toBeEnabled());
   const reads = vi.mocked(fetch).mock.calls.filter(([url])=>String(url).includes('/pacientes/21/tratamientos')).length;

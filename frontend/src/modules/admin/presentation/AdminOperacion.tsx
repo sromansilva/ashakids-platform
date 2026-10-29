@@ -313,7 +313,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
           {/* Filters and Search Bar */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-6">
             {/* Status Filter Pills */}
-            <div className="inline-flex rounded-2xl border border-[#E8E5F4] bg-white p-1 gap-1 shadow-2xs shrink-0">
+            <div className="grid w-4/5 grid-cols-2 sm:flex sm:w-fit rounded-2xl border border-[#E8E5F4] bg-white p-1 gap-1 shadow-sm shrink-0">
               {(
                 [
                   { key: 'TODAS', label: 'Todas' },
@@ -325,9 +325,9 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <button
                   key={tab.key}
                   onClick={() => setFilterEstado(tab.key)}
-                  className={`px-5 py-2 rounded-xl text-sm font-extrabold transition-all cursor-pointer ${
+                  className={`w-full min-w-0 sm:w-auto text-center px-1 sm:px-5 py-2 rounded-xl text-xs sm:text-sm leading-tight font-extrabold transition-all cursor-pointer ${
                     filterEstado === tab.key
-                      ? 'bg-[#6B46FE] text-white shadow-xs'
+                      ? 'bg-[#6B46FE] text-white shadow-md shadow-violet-200'
                       : 'text-[#615274] hover:bg-violet-50 hover:text-[#6B46FE]'
                   }`}
                 >

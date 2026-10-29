@@ -8,7 +8,9 @@ permissions:
   contents: read
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Keep a production push running until its deploy job finishes. PR runs can
+  # still be cancelled when a newer commit is pushed to the same branch.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   frontend:
@@ -46,8 +48,38 @@ jobs:
     name: backend
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      ENVIRONMENT: test
+      DB_HOST: 127.0.0.1
+      DB_PORT: '5432'
+      DB_NAME: ashakids
+      DB_USER: postgres
+      DB_PASSWORD: ci-only-password
+      DB_SSL_ENABLED: 'false'
+    services:
+      postgres:
+        image: postgres:18-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: ashakids
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ashakids"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
     steps:
       - uses: actions/checkout@v4
+      - name: Initialize PostgreSQL test database
+        run: |
+          container_id="$(docker ps --filter 'ancestor=postgres:18-alpine' --format '{{.ID}}' | head -n 1)"
+          test -n "$container_id"
+          docker exec -i "$container_id" psql \
+            --set ON_ERROR_STOP=1 \
+            --username postgres \
+            --dbname ashakids < docker/init.sql
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -76,4 +108,106 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build production image
         run: docker build --tag ashakids-ci .
+
+  deploy-production:
+    name: deploy-production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [frontend, backend, container]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      AWS_REGION: us-east-2
+      EC2_INSTANCE_ID: i-0e35ef609bf0a99ae
+    steps:
+      - name: Configure AWS credentials with GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          role-session-name: AshaKidsDeploy-${{ github.run_id }}
+
+      - name: Deploy the merged commit through AWS Systems Manager
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+
+          python3 - <<'PY'
+          import json
+          import os
+          import shlex
+          from pathlib import Path
+
+          deploy_sha = os.environ["GITHUB_SHA"]
+          app_root = "/opt/ashakids-platform"
+          inner_script = f'''set -Eeuo pipefail
+          APP_ROOT={shlex.quote(app_root)}
+          DEPLOY_SHA={shlex.quote(deploy_sha)}
+          cd "$APP_ROOT"
+          if [[ -n "$(git status --porcelain --untracked-files=no)" ]]; then
+            echo "El checkout de producción tiene cambios locales rastreados; se cancela para no sobrescribirlos." >&2
+            exit 1
+          fi
+          git fetch --no-tags origin refs/heads/main:refs/remotes/origin/main
+          git cat-file -e "$DEPLOY_SHA"
+          git merge-base --is-ancestor "$DEPLOY_SHA" refs/remotes/origin/main
+          DEPLOY_SCRIPT="$(mktemp)"
+          trap 'rm -f "$DEPLOY_SCRIPT"' EXIT
+          git show "$DEPLOY_SHA:scripts/deploy-ec2-update.sh" > "$DEPLOY_SCRIPT"
+          chmod 700 "$DEPLOY_SCRIPT"
+          ASHAKIDS_APP_ROOT="$APP_ROOT" bash "$DEPLOY_SCRIPT" "$DEPLOY_SHA"
+          '''
+          command = "bash -lc " + shlex.quote(inner_script)
+          Path(os.environ["RUNNER_TEMP"], "ashakids-ssm-parameters.json").write_text(
+              json.dumps({"commands": [command], "executionTimeout": ["900"]}), encoding="utf-8"
+          )
+          PY
+
+          command_id="$(aws ssm send-command \
+            --region "$AWS_REGION" \
+            --instance-ids "$EC2_INSTANCE_ID" \
+            --document-name AWS-RunShellScript \
+            --timeout-seconds 600 \
+            --comment "ASHAKids deploy ${GITHUB_SHA}" \
+            --parameters "file://${RUNNER_TEMP}/ashakids-ssm-parameters.json" \
+            --query 'Command.CommandId' \
+            --output text)"
+          echo "SSM command: ${command_id}"
+
+          for attempt in $(seq 1 90); do
+            status="$(aws ssm get-command-invocation \
+              --region "$AWS_REGION" \
+              --command-id "$command_id" \
+              --instance-id "$EC2_INSTANCE_ID" \
+              --query 'Status' \
+              --output text 2>/dev/null || true)"
+
+            case "$status" in
+              Success)
+                aws ssm get-command-invocation \
+                  --region "$AWS_REGION" \
+                  --command-id "$command_id" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --query '{Status:Status,Output:StandardOutputContent}' \
+                  --output json
+                exit 0
+                ;;
+              Failed|Cancelled|TimedOut|Cancelling)
+                aws ssm get-command-invocation \
+                  --region "$AWS_REGION" \
+                  --command-id "$command_id" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --query '{Status:Status,ResponseCode:ResponseCode,Output:StandardOutputContent,Error:StandardErrorContent}' \
+                  --output json
+                exit 1
+                ;;
+              *) sleep 10 ;;
+            esac
+          done
+
+          echo "SSM no terminó dentro del límite de espera. CommandId: ${command_id}" >&2
+          exit 1
+
 
