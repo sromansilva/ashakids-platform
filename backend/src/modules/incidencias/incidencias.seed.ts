@@ -400,10 +400,10 @@ export async function seedIncidencias() {
         const email = `${emailSlug}@ashakids.test`;
         const prefix = ticket.rol === 'TERAPEUTA' ? 't' : 'p';
         const code = `${prefix}${Math.floor(10000 + Math.random() * 89999)}`;
-        // Password hash temporal de desarrollo (compatible con '12345')
+        // Password hash Argon2id para '12345'
         const insertUser = await client.query(`
           INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-          VALUES ($1, $2, $3, $4, '$argon2id$v=19$m=65536,t=3,p=4$dummyhash', true, NOW())
+          VALUES ($1, $2, $3, $4, '$argon2id$v=19$m=19456,t=2,p=1$gNRBKknzRIzVijb0Q4pUgg$1UVQo8y+sKyaiqUDWgYkOHNx/7Kt61c27XIZm9+2Mcg', true, NOW())
           ON CONFLICT (email) DO UPDATE SET nombres = EXCLUDED.nombres
           RETURNING id_usuario;
         `, [nombres, apellidos, code, email]);
