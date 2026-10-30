@@ -29,7 +29,7 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
   });
 }
 
-it.each(["/register", "/register/padre", "/register/terapeuta", "/register/verify", "/register/terapeuta/success", "/onboarding", "/forgot-password"])("%s explains real access without invented credentials, email or success", async path => {
+it.each(["/register", "/register/padre", "/register/terapeuta", "/register/verify", "/register/terapeuta/success", "/onboarding"])("%s explains real access without invented credentials, email or success", async path => {
   renderRoute(path, null);
   await screen.findByRole("button", { name: "Ir al inicio de sesión" });
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
@@ -38,6 +38,18 @@ it.each(["/register", "/register/padre", "/register/terapeuta", "/register/verif
   fireEvent.click(screen.getByRole("button", { name: "Ir al inicio de sesión" }));
   expect(await screen.findByLabelText(/Código de usuario/i)).toBeInTheDocument();
 });
+
+it("/forgot-password offers real recovery form and submits to auth API", async () => {
+  api();
+  renderRoute("/forgot-password", null);
+  expect(await screen.findByRole("heading", { name: "¿Olvidaste tu contraseña?" })).toBeInTheDocument();
+  const input = screen.getByRole("textbox");
+  expect(input).toBeInTheDocument();
+  fireEvent.change(input, { target: { value: "test@example.com" } });
+  fireEvent.click(screen.getByRole("button", { name: /Enviar enlace de recuperación/i }));
+  expect(await screen.findByText(/Instrucciones enviadas/i)).toBeInTheDocument();
+});
+
 it("Consent is pending, does not record acceptance, and leads to real family settings", async () => {
   api(); renderRoute("/padre/consentimiento", "PADRE");
   await screen.findByRole("heading", { name: "Preferencias y consentimientos" });

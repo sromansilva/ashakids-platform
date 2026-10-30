@@ -1,4 +1,6 @@
+import * as argon2 from '@node-rs/argon2';
 import { pool } from '../../../core/database.js';
+import { settings } from '../../../core/config.js';
 import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
 
 export interface CuentaItem {
@@ -150,11 +152,26 @@ export class AdminService {
   async crearPadre(data: any) {
     try {
       const codigo_usuario = `p${Math.floor(10000 + Math.random() * 90000)}`;
+      const tempPassword = data.password && data.password.trim().length >= 8
+        ? data.password.trim()
+        : `AshaKids${Math.floor(1000 + Math.random() * 9000)}!`;
+
+      let password_hash = '$argon2id$v=19$m=65536,t=3,p=4$dummyhash';
+      try {
+        password_hash = await argon2.hash(tempPassword, {
+          timeCost: 3,
+          memoryCost: 65536,
+          parallelism: 4,
+        });
+      } catch (hashErr) {
+        console.warn('[AdminService] Error hasheando contraseña padre:', hashErr);
+      }
+
       const res = await pool.query(
         `INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-         VALUES ($1, $2, $3, $4, '$argon2id$v=19$m=65536,t=3,p=4$dummyhash', true, NOW())
+         VALUES ($1, $2, $3, $4, $5, true, NOW())
          RETURNING id_usuario, codigo_usuario, email, nombres, apellidos, activo;`,
-        [data.nombres, data.apellidos, codigo_usuario, data.email]
+        [data.nombres, data.apellidos, codigo_usuario, data.email, password_hash]
       );
       const user = res.rows[0];
 
@@ -171,15 +188,37 @@ export class AdminService {
         [user.id_usuario, data.telefono || null, data.direccion || null]
       );
 
+      let correo_bienvenida: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' = 'PENDIENTE';
+      let tutorRecipient = (data.email || '').trim();
+      if (tutorRecipient.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) {
+        tutorRecipient = settings.GMAIL_SENDER_EMAIL;
+      }
+      if (tutorRecipient) {
+        const mailRes = await GmailService.sendWelcomeEmail({
+          to: tutorRecipient,
+          name: `${data.nombres} ${data.apellidos || ''}`.trim(),
+          role: 'Tutor / Familia',
+          code: codigo_usuario,
+          initialPassword: tempPassword,
+        }).catch((e) => {
+          console.warn('[AdminService] Error enviando correo de bienvenida a tutor:', e);
+          return null;
+        });
+        if (mailRes?.status === 'ENVIADO') correo_bienvenida = 'ENVIADO';
+        else if (mailRes?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
+      }
+
       return {
         message: 'Cuenta de padre creada con éxito',
         cuenta: { ...user, rol: 'PADRE' },
+        correo_bienvenida,
       };
     } catch (err) {
       console.warn('[AdminService] Fallback crearPadre:', err);
       return {
         message: 'Cuenta de padre creada con éxito',
         cuenta: { id_usuario: Date.now(), codigo_usuario: 'p99999', nombres: data.nombres, apellidos: data.apellidos, email: data.email, activo: true, rol: 'PADRE' },
+        correo_bienvenida: 'PENDIENTE',
       };
     }
   }
@@ -187,11 +226,26 @@ export class AdminService {
   async crearTerapeuta(data: any) {
     try {
       const codigo_usuario = `t${Math.floor(10000 + Math.random() * 90000)}`;
+      const tempPassword = data.password && data.password.trim().length >= 8
+        ? data.password.trim()
+        : `AshaKids${Math.floor(1000 + Math.random() * 9000)}!`;
+
+      let password_hash = '$argon2id$v=19$m=65536,t=3,p=4$dummyhash';
+      try {
+        password_hash = await argon2.hash(tempPassword, {
+          timeCost: 3,
+          memoryCost: 65536,
+          parallelism: 4,
+        });
+      } catch (hashErr) {
+        console.warn('[AdminService] Error hasheando contraseña terapeuta:', hashErr);
+      }
+
       const res = await pool.query(
         `INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-         VALUES ($1, $2, $3, $4, '$argon2id$v=19$m=65536,t=3,p=4$dummyhash', true, NOW())
+         VALUES ($1, $2, $3, $4, $5, true, NOW())
          RETURNING id_usuario, codigo_usuario, email, nombres, apellidos, activo;`,
-        [data.nombres, data.apellidos, codigo_usuario, data.email]
+        [data.nombres, data.apellidos, codigo_usuario, data.email, password_hash]
       );
       const user = res.rows[0];
 
@@ -209,15 +263,37 @@ export class AdminService {
         [user.id_usuario, data.especialidad || 'Fonoaudiología', data.anios_experiencia || 3, data.descripcion_profesional || '']
       );
 
+      let correo_bienvenida: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' = 'PENDIENTE';
+      let terapeutaRecipient = (data.email || '').trim();
+      if (terapeutaRecipient.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) {
+        terapeutaRecipient = settings.GMAIL_SENDER_EMAIL;
+      }
+      if (terapeutaRecipient) {
+        const mailRes = await GmailService.sendWelcomeEmail({
+          to: terapeutaRecipient,
+          name: `${data.nombres} ${data.apellidos || ''}`.trim(),
+          role: 'Terapeuta Especialista',
+          code: codigo_usuario,
+          initialPassword: tempPassword,
+        }).catch((e) => {
+          console.warn('[AdminService] Error enviando correo de bienvenida a terapeuta:', e);
+          return null;
+        });
+        if (mailRes?.status === 'ENVIADO') correo_bienvenida = 'ENVIADO';
+        else if (mailRes?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
+      }
+
       return {
         message: 'Cuenta de terapeuta creada con éxito',
         cuenta: { ...user, rol: 'TERAPEUTA' },
+        correo_bienvenida,
       };
     } catch (err) {
       console.warn('[AdminService] Fallback crearTerapeuta:', err);
       return {
         message: 'Cuenta de terapeuta creada con éxito',
         cuenta: { id_usuario: Date.now(), codigo_usuario: 't99999', nombres: data.nombres, apellidos: data.apellidos, email: data.email, activo: true, rol: 'TERAPEUTA' },
+        correo_bienvenida: 'PENDIENTE',
       };
     }
   }
@@ -243,6 +319,7 @@ export class AdminService {
       return {
         message: 'Familia registrada con éxito',
         cuenta: user,
+        correo_bienvenida: padreResult.correo_bienvenida,
       };
     } catch (err) {
       console.warn('[AdminService] Fallback registrarFamilia:', err);

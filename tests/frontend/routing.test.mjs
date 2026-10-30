@@ -12,6 +12,8 @@ describe('ASHAKids Frontend Routing Tests', () => {
       '/',
       '/login',
       '/forgot-password',
+      '/crear-contrasena',
+      '/reset-password',
       '/onboarding',
       '/especialistas',
       '/especialidades',
