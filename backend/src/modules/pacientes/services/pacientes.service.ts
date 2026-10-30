@@ -200,8 +200,9 @@ export class PacientesService {
          LEFT JOIN terapeutas ter ON t.id_terapeuta = ter.id_terapeuta
          LEFT JOIN usuarios u ON ter.id_usuario = u.id_usuario
          WHERE e.id_paciente = $1
-         ORDER BY t.id_tratamiento DESC;`,
-        [id]
+         ORDER BY t.id_tratamiento DESC
+         LIMIT $2 OFFSET $3;`,
+        [id, filters?.limit ?? 50, filters?.offset ?? 0]
       );
 
       const items = res.rows.map(r => ({

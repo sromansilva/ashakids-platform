@@ -9,4 +9,6 @@ authRouter.post('/register', (req, res, next) => authController.register(req, re
 authRouter.get('/me', authenticate, (req, res) => authController.me(req, res));
 authRouter.post('/logout', (req, res, next) => authController.logout(req, res, next));
 authRouter.post('/forgot-password', (req, res, next) => authController.forgotPassword(req, res, next));
-
+authRouter.post('/create-password', (req, res, next) => authController.createPassword(req, res, next));
+authRouter.post('/reset-password', (req, res, next) => authController.createPassword(req, res, next));
+authRouter.post('/resend-activation', (req, res, next) => authController.resendActivation(req, res, next));
