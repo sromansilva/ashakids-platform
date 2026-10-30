@@ -6,7 +6,7 @@ import { PageBoundary } from "@/core/router/PageBoundary";
 import { NotFoundPage } from "@/modules/public/presentation/NotFoundPage";
 import { useDemoWorkflow } from "@/shared/application/hooks/useDemoWorkflow";
 import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminReportes, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminAnaliticas, AdminMensajes, AdminModeracion, AdminSolicitudes, AshaCore } from "./lazyPages";
-import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, AshaSessionWaiting, AshaSessionActive, AshaSessionEnd, PadreHome, PadreWelcome, MiCaminoAsha, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, PadreCompras, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaIsla, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaIngresos, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AshaPayCheckout, AshaPayHistory, AshaPayWallet, AshaSessionHome, AshaSessionPrep, AshaSessionSummary, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminPagos, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
+import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, AshaSessionWaiting, AshaSessionActive, AshaSessionEnd, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, PadreCompras, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaIsla, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaIngresos, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AshaPayCheckout, AshaPayHistory, AshaPayWallet, AshaSessionHome, AshaSessionPrep, AshaSessionSummary, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminPagos, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
 
 function RedirectToJourney() {
   const [searchParams] = useSearchParams();
@@ -15,11 +15,12 @@ function RedirectToJourney() {
 }
 
 export default function AppRouter() {
-const { view, role, authRole, go, navigate, location, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, addParentAppointment, setParentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, bookedSlots, setPadreUserName } = useDemoWorkflow();
+const { view, role, authRole, go, navigate, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, addParentAppointment, setParentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, bookedSlots, setPadreUserName } = useDemoWorkflow();
 return <RouteAccess><PageBoundary><Routes>
 <Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} padrePlan={padrePlan} />}>
 <Route path="/" element={<Landing go={go} />} />
 <Route path="/crear-contrasena" element={<CreatePassword />} />
+<Route path="/reset-password" element={<CreatePassword />} />
 <Route path="/login" element={<LoginPage onSuccess={handleLogin} onGoHome={() => navigate("/")} onForgotPassword={() => navigate("/forgot-password")} />} />
 <Route path="/register" element={<RegisterSelector go={go} />} />
 <Route path="/register/padre" element={<RegisterPadre go={go} onNameSet={setPadreUserName} />} />

@@ -46,6 +46,7 @@ export function pathToView(pathname: string, userRole?: SemanticRole | null): Vi
   if (cleanPath === "/") return "landing";
   if (cleanPath === "/login") return "login";
   if (cleanPath === "/forgot-password") return "forgot-password";
+  if (cleanPath === "/crear-contrasena" || cleanPath === "/reset-password") return "crear-contrasena" as View;
   if (cleanPath === "/onboarding") return "onboarding";
   if (cleanPath.startsWith("/register")) return "register" as View;
 
@@ -89,6 +90,7 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
     cleanPath === "/" ||
     cleanPath === "/login" ||
     cleanPath === "/crear-contrasena" ||
+    cleanPath === "/reset-password" ||
     cleanPath === "/forgot-password" ||
     cleanPath === "/onboarding" ||
     cleanPath.startsWith("/register") ||

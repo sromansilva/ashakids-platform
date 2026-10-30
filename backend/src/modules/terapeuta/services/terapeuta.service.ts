@@ -34,9 +34,12 @@ export class TerapeutaService {
         FROM terapeutas t
         JOIN usuarios u ON t.id_usuario = u.id_usuario
         WHERE u.activo = true
-        ORDER BY t.id_terapeuta ASC;
+        ORDER BY t.id_terapeuta ASC
+        LIMIT $1 OFFSET $2;
       `;
-      const res = await pool.query(sql);
+      const limit = filters?.limit ?? 50;
+      const offset = filters?.offset ?? 0;
+      const res = await pool.query(sql, [limit, offset]);
       const items: ProfessionalItem[] = res.rows.map(r => ({
         id_terapeuta: r.id_terapeuta,
         nombres: r.nombres,
@@ -109,10 +112,11 @@ export class TerapeutaService {
     return data;
   }
 
-  async getTurnosDelDia(terapeutaId: number, fechaStr: string): Promise<AvailableSlotItem[]> {
+  async getTurnosDelDia(_terapeutaId: number, fechaStr: string): Promise<AvailableSlotItem[]> {
     const slots: AvailableSlotItem[] = [];
     const date = new Date(fechaStr);
     const dayOfWeek = (date.getUTCDay() + 6) % 7 + 1; // 1=Mon .. 7=Sun
+    if (dayOfWeek === 7) return [];
 
     const horas = [9, 10, 11, 14, 15, 16];
     for (const h of horas) {
