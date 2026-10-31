@@ -13,7 +13,7 @@ export interface PacienteItem {
 }
 
 export class PacientesService {
-  async getAll(filters?: { q?: string; activo?: boolean; limit?: number; offset?: number }) {
+  async getAll(filters?: { q?: string; activo?: boolean; limit?: number; offset?: number; id_usuario_padre?: number }) {
     try {
       let sql = `
         SELECT 
@@ -30,23 +30,42 @@ export class PacientesService {
         WHERE 1=1
       `;
       const params: any[] = [];
+      if (filters?.id_usuario_padre) {
+        params.push(filters.id_usuario_padre);
+        sql += ' AND p.id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $' + params.length + ')';
+      }
       if (filters?.q) {
-        params.push(`%${filters.q.toLowerCase()}%`);
-        sql += ` AND (LOWER(p.nombres_paciente) LIKE $${params.length} OR LOWER(p.apellidos_paciente) LIKE $${params.length})`;
+        params.push('%' + filters.q.toLowerCase() + '%');
+        sql += ' AND (LOWER(p.nombres_paciente) LIKE $' + params.length + ' OR LOWER(p.apellidos_paciente) LIKE $' + params.length + ')';
       }
       if (filters?.activo !== undefined) {
         params.push(filters.activo);
-        sql += ` AND p.activo = $${params.length}`;
+        sql += ' AND p.activo = $' + params.length;
       }
 
-      sql += ` ORDER BY p.id_paciente ASC`;
+      sql += ' ORDER BY p.id_paciente ASC';
       const limit = filters?.limit ?? 50;
       const offset = filters?.offset ?? 0;
       params.push(limit, offset);
-      sql += ` LIMIT $${params.length - 1} OFFSET $${params.length};`;
+      sql += ' LIMIT $' + (params.length - 1) + ' OFFSET $' + params.length + ';';
 
       const res = await pool.query(sql, params);
-      const totalRes = await pool.query('SELECT count(*) as total FROM pacientes;');
+
+      let countSql = 'SELECT count(*) as total FROM pacientes p WHERE 1=1';
+      const countParams: any[] = [];
+      if (filters?.id_usuario_padre) {
+        countParams.push(filters.id_usuario_padre);
+        countSql += ' AND p.id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $' + countParams.length + ')';
+      }
+      if (filters?.q) {
+        countParams.push('%' + filters.q.toLowerCase() + '%');
+        countSql += ' AND (LOWER(p.nombres_paciente) LIKE $' + countParams.length + ' OR LOWER(p.apellidos_paciente) LIKE $' + countParams.length + ')';
+      }
+      if (filters?.activo !== undefined) {
+        countParams.push(filters.activo);
+        countSql += ' AND p.activo = $' + countParams.length;
+      }
+      const totalRes = await pool.query(countSql, countParams);
       const total = parseInt(totalRes.rows[0]?.total ?? '0', 10);
 
       const items: PacienteItem[] = res.rows.map(row => ({
@@ -64,6 +83,9 @@ export class PacientesService {
       return { items, total: Math.max(total, items.length) };
     } catch (err) {
       console.warn('[PacientesService] Fallback getAll:', err);
+      if (filters?.id_usuario_padre) {
+        return { items: [], total: 0 };
+      }
       return {
         items: [
           {
@@ -88,13 +110,30 @@ export class PacientesService {
     return items.find(p => p.id_paciente === id) ?? items[0] ?? null;
   }
 
-  async create(data: any): Promise<PacienteItem> {
+  async create(data: any, userId?: number): Promise<PacienteItem> {
     try {
+      let idTutor = data.id_tutor;
+      if (!idTutor && userId) {
+        const tutRes = await pool.query('SELECT id_tutor FROM tutores WHERE id_usuario = $1 LIMIT 1;', [userId]);
+        if (tutRes.rows.length > 0) {
+          idTutor = tutRes.rows[0].id_tutor;
+        } else {
+          const insertTut = await pool.query(
+            `INSERT INTO tutores (id_usuario, parentesco) VALUES ($1, 'PADRE') RETURNING id_tutor;`,
+            [userId]
+          );
+          idTutor = insertTut.rows[0]?.id_tutor;
+        }
+      }
+      if (!idTutor) {
+        idTutor = 1;
+      }
+
       const res = await pool.query(
         `INSERT INTO pacientes (id_tutor, nombres_paciente, apellidos_paciente, fecha_nacimiento, sexo, avatar_nombre, activo, fecha_registro)
-         VALUES (COALESCE($1, 1), $2, $3, $4::date, COALESCE($5, 'M'), COALESCE($6, 'zorro'), true, NOW())
+         VALUES ($1, $2, $3, $4::date, COALESCE($5, 'M'), COALESCE($6, 'zorro'), true, NOW())
          RETURNING *;`,
-        [data.id_tutor ?? 1, data.nombres_paciente, data.apellidos_paciente, data.fecha_nacimiento, data.sexo, data.avatar_nombre]
+        [idTutor, data.nombres_paciente, data.apellidos_paciente, data.fecha_nacimiento, data.sexo, data.avatar_nombre]
       );
       const r = res.rows[0];
       return {
@@ -124,18 +163,22 @@ export class PacientesService {
     }
   }
 
-  async update(id: number, data: any): Promise<PacienteItem> {
+  async update(id: number, data: any, userId?: number): Promise<PacienteItem> {
     try {
-      await pool.query(
-        `UPDATE pacientes 
-         SET nombres_paciente = COALESCE($1, nombres_paciente),
-             apellidos_paciente = COALESCE($2, apellidos_paciente),
-             fecha_nacimiento = COALESCE($3::date, fecha_nacimiento),
-             sexo = COALESCE($4, sexo),
-             avatar_nombre = COALESCE($5, avatar_nombre)
-         WHERE id_paciente = $6;`,
-        [data.nombres_paciente, data.apellidos_paciente, data.fecha_nacimiento, data.sexo, data.avatar_nombre, id]
-      );
+      let sql = `UPDATE pacientes 
+                 SET nombres_paciente = COALESCE($1, nombres_paciente),
+                     apellidos_paciente = COALESCE($2, apellidos_paciente),
+                     fecha_nacimiento = COALESCE($3::date, fecha_nacimiento),
+                     sexo = COALESCE($4, sexo),
+                     avatar_nombre = COALESCE($5, avatar_nombre)
+                 WHERE id_paciente = $6`;
+      const params: any[] = [data.nombres_paciente, data.apellidos_paciente, data.fecha_nacimiento, data.sexo, data.avatar_nombre, id];
+      if (userId) {
+        params.push(userId);
+        sql += ` AND id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $${params.length})`;
+      }
+      sql += ';';
+      await pool.query(sql, params);
     } catch (err) {
       console.warn('[PacientesService] Fallback update:', err);
     }
@@ -143,9 +186,16 @@ export class PacientesService {
     return pac || { id_paciente: id, ...data } as any;
   }
 
-  async deactivate(id: number): Promise<PacienteItem> {
+  async deactivate(id: number, userId?: number): Promise<PacienteItem> {
     try {
-      await pool.query(`UPDATE pacientes SET activo = false WHERE id_paciente = $1;`, [id]);
+      let sql = `UPDATE pacientes SET activo = false WHERE id_paciente = $1`;
+      const params: any[] = [id];
+      if (userId) {
+        params.push(userId);
+        sql += ` AND id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $${params.length})`;
+      }
+      sql += ';';
+      await pool.query(sql, params);
     } catch (err) {
       console.warn('[PacientesService] Fallback deactivate:', err);
     }

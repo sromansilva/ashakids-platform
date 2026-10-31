@@ -1,4 +1,5 @@
 import { usePadreConfig } from "./usePadreConfig";
+import { useAuth } from "@/modules/auth/application/useAuth";
 import { useRoleProfile } from "@/shared/application/hooks/useRoleProfile";
 import { PadreConfigHijos } from "./PadreConfigHijos";
 import { PadreConfigShowAddChildModal } from "./PadreConfigShowAddChildModal";
@@ -16,16 +17,19 @@ export function PadreConfig(props: Parameters<typeof usePadreConfig>[0]) {
   const profile = useRoleProfile();
   const { tab, setTab, toast, childList, setShowAddChildModal, setEditChild, setDeleteChild, editChild, deleteChild } = state;
 
-  const userData = profile.data?.user;
-  const fullName = userData ? `${userData.nombres} ${userData.apellidos || ''}`.trim() : 'Piero Anticona';
-  const email = userData?.email || 'piero@gmail.com';
-  const codigo = userData?.codigo_usuario || 'P00003';
-  const initials = fullName
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map(w => w[0].toUpperCase())
-    .join('') || 'PA';
+  const { user: authUser } = useAuth();
+  const userData = profile.data?.user || authUser;
+  const fullName = userData ? `${userData.nombres} ${userData.apellidos || ''}`.trim() : (profile.isPending ? 'Cargando...' : '');
+  const email = userData?.email || '';
+  const codigo = userData?.codigo_usuario || '';
+  const initials = fullName && fullName !== 'Cargando...'
+    ? fullName
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map(w => w[0].toUpperCase())
+        .join('')
+    : (authUser ? `${authUser.nombres?.[0] || ''}${authUser.apellidos?.[0] || ''}`.toUpperCase() : '..');
 
   return (
     <section className="p-4 sm:p-8 max-w-5xl text-[#1C1135]">

@@ -54,8 +54,8 @@ export function TerapeutaConfig() {
     { key: 'seguridad', label: 'Seguridad', icon: ShieldCheck },
   ];
 
-  const fullName = account ? `${account.nombres} ${account.apellidos}` : (user?.nombres ? `${user.nombres} ${user.apellidos || ''}` : 'PieroT Anticona');
-  const email = account?.email || user?.email || 'piero1@gmail.com';
+  const fullName = account ? `${account.nombres} ${account.apellidos}` : (user?.nombres ? `${user.nombres} ${user.apellidos || ''}` : '');
+  const email = account?.email || user?.email || '';
   const specialty = therapist?.especialidad || 'Terapia de lenguaje';
   const experience = therapist?.anios_experiencia?.toString() || '3';
   const languages = therapist?.idiomas || 'Español';

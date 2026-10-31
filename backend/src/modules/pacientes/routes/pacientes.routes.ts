@@ -1,8 +1,10 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { pacientesService } from '../services/pacientes.service.js';
 import { getProgresoJuegos, registrarIntentoJuegos } from '../../juegos/juegos.routes.js';
+import { optionalAuthenticate } from '../../../core/middleware/auth.middleware.js';
 
 export const pacientesRouter = Router();
+pacientesRouter.use(optionalAuthenticate);
 
 // GET /api/v1/pacientes
 pacientesRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
@@ -11,8 +13,9 @@ pacientesRouter.get('/', async (req: Request, res: Response, next: NextFunction)
     const activo = req.query.activo !== undefined ? req.query.activo === 'true' : undefined;
     const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
     const offset = req.query.offset ? parseInt(req.query.offset as string, 10) : 0;
+    const id_usuario_padre = req.user?.rol === 'PADRE' ? req.user.id_usuario : undefined;
 
-    const result = await pacientesService.getAll({ q, activo, limit, offset });
+    const result = await pacientesService.getAll({ q, activo, limit, offset, id_usuario_padre });
     res.header('X-Total-Count', String(result.total));
     res.json(result.items);
   } catch (err) {
@@ -23,7 +26,8 @@ pacientesRouter.get('/', async (req: Request, res: Response, next: NextFunction)
 // POST /api/v1/pacientes
 pacientesRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const paciente = await pacientesService.create(req.body);
+    const userId = req.user?.rol === 'PADRE' ? req.user.id_usuario : undefined;
+    const paciente = await pacientesService.create(req.body, userId);
     res.status(201).json(paciente);
   } catch (err) {
     next(err);
@@ -48,7 +52,8 @@ pacientesRouter.get('/:key', async (req: Request, res: Response, next: NextFunct
 pacientesRouter.put('/:key', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const paciente = await pacientesService.update(key, req.body);
+    const userId = req.user?.rol === 'PADRE' ? req.user.id_usuario : undefined;
+    const paciente = await pacientesService.update(key, req.body, userId);
     res.json(paciente);
   } catch (err) {
     next(err);
@@ -59,7 +64,8 @@ pacientesRouter.put('/:key', async (req: Request, res: Response, next: NextFunct
 pacientesRouter.delete('/:key', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const paciente = await pacientesService.deactivate(key);
+    const userId = req.user?.rol === 'PADRE' ? req.user.id_usuario : undefined;
+    const paciente = await pacientesService.deactivate(key, userId);
     res.json(paciente);
   } catch (err) {
     next(err);

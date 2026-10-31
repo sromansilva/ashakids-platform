@@ -137,7 +137,7 @@ export class UsuariosService {
       let id_terapeuta: number | null = null;
 
       if (data.rol === 'PADRE') {
-        const tutRes = await pool.query(`INSERT INTO tutores (id_usuario, fecha_registro) VALUES ($1, NOW()) RETURNING id_tutor;`, [user.id_usuario]);
+        const tutRes = await pool.query(`INSERT INTO tutores (id_usuario) VALUES ($1) RETURNING id_tutor;`, [user.id_usuario]);
         id_tutor = tutRes.rows[0]?.id_tutor ?? null;
       } else if (data.rol === 'TERAPEUTA') {
         const terRes = await pool.query(`INSERT INTO terapeutas (id_usuario, especialidad, anios_experiencia) VALUES ($1, 'Fonoaudiología', 3) RETURNING id_terapeuta;`, [user.id_usuario]);
