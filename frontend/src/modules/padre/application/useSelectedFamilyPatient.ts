@@ -21,7 +21,7 @@ export function useSelectedFamilyPatient() {
       window.removeEventListener('ashakids:patient-changed', onChange);
     };
   }, [key]);
-  const patients = useRemote(["family-patients"], signal => readAllPages(offset => patientsService.list({ activo: true, limit: 100, offset }, signal), signal));
+  const patients = useRemote(["family-patients", user?.id_usuario ?? "anonymous"], signal => readAllPages(offset => patientsService.list({ activo: true, limit: 100, offset }, signal), signal));
   const children = patients.data ?? [];
   const patient = children.find(p => p.id_paciente === selected) ?? children[0];
   const selectPatient = (id: number) => {

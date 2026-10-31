@@ -10,12 +10,12 @@ import { PACIENTE_AVATARES } from "@/core/config/avatars";
 
 type Props = Pick<ReturnType<typeof usePadreConfig>, "setShowAddChildModal" | "setNewCN" | "setNewBirth" | "setNewAvatar" | "newAvatar" | "avatarOptions" | "newCN" | "newBirth" | "setNewCA" | "newCA" | "setChildList" | "showToast">;
 export function PadreConfigShowAddChildModal({ setShowAddChildModal, setNewCN, setNewBirth, setNewAvatar, newAvatar, avatarOptions: _avatarOptions, newCN, newBirth, setNewCA, newCA, setChildList, showToast }: Props) {
-const [surname, setSurname] = useState(""); const [sex, setSex] = useState("");
+const [surname, setSurname] = useState(""); const [sex, setSex] = useState("Masculino");
 const save = useWrite(() => patientsService.create({
   nombres_paciente: newCN,
   apellidos_paciente: surname,
   fecha_nacimiento: newBirth,
-  sexo: sex,
+  sexo: sex || "Masculino",
   avatar_nombre: newAvatar || "zorro",
 }), () => {
   setChildList(); setShowAddChildModal(false); setNewCN(""); setNewBirth(""); setNewAvatar("zorro"); setNewCA(""); showToast("Hijo registrado en el servidor");
@@ -95,7 +95,20 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
                 onChange={setNewCN}
               />
               <Inp label="Apellidos" value={surname} onChange={setSurname} />
-              <Inp label="Sexo" value={sex} onChange={setSex} />
+              <div>
+                <label htmlFor="new-child-sex" className="block text-sm font-bold text-[#1C1135] mb-2">
+                  Sexo
+                </label>
+                <select
+                  id="new-child-sex"
+                  value={sex}
+                  onChange={(e) => setSex(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-2xl border border-[#E8E5F4] text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-400 bg-white"
+                >
+                  <option value="Masculino">Masculino</option>
+                  <option value="Femenino">Femenino</option>
+                </select>
+              </div>
               <RemoteFeedback error={save.error} />
               {/* Birth date */}
               <div>
@@ -135,7 +148,7 @@ return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4"
               <Btn
                 variant="primary"
                 className="w-full justify-center"
-                disabled={save.isPending || !newCN || !surname || !sex || !newBirth}
+                disabled={save.isPending || !newCN.trim() || !surname.trim() || !newBirth}
                 onClick={() => void save.submit(undefined)}
               >
                 <Plus size={14} /> Agregar hijo

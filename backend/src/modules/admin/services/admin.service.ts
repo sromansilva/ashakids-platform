@@ -184,7 +184,7 @@ export class AdminService {
       }
 
       await pool.query(
-        `INSERT INTO tutores (id_usuario, telefono, direccion, fecha_registro) VALUES ($1, $2, $3, NOW());`,
+        `INSERT INTO tutores (id_usuario, telefono, direccion) VALUES ($1, $2, $3);`,
         [user.id_usuario, data.telefono || null, data.direccion || null]
       );
 
@@ -302,16 +302,25 @@ export class AdminService {
     try {
       const padreResult = await this.crearPadre(data);
       const user = padreResult.cuenta;
-      let idTutor = 1;
+      let idTutor: number | null = null;
       const tutRes = await pool.query(`SELECT id_tutor FROM tutores WHERE id_usuario = $1;`, [user.id_usuario]);
-      if (tutRes.rows.length > 0) idTutor = tutRes.rows[0].id_tutor;
+      if (tutRes.rows.length > 0) {
+        idTutor = tutRes.rows[0].id_tutor;
+      } else {
+        const createTut = await pool.query(
+          `INSERT INTO tutores (id_usuario, telefono, direccion) VALUES ($1, $2, $3) RETURNING id_tutor;`,
+          [user.id_usuario, data.telefono || null, data.direccion || null]
+        );
+        idTutor = createTut.rows[0]?.id_tutor;
+      }
 
-      if (Array.isArray(data.hijos)) {
+      if (idTutor && Array.isArray(data.hijos) && data.hijos.length > 0) {
         for (const h of data.hijos) {
+          if (!h.nombres_paciente || !h.apellidos_paciente) continue;
           await pool.query(
             `INSERT INTO pacientes (id_tutor, nombres_paciente, apellidos_paciente, fecha_nacimiento, sexo, avatar_nombre, activo, fecha_registro)
              VALUES ($1, $2, $3, $4::date, COALESCE($5, 'M'), COALESCE($6, 'zorro'), true, NOW());`,
-            [idTutor, h.nombres_paciente, h.apellidos_paciente, h.fecha_nacimiento, h.sexo, h.avatar_nombre]
+            [idTutor, h.nombres_paciente, h.apellidos_paciente, h.fecha_nacimiento || '2020-01-01', h.sexo, h.avatar_nombre]
           );
         }
       }

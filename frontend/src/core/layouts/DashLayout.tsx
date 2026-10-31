@@ -154,7 +154,7 @@ export function DashLayout({
               <NotificationCenter go={go} />
               <div className="text-right">
                 <p className="text-xs font-black text-[#1C1135] leading-none">
-                  {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "PieroT Anticona"}
+                  {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Terapeuta"}
                 </p>
                 <p className="text-[11px] font-bold text-[#615274] leading-tight mt-0.5">
                   Terapeuta

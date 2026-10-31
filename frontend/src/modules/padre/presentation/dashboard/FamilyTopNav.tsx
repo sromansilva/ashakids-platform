@@ -44,7 +44,7 @@ export function FamilyTopNav({
     return () => document.removeEventListener('mousedown', handleOutside);
   }, []);
 
-  const displayName = padreUserName || (user ? `${user.nombres} ${user.apellidos || ''}`.trim() : 'Piero Anticona');
+  const displayName = padreUserName || (user ? `${user.nombres} ${user.apellidos || ''}`.trim() : 'Familia');
 
   const navLinks = [
     { label: 'Mi Mundo', path: '/padre?section=world', section: 'world' as const, icon: Sparkles },
