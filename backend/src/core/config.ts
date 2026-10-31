@@ -40,6 +40,8 @@ const envSchema = z.object({
   ZOOM_HOST_USER_ID: z.string().optional().default(''),
   ZOOM_API_BASE_URL: z.string().optional().default('https://api.zoom.us/v2'),
   ZOOM_MEETING_DURATION_MINUTES: z.string().optional().default('40').transform((v) => parseInt(v, 10) || 40),
+  MEET_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
+  VIDEOCALL_PROVIDER: z.enum(['meet', 'zoom']).default('meet'),
   GMAIL_ENABLED: z.string().optional().default('false').transform((v) => v === 'true'),
   GMAIL_CLIENT_ID: z.string().optional().default(''),
   GMAIL_CLIENT_SECRET: z.string().optional().default(''),

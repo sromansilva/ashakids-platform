@@ -21,7 +21,7 @@ export function AshaCore() {
 
   const statusItems = [
     { label: "API REST",   ok: true  }, { label: "Base de Datos", ok: true  },
-    { label: "Zoom",       ok: true  }, { label: "Email",         ok: true  },
+    { label: "Google Meet",ok: true  }, { label: "Email",         ok: true  },
     { label: "Pagos",      ok: true  }, { label: "IA Engine",     ok: true  },
     { label: "CDN",        ok: true  }, { label: "Auth",          ok: true  },
   ];
@@ -112,7 +112,7 @@ export function AshaCore() {
     { label: "RAM",         val: 61, unit: "%",    color: "#2563EB", ok: true  },
     { label: "API REST",    val: 99, unit: "% up", color: "#059669", ok: true  },
     { label: "Base Datos",  val: 98, unit: "% up", color: "#059669", ok: true  },
-    { label: "Zoom",        val: 100,unit: "% up", color: "#059669", ok: true  },
+    { label: "Google Meet", val: 100,unit: "% up", color: "#059669", ok: true  },
     { label: "Email SMTP",  val: 100,unit: "% up", color: "#059669", ok: true  },
     { label: "Pagos",       val: 100,unit: "% up", color: "#059669", ok: true  },
     { label: "IA Engine",   val: 97, unit: "% up", color: "#059669", ok: true  },

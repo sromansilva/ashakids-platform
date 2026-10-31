@@ -25,7 +25,7 @@ const apiTools: ToolItem[] = [
 
 const integrationTools: ToolItem[] = [
   { name: 'Gmail', logo: 'gmail', area: 'Integraciones', detail: 'Correo de alta y boletín', note: 'Según configuración del servicio' },
-  { name: 'Zoom', logo: 'zoom', area: 'Integraciones', detail: 'Enlaces de videollamada', note: 'Creación automática según configuración' },
+  { name: 'Google Meet', logo: 'google', area: 'Integraciones', detail: 'Enlaces de videollamada', note: 'Creación automática mediante Google Calendar API' },
   { name: 'GitHub', logo: 'github', area: 'Desarrollo', detail: 'Código e historial del proyecto' },
 ];
 
