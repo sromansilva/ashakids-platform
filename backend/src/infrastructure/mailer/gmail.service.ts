@@ -250,13 +250,17 @@ https://ashakids.life`;
     time: string;
     zoomJoinUrl?: string;
   }): Promise<MailSendResult> {
+    const isMeet = params.zoomJoinUrl?.includes('meet.google.com');
+    const callPlatform = isMeet ? 'Google Meet' : 'Zoom';
+    const buttonBg = isMeet ? '#1A73E8' : '#2D8CFF';
+
     const text = `Hola ${params.patientOrTherapistName},
 
 Se ha confirmado tu cita terapéutica en ASHAKids:
 • Motivo: ${params.topic}
 • Fecha: ${params.date}
 • Hora: ${params.time}
-${params.zoomJoinUrl ? `• Enlace de videoconsulta (Zoom): ${params.zoomJoinUrl}\n` : ''}
+${params.zoomJoinUrl ? `• Enlace de videoconsulta (${callPlatform}): ${params.zoomJoinUrl}\n` : ''}
 Te recomendamos conectarte 5 minutos antes de la sesión.
 
 Equipo ASHAKids
@@ -275,7 +279,7 @@ https://ashakids.life`;
     p { font-size: 14px; color: #615274; line-height: 1.6; }
     .details { background: #F8F7FC; border-radius: 16px; padding: 18px; margin: 20px 0; }
     .detail-row { font-size: 14px; margin: 6px 0; color: #1C1135; }
-    .btn { display: block; text-align: center; background: #2D8CFF; color: #ffffff !important; text-decoration: none; font-weight: 800; font-size: 15px; padding: 14px 28px; border-radius: 16px; margin: 24px 0; }
+    .btn { display: block; text-align: center; background: ${buttonBg}; color: #ffffff !important; text-decoration: none; font-weight: 800; font-size: 15px; padding: 14px 28px; border-radius: 16px; margin: 24px 0; }
     .footer { text-align: center; font-size: 12px; color: #9E95B7; }
   </style>
 </head>
@@ -292,7 +296,7 @@ https://ashakids.life`;
     </div>
     ${
       params.zoomJoinUrl
-        ? `<a href="${params.zoomJoinUrl}" class="btn">Unirse a la sesión de Zoom</a>`
+        ? `<a href="${params.zoomJoinUrl}" class="btn">Unirse con ${callPlatform}</a>`
         : ''
     }
     <div class="footer">

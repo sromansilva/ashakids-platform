@@ -1,5 +1,6 @@
 import { pool } from '../../../core/database.js';
 import { ZoomService } from '../../../infrastructure/zoom/zoom.service.js';
+import { MeetService } from '../../../infrastructure/meet/meet.service.js';
 import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
 import { settings } from '../../../core/config.js';
 import type { AgendarCitaDTO, CambiarEstadoCitaDTO } from '../dtos/agenda.dto.js';
@@ -70,14 +71,36 @@ export class AgendaService {
       let zoomMeetingId: string | null = null;
       let zoomJoinUrl: string | null = null;
 
-      const zoom = await ZoomService.createMeeting({
-        topic: 'AshaKids · Consulta de Agenda',
-        startTime: fechaHora,
-        durationMinutes: 40,
-      });
-      if (zoom) {
-        zoomMeetingId = zoom.id;
-        zoomJoinUrl = zoom.join_url;
+      if (settings.VIDEOCALL_PROVIDER === 'meet') {
+        const meet = await MeetService.createMeeting({
+          topic: 'AshaKids · Consulta de Agenda',
+          startTime: fechaHora,
+          durationMinutes: 40,
+        });
+        if (meet) {
+          zoomMeetingId = meet.id;
+          zoomJoinUrl = meet.join_url;
+        } else if (settings.ZOOM_ENABLED) {
+          const zoom = await ZoomService.createMeeting({
+            topic: 'AshaKids · Consulta de Agenda',
+            startTime: fechaHora,
+            durationMinutes: 40,
+          });
+          if (zoom) {
+            zoomMeetingId = zoom.id;
+            zoomJoinUrl = zoom.join_url;
+          }
+        }
+      } else {
+        const zoom = await ZoomService.createMeeting({
+          topic: 'AshaKids · Consulta de Agenda',
+          startTime: fechaHora,
+          durationMinutes: 40,
+        });
+        if (zoom) {
+          zoomMeetingId = zoom.id;
+          zoomJoinUrl = zoom.join_url;
+        }
       }
 
       const res = await pool.query(

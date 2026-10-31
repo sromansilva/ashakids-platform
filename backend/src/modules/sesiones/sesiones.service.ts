@@ -143,7 +143,7 @@ export class SesionesService {
               localizacion: null,
               estado_reserva: 'COMPLETADA',
               fecha_creacion: new Date().toISOString(),
-              zoom_join_url: 'https://zoom.us/j/123456789',
+              zoom_join_url: 'https://meet.google.com/ashakids-sesion',
               zoom_origen: 'AUTOMATICA',
               id_sesion: 1,
             },
