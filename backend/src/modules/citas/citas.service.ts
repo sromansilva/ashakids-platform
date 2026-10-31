@@ -1,5 +1,6 @@
 import { pool } from '../../core/database.js';
 import { ZoomService } from '../../infrastructure/zoom/zoom.service.js';
+import { MeetService } from '../../infrastructure/meet/meet.service.js';
 import { GmailService } from '../../infrastructure/mailer/gmail.service.js';
 import { settings } from '../../core/config.js';
 
@@ -109,7 +110,7 @@ export class CitasService {
           estado_reserva: 'CONFIRMADA',
           id_sesion: null,
           puede_editar: true,
-          zoom_join_url: 'https://zoom.us/j/123456789',
+          zoom_join_url: 'https://meet.google.com/ashakids-sesion',
           zoom_origen: 'AUTOMATICA',
         },
       ];
@@ -133,14 +134,36 @@ export class CitasService {
 
       if (modalidad === 'VIRTUAL') {
         const topic = `AshaKids · ${data.tipo_cita === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria'}`;
-        const zoom = await ZoomService.createMeeting({
-          topic,
-          startTime: fechaInicio,
-          durationMinutes: 40,
-        });
-        if (zoom) {
-          zoomMeetingId = zoom.id;
-          zoomJoinUrl = zoom.join_url;
+        if (settings.VIDEOCALL_PROVIDER === 'meet') {
+          const meet = await MeetService.createMeeting({
+            topic,
+            startTime: fechaInicio,
+            durationMinutes: 40,
+          });
+          if (meet) {
+            zoomMeetingId = meet.id;
+            zoomJoinUrl = meet.join_url;
+          } else if (settings.ZOOM_ENABLED) {
+            const zoom = await ZoomService.createMeeting({
+              topic,
+              startTime: fechaInicio,
+              durationMinutes: 40,
+            });
+            if (zoom) {
+              zoomMeetingId = zoom.id;
+              zoomJoinUrl = zoom.join_url;
+            }
+          }
+        } else {
+          const zoom = await ZoomService.createMeeting({
+            topic,
+            startTime: fechaInicio,
+            durationMinutes: 40,
+          });
+          if (zoom) {
+            zoomMeetingId = zoom.id;
+            zoomJoinUrl = zoom.join_url;
+          }
         }
       }
 

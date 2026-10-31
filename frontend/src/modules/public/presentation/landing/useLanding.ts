@@ -97,7 +97,7 @@ const faqs = [
     },
     {
       q: "¿Cómo funcionan las sesiones virtuales?",
-      a: "Las sesiones se realizan por Zoom. Al agendar recibís el enlace automáticamente. Solo necesitás internet y una cámara.",
+      a: "Las sesiones se realizan por Google Meet. Al agendar recibís el enlace automáticamente. Solo necesitás internet y una cámara.",
     },
     {
       q: "¿Cuántas sesiones necesita mi hijo?",
