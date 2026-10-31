@@ -79,7 +79,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
             {admin ? "Panel de administración" : "Panel del terapeuta"}
           </h1>
           <p className="text-sm sm:text-base text-[#615274] mt-2.5">
-            Hola, {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : admin ? "Administrador Sistema" : "PieroT Anticona"}.{" "}
+            Hola, {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : admin ? "Administrador Sistema" : "Especialista"}.{" "}
             {admin ? "Consulta los registros de la plataforma." : "Consulta tu agenda y las atenciones registradas."}
           </p>
           <button

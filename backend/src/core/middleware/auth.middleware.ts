@@ -142,6 +142,61 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
   }
 }
 
+export async function optionalAuthenticate(req: Request, _res: Response, next: NextFunction): Promise<void> {
+  const token = getSessionToken(req);
+
+  if (!token) {
+    const mockRole = req.headers['x-mock-role'];
+    if (settings.ENVIRONMENT !== 'production' && typeof mockRole === 'string' && validRoles.includes(mockRole.toUpperCase() as UserRole)) {
+      const role = mockRole.toUpperCase() as UserRole;
+      req.user = {
+        id_usuario: 1,
+        email: 'mock@ashakids.pe',
+        nombres: 'Mock',
+        apellidos: 'User',
+        rol: role,
+        roles: [role],
+        activo: true,
+      };
+    }
+    return next();
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT u.id_usuario, u.codigo_usuario, u.email, u.nombres, u.apellidos,
+              u.activo, u.password_change_required, r.nombre_rol
+       FROM sesiones_autenticacion s
+       JOIN usuarios u ON u.id_usuario = s.id_usuario
+       LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
+       LEFT JOIN roles r ON r.id_rol = ur.id_rol
+       WHERE s.token_hash = $1
+         AND s.revocado = false
+         AND s.fecha_expiracion > NOW()
+         AND u.activo = true;`,
+      [hashSessionToken(token)],
+    );
+
+    const sessionUser = normalizeUserRole(result.rows as Array<Record<string, unknown>>);
+    if (sessionUser) {
+      req.user = sessionUser;
+      return next();
+    }
+
+    if (settings.ENVIRONMENT !== 'production') {
+      const legacyUser = parseDevelopmentToken(token);
+      if (legacyUser) {
+        req.user = legacyUser;
+        return next();
+      }
+    }
+
+    return next();
+  } catch {
+    return next();
+  }
+}
+
 export function requireRoles(roles: UserRole[]) {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
