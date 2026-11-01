@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search, BookOpen, Music, FileText, LayoutGrid, Layers, CheckCircle2, Eye, Pencil, Send, Clock, Globe } from 'lucide-react';
+import { Plus, Search, BookOpen, Music, FileText, LayoutGrid, CheckCircle2, Eye, Pencil, Send, Clock, Globe } from 'lucide-react';
 
 type TabType = 'TODOS' | 'CUENTOS' | 'CANCIONES' | 'RECURSOS';
 

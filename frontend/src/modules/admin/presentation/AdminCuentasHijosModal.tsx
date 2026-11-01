@@ -1,4 +1,3 @@
-import React from "react";
 import { Loader2, Power, X } from "lucide-react";
 import { PacienteItem } from "@/modules/pacientes/domain/pacientes";
 import { CuentaItem } from "@/modules/auth/domain/auth";

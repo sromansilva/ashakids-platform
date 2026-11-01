@@ -319,5 +319,5 @@ const AshiAvatar = ({ size = 36 }: { size?: number }) => (
       <Sparkles size={size * 0.44} color="white" />
     </div>
   );
-return { role, ashiCSS, open, setOpen, ashiTriggerRef, closeAshi, tab, setTab, input, setInput, thinking, setThinking, btnBottom, setBtnBottom, draftStates, setDraftStates, isDragging, setIsDragging, dragData, hasMoved, onBtnPointerDown, onBtnPointerMove, onBtnPointerUp, onBtnClick, msgs, setMsgs, roleCtx, ctx, send, AshiAvatar };
+return { role, ashiCSS, open, ashiTriggerRef, closeAshi, tab, setTab, input, setInput, thinking, btnBottom, draftStates, setDraftStates, isDragging, onBtnPointerDown, onBtnPointerMove, onBtnPointerUp, onBtnClick, msgs, ctx, send, AshiAvatar };
 }

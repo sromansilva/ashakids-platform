@@ -3,7 +3,7 @@ import { VozAventuraGameVozAventura } from "@/modules/padre/presentation/MundoAs
 
 
 export function VozAventuraGame() {
-const { canvasRef, animRef, micStreamRef, analyserRef, audioCtxRef, phaseRef, noiseFloorRef, smoothedRef, isSpeakingRef, survivedRef, lastTickRef, bestTimeRef, isFirstRef, touchHeldRef, useMicRef, phase, setPhase, countdown, setCountdown, survivedSecs, setSurvivedSecs, bestTime, setBestTime, attemptNum, setAttemptNum, isSpeaking, setIsSpeaking, micPct, setMicPct, lastResult, setLastResult, inputMode, setInputMode, gRef, stopMic, getRaw, setP, requestMic, startCountdown, startTouchMode, getFeedback } = useVozAventuraGame();
+const { canvasRef, lastTickRef, isFirstRef, touchHeldRef, phase, countdown, survivedSecs, bestTime, attemptNum, isSpeaking, micPct, lastResult, inputMode, stopMic, setP, requestMic, startCountdown, startTouchMode, getFeedback } = useVozAventuraGame();
 if(phase==="done"&&lastResult){
     const stars=isFirstRef.current?15:0;
     if(isFirstRef.current) isFirstRef.current=false;

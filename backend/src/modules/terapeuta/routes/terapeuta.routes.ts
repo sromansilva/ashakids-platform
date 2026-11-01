@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { terapeutaService } from '../services/terapeuta.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
-import { settings } from '../../../core/config.js';
 
 export const terapeutaRouter = Router();
 

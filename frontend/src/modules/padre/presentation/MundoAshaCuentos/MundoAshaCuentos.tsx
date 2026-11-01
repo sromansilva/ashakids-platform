@@ -10,17 +10,13 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
   const [phase, setPhase] = useState<Phase>("pre");
   const [inputMode, setInputMode] = useState<"manual" | "mic">("manual");
   const [scene, setScene] = useState(0);
-  const [choices, setChoices] = useState<string[]>([]);
   const [attempts, setAttempts] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
   const [hintsUsed, setHintsUsed] = useState(0);
-  const [pauseCount, setPauseCount] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
   const [micSim, setMicSim] = useState<"idle" | "listening" | "done">("idle");
-  const [events, setEvents] = useState<object[]>([]);
   const [isRepeat, setIsRepeat] = useState(false);
-  const [starsEarned, setStarsEarned] = useState(15);
-  const [performanceLevel, setPerformanceLevel] = useState<"alto"|"medio"|"inicial">("alto");
-  const [currentWorld] = useState("bosque");
+  const starsEarned = 15;
   const [showAbandonConfirm, setShowAbandonConfirm] = useState(false);
 
   const scenes = [
@@ -60,27 +56,27 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
   ];
 
   const current = scenes[scene];
-  const isAssigned = true;
+  const performanceFeedback = correctAnswers === scenes.length
+    ? "¡Excelente explorador! Comprendiste muy bien la historia y encontraste las respuestas correctas."
+    : correctAnswers > 0
+      ? "¡Buen recorrido por el bosque! Sigue observando las pistas y vuelve a intentarlo cuando quieras."
+      : "¡Buen intento! Cada cuento te ayuda a descubrir nuevas palabras. Puedes volver a leerlo con calma.";
 
   const startGame = (mode: "manual" | "mic") => {
     setInputMode(mode);
     setPhase("playing");
     setStartTime(Date.now());
     setScene(0);
-    setChoices([]);
     setAttempts(0);
+    setCorrectAnswers(0);
     setHintsUsed(0);
-    setPauseCount(0);
-    setEvents([]);
     speakForChild(scenes[0].text);
   };
 
-  const choose = (optKey: string, optLabel: string) => {
-    const isTherapistPick = current.options.findIndex(o => o.key === optKey) === current.therapistSuggested;
-    const sceneTime = Math.round((Date.now() - startTime) / 1000);
+  const choose = (optKey: string) => {
+    const isCorrect = current.options.findIndex(option => option.key === optKey) === current.therapistSuggested;
     setAttempts(a => a + 1);
-    setEvents(prev => [...prev, { scene: scene + 1, choice: optKey, therapistSuggested: isTherapistPick, timeSeconds: sceneTime }]);
-    setChoices(prev => [...prev, optLabel]);
+    if (isCorrect) setCorrectAnswers(count => count + 1);
     if (scene < scenes.length - 1) {
       setScene(s => s + 1);
       setTimeout(() => speakForChild(scenes[scene + 1].text), 300);
@@ -95,28 +91,12 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
       setMicSim("done");
       setTimeout(() => {
         setMicSim("idle");
-        choose(current.options[current.therapistSuggested].key, current.options[current.therapistSuggested].label);
+        choose(current.options[current.therapistSuggested].key);
       }, 800);
     }, 2000);
   };
 
   const elapsedSec = Math.round((Date.now() - startTime) / 1000);
-  const dataLog = {
-    sessionId: `ASHA-SIM-${Date.now().toString(36).toUpperCase()}`,
-    profileId: "P-0421 (pseudonimizado)",
-    activityType: "bosque-cuentos",
-    version: "v1.0-demo",
-    assigned: isAssigned,
-    timestamp: new Date().toISOString(),
-    durationSeconds: phase === "done" ? elapsedSec : null,
-    attempts,
-    hintsUsed,
-    pauseCount,
-    inputMode,
-    levelCompleted: phase === "done" ? scenes.length : scene,
-    events,
-    note: "Datos simulados · No datos reales",
-  };
 
   // PRE-GAME
   if (phase === "pre") return (
@@ -216,8 +196,8 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
             <div className="grid grid-cols-2 gap-2">
               {[
                 { icon: "📝", label: "Escenas", val: `${scenes.length} de ${scenes.length}` },
-                { icon: "✅", label: "Correctas", val: String(scenes.length) },
-                { icon: "❌", label: "Errores", val: String(Math.max(0, attempts - scenes.length)) },
+                { icon: "✅", label: "Correctas", val: `${correctAnswers} de ${scenes.length}` },
+                { icon: "❌", label: "Errores", val: String(Math.max(0, attempts - correctAnswers)) },
                 { icon: "⏱️", label: "Duración", val: `${Math.floor(Math.max(1, elapsedSec) / 60)}:${String(Math.max(1, elapsedSec) % 60).padStart(2, "0")} min` },
               ].map(s => (
                 <div key={s.label} className="rounded-2xl border border-[#E8E5F4] p-3 text-center bg-white">
@@ -230,7 +210,7 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
             {/* Best result */}
             <div className="mt-2 rounded-2xl p-3 border border-[#E8E5F4] bg-white flex justify-between items-center">
               <span className="text-xs font-bold text-[#7C6F9A]">Mejor resultado</span>
-              <span className="text-sm font-extrabold text-green-600">100% ⭐</span>
+              <span className="text-sm font-extrabold text-green-600">{Math.round((correctAnswers / scenes.length) * 100)}% ⭐</span>
             </div>
           </div>
 
@@ -238,21 +218,7 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
           <div className="px-6 mt-4">
             <div className="rounded-2xl p-4" style={{background:"#F5F0FF"}}>
               <p className="text-sm font-bold text-violet-800 leading-relaxed">
-                {performanceLevel === "alto" && currentWorld === "bosque" && "¡Excelente explorador! Comprendiste muy bien la historia y encontraste las respuestas correctas."}
-                {performanceLevel === "medio" && currentWorld === "bosque" && "¡Muy buen recorrido por el bosque! Recuerda algunos detalles de la historia y vuelve a intentarlo cuando quieras."}
-                {performanceLevel === "inicial" && currentWorld === "bosque" && "¡Buen intento! Cada cuento te ayuda a descubrir nuevas palabras. Puedes volver a leerlo con calma."}
-                {performanceLevel === "alto" && currentWorld === "musical" && "¡Tienes un oído increíble! Escuchaste con mucha atención la canción."}
-                {performanceLevel === "medio" && currentWorld === "musical" && "¡Muy buen ritmo! Vuelve a escuchar algunas partes y descubrirás nuevos sonidos."}
-                {performanceLevel === "inicial" && currentWorld === "musical" && "¡La música también se aprende practicando! Escucha nuevamente la canción cuando quieras."}
-                {performanceLevel === "alto" && currentWorld === "adivinanzas" && "¡Gran detective! Descubriste las respuestas escondidas en las pistas."}
-                {performanceLevel === "medio" && currentWorld === "adivinanzas" && "¡Estuviste muy cerca! Observa las pistas y vuelve a intentarlo."}
-                {performanceLevel === "inicial" && currentWorld === "adivinanzas" && "¡Buen intento, detective! Cada pista te ayudará a encontrar la respuesta."}
-                {performanceLevel === "alto" && currentWorld === "laberinto" && "¡Encontraste la salida del laberinto! Completaste el trabalenguas con gran esfuerzo."}
-                {performanceLevel === "medio" && currentWorld === "laberinto" && "¡Ya casi llegas a la salida! Repite lentamente cada fragmento y sigue avanzando."}
-                {performanceLevel === "inicial" && currentWorld === "laberinto" && "¡Buen intento! Los trabalenguas se dominan paso a paso. Puedes escucharlo y practicar nuevamente."}
-                {performanceLevel === "alto" && currentWorld === "laboratorio" && "¡Experimento completado! Superaste esta aventura con un excelente resultado."}
-                {performanceLevel === "medio" && currentWorld === "laboratorio" && "¡Buen trabajo en el laboratorio! Sigue practicando para mejorar tu resultado."}
-                {performanceLevel === "inicial" && currentWorld === "laboratorio" && "¡Cada intento cuenta! Vuelve al laboratorio cuando estés listo para otra prueba."}
+                {performanceFeedback}
               </p>
             </div>
           </div>
@@ -267,7 +233,7 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
           {/* Action buttons */}
           <div className="px-6 mt-4 pb-6 space-y-2">
             <div className="grid grid-cols-2 gap-2">
-              <button onClick={() => { setIsRepeat(true); setPhase("pre"); setScene(0); setChoices([]); setAttempts(0); setHintsUsed(0); setPauseCount(0); setEvents([]); }}
+              <button onClick={() => { setIsRepeat(true); setPhase("pre"); setScene(0); setAttempts(0); setCorrectAnswers(0); setHintsUsed(0); }}
                 className="py-3 rounded-2xl font-extrabold text-white text-sm" style={{background:"#7C3AED"}}>
                 Volver a jugar
               </button>
@@ -324,7 +290,7 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
             <span className="text-xs font-bold text-green-200 ml-1">Escena {scene + 1}/{scenes.length}</span>
           </div>
           <button
-            onClick={() => { if (phase === "playing") { setPauseCount(p => p + 1); setPhase("paused"); } else setPhase("playing"); }}
+            onClick={() => { if (phase === "playing") setPhase("paused"); else setPhase("playing"); }}
             aria-label={phase === "playing" ? "Pausar actividad" : "Reanudar actividad"}
             title={phase === "playing" ? "Pausar actividad" : "Reanudar actividad"}
             className="p-2 rounded-xl text-green-200 hover:text-white transition-colors">
@@ -365,7 +331,7 @@ export function MundoAshaCuentos({ go }: { go: (v: View) => void }) {
             <p className="text-xs font-extrabold text-[#9E95B7] uppercase tracking-wider mb-2">Elige una opción:</p>
             <div className="flex flex-col gap-2">
               {current.options.map((opt) => (
-                <button key={opt.key} onClick={() => choose(opt.key, opt.label)}
+                <button key={opt.key} onClick={() => choose(opt.key)}
                   className="w-full py-3 px-4 rounded-2xl font-extrabold text-sm text-left border-2 border-transparent hover:border-green-300 hover:bg-green-50 transition-all bg-[#F5F3FF] text-[#1C1135]">
                   {opt.label}
                 </button>

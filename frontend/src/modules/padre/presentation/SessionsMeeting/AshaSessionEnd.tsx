@@ -6,7 +6,7 @@ import { Ashi } from "@/modules/padre/presentation/Sessions/Ashi";
 import { Confetti } from "@/modules/padre/presentation/GamesShared";
 
 export function AshaSessionEnd(props: Parameters<typeof useAshaSessionEnd>[0]) {
-const { go, showSummaryModal, setShowSummaryModal, showForm, setShowForm, formStep, setFormStep, formData, setFormData, formSaved, setFormSaved, showConfirm, setShowConfirm, downloadSessionPdf } = useAshaSessionEnd(props);
+const { go, showSummaryModal, setShowSummaryModal, showForm, setShowForm, formStep, setFormStep, formData, setFormData, formSaved, setFormSaved, downloadSessionPdf } = useAshaSessionEnd(props);
 return (
     <div className="min-h-screen flex flex-col items-center justify-center text-center px-6 relative overflow-hidden"
       style={{ background: `linear-gradient(160deg, ${B.violetDeep} 0%, #4C1D95 50%, ${B.violet} 100%)`, fontFamily: '"Nunito", system-ui, sans-serif' }}>

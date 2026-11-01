@@ -152,7 +152,14 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     assert.equal(vozRes.status, 400);
   });
 
-  it('9. 404 Not Found for unmapped routes', async () => {
+  it('9. Backward Compatibility: Keeps clinical and communication aliases mounted', async () => {
+    for (const path of ['/api/v1/clinica/sesiones', '/api/v1/comunicacion/mensajes']) {
+      const res = await fetch(`${baseUrl}${path}`);
+      assert.equal(res.status, 401, `${path} must reach its authenticated router`);
+    }
+  });
+
+  it('10. 404 Not Found for unmapped routes', async () => {
     const res = await fetch(`${baseUrl}/api/v1/ruta-inexistente`);
     assert.equal(res.status, 404);
   });

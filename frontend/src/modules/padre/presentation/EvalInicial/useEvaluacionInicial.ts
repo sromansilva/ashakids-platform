@@ -18,8 +18,7 @@ export function useEvaluacionInicial({
 const [step, setStep] = useState<AdventureStep>("welcome");
 const [consentGeneral, setConsentGeneral] = useState(false);
 const [consentMic, setConsentMic] = useState(false);
-const [_useMic, setUseMic] = useState(false);
-const [stationResults, setStationResults] = useState<Partial<StationResult>[]>([]);
+const [, setUseMic] = useState(false);
 const [completedStations, setCompletedStations] = useState<StationId[]>([]);
 const [currentStation, setCurrentStation] = useState<StationId>(1);
 const [parentObs, setParentObs] = useState<Record<string, ParentAnswer>>({});
@@ -31,8 +30,6 @@ const [childNotes, setChildNotes] = useState("");
 const ageYears = Math.floor(childAgeMonths / 12);
 const ageMonthsRem = childAgeMonths % 12;
 function handleStationComplete(result: Partial<StationResult>) {
-    const newResults = [...stationResults, result];
-    setStationResults(newResults);
     if (result.stationId) {
       setCompletedStations(prev => [...prev, result.stationId!]);
     }
@@ -77,5 +74,5 @@ function downloadPdf() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
   }
-return { go, childName, childAgeMonths, step, setStep, consentGeneral, setConsentGeneral, consentMic, setConsentMic, _useMic, setUseMic, stationResults, setStationResults, completedStations, setCompletedStations, currentStation, setCurrentStation, parentObs, setParentObs, processing, setProcessing, resultCategory, setResultCategory, childLangs, setChildLangs, childBackground, setChildBackground, childNotes, setChildNotes, ageYears, ageMonthsRem, handleStationComplete, handleParentObsChange, handleParentObsSubmit, downloadPdf };
+return { go, childName, childAgeMonths, step, setStep, consentGeneral, setConsentGeneral, consentMic, setConsentMic, setUseMic, completedStations, currentStation, setCurrentStation, parentObs, processing, resultCategory, childLangs, setChildLangs, childBackground, setChildBackground, childNotes, setChildNotes, ageYears, ageMonthsRem, handleStationComplete, handleParentObsChange, handleParentObsSubmit, downloadPdf };
 }

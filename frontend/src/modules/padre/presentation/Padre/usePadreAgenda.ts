@@ -13,7 +13,7 @@ import { getDaysInMonth } from "@/modules/padre/presentation/Padre/getDaysInMont
 import { getFirstDayOfWeek } from "@/modules/padre/presentation/Padre/getFirstDayOfWeek";
 import { Apt } from "@/modules/padre/presentation/Padre/Apt";
 
-export function usePadreAgenda({ go, appointments: _apts, onAppointmentsChange }: { go: (v: View) => void; appointments: Apt[]; onAppointmentsChange: React.Dispatch<React.SetStateAction<Apt[]>> }) {
+export function usePadreAgenda({ go, appointments: _apts }: { go: (v: View) => void; appointments: Apt[] }) {
 const { query: appointmentsQuery, appointments: liveAppointments } = useAppointments();
 const { patients: patientsQuery, children, patient, selectPatient } = useSelectedFamilyPatient();
 const allowed = new Set((appointmentsQuery.data ?? []).filter(a => a.id_paciente === patient?.id_paciente).map(a => a.id_reserva));

@@ -7,5 +7,4 @@ librosa>=0.10.2
 numpy>=1.26.0
 transformers>=4.46.0
 torch
-torchaudio
 

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Eye, Search, CheckCircle, X, RefreshCw, Trash2 } from "lucide-react";
+import { Eye, Search, X, RefreshCw, Trash2 } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { Crd } from "@/shared/presentation/components/common/Crd";
 import { Bdg } from "@/shared/presentation/components/common/Bdg";

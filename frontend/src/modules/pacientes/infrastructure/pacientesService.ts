@@ -6,7 +6,6 @@ import { apiClient } from "@/core/api/client";
 import {
   ActualizarHijoPayload,
   CrearHijoPayload,
-  HijoItemResponse,
   HijoListResponse,
   OperacionHijoResponse,
   PacienteItem,
