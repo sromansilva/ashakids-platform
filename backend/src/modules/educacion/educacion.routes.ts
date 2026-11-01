@@ -22,26 +22,29 @@ educacionRouter.post('/voz/transcribir', upload.single('audio'), async (req: Req
       fraseEsperada = Array.isArray(lvl.answer) ? lvl.answer[0] : lvl.answer;
     }
 
-    let transcripcion = fraseEsperada || 'El perro corre';
-    if (file && file.buffer) {
-      const base64 = file.buffer.toString('base64');
-      const trResult = await whisperService.transcribirAudio(base64, fraseEsperada);
-      if (trResult && trResult.texto) {
-        transcripcion = trResult.texto;
-      }
+    if (!file?.buffer?.length) {
+      res.status(400).json({ estado: 'AUDIO_VACIO', mensaje: 'Selecciona o graba un audio antes de continuar.' });
+      return;
     }
 
-    const targetWords = (fraseEsperada || transcripcion).toLowerCase().split(/\s+/).filter(Boolean);
+    const startedAt = Date.now();
+    const { texto: transcripcion } = await whisperService.transcribirAudio(file.buffer.toString('base64'));
+    if (!transcripcion.trim()) {
+      res.status(422).json({ estado: 'ERROR', mensaje: 'El servicio no pudo obtener una transcripción.' });
+      return;
+    }
+
+    const normalize = (word: string) => word.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const targetWords = (fraseEsperada || '').toLowerCase().split(/\s+/).filter(Boolean);
     const gotWords = transcripcion.toLowerCase().split(/\s+/).filter(Boolean);
+    const normalizedGotWords = gotWords.map(normalize);
 
     const desglose = targetWords.map(w => ({
       palabra: w,
-      estado: gotWords.includes(w) ? ('correcta' as const) : ('omitida' as const),
+      estado: normalizedGotWords.includes(normalize(w)) ? ('correcta' as const) : ('omitida' as const),
     }));
 
-    const correctCount = desglose.filter(d => d.estado === 'correcta').length;
-    const porcentaje = targetWords.length > 0 ? Math.round((correctCount / targetWords.length) * 100) : 100;
-    const esCoincidente = porcentaje >= 60;
+    const esCoincidente = targetWords.length > 0 && desglose.every(d => d.estado === 'correcta');
 
     let guardado = false;
     let idIntento: number | undefined;
@@ -67,20 +70,18 @@ educacionRouter.post('/voz/transcribir', upload.single('audio'), async (req: Req
       estado: 'OK',
       transcripcion,
       duracion_audio_segundos: duracionSegundos,
-      tiempo_procesamiento_segundos: 0.8,
-      idioma_detectado: 'es',
-      comparacion: {
-        frase_esperada: fraseEsperada || transcripcion,
+      tiempo_procesamiento_segundos: Number(((Date.now() - startedAt) / 1000).toFixed(2)),
+      ...(fraseEsperada ? { comparacion: {
+        frase_esperada: fraseEsperada,
         frase_obtenida: transcripcion,
-        porcentaje_coincidencia: porcentaje,
         palabras_esperadas: targetWords,
         palabras_obtenidas: gotWords,
-        palabras_omitidas: targetWords.filter(w => !gotWords.includes(w)),
+        palabras_omitidas: targetWords.filter(w => !normalizedGotWords.includes(normalize(w))),
         palabras_adicionales: gotWords.filter(w => !targetWords.includes(w)),
         es_coincidente: esCoincidente,
         desglose,
-        aviso: esCoincidente ? '¡Excelente pronunciación!' : 'Sigue practicando para mejorar tu fluidez.',
-      },
+        aviso: 'La comparación usa el texto reconocido para la actividad y no evalúa la pronunciación.',
+      } } : {}),
       guardado,
       id_intento: idIntento,
       experiencia_otorgada: expOtorgada,
@@ -88,7 +89,8 @@ educacionRouter.post('/voz/transcribir', upload.single('audio'), async (req: Req
     });
   } catch (err: any) {
     console.error('[educacionRouter] Error transcribir:', err);
-    res.status(500).json({ estado: 'ERROR', mensaje: err?.message || 'Error procesando audio' });
+    const unavailable = err?.name === 'TranscriptionUnavailableError';
+    res.status(unavailable ? 503 : 500).json({ estado: 'ERROR', mensaje: unavailable ? 'El servicio de transcripción no está disponible. Puedes volver a intentarlo.' : err?.message || 'Error procesando audio' });
   }
 });
 

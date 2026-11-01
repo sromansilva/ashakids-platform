@@ -21,7 +21,7 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   const [day, setDay] = useState(appointment ? localDate(appointment.fecha_hora_inicio) : localDate(new Date().toISOString()));
   const [start, setStart] = useState('');
   const [mode, setMode] = useState<'VIRTUAL' | 'PRESENCIAL'>(appointment?.modalidad ?? 'PRESENCIAL');
-  const location = mode === 'PRESENCIAL' ? 'Jr. Ricardo Treneman 252, Chorrillos 15064' : 'La reunión será mediante Zoom.';
+  const location = mode === 'PRESENCIAL' ? 'Jr. Ricardo Treneman 252, Chorrillos 15064' : 'La reunión será mediante Google Meet.';
   const [review, setReview] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   useEffect(() => {

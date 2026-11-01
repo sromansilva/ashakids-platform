@@ -69,6 +69,6 @@ export async function migrateIncidencias() {
   }
 }
 
-if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
+if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
   migrateIncidencias().then(() => pool.end());
 }

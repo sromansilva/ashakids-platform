@@ -1,5 +1,5 @@
 import { pool } from '../../core/database.js';
-import { ZoomService } from '../../infrastructure/zoom/zoom.service.js';
+import { GoogleCalendarService } from '../../infrastructure/calendar/google-calendar.service.js';
 import { MeetService } from '../../infrastructure/meet/meet.service.js';
 import { GmailService } from '../../infrastructure/mailer/gmail.service.js';
 import { settings } from '../../core/config.js';
@@ -18,12 +18,13 @@ export interface CitaRow {
   estado_reserva: 'PENDIENTE' | 'CONFIRMADA' | 'COMPLETADA' | 'CANCELADA';
   id_sesion: number | null;
   puede_editar: boolean;
-  zoom_join_url: string | null;
-  zoom_origen: 'AUTOMATICA' | 'MANUAL' | null;
+  meet_url: string | null;
+  meet_origen: 'AUTOMATICA' | 'MANUAL' | null;
+  meet_automatico_configurado: boolean;
 }
 
 export class CitasService {
-  async listar(filters?: { estado?: string; terapeutaId?: number; pacienteId?: number; limit?: number; offset?: number }) {
+  async listar(filters?: { idReserva?: number; estado?: string; terapeutaId?: number; pacienteId?: number; limit?: number; offset?: number }) {
     try {
       let sql = `
         SELECT 
@@ -39,8 +40,11 @@ export class CitasService {
           COALESCE(r.modalidad, 'VIRTUAL') as modalidad,
           COALESCE(r.estado_reserva, 'CONFIRMADA') as estado_reserva,
           s.id_sesion,
-          r.zoom_join_url,
-          CASE WHEN r.zoom_meeting_id IS NOT NULL THEN 'AUTOMATICA' ELSE 'MANUAL' END as zoom_origen
+          r.meet_id,
+          r.meet_url,
+          CASE WHEN r.meet_id IS NOT NULL THEN 'AUTOMATICA'
+               WHEN r.meet_url IS NOT NULL THEN 'MANUAL'
+               ELSE NULL END as meet_origen
         FROM reservas r
         LEFT JOIN pacientes p ON r.id_paciente = p.id_paciente
         LEFT JOIN terapeutas t ON r.id_terapeuta = t.id_terapeuta
@@ -49,6 +53,11 @@ export class CitasService {
         WHERE 1=1
       `;
       const params: any[] = [];
+
+      if (filters?.idReserva) {
+        params.push(filters.idReserva);
+        sql += ` AND r.id_reserva = $${params.length}`;
+      }
 
       if (filters?.estado) {
         params.push(filters.estado);
@@ -88,39 +97,20 @@ export class CitasService {
         estado_reserva: r.estado_reserva as any,
         id_sesion: r.id_sesion ?? null,
         puede_editar: true,
-        zoom_join_url: r.zoom_join_url ?? null,
-        zoom_origen: r.zoom_origen as any,
+        meet_url: isMeetingUrl(r.meet_url) ? r.meet_url : null,
+        meet_origen: isMeetingUrl(r.meet_url) ? r.meet_origen as any : null,
+        meet_automatico_configurado: MeetService.isConfigured(),
       }));
 
       return { items, total: Math.max(total, items.length) };
     } catch (err) {
-      console.warn('[CitasService] Fallback listar:', err);
-      const items: CitaRow[] = [
-        {
-          id_reserva: 1,
-          id_paciente: 1,
-          id_terapeuta: 1,
-          id_tratamiento: null,
-          tipo_cita: 'INTRODUCTORIA',
-          paciente_nombre: 'Ana Demostración',
-          terapeuta_nombre: 'Profesional Demostración',
-          fecha_hora_inicio: new Date(Date.now() + 3600000).toISOString(),
-          fecha_hora_fin: new Date(Date.now() + 6000000).toISOString(),
-          modalidad: 'VIRTUAL',
-          estado_reserva: 'CONFIRMADA',
-          id_sesion: null,
-          puede_editar: true,
-          zoom_join_url: 'https://meet.google.com/ashakids-sesion',
-          zoom_origen: 'AUTOMATICA',
-        },
-      ];
-      return { items, total: items.length };
+      throw err;
     }
   }
 
   async detalle(key: number): Promise<CitaRow | null> {
-    const { items } = await this.listar({ limit: 100 });
-    return items.find(c => c.id_reserva === key) ?? items[0] ?? null;
+    const { items } = await this.listar({ idReserva: key, limit: 1 });
+    return items.find(c => c.id_reserva === key) ?? null;
   }
 
   async crear(data: any): Promise<CitaRow> {
@@ -128,52 +118,37 @@ export class CitasService {
       const fechaInicio = data.fecha_hora_inicio;
       const fechaFin = data.fecha_hora_fin || new Date(new Date(fechaInicio).getTime() + 40 * 60000).toISOString();
       const modalidad = data.modalidad === 'PRESENCIAL' ? 'PRESENCIAL' : 'VIRTUAL';
-
-      let zoomMeetingId: string | null = null;
-      let zoomJoinUrl: string | null = null;
+      const topic = `AshaKids · ${data.tipo_cita === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria'}`;
+      let meetMeetingId: string | null = null;
+      let meetJoinUrl: string | null = null;
 
       if (modalidad === 'VIRTUAL') {
-        const topic = `AshaKids · ${data.tipo_cita === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria'}`;
-        if (settings.VIDEOCALL_PROVIDER === 'meet') {
-          const meet = await MeetService.createMeeting({
-            topic,
-            startTime: fechaInicio,
-            durationMinutes: 40,
-          });
-          if (meet) {
-            zoomMeetingId = meet.id;
-            zoomJoinUrl = meet.join_url;
-          } else if (settings.ZOOM_ENABLED) {
-            const zoom = await ZoomService.createMeeting({
-              topic,
-              startTime: fechaInicio,
-              durationMinutes: 40,
-            });
-            if (zoom) {
-              zoomMeetingId = zoom.id;
-              zoomJoinUrl = zoom.join_url;
-            }
-          }
-        } else {
-          const zoom = await ZoomService.createMeeting({
-            topic,
-            startTime: fechaInicio,
-            durationMinutes: 40,
-          });
-          if (zoom) {
-            zoomMeetingId = zoom.id;
-            zoomJoinUrl = zoom.join_url;
-          }
+        const meeting = await MeetService.createMeeting({
+          topic,
+          startTime: fechaInicio,
+          durationMinutes: Math.max(1, Math.round((new Date(fechaFin).getTime() - new Date(fechaInicio).getTime()) / 60_000)),
+        });
+        if (meeting && isMeetingUrl(meeting.join_url)) {
+          meetMeetingId = meeting.id;
+          meetJoinUrl = meeting.join_url;
         }
       }
 
       const res = await pool.query(
-        `INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, zoom_meeting_id, zoom_join_url)
+        `INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, meet_id, meet_url)
          VALUES ($1, $2, $3, $4::timestamptz, $5::timestamptz, $6, COALESCE($7, 'INTRODUCTORIA'), 'CONFIRMADA', NOW(), $8, $9)
          RETURNING *;`,
-        [data.id_paciente, data.id_terapeuta, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita, zoomMeetingId, zoomJoinUrl]
+        [data.id_paciente, data.id_terapeuta, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita, meetMeetingId, meetJoinUrl]
       );
       const row = res.rows[0];
+
+      // Existing reservation schema does not retain the Calendar event ID; later reschedules or link edits are not synced to that event.
+      await GoogleCalendarService.createAppointmentEvent({
+        topic,
+        startTime: fechaInicio,
+        durationMinutes: Math.max(1, Math.round((new Date(fechaFin).getTime() - new Date(fechaInicio).getTime()) / 60_000)),
+        meetUrl: row.meet_url,
+      });
 
       const detailRes = await pool.query(
         `SELECT CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) as paciente_nombre,
@@ -217,7 +192,7 @@ export class CitasService {
             topic: `Sesión de ${data.tipo_cita === 'TERAPIA' ? 'Terapia' : 'Consulta Introductoria'}`,
             date: dateStr,
             time: timeStr,
-            zoomJoinUrl: row.zoom_join_url || undefined,
+            meetUrl: row.meet_url || undefined,
           }).catch((e) => console.warn('[CitasService] Error enviando correo de cita al tutor:', e));
         }
 
@@ -228,7 +203,7 @@ export class CitasService {
             topic: `Cita con ${contacts?.nombres_paciente || 'paciente'}`,
             date: dateStr,
             time: timeStr,
-            zoomJoinUrl: row.zoom_join_url || undefined,
+            meetUrl: row.meet_url || undefined,
           }).catch((e) => console.warn('[CitasService] Error enviando correo de cita al terapeuta:', e));
         }
       } catch (errEmail) {
@@ -249,70 +224,61 @@ export class CitasService {
         estado_reserva: row.estado_reserva,
         id_sesion: null,
         puede_editar: true,
-        zoom_join_url: row.zoom_join_url,
-        zoom_origen: row.zoom_meeting_id ? 'AUTOMATICA' : (row.zoom_join_url ? 'MANUAL' : null),
+        meet_url: row.meet_url,
+        meet_origen: row.meet_id ? 'AUTOMATICA' : row.meet_url ? 'MANUAL' : null,
+        meet_automatico_configurado: MeetService.isConfigured(),
       };
     } catch (err) {
-      console.warn('[CitasService] Fallback crear:', err);
-      return {
-        id_reserva: Date.now(),
-        id_paciente: data.id_paciente || 1,
-        id_terapeuta: data.id_terapeuta || 1,
-        id_tratamiento: data.id_tratamiento || null,
-        tipo_cita: data.tipo_cita || 'INTRODUCTORIA',
-        paciente_nombre: 'Paciente Registrado',
-        terapeuta_nombre: 'Terapeuta Especialista',
-        fecha_hora_inicio: data.fecha_hora_inicio,
-        fecha_hora_fin: data.fecha_hora_fin || new Date(new Date(data.fecha_hora_inicio).getTime() + 40 * 60000).toISOString(),
-        modalidad: 'VIRTUAL',
-        estado_reserva: 'CONFIRMADA',
-        id_sesion: null,
-        puede_editar: true,
-        zoom_join_url: null,
-        zoom_origen: null,
-      };
+      throw err;
     }
   }
 
   async reprogramar(key: number, data: { fecha_hora_inicio: string; fecha_hora_fin?: string }): Promise<CitaRow> {
-    try {
-      const fechaFin = data.fecha_hora_fin || new Date(new Date(data.fecha_hora_inicio).getTime() + 40 * 60000).toISOString();
-      await pool.query(
-        `UPDATE reservas SET fecha_hora_inicio = $1::timestamptz, fecha_hora_fin = $2::timestamptz WHERE id_reserva = $3;`,
-        [data.fecha_hora_inicio, fechaFin, key]
-      );
-    } catch (err) {
-      console.warn('[CitasService] Fallback reprogramar:', err);
-    }
+    const fechaFin = data.fecha_hora_fin || new Date(new Date(data.fecha_hora_inicio).getTime() + 40 * 60000).toISOString();
+    // Calendar event IDs are not stored, so this updates the reservation only.
+    await pool.query(
+      `UPDATE reservas SET fecha_hora_inicio = $1::timestamptz, fecha_hora_fin = $2::timestamptz WHERE id_reserva = $3;`,
+      [data.fecha_hora_inicio, fechaFin, key]
+    );
     const cita = await this.detalle(key);
-    return cita || { ...data, id_reserva: key } as any;
+    if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
+    return cita;
   }
 
   async cambiarEstado(key: number, estado_reserva: string): Promise<CitaRow> {
-    try {
-      await pool.query(
-        `UPDATE reservas SET estado_reserva = $1 WHERE id_reserva = $2;`,
-        [estado_reserva, key]
-      );
-    } catch (err) {
-      console.warn('[CitasService] Fallback cambiarEstado:', err);
-    }
+    await pool.query(
+      `UPDATE reservas SET estado_reserva = $1 WHERE id_reserva = $2;`,
+      [estado_reserva, key]
+    );
     const cita = await this.detalle(key);
-    return cita ? { ...cita, estado_reserva: estado_reserva as any } : { id_reserva: key, estado_reserva } as any;
+    if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
+    return { ...cita, estado_reserva: estado_reserva as any };
   }
 
-  async actualizarReunion(key: number, zoom_join_url: string | null): Promise<CitaRow> {
-    try {
-      await pool.query(
-        `UPDATE reservas SET zoom_join_url = $1 WHERE id_reserva = $2;`,
-        [zoom_join_url, key]
-      );
-    } catch (err) {
-      console.warn('[CitasService] Fallback actualizarReunion:', err);
+  async actualizarReunion(key: number, meet_url: string | null): Promise<CitaRow> {
+    if (meet_url && !isMeetingUrl(meet_url)) {
+      throw Object.assign(new Error('Comparte un enlace HTTPS de Google Meet válido.'), { status: 400 });
     }
+    await pool.query(
+      `UPDATE reservas SET meet_url = $1, meet_id = NULL WHERE id_reserva = $2;`,
+      [meet_url, key]
+    );
     const cita = await this.detalle(key);
-    return cita ? { ...cita, zoom_join_url } : { id_reserva: key, zoom_join_url } as any;
+    if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
+    // Calendar event IDs are not stored, so a manually changed link updates the reservation only.
+    return { ...cita, meet_url, meet_origen: meet_url ? 'MANUAL' : null, meet_automatico_configurado: MeetService.isConfigured() };
   }
 }
 
 export const citasService = new CitasService();
+
+export function isMeetingUrl(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+

@@ -11,7 +11,6 @@ export interface DetallePalabra {
 export interface ComparacionResultado {
   frase_esperada: string;
   frase_obtenida: string;
-  porcentaje_coincidencia: number;
   palabras_esperadas: string[];
   palabras_obtenidas: string[];
   palabras_omitidas: string[];
@@ -26,7 +25,6 @@ export interface TranscripcionRespuesta {
   transcripcion: string;
   duracion_audio_segundos?: number;
   tiempo_procesamiento_segundos?: number;
-  idioma_detectado?: string;
   comparacion?: ComparacionResultado;
   mensaje?: string;
   guardado?: boolean;

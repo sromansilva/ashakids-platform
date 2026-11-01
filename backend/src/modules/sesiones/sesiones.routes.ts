@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 import { sesionesService } from './sesiones.service.js';
+import { authenticate, requireRoles } from '../../core/middleware/auth.middleware.js';
 
 export const sesionesRouter = Router();
 
@@ -110,11 +112,26 @@ sesionesRouter.get('/:key/plan', async (req: Request, res: Response, next: NextF
   }
 });
 
+const planSchema = z.object({
+  nombre_tratamiento: z.string().trim().min(1).max(100),
+  descripcion: z.string().max(90_000).nullable().optional(),
+  area: z.enum(['FLUIDEZ', 'HABLA', 'LENGUAJE', 'VOZ', 'OROFACIAL']),
+  mundos_asignados: z.array(z.enum(['FLUIDEZ', 'HABLA', 'LENGUAJE', 'VOZ', 'OROFACIAL']))
+    .min(1).max(5).refine((areas) => new Set(areas).size === areas.length),
+  sesiones_recomendadas: z.number().int().min(1).max(31),
+}).strict();
+
 // POST /api/v1/sesiones/:key/plan
-sesionesRouter.post('/:key/plan', async (req: Request, res: Response, next: NextFunction) => {
+sesionesRouter.post('/:key/plan', authenticate, requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const plan = await sesionesService.publicarPlan(key, req.body);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
+    if (req.user?.rol === 'TERAPEUTA' && !(await sesionesService.perteneceATerapeuta(key, req.user.id_usuario))) {
+      return res.status(403).json({ error: 'No tienes permiso para publicar un plan en esta sesión.' });
+    }
+    const parsed = planSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: 'Completa los campos obligatorios del plan con valores válidos.' });
+    const plan = await sesionesService.publicarPlan(key, { ...parsed.data, descripcion: parsed.data.descripcion ?? null });
     res.status(201).json(plan);
   } catch (err) {
     next(err);
@@ -133,12 +150,72 @@ sesionesRouter.get('/:key/valoracion', async (req: Request, res: Response, next:
 });
 
 // POST /api/v1/sesiones/:key/valoracion
-sesionesRouter.post('/:key/valoracion', async (req: Request, res: Response, next: NextFunction) => {
+sesionesRouter.post('/:key/valoracion', authenticate, requireRoles(['ADMIN', 'PADRE']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const userId = (req as any).user?.id_usuario || 1;
+    const userId = req.user?.id_usuario;
+    if (!userId) return res.status(401).json({ error: 'Inicia sesión para dejar una valoración.' });
     const val = await sesionesService.crearValoracion(key, req.body, userId);
     res.status(201).json(val);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/sesiones/:key/evaluar-fonema-en-vivo
+sesionesRouter.post('/:key/evaluar-fonema-en-vivo', authenticate, requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
+    if (req.user?.rol === 'TERAPEUTA' && !(await sesionesService.perteneceATerapeuta(key, req.user.id_usuario))) {
+      return res.status(403).json({ error: 'No tienes permiso para evaluar fonemas en esta sesión.' });
+    }
+    const resultado = await sesionesService.evaluarFonemaEnVivo(key, req.body);
+    res.json(resultado);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/sesiones/:key/evaluar-fragmento-fonetico
+sesionesRouter.post('/:key/evaluar-fragmento-fonetico', authenticate, requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
+    if (req.user?.rol === 'TERAPEUTA' && !(await sesionesService.perteneceATerapeuta(key, req.user.id_usuario))) {
+      return res.status(403).json({ error: 'No tienes permiso para analizar el audio de esta sesión.' });
+    }
+    const resultado = await sesionesService.evaluarFragmentoFonetico(key, req.body);
+    res.json(resultado);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/v1/sesiones/:key/seguimiento-articulacion
+sesionesRouter.get('/:key/seguimiento-articulacion', authenticate, requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
+    if (req.user?.rol === 'TERAPEUTA' && !(await sesionesService.perteneceATerapeuta(key, req.user.id_usuario))) {
+      return res.status(403).json({ error: 'No tienes permiso para consultar el historial de esta sesión.' });
+    }
+    res.json(await sesionesService.historialArticulacion(key));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/sesiones/:key/analizar-transcripcion-sesion
+sesionesRouter.post('/:key/analizar-transcripcion-sesion', authenticate, requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
+    if (req.user?.rol === 'TERAPEUTA' && !(await sesionesService.perteneceATerapeuta(key, req.user.id_usuario))) {
+      return res.status(403).json({ error: 'No tienes permiso para analizar la transcripción de esta sesión.' });
+    }
+    const resultado = await sesionesService.analizarTranscripcionSesion(key, req.body);
+    res.json(resultado);
   } catch (err) {
     next(err);
   }

@@ -87,11 +87,9 @@ describe('VoiceSpeechGame Component', () => {
       transcripcion: 'el gato duerme',
       duracion_audio_segundos: 2.1,
       tiempo_procesamiento_segundos: 0.8,
-      idioma_detectado: 'es',
       comparacion: {
         frase_esperada: 'El gato duerme',
         frase_obtenida: 'el gato duerme',
-        porcentaje_coincidencia: 100.0,
         palabras_esperadas: ['el', 'gato', 'duerme'],
         palabras_obtenidas: ['el', 'gato', 'duerme'],
         palabras_omitidas: [],
@@ -125,8 +123,8 @@ describe('VoiceSpeechGame Component', () => {
     await waitFor(() => {
       expect(screen.getByTestId('transcription-result')).toBeInTheDocument();
       expect(screen.getByTestId('transcribed-text')).toHaveTextContent('«el gato duerme»');
-      expect(screen.getByText(/¡Excelente pronunciación!/i)).toBeInTheDocument();
-      expect(screen.getByText(/100%/i)).toBeInTheDocument();
+      expect(screen.getByText(/¡Coinciden las palabras!/i)).toBeInTheDocument();
+      expect(screen.getByText(/no evalúa la pronunciación/i)).toBeInTheDocument();
     });
   });
 
@@ -139,7 +137,6 @@ describe('VoiceSpeechGame Component', () => {
       comparacion: {
         frase_esperada: 'El gato duerme',
         frase_obtenida: 'el gato',
-        porcentaje_coincidencia: 80.0,
         palabras_esperadas: ['el', 'gato', 'duerme'],
         palabras_obtenidas: ['el', 'gato'],
         palabras_omitidas: ['duerme'],
@@ -163,7 +160,7 @@ describe('VoiceSpeechGame Component', () => {
     fireEvent.click(screen.getByTestId('stop-btn'));
 
     await waitFor(() => {
-      expect(screen.getByText(/¡Buen intento! Estuviste muy cerca/i)).toBeInTheDocument();
+      expect(screen.getByText(/Puedes revisar el texto reconocido/i)).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Intentar de nuevo/i })).toBeInTheDocument();
     });
 
@@ -215,7 +212,6 @@ describe('VoiceSpeechGame Component', () => {
       comparacion: {
         frase_esperada: 'El gato duerme sobre la cama',
         frase_obtenida: 'el gato duerme sobre la cama',
-        porcentaje_coincidencia: 100.0,
         palabras_esperadas: ['el', 'gato', 'duerme', 'sobre', 'la', 'cama'],
         palabras_obtenidas: ['el', 'gato', 'duerme', 'sobre', 'la', 'cama'],
         palabras_omitidas: [],

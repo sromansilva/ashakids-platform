@@ -24,7 +24,7 @@ const stream = { getTracks: () => [{ stop: trackStop }] };
 const speech = { speak: vi.fn(), stop: vi.fn(), notice: '' };
 const response = (match = true, text = 'gato'): TranscripcionRespuesta => ({
   estado: 'OK', transcripcion: text, comparacion: {
-    frase_esperada: 'Gato', frase_obtenida: text, porcentaje_coincidencia: match ? 100 : 0,
+    frase_esperada: 'Gato', frase_obtenida: text,
     palabras_esperadas: ['gato'], palabras_obtenidas: [text], palabras_omitidas: [], palabras_adicionales: [],
     es_coincidente: match, desglose: [], aviso: 'Comparación textual',
   },

@@ -1,6 +1,6 @@
 import { pool } from '../../../core/database.js';
-import { ZoomService } from '../../../infrastructure/zoom/zoom.service.js';
 import { MeetService } from '../../../infrastructure/meet/meet.service.js';
+import { GoogleCalendarService } from '../../../infrastructure/calendar/google-calendar.service.js';
 import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
 import { settings } from '../../../core/config.js';
 import type { AgendarCitaDTO, CambiarEstadoCitaDTO } from '../dtos/agenda.dto.js';
@@ -18,7 +18,8 @@ export class AgendaService {
           r.fecha_hora_fin,
           r.estado_reserva as estado,
           r.modalidad,
-          r.zoom_join_url
+          r.meet_id,
+          r.meet_url
         FROM reservas r
         LEFT JOIN pacientes p ON r.id_paciente = p.id_paciente
         WHERE 1=1
@@ -43,73 +44,42 @@ export class AgendaService {
           hora_fin: r.fecha_hora_fin ? new Date(r.fecha_hora_fin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:45',
           estado: r.estado,
           modalidad: r.modalidad || 'TELETERAPIA',
+          meet_url: isMeetingUrl(r.meet_url) ? r.meet_url : null,
+          meet_origen: r.meet_id ? 'AUTOMATICA' : isMeetingUrl(r.meet_url) ? 'MANUAL' : null,
+          meet_automatico_configurado: MeetService.isConfigured(),
         }));
       }
     } catch (err) {
-      console.warn('[AgendaService] Fallback getCitas:', err);
+      console.warn('[AgendaService] Fallback citas:', err);
     }
-
-    return [
-      {
-        id_cita: 101,
-        id_paciente: 1,
-        id_terapeuta: filters?.terapeutaId || 2,
-        paciente_nombre: 'Liam García',
-        terapeuta_nombre: 'Lic. Valeria',
-        fecha: filters?.fecha || '2026-10-26',
-        hora_inicio: '10:00',
-        hora_fin: '10:45',
-        estado: 'CONFIRMADA',
-        modalidad: 'TELETERAPIA',
-      },
-    ];
+    return [];
   }
 
   async agendar(dto: AgendarCitaDTO) {
     try {
       const fechaHora = `${dto.fecha}T${dto.hora_inicio}:00Z`;
-      let zoomMeetingId: string | null = null;
-      let zoomJoinUrl: string | null = null;
-
-      if (settings.VIDEOCALL_PROVIDER === 'meet') {
-        const meet = await MeetService.createMeeting({
-          topic: 'AshaKids · Consulta de Agenda',
-          startTime: fechaHora,
-          durationMinutes: 40,
-        });
-        if (meet) {
-          zoomMeetingId = meet.id;
-          zoomJoinUrl = meet.join_url;
-        } else if (settings.ZOOM_ENABLED) {
-          const zoom = await ZoomService.createMeeting({
-            topic: 'AshaKids · Consulta de Agenda',
-            startTime: fechaHora,
-            durationMinutes: 40,
-          });
-          if (zoom) {
-            zoomMeetingId = zoom.id;
-            zoomJoinUrl = zoom.join_url;
-          }
-        }
-      } else {
-        const zoom = await ZoomService.createMeeting({
-          topic: 'AshaKids · Consulta de Agenda',
-          startTime: fechaHora,
-          durationMinutes: 40,
-        });
-        if (zoom) {
-          zoomMeetingId = zoom.id;
-          zoomJoinUrl = zoom.join_url;
-        }
-      }
-
+      const meet = await MeetService.createMeeting({
+        topic: 'AshaKids · Consulta de Agenda',
+        startTime: fechaHora,
+        durationMinutes: 40,
+      });
+      const meetMeetingId = meet ? meet.id : null;
+      const meetJoinUrl = meet ? meet.join_url : null;
       const res = await pool.query(
-        `INSERT INTO reservas (id_paciente, id_terapeuta, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, zoom_meeting_id, zoom_join_url)
+        `INSERT INTO reservas (id_paciente, id_terapeuta, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, meet_id, meet_url)
          VALUES ($1, $2, $3::timestamptz, ($3::timestamptz + INTERVAL '40 minutes'), 'ONLINE', 'INTRODUCTORIA', 'CONFIRMADA', NOW(), $4, $5)
-         RETURNING id_reserva, id_paciente, id_terapeuta, fecha_hora_inicio, estado_reserva, zoom_join_url;`,
-        [dto.id_paciente, dto.id_terapeuta, fechaHora, zoomMeetingId, zoomJoinUrl]
+         RETURNING id_reserva, id_paciente, id_terapeuta, fecha_hora_inicio, estado_reserva, meet_url;`,
+        [dto.id_paciente, dto.id_terapeuta, fechaHora, meetMeetingId, meetJoinUrl]
       );
       const row = res.rows[0];
+
+      // Existing reservation schema does not retain the Calendar event ID; later changes are not synced to that event.
+      await GoogleCalendarService.createAppointmentEvent({
+        topic: 'AshaKids · Consulta de Agenda',
+        startTime: fechaHora,
+        durationMinutes: 40,
+        meetUrl: row.meet_url,
+      });
 
       // Enviar confirmación por correo electrónico
       try {
@@ -133,7 +103,7 @@ export class AgendaService {
             topic: 'Consulta de Agenda ASHAKids',
             date: dto.fecha,
             time: dto.hora_inicio,
-            zoomJoinUrl: row.zoom_join_url || undefined,
+            meetUrl: row.meet_url || undefined,
           }).catch((e) => console.warn('[AgendaService] Error enviando correo de cita:', e));
         }
       } catch (e) {
@@ -144,15 +114,20 @@ export class AgendaService {
         id_cita: row.id_reserva,
         ...dto,
         estado: row.estado_reserva,
-        zoom_join_url: row.zoom_join_url,
+        meet_url: row.meet_url,
+        meet_origen: row.meet_id ? 'AUTOMATICA' : row.meet_url ? 'MANUAL' : null,
+        meet_automatico_configurado: MeetService.isConfigured(),
         creado_en: new Date().toISOString(),
       };
     } catch (err) {
       console.warn('[AgendaService] Fallback agendar:', err);
       return {
-        id_cita: Date.now(),
+        id_cita: 999,
         ...dto,
         estado: 'CONFIRMADA',
+        meet_url: null,
+        meet_origen: null,
+        meet_automatico_configurado: MeetService.isConfigured(),
         creado_en: new Date().toISOString(),
       };
     }
@@ -178,3 +153,14 @@ export class AgendaService {
 }
 
 export const agendaService = new AgendaService();
+
+export function isMeetingUrl(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+

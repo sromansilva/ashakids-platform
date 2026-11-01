@@ -56,16 +56,16 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#E8E5F4] bg-[#F8F7FC] hover:bg-violet-50 text-xs font-bold text-[#6B46FE] transition-all shadow-sm active:scale-95"
+        className="flex items-center gap-2.5 rounded-2xl border border-[#E8E5F4] bg-white px-3 py-1.5 text-xs font-bold text-[#594A6F] shadow-sm transition-all hover:border-violet-200 hover:bg-violet-50/70 active:scale-[.98]"
       >
-        <Bell size={15} />
+        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]"><Bell size={15} /></span>
         <span>Notificaciones</span>
         {query.error ? (
           <span className="text-red-700 font-bold">Sin conexión</span>
         ) : query.isPending ? (
           <span>Cargando…</span>
         ) : (
-          <span className="tabular-nums font-black">{count} sin leer</span>
+          <span aria-label={`${count} sin leer`} className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#EDE9FE] px-2 text-[11px] font-black tabular-nums text-[#6B46FE]">{count}</span>
         )}
         <ChevronDown size={14} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>

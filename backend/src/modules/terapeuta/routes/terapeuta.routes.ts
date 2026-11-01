@@ -18,11 +18,8 @@ terapeutaRouter.get('/', async (req: Request, res: Response, next: NextFunction)
   }
 });
 
-// The public therapist directory remains available; personal and operational routes require a session in production.
-terapeutaRouter.use((req, res, next) => {
-  if (settings.ENVIRONMENT === 'production' || req.headers['x-mock-role']) return authenticate(req, res, next);
-  next();
-});
+// The public therapist directory remains available; personal and operational routes require authentication.
+terapeutaRouter.use(authenticate);
 
 // GET /api/v1/terapeutas/me
 terapeutaRouter.get('/me', requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
