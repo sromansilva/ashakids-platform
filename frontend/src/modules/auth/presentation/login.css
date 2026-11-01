@@ -34,7 +34,7 @@
 
 /* Header */
 .asha-login .login-header {
-  max-width: 1140px;
+  max-width: 1280px;
   width: 100%;
   margin: 0 auto;
   height: 58px;
@@ -77,12 +77,12 @@
 
 /* Layout */
 .asha-login .login-layout {
-  width: min(1140px, 100%);
+  width: min(1280px, 100%);
   margin: auto;
   display: grid;
   grid-template-columns: 1.05fr 1fr;
   align-items: center;
-  gap: 56px;
+  gap: 64px;
   padding: 12px 0;
 }
 
@@ -93,7 +93,7 @@
   justify-content: center;
 }
 .asha-login .login-welcome h2 {
-  font-size: clamp(30px, 2.3vw, 38px);
+  font-size: clamp(32px, 2.4vw, 42px);
   line-height: 1.15;
   letter-spacing: -.03em;
   font-weight: 900;
@@ -101,7 +101,7 @@
 }
 .asha-login .login-welcome h2 span { color: var(--asha-primary); }
 .asha-login .login-welcome-sub {
-  font-size: 15px;
+  font-size: 16px;
   color: var(--asha-muted);
   line-height: 1.5;
   margin: 10px 0 16px;
@@ -175,12 +175,15 @@
 
 /* Right access / form side */
 .asha-login .login-access {
+  width: 100%;
+  max-width: 520px;
   min-width: 0;
   display: flex;
   flex-direction: column;
+  justify-self: end;
 }
 .asha-login .login-form-panel {
-  padding: 30px 34px;
+  padding: 32px 38px;
   border: 1px solid rgba(124, 58, 237, 0.14);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.9);
@@ -188,7 +191,7 @@
   box-shadow: 0 14px 36px rgba(28, 17, 53, 0.07), inset 0 1px 0 #fff;
 }
 .asha-login .login-form-panel h1 {
-  font-size: 27px;
+  font-size: 29px;
   line-height: 1.2;
   font-weight: 900;
   letter-spacing: -.025em;
@@ -196,7 +199,7 @@
 }
 .asha-login .login-description {
   margin: 6px 0 20px;
-  font-size: 14px;
+  font-size: 15px;
   line-height: 1.5;
   color: var(--asha-muted);
 }
@@ -235,7 +238,7 @@
 .asha-login .login-input-wrap {
   display: flex;
   align-items: center;
-  height: 46px;
+  height: 48px;
   padding-left: 14px;
   gap: 10px;
   border: 1.5px solid var(--asha-border);
@@ -302,8 +305,8 @@
   justify-content: center;
   align-items: center;
   gap: 10px;
-  height: 48px;
-  min-height: 48px;
+  height: 50px;
+  min-height: 50px;
   border-radius: 12px;
   background: var(--asha-primary);
   color: white;
@@ -364,54 +367,6 @@
   color: var(--asha-primary-hover);
 }
 
-/* Compact Dev Credentials bar */
-.asha-login .login-development {
-  margin-top: 12px;
-  padding: 10px 14px;
-  border: 1px dashed rgba(124, 58, 237, 0.25);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.65);
-}
-.asha-login .login-dev-title {
-  font-size: 11.5px;
-  color: var(--asha-muted);
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-  margin-bottom: 8px;
-}
-.asha-login .login-dev-chips {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-}
-.asha-login .login-dev-chip {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  border-radius: 10px;
-  padding: 7px 10px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #5B21B6;
-  background: #F5F3FF;
-  border: 1px solid #EDE9FE;
-  cursor: pointer;
-}
-.asha-login .login-dev-chip:hover {
-  background: #EDE9FE;
-  border-color: var(--asha-primary);
-  transform: translateY(-1px);
-}
-.asha-login .login-dev-chip svg { color: var(--asha-primary); }
-.asha-login .login-dev-chip code {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--asha-muted);
-}
-
 .asha-login .login-spinner { animation: login-spin 1s linear infinite; }
 @keyframes login-spin { to { transform: rotate(360deg); } }
 
@@ -431,7 +386,6 @@
 @media (max-width: 480px) {
   .asha-login { padding: 12px 14px 24px; }
   .asha-login .login-header { height: auto; padding: 10px 14px; }
-  .asha-login .login-dev-chips { grid-template-columns: 1fr; }
   .asha-login .login-form-panel { padding: 22px 18px; }
 }
 @media (prefers-reduced-motion: reduce) {

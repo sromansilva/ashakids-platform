@@ -55,11 +55,10 @@ it('filters persisted attendance by Lima month without counting scheduled or abs
   const session = (id: number, month: number, state: string, attendance: string | null) => ({id_sesion:id,cita:{...appointment(),fecha_hora_inicio:`${year}-${String(month).padStart(2,'0')}-01T10:00:00-05:00`},estado_sesion:state,asistencia:attendance});
   mockApi(path => path === '/sesiones' ? response([session(1,1,'FINALIZADA','ASISTIO'),session(2,2,'FINALIZADA','ASISTIO'),session(3,2,'FINALIZADA','NO_ASISTIO'),session(4,2,'PROGRAMADA',null)]) : undefined);
   renderRoute('/terapeuta/analiticas','TERAPEUTA');
-  await screen.findByText('Sesiones atendidas');
-  expect(screen.getByText('Sesiones atendidas').parentElement).toHaveTextContent('2');
+  await waitFor(() => expect(screen.getByText('Sesiones atendidas').parentElement).toHaveTextContent('2'));
   expect(screen.getByText('Pacientes atendidos').parentElement).toHaveTextContent('1');
   fireEvent.change(screen.getByLabelText('Mes'),{target:{value:'2'}});
-  expect(screen.getByText('Sesiones atendidas').parentElement).toHaveTextContent('1');
+  await waitFor(() => expect(screen.getByText('Sesiones atendidas').parentElement).toHaveTextContent('1'));
   expect(screen.getByText('Inasistencias').parentElement).toHaveTextContent('1');
 });
 

@@ -15,9 +15,9 @@ function RedirectToJourney() {
 }
 
 export default function AppRouter() {
-const { view, role, authRole, go, navigate, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, addParentAppointment, setParentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, bookedSlots, setPadreUserName } = useDemoWorkflow();
+const { view, role, authRole, go, navigate, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, setParentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, setPadreUserName } = useDemoWorkflow();
 return <RouteAccess><PageBoundary><Routes>
-<Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} padrePlan={padrePlan} />}>
+<Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} />}>
 <Route path="/" element={<Landing go={go} />} />
 <Route path="/crear-contrasena" element={<CreatePassword />} />
 <Route path="/reset-password" element={<CreatePassword />} />
@@ -56,8 +56,8 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/padre/progreso" element={<RedirectToJourney />} />
 <Route path="/padre/reportes" element={<PadreReportes />} />
 <Route path="/padre/config" element={<PadreConfig onNameChange={setPadreUserName} padrePlan={padrePlan} go={go} />} />
-<Route path="/padre/psicologos" element={<PadrePsicologos go={go} onRequest={addParentAppointment} bookedSlots={bookedSlots} />} />
-<Route path="/padre/agenda" element={<PadreAgenda go={go} appointments={parentAppointments} />} />
+<Route path="/padre/psicologos" element={<PadrePsicologos />} />
+<Route path="/padre/agenda" element={<PadreAgenda go={go} />} />
 <Route path="/padre/mensajes" element={<PadreMensajes />} />
 <Route path="/padre/compras" element={<PadreCompras go={go} appointments={parentAppointments} onAppointmentsChange={setParentAppointments} />} />
 <Route path="/padre/recompensas" element={<MundoAshaHome go={go} padrePlan={padrePlan} />} />

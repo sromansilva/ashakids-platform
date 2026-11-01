@@ -32,7 +32,7 @@ export function PadreConfig(props: Parameters<typeof usePadreConfig>[0]) {
     : (authUser ? `${authUser.nombres?.[0] || ''}${authUser.apellidos?.[0] || ''}`.toUpperCase() : '..');
 
   return (
-    <section className="p-4 sm:p-8 max-w-5xl text-[#1C1135]">
+    <section className="w-full max-w-[1500px] mx-auto p-4 sm:p-8 text-[#1C1135]">
       {/* Page Title & Subtitle */}
       <div className="mb-6">
         <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Configuración</h1>

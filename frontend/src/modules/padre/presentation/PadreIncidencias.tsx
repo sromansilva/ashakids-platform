@@ -32,7 +32,7 @@ export function PadreIncidencias({ go: _go }: { go: (v: View) => void }) {
 
   return (
     <div className="min-h-screen bg-[#F8F7FC] p-4 sm:p-8" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-      <div className="max-w-6xl mx-auto space-y-6">
+      <div className="w-full max-w-[1500px] mx-auto space-y-6">
         {/* Cabecera del Centro Familiar */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#E8E5F4] pb-6">
           <div>
@@ -77,6 +77,7 @@ export function PadreIncidencias({ go: _go }: { go: (v: View) => void }) {
           <div>
             <IncidentForm
               role="PADRE"
+              className="family-incident-form"
               title="¿Tienes alguna consulta o inconveniente?"
               subtitle="El sistema asignará automáticamente tu solicitud a Administración, Terapeuta o Soporte Técnico según el tipo de solicitud."
               onSuccess={() => {

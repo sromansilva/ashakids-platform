@@ -45,9 +45,162 @@
     box-shadow: none;
   }
 
+  .asha-professional > aside.sidebar--collapsed {
+    width: 88px !important;
+    flex: 0 0 88px;
+    overflow-x: hidden;
+    transition: width .22s ease, flex-basis .22s ease, box-shadow .22s ease;
+  }
+
   .asha-professional > aside > div:first-child { padding: 22px 18px 18px; }
   .asha-professional > aside nav { padding-inline: 12px; }
   .asha-professional > aside nav button { min-height: 46px; border-radius: 15px; }
+  .asha-professional > aside.sidebar--collapsed > div:first-child { padding: 22px 8px 18px; }
+  .asha-professional > aside.sidebar--collapsed .sidebar-brand-label--collapsed {
+    display: block;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    white-space: nowrap;
+    transition: max-width .22s ease, opacity .14s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed nav { padding-inline: 10px; transition: padding-inline .22s ease; }
+  .asha-professional > aside.sidebar--collapsed nav button {
+    position: relative;
+    justify-content: center;
+    gap: 0;
+    min-height: 50px;
+    padding-inline: 0;
+    border-radius: 16px;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-nav-icon {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: left .22s ease, transform .22s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-nav-label--collapsed {
+    position: absolute;
+    top: 50%;
+    left: 48px;
+    display: block;
+    width: max-content;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: max-width .22s ease, opacity .14s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-user-footer-collapsed {
+    align-items: center;
+    padding-inline: 8px;
+    transition: padding-inline .22s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-user-row-collapsed {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0;
+    transition: gap .22s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-user-avatar {
+    width: 32px !important;
+    height: 32px !important;
+    transition: width .22s ease, height .22s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-logout-button {
+    flex: 0 0 0px !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .14s ease, flex-basis .22s ease, width .22s ease, height .22s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-user-copy--collapsed {
+    flex: 0 0 0px !important;
+    width: 0 !important;
+    max-width: 0;
+    min-width: 0;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: flex-basis .22s ease, max-width .22s ease, opacity .14s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed .sidebar-logout-confirm { position: fixed; left: 96px; bottom: 14px; z-index: 70; width: 210px; box-shadow: 0 12px 32px rgb(48 33 87 / 16%); }
+
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) {
+    width: 264px !important;
+    flex-basis: 264px;
+    overflow-x: hidden;
+    box-shadow: 12px 0 34px rgb(40 28 74 / 14%);
+  }
+
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) > div:first-child {
+    padding: 22px 18px 18px;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) > div:first-child > div {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) nav { padding-inline: 12px; }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) nav button {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-brand-label--collapsed {
+    display: block;
+    max-width: 110px;
+    overflow: hidden;
+    opacity: 1;
+    white-space: nowrap;
+    transition: max-width .22s ease, opacity .14s ease;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-nav-icon {
+    left: 14px;
+    transform: none;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-nav-label--collapsed {
+    max-width: 180px;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-footer-collapsed { padding-inline: 16px; }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-row-collapsed {
+    flex-direction: row;
+    gap: 12px;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-avatar {
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-logout-button {
+    flex: 0 0 40px !important;
+    width: 40px !important;
+    height: 40px !important;
+    overflow: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-copy--collapsed {
+    flex: 1 1 0px !important;
+    width: auto !important;
+    max-width: 150px;
+    opacity: 1;
+  }
+  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-logout-confirm {
+    position: static;
+    width: auto;
+    box-shadow: none;
+  }
+
   .asha-professional > aside nav button[aria-current="page"] {
     background: linear-gradient(125deg, #6b46fe, #824eff);
     box-shadow: 0 8px 18px rgb(107 70 254 / 20%);
@@ -114,7 +267,7 @@
     padding: 24px clamp(24px, 2vw, 40px) 32px;
   }
   .asha-professional .operational-dashboard--therapist .operational-dashboard__hero {
-    min-height: 180px;
+    min-height: 160px;
     margin-bottom: 20px;
     padding: 22px 30px;
   }
@@ -132,8 +285,8 @@
     margin-bottom: 20px;
   }
   .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div {
-    min-height: 122px;
-    padding: 20px;
+    min-height: 108px;
+    padding: 18px;
     border-radius: 22px;
   }
   .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div > div:first-child > div:first-child {
@@ -150,17 +303,147 @@
     margin-bottom: 20px;
   }
   .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button {
-    min-height: 112px;
-    padding: 18px 20px;
+    min-height: 98px;
+    padding: 16px 18px;
     border-radius: 20px;
   }
   .asha-professional .operational-dashboard--therapist .operational-dashboard__workspace {
     gap: 20px;
   }
   .asha-professional .operational-dashboard--therapist .operational-dashboard__workspace > div {
-    min-height: clamp(300px, calc(100dvh - 700px), 390px);
-    padding: 24px;
+    min-height: clamp(270px, calc(100dvh - 700px), 340px);
+    padding: 22px;
   }
+}
+
+@keyframes therapist-page-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes therapist-soft-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes therapist-chart-grow {
+  from { opacity: .4; transform: scaleY(.35); }
+  to { opacity: 1; transform: scaleY(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .professional-content > .therapist-page,
+  .professional-content > .messages-center--therapist,
+  .professional-content > .operational-dashboard--therapist {
+    animation: therapist-page-enter .38s cubic-bezier(.2,.75,.25,1) both;
+  }
+
+  .therapist-page .therapist-animate {
+    animation: therapist-page-enter .42s cubic-bezier(.2,.75,.25,1) both;
+  }
+
+  .therapist-page .therapist-animate:nth-child(2) { animation-delay: .045s; }
+  .therapist-page .therapist-animate:nth-child(3) { animation-delay: .09s; }
+  .therapist-page .therapist-animate:nth-child(4) { animation-delay: .135s; }
+
+  .therapist-page .therapist-hover-card {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+
+  .therapist-page .therapist-hover-card:hover {
+    transform: translateY(-2px);
+    border-color: #c4b5fd;
+    box-shadow: 0 12px 26px rgb(48 33 87 / 9%);
+  }
+
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__hero,
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div,
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button,
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__workspace > div {
+    animation: therapist-page-enter .42s cubic-bezier(.2,.75,.25,1) both;
+  }
+
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div:nth-child(2),
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button:nth-child(2) { animation-delay: .05s; }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div:nth-child(3),
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button:nth-child(3) { animation-delay: .1s; }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__workspace > div:nth-child(2) { animation-delay: .08s; }
+
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 28px rgb(48 33 87 / 9%);
+  }
+
+  .asha-professional .messages-center--therapist .message-welcome > img {
+    animation: therapist-soft-float 4.8s ease-in-out infinite;
+  }
+
+  .asha-professional .messages-center--therapist .messages-contact-card,
+  .asha-professional .messages-center--therapist .message-welcome-quick-card {
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background-color .2s ease;
+  }
+
+  .asha-professional .messages-center--therapist .messages-contact-card:hover,
+  .asha-professional .messages-center--therapist .message-welcome-quick-card:hover:not(:disabled) {
+    transform: translateY(-2px);
+  }
+
+  .asha-professional .therapist-chart-bar {
+    transform-origin: bottom;
+    animation: therapist-chart-grow .55s cubic-bezier(.2,.75,.25,1) both;
+  }
+}
+
+.asha-professional .session-actions--agenda {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 14px;
+  margin-top: 0;
+  border-top: 0;
+  padding-top: 0;
+}
+
+.session-actions--agenda > h3,
+.session-actions--agenda .session-actions__feedback {
+  grid-column: 1 / -1;
+}
+
+.session-actions--agenda .session-actions__workflow,
+.session-actions--agenda .session-actions__clinical {
+  min-width: 0;
+  border: 1px solid #e8e5f4;
+  border-radius: 18px;
+  padding: 16px;
+  background: #fff;
+}
+
+.session-actions--agenda .session-actions__workflow {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #faf9fd;
+}
+
+.session-actions--agenda .session-actions__workflow--solo { grid-column: 1 / -1; }
+.session-actions--agenda .session-actions__clinical {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 12px;
+}
+.session-actions--agenda .session-actions__clinical > :first-child { margin-top: 0; }
+.session-actions--agenda .session-actions__clinical > div:last-child { grid-column: 1 / -1; }
+
+@media (max-width: 767px) {
+  .asha-professional .session-actions--agenda { grid-template-columns: minmax(0, 1fr); }
+  .session-actions--agenda .session-actions__workflow--solo { grid-column: auto; }
+  .session-actions--agenda .session-actions__clinical { grid-template-columns: minmax(0, 1fr); }
+  .session-actions--agenda .session-actions__clinical > div:last-child { grid-column: auto; }
 }
 
 @media (prefers-reduced-motion: reduce) {

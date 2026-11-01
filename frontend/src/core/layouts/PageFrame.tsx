@@ -10,7 +10,7 @@ import { ComingSoon } from '@/shared/presentation/components/common/ComingSoon';
 
 type Props = {
   view: View; role: Role; go: (view: View) => void; logout: () => void;
-  padreUserName: string; padrePlan: "exploracion" | "familia";
+  padreUserName: string;
 };
 export function PageFrame(props: Props) {
   const { pathname } = useLocation();

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { X, Stethoscope, UserRound, ChevronDown } from "lucide-react";
+import { X, Stethoscope, UserRound, LogOut } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
@@ -9,7 +9,6 @@ import { MobileTopBar } from "@/shared/presentation/components/common/MobileTopB
 import { Sidebar } from "@/core/layouts/Sidebar";
 import { FamilySidebar } from "@/core/layouts/FamilySidebar";
 import { FamilyTopNav } from "@/modules/padre/presentation/dashboard/FamilyTopNav";
-import { FamilySubNav } from "@/modules/padre/presentation/dashboard/FamilySubNav";
 import { AshhiFloat } from "@/shared/presentation/components/assistant/AshhiFloat";
 import { useAuth } from '@/modules/auth/application/useAuth';
 import "@/modules/admin/presentation/admin.css";
@@ -33,7 +32,6 @@ export function DashLayout({
   children: React.ReactNode;
   title: string;
   padreUserName?: string;
-  padrePlan?: "exploracion" | "familia";
 }) {
   const [mob, setMob] = useState(false);
   const { user } = useAuth();
@@ -72,7 +70,7 @@ export function DashLayout({
         fontFamily: '"Nunito", system-ui, sans-serif',
       }}
     >
-      {!isFamily && <Sidebar role={role} cur={cur} go={go} logout={logout} padreUserName={padreUserName} />}
+      {!isFamily && <Sidebar role={role} cur={cur} go={go} logout={logout} collapsed={role === "terapeuta" || role === "admin"} hideUserFooter={role === "terapeuta" || role === "admin"} padreUserName={padreUserName} />}
 
       {mob && !isFamily && (
         <div className="md:hidden fixed inset-0 z-40 flex bg-black/50 backdrop-blur-sm">
@@ -130,18 +128,32 @@ export function DashLayout({
                   </>
                 )}
             </div>
-            <div className="flex items-center gap-3 bg-white px-4 py-1.5 rounded-2xl border border-[#E8E5F4] shadow-sm">
-              <div className="text-right">
-                <p className="text-xs sm:text-sm font-extrabold text-[#1C1135] leading-tight">
-                  {user?.nombres
-                    ? `${user.nombres} ${user.apellidos || ""}`
-                    : "Administrador Sistema"}
-                </p>
-                <p className="text-[11px] font-semibold text-[#8C82A8]">
-                  Administración
-                </p>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2.5 rounded-2xl border border-[#E8E5F4] bg-white px-2 py-1.5 shadow-sm">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F2EDFF] text-[#6B46FE]">
+                  <UserRound size={17} />
+                </span>
+                <div className="min-w-0 max-w-[180px]">
+                  <p className="truncate text-xs sm:text-sm font-extrabold text-[#1C1135] leading-tight">
+                    {user?.nombres
+                      ? `${user.nombres} ${user.apellidos || ""}`
+                      : "Administrador Sistema"}
+                  </p>
+                  <p className="mt-0.5 text-[10px] font-bold leading-tight text-[#7E6AA5]">
+                    Administración
+                  </p>
+                </div>
               </div>
-              <ChevronDown size={16} className="text-[#6B46FE]" />
+              <button
+                type="button"
+                onClick={logout}
+                aria-label="Cerrar sesión"
+                title="Cerrar sesión"
+                className="flex h-10 items-center gap-2 rounded-xl border border-rose-200 bg-white px-3 text-sm font-extrabold text-rose-600 transition-colors hover:border-rose-300 hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200"
+              >
+                <LogOut size={16} />
+                <span>Salir</span>
+              </button>
             </div>
           </header>
         )}
@@ -162,22 +174,36 @@ export function DashLayout({
                   <h1 className="mt-0.5 truncate text-base font-black text-[#1C1135]">Mensajes</h1>
                 </div>
               ) : (
-                <p className="truncate text-sm font-extrabold text-[#1C1135]">Espacio profesional</p>
+                <p className="truncate text-sm font-extrabold text-[#1C1135]">
+                  {cur === "terapeuta" ? "Panel del terapeuta" : "Espacio profesional"}
+                </p>
               )}
             </div>
             <div className="flex shrink-0 items-center gap-3">
               <NotificationCenter go={go} />
               <span aria-hidden="true" className="mx-1 h-8 w-px bg-[#E8E5F4]" />
-              <div className="flex items-center gap-2.5 rounded-2xl border border-[#E8E5F4] bg-white px-2 py-1.5 shadow-sm">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]">
-                  <UserRound size={17} />
-                </span>
-                <div className="min-w-0 max-w-[180px]">
-                  <p className="truncate text-xs font-extrabold leading-tight text-[#1C1135]">
-                    {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Terapeuta"}
-                  </p>
-                  <p className="mt-0.5 text-[10px] font-bold leading-tight text-[#7E6AA5]">Terapeuta</p>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2.5 rounded-2xl border border-[#E8E5F4] bg-white px-2 py-1.5 shadow-sm">
+                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F2EDFF] text-[#6B46FE]">
+                    <UserRound size={17} />
+                  </span>
+                  <div className="min-w-0 max-w-[180px]">
+                    <p className="truncate text-xs font-extrabold leading-tight text-[#1C1135]">
+                      {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Terapeuta"}
+                    </p>
+                    <p className="mt-0.5 text-[10px] font-bold leading-tight text-[#7E6AA5]">Terapeuta</p>
+                  </div>
                 </div>
+                <button
+                  type="button"
+                  onClick={logout}
+                  aria-label="Cerrar sesión"
+                  title="Cerrar sesión"
+                  className="flex h-10 items-center gap-2 rounded-xl border border-rose-200 bg-white px-3 text-sm font-extrabold text-rose-600 transition-colors hover:border-rose-300 hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-200"
+                >
+                  <LogOut size={16} />
+                  <span>Salir</span>
+                </button>
               </div>
             </div>
           </header>
@@ -185,7 +211,6 @@ export function DashLayout({
         {!isFamily && <MobileTopBar title={title} onMenu={() => setMob(true)} menuOpen={mob} />}
         <div className="flex-1 overflow-y-auto flex min-h-0">
           <div className={`flex-1 min-w-0 overflow-x-hidden${role === "admin" ? " admin-content" : role === "padre" ? " family-content" : role === "terapeuta" ? " professional-content" : ""}`}>
-            {isFamily && isFamilyContextual && <FamilySubNav go={go} />}
             {children}
           </div>
 
@@ -194,7 +219,7 @@ export function DashLayout({
       </main>
       </div>
       {role === 'admin' && <div className="admin-support-rail">Ayuda y asistente</div>}
-      {!childCenter && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
+      {!childCenter && role !== "admin" && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
     </div>
   );
 }

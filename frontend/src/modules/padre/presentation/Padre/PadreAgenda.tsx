@@ -9,7 +9,7 @@ export function PadreAgenda(props: Parameters<typeof usePadreAgenda>[0]) {
   const agenda = usePadreAgenda(props);
 
   return (
-    <div className="p-4 sm:p-8 max-w-5xl text-[#1C1135]">
+    <div className="w-full max-w-[1320px] mx-auto p-4 sm:p-6 text-[#1C1135]">
       <RemoteFeedback
         pending={agenda.appointmentsQuery.isPending || agenda.patientsQuery.isPending}
         error={agenda.appointmentsQuery.error || agenda.patientsQuery.error || agenda.cancel.error}
@@ -23,44 +23,42 @@ export function PadreAgenda(props: Parameters<typeof usePadreAgenda>[0]) {
       )}
 
       {/* Top Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+      <div className="flex items-end justify-between flex-wrap gap-4 mb-4">
         <div>
-          <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Mi Agenda</h1>
+          <h1 className="text-2xl font-black text-[#1C1135] tracking-tight">Mi Agenda</h1>
           <p className="text-sm font-semibold text-[#8C82A8] mt-1">
             {MONTHS[agenda.month]} · {agenda.year}
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => agenda.setShowNew(true)}
-          className="flex items-center gap-2 bg-[#6B46FE] hover:bg-[#5835E5] text-white px-5 py-2.5 rounded-2xl font-bold text-sm shadow-md shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
-        >
-          <Plus size={16} />
-          <span>Reservar cita</span>
-        </button>
-      </div>
-
-      {/* Child selector */}
-      {agenda.patient && (
-        <div className="mb-6">
-          <label htmlFor="child-agenda-select" className="block text-xs font-bold text-[#8C82A8] mb-1.5">Hijo o hija</label>
-          <div className="relative max-w-xs">
-            <select
-              id="child-agenda-select"
-              aria-label="Hijo o hija"
-              className="w-full p-2.5 pr-8 rounded-2xl border border-[#E8E5F4] bg-white text-sm font-extrabold text-[#1C1135] shadow-xs focus:outline-hidden focus:border-[#6B46FE]"
-              value={agenda.patient.id_paciente}
-              onChange={(e) => agenda.selectPatient(Number(e.target.value))}
-            >
-              {agenda.children.map((p) => (
-                <option key={p.id_paciente} value={p.id_paciente}>
-                  {p.nombres_paciente} {p.apellidos_paciente}
-                </option>
-              ))}
-            </select>
-          </div>
+        <div className="flex flex-wrap items-end gap-3">
+          {agenda.children.length > 0 && (
+            <label className="block text-xs font-extrabold text-[#615274]">
+              Hijo o hija
+              <select
+                aria-label="Hijo o hija"
+                value={agenda.patient?.id_paciente ?? ''}
+                onChange={(event) => agenda.selectPatient(Number(event.target.value))}
+                disabled={agenda.children.length < 2}
+                className="mt-1 block min-w-52 rounded-xl border border-[#E8E5F4] bg-white px-3 py-2.5 text-sm font-bold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-500 disabled:opacity-70"
+              >
+                {agenda.children.map((child) => (
+                  <option key={child.id_paciente} value={child.id_paciente}>
+                    {child.nombres_paciente} {child.apellidos_paciente}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+          <button
+            type="button"
+            onClick={() => agenda.setShowNew(true)}
+            className="flex items-center gap-2 bg-[#6B46FE] hover:bg-[#5835E5] text-white px-4 py-2 rounded-2xl font-bold text-sm shadow-md shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
+          >
+            <Plus size={16} />
+            <span>Reservar cita</span>
+          </button>
         </div>
-      )}
+      </div>
 
       <PadreAgendaMiAgenda {...agenda} />
     </div>

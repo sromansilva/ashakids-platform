@@ -66,11 +66,106 @@
 @media (min-width: 768px) {
   .asha-admin > aside.admin-sidebar {
     width: 252px !important;
-    height: calc(100vh - 20px);
-    margin: 10px 0 10px 10px;
-    border: 1px solid #e8e5f4;
-    border-radius: 24px;
-    box-shadow: 0 14px 36px rgb(48 33 87 / 7%);
+    height: 100vh;
+    margin: 0;
+    border: 0;
+    border-right: 1px solid #e8e5f4;
+    border-radius: 0;
+    box-shadow: none;
+    transition: width .32s cubic-bezier(.22,.61,.36,1), flex-basis .32s cubic-bezier(.22,.61,.36,1);
+  }
+
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed {
+    width: 88px !important;
+    flex: 0 0 88px;
+    overflow-x: hidden;
+    transition: width .32s cubic-bezier(.22,.61,.36,1), flex-basis .32s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;
+  }
+
+  .asha-admin > aside.admin-sidebar > div:first-child {
+    display: flex;
+    height: 72px;
+    min-height: 72px;
+    flex: 0 0 72px;
+    box-sizing: border-box;
+    align-items: center;
+    padding: 18px !important;
+    border-bottom: 1px solid #e8e5f4;
+    background: rgb(255 255 255 / 88%);
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed > div:first-child { padding-inline: 18px !important; }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed > div:first-child > div { justify-content: flex-start; gap: 10px; }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed .sidebar-brand-label--collapsed {
+    display: block;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    white-space: nowrap;
+    transition: max-width .32s cubic-bezier(.22,.61,.36,1), opacity .18s ease;
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed nav { padding-inline: 10px; transition: padding-inline .32s cubic-bezier(.22,.61,.36,1); }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed nav button {
+    position: relative;
+    justify-content: center;
+    gap: 0;
+    min-height: 50px;
+    padding-inline: 0;
+    border-radius: 16px;
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed .sidebar-nav-icon {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: left .32s cubic-bezier(.22,.61,.36,1), transform .32s cubic-bezier(.22,.61,.36,1);
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed .sidebar-nav-label--collapsed {
+    position: absolute;
+    top: 50%;
+    left: 48px;
+    display: block;
+    width: max-content;
+    max-width: 0;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    transition: max-width .32s cubic-bezier(.22,.61,.36,1), opacity .18s ease;
+  }
+
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover {
+    width: 264px !important;
+    flex-basis: 264px;
+    overflow-x: hidden;
+    box-shadow: 12px 0 34px rgb(40 28 74 / 14%);
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover > div:first-child { padding-inline: 18px !important; }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover > div:first-child > div {
+    justify-content: flex-start;
+    gap: 10px;
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover nav { padding-inline: 12px; }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover nav button {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0;
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover .sidebar-brand-label--collapsed {
+    display: block;
+    max-width: 110px;
+    overflow: hidden;
+    opacity: 1;
+    white-space: nowrap;
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover .sidebar-nav-icon {
+    left: 14px;
+    transform: none;
+  }
+  .asha-admin > aside.admin-sidebar.sidebar--collapsed:hover .sidebar-nav-label--collapsed {
+    max-width: 180px;
+    opacity: 1;
+    pointer-events: auto;
   }
 
   .asha-admin > aside.admin-sidebar > div:first-child { padding: 22px 18px 18px; }
@@ -81,8 +176,11 @@
     box-shadow: 0 8px 18px rgb(107 70 254 / 20%);
   }
 
-  .asha-admin > main > header {
+  .asha-admin > .contents > main > header {
+    height: 72px;
     min-height: 72px;
+    box-sizing: border-box;
+    padding-block: 0;
     background: rgb(255 255 255 / 88%);
     box-shadow: 0 3px 16px rgb(48 33 87 / 3%);
   }

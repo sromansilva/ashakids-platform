@@ -9,7 +9,6 @@ import { LandingComoUnaFamiliaPodria } from './LandingComoUnaFamiliaPodria';
 import { ChevronDown, ClipboardPenLine, Search, CalendarDays, CircleHelp } from 'lucide-react';
 import { PublicNav } from '@/modules/public/presentation/Public/PublicNav';
 import { PublicFooter } from '@/modules/public/presentation/Public/PublicFooter';
-import { LandingAudience } from './LandingAudience';
 import { AshhiFloat } from '@/shared/presentation/components/assistant/AshhiFloat';
 import './landing-kit.css';
 import './landing.css';
@@ -47,7 +46,6 @@ export function Landing(props: Parameters<typeof useLanding>[0]) {
           {faqOpen===i && <div id={`landing-faq-${i}`} className="landing-faq-answer"><p>{faq.a}</p></div>}
         </div>)}</div>
       </div></section>
-      <LandingAudience/>
       <LandingTerapiasEspecializadas services={services} go={go}/>
       <LandingComoUnaFamiliaPodria testimonials={testimonials}/>
       <LandingConsejosDeTerapia email={email} setEmail={setEmail} newsletterConsent={newsletterConsent} setNewsletterConsent={setNewsletterConsent} newsletterSubmitting={newsletterSubmitting} newsletterMessage={newsletterMessage} newsletterError={newsletterError} submitNewsletter={submitNewsletter}/>

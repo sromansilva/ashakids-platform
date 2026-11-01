@@ -1,5 +1,4 @@
 /* Reference composition: confined to the public landing. */
-.asha-landing .landing-audience-container { margin-inline: auto; }
 .asha-landing { background: #fffefd; }
 .asha-landing .landing-wordmark > span:nth-child(2) { color: var(--asha-orange); }
 .asha-landing .landing-logo-rays { position: absolute; width: 18px; height: 22px; right: -20px; top: -5px; }
@@ -14,20 +13,6 @@
 .asha-landing .landing-ashi-bubble strong { font-weight: 900; font-size: 16px; }
 .asha-landing .landing-ashi-bubble span { font-size: 12px; color: var(--asha-muted); }
 .asha-landing .landing-voice-decoration { position: absolute; right: 21%; top: 31%; color: #16b8b5; }
-.asha-landing .landing-audience { position: relative; padding: 42px 0 50px; background: linear-gradient(120deg,#f8f5ff,#faf9ff); border-radius: 48% 52% 0 0 / 32px 32px 0 0; }
-.asha-landing .landing-audience h2 { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: clamp(26px,2.5vw,34px); white-space: nowrap; text-wrap: nowrap; }
-.asha-landing .landing-audience h2 > span:not(.landing-heading-rays) { margin-left: -3px; }
-.asha-landing .landing-heading-rays { position: relative; flex: 0 0 32px; height: 36px; }
-.asha-landing .landing-heading-rays::before,.asha-landing .landing-heading-rays::after { content: ''; position: absolute; width: 6px; height: 22px; background: #ff8a12; border-radius: 6px; left: 14px; top: 0; transform: rotate(-35deg); }
-.asha-landing .landing-heading-rays::after { width: 20px; height: 6px; top: 26px; left: 0; transform: rotate(8deg); }
-.asha-landing .landing-heading-rays:last-child { transform: scaleX(-1); }
-.asha-landing .landing-audience-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 16px; margin-top: 24px; }
-.asha-landing.asha-ui .landing-audience-card { display: grid; grid-template-columns: 38% 1fr 36px; align-items: center; gap: 12px; height: 164px; padding: 14px 18px; text-align: left; border-radius: 20px; border-color: white; box-shadow: inset 0 1px 0 white,0 8px 24px #624ac509; cursor: pointer; transition: transform 180ms ease,box-shadow 180ms ease; }
-.asha-landing .landing-audience-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px #624ac516; }
-.asha-landing .landing-audience-card img { width: 100%; height: 140px; object-fit: contain; }
-.asha-landing .landing-audience-copy strong { display: block; font-size: 21px; font-weight: 900; letter-spacing: -.03em; line-height: 1.2; }
-.asha-landing .landing-audience-copy > span { display: block; font-size: 14px; color: var(--asha-muted); line-height: 1.35; margin-top: 6px; }
-.asha-landing .landing-audience-arrow { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #eee5fc; color: var(--asha-primary-dark); }
 .asha-landing #landing-steps,.asha-landing #landing-faq { scroll-margin-top: 84px; }
 
 /* Floating assistant and WhatsApp buttons */
@@ -68,14 +53,8 @@
   .asha-landing .landing-ashi-bubble strong { font-size: 16px; }
   .asha-landing .landing-ashi-bubble span { font-size: 12px; }
   .asha-landing .landing-voice-decoration { top: 130px; right: 120px; width: 36px; height: 36px; }
-  .asha-landing .landing-audience-container { width: min(1200px,calc(100% - 64px)); margin-inline: auto; }
-  .asha-landing .landing-audience-grid { padding-right: 0; margin-top: 20px; gap: 20px; }
   .asha-landing .landing-reference-hero .landing-intro { margin-bottom: 24px; }
   .asha-landing.asha-ui .landing-hero-actions .asha-btn--outline { padding-inline: 20px; font-size: 15px; }
-  .asha-landing.asha-ui .landing-audience-card { grid-template-columns: 36% 1fr 36px; height: 164px; }
-  .asha-landing .landing-audience-copy strong { font-size: 21px; white-space: nowrap; }
-  .asha-landing .landing-audience-card img { transform: scale(1.05); }
-  .asha-landing .landing-audience-card:nth-child(2) img { transform: scale(1.15); }
   .asha-landing.asha-ui .landing-hero-actions .landing-primary { background: linear-gradient(180deg,#aa45fc,#8521ef); }
 }
 @media (min-width: 1024px) and (max-width: 1350px) {
@@ -84,21 +63,13 @@
   .asha-landing .landing-ashi-scene { width: 460px; right: -15px; }
   .asha-landing .landing-ashi-hero { width: 480px; height: 370px; left: -10px; top: 10px; }
   .asha-landing .landing-ashi-bubble { right: 20px; }
-  .asha-landing .landing-audience-copy strong { font-size: 19px; }
-  .asha-landing.asha-ui .landing-audience-card { grid-template-columns: 34% 1fr 32px; gap: 8px; padding-inline: 12px; }
 }
 @media (max-width: 1023px) {
   .asha-landing .landing-hero-actions { flex-wrap: wrap; }
-  .asha-landing .landing-audience h2 { white-space: normal; text-wrap: balance; flex-wrap: wrap; }
-  .asha-landing .landing-audience-grid { grid-template-columns: 1fr; }
-  .asha-landing .landing-audience-card { max-width: 500px; width: 100%; margin-inline: auto; }
   .asha-landing .landing-assistant-dock { right: 12px; bottom: 16px; gap: 10px; }
   .asha-landing .landing-dock-ashi,.asha-landing .landing-dock-whatsapp { width: 50px; height: 50px; }
   .asha-landing .landing-dock-ashi img,.asha-landing .landing-dock-whatsapp svg { width: 34px; height: 34px; }
   .asha-landing .landing-ashi-bubble { padding: 8px 14px; }
   .asha-landing .landing-ashi-bubble strong { font-size: 15px; }
   .asha-landing .landing-ashi-bubble span { font-size: 12px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .asha-landing .landing-audience-card { transition: none; }
 }

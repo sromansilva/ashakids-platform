@@ -75,10 +75,10 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8F7FC] p-4 sm:p-8" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-      <div className="max-w-6xl mx-auto space-y-6">
+    <div className="therapist-page min-h-full w-full px-4 py-4 sm:px-6 sm:py-5 xl:px-8" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+      <div className="w-full space-y-5">
         {/* Cabecera del Terapeuta */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-[#E8E5F4] pb-6">
+        <div className="therapist-animate flex flex-col xl:flex-row items-start xl:items-center justify-between gap-5 rounded-3xl border border-[#E8E5F4] bg-gradient-to-r from-white via-white to-[#F8F6FF] p-5 sm:p-6 shadow-sm">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EDE9FE] text-[#6B46FE] text-xs font-black mb-2">
               <Stethoscope size={14} /> Gestión Clínica y Solicitudes
@@ -90,7 +90,7 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
           </div>
 
           {/* Pastillas de Navegación de 3 Pestañas */}
-          <div className="flex items-center gap-1.5 bg-white p-1.5 rounded-2xl border border-[#E8E5F4] shadow-2xs">
+          <div className="flex flex-wrap items-center gap-1.5 bg-white p-1.5 rounded-2xl border border-[#E8E5F4] shadow-2xs">
             <button
               type="button"
               onClick={() => setTab('RECIBIDAS')}
@@ -129,14 +129,7 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
 
         {/* Contenido según pestaña */}
         {tab === 'RECIBIDAS' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl border border-[#E8E5F4] p-5 shadow-2xs">
-              <h2 className="text-base font-black text-[#1C1135]">Bandeja de incidencias y consultas asignadas</h2>
-              <p className="text-xs text-[#6B5E8A] font-medium mt-0.5">
-                Solicitudes de padres sobre sesiones, ejercicios en casa y seguimiento que requieren tu atención.
-              </p>
-            </div>
-
+          <div className="therapist-animate min-w-0">
             <IncidentsTable
               items={recibidas}
               loading={loading}
@@ -150,7 +143,7 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
         )}
 
         {tab === 'ENVIAR' && (
-          <div>
+          <div className="therapist-animate">
             <IncidentForm
               role="TERAPEUTA"
               title="Reportar problema o solicitud técnica"
@@ -163,14 +156,7 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
         )}
 
         {tab === 'HISTORIAL' && (
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl border border-[#E8E5F4] p-5 shadow-2xs">
-              <h2 className="text-base font-black text-[#1C1135]">Historial de solicitudes enviadas</h2>
-              <p className="text-xs text-[#6B5E8A] font-medium mt-0.5">
-                Incidencias y solicitudes que has emitido desde tu cuenta profesional hacia Soporte o Administración.
-              </p>
-            </div>
-
+          <div className="therapist-animate min-w-0">
             <IncidentsTable
               items={enviadas}
               loading={loading}

@@ -6,7 +6,7 @@
 
 import { Link } from "react-router-dom";
 import React, { useRef, useState } from "react";
-import { ArrowRight, AudioLines, ChevronLeft, CircleAlert, Eye, EyeOff, Loader2, Lock, ShieldCheck, User as UserIcon, Users } from "lucide-react";
+import { ArrowRight, ChevronLeft, CircleAlert, Eye, EyeOff, Loader2, Lock, User as UserIcon } from "lucide-react";
 import { AshaKidsLogo } from "@/shared/presentation/components/illustrations/AshaKidsLogo";
 import { useAuth } from "@/modules/auth/application/useAuth";
 import { SemanticRole } from "@/modules/auth/domain/auth";
@@ -58,11 +58,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       submitting.current = false;
       setIsLoading(false);
     }
-  };
-
-  const handleQuickDemo = (demoCodigo: string) => {
-    setCodigoUsuario(demoCodigo);
-    // Only prefill the identifier; authentication always requires a password.
   };
 
   return (
@@ -128,14 +123,6 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             </form>
             <p className="login-first-access">¿Es tu primer acceso? Revisa tu correo para crear tu contraseña. <Link className="underline font-bold" to="/crear-contrasena">Solicitar enlace</Link></p>
           </section>
-          {import.meta.env.DEV && <section className="login-development" aria-label="Usuarios de desarrollo">
-            <p className="login-dev-title">Usuarios de desarrollo (Fase 3A)</p>
-            <div className="login-dev-chips">{[
-              { label: "Padre", codigo: "p00001", icon: Users },
-              { label: "Terapeuta", codigo: "t00001", icon: AudioLines },
-              { label: "Admin", codigo: "a00001", icon: ShieldCheck },
-            ].map(d => <button key={d.codigo} type="button" disabled={isLoading} onClick={() => handleQuickDemo(d.codigo)} className="login-dev-chip" title={`Cargar ${d.label} (${d.codigo})`}><d.icon size={14} /><span>{d.label}</span><code>{d.codigo}</code></button>)}</div>
-          </section>}
         </div>
       </div>
     </main>

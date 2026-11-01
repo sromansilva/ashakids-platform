@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Users, Calendar, MessageSquare, Heart, FileText, Settings, AlertTriangle, HelpCircle, ChevronDown, Check } from 'lucide-react';
+import { Users, Calendar, MessageSquare, Heart, FileText, Settings, AlertTriangle, ChevronDown, Check } from 'lucide-react';
 import { Isotipo } from '@/shared/presentation/components/illustrations/Isotipo';
 import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
 import { getPacienteAvatarImage } from '@/core/config/avatars';
@@ -97,7 +97,7 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
       )}
 
       {/* Nav List */}
-      <nav className="flex-1 overflow-y-auto py-2 flex flex-col gap-1 px-3">
+      <nav aria-label="Herramientas para mi familia" className="flex-1 overflow-y-auto py-2 flex flex-col gap-1 px-3">
         {navItems.map((item) => {
           const active = isActive(item);
           const Icon = item.icon;
@@ -105,6 +105,8 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
             <button
               key={item.label}
               type="button"
+              aria-label={item.label}
+              title={item.label}
               aria-current={active ? 'page' : undefined}
               onClick={() => {
                 if (item.path.startsWith('/padre?')) {
@@ -113,34 +115,19 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
                   go(item.view);
                 }
               }}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98] ${
+              className={`family-sub-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98] ${active ? 'family-sub-nav-btn--active' : ''} ${
                 active
                   ? 'bg-[#F3EFFE] text-[#6B46FE]'
                   : 'text-[#5C5378] hover:bg-violet-50 hover:text-[#6B46FE]'
               }`}
             >
-              <Icon size={19} className={`flex-shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
-              <span className="truncate">{item.label}</span>
+              <Icon size={23} strokeWidth={active ? 2.25 : 1.9} className={`flex-shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
+              <span className="family-sidebar-label truncate">{item.label}</span>
             </button>
           );
         })}
       </nav>
 
-      {/* Bottom Ayuda */}
-      <div className="p-3 border-t border-[#E8E5F4] shrink-0">
-        <button
-          type="button"
-          onClick={() => go('padre/ayuda')}
-          className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all w-full text-left ${
-            location.pathname.startsWith('/padre/ayuda')
-              ? 'bg-[#F3EFFE] text-[#6B46FE]'
-              : 'text-[#5C5378] hover:bg-violet-50 hover:text-[#6B46FE]'
-          }`}
-        >
-          <HelpCircle size={19} className="text-[#7C6F9A] shrink-0" />
-          <span>Ayuda</span>
-        </button>
-      </div>
     </aside>
   );
 }

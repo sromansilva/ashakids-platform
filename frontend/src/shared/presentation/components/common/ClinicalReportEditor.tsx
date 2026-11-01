@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from 'react';
+import { useId, useRef, useState, type ReactNode } from 'react';
 import { ChevronDown, Mic, Save } from 'lucide-react';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
@@ -29,6 +29,9 @@ export function ClinicalReportEditor({
   patientName,
   patientId,
   sessionType = 'INTRODUCTORIA',
+  twoColumns = false,
+  downloadAction,
+  planAction,
   onSaved,
 }: {
   id: number;
@@ -36,6 +39,9 @@ export function ClinicalReportEditor({
   patientName?: string;
   patientId?: number;
   sessionType?: 'INTRODUCTORIA' | 'TERAPIA';
+  twoColumns?: boolean;
+  downloadAction?: ReactNode;
+  planAction?: ReactNode;
   onSaved?: () => void;
 }) {
   const [form, setForm] = useState<ReportData>(() => ({
@@ -84,7 +90,7 @@ export function ClinicalReportEditor({
 
   return (
     <form
-      className="space-y-4"
+      className={twoColumns ? 'space-y-3' : 'space-y-4'}
       onSubmit={(e) => {
         e.preventDefault();
         setValidation(true);
@@ -95,16 +101,18 @@ export function ClinicalReportEditor({
         void save.submit(undefined);
       }}
     >
-      <div className="flex flex-col gap-x-3 gap-y-1 rounded-xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-sm text-[#4B4264] sm:flex-row sm:items-start">
-        <p className="shrink-0 font-extrabold text-[#1C1135]">
-          {sessionType === 'INTRODUCTORIA' ? 'Línea base de la sesión introductoria' : 'Seguimiento de objetivos'}
-        </p>
-        <p className="text-xs leading-relaxed">
-          {sessionType === 'INTRODUCTORIA'
-            ? 'Registra lo que se observó realmente en esta sesión. El reporte no crea resultados previos ni completa datos clínicos automáticamente.'
-            : 'Consulta resultados revisados que ya fueron guardados en reportes anteriores del mismo paciente. La comparación y las conclusiones quedan a cargo del terapeuta.'}
-        </p>
-      </div>
+      {!twoColumns && (
+        <div className="flex flex-col gap-x-3 gap-y-1 rounded-xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-sm text-[#4B4264] sm:flex-row sm:items-start">
+          <p className="shrink-0 font-extrabold text-[#1C1135]">
+            {sessionType === 'INTRODUCTORIA' ? 'Línea base de la sesión introductoria' : 'Seguimiento de objetivos'}
+          </p>
+          <p className="text-xs leading-relaxed">
+            {sessionType === 'INTRODUCTORIA'
+              ? 'Registra lo que se observó realmente en esta sesión. El reporte no crea resultados previos ni completa datos clínicos automáticamente.'
+              : 'Consulta resultados revisados que ya fueron guardados en reportes anteriores del mismo paciente. La comparación y las conclusiones quedan a cargo del terapeuta.'}
+          </p>
+        </div>
+      )}
 
       {sessionType === 'TERAPIA' && (
         <section className="space-y-2 rounded-2xl border border-[#E8E5F4] bg-white p-4" aria-labelledby="articulation-history-title">
@@ -156,61 +164,64 @@ export function ClinicalReportEditor({
         </div>
       </details>
 
-      {Object.entries(reportLabels).map(([key, label]) => {
-        if (key === 'nivel_ayuda') {
-          return (
-            <ReportHelpLevel
-              key={key}
-              id={`${formId}-help`}
-              value={form.nivel_ayuda}
-              disabled={save.isPending}
-              onChange={(value) => update(key, value)}
-            />
-          );
-        }
-        const narrative = key as NarrativeField;
-        const invalid = validation && incomplete.includes(narrative);
-        return (
-          <div className="space-y-2 text-sm text-[#1C1135]" key={key}>
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <label className="font-extrabold text-sm text-[#1C1135]" htmlFor={`${formId}-${key}`}>
-                {label}
-              </label>
-              {!form[narrative]?.trim() && (
-                <button
-                  type="button"
+      <div className={twoColumns ? 'grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 xl:grid-cols-2' : 'space-y-4'}>
+        {Object.entries(reportLabels).map(([key, label]) => {
+          if (key === 'nivel_ayuda') {
+            return (
+              <div key={key} className="min-w-0">
+                <ReportHelpLevel
+                  id={`${formId}-help`}
+                  value={form.nivel_ayuda}
                   disabled={save.isPending}
-                  aria-label={`Usar plantilla de ${label.toLowerCase()}`}
-                  className="rounded-xl px-3 py-1 text-xs font-bold text-[#6B46FE] hover:bg-violet-50 transition-colors"
-                  onClick={() => useTemplate(narrative)}
-                >
-                  Usar plantilla
-                </button>
+                  onChange={(value) => update(key, value)}
+                />
+              </div>
+            );
+          }
+          const narrative = key as NarrativeField;
+          const invalid = validation && incomplete.includes(narrative);
+          return (
+            <div className="min-w-0 space-y-2 text-sm text-[#1C1135]" key={key}>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label className="font-extrabold text-sm text-[#1C1135]" htmlFor={`${formId}-${key}`}>
+                  {label}
+                </label>
+                {!form[narrative]?.trim() && (
+                  <button
+                    type="button"
+                    disabled={save.isPending}
+                    aria-label={`Usar plantilla de ${label.toLowerCase()}`}
+                    className="rounded-xl px-3 py-1 text-xs font-bold text-[#6B46FE] hover:bg-violet-50 transition-colors"
+                    onClick={() => useTemplate(narrative)}
+                  >
+                    Usar plantilla
+                  </button>
+                )}
+              </div>
+              <textarea
+                ref={(node) => {
+                  if (node) textareas.current[narrative] = node;
+                }}
+                id={`${formId}-${key}`}
+                rows={twoColumns ? 3 : 4}
+                maxLength={10000}
+                disabled={save.isPending}
+                placeholder={templates[narrative]}
+                aria-invalid={invalid}
+                aria-describedby={invalid ? `${formId}-${key}-error` : undefined}
+                className={`w-full rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] p-3.5 text-xs font-medium leading-relaxed text-[#1C1135] placeholder:text-[#9E95B7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6B46FE] transition-all ${twoColumns ? 'min-h-[76px]' : 'min-h-[90px]'}`}
+                value={form[narrative] ?? ''}
+                onChange={(e) => update(narrative, e.target.value)}
+              />
+              {invalid && (
+                <p id={`${formId}-${key}-error`} className="text-xs font-bold text-red-600">
+                  Completa o elimina los espacios entre corchetes de esta plantilla.
+                </p>
               )}
             </div>
-            <textarea
-              ref={(node) => {
-                if (node) textareas.current[narrative] = node;
-              }}
-              id={`${formId}-${key}`}
-              rows={4}
-              maxLength={10000}
-              disabled={save.isPending}
-              placeholder={templates[narrative]}
-              aria-invalid={invalid}
-              aria-describedby={invalid ? `${formId}-${key}-error` : undefined}
-              className="w-full rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] p-4 text-xs font-medium leading-relaxed text-[#1C1135] placeholder:text-[#9E95B7] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#6B46FE] transition-all min-h-[90px]"
-              value={form[narrative] ?? ''}
-              onChange={(e) => update(narrative, e.target.value)}
-            />
-            {invalid && (
-              <p id={`${formId}-${key}-error`} className="text-xs font-bold text-red-600">
-                Completa o elimina los espacios entre corchetes de esta plantilla.
-              </p>
-            )}
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
 
       {validation && incomplete.length > 0 && (
         <p role="alert" className="text-xs font-bold text-red-600">
@@ -218,23 +229,22 @@ export function ClinicalReportEditor({
         </p>
       )}
 
-      <p className="text-xs text-[#9E95B7]">
-        Reporte compartido con la familia. Las notas privadas no forman parte de estos campos.
-      </p>
-
       <RemoteFeedback error={save.error} />
-      {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">Reporte guardado en el servidor.</p>}
-      {dirty && <p role="status" className="text-xs font-bold text-[#D97706]">● Cambios sin guardar.</p>}
-
-      <div className="flex justify-end pt-2">
-        <button
-          type="submit"
-          disabled={save.isPending}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-extrabold text-sm shadow-md transition-all active:scale-[.98] disabled:opacity-50 cursor-pointer"
-        >
-          <Save size={16} />
-          {save.isPending ? 'Guardando reporte…' : 'Guardar reporte'}
-        </button>
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+        {planAction}
+        <div className="flex flex-wrap items-center justify-end gap-3">
+          {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">Reporte guardado en el servidor.</p>}
+          {dirty && <p role="status" className="text-xs font-bold text-[#D97706]">● Cambios sin guardar.</p>}
+          {downloadAction}
+          <button
+            type="submit"
+            disabled={save.isPending}
+            className="inline-flex items-center gap-2 rounded-2xl bg-[#6B46FE] px-5 py-2.5 text-sm font-extrabold text-white shadow-md transition-all hover:bg-[#5833EA] active:scale-[.98] disabled:opacity-50 cursor-pointer"
+          >
+            <Save size={16} />
+            {save.isPending ? 'Guardando reporte…' : 'Guardar reporte'}
+          </button>
+        </div>
       </div>
     </form>
   );

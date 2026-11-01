@@ -29,7 +29,7 @@
 }
 @media (max-width: 1023px) {
   #root:has(.asha-unified) { height: calc(100% - 72px); }
-  .asha-unified .landing-container,.asha-unified .landing-audience-container { width: calc(100% - 32px); }
+  .asha-unified .landing-container { width: calc(100% - 32px); }
   .asha-unified .landing-section { padding-block: 48px; }
   .asha-unified .landing-reference-hero h1 { font-size: clamp(31px,4.3vw,47px); }
   .asha-unified .landing-hero-layout { grid-template-columns: 1fr; }
@@ -41,8 +41,6 @@
   .asha-unified .landing-ashi-bubble { position: relative; top: auto; right: auto; order: -1; width: max-content; max-width: 100%; margin: 12px auto 20px; }
   .asha-unified .landing-voice-decoration { width: 40px; height: 40px; right: 12%; top: 44%; }
   .asha-unified .landing-reference-hero h1 > .landing-title-line { color: var(--asha-ink); }
-  .asha-unified .landing-audience h2 { display: block; font-size: 32px; }
-  .asha-unified .landing-heading-rays { display: none; }
   .asha-unified .landing-section h2 { font-size: 34px; }
   .asha-unified .landing-assistant-dock { inset: auto 0 0; height: 72px; padding: 8px 16px; flex-direction: row; justify-content: flex-end; align-items: center; background: #fffefd; border-top: 1px solid var(--asha-lavender); }
   .asha-unified .landing-dock-label { display: none; }
@@ -60,11 +58,6 @@
   .asha-unified .landing-hero h1 { font-size: 31px; }
   .asha-unified .landing-desktop-break { display: none; }
   .asha-unified .landing-section h2 { font-size: 30px; }
-  .asha-unified.asha-ui .landing-audience-card { grid-template-columns: 30% minmax(0,1fr) 32px; gap: 10px; padding: 16px 12px; height: auto; min-height: 150px; }
-  .asha-unified .landing-audience-card img { height: 130px; }
-  .asha-unified .landing-audience-copy strong { font-size: 23px; }
-  .asha-unified .landing-audience-copy > span { font-size: 15px; }
-  .asha-unified .landing-audience-arrow { width: 32px; height: 32px; }
   .asha-unified .landing-newsletter-panel { padding: 24px 16px; }
   .asha-unified .landing-newsletter-controls { padding: 16px; min-width: 0; }
   .asha-unified .landing-dialog-content { padding-inline: 24px; }
