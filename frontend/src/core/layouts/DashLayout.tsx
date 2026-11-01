@@ -103,7 +103,6 @@ export function DashLayout({
               logout={logout}
               mobile
               padreUserName={padreUserName}
-              padrePlan={padrePlan}
             />
           </div>
           <div

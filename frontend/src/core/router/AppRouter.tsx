@@ -45,7 +45,7 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/session/active" element={<AshaSessionActive go={go} />} />
 <Route path="/session/end" element={<AshaSessionEnd go={go} />} />
 <Route path="/padre" element={<PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />} />
-<Route path="/padre/welcome" element={<PadreWelcome go={go} padreUserName={padreUserName} padrePlan={padrePlan} />} />
+<Route path="/padre/welcome" element={<PadreWelcome go={go} />} />
 <Route path="/padre/camino" element={<RedirectToJourney />} />
 <Route path="/padre/ayuda" element={<PadreAyuda go={go} />} />
 <Route path="/padre/recorrido" element={<PadreRecorrido go={go} />} />
@@ -57,7 +57,7 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/padre/reportes" element={<PadreReportes />} />
 <Route path="/padre/config" element={<PadreConfig onNameChange={setPadreUserName} padrePlan={padrePlan} go={go} />} />
 <Route path="/padre/psicologos" element={<PadrePsicologos go={go} onRequest={addParentAppointment} bookedSlots={bookedSlots} />} />
-<Route path="/padre/agenda" element={<PadreAgenda go={go} appointments={parentAppointments} onAppointmentsChange={setParentAppointments} />} />
+<Route path="/padre/agenda" element={<PadreAgenda go={go} appointments={parentAppointments} />} />
 <Route path="/padre/mensajes" element={<PadreMensajes />} />
 <Route path="/padre/compras" element={<PadreCompras go={go} appointments={parentAppointments} onAppointmentsChange={setParentAppointments} />} />
 <Route path="/padre/recompensas" element={<MundoAshaHome go={go} padrePlan={padrePlan} />} />
