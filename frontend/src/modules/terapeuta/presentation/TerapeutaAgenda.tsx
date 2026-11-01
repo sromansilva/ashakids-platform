@@ -347,7 +347,14 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                 </span>
               </div>
               <div className="flex flex-col gap-2">
-                <SessionActions appointmentId={selectedEvent.id} />
+                <SessionActions
+                  appointmentId={selectedEvent.id}
+                  compact={true}
+                  onGoToReports={() => {
+                    setSelectedEvent(null);
+                    go('terapeuta/reportes');
+                  }}
+                />
                 {canCancel && <button
                   onClick={() => setShowCancelModal(true)}
                   className="w-full py-3 rounded-2xl font-extrabold text-sm border-2 border-red-200 text-red-600 hover:bg-red-50 transition-all"

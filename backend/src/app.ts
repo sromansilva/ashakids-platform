@@ -25,6 +25,7 @@ import { juegosRouter } from './modules/juegos/juegos.routes.js';
 import { educacionRouter } from './modules/educacion/educacion.routes.js';
 import { valoracionesRouter } from './modules/valoraciones/valoraciones.routes.js';
 import { newsletterRouter } from './modules/newsletter/newsletter.routes.js';
+import { identidadRouter } from './modules/identidad/identidad.routes.js';
 
 // Legacy Module Routers for backward compatibility
 import { agendaRouter } from './modules/agenda/routes/agenda.routes.js';
@@ -103,6 +104,7 @@ export function createApp() {
   app.use(`${settings.API_V1_PREFIX}/educacion`, educacionRouter);
   app.use(`${settings.API_V1_PREFIX}/valoraciones`, valoracionesRouter);
   app.use(`${settings.API_V1_PREFIX}/newsletter`, newsletterRouter);
+  app.use(`${settings.API_V1_PREFIX}/identidad`, identidadRouter);
 
   // Backward compatibility alias mounts
   app.use(`${settings.API_V1_PREFIX}/agenda`, agendaRouter);

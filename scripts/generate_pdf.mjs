@@ -443,7 +443,7 @@ const htmlContent = `<!DOCTYPE html>
       <div class="num-section">
         <div class="num-title">3. Realización de la consulta</div>
         <p class="num-p">
-          En modalidad presencial se muestra la dirección de la sede clínica (<em>Jr. Ricardo Treneman 252, Chorrillos 15064</em>). En modalidad virtual, la sesión se efectúa mediante Zoom o enlace seguro de teleterapia disponible en el detalle de la cita.
+          En modalidad presencial se muestra la dirección de la sede clínica (<em>Jr. Ricardo Treneman 252, Chorrillos 15064</em>). En modalidad virtual, la sesión se efectúa mediante Google Meet o enlace seguro de teleterapia disponible en el detalle de la cita.
         </p>
         <p class="num-p">
           El terapeuta abre la cita, registra la sesión en <code>sesiones</code> e inicia la atención a la hora prevista. Al concluir, redacta sus observaciones clínicas en <code>reportes_sesion</code>, marca la asistencia y formaliza el cierre en ASHAKids.
@@ -451,9 +451,9 @@ const htmlContent = `<!DOCTYPE html>
       </div>
 
       <div class="callout-box">
-        <div class="callout-title">Reserva, sesión y Zoom tienen funciones diferentes</div>
+        <div class="callout-title">Reserva, sesión y Google Meet tienen funciones diferentes</div>
         <div class="callout-content">
-          La reserva en <code>reservas</code> separa el cupo horario; la sesión en <code>sesiones</code> y <code>reportes_sesion</code> registra el acto clínico profesional. Entrar o salir de Zoom no registra asistencia ni finaliza la sesión en la plataforma.
+          La reserva en <code>reservas</code> separa el cupo horario; la sesión en <code>sesiones</code> y <code>reportes_sesion</code> registra el acto clínico profesional. Entrar o salir de Google Meet no registra asistencia ni finaliza la sesión en la plataforma.
         </div>
       </div>
     </div>
@@ -495,7 +495,7 @@ const htmlContent = `<!DOCTYPE html>
       <div class="callout-box">
         <div class="callout-title">Qué habilita la continuidad del tratamiento</div>
         <div class="callout-content">
-          Para reservar sesiones de terapia regular posterior, el niño debe tener la sesión introductoria finalizada con asistencia registrada, un reporte clínico válido y un plan activo en <code>tratamientos</code>. Una reserva agendada o una sala de Zoom abierta por sí solas no completan este requisito.
+          Para reservar sesiones de terapia regular posterior, el niño debe tener la sesión introductoria finalizada con asistencia registrada, un reporte clínico válido y un plan activo en <code>tratamientos</code>. Una reserva agendada o una sala de Google Meet abierta por sí solas no completan este requisito.
         </div>
       </div>
 

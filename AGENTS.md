@@ -10,7 +10,7 @@ Este documento define las directrices arquitectónicas, los flujos operativos y 
 
 El sistema opera con tres roles principales:
 - **`ADMIN` (Administración)**: Gestión de cuentas familiares y terapeutas, supervisión clínica, soporte, analíticas globales y auditoría.
-- **`TERAPEUTA` (Especialistas)**: Agenda clínica, atención presencial o vía Zoom, expedientes, generación de reportes clínicos estructurados, analíticas y seguimiento de actividad educativa.
+- **`TERAPEUTA` (Especialistas)**: Agenda clínica, atención presencial o vía Google Meet, expedientes, generación de reportes clínicos estructurados, analíticas y seguimiento de actividad educativa.
 - **`PADRE` (Familias y Pacientes)**: Centro familiar (*Mi mundo*, *Mi camino ASHA*, *Para mi familia*), selector de hijos activos, agendamiento de citas, reportes de evolución, pagos y juegos educativos del Mundo ASHA.
 
 ---
@@ -24,7 +24,7 @@ ashakids-platform/
 ├── backend/                  # API REST en TypeScript + Express + Drizzle ORM
 │   └── src/
 │       ├── core/             # Configuración (Zod env), conexión a PostgreSQL, middleware de cookies
-│       ├── infrastructure/   # Integraciones externas: Zoom OAuth/API, Mailer/Gmail, Reconocimiento de Voz Whisper
+│       ├── infrastructure/   # Integraciones externas: Google Calendar, Mailer/Gmail, Reconocimiento de Voz Whisper
 │       └── modules/          # Módulos de dominio (agenda, auth, clinica, comunicacion, cuentas, mundo_asha, pacientes)
 ├── frontend/                 # SPA en React 18 + TypeScript + Vite + Tailwind CSS
 │   └── src/
@@ -42,8 +42,9 @@ ashakids-platform/
 Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
 
 ### Regla 1: Integridad de Contratos de API y Servicios Externos
-- **Zoom Service** (`backend/src/infrastructure/zoom/zoom.service.ts`):
-  - No modificar la firma de `createMeeting` ni eliminar los fallbacks cuando las credenciales no estén configuradas. El backend debe seguir funcionando en modo desarrollo sin lanzar excepciones no controladas.
+- **Videollamadas y revisión de audio**:
+  - AshaKids no crea reuniones de Google Meet. Las sesiones virtuales se gestionan mediante Google Meet y selecciona la pista local individual del participante para una revisión experimental que debe confirmar antes de guardar.
+  - Google Calendar conserva la creación de eventos de cita sin solicitar datos de conferencia.
 - **Servicios de Correo / Gmail**:
   - Las variables y firmas en `backend/src/core/config.ts` y auth deben mantenerse backward-compatible.
 - **Base de Datos y PostgreSQL**:

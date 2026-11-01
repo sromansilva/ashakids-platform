@@ -105,6 +105,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     anios_experiencia: 1,
     idiomas: "Español",
     descripcion_profesional: "",
+    tipo_documento: "DNI", numero_documento: "", ruc: "", razon_social: "",
   });
   // Formulario de Edición
   const [editForm, setEditForm] = useState<ActualizarCuentaPayload>({});
@@ -183,6 +184,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       anios_experiencia: 1,
       idiomas: "Español",
       descripcion_profesional: "",
+      tipo_documento: "DNI", numero_documento: "", ruc: "", razon_social: "",
     });
     setErrorBanner(null);
     setModal("nueva");

@@ -200,7 +200,7 @@ export class AdminService {
           role: 'Tutor / Familia',
           code: codigo_usuario,
           initialPassword: tempPassword,
-        }).catch((e) => {
+        }).catch((e: unknown) => {
           console.warn('[AdminService] Error enviando correo de bienvenida a tutor:', e);
           return null;
         });
@@ -275,7 +275,7 @@ export class AdminService {
           role: 'Terapeuta Especialista',
           code: codigo_usuario,
           initialPassword: tempPassword,
-        }).catch((e) => {
+        }).catch((e: unknown) => {
           console.warn('[AdminService] Error enviando correo de bienvenida a terapeuta:', e);
           return null;
         });

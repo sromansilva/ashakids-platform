@@ -5,22 +5,22 @@ import { renderRoute } from './helpers';
 const response = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'X-Total-Count': String(Array.isArray(data) ? data.length : 1) } });
 const day = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Lima', year:'numeric',month:'2-digit',day:'2-digit' }).format(new Date());
 const patient = (id: number, name: string) => ({ id_paciente:id,id_tutor:1,nombres_paciente:name,apellidos_paciente:'Demostración',fecha_nacimiento:'2020-01-01',sexo:'Otro',activo:true });
-const appointment = (id = 1, patientId = 1, name = 'Ana Demostración') => ({ id_reserva:id,id_paciente:patientId,id_terapeuta:1,id_tratamiento:null,tipo_cita:'INTRODUCTORIA',paciente_nombre:name,terapeuta_nombre:'Profesional Demostración',fecha_hora_inicio:day()+'T10:00:00-05:00',fecha_hora_fin:day()+'T10:40:00-05:00',modalidad:'VIRTUAL',estado_reserva:'CONFIRMADA',id_sesion:null,puede_editar:true,zoom_join_url:null,zoom_origen:null });
+const appointment = (id = 1, patientId = 1, name = 'Ana Demostración') => ({ id_reserva:id,id_paciente:patientId,id_terapeuta:1,id_tratamiento:null,tipo_cita:'INTRODUCTORIA',paciente_nombre:name,terapeuta_nombre:'Profesional Demostración',fecha_hora_inicio:day()+'T10:00:00-05:00',fecha_hora_fin:day()+'T10:40:00-05:00',modalidad:'VIRTUAL',estado_reserva:'CONFIRMADA',id_sesion:null,puede_editar:true,meet_url:null,meet_origen:null });
 function mockApi(read: (path: string, init: RequestInit) => Response | undefined) {
   return vi.mocked(fetch).mockImplementation(async (input, init = {}) => read(new URL(String(input)).pathname.replace('/api/v1',''),init) ?? response([]));
 }
 
 it('separates siblings in the agenda and preserves completed appointment details', async () => {
   sessionStorage.clear();
-  const a = {...appointment(), estado_reserva:'COMPLETADA', zoom_join_url:'https://zoom.us/j/123456789', zoom_origen:'AUTOMATICA'};
+  const a = {...appointment(), estado_reserva:'COMPLETADA', meet_url:'https://meet.google.com/abc-defg-hij', meet_origen:'AUTOMATICA'};
   const b = appointment(2,2,'Luis Demostración');
   mockApi(path => path === '/pacientes' ? response([patient(1,'Ana'),patient(2,'Luis')]) : path === '/citas' ? response([a,b]) : path === '/citas/1' ? response(a) : path === '/citas/2' ? response(b) : undefined);
   renderRoute('/padre/agenda','PADRE');
   fireEvent.click(await screen.findByRole('button',{name:/Ana Demostración.*Completada/}));
   expect(await screen.findByText(/Consulta introductoria · COMPLETADA/)).toBeInTheDocument();
-  expect(await screen.findByRole('link',{name:'Abrir enlace externo de Zoom'})).toHaveAttribute('href',a.zoom_join_url);
-  expect(screen.getByText(/Reunión creada automáticamente por Zoom/)).toBeInTheDocument();
-  expect(screen.queryByRole('button',{name:'Compartir enlace de Zoom'})).not.toBeInTheDocument();
+  expect(await screen.findByRole('link',{name:'Abrir reunión de Google Meet'})).toHaveAttribute('href',a.meet_url);
+  expect(screen.getByText(/Reunión creada automáticamente por Google Meet/)).toBeInTheDocument();
+  expect(screen.queryByRole('button',{name:'Compartir enlace de Google Meet'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Cancelar cita'})).not.toBeInTheDocument();
   fireEvent.change(screen.getByLabelText('Hijo o hija'),{target:{value:'2'}});
   expect(await screen.findByRole('button',{name:/Luis Demostración.*Confirmada/})).toBeInTheDocument();
@@ -69,25 +69,25 @@ it('keeps a meeting draft after server rejection and publishes only after real s
   const a = appointment();
   const calls = mockApi((path, init) => {
     if(path === '/citas') return response([a]);
-    if(path === '/citas/1') return response({...a,zoom_join_url:saved});
+    if(path === '/citas/1') return response({...a,meet_url:saved});
     if(path === '/citas/1/reunion' && init.method === 'PUT') {
       if(fail) return response({detail:'Conflicto sintético'},409);
-      saved = JSON.parse(String(init.body)).zoom_join_url;
-      return response({...a,zoom_join_url:saved});
+      saved = JSON.parse(String(init.body)).meet_url;
+      return response({...a,meet_url:saved});
     }
   });
   renderRoute('/admin/citas','ADMIN');
   fireEvent.click(await screen.findByRole('button',{name:'Detalle'}));
-  fireEvent.click(await screen.findByRole('button',{name:'Compartir enlace de Zoom'}));
-  const url = 'https://zoom.us/j/123456789';
-  fireEvent.change(screen.getByLabelText('Enlace de Zoom'),{target:{value:url}});
+  fireEvent.click(await screen.findByRole('button',{name:'Compartir enlace de Google Meet'}));
+  const url = 'https://meet.google.com/abc-defg-hij';
+  fireEvent.change(screen.getByLabelText('Enlace de Google Meet'),{target:{value:url}});
   fireEvent.click(screen.getByRole('button',{name:'Guardar enlace'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('Conflicto sintético');
   expect(screen.getByDisplayValue(url)).toBeInTheDocument();
-  expect(screen.queryByRole('link',{name:'Abrir enlace externo de Zoom'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('link',{name:'Abrir reunión de Google Meet'})).not.toBeInTheDocument();
   fail = false;
   fireEvent.click(screen.getByRole('button',{name:'Guardar enlace'}));
-  expect(await screen.findByRole('link',{name:'Abrir enlace externo de Zoom'})).toHaveAttribute('href',url);
+  expect(await screen.findByRole('link',{name:'Abrir reunión de Google Meet'})).toHaveAttribute('href',url);
   expect(screen.getByText(/Enlace compartido por el profesional/)).toBeInTheDocument();
   await waitFor(() => expect(screen.queryByRole('button',{name:'Guardar enlace'})).not.toBeInTheDocument());
   expect(calls.mock.calls.filter(([,init]) => init?.method === 'PUT')).toHaveLength(2);

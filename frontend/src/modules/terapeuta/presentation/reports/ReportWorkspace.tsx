@@ -3,6 +3,7 @@ import { sessionsService } from '@/modules/clinica/infrastructure/clinicalServic
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { ClinicalReportEditor, emptyReport, reportLabels } from '@/shared/presentation/components/common/ClinicalReportEditor';
 import { ReportDownload } from '@/shared/presentation/components/common/ReportDownload';
+import { SessionPlan } from '@/shared/presentation/components/common/SessionPlan';
 import type { Session } from '@/modules/clinica/domain/clinical';
 import type { ReportData } from '@/modules/clinica/domain/clinical';
 import { useEffect, useState } from 'react';
@@ -16,7 +17,7 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
   );
   const [initialForm, setInitialForm] = useState<ReportData | null>(session.reporte_disponible ? null : emptyReport);
   useEffect(() => {
-    if (report.isSuccess && !report.error) setInitialForm((current) => current ?? report.data);
+    if (report.isSuccess && !report.error) setInitialForm((current) => current ?? report.data ?? emptyReport);
   }, [report.data, report.isSuccess, report.error]);
   const canEdit =
     !readOnly &&
@@ -25,43 +26,25 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
     session.asistencia !== 'NO_ASISTIO';
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <p className="mb-3 text-xs font-black uppercase tracking-wider text-[#6B46FE]">INFORMACIÓN GENERAL</p>
-        <div className="grid gap-3 sm:grid-cols-3">
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-            <div className="w-10 h-10 rounded-full bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center shrink-0">
-              <User size={18} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold text-[#615274]">Paciente</p>
-              <p className="text-sm font-black text-[#1C1135] truncate">{session.cita.paciente_nombre}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-            <div className="w-10 h-10 rounded-full bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center shrink-0">
-              <Calendar size={18} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold text-[#615274]">Fecha</p>
-              <p className="text-xs font-black text-[#1C1135] truncate">
-                {new Date(session.cita.fecha_hora_inicio).toLocaleString('es-PE', {
-                  timeZone: 'America/Lima',
-                  dateStyle: 'short',
-                  timeStyle: 'medium',
-                })}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 p-3.5 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-            <div className="w-10 h-10 rounded-full bg-[#CCFBF1] text-[#0D9488] flex items-center justify-center shrink-0">
-              <FileText size={18} />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[11px] font-bold text-[#615274]">Estado</p>
-              <p className="text-sm font-black text-[#1C1135]">{session.estado_sesion}</p>
-            </div>
-          </div>
+    <div className="space-y-4 p-4 sm:p-5">
+      <div className="grid grid-cols-2 gap-2 2xl:grid-cols-4">
+        <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-3 py-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#EDE9FE] text-[#6B46FE]"><User size={15} /></span>
+          <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Paciente</p><p className="truncate text-xs font-black text-[#1C1135]">{session.cita.paciente_nombre}</p></div>
+        </div>
+        <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-3 py-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#EDE9FE] text-[#6B46FE]"><Calendar size={15} /></span>
+          <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Fecha</p><p className="truncate text-xs font-black text-[#1C1135]">
+            {new Date(session.cita.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'medium' })}
+          </p></div>
+        </div>
+        <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-3 py-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#EDE9FE] text-[#6B46FE]"><User size={15} /></span>
+          <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Terapeuta</p><p className="truncate text-xs font-black text-[#1C1135]">{session.cita.terapeuta_nombre}</p></div>
+        </div>
+        <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-[#D5F4EE] bg-[#F0FDF9] px-3 py-2.5">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#CCFBF1] text-[#0D9488]"><FileText size={15} /></span>
+          <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Estado</p><p className="truncate text-xs font-black text-[#1C1135]">{session.estado_sesion}</p></div>
         </div>
       </div>
 
@@ -70,7 +53,13 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
       )}
 
       {canEdit && !report.error && initialForm && (
-        <ClinicalReportEditor id={session.id_sesion} initial={initialForm} patientName={session.cita.paciente_nombre} />
+        <ClinicalReportEditor
+          id={session.id_sesion}
+          initial={initialForm}
+          patientName={session.cita.paciente_nombre}
+          patientId={session.cita.id_paciente}
+          sessionType={session.cita.tipo_cita}
+        />
       )}
 
       {!canEdit && report.data && !report.error && (
@@ -86,19 +75,9 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
         </dl>
       )}
 
-      {report.isSuccess && !report.error && !report.isFetching && <ReportDownload sessionId={session.id_sesion} />}
+      {report.isSuccess && !report.error && !!report.data && !report.isFetching && <ReportDownload sessionId={session.id_sesion} />}
 
-      <div className="border-t border-[#E8E5F4] pt-5">
-        <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[#6B46FE]">Profesional de la sesión</p>
-        <div className="rounded-2xl p-4 bg-[#F8F7FC] border border-[#E8E5F4] flex items-center justify-between">
-          <div>
-            <p className="font-extrabold text-sm text-[#1C1135]">{session.cita.terapeuta_nombre}</p>
-            <p className="text-xs text-[#615274] mt-0.5">
-              La API guarda el reporte, pero no registra firmas digitales ni envíos por correo.
-            </p>
-          </div>
-        </div>
-      </div>
+      <SessionPlan session={session} readOnly={readOnly} />
     </div>
   );
 }

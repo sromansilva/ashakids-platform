@@ -270,7 +270,7 @@ export function VoiceSpeechGame({
             >
               <Mic size={36} className="transition-transform group-hover:scale-110" />
             </button>
-            <p className="text-xs text-slate-400">El audio se procesa en tu equipo y no se almacena permanentemente.</p>
+            <p className="text-xs text-slate-400">Se genera una transcripción temporal para la actividad; el audio no se usa para una evaluación clínica.</p>
           </>
         )}
 
@@ -312,9 +312,9 @@ export function VoiceSpeechGame({
           <>
             <Loader2 size={40} className="text-indigo-600 animate-spin" />
             <p className="text-base font-bold text-indigo-900" role="status">
-              Escuchando y transcribiendo tu voz con Whisper…
+              Transcribiendo el audio…
             </p>
-            <p className="text-xs text-slate-500">Un momento, estamos analizando las palabras con el modelo local.</p>
+            <p className="text-xs text-slate-500">Un momento, estamos preparando el texto reconocido.</p>
           </>
         )}
 
@@ -335,13 +335,13 @@ export function VoiceSpeechGame({
               <div>
                 <h4 className="font-bold text-base">
                   {comp?.es_coincidente
-                    ? '¡Excelente pronunciación! 🎉'
-                    : '¡Buen intento! Estuviste muy cerca ✨'}
+                    ? '¡Coinciden las palabras! 🎉'
+                    : 'Puedes revisar el texto reconocido ✨'}
                 </h4>
                 <p className="text-xs mt-1">
                   {comp?.es_coincidente
-                    ? 'Has dicho todas las palabras de la frase con gran claridad.'
-                    : 'Puedes escuchar la frase modelo de nuevo e intentar repetirla despacio.'}
+                    ? 'El texto transcrito incluye las palabras de la actividad.'
+                    : 'La transcripción puede tener errores. Escucha la frase modelo o vuelve a grabar.'}
                 </p>
               </div>
             </div>
@@ -379,12 +379,10 @@ export function VoiceSpeechGame({
                 </div>
               )}
 
-              {/* Métrica de coincidencia lúdica */}
+              {/* El texto de reconocimiento no mide la pronunciación. */}
               {comp && (
-                <div className="pt-2 text-right">
-                  <span className="text-xs text-slate-500 font-medium">
-                    Coincidencia textual: <strong className="text-indigo-700">{comp.porcentaje_coincidencia}%</strong>
-                  </span>
+                <div className="pt-2 text-xs text-slate-500">
+                  La actividad compara texto reconocido con la frase objetivo. Puede haber errores de transcripción y no evalúa la pronunciación.
                 </div>
               )}
             </div>

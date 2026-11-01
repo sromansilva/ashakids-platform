@@ -48,6 +48,16 @@
 .message-welcome > p:not(.messages-panel-kicker) { max-width:38ch; color:#4b4264; margin-top:10px; line-height:1.6; }
 .message-welcome-note { display:flex; align-items:center; gap:8px; max-width:40ch; margin-top:26px; padding:11px 14px; border:1px solid #e8e5f4; border-radius:12px; background:#faf9fd; color:#6b5e8a; font-size:.75rem; line-height:1.45; text-align:left; }
 .message-welcome-note svg { color:#16a34a; flex:none; }
+.message-welcome-quick { width:min(100%,860px); margin-top:28px; text-align:left; }
+.message-welcome-quick-title { color:#6b5e8a; font-size:.7rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
+.message-welcome-quick-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px; margin-top:10px; }
+.message-welcome-quick-card { display:flex; align-items:center; gap:12px; width:100%; min-height:64px; padding:10px 14px; border:1px solid #e8e5f4; border-radius:16px; color:#1c1135; background:#fff; text-align:left; cursor:pointer; transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s; }
+.message-welcome-quick-card:hover:not(:disabled) { border-color:#c4b5fd; background:#faf8ff; box-shadow:0 8px 18px rgba(91,33,182,.09); transform:translateY(-1px); }
+.message-welcome-quick-card:disabled { opacity:.55; cursor:not-allowed; }
+.message-welcome-quick-card > svg { flex:none; margin-left:auto; color:#6d28d9; }
+.message-welcome-quick-copy { display:flex; flex-direction:column; gap:3px; min-width:0; }
+.message-welcome-quick-copy strong { overflow:hidden; color:#1c1135; font-size:.875rem; font-weight:900; text-overflow:ellipsis; white-space:nowrap; }
+.message-welcome-quick-copy small { color:#6b5e8a; font-size:.75rem; }
 .message-thread-heading { border-bottom:1px solid #e8e5f4; padding-bottom:16px; }
 .message-thread-person { display:flex; align-items:center; gap:11px; min-width:0; }
 .message-thread-avatar { width:44px; height:44px; display:grid; place-items:center; border-radius:14px; background:#0d9488; color:#fff; font-weight:900; font-size:.85rem; flex:none; }
@@ -114,6 +124,36 @@
 .availability-slot:hover > span { border-color:#7c3aed; }
 .availability-slot:has(input:focus-visible) > span { outline:3px solid #5b21b6; outline-offset:2px; }
 .availability-slot:has(input:disabled) { cursor:not-allowed; opacity:.65; }
+@media(min-width:768px) {
+  .messages-center.messages-center--therapist { width:100%; max-width:none; margin:0; padding:12px clamp(20px,2vw,32px) 24px; }
+  .messages-center--therapist .messages-workspace { min-height:max(500px,calc(100dvh - 108px)); grid-template-columns:280px minmax(0,1fr); border-radius:24px; box-shadow:0 18px 42px rgba(45,27,105,.08); }
+  .messages-center--therapist .messages-context--empty { display:none; }
+  .messages-center--therapist .messages-sidebar { padding:22px; background:#faf9fd; }
+  .messages-center--therapist .messages-sidebar-heading { margin-bottom:16px; }
+  .messages-center--therapist .messages-sidebar-heading h2 { font-size:1.1rem; }
+  .messages-center--therapist .messages-search-hint { min-height:46px; margin-bottom:16px; padding:11px 13px; font-size:.8rem; }
+  .messages-center--therapist .messages-search-hint input { font-size:.8rem; }
+  .messages-center--therapist .messages-contact-list { gap:10px; }
+  .messages-center--therapist .messages-contact-card { min-height:68px; padding:12px; gap:12px; border-color:#eeebf5; background:#fff; }
+  .messages-center--therapist .messages-contact-card:hover { box-shadow:0 6px 14px rgba(91,33,182,.07); transform:translateY(-1px); }
+  .messages-center--therapist .messages-contact-copy > span:first-child { font-size:.95rem; line-height:1.3; }
+  .messages-center--therapist .messages-contact-copy > span:last-child { margin-top:3px; font-size:.78rem; }
+  .messages-center--therapist .messages-start-block { margin-top:24px; padding-top:22px; }
+  .messages-center--therapist .messages-thread-panel { padding:30px; }
+  .messages-center--therapist .message-welcome { padding:36px 30px; }
+  .messages-center--therapist .message-welcome > img { width:min(200px,32%); max-height:190px; object-fit:contain; margin-bottom:14px; }
+  .messages-center--therapist .message-welcome h2 { margin-top:7px; font-size:1.8rem; }
+  .messages-center--therapist .message-welcome > p:not(.messages-panel-kicker) { max-width:48ch; margin-top:8px; font-size:.95rem; }
+  .messages-center--therapist .message-welcome-note { margin-top:18px; padding:13px 16px; font-size:.82rem; }
+  .messages-center--therapist .message-welcome-quick { margin-top:24px; }
+}
+@media(min-width:1280px) {
+  .messages-center--therapist .messages-workspace:not(.messages-workspace--empty) { grid-template-columns:300px minmax(0,1fr) 240px; }
+}
+@media(min-width:1600px) {
+  .messages-center--therapist .messages-workspace { grid-template-columns:320px minmax(0,1fr); }
+  .messages-center--therapist .messages-workspace:not(.messages-workspace--empty) { grid-template-columns:320px minmax(0,1fr) 264px; }
+}
 @container(min-width:760px) {
   .availability-day { display:grid; grid-template-columns:115px minmax(0,1fr); gap:14px; align-items:center; padding:14px 18px; }
   .availability-day-heading { display:block; margin-bottom:0; }

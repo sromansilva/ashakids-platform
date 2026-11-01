@@ -3,7 +3,7 @@ import { useRemote } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { readAllPages } from '@/core/api/readAllPages';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
-import { Users, User, Calendar, Target, TrendingUp, BarChart3 } from 'lucide-react';
+import { Users, User, Calendar, Target, BarChart3 } from 'lucide-react';
 
 function period(value: string) {
   const parts = new Intl.DateTimeFormat('en', {
@@ -50,66 +50,68 @@ export function TerapeutaAnaliticas() {
     };
   });
 
-  const max = Math.max(2, ...months.map((m) => m.count));
+  const highestMonthCount = Math.max(0, ...months.map((m) => m.count));
+  const max = Math.max(2, Math.ceil(highestMonthCount / 2) * 2);
+  const axisTicks = [max, max / 2, 0];
   const attendedCount = rows.length > 0 ? attended.length : 2;
   const uniquePatientsCount = rows.length > 0 ? new Set(attended.map((s) => s.cita.id_paciente)).size : 1;
   const missedCount = rows.length > 0 ? selected.filter((s) => s.asistencia === 'NO_ASISTIO').length : 0;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
+    <div className="w-full max-w-none px-4 py-5 sm:px-6 lg:px-8 text-[#1C1135]">
       {/* Header with Filters & Ashi */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E5F4] shadow-sm mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
-        <div className="max-w-xl z-10">
-          <h1 className="text-3xl sm:text-4xl font-black text-[#1C1135] tracking-tight">Analíticas</h1>
-          <p className="text-sm font-bold text-[#615274] mt-1.5">
+      <div className="mb-5 flex flex-col gap-5 overflow-hidden rounded-3xl border border-[#E8E5F4] bg-gradient-to-r from-white via-white to-[#F8F6FF] p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-2xl font-black tracking-tight text-[#1C1135] sm:text-3xl">Analíticas</h1>
+          <p className="mt-1 text-sm font-semibold text-[#615274]">
             Tus sesiones registradas por mes y año, en horario de Lima.
           </p>
-          <div className="flex items-center gap-4 mt-6 flex-wrap">
-            <div>
-              <label htmlFor="analytics-year" className="block text-[11px] font-extrabold text-[#615274] uppercase tracking-wider mb-1.5">
+        </div>
+        <div className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="analytics-year" className="text-[10px] font-extrabold uppercase tracking-wider text-[#8C82A8]">
                 Año
-              </label>
-              <select
-                id="analytics-year"
-                aria-label="Año"
-                value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
-                className="px-4 py-2.5 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4] text-xs font-extrabold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-[#6B46FE]"
-              >
-                {years.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="analytics-month" className="block text-[11px] font-extrabold text-[#615274] uppercase tracking-wider mb-1.5">
+            </label>
+            <select
+              id="analytics-year"
+              aria-label="Año"
+              value={year}
+              onChange={(e) => setYear(Number(e.target.value))}
+              className="rounded-xl border border-[#E8E5F4] bg-white px-3.5 py-2 text-xs font-extrabold text-[#1C1135] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6B46FE]"
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="analytics-month" className="text-[10px] font-extrabold uppercase tracking-wider text-[#8C82A8]">
                 Mes
-              </label>
-              <select
-                id="analytics-month"
-                aria-label="Mes"
-                value={month}
-                onChange={(e) => setMonth(Number(e.target.value))}
-                className="px-4 py-2.5 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4] text-xs font-extrabold text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-[#6B46FE]"
-              >
-                <option value={0}>Todos los meses</option>
-                {MONTH_LABELS_SHORT.map((label, idx) => (
-                  <option key={idx + 1} value={idx + 1}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </div>
+            </label>
+            <select
+              id="analytics-month"
+              aria-label="Mes"
+              value={month}
+              onChange={(e) => setMonth(Number(e.target.value))}
+              className="rounded-xl border border-[#E8E5F4] bg-white px-3.5 py-2 text-xs font-extrabold text-[#1C1135] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6B46FE]"
+            >
+              <option value={0}>Todos los meses</option>
+              {MONTH_LABELS_SHORT.map((label, idx) => (
+                <option key={idx + 1} value={idx + 1}>
+                  {label}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
 
-        <div className="hidden md:block w-56 lg:w-64 shrink-0 z-10">
+        <div className="hidden shrink-0 xl:block xl:w-40 2xl:w-44">
           <img
             src="/illustrations/ashi-tablet.png"
             alt="Robot Ashi Analíticas"
-            className="w-full h-auto object-contain max-h-48 drop-shadow-md"
+            className="h-24 w-full object-contain drop-shadow-sm"
           />
         </div>
       </div>
@@ -117,7 +119,7 @@ export function TerapeutaAnaliticas() {
       <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />
 
       {/* Row 1: KPI Metrics Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-6">
+      <div className="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {[
           {
             label: 'Sesiones atendidas',
@@ -143,61 +145,67 @@ export function TerapeutaAnaliticas() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="bg-white rounded-3xl p-6 border border-[#E8E5F4] shadow-sm flex items-center justify-between relative overflow-hidden"
+            className="relative flex items-center justify-between overflow-hidden rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)]"
           >
-            <div className="flex items-center gap-4 z-10">
-              <div className={`w-14 h-14 rounded-full ${stat.bg} ${stat.color} flex items-center justify-center shrink-0`}>
-                <stat.icon size={24} />
+            <div className="z-10 flex items-center gap-3.5">
+              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${stat.bg} ${stat.color}`}>
+                <stat.icon size={21} />
               </div>
               <div>
                 <p className="text-xs font-bold text-[#615274]">{stat.label}</p>
-                <p className="text-3xl font-black text-[#1C1135] mt-1 tabular-nums">{stat.count}</p>
+                <p className="mt-0.5 text-2xl font-black tabular-nums text-[#1C1135]">{stat.count}</p>
               </div>
             </div>
             <div className="absolute -right-3 -bottom-3 opacity-10 pointer-events-none">
-              <stat.icon size={80} className={stat.color} />
+              <stat.icon size={64} className={stat.color} />
             </div>
           </div>
         ))}
       </div>
 
       {/* Row 2: Bar Chart Card */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E5F4] shadow-sm mb-6">
-        <h2 className="text-lg font-black text-[#1C1135] mb-6">Sesiones atendidas por mes · {year}</h2>
+      <div className="mb-5 rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)] sm:p-6">
+        <div className="mb-5 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]"><BarChart3 size={18} /></span>
+            <div>
+              <h2 className="text-base font-black text-[#1C1135]">Sesiones atendidas por mes</h2>
+              <p className="mt-0.5 text-xs font-semibold text-[#8C82A8]">Distribución anual · {year}</p>
+            </div>
+          </div>
+        </div>
 
-        <div className="relative pt-6 pb-2">
+        <div className="relative pt-5 pb-1">
           {/* Grid lines */}
-          <div className="absolute inset-x-0 top-6 bottom-12 flex flex-col justify-between pointer-events-none">
-            <div className="border-b border-dashed border-[#E8E5F4] w-full flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[#9E95B7] -translate-y-2.5">2</span>
-            </div>
-            <div className="border-b border-dashed border-[#E8E5F4] w-full flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[#9E95B7] -translate-y-2.5">1</span>
-            </div>
-            <div className="border-b border-[#E8E5F4] w-full flex items-center justify-between">
-              <span className="text-[11px] font-bold text-[#9E95B7] -translate-y-2.5">0</span>
-            </div>
+          <div className="pointer-events-none absolute inset-x-0 top-5 bottom-10 flex flex-col justify-between">
+            {axisTicks.map((tick, index) => (
+              <div key={`${tick}-${index}`} className={`relative w-full border-b ${index === axisTicks.length - 1 ? 'border-[#E8E5F4]' : 'border-dashed border-[#E8E5F4]'}`}>
+                <span className="absolute -left-0.5 -translate-y-1/2 text-[10px] font-bold text-[#9E95B7]">{tick}</span>
+              </div>
+            ))}
           </div>
 
           {/* Bars */}
-          <div className="grid grid-cols-12 gap-1 sm:gap-4 items-end h-56 pl-6 z-10 relative">
+          <div className="relative z-10 grid h-56 grid-cols-12 items-end gap-1 pl-6 sm:h-60 sm:gap-4">
             {months.map((m) => {
               const heightPercent = max > 0 ? (m.count / max) * 100 : 0;
               const hasData = m.count > 0;
               return (
-                <div key={m.month} className="flex flex-col items-center h-full justify-end group">
-                  <span className={`text-[11px] font-black mb-1.5 tabular-nums ${hasData ? 'text-[#6B46FE]' : 'text-transparent'}`}>
-                    {m.count}
+                <div key={m.month} className="group flex h-full flex-col items-center justify-end">
+                  <span className={`mb-1.5 text-[11px] font-black tabular-nums ${hasData ? 'text-[#6B46FE]' : 'text-transparent'}`}>
+                    {hasData ? m.count : '0'}
                   </span>
-                  <div className="w-full max-w-[36px] bg-[#F3E8FF] rounded-t-xl relative overflow-hidden flex items-end justify-center h-full">
-                    <div
-                      className={`w-full rounded-t-xl transition-all duration-500 ${
-                        hasData ? 'bg-[#6B46FE]' : 'bg-transparent'
-                      }`}
-                      style={{ height: `${Math.max(6, heightPercent)}%` }}
-                    />
+                  <div className="flex w-full max-w-[44px] flex-1 items-end justify-center">
+                    {hasData ? (
+                      <div
+                        className="w-full rounded-t-xl bg-gradient-to-t from-[#6B46FE] to-[#9B7AFF] shadow-[0_4px_12px_rgba(107,70,254,0.18)] transition-all duration-500"
+                        style={{ height: `${Math.max(6, heightPercent)}%` }}
+                      />
+                    ) : (
+                      <div className="mb-0.5 h-1 w-2/3 rounded-full bg-[#E8E5F4]" />
+                    )}
                   </div>
-                  <span className="text-[11px] font-bold text-[#615274] mt-2.5">{m.shortLabel}</span>
+                  <span className="mt-2 text-[10px] font-bold text-[#615274] sm:text-[11px]">{m.shortLabel}</span>
                 </div>
               );
             })}

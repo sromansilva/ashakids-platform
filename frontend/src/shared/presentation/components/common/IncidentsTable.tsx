@@ -292,7 +292,7 @@ export function IncidentsTable({
       {/* Modal de Detalle Completo */}
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl border border-[#E8E5F4] w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="bg-white rounded-3xl border border-[#E8E5F4] w-full max-w-2xl overflow-hidden shadow-2xl animate-in fade-in scale-95 duration-150">
             {/* Header Modal */}
             <div className="px-6 py-5 border-b border-[#E8E5F4] flex items-center justify-between bg-[#FAF9FD]">
               <div>

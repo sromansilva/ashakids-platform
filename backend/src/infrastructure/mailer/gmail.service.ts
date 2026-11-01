@@ -148,9 +148,9 @@ export class GmailService {
       });
 
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error('[GmailService] Error en Gmail API send:', res.status, errorText);
-        return { success: false, status: 'FALLO', error: `Gmail API ${res.status}: ${errorText}` };
+        const errJson = await res.text();
+        console.error('[GmailService] Error enviando correo:', res.status, errJson);
+        return { success: false, status: 'FALLO', error: `Gmail API ${res.status}: ${errJson}` };
       }
 
       const data = (await res.json()) as { id?: string };
@@ -240,7 +240,7 @@ https://ashakids.life`;
   }
 
   /**
-   * Envía correo de confirmación de cita con enlace de Zoom.
+   * Envía correo de confirmación de cita con enlace de Google Meet.
    */
   static async sendAppointmentConfirmation(params: {
     to: string;
@@ -248,11 +248,10 @@ https://ashakids.life`;
     topic: string;
     date: string;
     time: string;
-    zoomJoinUrl?: string;
+    meetUrl?: string;
   }): Promise<MailSendResult> {
-    const isMeet = params.zoomJoinUrl?.includes('meet.google.com');
-    const callPlatform = isMeet ? 'Google Meet' : 'Zoom';
-    const buttonBg = isMeet ? '#1A73E8' : '#2D8CFF';
+    const link = params.meetUrl;
+    const buttonBg = '#1A73E8';
 
     const text = `Hola ${params.patientOrTherapistName},
 
@@ -260,7 +259,7 @@ Se ha confirmado tu cita terapéutica en ASHAKids:
 • Motivo: ${params.topic}
 • Fecha: ${params.date}
 • Hora: ${params.time}
-${params.zoomJoinUrl ? `• Enlace de videoconsulta (${callPlatform}): ${params.zoomJoinUrl}\n` : ''}
+${link ? `• Enlace de videoconsulta (Google Meet): ${link}\n` : ''}
 Te recomendamos conectarte 5 minutos antes de la sesión.
 
 Equipo ASHAKids
@@ -295,8 +294,8 @@ https://ashakids.life`;
       <div class="detail-row"><strong>Hora:</strong> ${params.time}</div>
     </div>
     ${
-      params.zoomJoinUrl
-        ? `<a href="${params.zoomJoinUrl}" class="btn">Unirse con ${callPlatform}</a>`
+      link
+        ? `<a href="${link}" class="btn">Unirse con Google Meet</a>`
         : ''
     }
     <div class="footer">
@@ -391,4 +390,3 @@ Equipo ASHAKids`;
     });
   }
 }
-

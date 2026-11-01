@@ -1,4 +1,5 @@
 import { areaLabels } from "./SessionPlan";
+import { parsePlanNarrative, planNarrativeLabels } from "@/shared/application/planDraft";
 import { IntroductionStatus } from "./IntroductionStatus";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -22,6 +23,14 @@ function ReadError({ error, retry }: { error: unknown; retry: () => void }) {
     <p>{error instanceof ApiError && error.status === 0 ? "No pudimos cargar el seguimiento. Comprueba tu conexión y vuelve a intentarlo." : error instanceof Error ? error.message : "No pudimos cargar el seguimiento."}</p>
     <Btn variant="outline" onClick={retry}>Reintentar</Btn>
   </div>;
+}
+
+function PlanNarrative({ description }: { description: string }) {
+  const narrative = parsePlanNarrative(description);
+  return <dl className="space-y-2">{Object.entries(planNarrativeLabels).map(([key, label]) => {
+    const value = narrative[key as keyof typeof narrative];
+    return value.trim() ? <div key={key}><dt className="font-bold text-[#1C1135]">{label}</dt><dd className="whitespace-pre-wrap break-words">{value}</dd></div> : null;
+  })}</dl>;
 }
 
 function Milestones({ summary }: { summary: NonNullable<Tracking["summary"]> }) {
@@ -145,7 +154,7 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded
       </>}
       {mode === "journey" && tab === "Planes" && <section className="space-y-3"><h2 className="text-lg font-extrabold text-[#1C1135]">Planes de trabajo</h2>
         {!data.treatments.length && <p className="text-[#4B4264]">Todavía no hay un plan publicado para este hijo. Primero completa su introducción.</p>}
-        {data.treatments.map(t => <Crd key={t.id_tratamiento} className="p-5 space-y-2"><h3 className="font-bold text-[#1C1135] break-words">{t.nombre_tratamiento}</h3><p className="text-[#4B4264] break-words">{t.terapeuta_nombre} · {t.estado_tratamiento}</p>{t.descripcion && <p className="text-[#4B4264] whitespace-pre-wrap break-words">{t.descripcion}</p>}<p className="text-sm text-[#4B4264]">{t.area ? areaLabels[t.area] : "Plan anterior al nuevo flujo"} · Mes: {t.fecha_inicio ?? "Sin fecha"}{t.id_sesion_origen ? ` · Origen: sesión #${t.id_sesion_origen}` : ""}</p>{!!t.mundos_asignados?.length && <p className="text-sm text-[#4B4264]">Mundos: {t.mundos_asignados.map(w => areaLabels[w]).join(", ")}</p>}{t.sesiones_recomendadas != null && <p className="text-sm text-[#4B4264]">Sesiones recomendadas: {t.sesiones_recomendadas}</p>}</Crd>)}
+        {data.treatments.map(t => <Crd key={t.id_tratamiento} className="p-5 space-y-2"><h3 className="font-bold text-[#1C1135] break-words">{t.nombre_tratamiento}</h3><p className="text-[#4B4264] break-words">{t.terapeuta_nombre} · {t.estado_tratamiento}</p>{t.descripcion && <PlanNarrative description={t.descripcion} />}<p className="text-sm text-[#4B4264]">{t.area ? areaLabels[t.area] : "Plan anterior al nuevo flujo"} · Mes: {t.fecha_inicio ?? "Sin fecha"}{t.id_sesion_origen ? ` · Origen: sesión #${t.id_sesion_origen}` : ""}</p>{!!t.mundos_asignados?.length && <p className="text-sm text-[#4B4264]">Mundos: {t.mundos_asignados.map(w => areaLabels[w]).join(", ")}</p>}{t.sesiones_recomendadas != null && <p className="text-sm text-[#4B4264]">Sesiones recomendadas: {t.sesiones_recomendadas}</p>}</Crd>)}
       </section>}
       {mode === "journey" && (tab === "Sesiones" || tab === "Reportes") && <History key={`${patient.id_paciente}:${tab}`} data={data} reportsOnly={tab === "Reportes"} />}
       <p className="text-sm text-[#4B4264]">El número de sesiones no mide la mejoría clínica. Las recomendaciones para casa aparecen en el reporte del profesional.</p>
