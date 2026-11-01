@@ -14,6 +14,57 @@
 .sound-world .word-menu .word-visited.is-empty { visibility: hidden; }
 .sound-world .word-menu .word-game-number.is-visited { background: #438363; color: #fff; }
 .sound-world .word-menu .word-game-action { min-height: 48px; border: 1px solid #fff; border-bottom: 4px solid #9d82b655; border-radius: 16px; background: linear-gradient(#fff, #f7f1fb); color: #604087; font-size: 15px; }
+.family-center--world-open .sound-world.word-world { border: 1px solid #d7c9e8; border-bottom: 5px solid #b39aca; border-radius: 28px; box-shadow: 0 12px 34px #50357718, inset 0 1px 0 #fff; }
+.family-center--world-open .sound-world.word-world.is-game-menu { display: grid; grid-template-columns: minmax(260px, .34fr) minmax(0, .66fr); align-items: stretch; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-toolbar,
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-hero,
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-menu,
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-menu-note,
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-family,
+.family-center--world-open .sound-world.word-world.is-game-menu > .sound-audio-notice { grid-column: 1 / -1; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-toolbar { padding: 9px 20px; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-hero { min-height: 218px; padding: 20px clamp(24px,3vw,48px); }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-hero h2 { font-size: clamp(30px,2.5vw,36px); }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-hero > picture,
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-hero > img { width: clamp(220px,18vw,290px); max-height: 205px; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-narrator-preview { grid-column: 1; align-self: stretch; flex-direction: column; justify-content: center; align-items: center; gap: 10px; min-height: 150px; margin: 18px 0 10px 24px; padding: 18px; border: 1px solid #e2d8ed; border-radius: 20px; background: linear-gradient(145deg,#fff,#fbf8ff); box-shadow: 0 5px 16px #5035770c; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-narrator-preview .word-button { width: 100%; max-width: 300px; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-narrator-preview > span { max-width: 300px; line-height: 1.5; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-welcome { grid-column: 2; align-self: center; padding: 16px 28px 8px 22px; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-welcome > p { justify-content: flex-start; margin: 0; text-align: left; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-modes { justify-content: flex-start; gap: 10px; margin: 10px 0 3px; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-modes button { flex: 0 1 280px; min-height: 60px; padding: 8px 14px; border-radius: 16px; transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-modes button:hover { transform: translateY(-2px); box-shadow: 0 5px 12px #50357712; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-visit { justify-content: flex-start; padding: 5px 0 2px; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-menu { padding: 20px clamp(20px,2.2vw,34px) 18px; gap: 18px; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-menu .word-game-card { min-height: 370px; }
+.family-center--world-open .sound-world.word-world.is-game-menu .word-menu .word-game-art { flex-basis: 136px; height: 136px; }
+.family-center--world-open .sound-world.word-world.is-game-menu > .word-menu-note { margin: 0 24px 14px; color: #635671; }
+@keyframes family-world-intro { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes family-world-float { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(.6deg); } }
+@keyframes family-world-card-enter { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .family-center--world-open .sound-world.word-world.is-game-menu { animation: family-world-intro 360ms cubic-bezier(.2,.75,.3,1) both; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-hero > picture { transform-origin: 50% 80%; animation: family-world-float 4.8s ease-in-out 500ms infinite; }
+  .family-center--world-open .sound-world.word-world.is-game-menu .word-menu .word-game-card { animation: family-world-card-enter 360ms cubic-bezier(.2,.75,.3,1) both; animation-delay: calc(var(--card-order, 0) * 35ms); }
+}
+@media (max-width: 1000px) {
+  .family-center--world-open .sound-world.word-world.is-game-menu { display: block; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-narrator-preview { margin: 14px 18px 0; min-height: 0; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-welcome { padding: 12px 18px 4px; }
+  .family-center--world-open .sound-world.word-world.is-game-menu .word-welcome > p { justify-content: center; text-align: center; }
+  .family-center--world-open .sound-world.word-world.is-game-menu .word-modes,
+  .family-center--world-open .sound-world.word-world.is-game-menu .word-visit { justify-content: center; }
+  .family-center--world-open .sound-world.word-world.is-game-menu .word-modes button { flex-basis: 240px; }
+}
+@media (max-width: 640px) {
+  .family-center--world-open .sound-world.word-world { border-radius: 22px; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-toolbar { padding: 8px; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-hero { padding: 20px 16px; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-narrator-preview { margin-inline: 12px; padding: 14px; }
+  .family-center--world-open .sound-world.word-world.is-game-menu > .word-welcome { padding-inline: 14px; }
+  .family-center--world-open .sound-world.word-world.is-game-menu .word-modes button { flex-basis: 100%; }
+}
 .sound-world .sound-playground { padding: 20px clamp(14px, 3vw, 34px) 32px; background: radial-gradient(ellipse at 50% 0, #fff 0, #f5effb 65%); }
 .sound-world .sound-session-controls { align-items: center; gap: 8px 14px; padding-bottom: 6px; }
 .sound-world .sound-back,

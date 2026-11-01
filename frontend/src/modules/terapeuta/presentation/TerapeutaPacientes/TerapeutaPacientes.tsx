@@ -33,13 +33,13 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
 
   if (p) {
     return (
-      <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
+      <div className="therapist-page w-full px-4 py-4 text-[#1C1135] sm:px-6 sm:py-5 xl:px-8">
         <Btn variant="ghost" className="mb-5 inline-flex items-center gap-2 font-bold text-[#6B46FE]" onClick={() => setSelected(null)}>
           <ChevronLeft size={18} />
           Volver a pacientes
         </Btn>
         {feedback}
-        <header className="bg-white rounded-3xl p-6 sm:p-8 mb-6 border border-[#E8E5F4] shadow-sm">
+        <header className="therapist-animate bg-white rounded-3xl p-5 sm:p-6 mb-5 border border-[#E8E5F4] shadow-sm">
           <div className="flex gap-4 items-center justify-between flex-wrap pb-6 border-b border-[#E8E5F4]">
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full bg-[#6B46FE] text-white font-extrabold text-xl flex items-center justify-center shrink-0 shadow-md">
@@ -123,16 +123,16 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
   const filtered = patientsList.filter((row) => row.name.toLowerCase().includes(search.toLowerCase()));
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
+    <div className="therapist-page w-full px-4 py-4 text-[#1C1135] sm:px-6 sm:py-5 xl:px-8">
       {/* Header */}
-      <header className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between mb-8">
+      <header className="therapist-animate mb-5 flex flex-col gap-4 rounded-3xl border border-[#E8E5F4] bg-gradient-to-r from-white to-[#F8F6FF] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6 shadow-sm">
         <div>
           <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Pacientes</h1>
           <p className="text-sm font-bold text-[#615274] mt-1">
             {patientsList.length} paciente{patientsList.length === 1 ? '' : 's'} activo{patientsList.length === 1 ? '' : 's'}
           </p>
         </div>
-        <div className="relative w-full sm:w-80">
+        <div className="relative w-full sm:w-80 xl:w-96">
           <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
           <input
             type="text"
@@ -153,11 +153,11 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
       )}
 
       {/* Patient List */}
-      <div className="space-y-4 mb-10">
+      <div className="space-y-3 mb-5">
         {filtered.map((row) => (
           <div
             key={row.id}
-            className="bg-white rounded-3xl p-6 sm:p-7 border border-[#E8E5F4] shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 hover:border-violet-300 transition-all"
+            className="therapist-animate therapist-hover-card bg-white rounded-2xl p-4 sm:p-5 border border-[#E8E5F4] shadow-sm flex flex-col lg:flex-row items-start lg:items-center justify-between gap-5 hover:border-violet-300 transition-all"
           >
             {/* Identity */}
             <div className="flex items-center gap-4 min-w-[220px]">
@@ -177,7 +177,7 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
             </div>
 
             {/* Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 flex-1 max-w-2xl px-0 lg:px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1 min-w-0 px-0 lg:px-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center shrink-0">
                   <Calendar size={18} />
@@ -224,20 +224,6 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
         ))}
       </div>
 
-      {/* Centered Empty / Prompt State */}
-      <div className="flex flex-col items-center justify-center py-8 text-center">
-        <img
-          src="/illustrations/ashi-folder.png"
-          alt="Ashi con carpeta clínica"
-          className="w-80 h-auto object-contain drop-shadow-sm mb-4"
-        />
-        <h3 className="text-xl font-black text-[#1C1135]">
-          Selecciona un paciente para consultar su expediente.
-        </h3>
-        <p className="text-sm text-[#615274] mt-1.5 max-w-md">
-          Aquí podrás ver sus sesiones, agenda y más información.
-        </p>
-      </div>
     </div>
   );
 }

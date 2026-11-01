@@ -58,7 +58,7 @@ export function FamilyWorlds({
   const selected = assigned.find((w) => w.id === worldId);
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+    <div className={`family-worlds-stage ${worldId ? 'family-worlds-stage--selected' : 'family-worlds-stage--list'}`} style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
       <RemoteFeedback pending={progress.isPending} error={progress.error} retry={() => void progress.refetch()} />
 
       {progress.isSuccess && !progress.error && (
@@ -80,28 +80,25 @@ export function FamilyWorlds({
             />
           ) : assigned.length > 0 ? (
             <div className="space-y-6">
-              <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" aria-label="Mis mundos asignados">
+              <ul className={`family-worlds-grid family-worlds-grid--${Math.min(assigned.length, 5)}`} aria-label="Mis mundos asignados">
                 {assigned.map((w) => {
                   const card = worldCardsData.find((item) => item.id === w.id);
                   const image = card?.image || '/illustrations/optimized/world-lenguaje-v54-640-6f46efcc02.webp';
                   return (
-                    <li
-                      key={w.id}
-                      className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs flex flex-col items-center text-center justify-between min-h-[380px] hover:border-violet-300 transition-all group"
-                    >
-                      <div className="w-full flex items-center justify-center py-4 flex-1">
+                    <li key={w.id} className={`family-world-card family-world-card--${w.id.toLowerCase()}`}>
+                      <div className="family-world-card-art">
                         <img
                           src={image}
                           alt=""
-                          className="w-56 h-44 object-contain drop-shadow-sm group-hover:scale-105 transition-transform duration-200 select-none"
+                          className="family-world-card-image"
                         />
                       </div>
-                      <div className="w-full mt-2">
-                        <h2 className="text-2xl font-black text-[#1C1135] mb-5">{w.name}</h2>
+                      <div className="family-world-card-content">
+                        <h2>{w.name}</h2>
                         <button
                           type="button"
                           onClick={() => onOpen(w.id)}
-                          className="w-full flex items-center justify-center gap-2 bg-[#6B46FE] hover:bg-[#5835E5] text-white py-3.5 px-6 rounded-2xl font-black text-sm shadow-md shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
+                          className="family-world-card-action"
                         >
                           <span>Explorar</span>
                           <ArrowRight size={17} />

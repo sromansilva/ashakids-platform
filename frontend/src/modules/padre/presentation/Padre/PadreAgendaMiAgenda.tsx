@@ -33,8 +33,6 @@ type Props = Pick<
   | "confirmedApts"
   | "expandedReservationIds"
   | "setExpandedReservationIds"
-  | "timelineSel"
-  | "setTimelineSel"
 >;
 
 export function PadreAgendaMiAgenda({
@@ -60,13 +58,11 @@ export function PadreAgendaMiAgenda({
   confirmedApts,
   expandedReservationIds,
   setExpandedReservationIds,
-  timelineSel: _timelineSel,
-  setTimelineSel: _setTimelineSel,
 }: Props) {
   const currentDay = selDay ?? today.getDate();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {toast && <Toast msg={toast} onClose={() => setToast("")} />}
       {cancelId !== null && (
         <ConfirmModal
@@ -78,12 +74,12 @@ export function PadreAgendaMiAgenda({
       )}
 
       {/* Main Grid: Calendar & Day Appointments */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 items-stretch">
         {/* Left: Calendar Card */}
-        <div className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs flex flex-col justify-between">
+        <div className="bg-white rounded-3xl border border-[#E8E5F4] p-5 shadow-xs flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-xl font-black text-[#1C1135]">
+              <h3 className="text-lg font-black text-[#1C1135]">
                 {MONTHS[month]} {year}
               </h3>
               <div className="flex items-center gap-1">
@@ -169,10 +165,10 @@ export function PadreAgendaMiAgenda({
         </div>
 
         {/* Right: Selected Day Appointments Card */}
-        <div className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs flex flex-col justify-between min-h-[380px]">
+        <div className="bg-white rounded-3xl border border-[#E8E5F4] p-5 shadow-xs flex flex-col justify-between min-h-[320px]">
           <div>
             <div className="flex items-center justify-between mb-4 pb-3 border-b border-[#F0EEF8]">
-              <h3 className="text-xl font-black text-[#1C1135]">
+              <h3 className="text-lg font-black text-[#1C1135]">
                 Citas del {currentDay} de {MONTHS[month]} ({selectedApts.length})
               </h3>
               {selDay && (
@@ -312,31 +308,6 @@ export function PadreAgendaMiAgenda({
         </div>
       </div>
 
-      {/* Bottom: Timeline Card */}
-      <div className="bg-white rounded-3xl border border-[#E8E5F4] p-6 shadow-xs">
-        <div className="mb-4">
-          <h3 className="text-lg font-black text-[#1C1135]">Línea de tiempo</h3>
-          <p className="text-xs text-[#8C82A8] font-bold mt-0.5">
-            {currentDay} de {MONTHS[month]} {year} · {selectedApts.length} citas
-          </p>
-        </div>
-
-        {/* Timeline Rail */}
-        <div className="overflow-x-auto pb-2">
-          <div className="relative min-w-[700px] h-20 border-t border-[#F0EEF8] pt-2">
-            <div className="grid grid-cols-11 gap-0 h-full">
-              {Array.from({ length: 11 }, (_, i) => 8 + i).map((hour) => (
-                <div
-                  key={hour}
-                  className="border-l border-dashed border-[#E8E5F4] pl-2 text-[11px] font-bold text-[#8C82A8] h-full"
-                >
-                  {String(hour).padStart(2, "0")}:00
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Archive, ArrowRight, CheckCircle2, FileText, MessageCircle, MessageSquare, Paperclip, RefreshCw, Search, ShieldCheck, UserRound } from 'lucide-react';
+import { Archive, ArrowRight, CheckCircle2, FileText, MessageCircle, Paperclip, RefreshCw, Search, ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { readAllPages } from '@/core/api/readAllPages';
@@ -41,15 +41,7 @@ function MessagesWorkspace({ mode }: { mode: Mode }) {
   const initials = (name?: string) => name?.split(/\s+/).filter(Boolean).map(word => word[0]).join('').slice(0, 2).toUpperCase() || 'AS';
   const roleLabel = mode === 'PADRE' ? 'Terapeuta asignado' : 'Familia asignada';
   const isTherapist = mode === 'TERAPEUTA';
-  return <div className={`messages-center ${isTherapist ? 'messages-center--therapist' : ''} p-4 sm:p-8 max-w-6xl mx-auto pb-24`} style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-    {!isTherapist && <header className="messages-page-header mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-      <div>
-        <p className="messages-eyebrow"><MessageSquare size={15} aria-hidden="true" /> Comunicación familiar</p>
-        <h1 className="mt-1 text-3xl font-black tracking-tight text-[#1C1135]">Mensajes</h1>
-        <p className="text-sm font-medium text-[#6B5E8A] mt-1">Un espacio seguro para conversar y compartir con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}.</p>
-      </div>
-      <div className="messages-page-status shrink-0"><span className="messages-status-dot" aria-hidden="true" /> Canal protegido</div>
-    </header>}
+  return <div className={`messages-center ${isTherapist ? 'messages-center--therapist p-4 sm:p-8 max-w-6xl mx-auto pb-24' : 'messages-center--family family-messages-center'}`} style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
     <div className={`messages-workspace messages-shell grid md:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(0,1fr)_220px] bg-white border border-[#E8E5F4] rounded-3xl overflow-hidden ${isTherapist && activeId === null ? 'messages-workspace--empty' : ''}`}>
       <aside aria-label="Conversaciones" className={`messages-sidebar ${showList ? 'block' : 'hidden'} md:block min-w-0`}>
         <div className="messages-sidebar-heading"><div><p className="messages-panel-kicker">Bandeja</p><h2 className="font-extrabold text-[#1C1135]">Conversaciones</h2></div>

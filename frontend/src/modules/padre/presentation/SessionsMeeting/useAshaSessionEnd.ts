@@ -29,7 +29,6 @@ const [formData, setFormData] = useState({
     compartirResumen: false,
   });
 const [formSaved, setFormSaved] = useState(false);
-const [showConfirm, setShowConfirm] = useState(false);
 const downloadSessionPdf = () => {
     const safe = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[\\()]/g, "\\$&");
     const lines = [
@@ -62,5 +61,5 @@ const downloadSessionPdf = () => {
     a.href = url; a.download = "resumen-sesion-30jul2026.pdf";
     document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   };
-return { go, showSummaryModal, setShowSummaryModal, showForm, setShowForm, formStep, setFormStep, formData, setFormData, formSaved, setFormSaved, showConfirm, setShowConfirm, downloadSessionPdf };
+return { go, showSummaryModal, setShowSummaryModal, showForm, setShowForm, formStep, setFormStep, formData, setFormData, formSaved, setFormSaved, downloadSessionPdf };
 }

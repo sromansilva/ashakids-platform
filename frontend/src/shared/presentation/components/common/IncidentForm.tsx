@@ -13,6 +13,7 @@ interface IncidentFormProps {
   submitButtonText?: string;
   title?: string;
   subtitle?: string;
+  className?: string;
   onSuccess?: (inc: Incidencia) => void;
 }
 
@@ -22,6 +23,7 @@ export function IncidentForm({
   submitButtonText = 'Enviar a administración',
   title = 'Reportar incidencia',
   subtitle = 'Cuéntanos qué problema encontraste. El área correspondiente atenderá tu solicitud.',
+  className = '',
   onSuccess,
 }: IncidentFormProps) {
   const [tipo, setTipo] = useState(defaultTipo);
@@ -83,7 +85,7 @@ export function IncidentForm({
     (!isTerapeutaRelated || (isTerapeutaRelated && selectedTerapeutaId !== null));
 
   return (
-    <section className="max-w-5xl mx-auto p-4 sm:p-8" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+    <section className={`${className ? 'w-full max-w-[1320px]' : 'w-full max-w-5xl'} mx-auto p-4 sm:p-8 ${className}`} style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
       {/* Page Title & Subtitle */}
       <div className="mb-6">
         <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">{title}</h1>

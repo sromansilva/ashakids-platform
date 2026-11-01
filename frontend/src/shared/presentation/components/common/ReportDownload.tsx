@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Download } from 'lucide-react';
+import { Check, Download } from 'lucide-react';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { ApiError } from '@/core/api/client';
 import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 
-export function ReportDownload({ sessionId }: { sessionId: number }) {
+export function ReportDownload({ sessionId, compact = false }: { sessionId: number; compact?: boolean }) {
   const controller = useRef<AbortController | null>(null);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<unknown>(null);
@@ -36,10 +36,19 @@ export function ReportDownload({ sessionId }: { sessionId: number }) {
       if (controller.current === request) controller.current = null;
     }
   };
-  return <div className="space-y-2">
-    <Btn variant="outline" disabled={pending} onClick={() => void download()}><Download size={16} aria-hidden="true" />{pending ? 'Preparando PDF…' : 'Descargar reporte PDF'}</Btn>
+  return <div className={compact ? 'inline-flex max-w-full flex-col items-start gap-1' : 'space-y-2'}>
+    <Btn
+      variant="outline"
+      disabled={pending}
+      title={compact ? 'Incluye la última versión guardada; los cambios sin guardar quedan fuera del PDF.' : undefined}
+      onClick={() => void download()}
+    >
+      {started ? <Check size={16} aria-hidden="true" /> : <Download size={16} aria-hidden="true" />}
+      {pending ? 'Preparando PDF…' : started && compact ? 'Descarga iniciada' : 'Descargar reporte PDF'}
+    </Btn>
     <RemoteFeedback error={error} />
-    {started && <p role="status" className="text-sm text-[#4B4264] pr-16 sm:pr-0">PDF recibido. El navegador inició la descarga.</p>}
-    <p className="text-sm text-[#4B4264] pr-16 sm:pr-0">Incluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.</p>
+    {started && compact && <span role="status" className="sr-only">PDF recibido. El navegador inició la descarga.</span>}
+    {started && !compact && <p role="status" className="text-sm text-[#4B4264] pr-16 sm:pr-0">PDF recibido. El navegador inició la descarga.</p>}
+    {!compact && <p className="text-sm text-[#4B4264] pr-16 sm:pr-0">Incluye la última versión guardada. Los cambios sin guardar quedan fuera del PDF.</p>}
   </div>;
 }

@@ -69,9 +69,9 @@ export function TerapeutaConfig() {
     .toUpperCase() || 'PA';
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
+    <div className="therapist-page w-full px-4 py-4 text-[#1C1135] sm:px-6 sm:py-5 xl:px-8">
       {/* Header */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E5F4] shadow-sm mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+      <div className="therapist-animate bg-white rounded-3xl p-5 sm:p-6 border border-[#E8E5F4] shadow-sm mb-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-5 relative overflow-hidden">
         <div className="max-w-xl z-10">
           <h1 className="text-3xl sm:text-4xl font-black text-[#1C1135] tracking-tight">Configuración</h1>
           <p className="text-sm font-bold text-[#615274] mt-1.5">
@@ -98,17 +98,17 @@ export function TerapeutaConfig() {
           </nav>
         </div>
 
-        <div className="hidden md:block w-56 lg:w-64 shrink-0 z-10">
+        <div className="hidden md:block w-48 lg:w-56 shrink-0 z-10">
           <img
             src="/illustrations/ashi-hero-v1.png"
             alt="Robot Ashi Config"
-            className="w-full h-auto object-contain max-h-44 drop-shadow-md"
+            className="w-full h-auto object-contain max-h-36 drop-shadow-md"
           />
         </div>
       </div>
 
       {/* Main Tab Content */}
-      <section className="bg-white border border-[#E8E5F4] rounded-3xl p-6 sm:p-8 shadow-sm">
+      <section className="therapist-animate therapist-settings-panel bg-white border border-[#E8E5F4] rounded-3xl p-5 sm:p-7 shadow-sm">
         {tab === 'perfil' && (
           <div className="space-y-6">
             <h2 className="text-xl font-black text-[#1C1135]">Información del perfil</h2>

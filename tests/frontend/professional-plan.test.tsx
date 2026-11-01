@@ -31,16 +31,19 @@ async function open(options: { readonly?: boolean; published?: boolean; fail?: b
 it('convierte el reporte guardado en contexto editable y exige completar objetivos del plan antes de publicar', async () => {
   const calls = await open();
   fireEvent.click(await screen.findByRole('button',{name:'Iniciar borrador desde línea base guardada'}));
-  expect(screen.getByLabelText('Línea base confirmada (editable)')).toHaveValue('Línea base confirmada sintética');
-  expect(screen.getByLabelText('Objetivos trabajados en la introductoria (editable)')).toHaveValue('Objetivo trabajado en introductoria');
-  expect(screen.getByLabelText('Objetivos del plan *')).toHaveValue('');
-  expect(screen.getByLabelText('Actividades propuestas *')).toHaveValue('');
   fireEvent.change(screen.getByLabelText('Nombre del plan'),{target:{value:'Plan de Ana'}});
   fireEvent.change(screen.getByLabelText('Área principal definida por el terapeuta'),{target:{value:'HABLA'}});
-  fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Practicar el objetivo confirmado según criterio profesional.'}});
-  fireEvent.change(screen.getByLabelText('Actividades propuestas *'),{target:{value:'Actividad definida por el terapeuta.'}});
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'4'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'Comprensión y expresión'}));
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
+  expect(screen.getByLabelText('Línea base confirmada (editable)')).toHaveValue('Línea base confirmada sintética');
+  expect(screen.getByLabelText('Objetivos trabajados en la introductoria (editable)')).toHaveValue('Objetivo trabajado en introductoria');
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
+  expect(screen.getByLabelText('Objetivos del plan *')).toHaveValue('');
+  expect(screen.getByLabelText('Actividades propuestas *')).toHaveValue('');
+  fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Practicar el objetivo confirmado según criterio profesional.'}});
+  fireEvent.change(screen.getByLabelText('Actividades propuestas *'),{target:{value:'Actividad definida por el terapeuta.'}});
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   fireEvent.click(screen.getByRole('button',{name:'Aprobar y publicar plan'}));
   expect(await screen.findByText('Plan de Ana · ACTIVO')).toBeInTheDocument();
   const write=calls.mock.calls.find(([,init])=>init?.method==='POST');
@@ -56,12 +59,18 @@ it('conserva el borrador si el servidor rechaza la publicación', async () => {
   fireEvent.click(await screen.findByRole('button',{name:'Iniciar borrador desde línea base guardada'}));
   fireEvent.change(screen.getByLabelText('Nombre del plan'),{target:{value:'Borrador de Ana'}});
   fireEvent.change(screen.getByLabelText('Área principal definida por el terapeuta'),{target:{value:'HABLA'}});
-  fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Objetivo editable de prueba'}});
-  fireEvent.change(screen.getByLabelText('Actividades propuestas *'),{target:{value:'Actividad editable de prueba'}});
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'3'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'Comprensión y expresión'}));
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
+  fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Objetivo editable de prueba'}});
+  fireEvent.change(screen.getByLabelText('Actividades propuestas *'),{target:{value:'Actividad editable de prueba'}});
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   fireEvent.click(screen.getByRole('button',{name:'Aprobar y publicar plan'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('Conflicto del servidor');
+  fireEvent.click(screen.getByRole('button',{name:'Paso anterior'}));
+  fireEvent.click(screen.getByRole('button',{name:'Paso anterior'}));
+  fireEvent.click(screen.getByRole('button',{name:'Paso anterior'}));
   expect(screen.getByLabelText('Nombre del plan')).toHaveValue('Borrador de Ana');
 });
 it('usa resultados previos guardados como contexto editable y deja objetivos y actividades en blanco', async () => {
@@ -84,11 +93,17 @@ it('usa resultados previos guardados como contexto editable y deja objetivos y a
     }],
   });
   fireEvent.click(await screen.findByRole('button', { name: 'Iniciar borrador con resultados previos guardados' }));
+  fireEvent.change(screen.getByLabelText('Nombre del plan'),{target:{value:'Plan de Ana'}});
+  fireEvent.change(screen.getByLabelText('Área principal definida por el terapeuta'),{target:{value:'HABLA'}});
+  fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'4'}});
+  fireEvent.click(screen.getByRole('checkbox',{name:'Comprensión y expresión'}));
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   const previousResults = screen.getByLabelText('Resultados previos revisados (contexto editable)') as HTMLTextAreaElement;
   expect(previousResults.value).toContain('Sesión #8');
   expect(previousResults.value).toContain('objetivo guardado');
   expect(previousResults.value).toContain('palabra sintética');
   expect(previousResults.value).toContain('resultado confirmado');
+  fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   expect(screen.getByLabelText('Objetivos del plan *')).toHaveValue('');
   expect(screen.getByLabelText('Actividades propuestas *')).toHaveValue('');
 });
