@@ -76,11 +76,14 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
       <div className="operational-dashboard__hero bg-white rounded-3xl p-6 sm:p-8 border border-[#E8E5F4] shadow-sm mb-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
         <div className="max-w-xl z-10">
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1C1135] tracking-tight">
-            {admin ? "Panel de administración" : "Panel del terapeuta"}
+            {admin
+              ? "Panel de administración"
+              : `¡Hola, ${user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Especialista"}!`}
           </h1>
           <p className="text-sm sm:text-base text-[#615274] mt-2.5">
-            Hola, {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : admin ? "Administrador Sistema" : "Especialista"}.{" "}
-            {admin ? "Consulta los registros de la plataforma." : "Consulta tu agenda y las atenciones registradas."}
+            {admin
+              ? <>Hola, {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Administrador Sistema"}. Consulta los registros de la plataforma.</>
+              : "Consulta tu agenda y las atenciones registradas."}
           </p>
           <button
             onClick={reload}

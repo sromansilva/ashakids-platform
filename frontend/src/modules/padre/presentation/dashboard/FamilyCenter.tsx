@@ -53,7 +53,7 @@ export function FamilyCenter({ go, familyName }: { go: (view: View) => void; fam
   const navigate = (view: View) => (view === 'mundo-asha' ? open('world') : go(view));
 
   return (
-    <section className="family-center">
+    <section className={`family-center${section === 'world' ? (world ? ' family-center--world-open' : ' family-center--world-list') : ''}`}>
       <div className="fc-welcome fc-welcome--small">
         <PublicIllustration
           src="/illustrations/family-ashi-wave-v88.png"
@@ -68,7 +68,9 @@ export function FamilyCenter({ go, familyName }: { go: (view: View) => void; fam
           </h1>
           <p>
             {section === 'world'
-              ? 'Elige una aventura para explorar.'
+              ? world
+                ? 'Elige una aventura para explorar.'
+                : 'Juega, explora y descubre nuevas formas de comunicarte.'
               : section === 'journey'
                 ? 'Cada encuentro es parte de tu historia.'
                 : 'El acompañamiento de tu familia, en un solo lugar.'}

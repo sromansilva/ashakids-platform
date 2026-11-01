@@ -3,7 +3,7 @@ import { useRemote } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { readAllPages } from '@/core/api/readAllPages';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
-import { Users, User, Calendar, Target, BarChart3 } from 'lucide-react';
+import { Users, User, Calendar, BarChart3 } from 'lucide-react';
 
 function period(value: string) {
   const parts = new Intl.DateTimeFormat('en', {
@@ -41,26 +41,24 @@ export function TerapeutaAnaliticas() {
         s.asistencia === 'ASISTIO' &&
         period(s.cita.fecha_hora_inicio).month === index + 1
     ).length;
-    // Default mock data if empty (e.g. 2 in October as in mockup)
-    const effectiveCount = rows.length > 0 ? count : (index === 9 ? 2 : 0);
     return {
       month: index + 1,
       shortLabel: MONTH_LABELS_SHORT[index],
-      count: effectiveCount,
+      count,
     };
   });
 
   const highestMonthCount = Math.max(0, ...months.map((m) => m.count));
   const max = Math.max(2, Math.ceil(highestMonthCount / 2) * 2);
   const axisTicks = [max, max / 2, 0];
-  const attendedCount = rows.length > 0 ? attended.length : 2;
-  const uniquePatientsCount = rows.length > 0 ? new Set(attended.map((s) => s.cita.id_paciente)).size : 1;
-  const missedCount = rows.length > 0 ? selected.filter((s) => s.asistencia === 'NO_ASISTIO').length : 0;
+  const attendedCount = attended.length;
+  const uniquePatientsCount = new Set(attended.map((s) => s.cita.id_paciente)).size;
+  const missedCount = selected.filter((s) => s.asistencia === 'NO_ASISTIO').length;
 
   return (
-    <div className="w-full max-w-none px-4 py-5 sm:px-6 lg:px-8 text-[#1C1135]">
+    <div className="therapist-page w-full max-w-none px-4 py-4 text-[#1C1135] sm:px-6 sm:py-5 lg:px-8">
       {/* Header with Filters & Ashi */}
-      <div className="mb-5 flex flex-col gap-5 overflow-hidden rounded-3xl border border-[#E8E5F4] bg-gradient-to-r from-white via-white to-[#F8F6FF] p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <div className="therapist-animate mb-5 flex flex-col gap-5 overflow-hidden rounded-3xl border border-[#E8E5F4] bg-gradient-to-r from-white via-white to-[#F8F6FF] p-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
         <div className="min-w-0">
           <h1 className="text-2xl font-black tracking-tight text-[#1C1135] sm:text-3xl">Analíticas</h1>
           <p className="mt-1 text-sm font-semibold text-[#615274]">
@@ -145,7 +143,7 @@ export function TerapeutaAnaliticas() {
         ].map((stat) => (
           <div
             key={stat.label}
-            className="relative flex items-center justify-between overflow-hidden rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)]"
+            className="therapist-animate therapist-hover-card relative flex items-center justify-between overflow-hidden rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)]"
           >
             <div className="z-10 flex items-center gap-3.5">
               <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl ${stat.bg} ${stat.color}`}>
@@ -164,7 +162,7 @@ export function TerapeutaAnaliticas() {
       </div>
 
       {/* Row 2: Bar Chart Card */}
-      <div className="mb-5 rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)] sm:p-6">
+      <div className="therapist-animate mb-5 rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)] sm:p-6">
         <div className="mb-5 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]"><BarChart3 size={18} /></span>
@@ -198,7 +196,7 @@ export function TerapeutaAnaliticas() {
                   <div className="flex w-full max-w-[44px] flex-1 items-end justify-center">
                     {hasData ? (
                       <div
-                        className="w-full rounded-t-xl bg-gradient-to-t from-[#6B46FE] to-[#9B7AFF] shadow-[0_4px_12px_rgba(107,70,254,0.18)] transition-all duration-500"
+                        className="therapist-chart-bar w-full rounded-t-xl bg-gradient-to-t from-[#6B46FE] to-[#9B7AFF] shadow-[0_4px_12px_rgba(107,70,254,0.18)] transition-all duration-500"
                         style={{ height: `${Math.max(6, heightPercent)}%` }}
                       />
                     ) : (
@@ -213,28 +211,6 @@ export function TerapeutaAnaliticas() {
         </div>
       </div>
 
-      {/* Row 3: Bottom 2 Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-        <div className="bg-white rounded-3xl p-6 border border-[#E8E5F4] shadow-sm flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center shrink-0">
-            <Target size={24} />
-          </div>
-          <div>
-            <h3 className="text-base font-extrabold text-[#1C1135]">Objetivos alcanzados</h3>
-            <p className="text-xs font-bold text-[#615274] mt-0.5">Próximamente</p>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-3xl p-6 border border-[#E8E5F4] shadow-sm flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-[#CCFBF1] text-[#0D9488] flex items-center justify-center shrink-0">
-            <BarChart3 size={24} />
-          </div>
-          <div>
-            <h3 className="text-base font-extrabold text-[#1C1135]">Evolución clínica</h3>
-            <p className="text-xs font-bold text-[#615274] mt-0.5">Próximamente</p>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

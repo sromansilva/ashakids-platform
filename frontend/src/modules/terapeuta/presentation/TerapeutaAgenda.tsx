@@ -117,6 +117,12 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
       .filter(apt => { const d = parseCalDate(apt.date); return d && isSameDay(d, day) && !isCancelled(apt); })
       .sort((a, b) => a.time.localeCompare(b.time));
   }
+  const visibleAppointments = agView === "semana"
+    ? confirmedApts.filter(apt => {
+        const date = parseCalDate(apt.date);
+        return date && weekDays.some(day => isSameDay(day, date)) && !isCancelled(apt);
+      })
+    : aptsForDay(selDate);
 
   // ── Header ─────────────────────────────────────────────────────────────────
   const headerLabel = agView === "semana"
@@ -124,14 +130,22 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
     : `${DAY_NAMES_SHORT[selDate.getDay()]}, ${selDate.getDate()} de ${MONTHS_ES_FULL[selDate.getMonth()]} ${selDate.getFullYear()}`;
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
+    <div className="w-full px-4 py-4 text-[#1C1135] sm:px-6 sm:py-5 xl:px-8">
       <RemoteFeedback pending={query.isPending} error={query.error || update.error} retry={() => void query.refetch()} />
-      <p className="text-xs font-bold text-[#615274] mb-1">Horarios en America/Lima</p>
       {/* ── Top bar ── */}
-      <div className="flex items-center justify-between flex-wrap gap-4 mb-6">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Agenda</h1>
-          <p className="text-sm font-bold text-[#615274] mt-0.5">{headerLabel}</p>
+          <p className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-[#6B46FE]">
+            <Clock size={12} aria-hidden="true" /> Horario local · America/Lima
+          </p>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <h1 className="text-2xl font-black tracking-tight text-[#1C1135] sm:text-3xl">Agenda</h1>
+            <p className="text-sm font-bold text-[#615274]">{headerLabel}</p>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#E8E5F4] bg-white px-2.5 py-1 text-[11px] font-bold text-[#615274]">
+              <Calendar size={13} className="text-[#6B46FE]" aria-hidden="true" />
+              {visibleAppointments.length} {visibleAppointments.length === 1 ? 'cita' : 'citas'} {agView === 'semana' ? 'esta semana' : 'este día'}
+            </span>
+          </div>
         </div>
         <div className="flex items-center gap-3 flex-wrap">
           {/* Día / Semana toggle */}
@@ -231,7 +245,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
           <div className="overflow-x-auto">
             <div className="min-w-[640px]">
               {/* Day headers */}
-              <div className="grid border-b" style={{ gridTemplateColumns: "64px repeat(7, 1fr)", borderColor: B.border }}>
+              <div className="grid border-b" style={{ gridTemplateColumns: "72px repeat(7, 1fr)", borderColor: B.border }}>
                 <div className="p-3 border-r" style={{ borderColor: B.border }} />
                 {weekDays.map((wd, i) => {
                   const today  = isSameDay(wd, DEMO_TODAY);
@@ -254,9 +268,9 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
                 })}
               </div>
               {/* Time grid */}
-              <div className="overflow-y-auto" style={{ maxHeight: 440 }}>
+              <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - 250px)" }}>
                 {hours.map((h, hi) => (
-                  <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "64px repeat(7, 1fr)", borderColor: B.border, minHeight: 52 }}>
+                  <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "72px repeat(7, 1fr)", borderColor: B.border, minHeight: "max(62px, calc((100vh - 260px) / 10))" }}>
                     <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: "#615274" }}>{h}</div>
                     {weekDays.map((wd, di) => {
                       const apt = aptForSlot(wd, hi + 8);
@@ -331,36 +345,53 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
       {selectedEvent && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
           <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedEvent(null)} />
-          <div ref={detailDialog} role="dialog" aria-modal="true" aria-label="Detalle de la atención" onKeyDown={showCancelModal ? undefined : dialogKeys} className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E5F4]">
-              <h3 className="font-extrabold text-[#1C1135]">Detalle de la atención</h3>
-              <button onClick={() => setSelectedEvent(null)} aria-label="Cerrar detalle" className="p-1.5 rounded-xl hover:bg-gray-100"><X size={16} /></button>
+          <div ref={detailDialog} role="dialog" aria-modal="true" aria-label="Detalle de la atención" onKeyDown={showCancelModal ? undefined : dialogKeys} className="relative flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
+            <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#E8E5F4] bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
+              <div>
+                <p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-[#8C82A8]">Agenda · cita seleccionada</p>
+                <h3 className="mt-0.5 font-extrabold text-[#1C1135]">Detalle de la atención</h3>
+              </div>
+              <button onClick={() => setSelectedEvent(null)} aria-label="Cerrar detalle" className="rounded-xl p-2 text-[#7C6F9A] transition-colors hover:bg-violet-50 hover:text-[#6B46FE]"><X size={17} /></button>
             </div>
-            <div className="p-6">
-              <div className="rounded-2xl p-4 mb-5" style={{ background: "#F5F0FF" }}>
-                <p className="font-extrabold text-[#1C1135]">{selectedEvent.patient}</p>
-                <p className="text-sm text-[#7C6F9A] mt-0.5">{selectedEvent.date} · {selectedEvent.time}</p>
-                <span className="inline-block mt-1.5 text-[11px] font-extrabold px-2 py-0.5 rounded-full"
-                  style={selectedEvent.type === "presencial" ? { background:"#F0FDFA", color:"#0D9488" } : { background:"#EDE9FE", color:"#7C3AED" }}>
-                  {selectedEvent.type === "presencial" ? "Presencial" : "Virtual"}
-                </span>
-              </div>
-              <div className="flex flex-col gap-2">
-                <SessionActions
-                  appointmentId={selectedEvent.id}
-                  compact={true}
-                  onGoToReports={() => {
-                    setSelectedEvent(null);
-                    go('terapeuta/reportes');
-                  }}
-                />
-                {canCancel && <button
-                  onClick={() => setShowCancelModal(true)}
-                  className="w-full py-3 rounded-2xl font-extrabold text-sm border-2 border-red-200 text-red-600 hover:bg-red-50 transition-all"
-                >
-                  Cancelar sesión
-                </button>}
-              </div>
+            <div className="min-h-0 overflow-y-auto p-4 sm:p-6">
+              <section className="mb-4 flex flex-col gap-4 rounded-2xl border border-violet-100 bg-gradient-to-r from-[#F8F6FF] to-white p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+                <div className="flex min-w-0 items-center gap-3">
+                  <Av initials={selectedEvent.patient.split(/\s+/).filter(Boolean).map((part) => part[0]).join("").slice(0, 2)} color={B.violet} size="md" />
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-[#8C82A8]">Paciente</p>
+                    <p className="break-words text-base font-extrabold text-[#1C1135]">{selectedEvent.patient}</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="rounded-xl border border-[#E8E5F4] bg-white px-3 py-2">
+                    <span className="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-wide text-[#8C82A8]"><Calendar size={11} aria-hidden="true" /> Fecha</span>
+                    <p className="mt-0.5 text-xs font-extrabold text-[#1C1135]">{selectedEvent.date}</p>
+                  </div>
+                  <div className="rounded-xl border border-[#E8E5F4] bg-white px-3 py-2">
+                    <span className="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-wide text-[#8C82A8]"><Clock size={11} aria-hidden="true" /> Hora</span>
+                    <p className="mt-0.5 text-xs font-extrabold text-[#1C1135]">{selectedEvent.time}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-[#E8E5F4] bg-white px-3 py-2 text-xs font-extrabold"
+                    style={selectedEvent.type === "presencial" ? { color:"#0D9488" } : { color:"#7C3AED" }}>
+                    {selectedEvent.type === "presencial" ? <MapPin size={13} aria-hidden="true" /> : <Video size={13} aria-hidden="true" />}
+                    {selectedEvent.type === "presencial" ? "Presencial" : "Virtual"}
+                  </span>
+                  {canCancel && <button
+                    onClick={() => setShowCancelModal(true)}
+                    className="rounded-xl border border-red-200 bg-white px-3 py-2 text-xs font-extrabold text-red-600 transition-colors hover:bg-red-50"
+                  >
+                    Cancelar sesión
+                  </button>}
+                </div>
+              </section>
+              <SessionActions
+                appointmentId={selectedEvent.id}
+                compact={true}
+                onGoToReports={() => {
+                  setSelectedEvent(null);
+                  go('terapeuta/reportes');
+                }}
+              />
             </div>
           </div>
         </div>

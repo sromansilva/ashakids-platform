@@ -1,6 +1,12 @@
 .family-center-layout { background: radial-gradient(ellipse at 90% 15%,#ccfbf173,transparent 48%),radial-gradient(ellipse at 10% 70%,#ede9fe,transparent 52%),#fafaf9 !important; }
 .family-center-layout .family-content { padding: 0; }
 .family-center-layout .family-content > .family-center,.family-center { max-width: 1200px; padding: 24px 32px 48px; margin-inline: auto; color: #1c1135; font-family: Nunito,system-ui,sans-serif; }
+.family-center-layout .family-content > .family-center:not(.family-center--world-open):not(.family-center--world-list) { width: 100%; max-width: 1600px; padding: 18px clamp(24px,3vw,48px) 38px; }
+.family-center-layout .family-content > .family-center:not(.family-center--world-open):not(.family-center--world-list) > .fc-adult > .family-panel { width: 100%; max-width: none; }
+.family-center-layout .family-content > .family-center:not(.family-center--world-open):not(.family-center--world-list) > .max-w-6xl { width: 100%; max-width: 1480px; }
+.family-center-layout .family-content > .family-center.family-center--world-open { max-width: 1740px; padding: 14px clamp(24px,3vw,48px) 40px; }
+.family-center-layout .family-content > .family-center.family-center--world-list { width: 100%; max-width: none; padding: 18px 44px 34px; position: relative; isolation: isolate; }
+.family-center--world-list::before { content: ''; position: absolute; z-index: -1; inset: 0; pointer-events: none; background: radial-gradient(circle at 92% 5%,#ffe6a1 0 29px,transparent 31px),radial-gradient(ellipse at 0 15%,#dedcff8c 0%,transparent 28%),radial-gradient(ellipse at 100% 43%,#c8f0e18c 0%,transparent 32%),linear-gradient(110deg,#f1efff 0%,#f8f8ff 50%,#e9f8f4 100%); }
 .family-center * { min-width: 0; }
 .family-center ::selection { background: #ddd6fe; color: #1c1135; }
 .family-center :is(button,summary):focus-visible { outline: 2px solid #5b21b6; outline-offset: 4px; }
@@ -29,9 +35,18 @@
 .family-center-layout .fc-welcome h1,.fc-welcome h1 { font-size: clamp(36px,4.5vw,62px); font-weight: 900; line-height: 1.1; overflow-wrap: anywhere; letter-spacing: -.025em; }
 .fc-welcome p { font-size: clamp(18px,2.2vw,26px); color: #615274; margin-top: 12px; line-height: 1.45; }
 .fc-welcome--small { gap: 18px; margin-top: 12px; }
+.family-center--world-open .fc-welcome--small { gap: 14px; margin: 0 0 4px; }
+.family-center--world-open .fc-welcome--small .fc-ashi { width: 76px; height: 86px; }
+.family-center-layout .family-content > .family-center.family-center--world-open .fc-welcome--small h1 { font-size: clamp(30px,2.5vw,36px); }
+.family-center--world-open .fc-welcome--small p { margin-top: 5px; font-size: 16px; }
 .fc-welcome--small .fc-ashi { width: 90px; height: 110px; }
 .family-center-layout .fc-welcome--small h1,.fc-welcome--small h1 { font-size: clamp(30px,3vw,42px); }
 .fc-welcome--small p { font-size: 17px; }
+.family-center--world-list .fc-welcome--small { position: relative; isolation: isolate; gap: 16px; min-height: 112px; margin: 0 0 6px; }
+.family-center--world-list .fc-welcome--small::after { content: ''; position: absolute; z-index: -1; top: 16px; right: 8%; width: min(42%,560px); height: 56px; border-top: 2px dashed #c8c0ed80; border-radius: 50%; transform: rotate(5deg); pointer-events: none; }
+.family-center--world-list .fc-welcome--small .fc-ashi { width: 108px; height: 114px; }
+.family-center-layout .family-content > .family-center.family-center--world-list .fc-welcome--small h1 { font-size: clamp(33px,2.7vw,44px); }
+.family-center--world-list .fc-welcome--small p { margin-top: 4px; font-size: clamp(15px,1.1vw,18px); }
 .fc-destinations { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; position: relative; isolation: isolate; }
 .fc-destinations::before { content: ''; position: absolute; inset: 12% 0 0; z-index: -1; border-radius: 48px; background: radial-gradient(ellipse at 22% 40%,#cabaf5 0%,transparent 62%),radial-gradient(ellipse at 92% 50%,#b9e7df 0%,transparent 60%); }
 .fc-destination,.fc-glass { background: rgb(255 255 255 / 74%); border: 1px solid #7c3aed33; border-radius: 24px; box-shadow: 0 10px 30px #4524780a,inset 0 1px 0 #fff; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
@@ -56,6 +71,33 @@
 .fc-world-list h2,.fc-journey-list h2 { font-size: 23px; font-weight: 900; line-height: 1.25; }
 .fc-world-list .fc-button { margin-top: auto; font-size: 18px; }
 .fc-world-list h2 { margin-block: 12px 24px; }
+.family-worlds-stage--selected,.family-worlds-stage--list { width: 100%; max-width: none; margin: 0; padding: 0; }
+.family-worlds-grid { display: grid; grid-template-columns: repeat(6,minmax(0,1fr)); gap: 16px; width: min(100%,1230px); margin: 0 auto; padding: 0; list-style: none; }
+.family-world-card { --world-card-bg:#f0ecff; grid-column: span 2; display: flex; flex-direction: column; min-width: 0; min-height: 326px; padding: 9px; border: 1px solid #e5dff0; border-radius: 21px; background: #ffffffdc; box-shadow: 0 10px 26px #4b32720d,inset 0 1px 0 #fff; transition: transform 200ms cubic-bezier(.2,.75,.3,1),box-shadow 200ms ease,border-color 200ms ease; }
+.family-worlds-grid--1 > .family-world-card:nth-child(1) { grid-column: 3 / span 2; }
+.family-worlds-grid--2 > .family-world-card:nth-child(1) { grid-column: 2 / span 2; }
+.family-worlds-grid--2 > .family-world-card:nth-child(2) { grid-column: 4 / span 2; }
+.family-worlds-grid--4 > .family-world-card:nth-child(4) { grid-column: 3 / span 2; }
+.family-worlds-grid--5 > .family-world-card:nth-child(4) { grid-column: 2 / span 2; }
+.family-worlds-grid--5 > .family-world-card:nth-child(5) { grid-column: 4 / span 2; }
+.family-world-card--habla { --world-card-bg:#fff0d6; }
+.family-world-card--lenguaje { --world-card-bg:#efecff; }
+.family-world-card--fluidez { --world-card-bg:#e5f7ee; }
+.family-world-card--voz { --world-card-bg:#eeeaff; }
+.family-world-card--orofacial { --world-card-bg:#fff0dc; }
+.family-world-card-art { position: relative; isolation: isolate; display: grid; place-items: center; min-height: 154px; overflow: hidden; border-radius: 16px; background: radial-gradient(ellipse at 50% 10%,#fff 0,transparent 66%),linear-gradient(145deg,#ffffff96,var(--world-card-bg)); }
+.family-world-card-art::before { content: ''; position: absolute; z-index: -1; top: 24px; left: 24px; width: 19px; height: 19px; background: #ffc95a; opacity: .85; clip-path: polygon(50% 0,61% 37%,100% 50%,61% 63%,50% 100%,39% 63%,0 50%,39% 37%); }
+.family-world-card-art::after { content: ''; position: absolute; z-index: -1; right: -26px; bottom: -58px; width: 180px; height: 120px; border-radius: 50%; background: #ffffff78; box-shadow: -70px -8px 0 #ffffff55; }
+.family-world-card-image { position: relative; z-index: 1; display: block; width: min(86%,250px); height: 142px; object-fit: contain; filter: drop-shadow(0 7px 5px #4430631b); transition: transform 220ms cubic-bezier(.2,.75,.3,1); user-select: none; }
+.family-world-card-content { display: flex; flex: 1; flex-direction: column; align-items: center; padding: 10px 6px 4px; text-align: center; }
+.family-world-card-content h2 { display: flex; align-items: center; justify-content: center; max-width: 235px; min-height: 2.25em; margin: 0 0 10px; color: #1c1135; font-size: clamp(18px,1.3vw,20px); font-weight: 900; line-height: 1.16; text-wrap: balance; }
+.family-world-card-action { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; min-height: 46px; margin-top: auto; padding: 9px 16px; border-radius: 14px; background: #6b46fe; box-shadow: 0 4px 0 #5633d6,0 8px 15px #6b46fe24; color: #fff; font-size: 14px; font-weight: 900; transition: transform 180ms ease,background-color 180ms ease,box-shadow 180ms ease; }
+.family-world-card-action:hover { background: #5835e5; box-shadow: 0 5px 0 #4529bd,0 11px 18px #6b46fe32; transform: translateY(-2px); }
+.family-world-card-action:active { transform: translateY(1px); box-shadow: 0 2px 0 #4529bd; }
+.family-world-card :is(button,a):focus-visible { outline: 3px solid #4b27c8; outline-offset: 4px; }
+@media (hover:hover) { .family-world-card:hover { transform: translateY(-5px); border-color: #cfc2eb; box-shadow: 0 16px 30px #4b32721b,inset 0 1px 0 #fff; } .family-world-card:hover .family-world-card-image { transform: scale(1.055) rotate(-1deg); } }
+@keyframes family-world-selection-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion:no-preference) { .family-world-card { animation: family-world-selection-in 420ms cubic-bezier(.2,.75,.3,1) both; } .family-world-card:nth-child(2) { animation-delay: 55ms; } .family-world-card:nth-child(3) { animation-delay: 110ms; } .family-world-card:nth-child(4) { animation-delay: 165ms; } .family-world-card:nth-child(5) { animation-delay: 220ms; } }
 .fc-journey-list li { padding: 24px; display: flex; flex-direction: column; }
 .fc-journey-list img { width: 100%; height: 180px; object-fit: contain; margin-bottom: 16px; }
 .fc-journey-list p { color: #615274; font-size: 16px; line-height: 1.6; margin-block: 12px; }
@@ -116,8 +158,26 @@
 .fc-notice { background: #fff; padding: 16px; border-radius: 14px; margin-bottom: 20px; }
 @media (hover:hover) { .fc-destination:has(button:hover) .fc-destination-art { transform: translateY(-4px); } }
 @media (max-width: 1000px) { .fc-family-tools { grid-template-columns: repeat(2,minmax(0,1fr)); } }
+@media (max-width: 960px) {
+  .family-worlds-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .family-worlds-grid--1 > .family-world-card:nth-child(1),.family-worlds-grid--2 > .family-world-card:nth-child(1),.family-worlds-grid--2 > .family-world-card:nth-child(2),.family-worlds-grid--4 > .family-world-card:nth-child(4),.family-worlds-grid--5 > .family-world-card:nth-child(4),.family-worlds-grid--5 > .family-world-card:nth-child(5) { grid-column: auto; width: auto; justify-self: stretch; }
+  .family-worlds-grid--1 > .family-world-card:nth-child(1) { grid-column: 1 / -1; width: min(100%,420px); justify-self: center; }
+  .family-worlds-grid > .family-world-card:last-child:nth-child(odd) { grid-column: 1 / -1; width: calc(50% - 10px); justify-self: center; }
+}
 @media (max-width: 767px) {
   .family-center-layout .family-content > .family-center,.family-center { padding: 16px 16px 32px; }
+  .family-center-layout .family-content > .family-center.family-center--world-open { padding: 12px 16px 28px; }
+  .family-center-layout .family-content > .family-center.family-center--world-list { padding: 16px 16px 32px; }
+  .family-center--world-list .fc-welcome--small { gap: 10px; min-height: 96px; margin-bottom: 8px; }
+  .family-center--world-list .fc-welcome--small .fc-ashi { width: 86px; height: 96px; }
+  .family-center-layout .family-content > .family-center.family-center--world-list .fc-welcome--small h1 { font-size: 34px; }
+  .family-center--world-list .fc-welcome--small p { font-size: 15px; }
+  .family-worlds-grid { gap: 14px; }
+  .family-world-card { min-height: 340px; padding: 9px; border-radius: 20px; }
+  .family-world-card-art { min-height: 158px; border-radius: 15px; }
+  .family-world-card-image { height: 150px; }
+  .family-world-card-content h2 { font-size: 18px; margin-bottom: 10px; }
+  .family-world-card-action { min-height: 44px; font-size: 14px; }
   .fc-top { gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
   .fc-home-link { font-size: 15px; }
   .fc-profile { order: 3; flex-basis: 100%; max-width: 100%; }
@@ -139,6 +199,13 @@
   .fc-family-tools { gap: 12px; }
   .fc-family-tools button { flex-wrap: wrap; padding: 16px 12px; }
   .fc-empty { padding: 24px 18px; }
+}
+@media (max-width: 520px) {
+  .family-worlds-grid { grid-template-columns: minmax(0,1fr); }
+  .family-worlds-grid > .family-world-card { grid-column: auto !important; width: 100% !important; }
+  .family-world-card { min-height: 300px; }
+  .family-world-card-art { min-height: 150px; }
+  .family-world-card-image { height: 145px; }
 }
 @supports not ((backdrop-filter:blur(18px)) or (-webkit-backdrop-filter:blur(18px))) { .fc-destination,.fc-glass { background: #fff; } }
 @media (prefers-reduced-motion:reduce) { .family-center * { animation: none !important; transition: none !important; } .fc-button:active { transform: none; } }

@@ -27,7 +27,7 @@ describe('Reportes profesionales persistentes, sin rediseño', () => {
   it('consulta sesiones/reportes reales y mantiene tarjetas y plantillas', async () => {
     const calls = mockApi(); renderRoute('/terapeuta/reportes', 'TERAPEUTA');
     expect(await screen.findByDisplayValue('AUDITORIA guardada')).toBeInTheDocument();
-    expect(screen.getByText('Plantillas descargables')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Descargar reporte PDF' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Firmar' })).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Enviar' })).toBeDisabled();
     expect(screen.queryByText('Dra. Ana Ruiz')).not.toBeInTheDocument();

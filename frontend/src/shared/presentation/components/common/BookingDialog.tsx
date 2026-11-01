@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
-import { X } from 'lucide-react';
+import { createPortal } from 'react-dom';
+import { Building2, CalendarDays, Check, MapPin, Sparkles, Stethoscope, UserRound, Video, X } from 'lucide-react';
 import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
+import './booking-dialog.css';
 import { useFamilyPatients } from '@/modules/padre/application/useFamilyPatients';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { agendaService, appointmentsService, patientsService, treatmentsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { readAllPages } from '@/core/api/readAllPages';
 import type { Appointment } from '@/modules/clinica/domain/clinical';
-const field = 'mt-1 w-full rounded-2xl border border-[#C8C2DC] bg-white px-4 py-3 text-base';
+const field = 'booking-field-input';
 const localDate = (date: string) => new Date(Date.parse(date) - 5 * 3600000).toISOString().slice(0, 10);
 const clock = (date: string) => new Date(date).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', hour12: false });
 
@@ -49,8 +51,13 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   }, close);
   const change = () => { setStart(''); setReview(false); };
   const selectedChild = family.children.find(p => p.id === patient);
-  return <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
-    <form ref={form} role="dialog" aria-modal="true" aria-labelledby="booking-title" onKeyDown={e => {
+  const patientName = selectedChild ? `${selectedChild.name} ${selectedChild.surname}` : appointment?.paciente_nombre || 'Sin seleccionar';
+  const selectedProfessional = professionals.data?.find(p => p.id_terapeuta === therapist);
+  const formattedDay = day ? day.split('-').reverse().join('/') : 'Elige una fecha';
+  return createPortal(<div className="booking-dialog-overlay" onMouseDown={event => {
+    if (event.target === event.currentTarget && !save.isPending) close();
+  }}>
+    <form ref={form} role="dialog" aria-modal="true" aria-labelledby="booking-title" aria-describedby="booking-description" className="booking-dialog" onKeyDown={e => {
       if (e.key === 'Escape' && !save.isPending) close();
       if (e.key === 'Tab') {
         const nodes = Array.from(form.current?.querySelectorAll<HTMLElement>('button:not(:disabled),select:not(:disabled),input:not(:disabled)') ?? []);
@@ -58,37 +65,78 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
         if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
       }
-    }} className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl text-[#1C1135]" onSubmit={e => {
+    }} onSubmit={e => {
       e.preventDefault(); if (!ready) return; if (!review) setReview(true); else void save.submit(undefined);
     }}>
-      <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8E5F4]"><h2 id="booking-title" className="font-extrabold text-lg">{appointment ? 'Reprogramar cita' : 'Reservar una cita'}</h2><button type="button" className="min-h-11 min-w-11" disabled={save.isPending} onClick={close} aria-label="Cerrar reserva"><X size={20} /></button></div>
-      <fieldset disabled={save.isPending} className="p-6 space-y-4 text-sm font-bold">
+      <header className="booking-dialog-header">
+        <div className="booking-dialog-heading">
+          <span className="booking-dialog-icon"><CalendarDays size={19} aria-hidden="true" /></span>
+          <div><p className="booking-eyebrow">Agenda familiar</p><h2 id="booking-title">{appointment ? 'Reprogramar cita' : 'Reservar una cita'}</h2></div>
+        </div>
+        <button type="button" className="booking-close" disabled={save.isPending} onClick={close} aria-label="Cerrar reserva"><X size={19} /></button>
+        <p id="booking-description" className="booking-dialog-subtitle">{appointment ? 'Elige otro horario para esta atención.' : 'Elige un horario disponible y confirma los datos de la sesión.'}</p>
+        <div className="booking-progress" aria-label={review ? 'Paso 2 de 2' : 'Paso 1 de 2'}>
+          <span className="booking-progress-step is-complete"><span>1</span><span>Elige horario</span></span>
+          <span className={`booking-progress-line ${review ? 'is-complete' : ''}`} aria-hidden="true" />
+          <span className={`booking-progress-step ${review ? 'is-complete' : ''}`}><span>2</span><span>Confirma cita</span></span>
+        </div>
+      </header>
+      <fieldset disabled={save.isPending} className="booking-dialog-body">
         {!review ? <>
-          {!appointment && <><RemoteFeedback pending={family.query.isPending} error={family.query.error} retry={() => void family.query.refetch()} />
-            <label className="block">Hijo o hija<select required className={field} value={patient || ''} onChange={e => { setPatient(Number(e.target.value)); setTreatment(0); change(); }}><option value="">Selecciona un niño</option>{family.children.map(p => <option key={p.id} value={p.id}>{p.name} {p.surname}</option>)}</select></label>
-            {!!patient && <><RemoteFeedback pending={journey.isPending} error={journey.error || plans.error} retry={() => { void journey.refetch(); void plans.refetch(); }} />
-              <p className="rounded-2xl bg-violet-50 p-3 text-violet-950">{journey.data?.introduccion_pendiente ? 'Este niño ya tiene una introducción reservada. Consúltala en la agenda.' : journey.data?.introduccion_atendida && !journey.data.terapia_habilitada ? 'El profesional debe guardar el plan antes de reservar terapia.' : type === 'INTRODUCTORIA' ? 'Consulta introductoria: el primer paso para este niño. Todavía no necesita un plan.' : 'Sesión de terapia: puedes elegir cualquier profesional disponible.'}</p>
-              {type === 'TERAPIA' && (
-                activePlans.length > 0 ? (
-                  <label className="block">Plan vigente<select required className={field} value={selectedPlan ?? ''} onChange={e => { setTreatment(Number(e.target.value)); setReview(false); }}>{activePlans.map(t => <option key={t.id_tratamiento} value={t.id_tratamiento}>{t.nombre_tratamiento}</option>)}</select></label>
-                ) : (
-                  <div className="rounded-2xl border border-violet-100 bg-violet-50/60 p-3 text-xs text-violet-900">
-                    <span className="font-bold">Plan de trabajo:</span> Se registrará como sesión general de seguimiento.
-                  </div>
-                )
-              )}
+          {!appointment && <div className="booking-patient-section">
+            <RemoteFeedback pending={family.query.isPending} error={family.query.error} retry={() => void family.query.refetch()} />
+            <label className="booking-field-label">Hijo o hija<select required className={field} value={patient || ''} onChange={e => { setPatient(Number(e.target.value)); setTreatment(0); change(); }}><option value="">Selecciona un niño</option>{family.children.map(p => <option key={p.id} value={p.id}>{p.name} {p.surname}</option>)}</select></label>
+            {family.query.isSuccess && family.children.length === 0 && <p className="booking-inline-hint">No hay perfiles infantiles asociados. Añade uno en “Gestionar familia” para poder reservar.</p>}
+            {!!patient && <>
+              <RemoteFeedback pending={journey.isPending} error={journey.error || plans.error} retry={() => { void journey.refetch(); void plans.refetch(); }} />
+              <div className={`booking-guidance ${blocked ? 'is-blocked' : ''}`} role="status">
+                <span className="booking-guidance-icon"><Stethoscope size={17} aria-hidden="true" /></span>
+                <span>{journey.isPending ? 'Estamos comprobando qué tipo de sesión necesita este niño.' : journey.error ? 'No pudimos validar el proceso de este niño. Vuelve a intentarlo antes de reservar.' : journey.data?.introduccion_pendiente ? 'Este niño ya tiene una consulta introductoria reservada. Puedes verla en la agenda.' : journey.data?.introduccion_atendida && !journey.data.terapia_habilitada ? 'El profesional debe guardar el plan antes de reservar una sesión de terapia.' : type === 'INTRODUCTORIA' ? 'Consulta introductoria: el primer paso para este niño. Aún no necesita un plan.' : 'Sesión de terapia: elige un profesional y un horario disponible.'}</span>
+              </div>
+              {type === 'TERAPIA' && (activePlans.length > 0 ? (
+                <label className="booking-field-label">Plan vigente<select required className={field} value={selectedPlan ?? ''} onChange={e => { setTreatment(Number(e.target.value)); setReview(false); }}>{activePlans.map(t => <option key={t.id_tratamiento} value={t.id_tratamiento}>{t.nombre_tratamiento}</option>)}</select></label>
+              ) : (
+                <div className="booking-guidance"><span className="booking-guidance-icon"><Check size={16} aria-hidden="true" /></span><span><strong>Plan de trabajo:</strong> la sesión se registrará como seguimiento general.</span></div>
+              ))}
             </>}
-          </>}
+          </div>}
           <RemoteFeedback pending={professionals.isPending} error={professionals.error} retry={() => void professionals.refetch()} />
-          <label className="block">Profesional<select required disabled={!!appointment} className={field} value={therapist || ''} onChange={e => { setTherapist(Number(e.target.value)); change(); }}><option value="">Selecciona un terapeuta</option>{professionals.data?.map(p => <option key={p.id_terapeuta} value={p.id_terapeuta}>{p.nombres} {p.apellidos}{p.especialidad ? ` · ${p.especialidad}` : ''}</option>)}</select></label>
-          <label className="block">Día<input required type="date" className={field} min={localDate(new Date().toISOString())} max={localDate(new Date(Date.now() + 90 * 86400000).toISOString())} value={day} onInput={e => { setDay(e.currentTarget.value); change(); }} onChange={e => { setDay(e.target.value); change(); }} /></label>
-          {!!therapist && <><RemoteFeedback pending={slots.isPending} error={slots.error} retry={() => void slots.refetch()} />
-            <fieldset><legend>Horario en Lima · {durationMinutes} minutos</legend><div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">{!slots.error && slots.data?.map(s => <button type="button" key={s.inicio} disabled={!s.disponible} aria-pressed={start === s.inicio} onClick={() => setStart(s.inicio)} className={`min-h-14 rounded-xl border p-2 ${start === s.inicio ? 'bg-violet-700 text-white border-violet-700' : 'bg-white border-[#C8C2DC] disabled:bg-slate-100 disabled:text-slate-600'}`}><span className="block">{clock(s.inicio)}</span><span className="text-xs font-normal">{s.motivo ?? 'Disponible'}</span></button>)}</div></fieldset>
-          </>}
-          <label className="block">Modalidad<select className={field} value={mode} onChange={e => setMode(e.target.value as typeof mode)}><option value="PRESENCIAL">Presencial</option><option value="VIRTUAL">Virtual</option></select></label>
-          <div aria-live="polite"><p>{mode === 'PRESENCIAL' ? 'Dirección del centro' : 'Reunión virtual'}</p><p className="mt-1 font-normal">{location}</p></div>
-        </> : <section aria-label="Resumen de la reserva" className="space-y-3"><h3 className="font-extrabold text-lg">Revisa tu cita</h3><p>{type === 'INTRODUCTORIA' ? 'Consulta introductoria' : 'Sesión de terapia'}</p><p>{selectedChild ? `${selectedChild.name} ${selectedChild.surname}` : appointment?.paciente_nombre}</p><p>{professionals.data?.find(p => p.id_terapeuta === therapist)?.nombres} {professionals.data?.find(p => p.id_terapeuta === therapist)?.apellidos}</p><p>{day} · {selected && `${clock(selected.inicio)}–${clock(selected.fin)}`} (Lima)</p><p>{mode === 'VIRTUAL' ? 'Virtual' : 'Presencial'}{location && ` · ${location}`}</p><p className="font-normal">La cita quedará confirmada al guardar. El servidor volverá a comprobar que el turno esté libre.</p><Btn variant="outline" onClick={() => setReview(false)}>Editar selección</Btn></section>}
+          <div className="booking-selection-grid">
+            <div className="booking-selection-controls">
+              <label className="booking-field-label">Profesional<select required disabled={!!appointment} className={field} value={therapist || ''} onChange={e => { setTherapist(Number(e.target.value)); change(); }}><option value="">Selecciona un terapeuta</option>{professionals.data?.map(p => <option key={p.id_terapeuta} value={p.id_terapeuta}>{p.nombres} {p.apellidos}{p.especialidad ? ` · ${p.especialidad}` : ''}</option>)}</select></label>
+              <label className="booking-field-label">Día<input required type="date" className={field} min={localDate(new Date().toISOString())} max={localDate(new Date(Date.now() + 90 * 86400000).toISOString())} value={day} onInput={e => { setDay(e.currentTarget.value); change(); }} onChange={e => { setDay(e.target.value); change(); }} /></label>
+              <fieldset className="booking-mode-picker"><legend>Modalidad</legend>
+                <label className={`booking-mode-option ${mode === 'PRESENCIAL' ? 'is-selected' : ''}`}><input type="radio" name="booking-mode" value="PRESENCIAL" checked={mode === 'PRESENCIAL'} onChange={() => setMode('PRESENCIAL')} /><span className="booking-mode-icon"><Building2 size={17} aria-hidden="true" /></span><span><strong>Presencial</strong><small>En el centro</small></span>{mode === 'PRESENCIAL' && <Check size={16} className="booking-mode-check" aria-hidden="true" />}</label>
+                <label className={`booking-mode-option ${mode === 'VIRTUAL' ? 'is-selected' : ''}`}><input type="radio" name="booking-mode" value="VIRTUAL" checked={mode === 'VIRTUAL'} onChange={() => setMode('VIRTUAL')} /><span className="booking-mode-icon"><Video size={17} aria-hidden="true" /></span><span><strong>Virtual</strong><small>Por Google Meet</small></span>{mode === 'VIRTUAL' && <Check size={16} className="booking-mode-check" aria-hidden="true" />}</label>
+              </fieldset>
+              <div className="booking-location" aria-live="polite"><span className="booking-location-icon">{mode === 'PRESENCIAL' ? <MapPin size={17} aria-hidden="true" /> : <Video size={17} aria-hidden="true" />}</span><span><strong>{mode === 'PRESENCIAL' ? 'Lugar de atención' : 'Conexión virtual'}</strong><small>{location}</small></span></div>
+            </div>
+            <div className="booking-schedule">
+              <div className="booking-schedule-heading"><div><h3>Elige un horario</h3><p>Horario en Lima · {durationMinutes} minutos</p></div>{selected && <span className="booking-selected-badge"><Check size={13} aria-hidden="true" /> Seleccionado</span>}</div>
+              {!!therapist && <>
+                <RemoteFeedback pending={slots.isPending} error={slots.error} retry={() => void slots.refetch()} />
+                {!slots.isPending && !slots.error && slots.data?.length === 0 && <div className="booking-no-slots"><CalendarDays size={22} aria-hidden="true" /><strong>No hay horarios para este día</strong><span>Prueba con otra fecha para ver más opciones.</span></div>}
+                <div className="booking-slots" role="group" aria-label={`Horarios disponibles para el ${formattedDay}`}>
+                  {!slots.error && slots.data?.map(s => <button type="button" key={s.inicio} disabled={!s.disponible} aria-pressed={start === s.inicio} onClick={() => setStart(s.inicio)} className={`booking-slot ${start === s.inicio ? 'is-selected' : ''}`}><span className="booking-slot-time">{clock(s.inicio)}</span><span className="booking-slot-state">{s.motivo ?? (s.disponible ? 'Disponible' : 'No disponible')}</span></button>)}
+                </div>
+              </>}
+              {!therapist && <div className="booking-no-slots"><Stethoscope size={22} aria-hidden="true" /><strong>Selecciona un profesional</strong><span>Mostraremos aquí los turnos disponibles.</span></div>}
+            </div>
+          </div>
+        </> : <section aria-label="Resumen de la reserva" className="booking-review">
+          <div className="booking-review-heading"><span className="booking-review-icon"><Check size={19} aria-hidden="true" /></span><div><p className="booking-eyebrow">Todo listo</p><h3>Revisa tu cita</h3><p>Comprueba los datos antes de confirmar la reserva.</p></div></div>
+          <div className="booking-review-grid">
+            <div className="booking-review-card"><span className="booking-review-card-icon"><UserRound size={17} aria-hidden="true" /></span><div><small>Paciente</small><strong>{patientName}</strong></div></div>
+            <div className="booking-review-card"><span className="booking-review-card-icon"><Sparkles size={17} aria-hidden="true" /></span><div><small>Tipo de cita</small><strong>{type === 'INTRODUCTORIA' ? 'Consulta introductoria' : 'Sesión de terapia'}</strong></div></div>
+            <div className="booking-review-card"><span className="booking-review-card-icon"><Stethoscope size={17} aria-hidden="true" /></span><div><small>Profesional</small><strong>{selectedProfessional ? `${selectedProfessional.nombres} ${selectedProfessional.apellidos}` : 'Sin seleccionar'}</strong></div></div>
+            <div className="booking-review-card"><span className="booking-review-card-icon"><CalendarDays size={17} aria-hidden="true" /></span><div><small>Fecha y hora (Lima)</small><strong>{formattedDay}{selected && ` · ${clock(selected.inicio)}–${clock(selected.fin)}`}</strong></div></div>
+            <div className="booking-review-card"><span className="booking-review-card-icon">{mode === 'PRESENCIAL' ? <Building2 size={17} aria-hidden="true" /> : <Video size={17} aria-hidden="true" />}</span><div><small>{mode === 'PRESENCIAL' ? 'Atención presencial' : 'Atención virtual'}</small><strong>{location}</strong></div></div>
+          </div>
+          <p className="booking-review-note">La reserva quedará confirmada al guardar. El sistema volverá a comprobar que el horario siga disponible.</p>
+        </section>}
         <RemoteFeedback error={save.error} />
-      </fieldset><div className="px-6 py-4 border-t border-[#E8E5F4] flex gap-3"><Btn variant="secondary" disabled={save.isPending} onClick={close}>Cancelar</Btn><Btn type="submit" disabled={save.isPending || !ready}>{save.isPending ? 'Confirmando…' : review ? 'Confirmar cita' : 'Revisar reserva'}</Btn></div>
-    </form></div>;
+      </fieldset>
+      <footer className="booking-dialog-footer"><p>{review ? 'La cita se confirmará con los datos que aparecen arriba.' : 'Podrás revisar los datos antes de confirmar.'}</p><div><Btn variant="secondary" disabled={save.isPending} onClick={() => review ? setReview(false) : close()}>{review ? 'Editar selección' : 'Cancelar'}</Btn><Btn type="submit" disabled={save.isPending || !ready}>{save.isPending ? 'Confirmando…' : review ? 'Confirmar cita' : 'Revisar reserva'}</Btn></div></footer>
+    </form>
+  </div>, document.body);
 }

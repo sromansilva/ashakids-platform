@@ -11,6 +11,8 @@ export function Sidebar({
   go,
   logout,
   mobile = false,
+  collapsed = false,
+  hideUserFooter = false,
   padreUserName = "Laura Gómez",
 }: {
   role: Role;
@@ -18,6 +20,8 @@ export function Sidebar({
   go: (v: View) => void;
   logout: () => void;
   mobile?: boolean;
+  collapsed?: boolean;
+  hideUserFooter?: boolean;
   padreUserName?: string;
 }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -185,11 +189,11 @@ export function Sidebar({
 
   return (
     <aside
-      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : ""}`}
-      style={{ width: mobile ? "100%" : 240 }}
+      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : ""}${collapsed ? " sidebar--collapsed" : ""}`}
+      style={{ width: mobile ? "100%" : collapsed ? 88 : 240 }}
     >
-      {!mobile && <div className="p-5 pb-4" style={{ position: "relative", zIndex: 1 }}>
-        <div className="flex items-center gap-2.5"><Isotipo size={36} /><span className="font-extrabold text-[#1C1135] text-lg tracking-tight">AshaKids</span></div>
+      {!mobile && <div className={`p-5 pb-4 ${collapsed ? "sidebar-brand-collapsed" : ""}`} style={{ position: "relative", zIndex: 1 }}>
+        <div className={`flex items-center gap-2.5 ${collapsed ? "justify-center" : ""}`}><Isotipo size={36} /><span className={`sidebar-brand-label ${collapsed ? "sidebar-brand-label--collapsed" : ""} font-extrabold text-[#1C1135] text-lg tracking-tight`}>AshaKids</span></div>
       </div>}
 
       <nav className={`flex-1 min-h-0 overflow-y-auto py-2 flex flex-col gap-1 px-3`} style={{ position: "relative", zIndex: 1 }}>
@@ -202,8 +206,10 @@ export function Sidebar({
             <button
               key={item.view}
               aria-current={active ? "page" : undefined}
+              aria-label={collapsed ? item.label : undefined}
+              title={collapsed ? item.label : undefined}
               onClick={() => go(item.view)}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98]
+              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98] ${collapsed ? "justify-center gap-0 px-0" : ""}
                 ${
                   active
                     ? "bg-[#6B46FE] text-white shadow-md shadow-violet-200"
@@ -211,11 +217,12 @@ export function Sidebar({
                 }`}
             >
               <item.icon
-                size={18}
-                className={`flex-shrink-0 transition-colors ${active ? "text-white" : "text-[#7C6F9A]"}`}
+                size={collapsed ? 22 : 18}
+                className={`sidebar-nav-icon flex-shrink-0 transition-colors ${active ? "text-white" : "text-[#7C6F9A]"}`}
+                aria-hidden="true"
               />
-              <span className="truncate">{item.label}</span>
-              {active && (
+              <span className={`sidebar-nav-label ${collapsed ? "sidebar-nav-label--collapsed" : "truncate"}`}>{item.label}</span>
+              {active && !collapsed && (
                 <div className="ml-auto w-2 h-2 rounded-full bg-white flex-shrink-0" />
               )}
             </button>
@@ -223,9 +230,9 @@ export function Sidebar({
         })}
       </nav>
 
-      <div className={`shrink-0 px-4 py-4 border-t border-[#E8E5F4] ${mobile ? "pb-[calc(1rem+env(safe-area-inset-bottom))]" : ""}`} style={{ position: "relative", zIndex: 1 }}>
+      {!hideUserFooter && <div className={`shrink-0 px-4 py-4 border-t border-[#E8E5F4] ${mobile ? "pb-[calc(1rem+env(safe-area-inset-bottom))]" : ""} ${collapsed ? "sidebar-user-footer-collapsed" : ""}`} style={{ position: "relative", zIndex: 1 }}>
         {showLogoutConfirm ? (
-          <div className="flex items-center justify-between gap-2 p-2 rounded-2xl bg-red-50 border border-red-200 animate-in fade-in duration-150">
+          <div className={`sidebar-logout-confirm flex items-center justify-between gap-2 p-2 rounded-2xl bg-red-50 border border-red-200 animate-in fade-in duration-150`}>
             <span className="text-xs font-bold text-red-700 truncate">¿Cerrar sesión?</span>
             <div className="flex items-center gap-1 shrink-0">
               <button
@@ -247,18 +254,18 @@ export function Sidebar({
             </div>
           </div>
         ) : (
-          <div className="flex items-center gap-3 min-w-0">
-            <div className="w-10 h-10 rounded-full bg-[#FF8A00] flex items-center justify-center text-white font-extrabold text-sm shrink-0">
+          <div className={`sidebar-user-row flex items-center gap-3 min-w-0 ${collapsed ? "sidebar-user-row-collapsed" : ""}`}>
+            <div title={collapsed ? user.name : undefined} className={`sidebar-user-avatar ${collapsed ? "w-9 h-9" : "w-10 h-10"} rounded-full bg-[#FF8A00] flex items-center justify-center text-white font-extrabold text-sm shrink-0`}>
               {user.av}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className={`sidebar-user-copy flex-1 min-w-0 ${collapsed ? "sidebar-user-copy--collapsed" : ""}`}>
               <p className="text-sm font-bold text-[#1C1135] leading-snug truncate">{user.name}</p>
               {user.sub && <p className="text-xs font-black truncate text-[#FF8A00]">{user.sub}</p>}
             </div>
             <button
               type="button"
               onClick={() => setShowLogoutConfirm(true)}
-              className="shrink-0 h-10 w-10 flex items-center justify-center rounded-xl text-[#7C6F9A] hover:bg-red-50 hover:text-red-500 transition-colors cursor-pointer"
+              className={`sidebar-logout-button ${collapsed ? "h-9 w-9" : "h-10 w-10"} shrink-0 flex items-center justify-center rounded-xl text-[#7C6F9A] hover:bg-red-50 hover:text-red-500 transition-colors cursor-pointer`}
               aria-label="Cerrar sesión"
               title="Cerrar sesión"
             >
@@ -266,7 +273,7 @@ export function Sidebar({
             </button>
           </div>
         )}
-      </div>
+      </div>}
     </aside>
   );
 }
