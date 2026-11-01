@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { CheckCircle, FileText, Settings, Target, UserCheck } from 'lucide-react';
+import { CheckCircle, FileText, Settings, Target } from 'lucide-react';
 import {
   incidenciasService,
   tiposIncidencia,

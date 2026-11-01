@@ -1,8 +1,6 @@
 """Experimental speech transcription for therapist-reviewed audio fragments."""
 
 import io
-import re
-import unicodedata
 from typing import Any, Dict, Optional
 
 import librosa
@@ -81,42 +79,5 @@ class Wav2VecPhoneticEngine:
             "duracion_segundos": round(len(waveform) / 16000, 2),
             "motor_red_neuronal_activa": True,
         }
-
-    def analizar_transcripcion_sesion(self, texto_transcripcion: str) -> Dict[str, Any]:
-        """Split explicitly labelled turns without inferring a speaker's clinical role."""
-        turn_pattern = re.compile(
-            r"^([^:()]{1,60}?)(?:\s*\((\d{1,2}:\d{2}(?::\d{2})?)\))?:\s*(.+)$"
-        )
-        turnos = []
-        for line in texto_transcripcion.splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            match = turn_pattern.match(line)
-            if not match:
-                continue
-            speaker = match.group(1).strip()
-            normalized = unicodedata.normalize("NFD", speaker.lower())
-            normalized = "".join(char for char in normalized if unicodedata.category(char) != "Mn")
-            if normalized in {"terapeuta", "profesional"}:
-                role = "TERAPEUTA"
-            elif normalized in {"paciente", "nino", "usuario"}:
-                role = "PACIENTE"
-            else:
-                role = "HABLANTE"
-            turnos.append({
-                "hablante": role,
-                "hablante_nombre": speaker,
-                "timestamp": match.group(2) or "",
-                "texto": match.group(3).strip(),
-            })
-
-        return {
-            "estado": "PROCESADA",
-            "texto_extraido": texto_transcripcion,
-            "turnos_dialogo_count": len(turnos),
-            "turnos_dialogo": turnos[:100],
-        }
-
 
 engine = Wav2VecPhoneticEngine()

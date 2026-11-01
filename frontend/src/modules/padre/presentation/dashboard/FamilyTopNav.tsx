@@ -54,7 +54,6 @@ export function FamilyTopNav({
 
   const currentSection = activeSection || searchParams.get('section');
   const isFamilySubmodule = location.pathname.startsWith('/padre/') && location.pathname !== '/padre/welcome';
-  const hasSidebar = isFamilySubmodule || (location.pathname === '/padre' && (currentSection === 'family' || !currentSection));
 
   const handleNavClick = (item: typeof navLinks[number]) => {
     if (location.pathname === '/padre' && onSelectSection) {

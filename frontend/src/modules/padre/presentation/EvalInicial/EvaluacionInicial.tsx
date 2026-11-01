@@ -19,7 +19,7 @@ import { Station4 } from "@/modules/padre/presentation/EvalInicial/Station4";
 import { Station5 } from "@/modules/padre/presentation/EvalInicial/Station5";
 
 export function EvaluacionInicial(props: Parameters<typeof useEvaluacionInicial>[0]) {
-const { go, childName, childAgeMonths, step, setStep, consentGeneral, setConsentGeneral, consentMic, setConsentMic, _useMic, setUseMic, stationResults, setStationResults, completedStations, setCompletedStations, currentStation, setCurrentStation, parentObs, setParentObs, processing, setProcessing, resultCategory, setResultCategory, childLangs, setChildLangs, childBackground, setChildBackground, childNotes, setChildNotes, ageYears, ageMonthsRem, handleStationComplete, handleParentObsChange, handleParentObsSubmit, downloadPdf } = useEvaluacionInicial(props);
+const { go, childName, childAgeMonths, step, setStep, consentGeneral, setConsentGeneral, consentMic, setConsentMic, setUseMic, completedStations, currentStation, setCurrentStation, parentObs, processing, resultCategory, childLangs, setChildLangs, childBackground, setChildBackground, childNotes, setChildNotes, ageYears, ageMonthsRem, handleStationComplete, handleParentObsChange, handleParentObsSubmit, downloadPdf } = useEvaluacionInicial(props);
 if (step === "welcome") {
     return (
       <EvaluacionInicialComencemosTuPrimera childName={childName} ageYears={ageYears} ageMonthsRem={ageMonthsRem} setStep={setStep} go={go} />
@@ -114,10 +114,10 @@ if (step === "welcome") {
   // ── Steps: Stations ───────────────────────────────────────────────────────────
   const stationSteps: Record<string, React.ReactElement> = {
     "station-1": <Station1 ageMonths={childAgeMonths} onComplete={handleStationComplete} />,
-    "station-2": <Station2 ageMonths={childAgeMonths} onComplete={handleStationComplete} />,
+    "station-2": <Station2 onComplete={handleStationComplete} />,
     "station-3": <Station3 ageMonths={childAgeMonths} onComplete={handleStationComplete} />,
-    "station-4": <Station4 ageMonths={childAgeMonths} onComplete={handleStationComplete} />,
-    "station-5": <Station5 ageMonths={childAgeMonths} onComplete={handleStationComplete} />,
+    "station-4": <Station4 onComplete={handleStationComplete} />,
+    "station-5": <Station5 onComplete={handleStationComplete} />,
   };
 
   if (step.startsWith("station-")) {

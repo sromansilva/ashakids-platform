@@ -12,6 +12,7 @@ from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+from transcript_service import analizar_transcripcion_sesion, extraer_texto_de_docx_o_bytes
 from wav2vec_engine import engine
 
 app = FastAPI(
@@ -91,33 +92,6 @@ async def predict_phonetics_file(
         raise HTTPException(status_code=500, detail=f"Error procesando archivo de audio: {str(exc)}")
 
 
-import io
-import zipfile
-import xml.etree.ElementTree as ET
-
-def extraer_texto_de_docx_o_bytes(raw_bytes: bytes) -> str:
-    if raw_bytes.startswith(b'PK\x03\x04'):
-        try:
-            with zipfile.ZipFile(io.BytesIO(raw_bytes)) as z:
-                if 'word/document.xml' in z.namelist():
-                    xml_content = z.read('word/document.xml')
-                    tree = ET.fromstring(xml_content)
-                    paragraphs = []
-                    for p in tree.iter():
-                        if p.tag.endswith('}p'):
-                            p_texts = [node.text for node in p.iter() if node.tag.endswith('}t') and node.text]
-                            if p_texts:
-                                paragraphs.append(''.join(p_texts))
-                    if paragraphs:
-                        return '\n'.join(paragraphs)
-        except Exception as e:
-            print(f"[Docx Parser Warning]: {e}")
-    try:
-        return raw_bytes.decode('utf-8')
-    except UnicodeDecodeError:
-        return raw_bytes.decode('latin-1', errors='replace')
-
-
 class TranscriptAnalysisRequest(BaseModel):
     texto: Optional[str] = Field(None, description="Texto de la transcripción de una sesión")
     archivo_base64: Optional[str] = Field(None, description="Contenido de archivo .docx o .txt en base64")
@@ -140,7 +114,7 @@ async def analyze_session_transcript_json(payload: TranscriptAnalysisRequest):
             if texto_extraido and len(texto_extraido.strip()) > 10:
                 texto = texto_extraido
 
-        resultado = engine.analizar_transcripcion_sesion(texto_transcripcion=texto)
+        resultado = analizar_transcripcion_sesion(texto_transcripcion=texto)
         resultado["texto_extraido"] = texto
         if payload.nombre_archivo:
             resultado["nombre_archivo"] = payload.nombre_archivo
@@ -157,7 +131,7 @@ async def analyze_session_transcript_file(file: UploadFile = File(...)):
     try:
         raw_bytes = await file.read()
         texto = extraer_texto_de_docx_o_bytes(raw_bytes)
-        resultado = engine.analizar_transcripcion_sesion(texto_transcripcion=texto)
+        resultado = analizar_transcripcion_sesion(texto_transcripcion=texto)
         return resultado
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Error analizando el archivo de transcripción: {str(exc)}")

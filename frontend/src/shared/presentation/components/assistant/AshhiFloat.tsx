@@ -7,7 +7,7 @@ import { MessageCircle } from "lucide-react";
 const LandingAshiAvatar = ({ size = 36 }: { size?: number }) => <PublicIllustration sizes="88px" src="/illustrations/ashi-head-v1.png" alt="" width={size} height={size} style={{ objectFit: 'contain' }}/>;
 
 export function AshhiFloat({ appearance, ...props }: Parameters<typeof useAshhiFloat>[0] & { appearance?: 'landing' }) {
-const { role, ashiCSS, open, setOpen, ashiTriggerRef, closeAshi, tab, setTab, input, setInput, thinking, setThinking, btnBottom, setBtnBottom, draftStates, setDraftStates, isDragging, setIsDragging, dragData, hasMoved, onBtnPointerDown, onBtnPointerMove, onBtnPointerUp, onBtnClick, msgs, setMsgs, roleCtx, ctx, send, AshiAvatar } = useAshhiFloat(props);
+const { ashiCSS, open, ashiTriggerRef, closeAshi, tab, setTab, input, setInput, thinking, btnBottom, draftStates, setDraftStates, isDragging, onBtnPointerDown, onBtnPointerMove, onBtnPointerUp, onBtnClick, msgs, ctx, send, AshiAvatar } = useAshhiFloat(props);
 return (
     <>
       <style>{ashiCSS}</style>

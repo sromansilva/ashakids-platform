@@ -91,7 +91,6 @@ function BasicWorldPlayer({ world, patientId, onSaved, back }: {
           levelNumber={level.number}
           targetPhrase={level.choices?.[0] || 'El perro corre'}
           patientId={patientId}
-          worldVersion={world.version}
           onSaved={onSaved}
           onExit={() => setLevelNumber(null)}
         />

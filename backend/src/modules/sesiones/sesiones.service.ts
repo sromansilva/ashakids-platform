@@ -118,7 +118,6 @@ function diagnosticarClinico(palabraEsperada: string, transcripcion: string) {
 
 export class SesionesService {
   async evaluarFonemaEnVivo(
-    idSesion: number,
     payload?: {
       audio_base64?: string;
       palabra_esperada?: string;

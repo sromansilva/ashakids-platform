@@ -170,7 +170,7 @@ sesionesRouter.post('/:key/evaluar-fonema-en-vivo', authenticate, requireRoles([
     if (req.user?.rol === 'TERAPEUTA' && !(await sesionesService.perteneceATerapeuta(key, req.user.id_usuario))) {
       return res.status(403).json({ error: 'No tienes permiso para evaluar fonemas en esta sesión.' });
     }
-    const resultado = await sesionesService.evaluarFonemaEnVivo(key, req.body);
+    const resultado = await sesionesService.evaluarFonemaEnVivo(req.body);
     res.json(resultado);
   } catch (err) {
     next(err);

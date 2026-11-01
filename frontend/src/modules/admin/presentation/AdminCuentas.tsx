@@ -1,20 +1,11 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Plus,
-  Search,
   X,
-  Mail,
   CheckCircle,
-  Trash2,
-  Pencil,
   AlertTriangle,
-  Loader2,
   RefreshCw,
-  Power,
-  Shield,
-  Users,
 } from "lucide-react";
-import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { adminService } from "@/modules/admin/infrastructure/adminService";
 import {
@@ -25,7 +16,6 @@ import {
   RegistroHijo,
 } from "@/modules/auth/domain/auth";
 import { PacienteItem } from "@/modules/pacientes/domain/pacientes";
-import { getAvatarInfo } from "@/core/config/avatars";
 import { ApiError } from "@/core/api/client";
 import { AdminCuentasHijosModal } from "./AdminCuentasHijosModal";
 import { AdminCuentasCrearModal } from "./AdminCuentasCrearModal";

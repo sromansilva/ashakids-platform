@@ -18,8 +18,6 @@ export function PadreCompras({ go, appointments, onAppointmentsChange }: { go: (
   const [toast, setToast]       = useState("");
   const [receipt, setReceipt]   = useState<Purchase | null>(null);
   const [cart, setCart]         = useState<number | null>(null);
-  const [coupon, setCoupon]     = useState("");
-  const [couponApplied, setCouponApplied] = useState(false);
   const [openPayments, setOpenPayments] = useState<number[]>([]);
   const confirmedSessions = appointments.filter(apt => apt.status === "confirmada");
   const pendingPayments = confirmedSessions.filter(apt => apt.paymentStatus !== "pagada");
@@ -30,11 +28,6 @@ export function PadreCompras({ go, appointments, onAppointmentsChange }: { go: (
     { id: 2, hours: 6,  price: "—", label: "Paquete Familiar", popular: true,  bg: "#EDE9FE",     border: B.violet,  discount: null },
     { id: 3, hours: 10, price: "—", label: "Paquete Completo", popular: false, bg: B.tealLight,   border: "#99F6E4", discount: null },
   ];
-
-  const applyCoupon = () => {
-    if (coupon.toUpperCase() === "ASHA20") { setCouponApplied(true); setToast("Cupón ASHA20 aplicado: 20% de descuento"); }
-    else setToast("Cupón no válido. Prueba con ASHA20");
-  };
 
   const exportHistory = () => {
     setToast("Historial exportado como CSV");
@@ -90,7 +83,6 @@ export function PadreCompras({ go, appointments, onAppointmentsChange }: { go: (
           <div className="p-6">
             {(() => {
               const pkg = pkgs.find(p => p.id === cart)!;
-              const finalPrice = "—";
               return (
                 <>
                   <div className="rounded-2xl p-4 border border-[#E8E5F4] mb-5">

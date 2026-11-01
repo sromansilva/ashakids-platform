@@ -12,7 +12,6 @@ interface VoiceSpeechGameProps {
   targetPhrase?: string;
   levelNumber?: number;
   patientId?: number;
-  worldVersion?: string;
   onSaved?: (progress: GameProgress) => void;
   onCompleted?: () => void;
   onExit?: () => void;
@@ -22,7 +21,6 @@ export function VoiceSpeechGame({
   targetPhrase = 'El perro corre',
   levelNumber = 1,
   patientId,
-  worldVersion = 'basica-1',
   onSaved,
   onCompleted,
   onExit,

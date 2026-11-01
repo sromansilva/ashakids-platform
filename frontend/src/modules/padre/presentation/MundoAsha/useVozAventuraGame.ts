@@ -304,5 +304,5 @@ const getFeedback=(s:number)=>{
     if(s<60) return "¡Excelente control! Tu voz llevó al personaje muy lejos.";
     return "¡Increíble aventura! Mantuviste un gran control de tu voz durante todo el recorrido.";
   };
-return { canvasRef, animRef, micStreamRef, analyserRef, audioCtxRef, phaseRef, noiseFloorRef, smoothedRef, isSpeakingRef, survivedRef, lastTickRef, bestTimeRef, isFirstRef, touchHeldRef, useMicRef, phase, setPhase, countdown, setCountdown, survivedSecs, setSurvivedSecs, bestTime, setBestTime, attemptNum, setAttemptNum, isSpeaking, setIsSpeaking, micPct, setMicPct, lastResult, setLastResult, inputMode, setInputMode, gRef, stopMic, getRaw, setP, requestMic, startCountdown, startTouchMode, getFeedback };
+return { canvasRef, lastTickRef, isFirstRef, touchHeldRef, phase, countdown, survivedSecs, bestTime, attemptNum, isSpeaking, micPct, lastResult, inputMode, stopMic, setP, requestMic, startCountdown, startTouchMode, getFeedback };
 }

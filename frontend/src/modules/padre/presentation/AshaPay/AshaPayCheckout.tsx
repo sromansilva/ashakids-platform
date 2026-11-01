@@ -16,8 +16,6 @@ import { PAYMENT_METHODS } from "@/modules/padre/presentation/AshaPay/PAYMENT_ME
 export function AshaPayCheckout({ go }: { go: (v: View) => void }) {
   const [step, setStep]           = useState<"summary" | "method" | "form" | "processing" | "done">("summary");
   const [method, setMethod]       = useState("card");
-  const [promo, setPromo]         = useState("");
-  const [promoApplied, setPromoApplied] = useState(false);
   const [saveCard, setSaveCard]   = useState(false);
   const [cardNum, setCardNum]     = useState("");
   const [cardName, setCardName]   = useState("");
@@ -28,10 +26,9 @@ export function AshaPayCheckout({ go }: { go: (v: View) => void }) {
   const [payFormSubmitted, setPayFormSubmitted] = useState(false);
   const pkg = ASHA_PAY_PACKAGE;
 
-  const discount  = promoApplied ? 9 : 0;
   const tax       = 4.05;
   const commission = method === "paypal" ? 1.5 : 0;
-  const total     = pkg.price - discount + tax + commission;
+  const total     = pkg.price + tax + commission;
 
   const formatCard = (v: string) => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
 
@@ -403,12 +400,6 @@ export function AshaPayCheckout({ go }: { go: (v: View) => void }) {
                     <span className="text-[#7C6F9A] font-medium">Sesión 45 min</span>
                     <span className="font-bold text-[#1C1135]">S/ {pkg.price}.00</span>
                   </div>
-                  {promoApplied && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-emerald-600 font-bold flex items-center gap-1"><span>🎁</span> Descuento</span>
-                      <span className="font-extrabold text-emerald-600">−S/ {discount.toFixed(2)}</span>
-                    </div>
-                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-[#7C6F9A] font-medium">IGV (18%)</span>
                     <span className="font-bold text-[#1C1135]">S/ {tax.toFixed(2)}</span>

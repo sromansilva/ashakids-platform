@@ -18,7 +18,7 @@ return (<div className="min-h-screen" style={{ background: "linear-gradient(160d
           <ProgressBar current={completedStations.length} total={5} label="Progreso de la aventura" />
 
           <div className="space-y-3 mb-8">
-            {STATIONS.map((station, idx) => {
+            {STATIONS.map((station) => {
               const isCompleted = completedStations.includes(station.id);
               const isCurrent = station.id === currentStation && !isCompleted;
               return (

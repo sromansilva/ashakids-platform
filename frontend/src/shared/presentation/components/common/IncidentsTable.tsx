@@ -5,13 +5,9 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
-  User,
-  Shield,
-  Calendar,
   X,
   RefreshCw,
   ChevronRight,
-  ArrowRight,
 } from 'lucide-react';
 import { Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
 
