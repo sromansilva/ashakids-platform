@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { View } from '@/shared/domain/types/navigation';
+import { apiClient } from '@/core/api/client';
+import { AdminMLHistoryTable } from './AdminMLHistoryTable';
 import {
   Mic,
   Clock,
@@ -58,13 +60,8 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
   const consultarHealthML = async () => {
     setIsLoadingHealth(true);
     try {
-      const res = await fetch('http://127.0.0.1:8001/health');
-      if (res.ok) {
-        const data = (await res.json()) as HealthMLResponse;
-        setHealth(data);
-      } else {
-        setHealth(null);
-      }
+      const data = await apiClient.get<HealthMLResponse>('http://127.0.0.1:8001/health');
+      setHealth(data);
     } catch {
       setHealth(null);
     } finally {
@@ -131,23 +128,11 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
 
     try {
       const formData = new FormData();
-
       formData.append('file', fileObject);
 
-      // Llamada directa al microservicio Wav2Vec 2.0 (puerto 8001)
-      const res = await fetch('http://127.0.0.1:8001/predict/file', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}: Falló el procesamiento en el motor ML.`);
-      }
-
-      const data = (await res.json()) as InferenciaMLResponse;
+      const data = await apiClient.upload<InferenciaMLResponse>('http://127.0.0.1:8001/predict/file', formData);
       setMlResult(data);
 
-      // El historial de esta pestaña solo conserva archivos procesados en memoria.
       setHistory(prev => [
         {
           id: Date.now(),
@@ -441,11 +426,27 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
 
               {/* Transcripción detectada */}
               <div className="mb-4">
-                  <label className="block text-xs font-extrabold text-[#1C1135] mb-2 flex items-center gap-1.5">
+                <label className="block text-xs font-extrabold text-[#1C1135] mb-2 flex items-center gap-1.5">
                   <Sparkles size={14} className="text-[#6B46FE]" /> Texto reconocido
                 </label>
                 <div className="bg-[#F8F7FD] border border-[#E8E5F4] rounded-2xl p-4 text-sm font-bold text-[#1C1135]">
                   {mlResult?.transcripcion ? `“${mlResult.transcripcion}”` : 'Carga un audio para ver una transcripción. No se generan frases de ejemplo.'}
+                </div>
+              </div>
+
+              {/* Technical specs of ML analysis */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-[#F8F7FD] border border-[#E8E5F4] rounded-2xl p-3.5">
+                  <p className="text-[11px] font-bold text-[#615274]">Duración procesada</p>
+                  <p className="text-xs font-black text-[#1C1135]">
+                    {mlResult ? `${mlResult.duracion_segundos.toFixed(1)} segundos` : '—'}
+                  </p>
+                </div>
+                <div className="bg-[#F8F7FD] border border-[#E8E5F4] rounded-2xl p-3.5">
+                  <p className="text-[11px] font-bold text-[#615274]">Red Neuronal</p>
+                  <p className="text-xs font-black text-[#6B46FE]">
+                    {mlResult ? 'Wav2Vec 2.0' : '—'}
+                  </p>
                 </div>
               </div>
 
@@ -471,44 +472,7 @@ export function AdminML({ go: _go }: { go: (v: View) => void }) {
 
       {/* CONTENIDO DE LA PESTAÑA HISTORIAL */}
       {tab === 'HISTORIAL' && (
-        <div className="bg-white rounded-3xl border border-[#E8E5F4] shadow-sm overflow-hidden mb-6">
-          <div className="p-6 border-b border-[#E8E5F4] flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-[#F3E8FF] text-[#6B46FE] flex items-center justify-center shrink-0">
-                <Clock size={20} />
-              </div>
-              <div>
-                <h2 className="text-base font-extrabold text-[#1C1135]">Archivos procesados en esta vista</h2>
-                <p className="text-xs text-[#615274]">Lista temporal del navegador; no es un historial clínico guardado.</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[700px]">
-              <thead>
-                <tr className="bg-[#F8F7FD] border-b border-[#E8E5F4] text-xs font-extrabold text-[#615274]">
-                  <th className="py-4 px-6">Archivo de audio</th>
-                  <th className="py-4 px-6">Procesado</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#E8E5F4] text-sm">
-                {history.map(item => (
-                  <tr key={item.id} className="hover:bg-[#F9F8FD] transition-colors">
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-2.5">
-                        <FileText size={16} className="text-[#8C82A8]" />
-                        <span className="font-extrabold text-[#1C1135]">{item.archivo}</span>
-                      </div>
-                    </td>
-                    <td className="py-4 px-6 text-[#615274] font-medium">{item.fecha}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {history.length === 0 && <p className="p-6 text-sm text-[#615274]">Todavía no se procesó ningún archivo en esta página.</p>}
-          </div>
-        </div>
+        <AdminMLHistoryTable history={history} />
       )}
     </section>
   );
