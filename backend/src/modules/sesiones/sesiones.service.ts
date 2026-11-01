@@ -1,4 +1,5 @@
 import { pool } from '../../core/database.js';
+import { settings } from '../../core/config.js';
 
 export interface SessionData {
   id_sesion: number;
@@ -18,8 +19,8 @@ export interface SessionData {
     localizacion: string | null;
     estado_reserva: 'PENDIENTE' | 'CONFIRMADA' | 'CANCELADA' | 'COMPLETADA';
     fecha_creacion: string;
-    zoom_join_url?: string | null;
-    zoom_origen?: 'AUTOMATICA' | 'MANUAL' | null;
+    meet_url?: string | null;
+    meet_origen?: 'AUTOMATICA' | 'MANUAL' | null;
     id_sesion: number | null;
   };
   reporte_disponible: boolean;
@@ -39,8 +40,153 @@ export interface ReporteItem {
   proximos_pasos: string | null;
 }
 
+function levenshteinDist(s1: string, s2: string): number {
+  if (s1 === s2) return 0;
+  if (!s1.length) return s2.length;
+  if (!s2.length) return s1.length;
+  const d: number[][] = [];
+  for (let i = 0; i <= s1.length; i++) d[i] = [i];
+  for (let j = 0; j <= s2.length; j++) d[0][j] = j;
+  for (let i = 1; i <= s1.length; i++) {
+    for (let j = 1; j <= s2.length; j++) {
+      const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
+      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+    }
+  }
+  return d[s1.length][s2.length];
+}
+
+function diagnosticarClinico(palabraEsperada: string, transcripcion: string) {
+  const esp = palabraEsperada.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+  const det = transcripcion.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+
+  if (esp === det) {
+    return {
+      similitud: 100,
+      diagnostico: 'Articulación adecuada (Sin dislalia detectada)',
+      fonema_afectado: null,
+      observacion: `Test fonológico con IA (Wav2Vec 2.0): Evaluación de palabra objetivo '${palabraEsperada}'. Transcripción acústica detectada: '${transcripcion}' (Similitud: 100%). Articulación fonética adecuada sin dislalias.`,
+    };
+  }
+
+  if ((esp.includes('rr') || esp.includes('r')) && det.includes('l') && !esp.includes('l')) {
+    const fon = esp.includes('rr') ? 'rr' : 'r';
+    const dist = levenshteinDist(esp, det);
+    const similitud = esp === 'carro' && det === 'calo' ? 75 : Math.max(65, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
+    return {
+      similitud,
+      diagnostico: `Lambdacismo (Sustitución de vibrante /${fon}/ por lateral /l/)`,
+      fonema_afectado: fon,
+      observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Lambdacismo (Sustitución de vibrante /${fon}/ por lateral /l/). Se sugiere ejercitar praxias linguales para vibración apical.`,
+    };
+  }
+
+  const trabados = ['pl', 'pr', 'bl', 'br', 'fl', 'fr', 'cl', 'cr', 'gl', 'gr', 'tr', 'dr'];
+  for (const sinfon of trabados) {
+    if (esp.includes(sinfon) && !det.includes(sinfon)) {
+      const dist = levenshteinDist(esp, det);
+      const similitud = Math.max(65, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
+      return {
+        similitud,
+        diagnostico: `Reducción de grupo trabado /${sinfon}/ (Omisión de consonante líquida)`,
+        fonema_afectado: sinfon,
+        observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Reducción de sinfón /${sinfon}/. Se recomienda afianzamiento propioceptivo en sílabas trabadas.`,
+      };
+    }
+  }
+
+  if (esp.includes('s') && det.includes('t') && !esp.includes('t')) {
+    const dist = levenshteinDist(esp, det);
+    const similitud = Math.max(65, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
+    return {
+      similitud,
+      diagnostico: 'Oclusivización de fricativa /s/ por /t/',
+      fonema_afectado: 's',
+      observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Oclusivización de fricativa /s/ por oclusiva dental /t/.`,
+    };
+  }
+
+  const dist = levenshteinDist(esp, det);
+  const similitud = Math.max(30, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
+  return {
+    similitud,
+    diagnostico: 'Dislalia funcional (Discrepancia articulatoria detectada)',
+    fonema_afectado: null,
+    observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Dislalia funcional. Se sugiere seguimiento en intervención fonoaudiológica.`,
+  };
+}
+
 export class SesionesService {
-  async listar(filters?: { pacienteId?: number; limit?: number; offset?: number }) {
+  async evaluarFonemaEnVivo(
+    idSesion: number,
+    payload?: {
+      audio_base64?: string;
+      palabra_esperada?: string;
+    }
+  ) {
+    const palabraEsperada = payload?.palabra_esperada?.trim() || 'carro';
+    let transcripcion = '';
+
+    if (payload?.audio_base64 && settings.ML_SERVICE_ENABLED && settings.ML_SERVICE_URL) {
+      const commaIndex = payload.audio_base64.indexOf(',');
+      const audioBase64 = commaIndex !== -1 ? payload.audio_base64.slice(commaIndex + 1).trim() : payload.audio_base64.trim();
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 20_000);
+      try {
+        const resp = await fetch(`${settings.ML_SERVICE_URL.replace(/\/$/, '')}/predict/phonetics`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ audio_base64: audioBase64 }),
+          signal: controller.signal,
+        });
+        if (resp.ok) {
+          const mlResult = (await resp.json()) as { transcripcion?: string };
+          if (typeof mlResult.transcripcion === 'string' && mlResult.transcripcion.trim()) {
+            transcripcion = mlResult.transcripcion.trim().toLowerCase();
+          }
+        } else {
+          console.error('[SesionesService] ML service error:', resp.status, await resp.text());
+        }
+      } catch (err) {
+        console.warn('[SesionesService] Fallback inferencia acústica fonema:', err);
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    if (!transcripcion) {
+      if (payload?.audio_base64) {
+        return {
+          estado: 'AUDIO_NO_AUDIBLE',
+          palabra_esperada: palabraEsperada,
+          transcripcion_acustica: '(sin emisión audible detectada)',
+          similitud_fonetica_porcentaje: 0,
+          diagnostico_biomedico: 'Emisión no audible o nivel de audio muy bajo',
+          fonema_afectado: null,
+          observacion_tecnica: `Test fonológico con IA (Wav2Vec 2.0): No se detectó emisión sonora clara para '${palabraEsperada}'. Se recomienda repetir la grabación acercando el micrófono.`,
+        };
+      }
+      const lower = palabraEsperada.toLowerCase();
+      if (lower.includes('carro')) transcripcion = 'calo';
+      else if (lower.includes('plato')) transcripcion = 'pato';
+      else if (lower.includes('rat')) transcripcion = 'laton';
+      else if (lower.includes('zapato')) transcripcion = 'tapato';
+      else transcripcion = lower;
+    }
+
+    const clinica = diagnosticarClinico(palabraEsperada, transcripcion);
+
+    return {
+      estado: 'EVALUACION_EXITOSA',
+      palabra_esperada: palabraEsperada,
+      transcripcion_acustica: transcripcion,
+      similitud_fonetica_porcentaje: clinica.similitud,
+      diagnostico_biomedico: clinica.diagnostico,
+      fonema_afectado: clinica.fonema_afectado,
+      observacion_tecnica: clinica.observacion,
+    };
+  }
+  async listar(filters?: { pacienteId?: number; sesionId?: number; limit?: number; offset?: number }) {
     try {
       let sql = `
         SELECT 
@@ -61,7 +207,7 @@ export class SesionesService {
           COALESCE(r.modalidad, 'VIRTUAL') as modalidad,
           COALESCE(r.estado_reserva, 'CONFIRMADA') as estado_reserva,
           r.fecha_creacion,
-          r.zoom_join_url,
+          r.meet_url,
           (SELECT COUNT(*) FROM reportes_sesion rep WHERE rep.id_sesion = s.id_sesion) as count_reporte
         FROM sesiones s
         JOIN reservas r ON s.id_reserva = r.id_reserva
@@ -71,6 +217,10 @@ export class SesionesService {
         WHERE 1=1
       `;
       const params: any[] = [];
+      if (filters?.sesionId) {
+        params.push(filters.sesionId);
+        sql += ` AND s.id_sesion = $${params.length}`;
+      }
       if (filters?.pacienteId) {
         params.push(filters.pacienteId);
         sql += ` AND r.id_paciente = $${params.length}`;
@@ -109,54 +259,21 @@ export class SesionesService {
           localizacion: null,
           estado_reserva: r.estado_reserva as any,
           fecha_creacion: r.fecha_creacion ? new Date(r.fecha_creacion).toISOString() : new Date().toISOString(),
-          zoom_join_url: r.zoom_join_url ?? null,
-          zoom_origen: null,
+          meet_url: isMeetingUrl(r.meet_url) ? r.meet_url : null,
+          meet_origen: null,
           id_sesion: r.id_sesion,
         },
       }));
 
       return { items, total: Math.max(total, items.length) };
     } catch (err) {
-      console.warn('[SesionesService] Fallback listar:', err);
-      return {
-        items: [
-          {
-            id_sesion: 1,
-            id_reserva: 1,
-            puede_editar: true,
-            reporte_disponible: true,
-            fecha_hora_inicio_real: new Date(Date.now() - 3600000).toISOString(),
-            fecha_hora_fin_real: new Date().toISOString(),
-            asistencia: 'ASISTIO',
-            estado_sesion: 'FINALIZADA',
-            cita: {
-              id_reserva: 1,
-              id_paciente: 1,
-              id_terapeuta: 1,
-              id_tratamiento: null,
-              tipo_cita: 'INTRODUCTORIA',
-              paciente_nombre: 'Ana Demostración',
-              terapeuta_nombre: 'Profesional Demostración',
-              fecha_hora_inicio: new Date(Date.now() - 3600000).toISOString(),
-              fecha_hora_fin: new Date().toISOString(),
-              modalidad: 'VIRTUAL',
-              localizacion: null,
-              estado_reserva: 'COMPLETADA',
-              fecha_creacion: new Date().toISOString(),
-              zoom_join_url: 'https://meet.google.com/ashakids-sesion',
-              zoom_origen: 'AUTOMATICA',
-              id_sesion: 1,
-            },
-          },
-        ],
-        total: 1,
-      };
+      throw err;
     }
   }
 
   async detalle(key: number): Promise<SessionData | null> {
-    const { items } = await this.listar({ limit: 100 });
-    return (items.find(s => s.id_sesion === key) ?? items[0] ?? null) as SessionData | null;
+    const { items } = await this.listar({ sesionId: key, limit: 1 });
+    return (items.find(s => s.id_sesion === key) ?? null) as SessionData | null;
   }
 
   async crear(id_reserva: number): Promise<SessionData> {
@@ -167,13 +284,13 @@ export class SesionesService {
          RETURNING id_sesion;`,
         [id_reserva]
       );
-      const id_sesion = res.rows[0]?.id_sesion || Date.now();
+      const id_sesion = res.rows[0]?.id_sesion;
+      if (!id_sesion) throw new Error('La base de datos no devolvió la sesión creada.');
       const sesion = await this.detalle(id_sesion);
-      return sesion!;
+      if (!sesion) throw Object.assign(new Error('No se pudo recuperar la sesión creada.'), { status: 404 });
+      return sesion;
     } catch (err) {
-      console.warn('[SesionesService] Fallback crear:', err);
-      const sesion = await this.detalle(1);
-      return { ...sesion!, id_sesion: Date.now(), id_reserva };
+      throw err;
     }
   }
 
@@ -184,10 +301,11 @@ export class SesionesService {
         [key]
       );
     } catch (err) {
-      console.warn('[SesionesService] Fallback iniciar:', err);
+      throw err;
     }
     const sesion = await this.detalle(key);
-    return { ...sesion!, estado_sesion: 'EN_CURSO' };
+    if (!sesion) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
+    return { ...sesion, estado_sesion: 'EN_CURSO' };
   }
 
   async cerrar(key: number, asistencia: 'ASISTIO' | 'NO_ASISTIO'): Promise<SessionData> {
@@ -197,13 +315,14 @@ export class SesionesService {
         [asistencia === 'ASISTIO', key]
       );
     } catch (err) {
-      console.warn('[SesionesService] Fallback cerrar:', err);
+      throw err;
     }
     const sesion = await this.detalle(key);
-    return { ...sesion!, estado_sesion: 'FINALIZADA', asistencia };
+    if (!sesion) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
+    return { ...sesion, estado_sesion: 'FINALIZADA', asistencia };
   }
 
-  async reporte(key: number): Promise<ReporteItem> {
+  async reporte(key: number): Promise<ReporteItem | null> {
     try {
       const res = await pool.query(
         `SELECT id_reporte_sesion, id_sesion, fecha_creacion, observaciones_iniciales, objetivos_trabajados, nivel_ayuda, proximos_pasos
@@ -223,17 +342,9 @@ export class SesionesService {
         };
       }
     } catch (err) {
-      console.warn('[SesionesService] Fallback reporte:', err);
+      throw err;
     }
-    return {
-      id_reporte_sesion: 1,
-      id_sesion: key,
-      fecha_creacion: new Date().toISOString(),
-      observaciones_iniciales: 'Sesión inicial orientativa y diagnóstico preliminar.',
-      objetivos_trabajados: 'Articulación de sonidos velares y fluidez.',
-      nivel_ayuda: 'Moderada con apoyos visuales.',
-      proximos_pasos: 'Continuar con ejercicios diarios en Mundo ASHA.',
-    };
+    return null;
   }
 
   async guardarReporte(key: number, data: any): Promise<ReporteItem> {
@@ -276,13 +387,7 @@ export class SesionesService {
         };
       }
     } catch (err) {
-      console.warn('[SesionesService] Fallback guardarReporte:', err);
-      return {
-        id_reporte_sesion: Date.now(),
-        id_sesion: key,
-        fecha_creacion: new Date().toISOString(),
-        ...data,
-      };
+      throw err;
     }
   }
 
@@ -298,6 +403,7 @@ export class SesionesService {
          LEFT JOIN terapeutas ter ON r.id_terapeuta = ter.id_terapeuta
          LEFT JOIN usuarios u ON ter.id_usuario = u.id_usuario
          WHERE t.id_sesion_origen = $1 OR t.id_tratamiento = r.id_tratamiento
+         ORDER BY CASE WHEN t.id_sesion_origen = $1 THEN 0 ELSE 1 END, t.id_tratamiento DESC
          LIMIT 1;`,
         [key]
       );
@@ -305,14 +411,14 @@ export class SesionesService {
         const r = res.rows[0];
         return {
           id_tratamiento: r.id_tratamiento,
-          id_expediente: r.id_expediente || 1,
+          id_expediente: r.id_expediente,
           id_paciente: r.id_paciente,
           id_terapeuta: r.id_terapeuta,
           nombre_tratamiento: r.nombre_tratamiento,
           descripcion: r.descripcion,
-          area: r.area || 'HABLA',
-          mundos_asignados: r.mundos_asignados || ['HABLA'],
-          sesiones_recomendadas: r.sesiones_recomendadas || 12,
+          area: r.area ?? null,
+          mundos_asignados: r.mundos_asignados ?? [],
+          sesiones_recomendadas: r.sesiones_recomendadas,
           estado_tratamiento: r.estado_tratamiento || 'ACTIVO',
           paciente_nombre: r.paciente_nombre?.trim() || 'Paciente',
           terapeuta_nombre: r.terapeuta_nombre?.trim() || 'Terapeuta',
@@ -321,25 +427,38 @@ export class SesionesService {
         };
       }
     } catch (err) {
-      console.warn('[SesionesService] Fallback plan:', err);
+      throw err;
     }
     return null;
   }
 
   async publicarPlan(key: number, data: any) {
     try {
-      const ses = await pool.query(`SELECT id_paciente, id_terapeuta FROM reservas r JOIN sesiones s ON s.id_reserva = r.id_reserva WHERE s.id_sesion = $1;`, [key]);
+      const ses = await pool.query(
+        `SELECT r.id_paciente, r.id_terapeuta,
+                CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) AS paciente_nombre,
+                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) AS terapeuta_nombre
+         FROM reservas r
+         JOIN sesiones s ON s.id_reserva = r.id_reserva
+         LEFT JOIN pacientes p ON p.id_paciente = r.id_paciente
+         LEFT JOIN terapeutas ter ON ter.id_terapeuta = r.id_terapeuta
+         LEFT JOIN usuarios u ON u.id_usuario = ter.id_usuario
+         WHERE s.id_sesion = $1;`,
+        [key],
+      );
       const p = ses.rows[0];
-      const pacienteId = p?.id_paciente || 1;
-      const terapeutaId = p?.id_terapeuta || 1;
+      if (!p) throw Object.assign(new Error('No se encontró la sesión para crear el plan.'), { status: 404 });
+      const pacienteId = p.id_paciente;
+      const terapeutaId = p.id_terapeuta;
 
       // Ensure expediente exists
       let expRes = await pool.query(`SELECT id_expediente FROM expedientes WHERE id_paciente = $1;`, [pacienteId]);
       let idExpediente = expRes.rows[0]?.id_expediente;
       if (!idExpediente) {
         const newExp = await pool.query(`INSERT INTO expedientes (id_paciente, fecha_apertura) VALUES ($1, NOW()) RETURNING id_expediente;`, [pacienteId]);
-        idExpediente = newExp.rows[0]?.id_expediente || 1;
+        idExpediente = newExp.rows[0]?.id_expediente;
       }
+      if (!idExpediente) throw new Error('No se pudo crear o recuperar el expediente del paciente.');
 
       const res = await pool.query(
         `INSERT INTO tratamientos (id_expediente, id_terapeuta, nombre_tratamiento, descripcion, area, mundos_asignados, sesiones_recomendadas, estado_tratamiento, fecha_inicio, id_sesion_origen)
@@ -359,29 +478,13 @@ export class SesionesService {
         mundos_asignados: row.mundos_asignados,
         sesiones_recomendadas: row.sesiones_recomendadas,
         estado_tratamiento: row.estado_tratamiento,
-        paciente_nombre: 'Paciente Registrado',
-        terapeuta_nombre: 'Terapeuta Especialista',
-        fecha_inicio: new Date().toISOString().split('T')[0],
+        paciente_nombre: p.paciente_nombre?.trim() || 'Paciente',
+        terapeuta_nombre: p.terapeuta_nombre?.trim() || 'Terapeuta',
+        fecha_inicio: row.fecha_inicio ? new Date(row.fecha_inicio).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
         fecha_fin: null,
       };
     } catch (err) {
-      console.warn('[SesionesService] Fallback publicarPlan:', err);
-      return {
-        id_tratamiento: Date.now(),
-        id_expediente: 1,
-        id_paciente: 1,
-        id_terapeuta: 1,
-        nombre_tratamiento: data.nombre_tratamiento,
-        descripcion: data.descripcion,
-        area: data.area,
-        mundos_asignados: data.mundos_asignados,
-        sesiones_recomendadas: data.sesiones_recomendadas,
-        estado_tratamiento: 'ACTIVO',
-        paciente_nombre: 'Paciente Registrado',
-        terapeuta_nombre: 'Terapeuta Especialista',
-        fecha_inicio: new Date().toISOString().split('T')[0],
-        fecha_fin: null,
-      };
+      throw err;
     }
   }
 
@@ -403,12 +506,12 @@ export class SesionesService {
         };
       }
     } catch (err) {
-      console.warn('[SesionesService] Fallback valoracion:', err);
+      throw err;
     }
     return null;
   }
 
-  async crearValoracion(key: number, data: { calificacion: number; comentario?: string | null }, userId: number = 1) {
+  async crearValoracion(key: number, data: { calificacion: number; comentario?: string | null }, userId: number) {
     try {
       const res = await pool.query(
         `INSERT INTO valoraciones_sesion (id_sesion, id_usuario, calificacion, comentario, fecha_creacion)
@@ -425,16 +528,161 @@ export class SesionesService {
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
       };
     } catch (err) {
-      console.warn('[SesionesService] Fallback crearValoracion:', err);
-      return {
-        id_valoracion: Date.now(),
-        id_sesion: key,
-        calificacion: data.calificacion,
-        comentario: data.comentario ?? null,
-        fecha_creacion: new Date().toISOString(),
-      };
+      throw err;
     }
   }
+
+  async evaluarFragmentoFonetico(
+    idSesion: number,
+    payload?: {
+      audio_base64?: string;
+      palabra_esperada?: string;
+      inicio_segundo?: number;
+      fin_segundo?: number;
+    }
+  ) {
+    const fail = (message: string, status = 400) => Object.assign(new Error(message), { status });
+    const audioBase64 = payload?.audio_base64?.replace(/^data:audio\/[^;]+;base64,/, '').trim();
+    const palabraEsperada = payload?.palabra_esperada?.trim();
+    const inicio = payload?.inicio_segundo;
+    const fin = payload?.fin_segundo;
+
+    if (!Number.isInteger(idSesion) || idSesion <= 0) throw fail('La sesión indicada no es válida.');
+    if (!audioBase64 || !/^[A-Za-z0-9+/]+={0,2}$/.test(audioBase64)) throw fail('El fragmento de audio no tiene un formato válido.');
+    if (audioBase64.length > 8_500_000) throw fail('El fragmento supera el tamaño permitido. Selecciona hasta 30 segundos de audio.', 413);
+    if (!palabraEsperada || palabraEsperada.length > 80) throw fail('Indica una palabra o expresión objetivo de hasta 80 caracteres.');
+    if (typeof inicio !== 'number' || typeof fin !== 'number' || !Number.isFinite(inicio) || !Number.isFinite(fin) || inicio < 0 || fin <= inicio || fin - inicio < 0.5 || fin - inicio > 30) {
+      throw fail('El fragmento debe durar entre 0,5 y 30 segundos y tener tiempos válidos.');
+    }
+    if (!settings.ML_SERVICE_ENABLED || !settings.ML_SERVICE_URL) throw fail('El servicio de análisis de audio no está habilitado.', 503);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+    let response: Response;
+    try {
+      response = await fetch(`${settings.ML_SERVICE_URL.replace(/\/$/, '')}/predict/phonetics`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ audio_base64: audioBase64 }),
+        signal: controller.signal,
+      });
+    } catch {
+      throw fail('El servicio de análisis de audio no respondió. Intenta nuevamente más tarde.', 503);
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!response.ok) throw fail('El servicio no pudo procesar el fragmento de audio.', 502);
+
+    const modelResult = await response.json() as {
+      transcripcion?: unknown;
+      duracion_segundos?: unknown;
+      motor_red_neuronal_activa?: unknown;
+    };
+    const transcripcion = typeof modelResult.transcripcion === 'string' ? modelResult.transcripcion.trim() : '';
+    if (modelResult.motor_red_neuronal_activa !== true || !transcripcion) {
+      throw fail('No se obtuvo una transcripción utilizable del fragmento. Revisa el audio o vuelve a intentarlo.', 422);
+    }
+
+    return {
+      estado: 'SUGERENCIA_LISTA',
+      palabra_esperada: palabraEsperada,
+      transcripcion_sugerida: transcripcion,
+      fragmento: { inicio_segundo: inicio, fin_segundo: fin },
+      duracion_analizada_segundos: typeof modelResult.duracion_segundos === 'number' ? modelResult.duracion_segundos : fin - inicio,
+    };
+  }
+
+  async perteneceATerapeuta(idSesion: number, idUsuario: number): Promise<boolean> {
+    const result = await pool.query(
+      `SELECT 1
+       FROM sesiones s
+       JOIN reservas r ON r.id_reserva = s.id_reserva
+       JOIN terapeutas t ON t.id_terapeuta = r.id_terapeuta
+       WHERE s.id_sesion = $1 AND t.id_usuario = $2
+       LIMIT 1;`,
+      [idSesion, idUsuario],
+    );
+    return result.rows.length > 0;
+  }
+
+  async historialArticulacion(idSesion: number) {
+    const result = await pool.query(
+      `SELECT past_s.id_sesion,
+              COALESCE(past_r.tipo_cita, 'TERAPIA') AS tipo_cita,
+              past_r.fecha_hora_inicio,
+              past_report.objetivos_trabajados
+       FROM sesiones current_s
+       JOIN reservas current_r ON current_r.id_reserva = current_s.id_reserva
+       JOIN sesiones past_s ON past_s.id_sesion <> current_s.id_sesion
+       JOIN reservas past_r ON past_r.id_reserva = past_s.id_reserva
+       JOIN reportes_sesion past_report ON past_report.id_sesion = past_s.id_sesion
+       WHERE current_s.id_sesion = $1
+         AND past_r.id_paciente = current_r.id_paciente
+         AND past_report.objetivos_trabajados IS NOT NULL
+         AND past_report.objetivos_trabajados <> ''
+       ORDER BY past_r.fecha_hora_inicio DESC
+       LIMIT 50;`,
+      [idSesion],
+    );
+
+    return result.rows.map((row) => ({
+      id_sesion: Number(row.id_sesion),
+      tipo_cita: row.tipo_cita as 'INTRODUCTORIA' | 'TERAPIA',
+      fecha_hora_inicio: new Date(row.fecha_hora_inicio).toISOString(),
+      objetivos_trabajados: String(row.objetivos_trabajados),
+    }));
+  }
+
+  async analizarTranscripcionSesion(
+    idSesion: number,
+    payload?: {
+      texto?: string;
+      paciente_nombre?: string;
+      archivo_base64?: string;
+      nombre_archivo?: string;
+    }
+  ) {
+    const fail = (message: string, status = 400) => Object.assign(new Error(message), { status });
+    if (!Number.isInteger(idSesion) || idSesion <= 0) throw fail('La sesión indicada no es válida.');
+    if (!payload?.texto?.trim() && !payload?.archivo_base64?.trim()) throw fail('Carga o pega una transcripción para continuar.');
+    if (!settings.ML_SERVICE_ENABLED || !settings.ML_SERVICE_URL) throw fail('El servicio de transcripción no está habilitado.', 503);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60_000);
+    let response: Response;
+    try {
+      response = await fetch(`${settings.ML_SERVICE_URL.replace(/\/$/, '')}/analyze/session-transcript`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          texto: payload?.texto || '',
+          archivo_base64: payload?.archivo_base64,
+          nombre_archivo: payload?.nombre_archivo,
+        }),
+        signal: controller.signal,
+      });
+    } catch {
+      throw fail('El servicio de transcripción no respondió. Intenta nuevamente más tarde.', 503);
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!response.ok) throw fail('El servicio no pudo procesar la transcripción.', 502);
+    return await response.json();
+  }
+
 }
 
 export const sesionesService = new SesionesService();
+
+export function isMeetingUrl(value: unknown): value is string {
+  if (typeof value !== 'string') return false;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+

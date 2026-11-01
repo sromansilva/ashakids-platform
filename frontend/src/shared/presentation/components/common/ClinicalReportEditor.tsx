@@ -1,12 +1,13 @@
 import { useId, useRef, useState } from 'react';
-import { Save } from 'lucide-react';
-import { useWrite } from '@/shared/application/hooks/useRemoteData';
+import { ChevronDown, Mic, Save } from 'lucide-react';
+import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
 import type { ReportData } from '@/modules/clinica/domain/clinical';
-import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 import { ReportHelpLevel } from './ReportHelpLevel';
+import { TherapistVoiceAIWidget } from './TherapistVoiceAIWidget';
 import { incompleteTemplateFields, reportTemplates, type NarrativeField } from './reportFormGuidance';
+import { encodeArticulationResult, parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 
 export const reportLabels = {
   observaciones_iniciales: 'Observaciones iniciales',
@@ -26,11 +27,15 @@ export function ClinicalReportEditor({
   id,
   initial,
   patientName,
+  patientId,
+  sessionType = 'INTRODUCTORIA',
   onSaved,
 }: {
   id: number;
   initial: ReportData;
   patientName?: string;
+  patientId?: number;
+  sessionType?: 'INTRODUCTORIA' | 'TERAPIA';
   onSaved?: () => void;
 }) {
   const [form, setForm] = useState<ReportData>(() => ({
@@ -45,6 +50,12 @@ export function ClinicalReportEditor({
   const [dirty, setDirty] = useState(false);
   const [validation, setValidation] = useState(false);
   const incomplete = incompleteTemplateFields(form);
+  const history = useRemote(
+    ['articulation-history', id],
+    (signal) => sessionsService.articulationHistory(id, signal),
+    typeof patientId === 'number' && Number.isInteger(patientId) && patientId > 0,
+  );
+  const priorResults = parseArticulationHistory(history.data ?? []);
 
   const update = (key: keyof ReportData, value: string) => {
     setDirty(true);
@@ -73,7 +84,7 @@ export function ClinicalReportEditor({
 
   return (
     <form
-      className="space-y-6"
+      className="space-y-4"
       onSubmit={(e) => {
         e.preventDefault();
         setValidation(true);
@@ -84,9 +95,66 @@ export function ClinicalReportEditor({
         void save.submit(undefined);
       }}
     >
-      <p className="text-xs text-[#615274]">
-        Puedes usar las plantillas y completar los espacios entre corchetes con los datos de esta sesión.
-      </p>
+      <div className="flex flex-col gap-x-3 gap-y-1 rounded-xl border border-violet-100 bg-violet-50/60 px-4 py-3 text-sm text-[#4B4264] sm:flex-row sm:items-start">
+        <p className="shrink-0 font-extrabold text-[#1C1135]">
+          {sessionType === 'INTRODUCTORIA' ? 'Línea base de la sesión introductoria' : 'Seguimiento de objetivos'}
+        </p>
+        <p className="text-xs leading-relaxed">
+          {sessionType === 'INTRODUCTORIA'
+            ? 'Registra lo que se observó realmente en esta sesión. El reporte no crea resultados previos ni completa datos clínicos automáticamente.'
+            : 'Consulta resultados revisados que ya fueron guardados en reportes anteriores del mismo paciente. La comparación y las conclusiones quedan a cargo del terapeuta.'}
+        </p>
+      </div>
+
+      {sessionType === 'TERAPIA' && (
+        <section className="space-y-2 rounded-2xl border border-[#E8E5F4] bg-white p-4" aria-labelledby="articulation-history-title">
+          <h3 id="articulation-history-title" className="text-sm font-extrabold text-[#1C1135]">Resultados anteriores guardados</h3>
+          <p className="text-xs text-[#615274]">Este historial se consulta solo desde reportes clínicos guardados. Los intentos y medallas de los juegos educativos se muestran por separado y no se usan como progreso por objetivo.</p>
+          <RemoteFeedback pending={history.isPending} error={history.error} retry={() => void history.refetch()} />
+          {history.isSuccess && !history.error && priorResults.length === 0 && (
+            <p className="text-xs text-[#615274]">No hay resultados revisados de articulación guardados en reportes anteriores para este paciente.</p>
+          )}
+          {history.isSuccess && priorResults.length > 0 && (
+            <ul className="space-y-2">
+              {priorResults.map((entry, index) => (
+                <li key={`${entry.id_sesion}-${index}`} className="rounded-xl bg-[#F8F7FC] p-3 text-xs text-[#4B4264]">
+                  <p className="font-bold text-[#1C1135]">
+                    Sesión #{entry.id_sesion} · {new Date(entry.fecha_hora_inicio).toLocaleDateString('es-PE', { timeZone: 'America/Lima', dateStyle: 'medium' })}
+                  </p>
+                  <p className="mt-1">Objetivo: {entry.objetivo_articulacion} · Palabra: {entry.palabra_esperada}</p>
+                  <p>Resultado revisado: {entry.resultado_revisado}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      <details className="group">
+        <summary className="flex cursor-pointer list-none items-center gap-3 rounded-xl border border-violet-100 bg-violet-50/35 px-4 py-3 transition-colors hover:bg-violet-50">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#6B46FE] shadow-sm"><Mic size={17} /></span>
+          <span>
+            <span className="block text-sm font-extrabold text-[#1C1135]">Evaluación fonológica opcional</span>
+            <span className="block text-xs text-[#615274]">Audio en vivo y prueba rápida con IA</span>
+          </span>
+          <ChevronDown size={17} className="ml-auto shrink-0 text-[#6B46FE] transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="pt-3">
+          <TherapistVoiceAIWidget
+            sessionId={id}
+            patientName={patientName}
+            onApplyObservation={(obs) => {
+              const currentObs = form.observaciones_iniciales?.trim();
+              update('observaciones_iniciales', currentObs ? `${currentObs}\n\n${obs}` : obs);
+            }}
+            onConfirmResult={(result) => {
+              const summary = result.resultado_revisado;
+              const currentObs = form.observaciones_iniciales?.trim();
+              update('observaciones_iniciales', currentObs ? `${currentObs}\n\n${summary}` : summary);
+            }}
+          />
+        </div>
+      </details>
 
       {Object.entries(reportLabels).map(([key, label]) => {
         if (key === 'nivel_ayuda') {
@@ -170,4 +238,9 @@ export function ClinicalReportEditor({
       </div>
     </form>
   );
+}
+
+function formatAudioTime(seconds: number): string {
+  const wholeSeconds = Math.floor(seconds);
+  return `${String(Math.floor(wholeSeconds / 60)).padStart(2, '0')}:${String(wholeSeconds % 60).padStart(2, '0')}`;
 }

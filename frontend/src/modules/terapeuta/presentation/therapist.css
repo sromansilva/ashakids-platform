@@ -37,11 +37,12 @@
 @media (min-width: 768px) {
   .asha-professional > aside {
     width: 252px !important;
-    height: calc(100vh - 20px);
-    margin: 10px 0 10px 10px;
-    border: 1px solid #e8e5f4;
-    border-radius: 24px;
-    box-shadow: 0 14px 36px rgb(48 33 87 / 7%);
+    height: 100vh;
+    margin: 0;
+    border: 0;
+    border-right: 1px solid #e8e5f4;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .asha-professional > aside > div:first-child { padding: 22px 18px 18px; }
@@ -54,8 +55,12 @@
 
   .asha-professional > main > header {
     min-height: 72px;
-    background: rgb(255 255 255 / 92%);
-    box-shadow: 0 3px 16px rgb(48 33 87 / 3%);
+    background: rgb(255 255 255 / 96%);
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid #e8e5f4;
+    border-radius: 0;
+    box-shadow: none;
   }
 }
 
@@ -99,6 +104,63 @@
   .asha-professional .operational-dashboard__hero { min-height: 0; }
   .asha-professional .operational-dashboard__metrics > div { min-height: 102px; }
   .asha-professional .operational-dashboard__actions > button { min-height: 92px; }
+}
+
+@media (min-width: 768px) {
+  .asha-professional .operational-dashboard--therapist {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 24px clamp(24px, 2vw, 40px) 32px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__hero {
+    min-height: 180px;
+    margin-bottom: 20px;
+    padding: 22px 30px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__hero h1 {
+    font-size: clamp(30px, 2.2vw, 42px);
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__hero > div:last-child {
+    width: clamp(190px, 14vw, 240px);
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__hero img {
+    max-height: 150px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics {
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div {
+    min-height: 122px;
+    padding: 20px;
+    border-radius: 22px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div > div:first-child > div:first-child {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__metrics > div > div:last-child > svg {
+    width: 72px;
+    height: 72px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions {
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__actions > button {
+    min-height: 112px;
+    padding: 18px 20px;
+    border-radius: 20px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__workspace {
+    gap: 20px;
+  }
+  .asha-professional .operational-dashboard--therapist .operational-dashboard__workspace > div {
+    min-height: clamp(300px, calc(100dvh - 700px), 390px);
+    padding: 24px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

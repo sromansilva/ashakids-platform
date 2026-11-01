@@ -21,7 +21,7 @@ export function AshaCore() {
 
   const statusItems = [
     { label: "API REST",   ok: true  }, { label: "Base de Datos", ok: true  },
-    { label: "Google Meet",ok: true  }, { label: "Email",         ok: true  },
+    { label: "Email",         ok: true  },
     { label: "Pagos",      ok: true  }, { label: "IA Engine",     ok: true  },
     { label: "CDN",        ok: true  }, { label: "Auth",          ok: true  },
   ];
@@ -63,11 +63,6 @@ export function AshaCore() {
       icon: "🗓", label: "Agenda Engine", tag: "Scheduler", color: "#7C3AED", bg: "#F5F3FF",
       metrics: [{ k: "Sesiones prog.", v: "156" }, { k: "Conflictos", v: "2" }, { k: "Recordatorios", v: "48" }, { k: "Sincronizado", v: "Sí" }],
       bar: 82,
-    },
-    {
-      icon: "🎥", label: "ASHA Session Engine", tag: "Videollamadas", color: "#0D9488", bg: "#F0FDFA",
-      metrics: [{ k: "Activas", v: "3" }, { k: "Promedio", v: "47 min" }, { k: "Calidad", v: "98.2%" }, { k: "Grabadas", v: "142" }],
-      bar: 95,
     },
     {
       icon: "💳", label: "Módulo de Pagos", tag: "Pagos & Cobros", color: "#059669", bg: "#F0FDF4",
@@ -112,7 +107,6 @@ export function AshaCore() {
     { label: "RAM",         val: 61, unit: "%",    color: "#2563EB", ok: true  },
     { label: "API REST",    val: 99, unit: "% up", color: "#059669", ok: true  },
     { label: "Base Datos",  val: 98, unit: "% up", color: "#059669", ok: true  },
-    { label: "Google Meet", val: 100,unit: "% up", color: "#059669", ok: true  },
     { label: "Email SMTP",  val: 100,unit: "% up", color: "#059669", ok: true  },
     { label: "Pagos",       val: 100,unit: "% up", color: "#059669", ok: true  },
     { label: "IA Engine",   val: 97, unit: "% up", color: "#059669", ok: true  },

@@ -24,8 +24,8 @@
 .asha-unified .landing-mobile-links a { padding: 12px 0; min-height: 48px; font-size: 18px; font-weight: 800; color: var(--asha-primary-dark); }
 @media (min-width: 1024px) and (max-width: 1279px) {
   .asha-unified > nav .landing-nav-link { font-size: 15px; }
-  .asha-unified .landing-wordmark { font-size: 34px; }
-  .asha-unified.asha-ui > nav .asha-btn { min-width: 140px; font-size: 17px; }
+  .asha-unified .landing-wordmark { font-size: 28px; }
+  .asha-unified.asha-ui > nav .asha-btn { min-width: 136px; font-size: 15px; }
 }
 @media (max-width: 1023px) {
   #root:has(.asha-unified) { height: calc(100% - 72px); }

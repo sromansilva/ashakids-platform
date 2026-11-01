@@ -45,14 +45,14 @@ describe('Gmail & Mailer Microservice Tests (TypeScript)', () => {
     assert.ok(['ENVIADO', 'NO_CONFIGURADO', 'FALLO'].includes(result.status));
   });
 
-  it('5. Generates Zoom appointment confirmation email safely', async () => {
+  it('5. Generates Google Meet appointment confirmation email safely', async () => {
     const result = await GmailService.sendAppointmentConfirmation({
       to: 'familia.demo@ashakids.life',
       patientOrTherapistName: 'Mateo Roman',
       topic: 'Terapia de Lenguaje y Habla',
       date: '2026-11-01',
       time: '10:00 AM',
-      zoomJoinUrl: 'https://zoom.us/j/123456789',
+      meetUrl: 'https://meet.google.com/abc-defg-hij',
     });
 
     assert.ok(typeof result === 'object');

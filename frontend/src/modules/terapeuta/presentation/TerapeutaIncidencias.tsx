@@ -11,40 +11,60 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
   const [enviadas, setEnviadas] = useState<Incidencia[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const loadRecibidas = () => {
+  const loadRecibidas = (signal?: AbortSignal) => {
     setLoading(true);
     incidenciasService
-      .recibidasTerapeuta()
+      .recibidasTerapeuta(signal)
       .then((res) => {
-        setRecibidas(res.items || []);
+        if (!signal?.aborted) {
+          setRecibidas(res?.items || []);
+        }
       })
       .catch((err) => {
-        console.warn('[TerapeutaIncidencias] Error cargando recibidas:', err);
-        setRecibidas([]);
+        if (!signal?.aborted) {
+          console.warn('[TerapeutaIncidencias] Error cargando recibidas:', err);
+          setRecibidas([]);
+        }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      });
   };
 
-  const loadEnviadas = () => {
+  const loadEnviadas = (signal?: AbortSignal) => {
     setLoading(true);
     incidenciasService
-      .misIncidencias()
+      .misIncidencias(signal)
       .then((res) => {
-        setEnviadas(res.items || []);
+        if (!signal?.aborted) {
+          setEnviadas(res?.items || []);
+        }
       })
       .catch((err) => {
-        console.warn('[TerapeutaIncidencias] Error cargando enviadas:', err);
-        setEnviadas([]);
+        if (!signal?.aborted) {
+          console.warn('[TerapeutaIncidencias] Error cargando enviadas:', err);
+          setEnviadas([]);
+        }
       })
-      .finally(() => setLoading(false));
+      .finally(() => {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      });
   };
 
   useEffect(() => {
+    const controller = new AbortController();
     if (tab === 'RECIBIDAS') {
-      loadRecibidas();
+      loadRecibidas(controller.signal);
     } else if (tab === 'HISTORIAL') {
-      loadEnviadas();
+      loadEnviadas(controller.signal);
     }
+    return () => {
+      controller.abort();
+    };
   }, [tab]);
 
   const handleStatusChange = async (id: number, newStatus: string) => {

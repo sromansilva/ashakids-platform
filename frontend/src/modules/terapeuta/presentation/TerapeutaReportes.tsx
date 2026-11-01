@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, Eye, Send, Edit, Plus, X, FileText, ChevronRight, Save, User, Calendar } from 'lucide-react';
+import { Download, Eye, Send, Edit, Plus, X, FileText, ChevronRight, Mic } from 'lucide-react';
 import type { View } from '@/shared/domain/types/navigation';
 import type { Session } from '@/modules/clinica/domain/clinical';
 import { Btn } from '@/shared/presentation/components/common/Btn';
@@ -25,13 +25,15 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [newReportOpen, setNewReportOpen] = useState(false);
   const [candidate, setCandidate] = useState(0);
-
   const rows = sessions.error ? [] : sessions.data ?? [];
   const reports = rows.filter((s) => s.reporte_disponible);
   const eligible = rows.filter(
     (s) => !s.reporte_disponible && ['EN_CURSO', 'FINALIZADA'].includes(s.estado_sesion) && s.asistencia !== 'NO_ASISTIO'
   );
-  const selected = rows.find((s) => s.id_sesion === selectedId) ?? reports[0];
+
+  // Auto-selecciona la primera sesión con reporte o elegible para que el terapeuta nunca vea la pantalla vacía
+  const selected = rows.find((s) => s.id_sesion === selectedId) ?? reports[0] ?? eligible[0];
+
   const templates = [
     'Evaluación inicial',
     'Seguimiento mensual',
@@ -41,43 +43,84 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
   ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto text-[#1C1135]">
-      {/* Header with Ashi */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-        <div className="flex items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-black text-[#1C1135] tracking-tight">Reportes</h1>
-            <p className="text-sm font-bold text-[#615274] mt-0.5">Editor profesional de reportes clínicos</p>
-          </div>
-          <div className="hidden sm:block w-20 h-auto">
-            <img
-              src="/illustrations/ashi-hero-v1.png"
-              alt="Robot Ashi"
-              className="w-full h-auto object-contain max-h-16 drop-shadow-sm"
-            />
-          </div>
+    <div className="w-full max-w-none px-4 py-4 sm:px-6 sm:py-5 2xl:px-8 text-[#1C1135]">
+      <div className="mb-4 flex flex-col gap-3 border-b border-[#E8E5F4] pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-sm font-bold text-[#615274]">Redacción y seguimiento de sesiones</p>
+        <div className="flex items-center gap-3 self-end sm:self-auto">
+          {sessions.isSuccess && (
+            <span className="hidden md:inline-flex items-center gap-2 rounded-xl border border-[#E8E5F4] bg-white px-3 py-2 text-xs font-extrabold text-[#615274]">
+              <span className="h-2 w-2 rounded-full bg-[#0D9488]" />
+              {rows.length} sesiones clínicas
+            </span>
+          )}
+          <button
+            onClick={() => setNewReportOpen(true)}
+            disabled={sessions.isPending || !!sessions.error}
+            className="inline-flex items-center gap-2 rounded-xl bg-[#6B46FE] px-4 py-2 text-sm font-extrabold text-white shadow-[0_6px_14px_rgba(107,70,254,0.2)] transition-all hover:bg-[#5833EA] active:scale-[.98] disabled:opacity-50 cursor-pointer"
+          >
+            <Plus size={16} />
+            Nuevo reporte
+          </button>
         </div>
-        <button
-          onClick={() => setNewReportOpen(true)}
-          disabled={sessions.isPending || !!sessions.error}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-extrabold text-sm shadow-sm transition-all active:scale-[.98] disabled:opacity-50 cursor-pointer"
-        >
-          <Plus size={16} />
-          Nuevo reporte
-        </button>
       </div>
 
       <RemoteFeedback pending={sessions.isPending} error={sessions.error} retry={() => void sessions.refetch()} />
 
       {/* Main Grid: Left sidebar (saved & templates) + Right Editor */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        {/* Left Column (5 cols) */}
-        <div className="lg:col-span-5 space-y-6">
+      <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[minmax(320px,0.88fr)_minmax(0,1.65fr)] 2xl:gap-6">
+        <div className="space-y-4">
+          {/* Sesiones Listas para Redactar Reporte */}
+          {eligible.length > 0 && (
+            <div className="rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50/80 via-white to-white p-5 shadow-[0_10px_26px_rgba(95,68,170,0.08)]">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#6B46FE] animate-pulse" />
+                  <h2 className="text-base font-extrabold text-[#1C1135]">Sesiones por redactar</h2>
+                </div>
+                <span className="text-xs font-bold text-[#6B46FE] bg-violet-100 px-2 py-0.5 rounded-full">
+                  {eligible.length} {eligible.length === 1 ? 'pendiente' : 'pendientes'}
+                </span>
+              </div>
+              <div className="space-y-3">
+                {eligible.map((s) => {
+                  const isCur = (selected?.id_sesion ?? 0) === s.id_sesion;
+                  return (
+                    <button
+                      key={s.id_sesion}
+                      onClick={() => setSelectedId(s.id_sesion)}
+                      className={`group w-full rounded-xl p-3.5 text-left transition-all border flex items-center justify-between gap-3 cursor-pointer ${
+                        isCur
+                          ? 'bg-[#F8F7FC] border-[#6B46FE] ring-2 ring-[#6B46FE]/30'
+                          : 'bg-white border-[#E8E5F4] hover:border-violet-300'
+                      }`}
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="font-extrabold text-sm text-[#1C1135] truncate">
+                          Sesión #{s.id_sesion} — {s.cita.paciente_nombre}
+                        </p>
+                        <div className="flex items-center gap-2.5 mt-1">
+                          <span className="text-xs text-[#615274]">{dateLabel(s)}</span>
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-[#EDE9FE] text-[#6B46FE]">
+                            Redactar ahora
+                          </span>
+                        </div>
+                      </div>
+                      <ChevronRight size={16} className={isCur ? 'text-[#6B46FE]' : 'text-[#9E95B7]'} />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
           {/* Saved Reports Card */}
-          <div className="bg-white rounded-3xl p-6 border border-[#E8E5F4] shadow-sm">
-            <div className="flex items-center gap-2.5 mb-4">
-              <FileText size={18} className="text-[#6B46FE]" />
-              <h2 className="text-base font-extrabold text-[#1C1135]">Reportes guardados</h2>
+          <div className="rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_8px_24px_rgba(48,33,87,0.045)]">
+            <div className="flex items-center gap-2.5 mb-3">
+              <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet-50"><FileText size={17} className="text-[#6B46FE]" /></span>
+              <div>
+                <h2 className="text-base font-extrabold text-[#1C1135]">Reportes guardados</h2>
+                <p className="text-xs text-[#8C82A8]">Sesiones con informe registrado</p>
+              </div>
             </div>
             <div className="space-y-3">
               {reports.map((s) => {
@@ -86,7 +129,7 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                   <button
                     key={s.id_sesion}
                     onClick={() => setSelectedId(s.id_sesion)}
-                    className={`w-full rounded-2xl p-4 text-left transition-all border flex items-center justify-between gap-3 cursor-pointer ${
+                    className={`w-full rounded-xl p-3.5 text-left transition-all border flex items-center justify-between gap-3 cursor-pointer ${
                       isCur
                         ? 'bg-[#F8F7FC] border-[#6B46FE] ring-1 ring-[#6B46FE]'
                         : 'bg-white border-[#E8E5F4] hover:border-violet-300'
@@ -94,7 +137,7 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                   >
                     <div className="min-w-0 flex-1">
                       <p className="font-extrabold text-sm text-[#1C1135] truncate">
-                        Reporte de sesión #{s.id_sesion} — {s.cita.paciente_nombre}
+                        Reporte #{s.id_sesion} — {s.cita.paciente_nombre}
                       </p>
                       <div className="flex items-center gap-2.5 mt-1">
                         <span className="text-xs text-[#615274]">{dateLabel(s)}</span>
@@ -114,13 +157,13 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
           </div>
 
           {/* Downloadable Templates Card */}
-          <div className="bg-white rounded-3xl p-6 border border-[#E8E5F4] shadow-sm">
+          <div className="rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_8px_24px_rgba(48,33,87,0.045)]">
             <div className="flex items-center gap-2.5 mb-1">
               <Download size={18} className="text-[#6B46FE]" />
               <h2 className="text-base font-extrabold text-[#1C1135]">Plantillas descargables</h2>
             </div>
-            <p className="text-xs text-[#615274] mb-4">Plantillas en blanco, no son reportes clínicos guardados.</p>
-            <div className="space-y-2">
+            <p className="text-xs text-[#615274] mb-3">Plantillas en blanco, no son reportes clínicos guardados.</p>
+            <div className="grid gap-2 2xl:grid-cols-2">
               {templates.map((template) => (
                 <button
                   key={template}
@@ -140,11 +183,11 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                       'Próximos pasos: _________________',
                     ])
                   }
-                  className="w-full flex items-center justify-between p-3 rounded-2xl bg-[#F8F7FC] hover:bg-violet-50 text-xs font-extrabold text-[#1C1135] transition-all cursor-pointer border border-transparent hover:border-[#E8E5F4]"
+                  className="w-full min-w-0 flex items-center justify-between gap-2 rounded-xl border border-transparent bg-[#F8F7FC] px-3 py-2.5 text-left text-xs font-extrabold text-[#1C1135] transition-all hover:border-[#E8E5F4] hover:bg-violet-50 cursor-pointer"
                 >
                   <div className="flex items-center gap-2.5">
                     <Download size={14} className="text-[#6B46FE]" />
-                    <span>{template}</span>
+                    <span className="truncate">{template}</span>
                   </div>
                   <ChevronRight size={14} className="text-[#9E95B7]" />
                 </button>
@@ -153,15 +196,18 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
           </div>
         </div>
 
-        {/* Right Column (7 cols) - Editor */}
-        <div className="lg:col-span-7 bg-white rounded-3xl border border-[#E8E5F4] shadow-sm overflow-hidden">
+        <div className="min-w-0 overflow-hidden rounded-[26px] border border-[#E8E5F4] bg-white shadow-[0_14px_36px_rgba(48,33,87,0.07)]">
           {selected && !sessions.error ? (
             <div>
               {/* Editor Header */}
-              <div className="p-6 border-b border-[#E8E5F4] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex flex-col items-start justify-between gap-3 border-b border-[#E8E5F4] bg-gradient-to-r from-white via-white to-violet-50/60 px-5 py-4 sm:flex-row sm:items-center 2xl:px-6">
                 <div>
-                  <p className="text-xs font-bold text-[#615274]">Sesión clínica · {selected.cita.paciente_nombre}</p>
-                  <h2 className="text-xl font-black text-[#1C1135] mt-0.5">Reporte de sesión #{selected.id_sesion}</h2>
+                  <div className="flex items-center gap-2">
+                    <p className="text-xs font-bold text-[#615274]">Sesión clínica · {selected.cita.paciente_nombre}</p>
+                  </div>
+                  <h2 className="text-lg font-black text-[#1C1135] mt-0.5 sm:text-xl">
+                    Reporte de sesión #{selected.id_sesion}
+                  </h2>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
                   <button
@@ -195,8 +241,16 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
               <ReportWorkspace key={selected.id_sesion} session={selected} />
             </div>
           ) : (
-            <div className="p-12 text-center text-sm font-bold text-[#615274]">
-              Selecciona un reporte o una sesión para comenzar.
+            <div className="p-12 text-center flex flex-col items-center justify-center space-y-4">
+              <div className="w-16 h-16 rounded-3xl bg-violet-50 border border-violet-100 flex items-center justify-center text-[#6B46FE]">
+                <Mic size={28} />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-[#1C1135]">Selecciona una sesión clínica</h3>
+                <p className="text-xs font-bold text-[#615274] max-w-sm mt-1">
+                  Los reportes y sus resultados se guardan únicamente en sesiones reales autorizadas. Inicia o finaliza una sesión desde la agenda para redactar su reporte.
+                </p>
+              </div>
             </div>
           )}
         </div>

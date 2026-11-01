@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { Archive, CheckCircle2, FileText, MessageCircle, MessageSquare, Paperclip, RefreshCw, Search, ShieldCheck, UserRound } from 'lucide-react';
+import { Archive, ArrowRight, CheckCircle2, FileText, MessageCircle, MessageSquare, Paperclip, RefreshCw, Search, ShieldCheck, UserRound } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { readAllPages } from '@/core/api/readAllPages';
@@ -36,18 +36,21 @@ function MessagesWorkspace({ mode }: { mode: Mode }) {
   const availableContacts = contacts.data?.filter(contact => !rows.some(row => row.id_tutor === contact.id_tutor && row.id_terapeuta === contact.id_terapeuta)) ?? [];
   const activeConversation = rows.find(row => row.id_conversacion === activeId);
   const visibleRows = rows.filter(row => counterpart(row).toLocaleLowerCase().includes(searchQuery.trim().toLocaleLowerCase()));
+  const quickRows = visibleRows.slice(0, 3);
+  const quickContacts = availableContacts.slice(0, 3);
   const initials = (name?: string) => name?.split(/\s+/).filter(Boolean).map(word => word[0]).join('').slice(0, 2).toUpperCase() || 'AS';
   const roleLabel = mode === 'PADRE' ? 'Terapeuta asignado' : 'Familia asignada';
-  return <div className="messages-center p-4 sm:p-8 max-w-6xl mx-auto pb-24" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-    <header className="messages-page-header mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+  const isTherapist = mode === 'TERAPEUTA';
+  return <div className={`messages-center ${isTherapist ? 'messages-center--therapist' : ''} p-4 sm:p-8 max-w-6xl mx-auto pb-24`} style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
+    {!isTherapist && <header className="messages-page-header mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
       <div>
         <p className="messages-eyebrow"><MessageSquare size={15} aria-hidden="true" /> Comunicación familiar</p>
-        <h1 className="text-3xl font-black text-[#1C1135] tracking-tight mt-1">Mensajes</h1>
+        <h1 className="mt-1 text-3xl font-black tracking-tight text-[#1C1135]">Mensajes</h1>
         <p className="text-sm font-medium text-[#6B5E8A] mt-1">Un espacio seguro para conversar y compartir con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}.</p>
       </div>
       <div className="messages-page-status shrink-0"><span className="messages-status-dot" aria-hidden="true" /> Canal protegido</div>
-    </header>
-    <div className="messages-workspace messages-shell grid md:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(0,1fr)_220px] bg-white border border-[#E8E5F4] rounded-3xl overflow-hidden">
+    </header>}
+    <div className={`messages-workspace messages-shell grid md:grid-cols-[280px_minmax(0,1fr)] xl:grid-cols-[280px_minmax(0,1fr)_220px] bg-white border border-[#E8E5F4] rounded-3xl overflow-hidden ${isTherapist && activeId === null ? 'messages-workspace--empty' : ''}`}>
       <aside aria-label="Conversaciones" className={`messages-sidebar ${showList ? 'block' : 'hidden'} md:block min-w-0`}>
         <div className="messages-sidebar-heading"><div><p className="messages-panel-kicker">Bandeja</p><h2 className="font-extrabold text-[#1C1135]">Conversaciones</h2></div>
           <Btn size="sm" variant="ghost" title="Actualizar lista" className="messages-icon-button" disabled={conversations.isFetching || contacts.isFetching} onClick={() => { void conversations.refetch(); void contacts.refetch(); }}><RefreshCw size={17} aria-hidden="true" /></Btn></div>
@@ -71,14 +74,29 @@ function MessagesWorkspace({ mode }: { mode: Mode }) {
           <p className="messages-panel-kicker">Tu espacio de acompañamiento</p>
           <h2 className="text-2xl font-black text-[#1C1135] mt-1">Conecta con {mode === 'PADRE' ? 'tu terapeuta' : 'las familias'}</h2>
           <p className="text-sm text-[#6B5E8A] mt-1">Selecciona una conversación o inicia una con una asignación activa.</p>
-          <div className="message-welcome-note mt-6">
+          {isTherapist && (quickRows.length > 0 || quickContacts.length > 0) && <div className="message-welcome-quick">
+            <p className="message-welcome-quick-title">{quickRows.length ? 'Retoma una conversación' : 'Inicia una conversación'}</p>
+            <div className="message-welcome-quick-list">
+              {quickRows.map(row => <button key={row.id_conversacion} type="button" className="message-welcome-quick-card" aria-label={`Abrir conversación con ${counterpart(row)}`} onClick={() => { setActiveId(row.id_conversacion); setShowList(false); }}>
+                <Av initials={initials(counterpart(row))} color={B.teal} size="sm" />
+                <span className="message-welcome-quick-copy"><strong>{counterpart(row)}</strong><small>{row.puede_enviar ? 'Asignación activa' : 'Solo lectura'}</small></span>
+                <ArrowRight size={17} aria-hidden="true" />
+              </button>)}
+              {!quickRows.length && quickContacts.map(contact => <button key={`${contact.id_tutor}-${contact.id_terapeuta}`} type="button" className="message-welcome-quick-card" disabled={open.isPending} onClick={() => void open.submit(contact)}>
+                <Av initials={initials(counterpart(contact))} color={B.orange} size="sm" />
+                <span className="message-welcome-quick-copy"><strong>{counterpart(contact)}</strong><small>Iniciar chat</small></span>
+                <MessageCircle size={17} aria-hidden="true" />
+              </button>)}
+            </div>
+          </div>}
+          {mode === 'PADRE' && <div className="message-welcome-note mt-6">
             <ShieldCheck size={17} className="text-emerald-600 shrink-0" aria-hidden="true" />
             <span>Tus mensajes y archivos se guardan de forma segura en cada conversación.</span>
-          </div>
+          </div>}
         </div> :
           <MessageThread key={`${user?.id_usuario}-${activeId}`} id={activeId} conversationSummary={activeConversation} draft={drafts[activeId] ?? ''} setDraft={value => setDrafts(current => ({ ...current, [activeId]: value }))} onBack={() => setShowList(true)} />}
       </section>
-      <aside aria-label="Detalles de la conversación" className="messages-context hidden xl:flex">
+      <aside aria-label="Detalles de la conversación" className={`messages-context hidden xl:flex ${isTherapist && activeId === null ? 'messages-context--empty' : ''}`}>
         <div className="messages-context-profile"><div className="messages-context-icon"><UserRound size={18} aria-hidden="true" /></div><p className="messages-panel-kicker">Detalles</p><h2>{activeConversation ? counterpart(activeConversation) : 'Tu comunicación'}</h2><p>{activeConversation ? roleLabel : 'Acompañamiento ASHAKids'}</p></div>
         <div className="messages-context-section"><p className="messages-context-label">Estado</p><div className="messages-context-row"><span className="messages-status-dot" aria-hidden="true" />{activeConversation?.puede_enviar ? 'Asignación activa' : activeConversation ? 'Solo lectura' : 'Listo para conversar'}</div></div>
         <div className="messages-context-section"><p className="messages-context-label"><Paperclip size={14} aria-hidden="true" /> Archivos compartidos</p><div className="messages-context-empty"><FileText size={20} aria-hidden="true" /><span>Los adjuntos de la conversación aparecerán aquí.</span></div></div>

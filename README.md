@@ -13,7 +13,7 @@
 [![Docker](https://img.shields.io/badge/Docker-Enabled-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
 
 <p align="center">
-  La <b>Plataforma Educativa Ashakids</b> conecta a familias con especialistas en fonoaudiología y terapia del lenguaje infantil a través de sesiones virtuales (Zoom) o presenciales, expedientes clínicos estructurados y un entorno de aprendizaje gamificado de 5 mundos educativos interactivos guiados por <b>Ashi</b>.
+  La <b>Plataforma Educativa Ashakids</b> conecta a familias con especialistas en fonoaudiología y terapia del lenguaje infantil a través de sesiones virtuales (Google Meet) o presenciales, expedientes clínicos estructurados y un entorno de aprendizaje gamificado de 5 mundos educativos interactivos guiados por <b>Ashi</b>.
 </p>
 
 [✨ Características](#-características-principales) •
@@ -32,7 +32,7 @@ La **Plataforma Educativa Ashakids** implementa un control de acceso basado en r
 
 | 👨‍👩‍👧 Portal Familiar (`PADRE`) | 🩺 Portal Clínico (`TERAPEUTA`) | 🛡️ Portal de Gestión (`ADMIN`) |
 | :--- | :--- | :--- |
-| • **Centro Familiar**: Gestión multi-hijo con selector activo.<br>• **Camino ASHA**: Seguimiento visual del plan y etapas terapéuticas.<br>• **Agendamiento**: Reserva de consulta introductoria y citas Zoom/Presencial.<br>• **Mundo ASHA**: 5 mundos lúdicos con reconocimiento fonético de voz.<br>• **Reportes de Evolución**: Descarga en PDF con observaciones estructuradas. | • **Dashboard Clínico**: Métricas de pacientes, próximas citas y alertas.<br>• **Agenda Interactiva**: Turnos semanales, bloqueos y gestión de disponibilidad.<br>• **Expediente del Paciente**: Historial médico, notas de sesión y evolución.<br>• **Editor Clínico Asistido**: Objetivos, niveles de ayuda (1–5) y plantillas.<br>• **Seguimiento Lúdico**: Analítica de participación en mundos de juego. | • **Control de Cuentas**: Gestión de tutores y terapeutas, activación y reseteo.<br>• **Auditoría en Tiempo Real**: Bitácora cronológica con trazabilidad.<br>• **Supervisión Operativa**: Resumen financiero, soporte y conciliación.<br>• **Bandeja de Incidencias**: Atención de reportes de familias y terapeutas.<br>• **Gobierno del Sistema**: Parámetros globales y salud de servicios. |
+| • **Centro Familiar**: Gestión multi-hijo con selector activo.<br>• **Camino ASHA**: Seguimiento visual del plan y etapas terapéuticas.<br>• **Agendamiento**: Reserva de consulta introductoria y citas Google Meet/Presencial.<br>• **Mundo ASHA**: 5 mundos lúdicos con reconocimiento fonético de voz.<br>• **Reportes de Evolución**: Descarga en PDF con observaciones estructuradas. | • **Dashboard Clínico**: Métricas de pacientes, próximas citas y alertas.<br>• **Agenda Interactiva**: Turnos semanales, bloqueos y gestión de disponibilidad.<br>• **Expediente del Paciente**: Historial médico, notas de sesión y evolución.<br>• **Editor Clínico Asistido**: Objetivos, niveles de ayuda (1–5) y plantillas.<br>• **Seguimiento Lúdico**: Analítica de participación en mundos de juego. | • **Control de Cuentas**: Gestión de tutores y terapeutas, activación y reseteo.<br>• **Auditoría en Tiempo Real**: Bitácora cronológica con trazabilidad.<br>• **Supervisión Operativa**: Resumen financiero, soporte y conciliación.<br>• **Bandeja de Incidencias**: Atención de reportes de familias y terapeutas.<br>• **Gobierno del Sistema**: Parámetros globales y salud de servicios. |
 
 ---
 
@@ -45,7 +45,7 @@ ashakids-platform/
 ├── backend/                  # API REST en TypeScript + Express + Drizzle ORM
 │   └── src/
 │       ├── core/             # Configuración Zod, conexión a PostgreSQL, middlewares, seguridad
-│       ├── infrastructure/   # Integraciones externas (Gmail API OAuth2, Zoom API, Reconocimiento Whisper)
+│       ├── infrastructure/   # Integraciones externas (Gmail API OAuth2, Google Meet API, Reconocimiento Whisper)
 │       └── modules/          # 20 Módulos de dominio (auth, admin, agenda, clinica, mundo_asha, etc.)
 │           ├── routes/       # Definición declarativa de endpoints REST (/api/v1/...)
 │           └── services/     # Lógica de negocio, reglas de dominio y persistencia segura con fallbacks

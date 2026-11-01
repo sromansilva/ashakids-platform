@@ -71,8 +71,8 @@ citasRouter.patch('/:key/estado', async (req: Request, res: Response, next: Next
 citasRouter.put('/:key/reunion', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const { zoom_join_url } = req.body;
-    const cita = await citasService.actualizarReunion(key, zoom_join_url ?? null);
+    const { meet_url } = req.body;
+    const cita = await citasService.actualizarReunion(key, meet_url ?? null);
     res.json(cita);
   } catch (err) {
     next(err);

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { Video, X, Sparkles, ChevronDown } from "lucide-react";
+import { Video, X, Sparkles, ChevronDown, Stethoscope, UserRound } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
@@ -148,17 +148,38 @@ export function DashLayout({
           </header>
         )}
         {role === "terapeuta" && (
-          <header className="hidden md:flex h-16 bg-white border-b border-[#E8E5F4] px-8 items-center justify-between shrink-0">
-            <p className="text-sm font-extrabold text-[#1C1135]">{title}</p>
-            <div className="flex items-center gap-5">
+          <header aria-label="Barra superior del terapeuta" className="hidden md:flex h-[72px] shrink-0 items-center justify-between gap-6 border-b border-[#E8E5F4] bg-white/90 px-6 backdrop-blur-xl lg:px-8">
+            <div className="flex min-w-0 items-center gap-3">
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-gradient-to-br from-violet-50 to-violet-100 text-[#6B46FE] ring-1 ring-violet-100">
+                <Stethoscope size={18} />
+              </span>
+              {cur === "terapeuta/reportes" ? (
+                <div className="min-w-0">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9E95B7]">Espacio profesional</p>
+                  <h1 className="mt-0.5 truncate text-sm font-black text-[#1C1135]">Reportes clínicos</h1>
+                </div>
+              ) : cur === "terapeuta/mensajes" ? (
+                <div className="min-w-0">
+                  <p className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-[#9E95B7]">Comunicación familiar</p>
+                  <h1 className="mt-0.5 truncate text-base font-black text-[#1C1135]">Mensajes</h1>
+                </div>
+              ) : (
+                <p className="truncate text-sm font-extrabold text-[#1C1135]">Espacio profesional</p>
+              )}
+            </div>
+            <div className="flex shrink-0 items-center gap-3">
               <NotificationCenter go={go} />
-              <div className="text-right">
-                <p className="text-xs font-black text-[#1C1135] leading-none">
-                  {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Terapeuta"}
-                </p>
-                <p className="text-[11px] font-bold text-[#615274] leading-tight mt-0.5">
-                  Terapeuta
-                </p>
+              <span aria-hidden="true" className="mx-1 h-8 w-px bg-[#E8E5F4]" />
+              <div className="flex items-center gap-2.5 rounded-2xl border border-[#E8E5F4] bg-white px-2 py-1.5 shadow-sm">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]">
+                  <UserRound size={17} />
+                </span>
+                <div className="min-w-0 max-w-[180px]">
+                  <p className="truncate text-xs font-extrabold leading-tight text-[#1C1135]">
+                    {user?.nombres ? `${user.nombres} ${user.apellidos || ""}` : "Terapeuta"}
+                  </p>
+                  <p className="mt-0.5 text-[10px] font-bold leading-tight text-[#7E6AA5]">Terapeuta</p>
+                </div>
               </div>
             </div>
           </header>

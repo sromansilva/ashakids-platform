@@ -69,27 +69,44 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     <main className="asha-login">
       <header className="login-header">
         <AshaKidsLogo variant="header" />
-        <button type="button" onClick={onGoHome} className="login-home"><ChevronLeft size={18} /> Volver al inicio</button>
+        <button type="button" onClick={onGoHome} className="login-home"><ChevronLeft size={16} /> Volver al inicio</button>
       </header>
       <div className="login-layout">
         <section className="login-welcome" aria-labelledby="login-welcome-title">
           <h2 id="login-welcome-title">El acompañamiento<br /><span>que tu hijo merece</span></h2>
+          <p className="login-welcome-sub">
+            Conectamos familias y terapeutas certificados para acompañar el desarrollo del lenguaje y aprender jugando.
+          </p>
           <div className="login-word" aria-hidden="true">
             <span className="login-letter login-letter-h">h</span><span className="login-letter login-letter-o">o</span>
             <span className="login-letter login-letter-l">l</span><span className="login-letter login-letter-a">a</span>
             <span className="login-word-caption">Cada palabra cuenta.</span>
+          </div>
+          <div className="login-features">
+            <div className="login-feature-item">
+              <span className="login-feature-dot" />
+              <span>Terapeutas certificados y planes a medida</span>
+            </div>
+            <div className="login-feature-item">
+              <span className="login-feature-dot" />
+              <span>Mundo ASHA con actividades lúdicas guiadas</span>
+            </div>
+            <div className="login-feature-item">
+              <span className="login-feature-dot" />
+              <span>Monitoreo continuo y reportes de progreso</span>
+            </div>
           </div>
         </section>
         <div className="login-access">
           <section className="login-form-panel" aria-labelledby="login-title">
             <h1 id="login-title">Bienvenido de vuelta</h1>
             <p className="login-description">Inicia sesión con tu código de usuario de ASHAKids.</p>
-            {errorMessage && <div role="alert" className="login-error"><CircleAlert size={19} /><span>{errorMessage}</span></div>}
+            {errorMessage && <div role="alert" className="login-error"><CircleAlert size={18} /><span>{errorMessage}</span></div>}
             <form onSubmit={handleSubmit} className="login-form">
               <div className="login-field">
                 <label htmlFor="login-user-code">Código de usuario</label>
                 <div className="login-input-wrap">
-                  <UserIcon size={19} aria-hidden="true" />
+                  <UserIcon size={18} aria-hidden="true" />
                   <input id="login-user-code" type="text" value={codigoUsuario} onChange={e => setCodigoUsuario(e.target.value)} placeholder="Código de usuario" disabled={isLoading} maxLength={6} autoComplete="username" />
                 </div>
               </div>
@@ -99,25 +116,25 @@ export const LoginPage: React.FC<LoginPageProps> = ({
                   {onForgotPassword && <button type="button" onClick={onForgotPassword} className="login-forgot">¿Olvidaste tu contraseña?</button>}
                 </div>
                 <div className="login-input-wrap">
-                  <Lock size={19} aria-hidden="true" />
+                  <Lock size={18} aria-hidden="true" />
                   <input id="login-password" type={showPassword ? "text" : "password"} value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••" disabled={isLoading} autoComplete="current-password" />
-                  <button type="button" onClick={() => setShowPassword(s => !s)} aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} aria-pressed={showPassword} className="login-password-toggle">{showPassword ? <EyeOff size={19} /> : <Eye size={19} />}</button>
+                  <button type="button" onClick={() => setShowPassword(s => !s)} aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} aria-pressed={showPassword} className="login-password-toggle">{showPassword ? <EyeOff size={18} /> : <Eye size={18} />}</button>
                 </div>
               </div>
               <label className="login-remember"><input type="checkbox" checked={remember} onChange={() => setRemember(r => !r)} /><span>Recordarme</span></label>
               <button type="submit" disabled={isLoading} className="login-submit">
-                {isLoading ? <><Loader2 size={19} className="login-spinner" /><span>Iniciando sesión…</span></> : <>Iniciar sesión <ArrowRight size={19} /></>}
+                {isLoading ? <><Loader2 size={18} className="login-spinner" /><span>Iniciando sesión…</span></> : <>Iniciar sesión <ArrowRight size={18} /></>}
               </button>
             </form>
             <p className="login-first-access">¿Es tu primer acceso? Revisa tu correo para crear tu contraseña. <Link className="underline font-bold" to="/crear-contrasena">Solicitar enlace</Link></p>
           </section>
           {import.meta.env.DEV && <section className="login-development" aria-label="Usuarios de desarrollo">
-            <p>Usuarios de desarrollo (Fase 3A)</p>
-            <div>{[
-              { label: "Padre / Familia", codigo: "p00001", icon: Users },
+            <p className="login-dev-title">Usuarios de desarrollo (Fase 3A)</p>
+            <div className="login-dev-chips">{[
+              { label: "Padre", codigo: "p00001", icon: Users },
               { label: "Terapeuta", codigo: "t00001", icon: AudioLines },
-              { label: "Administrador", codigo: "a00001", icon: ShieldCheck },
-            ].map(d => <button key={d.codigo} type="button" disabled={isLoading} onClick={() => handleQuickDemo(d.codigo)}><d.icon size={17} /><span>{d.label}</span><code>{d.codigo}</code></button>)}</div>
+              { label: "Admin", codigo: "a00001", icon: ShieldCheck },
+            ].map(d => <button key={d.codigo} type="button" disabled={isLoading} onClick={() => handleQuickDemo(d.codigo)} className="login-dev-chip" title={`Cargar ${d.label} (${d.codigo})`}><d.icon size={14} /><span>{d.label}</span><code>{d.codigo}</code></button>)}</div>
           </section>}
         </div>
       </div>

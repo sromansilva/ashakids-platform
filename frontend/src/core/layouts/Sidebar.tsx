@@ -1,4 +1,5 @@
-import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
+import { useState } from "react";
+import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle, Check, X } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
@@ -22,6 +23,7 @@ export function Sidebar({
   padreUserName?: string;
   padrePlan?: "exploracion" | "familia";
 }) {
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const nav =
     role === "padre"
       ? [
@@ -225,18 +227,48 @@ export function Sidebar({
       </nav>
 
       <div className={`shrink-0 px-4 py-4 border-t border-[#E8E5F4] ${mobile ? "pb-[calc(1rem+env(safe-area-inset-bottom))]" : ""}`} style={{ position: "relative", zIndex: 1 }}>
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 rounded-full bg-[#FF8A00] flex items-center justify-center text-white font-extrabold text-sm shrink-0">
-            {user.av}
+        {showLogoutConfirm ? (
+          <div className="flex items-center justify-between gap-2 p-2 rounded-2xl bg-red-50 border border-red-200 animate-in fade-in duration-150">
+            <span className="text-xs font-bold text-red-700 truncate">¿Cerrar sesión?</span>
+            <div className="flex items-center gap-1 shrink-0">
+              <button
+                type="button"
+                onClick={logout}
+                className="px-2.5 py-1 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs transition-colors cursor-pointer"
+                title="Confirmar cierre"
+              >
+                Sí
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                className="px-2.5 py-1 rounded-xl bg-white hover:bg-gray-100 text-[#615274] border border-[#E8E5F4] font-bold text-xs transition-colors cursor-pointer"
+                title="Cancelar"
+              >
+                No
+              </button>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-bold text-[#1C1135] leading-snug truncate">{user.name}</p>
-            {user.sub && <p className="text-xs font-black truncate text-[#FF8A00]">{user.sub}</p>}
+        ) : (
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-full bg-[#FF8A00] flex items-center justify-center text-white font-extrabold text-sm shrink-0">
+              {user.av}
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-bold text-[#1C1135] leading-snug truncate">{user.name}</p>
+              {user.sub && <p className="text-xs font-black truncate text-[#FF8A00]">{user.sub}</p>}
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowLogoutConfirm(true)}
+              className="shrink-0 h-10 w-10 flex items-center justify-center rounded-xl text-[#7C6F9A] hover:bg-red-50 hover:text-red-500 transition-colors cursor-pointer"
+              aria-label="Cerrar sesión"
+              title="Cerrar sesión"
+            >
+              <LogOut size={18} />
+            </button>
           </div>
-          <button onClick={logout} className="shrink-0 h-10 w-10 flex items-center justify-center rounded-xl text-[#7C6F9A] hover:bg-red-50 hover:text-red-500 transition-colors" aria-label="Cerrar sesión">
-            <LogOut size={18} />
-          </button>
-        </div>
+        )}
       </div>
     </aside>
   );

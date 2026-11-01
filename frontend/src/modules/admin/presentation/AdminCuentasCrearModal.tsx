@@ -7,7 +7,6 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
-  IdCard,
   Loader2,
   Mail,
   MapPin,
@@ -23,6 +22,8 @@ import { publicAssets } from "@/shared/presentation/components/illustrations/pub
 import type { CrearPadrePayload, CrearTerapeutaPayload, RegistroHijo } from "@/modules/auth/domain/auth";
 import { TabRole } from "./AdminCuentas";
 import { emptyChild, FamilyChildrenFields } from "./FamilyChildrenFields";
+import { DniConsultarField } from "./DniConsultarField";
+import { RucConsultarField } from "./RucConsultarField";
 
 interface AdminCuentasCrearModalProps {
   isOpen: boolean;
@@ -213,7 +214,6 @@ export function AdminCuentasCrearModal({
   }
 
   const progress = ((step + 1) / steps.length) * 100;
-  const documentValue = formPadre.numero_documento || "";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1C1135]/45 p-3 backdrop-blur-md sm:p-6">
@@ -303,25 +303,19 @@ export function AdminCuentasCrearModal({
               </div>
               <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_220px]">
                 <div className="rounded-[20px] bg-white p-4 shadow-sm sm:p-5">
-                  <div className="grid gap-3 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_auto] sm:items-end">
-                    <label htmlFor="account-document-type" className={labelClass}>
-                      Tipo de documento
-                      <span className="relative mt-1.5 block">
-                        <IdCard className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9E95B7]" size={18} />
-                        <select id="account-document-type" required disabled value="DNI" className={`${inputClass} appearance-none pl-10`}>
-                          <option value="DNI">DNI</option>
-                        </select>
-                      </span>
-                    </label>
-                    <label htmlFor="account-document-number" className={labelClass}>
-                      Número de DNI *
-                      <input id="account-document-number" required minLength={8} maxLength={8} pattern="[0-9]{8}" inputMode="numeric" disabled={submitting} value={documentValue} onChange={(event) => setFormPadre((form) => ({ ...form, tipo_documento: "DNI", numero_documento: event.target.value.replace(/\D/g, "") }))} placeholder="12345678" className={`${inputClass} text-base`} />
-                    </label>
-                    <button type="button" disabled aria-disabled="true" title="Consultar RENIEC estará disponible en el próximo avance" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#EDE9FE] px-4 text-sm font-black text-violet-700 opacity-60 shadow-sm disabled:cursor-not-allowed sm:mb-0">
-                      <Search size={18} />
-                      <span>Consultar RENIEC</span>
-                    </button>
-                  </div>
+                  <DniConsultarField
+                    id="account-document-number"
+                    value={formPadre.numero_documento || ""}
+                    tipoDocumento={formPadre.tipo_documento || "DNI"}
+                    onTipoDocumentoChange={(tipo) => setFormPadre((form) => ({ ...form, tipo_documento: tipo }))}
+                    disabled={submitting}
+                    required
+                    inputClass={inputClass}
+                    labelClass={labelClass}
+                    onChange={(val) => setFormPadre((form) => ({ ...form, numero_documento: val }))}
+                    onSuccess={(data) => setFormPadre((prev) => ({ ...prev, nombres: data.nombres, apellidos: data.apellidos }))}
+                  />
+                  <div className="mt-3" />
                   <div className="grid gap-3 sm:grid-cols-2">
                     <label htmlFor="account-names" className={labelClass}>Nombres *<input id="account-names" autoComplete="given-name" required maxLength={60} disabled={submitting} value={formPadre.nombres} onChange={(event) => setFormPadre((form) => ({ ...form, nombres: event.target.value }))} placeholder="Ej. Juan" className={`${inputClass} mt-1.5`} /></label>
                     <label htmlFor="account-surnames" className={labelClass}>Apellidos *<input id="account-surnames" autoComplete="family-name" required maxLength={80} disabled={submitting} value={formPadre.apellidos} onChange={(event) => setFormPadre((form) => ({ ...form, apellidos: event.target.value }))} placeholder="Ej. Pérez" className={`${inputClass} mt-1.5`} /></label>
@@ -344,17 +338,19 @@ export function AdminCuentasCrearModal({
             <section aria-labelledby="therapist-step-identification" className="space-y-4 rounded-[24px] bg-[#F7F4FF] p-4 sm:p-5">
               <div><h3 id="therapist-step-identification" className="text-2xl font-black tracking-tight text-[#1C1135]">Paso 1: Identificación</h3><p className="mt-1 text-base text-[#6B5E8A]">Registra los datos básicos del profesional.</p></div>
               <div className="rounded-[20px] bg-white p-4 shadow-sm sm:p-5">
-                <div className="mb-4 grid gap-3 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_auto] sm:items-end">
-                  <label htmlFor="therapist-document-type" className={labelClass}>Tipo de documento
-                    <span className="relative mt-1.5 block"><IdCard className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9E95B7]" size={18} /><input id="therapist-document-type" value="DNI" readOnly disabled className={`${inputClass} pl-10`} /></span>
-                  </label>
-                  <label htmlFor="therapist-document-number" className={labelClass}>Número de DNI
-                    <input id="therapist-document-number" disabled placeholder="12345678" className={`${inputClass} mt-1.5 text-base`} />
-                  </label>
-                  <button type="button" disabled aria-disabled="true" title="Consulta RENIEC pendiente de implementación" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#EDE9FE] px-4 text-sm font-black text-violet-700 opacity-60 shadow-sm disabled:cursor-not-allowed">
-                    <Search size={18} /><span>Consultar RENIEC</span>
-                  </button>
-                </div>
+                <DniConsultarField
+                  id="therapist-document-number"
+                  value={formTerapeuta.numero_documento || ""}
+                  tipoDocumento={formTerapeuta.tipo_documento || "DNI"}
+                  onTipoDocumentoChange={(tipo) => setFormTerapeuta((form) => ({ ...form, tipo_documento: tipo }))}
+                  disabled={submitting}
+                  required
+                  inputClass={inputClass}
+                  labelClass={labelClass}
+                  onChange={(val) => setFormTerapeuta((form) => ({ ...form, numero_documento: val }))}
+                  onSuccess={(data) => setFormTerapeuta((prev) => ({ ...prev, nombres: data.nombres, apellidos: data.apellidos }))}
+                />
+                <div className="mb-4" />
                 <div className="grid gap-3 sm:grid-cols-2"><label htmlFor="therapist-names" className={labelClass}>Nombres *<input id="therapist-names" required maxLength={60} disabled={submitting} value={formTerapeuta.nombres} onChange={(event) => setFormTerapeuta((form) => ({ ...form, nombres: event.target.value }))} placeholder="Ej. Ana" className={`${inputClass} mt-1.5`} /></label><label htmlFor="therapist-surnames" className={labelClass}>Apellidos *<input id="therapist-surnames" required maxLength={80} disabled={submitting} value={formTerapeuta.apellidos} onChange={(event) => setFormTerapeuta((form) => ({ ...form, apellidos: event.target.value }))} placeholder="Ej. Ruiz" className={`${inputClass} mt-1.5`} /></label></div>
                 <label htmlFor="therapist-email" className={`${labelClass} mt-4`}>Correo electrónico *<input id="therapist-email" required maxLength={150} type="email" disabled={submitting} value={formTerapeuta.email} onChange={(event) => setFormTerapeuta((form) => ({ ...form, email: event.target.value }))} placeholder="correo@ejemplo.com" className={`${inputClass} mt-1.5`} /></label>
                 <p className={helpClass}>Se enviará un enlace para crear la contraseña. Vence en 24 horas.</p>
@@ -378,14 +374,50 @@ export function AdminCuentasCrearModal({
           {step === 1 && !parent && (
             <section aria-labelledby="therapist-step-profile" className="space-y-4 rounded-[24px] bg-[#F7F4FF] p-4 sm:p-5">
               <div><h3 id="therapist-step-profile" className="text-2xl font-black tracking-tight text-[#1C1135]">Paso 2: Perfil profesional</h3><p className="mt-1 text-base text-[#6B5E8A]">Completa la información que verá el equipo administrativo.</p></div>
-              <div className="rounded-[20px] bg-white p-4 shadow-sm sm:p-5"><div className="grid gap-3 sm:grid-cols-2"><label htmlFor="account-specialty" className={labelClass}>Área de especialización<AccountSelect id="account-specialty" label="Área de especialización" disabled={submitting} value={formTerapeuta.especialidad || "Selecciona un área"} options={languageAreas} onChange={(especialidad) => setFormTerapeuta((form) => ({ ...form, especialidad }))} /></label><label htmlFor="account-experience" className={labelClass}>Años de experiencia<input id="account-experience" type="number" min="0" max="70" disabled={submitting} value={formTerapeuta.anios_experiencia ?? 0} onChange={(event) => setFormTerapeuta((form) => ({ ...form, anios_experiencia: Number(event.target.value) || 0 }))} className={`${inputClass} mt-1.5`} /></label></div><TherapistProfileExtras form={formTerapeuta} disabled={submitting} onChange={(patch) => setFormTerapeuta((form) => ({ ...form, ...patch }))} /></div>
+              <div className="rounded-[20px] bg-white p-4 shadow-sm sm:p-5">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <label htmlFor="account-specialty" className={labelClass}>Área de especialización<AccountSelect id="account-specialty" label="Área de especialización" disabled={submitting} value={formTerapeuta.especialidad || "Selecciona un área"} options={languageAreas} onChange={(especialidad) => setFormTerapeuta((form) => ({ ...form, especialidad }))} /></label>
+                  <label htmlFor="account-experience" className={labelClass}>Años de experiencia<input id="account-experience" type="number" min="0" max="70" disabled={submitting} value={formTerapeuta.anios_experiencia ?? 0} onChange={(event) => setFormTerapeuta((form) => ({ ...form, anios_experiencia: Number(event.target.value) || 0 }))} className={`${inputClass} mt-1.5`} /></label>
+                </div>
+                <div className="mt-4 border-t border-[#E8E5F4] pt-4">
+                  <RucConsultarField
+                    id="therapist-ruc"
+                    value={formTerapeuta.ruc || ""}
+                    disabled={submitting}
+                    inputClass={inputClass}
+                    labelClass={labelClass}
+                    onChange={(val) => setFormTerapeuta((form) => ({ ...form, ruc: val }))}
+                    onSuccess={(rucData) => {
+                      setFormTerapeuta((form) => ({
+                        ...form,
+                        ruc: rucData.ruc,
+                        razon_social: rucData.razonSocial,
+                      }));
+                    }}
+                  />
+                </div>
+                <TherapistProfileExtras form={formTerapeuta} disabled={submitting} onChange={(patch) => setFormTerapeuta((form) => ({ ...form, ...patch }))} />
+              </div>
             </section>
           )}
 
           {step === lastStep && (
             <section aria-labelledby="account-step-review" className="space-y-4 rounded-[24px] bg-[#F7F4FF] p-4 sm:p-5">
               <div><h3 id="account-step-review" className="text-2xl font-black tracking-tight text-[#1C1135]">{parent ? "Paso 3: Hijos" : "Paso 3: Revisión"}</h3><p className="mt-1 text-base text-[#6B5E8A]">{parent ? "Registra a los hijos asociados y crea la cuenta." : "Revisa los datos antes de crear la cuenta."}</p></div>
-              {parent ? <div className="rounded-2xl bg-white p-4 shadow-sm"><FamilyChildrenFields children={formPadre.hijos ?? []} draft={hijoEnEdicion} onDraftChange={setHijoEnEdicion} onSaveChild={saveChild} onEditChild={editChild} onRemoveChild={removeChild} draftError={childError} disabled={submitting} /></div> : <div className="rounded-2xl bg-white p-4 text-sm text-[#6B5E8A] shadow-sm"><p><span className="font-bold text-[#1C1135]">Especialidad:</span> {formTerapeuta.especialidad || "No especificada"}</p><p className="mt-1"><span className="font-bold text-[#1C1135]">Experiencia:</span> {formTerapeuta.anios_experiencia ?? 0} años</p><p className="mt-1"><span className="font-bold text-[#1C1135]">Idiomas:</span> {formTerapeuta.idiomas || "No especificados"}</p>{formTerapeuta.descripcion_profesional && <p className="mt-1 whitespace-pre-line"><span className="font-bold text-[#1C1135]">Perfil:</span> {formTerapeuta.descripcion_profesional}</p>}</div>}
+              {parent ? (
+                <div className="rounded-2xl bg-white p-4 shadow-sm"><FamilyChildrenFields children={formPadre.hijos ?? []} draft={hijoEnEdicion} onDraftChange={setHijoEnEdicion} onSaveChild={saveChild} onEditChild={editChild} onRemoveChild={removeChild} draftError={childError} disabled={submitting} /></div>
+              ) : (
+                <div className="rounded-2xl bg-white p-4 text-sm text-[#6B5E8A] shadow-sm space-y-1.5">
+                  <p><span className="font-bold text-[#1C1135]">Documento:</span> {formTerapeuta.tipo_documento || "DNI"} · {formTerapeuta.numero_documento || "No registrado"}</p>
+                  <p><span className="font-bold text-[#1C1135]">Especialidad:</span> {formTerapeuta.especialidad || "No especificada"}</p>
+                  <p><span className="font-bold text-[#1C1135]">Experiencia:</span> {formTerapeuta.anios_experiencia ?? 0} años</p>
+                  {formTerapeuta.ruc && (
+                    <p><span className="font-bold text-[#1C1135]">RUC (SUNAT):</span> {formTerapeuta.ruc} {formTerapeuta.razon_social ? `· ${formTerapeuta.razon_social}` : ""}</p>
+                  )}
+                  <p><span className="font-bold text-[#1C1135]">Idiomas:</span> {formTerapeuta.idiomas || "No especificados"}</p>
+                  {formTerapeuta.descripcion_profesional && <p className="whitespace-pre-line"><span className="font-bold text-[#1C1135]">Perfil:</span> {formTerapeuta.descripcion_profesional}</p>}
+                </div>
+              )}
             </section>
           )}
 

@@ -21,7 +21,7 @@
   cursor: pointer; perspective: 1000px;
 }
 .asha-unified .landing-flip-inner {
-  display: grid; min-height: 270px; border-radius: inherit;
+  display: grid; min-height: 220px; border-radius: inherit;
   transform-style: preserve-3d; transition: transform 420ms ease-out;
 }
 .asha-unified .landing-flip-card.is-flipped .landing-flip-inner { transform: rotateY(180deg); }
@@ -32,10 +32,10 @@
   box-shadow: inset 0 1px 0 #fff, 0 8px 24px #62448e0c;
   backface-visibility: hidden; -webkit-backface-visibility: hidden;
 }
-.asha-unified .landing-flip-face strong { font-size: 26px; font-weight: 900; line-height: 1.2; }
-.asha-unified .landing-flip-front img { width: 156px; height: 156px; object-fit: contain; }
+.asha-unified .landing-flip-face strong { font-size: 20px; font-weight: 900; line-height: 1.25; }
+.asha-unified .landing-flip-front img { width: 115px; height: 115px; object-fit: contain; }
 .asha-unified .landing-flip-back { transform: rotateY(180deg); background: #fff; }
-.asha-unified .landing-flip-back > span { font-size: 17px; line-height: 1.6; color: var(--asha-muted); }
+.asha-unified .landing-flip-back > span { font-size: 14px; line-height: 1.55; color: var(--asha-muted); }
 .asha-unified .landing-flip-back small { font-size: 13px; line-height: 1.5; color: var(--asha-primary-dark); }
 .asha-unified .landing-flip-card:focus-visible { outline: 3px solid var(--asha-primary-dark); outline-offset: 5px; }
 @media (hover: hover) {

@@ -46,7 +46,25 @@ export interface TutorData {
   direccion: string | null;
 }
 
-export type TipoDocumento = "DNI";
+export type TipoDocumento = "DNI" | "CE" | "PASAPORTE";
+
+export interface RucData {
+  ruc: string;
+  razonSocial: string;
+  estado: string;
+  condicion: string;
+  direccion: string;
+  departamento?: string;
+  provincia?: string;
+  distrito?: string;
+  fuente?: "DECOLECTA_SUNAT" | "MOCK_DESARROLLO";
+}
+
+export interface RucResponse {
+  success: boolean;
+  data?: RucData;
+  message?: string;
+}
 
 export interface PadreProfileResponse {
   user: User;
@@ -131,6 +149,10 @@ export interface CrearTerapeutaPayload {
   anios_experiencia?: number;
   idiomas?: string;
   descripcion_profesional?: string;
+  tipo_documento?: TipoDocumento;
+  numero_documento?: string;
+  ruc?: string;
+  razon_social?: string;
 }
 
 export interface ActualizarCuentaPayload {

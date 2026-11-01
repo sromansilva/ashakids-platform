@@ -642,8 +642,8 @@ CREATE TABLE public.reservas (
     fecha_hora_fin timestamp with time zone NOT NULL,
     modalidad character varying(10) NOT NULL,
     localizacion character varying(255),
-    zoom_meeting_id character varying(64),
-    zoom_join_url character varying(2048),
+    meet_id character varying(64),
+    meet_url character varying(2048),
     estado_reserva character varying(20) NOT NULL,
     fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
     tipo_cita character varying(20) DEFAULT 'TERAPIA'::character varying NOT NULL,
@@ -1202,9 +1202,9 @@ COPY public.reportes_sesion (id_reporte_sesion, id_sesion, observaciones_inicial
 -- Data for Name: reservas; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-COPY public.reservas (id_reserva, id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, localizacion, zoom_meeting_id, zoom_join_url, estado_reserva, fecha_creacion, tipo_cita) FROM stdin;
+COPY public.reservas (id_reserva, id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, localizacion, meet_id, meet_url, estado_reserva, fecha_creacion, tipo_cita) FROM stdin;
 7	2	1	\N	2026-10-26 04:00:00-05	2026-10-26 04:40:00-05	ONLINE	\N	\N	\N	CANCELADA	2026-10-26 02:11:56.304396-05	INTRODUCTORIA
-9	2	1	\N	2026-10-26 05:00:00-05	2026-10-26 05:40:00-05	ONLINE	\N	78533167020	https://us04web.zoom.us/j/78533167020?pwd=Ai3Rb527AN8lU4IkJ4TIy4icTO3LRz.1	CONFIRMADA	2026-10-26 02:18:43.169958-05	INTRODUCTORIA
+9	2	1	\N	2026-10-26 05:00:00-05	2026-10-26 05:40:00-05	ONLINE	\N	78533167020	https://meet.google.com/abc-defg-hij	CONFIRMADA	2026-10-26 02:18:43.169958-05	INTRODUCTORIA
 \.
 
 
