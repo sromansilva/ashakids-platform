@@ -25,7 +25,6 @@ export function DashLayout({
   children,
   title,
   padreUserName = "Laura Gómez",
-  padrePlan = "exploracion",
 }: {
   role: Role;
   cur: View;
