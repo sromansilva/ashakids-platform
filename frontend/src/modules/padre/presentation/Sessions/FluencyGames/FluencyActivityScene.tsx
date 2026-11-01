@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { ArrowRight, Ear, Drum, Heart, MessageCircle, Pause, RotateCcw, Sparkles, Volume2 } from 'lucide-react';
+import { ArrowRight, Ear, Drum, Heart, MessageCircle, Pause, Sparkles } from 'lucide-react';
 import { WordPicture } from '../WordGames/WordParts';
 import { fluencyBeatPrompts, fluencyBeatWords, type FluencyGameId } from './fluencyContent';
 

@@ -26,7 +26,6 @@ export function MundoAshaAdivinanzas({ go }: { go: (v: View) => void }) {
   const [wrongThisRiddle, setWrongThisRiddle] = useState(0);
   const [revealed, setRevealed] = useState(false);
   const [hintLevel, setHintLevel] = useState(0);
-  const [completed, setCompleted] = useState(0);   // riddles answered (correct or after 2 wrong)
   const [attempts, setAttempts] = useState(0);     // total taps across all riddles
   const [hintsUsed, setHintsUsed] = useState(0);
   const [pauseCount, setPauseCount] = useState(0);
@@ -89,7 +88,6 @@ export function MundoAshaAdivinanzas({ go }: { go: (v: View) => void }) {
     setPhase("playing");
     setStartTime(Date.now());
     setRiddle(0);
-    setCompleted(0);
     setAttempts(0);
     setHintsUsed(0);
     setPauseCount(0);
@@ -108,11 +106,9 @@ export function MundoAshaAdivinanzas({ go }: { go: (v: View) => void }) {
       timeSeconds: Math.round((Date.now() - startTime) / 1000),
     }]);
     if (!correct) setWrongThisRiddle(w => w + 1);
-    if (correct) setCompleted(c => c + 1);
   };
 
   const next = () => {
-    if (!isCorrect && !revealed) setCompleted(c => c + 1); // count even if revealed after 2 wrongs
     if (riddle < riddles.length - 1) {
       setRiddle(r => r + 1);
       resetRiddleState();

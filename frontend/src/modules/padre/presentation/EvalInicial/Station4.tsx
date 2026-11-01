@@ -7,17 +7,14 @@ import { StationResult } from "@/modules/padre/presentation/EvalInicial/types";
 import { STATIONS } from "@/modules/padre/presentation/EvalInicial/data";
 import { HelpBar } from "@/modules/padre/presentation/EvalInicial/HelpBar";
 
-export function Station4({ ageMonths, onComplete }: { ageMonths: number; onComplete: (result: Partial<StationResult>) => void }) {
+export function Station4({ onComplete }: { onComplete: (result: Partial<StationResult>) => void }) {
   const scenes = [
     { id: "A", emoji: "🌅", label: "Asha se despierta por la mañana" },
     { id: "B", emoji: "🎒", label: "Asha prepara su mochila" },
     { id: "C", emoji: "🚌", label: "Asha toma el autobús a la escuela" },
     { id: "D", emoji: "📚", label: "Asha llega a clase y saluda" },
   ];
-  const correctOrder = ["A", "B", "C", "D"];
-
   const [order, setOrder] = useState(["C", "A", "D", "B"]);
-  const [dragging, setDragging] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [hints, setHints] = useState(3);
   const [hintMsg, setHintMsg] = useState("");

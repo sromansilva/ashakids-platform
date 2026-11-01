@@ -8,7 +8,7 @@ import { ProgressBar } from "@/modules/padre/presentation/EvalInicial/ProgressBa
 import { HelpBar } from "@/modules/padre/presentation/EvalInicial/HelpBar";
 import { FeedbackBubble } from "@/modules/padre/presentation/EvalInicial/FeedbackBubble";
 
-export function Station5({ ageMonths, onComplete }: { ageMonths: number; onComplete: (result: Partial<StationResult>) => void }) {
+export function Station5({ onComplete }: { onComplete: (result: Partial<StationResult>) => void }) {
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);

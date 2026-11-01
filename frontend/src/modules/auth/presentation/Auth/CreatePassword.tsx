@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, Eye, EyeOff, KeyRound, Loader2, Lock, Mail, AlertCircle } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, KeyRound, Loader2, Lock, Mail, AlertCircle } from "lucide-react";
 import { AuthShell } from "./AuthShell";
 import { Btn } from "@/shared/presentation/components/common/Btn";
 import { Isotipo } from "@/shared/presentation/components/illustrations/Isotipo";
@@ -35,7 +35,6 @@ export function CreatePassword() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-  const [resendDone, setResendDone] = useState(false);
 
   const handleSubmitPassword = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -80,7 +79,6 @@ export function CreatePassword() {
     try {
       const result = await authService.resendActivation(cleanCode);
       setMessage(result.message || "Si está pendiente, recibirás un enlace en tu correo.");
-      setResendDone(true);
     } catch (cause: unknown) {
       const msg = cause instanceof Error ? cause.message : "No pudimos solicitar el enlace. Intenta nuevamente.";
       setError(msg);

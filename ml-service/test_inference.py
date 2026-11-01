@@ -6,6 +6,7 @@ import unittest
 import numpy as np
 import soundfile as sf
 
+from transcript_service import analizar_transcripcion_sesion
 from wav2vec_engine import Wav2VecPhoneticEngine
 
 
@@ -36,7 +37,7 @@ class AudioReviewEngineTests(unittest.TestCase):
             self.engine.inferir_audio(b"audio")
 
     def test_transcript_does_not_assign_named_speakers_to_clinical_roles(self):
-        result = self.engine.analizar_transcripcion_sesion(
+        result = analizar_transcripcion_sesion(
             "Terapeuta (00:01): Repite la palabra.\nCarlos (00:02): Casa.\n"
         )
 

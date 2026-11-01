@@ -5,7 +5,6 @@ import {
   Sparkles,
   CheckCircle2,
   FileText,
-  Volume2,
   ArrowRight,
   AlertCircle,
   Zap,

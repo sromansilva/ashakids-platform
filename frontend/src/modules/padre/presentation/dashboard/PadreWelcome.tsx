@@ -12,11 +12,8 @@ import './family-center.css';
 
 export function PadreWelcome({
   go,
-  padreUserName,
 }: {
   go: (view: View) => void;
-  padreUserName?: string;
-  padrePlan?: 'exploracion' | 'familia';
 }) {
   const navigate = useNavigate();
   const { patients, patient } = useSelectedFamilyPatient();

@@ -24,6 +24,13 @@ class LocalAudioApiTests(unittest.TestCase):
                 self.assertEqual(transcript.json()["turnos_dialogo_count"], 2)
                 self.assertEqual(transcript.json()["turnos_dialogo"][1]["hablante"], "HABLANTE")
 
+                transcript_file = client.post(
+                    "/analyze/session-transcript-file",
+                    files={"file": ("sesion.txt", b"Terapeuta: Buen trabajo.\n", "text/plain")},
+                )
+                self.assertEqual(transcript_file.status_code, 200)
+                self.assertEqual(transcript_file.json()["turnos_dialogo_count"], 1)
+
                 old_route = client.post("/analyze/meet-transcript", json={"texto": "texto"})
                 self.assertEqual(old_route.status_code, 404)
         finally:

@@ -7,7 +7,7 @@ import { RemoteFeedback } from './RemoteFeedback';
 import { ReportHelpLevel } from './ReportHelpLevel';
 import { TherapistVoiceAIWidget } from './TherapistVoiceAIWidget';
 import { incompleteTemplateFields, reportTemplates, type NarrativeField } from './reportFormGuidance';
-import { encodeArticulationResult, parseArticulationHistory } from '@/shared/application/articulationReportEntries';
+import { parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 
 export const reportLabels = {
   observaciones_iniciales: 'Observaciones iniciales',
@@ -238,9 +238,4 @@ export function ClinicalReportEditor({
       </div>
     </form>
   );
-}
-
-function formatAudioTime(seconds: number): string {
-  const wholeSeconds = Math.floor(seconds);
-  return `${String(Math.floor(wholeSeconds / 60)).padStart(2, '0')}:${String(wholeSeconds % 60).padStart(2, '0')}`;
 }

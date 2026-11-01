@@ -27,7 +27,6 @@ export function MundoAshaCanciones({ go }: { go: (v: View) => void }) {
   const [pauseCount, setPauseCount] = useState(0);
   const [startTime, setStartTime] = useState(Date.now());
   const [selected, setSelected] = useState<string | null>(null);
-  const [simPlaying, setSimPlaying] = useState(false);
   const [events, setEvents] = useState<object[]>([]);
   const isAssigned = true;
 
@@ -79,10 +78,8 @@ export function MundoAshaCanciones({ go }: { go: (v: View) => void }) {
     setEvents([]);
   };
 
-  const simulateSound = (key: string, label: string) => {
-    setSimPlaying(true);
+  const simulateSound = (label: string) => {
     speakForChild(`Simulando: ${label}`);
-    setTimeout(() => setSimPlaying(false), 1500);
   };
 
   const choose = (key: string) => {
@@ -273,7 +270,7 @@ export function MundoAshaCanciones({ go }: { go: (v: View) => void }) {
             <div className="flex flex-col gap-3 mb-4">
               {current.sounds.map((sound) => (
                 <button key={sound.key}
-                  onClick={() => { simulateSound(sound.key, sound.label); speakForChild(sound.sim); }}
+                  onClick={() => { simulateSound(sound.label); speakForChild(sound.sim); }}
                   aria-label={`Escuchar: ${sound.label}. Síntesis simulada, no se graba audio.`}
                   title="Síntesis de voz simulada · No se graba audio"
                   className="flex items-center gap-3 py-3 px-4 rounded-2xl text-sm font-bold border-2 border-[#E8E5F4] hover:border-violet-300 hover:bg-violet-50 transition-all bg-white text-[#4B4869]">

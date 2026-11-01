@@ -3,7 +3,6 @@ import { useTerapeutaPacientes } from './useTerapeutaPacientes';
 import { PatientClinicalHistory } from './PatientClinicalHistory';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { Btn } from '@/shared/presentation/components/common/Btn';
-import { Av } from '@/shared/presentation/components/common/Av';
 
 export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPacientes>[0]) {
   const {

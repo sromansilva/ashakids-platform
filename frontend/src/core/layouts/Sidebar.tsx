@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle, Check, X } from "lucide-react";
+import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
-import { Av } from "@/shared/presentation/components/common/Av";
 import { Isotipo } from "@/shared/presentation/components/illustrations/Isotipo";
 
 export function Sidebar({
@@ -13,7 +12,6 @@ export function Sidebar({
   logout,
   mobile = false,
   padreUserName = "Laura Gómez",
-  padrePlan = "exploracion",
 }: {
   role: Role;
   cur: View;
@@ -21,7 +19,6 @@ export function Sidebar({
   logout: () => void;
   mobile?: boolean;
   padreUserName?: string;
-  padrePlan?: "exploracion" | "familia";
 }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const nav =

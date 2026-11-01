@@ -36,7 +36,6 @@ function getMondayOf(date: Date): Date {
   return d;
 }
 function formatMonthYear(d: Date) { return `${MONTHS_ES_FULL[d.getMonth()]} ${d.getFullYear()}`; }
-function formatDateLabel(d: Date) { return `${String(d.getDate()).padStart(2,"0")} ${MONTHS_ES_SHORT[d.getMonth()]} ${d.getFullYear()}`; }
 
 const CAL_COLORS = ["#7C3AED","#0D9488","#22C55E","#F97316","#8B5CF6","#EC4899"];
 function childColor(name: string) {
