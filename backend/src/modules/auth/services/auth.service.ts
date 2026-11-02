@@ -2,7 +2,7 @@ import * as argon2 from '@node-rs/argon2';
 import { pool } from '../../../core/database.js';
 import { settings } from '../../../core/config.js';
 import { createSessionToken, hashSessionToken } from '../../../core/security/session-token.js';
-import type { LoginDTO, RegisterDTO } from '../dtos/auth.dto.js';
+import type { LoginDTO } from '../dtos/auth.dto.js';
 
 const sessionLifetimeMs = settings.SESSION_TTL_HOURS * 60 * 60 * 1000;
 
@@ -151,55 +151,6 @@ export class AuthService {
     };
     const token = Buffer.from(JSON.stringify(user)).toString('base64');
     return { token, user, usuario: user, message: 'Inicio de sesión exitoso (modo respaldo)' };
-  }
-
-  async register(dto: RegisterDTO) {
-    if (dto.rol !== 'PADRE') {
-      const err = new Error('El registro público solo permite crear cuentas PADRE.');
-      (err as any).status = 403;
-      throw err;
-    }
-
-    const client = await pool.connect();
-    try {
-      await client.query('BEGIN');
-      const codigo_usuario = dto.codigo_usuario || `p${Math.floor(10000 + Math.random() * 90000)}`;
-      const password_hash = await argon2.hash(dto.password, {
-        timeCost: 3,
-        memoryCost: 65536,
-        parallelism: 4,
-      });
-      const userInsert = await client.query(
-        `INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-         VALUES ($1, $2, $3, $4, $5, true, NOW())
-         RETURNING id_usuario, codigo_usuario, email, nombres, apellidos, activo, fecha_creacion;`,
-        [dto.nombres, dto.apellidos, codigo_usuario, dto.email, password_hash],
-      );
-      const createdUser = userInsert.rows[0];
-
-      const roleResult = await client.query('SELECT id_rol FROM roles WHERE nombre_rol = $1;', ['PADRE']);
-      if (!roleResult.rows[0]) throw new Error('El rol PADRE no está configurado en la base de datos.');
-      await client.query(
-        `INSERT INTO usuario_roles (id_usuario, id_rol, fecha_asignacion, activo)
-         VALUES ($1, $2, NOW(), true);`,
-        [createdUser.id_usuario, roleResult.rows[0].id_rol],
-      );
-
-      const user = {
-        ...createdUser,
-        rol: 'PADRE' as const,
-        roles: ['PADRE'],
-        password_change_required: false,
-      };
-      const token = await persistSession(client, Number(user.id_usuario));
-      await client.query('COMMIT');
-      return { token, user, usuario: user, message: 'Usuario registrado exitosamente en PostgreSQL' };
-    } catch (err) {
-      await client.query('ROLLBACK').catch(() => undefined);
-      throw err;
-    } finally {
-      client.release();
-    }
   }
 
   async revokeSession(token?: string): Promise<void> {

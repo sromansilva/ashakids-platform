@@ -32,7 +32,7 @@ export function Landing(props: Parameters<typeof useLanding>[0]) {
     <a className="landing-skip" href="#landing-content">Saltar al contenido</a>
     <PublicNav go={go} cur="landing"/>
     <main id="landing-content">
-      <LandingElApoyoQue go={go}/>
+      <LandingElApoyoQue/>
       <section id="landing-steps" className="landing-section landing-steps"><div className="landing-container">
         <div className="landing-section-heading"><h2>Comenzar es<br/> <span>muy sencillo</span></h2></div>
         <ol className="landing-step-list">{steps.map((step,i) => {const Icon = stepIcons[i]; return <li key={step.n}><div className="landing-step-marker"><Icon size={27} strokeWidth={1.6}/><span>{step.n}</span></div><PublicIllustration className="landing-step-illustration" src={`/illustrations/${stepArt[i]}.png`} alt="" loading="lazy" width={180} height={180}/><h3>{step.title}</h3><p>{step.desc}</p></li>;})}</ol>

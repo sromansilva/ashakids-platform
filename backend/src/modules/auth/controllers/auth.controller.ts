@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as argon2 from '@node-rs/argon2';
-import { loginSchema, registerSchema, forgotPasswordSchema } from '../dtos/auth.dto.js';
+import { loginSchema, forgotPasswordSchema } from '../dtos/auth.dto.js';
 import { authService } from '../services/auth.service.js';
 import { settings } from '../../../core/config.js';
 import { getSessionToken } from '../../../core/middleware/auth.middleware.js';
@@ -29,17 +29,6 @@ export class AuthController {
       const { user, token } = await authService.login(dto);
       setSessionCookie(res, token);
       res.json({ message: 'Inicio de sesión exitoso', token, user });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async register(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const dto = registerSchema.parse(req.body);
-      const { user, token } = await authService.register(dto);
-      setSessionCookie(res, token);
-      res.status(201).json({ message: 'Usuario registrado exitosamente', token, user });
     } catch (err) {
       next(err);
     }

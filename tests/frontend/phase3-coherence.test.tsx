@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from "vitest";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderRoute } from "./helpers";
+import { LandingElApoyoQue } from "@/modules/public/presentation/landing/LandingElApoyoQue";
 import { LEARNING_WORLDS, deriveWorldProgress, type VerifiedLearningAttempt } from "@/modules/mundo_asha/application/learningWorlds";
 import { capabilityNotice } from "@/core/router/routeCapabilities";
 import type { Patient, Appointment, Session } from "@/modules/clinica/domain/clinical";
@@ -11,6 +12,20 @@ const future: Appointment = { id_reserva: 1, id_paciente: 1, id_tratamiento: 1, 
 const completed: Session = { id_sesion: 1, id_reserva: 2, cita: { ...future, id_reserva: 2, estado_reserva: "COMPLETADA" }, estado_sesion: "FINALIZADA", asistencia: "ASISTIO", reporte_disponible: false, fecha_hora_inicio_real: "2026-10-09T10:00:00Z", fecha_hora_fin_real: "2026-10-09T10:45:00Z" };
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "X-Total-Count": String(Array.isArray(body) ? body.length : 1) } });
 beforeEach(() => sessionStorage.clear());
+
+it("Landing account request opens the official WhatsApp channel", () => {
+  render(<LandingElApoyoQue />);
+  expect(screen.getByRole("link", { name: "Solicitar información de cuenta por WhatsApp" }))
+    .toHaveAttribute("href", expect.stringContaining("https://wa.me/51986309426"));
+});
+
+it("Public contact offers a working WhatsApp path without placeholder details", async () => {
+  renderRoute("/contacto", null);
+  expect(await screen.findByRole("heading", { name: "Conversemos por WhatsApp" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Solicitar información por WhatsApp" }))
+    .toHaveAttribute("href", expect.stringContaining("https://wa.me/51986309426"));
+  expect(screen.queryByText(/555|Ciudad de México|hola@ashakids\.com/i)).not.toBeInTheDocument();
+});
 function api(options: { error?: boolean; pending?: boolean; children?: Patient[]; writeError?: boolean } = {}) {
   vi.mocked(fetch).mockImplementation(async (input, init) => {
     if (options.writeError && init?.method === "POST") return response({ detail: "Registro de hijo no disponible" }, 503);
@@ -37,6 +52,7 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
 it.each(["/register", "/register/padre", "/register/terapeuta", "/register/verify", "/register/terapeuta/success", "/onboarding"])("%s explains real access without invented credentials, email or success", async path => {
   renderRoute(path, null);
   await screen.findByRole("button", { name: "Ir al inicio de sesión" });
+  expect(screen.getByRole("link", { name: /(Contactar|Pedir ayuda) por WhatsApp/i })).toHaveAttribute("href", expect.stringContaining("wa.me/51986309426"));
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   expect(screen.queryByText(/Correo reenviado|Contraseña actualizada|Solicitud enviada|ana@email.com|Ya verifiqué/)).not.toBeInTheDocument();
   expect(fetch).not.toHaveBeenCalled();
