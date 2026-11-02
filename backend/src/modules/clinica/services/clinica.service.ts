@@ -1,63 +1,54 @@
 import { pool } from '../../../core/database.js';
+import type { AuthenticatedUser } from '../../../core/middleware/auth.middleware.js';
+import { appendPatientScope, assertPatientAccess, assertReservationAccess } from '../../../core/security/clinical-access.js';
 import type { SesionClinicaDTO, ValoracionInicialDTO } from '../dtos/clinica.dto.js';
 
 export class ClinicaService {
-  async getSesiones(pacienteId?: number) {
-    try {
+  async getSesiones(pacienteId: number | undefined, user: AuthenticatedUser) {
       let sql = `
         SELECT 
           s.id_sesion,
           s.id_reserva as id_cita,
-          COALESCE(r.id_paciente, $1) as id_paciente,
-          COALESCE(r.id_terapeuta, 2) as id_terapeuta,
+          r.id_paciente,
+          r.id_terapeuta,
           s.fecha_hora_inicio_real as fecha,
           s.estado_sesion as estado,
-          COALESCE(rs.resumen_clinico, 'Sesión completada') as resumen
+          COALESCE(rs.observaciones_iniciales, '') as resumen,
+          rs.objetivos_trabajados
         FROM sesiones s
-        LEFT JOIN reservas r ON s.id_reserva = r.id_reserva
+        JOIN reservas r ON s.id_reserva = r.id_reserva
         LEFT JOIN reportes_sesion rs ON s.id_sesion = rs.id_sesion
         WHERE 1=1
       `;
-      const params: any[] = [pacienteId || 1];
+      const params: any[] = [];
       if (pacienteId) {
+        params.push(pacienteId);
         sql += ` AND r.id_paciente = $1`;
       }
+      sql += appendPatientScope(params, user, 'r.id_paciente');
       sql += ` ORDER BY s.fecha_hora_inicio_real DESC LIMIT 20;`;
 
       const res = await pool.query(sql, params);
-      if (res.rows.length > 0) {
-        return res.rows.map(row => ({
+      return res.rows.map(row => ({
           id_sesion: row.id_sesion,
           id_cita: row.id_cita,
           id_paciente: row.id_paciente,
           id_terapeuta: row.id_terapeuta,
-          fecha: row.fecha ? new Date(row.fecha).toISOString().split('T')[0] : '2026-10-20',
-          hora_inicio: row.fecha ? new Date(row.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '10:00',
+          fecha: row.fecha ? new Date(row.fecha).toISOString().split('T')[0] : null,
+          hora_inicio: row.fecha ? new Date(row.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null,
           estado: row.estado || 'COMPLETADA',
           resumen: row.resumen,
-          objetivos: ['Discriminación auditiva /k/', 'Producción guiada'],
+          objetivos: typeof row.objetivos_trabajados === 'string' && row.objetivos_trabajados
+            ? row.objetivos_trabajados.split(/\r?\n|,/).map((item: string) => item.trim()).filter(Boolean)
+            : [],
         }));
-      }
-    } catch (err) {
-      console.warn('[ClinicaService] Fallback getSesiones:', err);
-    }
-
-    return [
-      {
-        id_sesion: 1,
-        id_cita: 101,
-        id_paciente: pacienteId || 1,
-        id_terapeuta: 2,
-        fecha: '2026-10-20',
-        hora_inicio: '10:00',
-        estado: 'COMPLETADA',
-        resumen: 'Se avanzó en fonemas velares y discriminación auditiva.',
-        objetivos: ['Discriminación auditiva /k/', 'Producción guiada'],
-      },
-    ];
   }
 
-  async crearSesion(dto: SesionClinicaDTO) {
+  async crearSesion(dto: SesionClinicaDTO, user: AuthenticatedUser) {
+    if (user.rol !== 'ADMIN' && user.rol !== 'TERAPEUTA') {
+      throw Object.assign(new Error('Solo el terapeuta asignado puede registrar una sesión.'), { status: 403 });
+    }
+    await assertReservationAccess(user, dto.id_cita);
     try {
       const res = await pool.query(
         `INSERT INTO sesiones (id_reserva, fecha_hora_inicio_real, estado_sesion, asistencia)
@@ -65,24 +56,33 @@ export class ClinicaService {
          RETURNING id_sesion;`,
         [dto.id_cita]
       );
+      if (!res.rows[0]?.id_sesion) throw new Error('No se pudo registrar la sesión.');
+      const reservation = await pool.query(
+        'SELECT id_paciente, id_terapeuta FROM reservas WHERE id_reserva = $1 LIMIT 1;',
+        [dto.id_cita],
+      );
       return {
-        id_sesion: res.rows[0]?.id_sesion || Date.now(),
-        ...dto,
+        id_sesion: res.rows[0].id_sesion,
+        id_cita: dto.id_cita,
+        id_paciente: reservation.rows[0]?.id_paciente,
+        id_terapeuta: reservation.rows[0]?.id_terapeuta,
+        fecha: dto.fecha,
+        hora_inicio: dto.hora_inicio,
+        objetivos: dto.objetivos ?? [],
+        resumen: dto.resumen ?? '',
         estado: 'EN_PROGRESO',
         creado_en: new Date().toISOString(),
       };
     } catch (err) {
-      console.warn('[ClinicaService] Fallback crearSesion:', err);
-      return {
-        id_sesion: Date.now(),
-        ...dto,
-        estado: 'EN_PROGRESO',
-        creado_en: new Date().toISOString(),
-      };
+      throw err;
     }
   }
 
-  async crearValoracion(dto: ValoracionInicialDTO) {
+  async crearValoracion(dto: ValoracionInicialDTO, user: AuthenticatedUser) {
+    await assertPatientAccess(user, dto.id_paciente);
+    if (user.rol !== 'ADMIN' && user.rol !== 'TERAPEUTA') {
+      throw Object.assign(new Error('Solo administración o el terapeuta pueden registrar una valoración clínica inicial.'), { status: 403 });
+    }
     return {
       id_valoracion: Date.now(),
       ...dto,

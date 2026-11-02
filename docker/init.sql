@@ -1069,7 +1069,6 @@ COPY public.bloqueos_agenda (id_bloqueo, id_terapeuta, inicio, fin) FROM stdin;
 --
 
 COPY public.conversaciones (id_conversacion, id_tutor, id_terapeuta, estado, fecha_creacion, ultima_actividad, fecha_archivado) FROM stdin;
-1	1	1	ACTIVA	2026-10-26 02:16:38.163246-05	2026-10-26 02:16:49.930821-05	\N
 \.
 
 
@@ -1120,7 +1119,6 @@ COPY public.mensaje_adjuntos (id_adjunto, id_mensaje, url_archivo, nombre_archiv
 --
 
 COPY public.mensajes (id_mensaje, id_conversacion, id_usuario_emisor, texto_mensaje, fecha_envio, leido) FROM stdin;
-1	1	1	hola	2026-10-26 02:16:49.928781-05	f
 \.
 
 

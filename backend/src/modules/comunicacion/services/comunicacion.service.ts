@@ -1,27 +1,17 @@
+import type { AuthenticatedUser } from '../../../core/middleware/auth.middleware.js';
 import type { EnviarMensajeDTO, CrearIncidenciaDTO } from '../dtos/comunicacion.dto.js';
+import { conversacionesService } from '../../conversaciones/conversaciones.service.js';
 
 export class ComunicacionService {
-  async getMensajes(usuarioId: number, conUsuarioId?: number) {
-    return [
-      {
-        id_mensaje: 1,
-        remitente_id: conUsuarioId || 2,
-        destinatario_id: usuarioId,
-        contenido: 'Hola, recuerde repasar la actividad de discriminación auditiva hoy.',
-        leido: true,
-        creado_en: '2026-10-24T18:00:00Z',
-      },
-    ];
+  async getMensajes(user: AuthenticatedUser, conUsuarioId?: number) {
+    return conversacionesService.getMensajesLegacy(user, conUsuarioId);
   }
 
-  async enviarMensaje(remitenteId: number, dto: EnviarMensajeDTO) {
-    return {
-      id_mensaje: Date.now(),
-      remitente_id: remitenteId,
-      ...dto,
-      leido: false,
-      creado_en: new Date().toISOString(),
-    };
+  async enviarMensaje(user: AuthenticatedUser, dto: EnviarMensajeDTO) {
+    if (dto.adjunto_url) {
+      throw Object.assign(new Error('Los adjuntos deben enviarse desde la conversación.'), { status: 400 });
+    }
+    return conversacionesService.enviarLegacy(user, dto.destinatario_id, dto.contenido);
   }
 
   async getNotificaciones(usuarioId: number) {

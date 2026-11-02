@@ -1,13 +1,23 @@
 import type { Request, Response, NextFunction } from 'express';
 import { comunicacionService } from '../services/comunicacion.service.js';
 import { enviarMensajeSchema, crearIncidenciaSchema } from '../dtos/comunicacion.dto.js';
+import { requireUser } from '../../../core/security/clinical-access.js';
+
+function optionalRecipientId(value: unknown): number | undefined {
+  if (value === undefined) return undefined;
+  const id = Number(value);
+  if (!Number.isSafeInteger(id) || id <= 0) {
+    throw Object.assign(new Error('El contacto indicado no es válido.'), { status: 400 });
+  }
+  return id;
+}
 
 export class ComunicacionController {
   async getMensajes(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const usuarioId = req.user?.id_usuario || 1;
-      const conUsuarioId = req.query.con ? parseInt(req.query.con as string, 10) : undefined;
-      const result = await comunicacionService.getMensajes(usuarioId, conUsuarioId);
+      const user = requireUser(req);
+      const counterpartUserId = optionalRecipientId(req.query.con);
+      const result = await comunicacionService.getMensajes(user, counterpartUserId);
       res.json(result);
     } catch (err) {
       next(err);
@@ -16,9 +26,9 @@ export class ComunicacionController {
 
   async enviarMensaje(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const remitenteId = req.user?.id_usuario || 1;
+      const user = requireUser(req);
       const dto = enviarMensajeSchema.parse(req.body);
-      const result = await comunicacionService.enviarMensaje(remitenteId, dto);
+      const result = await comunicacionService.enviarMensaje(user, dto);
       res.status(201).json(result);
     } catch (err) {
       next(err);
@@ -27,8 +37,8 @@ export class ComunicacionController {
 
   async getNotificaciones(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const usuarioId = req.user?.id_usuario || 1;
-      const result = await comunicacionService.getNotificaciones(usuarioId);
+      const user = requireUser(req);
+      const result = await comunicacionService.getNotificaciones(user.id_usuario);
       res.json(result);
     } catch (err) {
       next(err);
@@ -37,9 +47,9 @@ export class ComunicacionController {
 
   async crearIncidencia(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const usuarioId = req.user?.id_usuario || 1;
+      const user = requireUser(req);
       const dto = crearIncidenciaSchema.parse(req.body);
-      const result = await comunicacionService.crearIncidencia(usuarioId, dto);
+      const result = await comunicacionService.crearIncidencia(user.id_usuario, dto);
       res.status(201).json(result);
     } catch (err) {
       next(err);
