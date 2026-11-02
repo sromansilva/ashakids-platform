@@ -25,7 +25,7 @@ export function encodeArticulationResult(result: ReviewedArticulationResult): st
     ['Palabra esperada', result.palabra_esperada],
     ['Transcripción tentativa del modelo', result.transcripcion_tentativa],
     ['Resultado revisado por terapeuta', result.resultado_revisado],
-    ['Fuente confirmada por terapeuta', `Pista local individual del participante · ${result.archivo_origen}`],
+    ['Fuente de audio revisada', result.archivo_origen],
     ['Fragmento', `${result.inicio_segundo.toFixed(2)}–${result.fin_segundo.toFixed(2)} s`],
   ];
   return `${OPEN_MARKER}\n${values.map(([label, value]) => `${label}: ${oneLine(value)}`).join('\n')}\n${CLOSE_MARKER}`;
@@ -45,7 +45,7 @@ export function parseArticulationResults(text: string | null | undefined): Revie
     const expected = fields.get('Palabra esperada');
     const tentative = fields.get('Transcripción tentativa del modelo');
     const reviewed = fields.get('Resultado revisado por terapeuta');
-    const source = fields.get('Fuente confirmada por terapeuta');
+    const source = fields.get('Fuente de audio revisada') ?? fields.get('Fuente confirmada por terapeuta');
     const fragment = fields.get('Fragmento')?.match(/([\d.]+)–([\d.]+)\s*s/);
     if (!objective || !expected || !tentative || !reviewed || !source || !fragment) continue;
     results.push({

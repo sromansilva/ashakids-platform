@@ -115,15 +115,15 @@
     min-height: 0;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 7px 10px;
+    gap: 7px 6px;
     padding: 9px 12px 8px;
   }
   .ftn-top-row { grid-column: 1; grid-row: 1; gap: 7px; }
   .ftn-brand-btn { padding: 4px; }
-  .ftn-child-picker > summary { min-height: 42px; max-width: 145px; padding-right: 9px; }
+  .ftn-child-picker > summary { min-height: 42px; max-width: 120px; padding-right: 9px; }
   .ftn-child-picker > summary img { width: 32px; height: 32px; }
-  .ftn-child-name { max-width: 74px; font-size: 13px; }
-  .ftn-user-section { grid-column: 2; grid-row: 1; gap: 7px; }
+  .ftn-child-name { max-width: 52px; font-size: 13px; }
+  .ftn-user-section { grid-column: 2; grid-row: 1; gap: 5px; }
   .ftn-user-section > div:first-child { display: none; }
   .ftn-header .ftn-logout-btn { min-height: 40px; padding: 7px 9px; }
   .ftn-nav-bar { grid-column: 1 / -1; grid-row: 2; justify-content: flex-start; width: 100%; }

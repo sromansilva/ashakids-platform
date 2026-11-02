@@ -872,9 +872,14 @@ CREATE TABLE public.tratamientos (
     fecha_fin date,
     observaciones_cierre text,
     id_sesion_origen integer,
+    id_prediccion integer,
+    frecuencia_semanal smallint,
+    fonemas_priorizados jsonb DEFAULT '[]'::jsonb NOT NULL,
     area character varying(20),
     mundos_asignados jsonb DEFAULT '[]'::jsonb NOT NULL,
     CONSTRAINT chk_tratamientos_sesiones CHECK (((sesiones_recomendadas IS NULL) OR (sesiones_recomendadas >= 0))),
+    CONSTRAINT tratamientos_frecuencia_semanal_check CHECK (((frecuencia_semanal IS NULL) OR ((frecuencia_semanal >= 1) AND (frecuencia_semanal <= 3)))),
+    CONSTRAINT tratamientos_fonemas_priorizados_check CHECK ((jsonb_typeof(fonemas_priorizados) = 'array'::text)),
     CONSTRAINT ck_plan_profesional CHECK (((id_sesion_origen IS NULL) OR ((area IS NOT NULL) AND ((area)::text = ANY (ARRAY[('FLUIDEZ'::character varying)::text, ('HABLA'::character varying)::text, ('LENGUAJE'::character varying)::text, ('VOZ'::character varying)::text, ('OROFACIAL'::character varying)::text])) AND (sesiones_recomendadas IS NOT NULL) AND ((sesiones_recomendadas >= 1) AND (sesiones_recomendadas <= 31)) AND (jsonb_typeof(mundos_asignados) = 'array'::text) AND ((jsonb_array_length(mundos_asignados) >= 1) AND (jsonb_array_length(mundos_asignados) <= 5)) AND (mundos_asignados <@ '["FLUIDEZ", "HABLA", "LENGUAJE", "VOZ", "OROFACIAL"]'::jsonb))))
 );
 
@@ -1303,8 +1308,8 @@ COPY public.terapeutas (id_terapeuta, id_usuario, especialidad, anios_experienci
 --
 
 COPY public.tratamientos (id_tratamiento, id_expediente, id_terapeuta, nombre_tratamiento, descripcion, sesiones_recomendadas, estado_tratamiento, fecha_inicio, fecha_fin, observaciones_cierre, id_sesion_origen, area, mundos_asignados) FROM stdin;
-1	1	1	Plan Integral de Articulación y Habla	Intervención enfocada en fluidez, pronunciación y discriminación auditiva.	12	ACTIVO	2026-10-26	\N	\N	\N	HABLA	["HABLA"]
-2	2	1	Plan Integral de Articulación y Habla	Intervención enfocada en fluidez y habla	12	ACTIVO	2026-10-26	\N	\N	\N	HABLA	["HABLA"]
+1	1	1	Plan Integral de Articulación y Habla	Intervención enfocada en fluidez, pronunciación y discriminación auditiva.	\N	ACTIVO	2026-10-26	\N	\N	\N	HABLA	["HABLA"]
+2	2	1	Plan Integral de Articulación y Habla	Intervención enfocada en fluidez y habla	\N	ACTIVO	2026-10-26	\N	\N	\N	HABLA	["HABLA"]
 \.
 
 

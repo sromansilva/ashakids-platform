@@ -7,11 +7,12 @@ describe('Whisper transcription service', () => {
   it('uses a returned transcript without inventing a pronunciation score', async () => {
     const originalFetch = globalThis.fetch;
     const originalEnabled = settings.ML_SERVICE_ENABLED;
+    let requestPath = '';
+    let requestBody: FormData | null = null;
     settings.ML_SERVICE_ENABLED = true;
     globalThis.fetch = async (input, init) => {
-      assert.equal(new URL(String(input)).pathname, '/predict/phonetics');
-      const body = JSON.parse(String(init?.body));
-      assert.deepEqual(Object.keys(body), ['audio_base64']);
+      requestPath = new URL(String(input)).pathname;
+      requestBody = init?.body instanceof FormData ? init.body : null;
       return new Response(JSON.stringify({ transcripcion: ' pelota ' }), { status: 200 });
     };
 
@@ -22,6 +23,8 @@ describe('Whisper transcription service', () => {
       assert.equal(result.palabra_esperada, 'pelota');
       assert.equal(result.requiere_revision, true);
       assert.match(result.mensaje, /no evalúa|debe revisarla/i);
+      assert.equal(requestPath, '/predict/file');
+      assert.ok(requestBody?.get('file') instanceof Blob);
       assert.equal('reconocido' in result, false);
       assert.equal('similitud' in result, false);
       assert.equal('diagnostico_clinico' in result, false);
@@ -31,13 +34,15 @@ describe('Whisper transcription service', () => {
     }
   });
 
-  it('does not substitute the expected word when transcription providers fail', async () => {
+  it('keeps audio on the local Wav2Vec service when transcription is unavailable', async () => {
     const originalFetch = globalThis.fetch;
     const originalEnabled = settings.ML_SERVICE_ENABLED;
-    const originalKey = settings.OPENAI_API_KEY;
+    const requestHosts: string[] = [];
     settings.ML_SERVICE_ENABLED = true;
-    settings.OPENAI_API_KEY = '';
-    globalThis.fetch = async () => new Response('unavailable', { status: 503 });
+    globalThis.fetch = async (input) => {
+      requestHosts.push(new URL(String(input)).host);
+      return new Response('unavailable', { status: 503 });
+    };
 
     try {
       const service = new WhisperService();
@@ -45,10 +50,10 @@ describe('Whisper transcription service', () => {
         service.evaluarPronunciacion('UklGRiQAAABXQVZFZm10IBAAAAABAAEA', 'manzana'),
         TranscriptionUnavailableError,
       );
+      assert.deepEqual(requestHosts, ['127.0.0.1:8001']);
     } finally {
       globalThis.fetch = originalFetch;
       settings.ML_SERVICE_ENABLED = originalEnabled;
-      settings.OPENAI_API_KEY = originalKey;
     }
   });
 });

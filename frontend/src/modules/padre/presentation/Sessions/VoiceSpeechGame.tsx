@@ -3,6 +3,7 @@ import { Mic, MicOff, Square, RefreshCw, Volume2, ArrowLeft, CheckCircle2, Alert
 import { Btn } from '@/shared/presentation/components/common/Btn';
 import { voiceService, type TranscripcionRespuesta, type ComparacionResultado } from '@/modules/mundo_asha/infrastructure/voiceService';
 import { speakForChild } from './speakForChild';
+import { clinicaService } from '@/modules/clinica/infrastructure/clinicalService';
 
 import type { GameProgress } from '@/modules/mundo_asha/infrastructure/learningGames';
 
@@ -38,16 +39,18 @@ export function VoiceSpeechGame({
   const timerRef = useRef<number | null>(null);
   const isMountedRef = useRef(true);
 
-  // Limpieza al desmontar
   const cleanupStream = useCallback(() => {
     if (timerRef.current) { clearInterval(timerRef.current); timerRef.current = null; }
     if (recorderRef.current && recorderRef.current.state !== 'inactive') {
+      recorderRef.current.onstop = null;
+      recorderRef.current.ondataavailable = null;
       try { recorderRef.current.stop(); } catch { /* Inactivo */ }
     }
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
     }
+    chunksRef.current = [];
   }, []);
 
   useEffect(() => {
@@ -58,14 +61,12 @@ export function VoiceSpeechGame({
     };
   }, [cleanupStream]);
 
-  // Selección de MIME soportado por el navegador
   const getSupportedMimeType = (): string => {
     if (typeof MediaRecorder === 'undefined') return '';
     const candidates = ['audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus', 'audio/ogg'];
     return candidates.find(cand => MediaRecorder.isTypeSupported(cand)) || '';
   };
 
-  // Iniciar grabación
   const startRecording = async () => {
     setErrorMessage('');
     setTranscription(null);
@@ -76,6 +77,28 @@ export function VoiceSpeechGame({
       if (!navigator.mediaDevices?.getUserMedia) {
         setState('blocked');
         setErrorMessage('Tu navegador no permite acceso al micrófono.');
+        return;
+      }
+
+      if (!Number.isInteger(patientId) || !patientId || patientId <= 0) {
+        setState('blocked');
+        setErrorMessage('Selecciona el perfil del niño y confirma su consentimiento antes de usar el micrófono.');
+        return;
+      }
+      let consent;
+      try {
+        consent = await clinicaService.getConsent(patientId);
+      } catch {
+        if (isMountedRef.current) {
+          setState('blocked');
+          setErrorMessage('No pudimos verificar el consentimiento. Comprueba la conexión antes de usar el micrófono.');
+        }
+        return;
+      }
+      if (!isMountedRef.current) return;
+      if (consent.consentido !== true) {
+        setState('blocked');
+        setErrorMessage('El tutor debe autorizar el reconocimiento de voz para este niño antes de grabar.');
         return;
       }
 
@@ -109,9 +132,10 @@ export function VoiceSpeechGame({
       };
 
       recorder.onstop = async () => {
-        if (!isMountedRef.current) return;
+        if (!isMountedRef.current) { chunksRef.current = []; return; }
         const mime = recorder.mimeType || 'audio/webm';
         const audioBlob = new Blob(chunksRef.current, { type: mime });
+        chunksRef.current = [];
 
         // Si es demasiado pequeño (< 500 bytes), considerar vacío
         if (audioBlob.size < 500) {
@@ -160,6 +184,8 @@ export function VoiceSpeechGame({
           setErrorMessage(
             err instanceof Error ? err.message : 'No se pudo conectar con el servicio de transcripción.'
           );
+        } finally {
+          chunksRef.current = [];
         }
       };
 
@@ -189,7 +215,6 @@ export function VoiceSpeechGame({
     }
   };
 
-  // Detener grabación
   const stopRecording = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -204,13 +229,11 @@ export function VoiceSpeechGame({
     }
   };
 
-  // Escuchar la frase modelo con síntesis de voz (TTS)
   const handleListenPrompt = () => {
     setHelps(h => h + 1);
     speakForChild(targetPhrase);
   };
 
-  // Reiniciar para un nuevo intento
   const handleRetry = () => {
     cleanupStream();
     setTranscription(null);
@@ -268,7 +291,7 @@ export function VoiceSpeechGame({
             >
               <Mic size={36} className="transition-transform group-hover:scale-110" />
             </button>
-            <p className="text-xs text-slate-400">Se genera una transcripción temporal para la actividad; el audio no se usa para una evaluación clínica.</p>
+            <p className="text-xs text-slate-400">Antes de abrir el micrófono se comprobará el consentimiento vigente del tutor para este niño. La transcripción sirve solo para la actividad y no evalúa pronunciación.</p>
           </>
         )}
 

@@ -57,7 +57,24 @@ export function DemoWorldPlayer(props: {
 }) {
   const [previousActivities, setPreviousActivities] = useState(false);
   if (props.world.id === 'HABLA' && !previousActivities) return <SoundWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
-  if (props.world.id === 'LENGUAJE' && !previousActivities) return <WordWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
+  if (props.world.id === 'LENGUAJE' && !previousActivities) {
+    const focusedWordLevels = props.world.levels.flatMap((level) =>
+      level.target_word_id && level.fonema_objetivo
+        ? [{ wordId: level.target_word_id, phoneme: level.fonema_objetivo, level: level.number }]
+        : [],
+    );
+    return <WordWorld
+      key={`${props.patientId}:${props.birthDate}`}
+      patientId={props.patientId}
+      birthDate={props.birthDate}
+      back={props.back}
+      legacy={() => setPreviousActivities(true)}
+      focusedPhonemes={props.world.fonemas_recomendados ?? []}
+      focusedWordLevels={focusedWordLevels}
+      gameVersion={props.world.version}
+      onProgressSaved={props.onSaved}
+    />;
+  }
   if (props.world.id === 'FLUIDEZ' && !previousActivities) return <FluencyWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
   return <>{['HABLA','LENGUAJE','FLUIDEZ'].includes(props.world.id) && <button type="button" className="asha-map-back" onClick={() => setPreviousActivities(false)}><ArrowLeft size={18}/> Volver a juegos de {props.world.id==='HABLA'?'sonidos':props.world.id==='LENGUAJE'?'palabras':'Ritmo de las Palabras'}</button>}<BasicWorldPlayer {...props}/></>;
 }

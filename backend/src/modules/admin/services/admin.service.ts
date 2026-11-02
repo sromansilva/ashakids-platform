@@ -1,7 +1,9 @@
 import * as argon2 from '@node-rs/argon2';
+import { randomBytes, randomInt } from 'node:crypto';
 import { pool } from '../../../core/database.js';
 import { settings } from '../../../core/config.js';
 import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
+import { createResetToken } from '../../../core/security/password-reset-token.js';
 
 export interface CuentaItem {
   id_usuario: number;
@@ -149,194 +151,110 @@ export class AdminService {
     return res.cuenta;
   }
 
-  async crearPadre(data: any) {
+  private async createInvitedAccount(data: any, role: 'PADRE' | 'TERAPEUTA', children: any[] = []) {
+    const prefix = role === 'PADRE' ? 'p' : 't';
+    const codigo_usuario = `${prefix}${randomInt(10000, 100000)}`;
+    const oneTimePassword = randomBytes(48);
+    let password_hash: string;
     try {
-      const codigo_usuario = `p${Math.floor(10000 + Math.random() * 90000)}`;
-      const tempPassword = data.password && data.password.trim().length >= 8
-        ? data.password.trim()
-        : `AshaKids${Math.floor(1000 + Math.random() * 9000)}!`;
-
-      let password_hash = '$argon2id$v=19$m=65536,t=3,p=4$dummyhash';
-      try {
-        password_hash = await argon2.hash(tempPassword, {
-          timeCost: 3,
-          memoryCost: 65536,
-          parallelism: 4,
-        });
-      } catch (hashErr) {
-        console.warn('[AdminService] Error hasheando contraseña padre:', hashErr);
-      }
-
-      const res = await pool.query(
-        `INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-         VALUES ($1, $2, $3, $4, $5, true, NOW())
+      password_hash = await argon2.hash(oneTimePassword, {
+        timeCost: 3,
+        memoryCost: 65536,
+        parallelism: 4,
+      });
+    } finally {
+      oneTimePassword.fill(0);
+    }
+    const client = await pool.connect();
+    let user: Record<string, unknown>;
+    try {
+      await client.query('BEGIN;');
+      const userResult = await client.query(
+        `INSERT INTO public.usuarios
+          (nombres, apellidos, codigo_usuario, email, password_hash, activo, password_change_required, fecha_creacion)
+         VALUES ($1, $2, $3, $4, $5, TRUE, TRUE, NOW())
          RETURNING id_usuario, codigo_usuario, email, nombres, apellidos, activo;`,
-        [data.nombres, data.apellidos, codigo_usuario, data.email, password_hash]
+        [data.nombres, data.apellidos, codigo_usuario, String(data.email).trim().toLowerCase(), password_hash],
       );
-      const user = res.rows[0];
+      user = userResult.rows[0] as Record<string, unknown>;
+      const roleResult = await client.query(`SELECT id_rol FROM public.roles WHERE nombre_rol = $1 LIMIT 1;`, [role]);
+      if (!roleResult.rows[0]) throw new Error(`No existe el rol requerido: ${role}.`);
+      await client.query(
+        `INSERT INTO public.usuario_roles (id_usuario, id_rol, fecha_asignacion, activo) VALUES ($1, $2, NOW(), TRUE);`,
+        [user.id_usuario, roleResult.rows[0].id_rol],
+      );
 
-      const rolRes = await pool.query(`SELECT id_rol FROM roles WHERE nombre_rol = 'PADRE';`);
-      if (rolRes.rows.length > 0) {
-        await pool.query(
-          `INSERT INTO usuario_roles (id_usuario, id_rol, fecha_asignacion, activo) VALUES ($1, $2, NOW(), true);`,
-          [user.id_usuario, rolRes.rows[0].id_rol]
+      if (role === 'PADRE') {
+        const tutorResult = await client.query(
+          `INSERT INTO public.tutores (id_usuario, parentesco, telefono, direccion)
+           VALUES ($1, $2, $3, $4) RETURNING id_tutor;`,
+          [user.id_usuario, data.parentesco || 'Padre', data.telefono || null, data.direccion || null],
+        );
+        const tutorId = Number(tutorResult.rows[0].id_tutor);
+        for (const child of children) {
+          if (!child.nombres_paciente || !child.apellidos_paciente || !child.fecha_nacimiento) {
+            throw Object.assign(new Error('Completa los datos obligatorios de cada niño.'), { status: 400 });
+          }
+          await client.query(
+            `INSERT INTO public.pacientes
+              (id_tutor, nombres_paciente, apellidos_paciente, fecha_nacimiento, sexo, avatar_nombre, activo, fecha_registro)
+             VALUES ($1, $2, $3, $4::date, COALESCE($5, 'M'), COALESCE($6, 'zorro'), TRUE, NOW());`,
+            [tutorId, child.nombres_paciente, child.apellidos_paciente, child.fecha_nacimiento, child.sexo, child.avatar_nombre],
+          );
+        }
+      } else {
+        await client.query(
+          `INSERT INTO public.terapeutas (id_usuario, especialidad, anios_experiencia, idiomas, descripcion_profesional)
+           VALUES ($1, $2, $3, $4, $5);`,
+          [user.id_usuario, data.especialidad || 'Fonoaudiología', data.anios_experiencia ?? 3, data.idiomas || 'Español', data.descripcion_profesional || ''],
         );
       }
-
-      await pool.query(
-        `INSERT INTO tutores (id_usuario, telefono, direccion) VALUES ($1, $2, $3);`,
-        [user.id_usuario, data.telefono || null, data.direccion || null]
-      );
-
-      let correo_bienvenida: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' = 'PENDIENTE';
-      let tutorRecipient = (data.email || '').trim();
-      if (tutorRecipient.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) {
-        tutorRecipient = settings.GMAIL_SENDER_EMAIL;
-      }
-      if (tutorRecipient) {
-        const mailRes = await GmailService.sendWelcomeEmail({
-          to: tutorRecipient,
-          name: `${data.nombres} ${data.apellidos || ''}`.trim(),
-          role: 'Tutor / Familia',
-          code: codigo_usuario,
-          initialPassword: tempPassword,
-        }).catch((e: unknown) => {
-          console.warn('[AdminService] Error enviando correo de bienvenida a tutor:', e);
-          return null;
-        });
-        if (mailRes?.status === 'ENVIADO') correo_bienvenida = 'ENVIADO';
-        else if (mailRes?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
-      }
-
-      return {
-        message: 'Cuenta de padre creada con éxito',
-        cuenta: { ...user, rol: 'PADRE' },
-        correo_bienvenida,
-      };
-    } catch (err) {
-      console.warn('[AdminService] Fallback crearPadre:', err);
-      return {
-        message: 'Cuenta de padre creada con éxito',
-        cuenta: { id_usuario: Date.now(), codigo_usuario: 'p99999', nombres: data.nombres, apellidos: data.apellidos, email: data.email, activo: true, rol: 'PADRE' },
-        correo_bienvenida: 'PENDIENTE',
-      };
+      await client.query('COMMIT;');
+    } catch (error) {
+      await client.query('ROLLBACK;');
+      throw error;
+    } finally {
+      client.release();
     }
+
+    const token = createResetToken(Number(user.id_usuario), String(user.codigo_usuario), password_hash, 2);
+    const origin = settings.PUBLIC_ORIGIN.replace(/\/+$/, '');
+    const activationUrl = `${origin}/crear-contrasena?token=${encodeURIComponent(token)}`;
+    let recipient = String(user.email ?? '').trim();
+    if (recipient.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) recipient = settings.GMAIL_SENDER_EMAIL;
+    let correo_bienvenida: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' = 'PENDIENTE';
+    if (recipient) {
+      const mailResult = await GmailService.sendAccountActivationEmail({
+        to: recipient,
+        name: `${data.nombres} ${data.apellidos || ''}`.trim(),
+        role: role === 'PADRE' ? 'Familia' : 'Terapeuta',
+        code: String(user.codigo_usuario),
+        activationUrl,
+      }).catch((error: unknown) => {
+        console.warn('[AdminService] No se pudo enviar el enlace de activación:', error instanceof Error ? error.message : String(error));
+        return null;
+      });
+      if (mailResult?.status === 'ENVIADO') correo_bienvenida = 'ENVIADO';
+      else if (mailResult?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
+    }
+    return {
+      message: role === 'PADRE' ? 'Cuenta familiar creada con éxito' : 'Cuenta de terapeuta creada con éxito',
+      cuenta: { ...user, rol: role },
+      correo_bienvenida,
+    };
+  }
+
+  async crearPadre(data: any) {
+    return this.createInvitedAccount(data, 'PADRE');
   }
 
   async crearTerapeuta(data: any) {
-    try {
-      const codigo_usuario = `t${Math.floor(10000 + Math.random() * 90000)}`;
-      const tempPassword = data.password && data.password.trim().length >= 8
-        ? data.password.trim()
-        : `AshaKids${Math.floor(1000 + Math.random() * 9000)}!`;
-
-      let password_hash = '$argon2id$v=19$m=65536,t=3,p=4$dummyhash';
-      try {
-        password_hash = await argon2.hash(tempPassword, {
-          timeCost: 3,
-          memoryCost: 65536,
-          parallelism: 4,
-        });
-      } catch (hashErr) {
-        console.warn('[AdminService] Error hasheando contraseña terapeuta:', hashErr);
-      }
-
-      const res = await pool.query(
-        `INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-         VALUES ($1, $2, $3, $4, $5, true, NOW())
-         RETURNING id_usuario, codigo_usuario, email, nombres, apellidos, activo;`,
-        [data.nombres, data.apellidos, codigo_usuario, data.email, password_hash]
-      );
-      const user = res.rows[0];
-
-      const rolRes = await pool.query(`SELECT id_rol FROM roles WHERE nombre_rol = 'TERAPEUTA';`);
-      if (rolRes.rows.length > 0) {
-        await pool.query(
-          `INSERT INTO usuario_roles (id_usuario, id_rol, fecha_asignacion, activo) VALUES ($1, $2, NOW(), true);`,
-          [user.id_usuario, rolRes.rows[0].id_rol]
-        );
-      }
-
-      await pool.query(
-        `INSERT INTO terapeutas (id_usuario, especialidad, anios_experiencia, descripcion_profesional)
-         VALUES ($1, $2, $3, $4);`,
-        [user.id_usuario, data.especialidad || 'Fonoaudiología', data.anios_experiencia || 3, data.descripcion_profesional || '']
-      );
-
-      let correo_bienvenida: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' = 'PENDIENTE';
-      let terapeutaRecipient = (data.email || '').trim();
-      if (terapeutaRecipient.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) {
-        terapeutaRecipient = settings.GMAIL_SENDER_EMAIL;
-      }
-      if (terapeutaRecipient) {
-        const mailRes = await GmailService.sendWelcomeEmail({
-          to: terapeutaRecipient,
-          name: `${data.nombres} ${data.apellidos || ''}`.trim(),
-          role: 'Terapeuta Especialista',
-          code: codigo_usuario,
-          initialPassword: tempPassword,
-        }).catch((e: unknown) => {
-          console.warn('[AdminService] Error enviando correo de bienvenida a terapeuta:', e);
-          return null;
-        });
-        if (mailRes?.status === 'ENVIADO') correo_bienvenida = 'ENVIADO';
-        else if (mailRes?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
-      }
-
-      return {
-        message: 'Cuenta de terapeuta creada con éxito',
-        cuenta: { ...user, rol: 'TERAPEUTA' },
-        correo_bienvenida,
-      };
-    } catch (err) {
-      console.warn('[AdminService] Fallback crearTerapeuta:', err);
-      return {
-        message: 'Cuenta de terapeuta creada con éxito',
-        cuenta: { id_usuario: Date.now(), codigo_usuario: 't99999', nombres: data.nombres, apellidos: data.apellidos, email: data.email, activo: true, rol: 'TERAPEUTA' },
-        correo_bienvenida: 'PENDIENTE',
-      };
-    }
+    return this.createInvitedAccount(data, 'TERAPEUTA');
   }
 
   async registrarFamilia(data: any) {
-    try {
-      const padreResult = await this.crearPadre(data);
-      const user = padreResult.cuenta;
-      let idTutor: number | null = null;
-      const tutRes = await pool.query(`SELECT id_tutor FROM tutores WHERE id_usuario = $1;`, [user.id_usuario]);
-      if (tutRes.rows.length > 0) {
-        idTutor = tutRes.rows[0].id_tutor;
-      } else {
-        const createTut = await pool.query(
-          `INSERT INTO tutores (id_usuario, telefono, direccion) VALUES ($1, $2, $3) RETURNING id_tutor;`,
-          [user.id_usuario, data.telefono || null, data.direccion || null]
-        );
-        idTutor = createTut.rows[0]?.id_tutor;
-      }
-
-      if (idTutor && Array.isArray(data.hijos) && data.hijos.length > 0) {
-        for (const h of data.hijos) {
-          if (!h.nombres_paciente || !h.apellidos_paciente) continue;
-          await pool.query(
-            `INSERT INTO pacientes (id_tutor, nombres_paciente, apellidos_paciente, fecha_nacimiento, sexo, avatar_nombre, activo, fecha_registro)
-             VALUES ($1, $2, $3, $4::date, COALESCE($5, 'M'), COALESCE($6, 'zorro'), true, NOW());`,
-            [idTutor, h.nombres_paciente, h.apellidos_paciente, h.fecha_nacimiento || '2020-01-01', h.sexo, h.avatar_nombre]
-          );
-        }
-      }
-
-      return {
-        message: 'Familia registrada con éxito',
-        cuenta: user,
-        correo_bienvenida: padreResult.correo_bienvenida,
-      };
-    } catch (err) {
-      console.warn('[AdminService] Fallback registrarFamilia:', err);
-      return {
-        message: 'Familia registrada con éxito',
-        cuenta: { id_usuario: Date.now(), codigo_usuario: 'p99999', ...data, activo: true, rol: 'PADRE' },
-      };
-    }
+    const result = await this.createInvitedAccount(data, 'PADRE', Array.isArray(data.hijos) ? data.hijos : []);
+    return { ...result, message: 'Familia registrada con éxito' };
   }
 
   async actualizarCuenta(id: number, data: any) {

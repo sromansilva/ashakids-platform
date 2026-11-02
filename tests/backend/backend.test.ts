@@ -14,6 +14,7 @@ const accessFixture: {
   sharedPatientId?: number;
   cancelledOnlyPatientId?: number;
   unrelatedPatientId?: number;
+  parentActionPatientId?: number;
   reservationIds: number[];
   sessionIds: number[];
 } = { reservationIds: [], sessionIds: [] };
@@ -278,6 +279,7 @@ async function createClinicalAccessFixture(): Promise<void> {
   accessFixture.sharedPatientId = await insertTestPatient(1, 'Paciente compartido');
   accessFixture.cancelledOnlyPatientId = await insertTestPatient(1, 'Paciente cancelado');
   accessFixture.unrelatedPatientId = await insertTestPatient(accessFixture.otherTutorId, 'Paciente ajeno');
+  accessFixture.parentActionPatientId = await insertTestPatient(1, 'Paciente para gestión familiar');
 
   const oldTherapistCancelledReservation = await insertTestReservation(
     accessFixture.sharedPatientId,
@@ -293,6 +295,7 @@ async function createClinicalAccessFixture(): Promise<void> {
   await insertTestSession(sharedTherapistReservation);
   await insertTestReservation(accessFixture.cancelledOnlyPatientId, accessFixture.therapistId, 'CANCELADA');
   await insertTestReservation(accessFixture.unrelatedPatientId, 1, 'CONFIRMADA');
+  await insertTestReservation(accessFixture.parentActionPatientId, accessFixture.therapistId, 'CONFIRMADA');
 }
 
 async function cleanupClinicalAccessFixture(): Promise<void> {
@@ -302,7 +305,7 @@ async function cleanupClinicalAccessFixture(): Promise<void> {
   if (accessFixture.reservationIds.length) {
     await pool.query('DELETE FROM reservas WHERE id_reserva = ANY($1::int[]);', [accessFixture.reservationIds]);
   }
-  const patientIds = [accessFixture.sharedPatientId, accessFixture.cancelledOnlyPatientId, accessFixture.unrelatedPatientId]
+  const patientIds = [accessFixture.sharedPatientId, accessFixture.cancelledOnlyPatientId, accessFixture.unrelatedPatientId, accessFixture.parentActionPatientId]
     .filter((id): id is number => typeof id === 'number');
   if (patientIds.length) await pool.query('DELETE FROM pacientes WHERE id_paciente = ANY($1::int[]);', [patientIds]);
   if (accessFixture.otherTutorId) await pool.query('DELETE FROM tutores WHERE id_tutor = $1;', [accessFixture.otherTutorId]);
@@ -454,7 +457,7 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
         palabra_objetivo: 'pelota',
       }),
     });
-    assert.equal(vozRes.status, 400);
+    assert.equal(vozRes.status, 401, 'voice recognition must require an authenticated family account');
   });
 
   it('9. Backward Compatibility: Keeps clinical and communication aliases mounted', async () => {
@@ -494,7 +497,10 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     });
     assert.equal(therapistPatients.status, 200);
     const therapistPatientItems = await therapistPatients.json() as Array<{ id_paciente: number }>;
-    assert.deepEqual(therapistPatientItems.map((item) => item.id_paciente), [sharedPatientId]);
+    assert.deepEqual(
+      new Set(therapistPatientItems.map((item) => item.id_paciente)),
+      new Set([sharedPatientId, accessFixture.parentActionPatientId]),
+    );
 
     const cancelledOnly = await fetch(`${baseUrl}/api/v1/pacientes/${cancelledPatientId}`, {
       headers: { authorization: devAuth('TERAPEUTA', therapistId) },
@@ -514,7 +520,7 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     });
     assert.equal(therapistAppointments.status, 200);
     const therapistAppointmentItems = await therapistAppointments.json() as Array<{ id_reserva: number }>;
-    assert.deepEqual(new Set(therapistAppointmentItems.map((item) => item.id_reserva)), new Set([ownReservationId, accessFixture.reservationIds[2]]));
+    assert.deepEqual(new Set(therapistAppointmentItems.map((item) => item.id_reserva)), new Set([ownReservationId, accessFixture.reservationIds[2], accessFixture.reservationIds[4]]));
     assert.ok(!therapistAppointmentItems.some((item) => item.id_reserva === oldReservationId));
 
     const legacyAgenda = await fetch(`${baseUrl}/api/v1/agenda/citas`, {
@@ -522,7 +528,10 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     });
     assert.equal(legacyAgenda.status, 200);
     const legacyAgendaItems = await legacyAgenda.json() as Array<{ id_cita: number }>;
-    assert.deepEqual(new Set(legacyAgendaItems.map((item) => item.id_cita)), new Set([ownReservationId, accessFixture.reservationIds[2]]));
+    assert.deepEqual(
+      new Set(legacyAgendaItems.map((item) => item.id_cita)),
+      new Set([ownReservationId, accessFixture.reservationIds[2], accessFixture.reservationIds[4]]),
+    );
 
     const sharedHistory = await fetch(`${baseUrl}/api/v1/sesiones`, {
       headers: { authorization: devAuth('TERAPEUTA', therapistId) },
@@ -547,7 +556,12 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     const retainedTherapistCanEditReport = await fetch(`${baseUrl}/api/v1/sesiones/${sessionId}/reporte`, {
       method: 'PUT',
       headers: { authorization: devAuth('TERAPEUTA', 2), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ observaciones_iniciales: 'Historial propio conservado' }),
+      body: JSON.stringify({
+        observaciones_iniciales: 'Historial propio conservado',
+        objetivos_trabajados: null,
+        nivel_ayuda: null,
+        proximos_pasos: null,
+      }),
     });
     assert.equal(retainedTherapistCanEditReport.status, 200);
     const readUnrelatedSession = await fetch(`${baseUrl}/api/v1/sesiones/${sessionId}`, {
@@ -569,7 +583,12 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     const editOwnSessionReport = await fetch(`${baseUrl}/api/v1/sesiones/${ownSessionId}/reporte`, {
       method: 'PUT',
       headers: { authorization: devAuth('TERAPEUTA', therapistId), 'Content-Type': 'application/json' },
-      body: JSON.stringify({ observaciones_iniciales: 'Reporte del terapeuta asignado' }),
+      body: JSON.stringify({
+        observaciones_iniciales: 'Reporte del terapeuta asignado',
+        objetivos_trabajados: null,
+        nivel_ayuda: null,
+        proximos_pasos: null,
+      }),
     });
     assert.equal(editOwnSessionReport.status, 200);
 
@@ -659,20 +678,21 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     });
     assert.equal(editOtherTherapistAppointment.status, 404);
 
-    const parentManagesOwnAppointment = await fetch(`${baseUrl}/api/v1/citas/${ownReservationId}/estado`, {
+    const parentActionReservationId = accessFixture.reservationIds[4];
+    const parentManagesOwnAppointment = await fetch(`${baseUrl}/api/v1/citas/${parentActionReservationId}/estado`, {
       method: 'PATCH',
       headers: { authorization: devAuth('PADRE', 3), 'Content-Type': 'application/json' },
       body: JSON.stringify({ estado_reserva: 'CANCELADA' }),
     });
     assert.equal(parentManagesOwnAppointment.status, 200);
-    const legacyParentManagesOwnAppointment = await fetch(`${baseUrl}/api/v1/agenda/citas/${ownReservationId}/estado`, {
+    const legacyParentManagesOwnAppointment = await fetch(`${baseUrl}/api/v1/agenda/citas/${parentActionReservationId}/estado`, {
       method: 'PATCH',
       headers: { authorization: devAuth('PADRE', 3), 'Content-Type': 'application/json' },
       body: JSON.stringify({ estado: 'CANCELADA', motivo_cambio: 'Prueba de acceso familiar' }),
     });
     assert.equal(legacyParentManagesOwnAppointment.status, 200);
     const legacyChange = await legacyParentManagesOwnAppointment.json() as { id_cita: number; estado: string };
-    assert.equal(legacyChange.id_cita, ownReservationId);
+    assert.equal(legacyChange.id_cita, parentActionReservationId);
     assert.equal(legacyChange.estado, 'CANCELADA');
   });
 
@@ -971,6 +991,95 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     const legacySaved = await legacySend.json() as { id_conversacion: number; contenido: string };
     assert.equal(legacySaved.id_conversacion, conversationA.id_conversacion);
     assert.equal(legacySaved.contenido, 'Mensaje del adaptador persistido');
+  });
+
+  it('9d. Clinical AI Consent and ML Prediction contracts', async () => {
+    const authRequest = (
+      path: string,
+      role: 'ADMIN' | 'TERAPEUTA' | 'PADRE',
+      userId: number,
+      options: RequestInit = {},
+    ) => {
+      const headers = new Headers(options.headers);
+      headers.set('Authorization', devAuth(role, userId));
+      return fetch(baseUrl + path, { ...options, headers });
+    };
+    const jsonOptions = (method: string, body: unknown): RequestInit => ({
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    const predictionCatalog = await authRequest(
+      '/api/v1/clinica/tratamientos/predictor-catalog',
+      'TERAPEUTA',
+      messagingFixture.therapistAUserId,
+    );
+    let diagnosisCode = 1;
+    if (predictionCatalog.status === 200) {
+      const catalog = await predictionCatalog.json() as { diagnosis_codes: { code: number; label: string }[] };
+      assert.equal(catalog.diagnosis_codes.length, 5);
+      assert.ok(catalog.diagnosis_codes.every((item) => item.label.trim().length > 0));
+      diagnosisCode = catalog.diagnosis_codes[0].code;
+    } else {
+      assert.equal(predictionCatalog.status, 503, 'the model catalog must fail closed until approved');
+    }
+    const planPred = await authRequest(
+      '/api/v1/clinica/tratamientos/predecir-plan',
+      'TERAPEUTA',
+      messagingFixture.therapistAUserId,
+      jsonOptions('POST', {
+        id_sesion: messagingFixture.historySessionId,
+        codigo_diagnostico: diagnosisCode,
+        frecuencia_semanal: 2,
+      }),
+    );
+    assert.equal(planPred.status, 409, 'a prediction must require a saved clinical help level for its session');
+    const unavailable = await planPred.json() as { error?: string };
+    assert.ok(unavailable.error?.toLowerCase().includes('nivel de ayuda'));
+
+    const consentCheckInitial = await authRequest(
+      '/api/v1/clinica/consentimientos/' + messagingFixture.sharedPatientId,
+      'TERAPEUTA',
+      messagingFixture.therapistAUserId,
+    );
+    assert.equal(consentCheckInitial.status, 200);
+
+    const grantConsent = await authRequest(
+      '/api/v1/clinica/consentimientos',
+      'PADRE',
+      messagingFixture.parentAUserId,
+      jsonOptions('POST', {
+        id_paciente: messagingFixture.sharedPatientId,
+        tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA',
+        estado: 'CONCEDIDO',
+      }),
+    );
+    assert.equal(grantConsent.status, 201);
+    const grantedData = await grantConsent.json() as { consentido: boolean; estado: string };
+    assert.equal(grantedData.consentido, true);
+    assert.equal(grantedData.estado, 'CONCEDIDO');
+
+    const unrelatedConsent = await authRequest(
+      '/api/v1/clinica/consentimientos',
+      'PADRE',
+      messagingFixture.parentAUserId,
+      jsonOptions('POST', {
+        id_paciente: messagingFixture.sharedPatientId,
+        tipo_consentimiento: 'CONSENTIMIENTO_CAMPANA',
+        estado: 'REVOCADO',
+      }),
+    );
+    assert.equal(unrelatedConsent.status, 201);
+
+    const consentCheckAfter = await authRequest(
+      '/api/v1/clinica/consentimientos/' + messagingFixture.sharedPatientId,
+      'TERAPEUTA',
+      messagingFixture.therapistAUserId,
+    );
+    assert.equal(consentCheckAfter.status, 200);
+    const afterData = await consentCheckAfter.json() as { consentido: boolean; estado: string };
+    assert.equal(afterData.consentido, true);
+    assert.equal(afterData.estado, 'CONCEDIDO');
   });
 
   it('10. 404 Not Found for unmapped routes', async () => {

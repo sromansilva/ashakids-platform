@@ -1,4 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
 import { adminService } from '../services/admin.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
 import { listarIncidenciasAdmin, cambiarEstadoIncidenciaAdmin } from '../../incidencias/incidencias.routes.js';
@@ -7,6 +8,42 @@ export const adminRouter = Router();
 
 // Require authenticated ADMIN role for administration endpoints
 adminRouter.use(authenticate, requireRoles(['ADMIN']));
+
+const accountIdentitySchema = z.object({
+  nombres: z.string().trim().min(1).max(60),
+  apellidos: z.string().trim().min(1).max(80),
+  email: z.string().trim().email().max(150),
+});
+const parentAccountSchema = accountIdentitySchema.extend({
+  parentesco: z.string().trim().max(30).optional(),
+  telefono: z.string().trim().max(12).optional(),
+  direccion: z.string().trim().max(200).optional(),
+});
+const childAccountSchema = z.object({
+  nombres_paciente: z.string().trim().min(1).max(60),
+  apellidos_paciente: z.string().trim().min(1).max(80),
+  fecha_nacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
+    const date = new Date(`${value}T00:00:00Z`);
+    return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value;
+  }),
+  sexo: z.enum(['Masculino', 'Femenino', 'Otro', 'M', 'F']),
+  edad: z.number().int().min(0).max(18).optional(),
+  avatar_nombre: z.string().max(80).optional(),
+}).refine((child) => {
+  const birth = new Date(`${child.fecha_nacimiento}T00:00:00Z`);
+  const now = new Date();
+  let age = now.getUTCFullYear() - birth.getUTCFullYear();
+  const month = now.getUTCMonth() - birth.getUTCMonth();
+  if (month < 0 || (month === 0 && now.getUTCDate() < birth.getUTCDate())) age -= 1;
+  return age >= 3 && age <= 12;
+}, { message: 'La edad registrada debe estar entre 3 y 12 años.', path: ['fecha_nacimiento'] });
+const familyAccountSchema = parentAccountSchema.extend({ hijos: z.array(childAccountSchema).min(1).max(10) });
+const therapistAccountSchema = accountIdentitySchema.extend({
+  especialidad: z.string().trim().max(100).optional(),
+  anios_experiencia: z.number().int().min(0).max(70).optional(),
+  idiomas: z.string().trim().max(50).optional(),
+  descripcion_profesional: z.string().trim().max(2000).optional(),
+});
 
 // GET /api/v1/admin/me
 adminRouter.get('/me', async (req: Request, res: Response, next: NextFunction) => {
@@ -57,7 +94,9 @@ adminRouter.get('/cuentas/:id', async (req: Request, res: Response, next: NextFu
 // POST /api/v1/admin/cuentas/padres
 adminRouter.post('/cuentas/padres', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await adminService.crearPadre(req.body);
+    const parsed = parentAccountSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos, correo y datos de contacto.' }); return; }
+    const result = await adminService.crearPadre(parsed.data);
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -67,7 +106,9 @@ adminRouter.post('/cuentas/padres', async (req: Request, res: Response, next: Ne
 // POST /api/v1/admin/cuentas/terapeutas
 adminRouter.post('/cuentas/terapeutas', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await adminService.crearTerapeuta(req.body);
+    const parsed = therapistAccountSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos, correo y perfil profesional.' }); return; }
+    const result = await adminService.crearTerapeuta(parsed.data);
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -77,7 +118,9 @@ adminRouter.post('/cuentas/terapeutas', async (req: Request, res: Response, next
 // POST /api/v1/admin/familias
 adminRouter.post('/familias', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const result = await adminService.registrarFamilia(req.body);
+    const parsed = familyAccountSchema.safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ error: 'Completa los datos de la familia y registra al menos un niño de 3 a 12 años.' }); return; }
+    const result = await adminService.registrarFamilia(parsed.data);
     res.status(201).json(result);
   } catch (err) {
     next(err);

@@ -1,13 +1,13 @@
-import { useId, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ReactNode } from 'react';
 import { ChevronDown, Mic, Save } from 'lucide-react';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
-import type { ReportData } from '@/modules/clinica/domain/clinical';
+import type { Report, ReportData } from '@/modules/clinica/domain/clinical';
 import { RemoteFeedback } from './RemoteFeedback';
 import { ReportHelpLevel } from './ReportHelpLevel';
 import { TherapistVoiceAIWidget } from './TherapistVoiceAIWidget';
-import { incompleteTemplateFields, reportTemplates, type NarrativeField } from './reportFormGuidance';
-import { parseArticulationHistory } from '@/shared/application/articulationReportEntries';
+import { helpLevels, incompleteTemplateFields, reportTemplates, type NarrativeField } from './reportFormGuidance';
+import { encodeArticulationResult, parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 
 export const reportLabels = {
   observaciones_iniciales: 'Observaciones iniciales',
@@ -35,7 +35,7 @@ export function ClinicalReportEditor({
   onSaved,
 }: {
   id: number;
-  initial: ReportData;
+  initial: ReportData & Partial<Pick<Report, 'estado_reporte' | 'fecha_firma'>>;
   patientName?: string;
   patientId?: number;
   sessionType?: 'INTRODUCTORIA' | 'TERAPIA';
@@ -54,7 +54,12 @@ export function ClinicalReportEditor({
   const textareas = useRef<Partial<Record<NarrativeField, HTMLTextAreaElement>>>({});
   const templates = reportTemplates(patientName);
   const [dirty, setDirty] = useState(false);
+  const [reportStatus, setReportStatus] = useState<'BORRADOR' | 'FIRMADO'>(initial.estado_reporte ?? 'BORRADOR');
+  const [signedAt, setSignedAt] = useState(initial.fecha_firma ?? null);
   const [validation, setValidation] = useState(false);
+  const editRevision = useRef(0);
+  const submittedRevision = useRef(0);
+  const lastAutoSaveAttempt = useRef(0);
   const incomplete = incompleteTemplateFields(form);
   const history = useRemote(
     ['articulation-history', id],
@@ -62,8 +67,10 @@ export function ClinicalReportEditor({
     typeof patientId === 'number' && Number.isInteger(patientId) && patientId > 0,
   );
   const priorResults = parseArticulationHistory(history.data ?? []);
+  const hasStandardHelpLevel = helpLevels.some((level) => level.value === form.nivel_ayuda);
 
   const update = (key: keyof ReportData, value: string) => {
+    editRevision.current += 1;
     setDirty(true);
     setForm((current) => ({ ...current, [key]: value }));
   };
@@ -81,12 +88,40 @@ export function ClinicalReportEditor({
   };
 
   const save = useWrite(
-    () => sessionsService.saveReport(id, form),
+    (draft: ReportData) => sessionsService.saveReport(id, draft),
     () => {
-      setDirty(false);
+      setDirty(editRevision.current !== submittedRevision.current);
       onSaved?.();
     }
   );
+  const saveSubmitRef = useRef(save.submit);
+  saveSubmitRef.current = save.submit;
+  useEffect(() => {
+    if (!dirty || reportStatus === 'FIRMADO' || save.isPending || editRevision.current <= lastAutoSaveAttempt.current) return;
+    const revision = editRevision.current;
+    const draft = { ...form };
+    const timeout = window.setTimeout(() => {
+      if (editRevision.current !== revision || revision <= lastAutoSaveAttempt.current) return;
+      lastAutoSaveAttempt.current = revision;
+      submittedRevision.current = revision;
+      void saveSubmitRef.current(draft);
+    }, 900);
+    return () => window.clearTimeout(timeout);
+  }, [dirty, form, reportStatus, save.isPending]);
+  const sign = useWrite<void>(
+    () => sessionsService.signReport(id),
+    () => {
+      setReportStatus('FIRMADO');
+      setSignedAt(new Date().toISOString());
+      onSaved?.();
+    },
+  );
+  const reportComplete = [
+    form.observaciones_iniciales,
+    form.objetivos_trabajados,
+    form.nivel_ayuda,
+    form.proximos_pasos,
+  ].every((value) => Boolean(value?.trim()));
 
   return (
     <form
@@ -98,7 +133,8 @@ export function ClinicalReportEditor({
           textareas.current[incomplete[0]]?.focus();
           return;
         }
-        void save.submit(undefined);
+        submittedRevision.current = editRevision.current;
+        void save.submit({ ...form });
       }}
     >
       {!twoColumns && (
@@ -138,31 +174,29 @@ export function ClinicalReportEditor({
         </section>
       )}
 
-      <details className="group">
+      {reportStatus !== 'FIRMADO' && <details className="group">
         <summary className="flex cursor-pointer list-none items-center gap-3 rounded-xl border border-violet-100 bg-violet-50/35 px-4 py-3 transition-colors hover:bg-violet-50">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#6B46FE] shadow-sm"><Mic size={17} /></span>
           <span>
             <span className="block text-sm font-extrabold text-[#1C1135]">Evaluación fonológica opcional</span>
-            <span className="block text-xs text-[#615274]">Audio en vivo y prueba rápida con IA</span>
+            <span className="block text-xs text-[#615274]">Transcripción tentativa con consentimiento y revisión del terapeuta</span>
           </span>
           <ChevronDown size={17} className="ml-auto shrink-0 text-[#6B46FE] transition-transform group-open:rotate-180" />
         </summary>
         <div className="pt-3">
           <TherapistVoiceAIWidget
             sessionId={id}
+            patientId={patientId}
             patientName={patientName}
-            onApplyObservation={(obs) => {
-              const currentObs = form.observaciones_iniciales?.trim();
-              update('observaciones_iniciales', currentObs ? `${currentObs}\n\n${obs}` : obs);
-            }}
             onConfirmResult={(result) => {
-              const summary = result.resultado_revisado;
-              const currentObs = form.observaciones_iniciales?.trim();
-              update('observaciones_iniciales', currentObs ? `${currentObs}\n\n${summary}` : summary);
+              const entry = encodeArticulationResult(result);
+              const currentObjectives = form.objetivos_trabajados?.trim() ?? '';
+              if (currentObjectives.includes(entry)) return;
+              update('objetivos_trabajados', currentObjectives ? currentObjectives + '\n\n' + entry : entry);
             }}
           />
         </div>
-      </details>
+      </details>}
 
       <div className={twoColumns ? 'grid min-w-0 grid-cols-1 gap-x-4 gap-y-3 xl:grid-cols-2' : 'space-y-4'}>
         {Object.entries(reportLabels).map(([key, label]) => {
@@ -172,7 +206,7 @@ export function ClinicalReportEditor({
                 <ReportHelpLevel
                   id={`${formId}-help`}
                   value={form.nivel_ayuda}
-                  disabled={save.isPending}
+                  disabled={save.isPending || reportStatus === 'FIRMADO'}
                   onChange={(value) => update(key, value)}
                 />
               </div>
@@ -189,7 +223,7 @@ export function ClinicalReportEditor({
                 {!form[narrative]?.trim() && (
                   <button
                     type="button"
-                    disabled={save.isPending}
+                    disabled={save.isPending || reportStatus === 'FIRMADO'}
                     aria-label={`Usar plantilla de ${label.toLowerCase()}`}
                     className="rounded-xl px-3 py-1 text-xs font-bold text-[#6B46FE] hover:bg-violet-50 transition-colors"
                     onClick={() => useTemplate(narrative)}
@@ -205,7 +239,7 @@ export function ClinicalReportEditor({
                 id={`${formId}-${key}`}
                 rows={twoColumns ? 3 : 4}
                 maxLength={10000}
-                disabled={save.isPending}
+                disabled={save.isPending || reportStatus === 'FIRMADO'}
                 placeholder={templates[narrative]}
                 aria-invalid={invalid}
                 aria-describedby={invalid ? `${formId}-${key}-error` : undefined}
@@ -230,15 +264,36 @@ export function ClinicalReportEditor({
       )}
 
       <RemoteFeedback error={save.error} />
+      <RemoteFeedback error={sign.error} />
       <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
         {planAction}
         <div className="flex flex-wrap items-center justify-end gap-3">
+          {reportStatus === 'FIRMADO' ? (
+            <p role="status" className="text-xs font-bold text-emerald-700">
+              Reporte firmado{signedAt ? ' · ' + new Date(signedAt).toLocaleString('es-PE') : ''}.
+            </p>
+          ) : (
+            <button
+              type="button"
+              disabled={sign.isPending || dirty || !reportComplete || !hasStandardHelpLevel}
+              onClick={() => void sign.submit(undefined)}
+              className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-extrabold text-emerald-800 disabled:opacity-50"
+            >
+              {sign.isPending ? 'Firmando…' : 'Firmar y publicar reporte'}
+            </button>
+          )}
+          {reportStatus !== 'FIRMADO' && reportComplete && !hasStandardHelpLevel && (
+            <p role="note" className="w-full text-right text-xs text-[#615274]">
+              Conserva el nivel histórico al guardar; selecciona una de las cinco opciones para firmar el reporte.
+            </p>
+          )}
+          {save.isPending && <p role="status" className="text-xs font-bold text-[#6B46FE]">Guardando borrador automáticamente…</p>}
           {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">Reporte guardado en el servidor.</p>}
-          {dirty && <p role="status" className="text-xs font-bold text-[#D97706]">● Cambios sin guardar.</p>}
+          {dirty && !save.isPending && <p role="status" className="text-xs font-bold text-[#D97706]">● Cambios sin guardar. Se guardarán automáticamente en unos segundos.</p>}
           {downloadAction}
           <button
             type="submit"
-            disabled={save.isPending}
+            disabled={save.isPending || reportStatus === 'FIRMADO'}
             className="inline-flex items-center gap-2 rounded-2xl bg-[#6B46FE] px-5 py-2.5 text-sm font-extrabold text-white shadow-md transition-all hover:bg-[#5833EA] active:scale-[.98] disabled:opacity-50 cursor-pointer"
           >
             <Save size={16} />

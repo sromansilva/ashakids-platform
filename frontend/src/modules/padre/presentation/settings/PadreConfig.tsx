@@ -6,10 +6,11 @@ import { PadreConfigShowAddChildModal } from "./PadreConfigShowAddChildModal";
 import { PadreConfigEditChild } from "./PadreConfigEditChild";
 import { PadreConfigDeleteChild } from "./PadreConfigDeleteChild";
 import { RemoteFeedback } from "@/shared/presentation/components/common/RemoteFeedback";
-import { Btn } from "@/shared/presentation/components/common/Btn";
 import { PadreConfigSeguridad } from "./PadreConfigSeguridad";
 import { PadreConfigShow2FA } from "./PadreConfigShow2FA";
 import { PadreConfigShowDeleteAccount } from "./PadreConfigShowDeleteAccount";
+import { FamilyConsentManager } from "@/shared/presentation/components/common/FamilyConsentManager";
+import { NotificationPreferences } from "@/shared/presentation/components/common/NotificationPreferences";
 import { User, Mail, Contact, Info } from "lucide-react";
 
 export function PadreConfig(props: Parameters<typeof usePadreConfig>[0]) {
@@ -159,25 +160,34 @@ export function PadreConfig(props: Parameters<typeof usePadreConfig>[0]) {
 
       {tab === "notificaciones" && (
         <div className="bg-white border border-[#E8E5F4] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
-          <h2 className="text-xl font-extrabold mb-2 text-[#1C1135]">Notificaciones</h2>
-          <p className="text-sm text-[#6B5E8A] leading-relaxed max-w-2xl">
-            Las preferencias y el envío de avisos automáticos se sincronizan con tu terapeuta. Consulta tu agenda y los reportes para conocer los registros actuales.
-          </p>
-          <Btn className="mt-2" onClick={() => props.go?.("padre/agenda")}>
-            Consultar agenda
-          </Btn>
+          <NotificationPreferences />
         </div>
       )}
 
       {tab === "privacidad" && (
-        <div className="bg-white border border-[#E8E5F4] rounded-3xl p-6 sm:p-8 shadow-xs space-y-4">
-          <h2 className="text-xl font-extrabold mb-2 text-[#1C1135]">Privacidad y Consentimientos</h2>
-          <p className="text-sm text-[#6B5E8A] leading-relaxed max-w-2xl">
-            Toda la información clínica, grabaciones autorizadas y ejercicios de tus hijos están encriptados y protegidos según los estándares ASHA de confidencialidad.
-          </p>
-          <Btn className="mt-2" onClick={() => props.go?.("padre/consentimiento")}>
-            Consultar estado de consentimientos
-          </Btn>
+        <div className="bg-white border border-[#E8E5F4] rounded-3xl p-6 sm:p-8 shadow-xs space-y-5">
+          <div>
+            <h2 className="text-xl font-extrabold text-[#1C1135]">Privacidad y consentimientos</h2>
+            <p className="text-sm text-[#6B5E8A] leading-relaxed max-w-2xl mt-1">
+              Gestiona aquí, por cada hijo, la autorización opcional para el reconocimiento de voz en actividades clínicas. El audio se procesa temporalmente y no se conserva como archivo.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            {childList.length > 0 ? (
+              childList.map((child) => (
+                <FamilyConsentManager
+                  key={child.id}
+                  patientId={child.id}
+                  patientName={child.name}
+                />
+              ))
+            ) : (
+              <p className="rounded-2xl bg-[#F8F7FC] p-4 text-xs font-medium text-[#6B5E8A]">
+                Registra a tus hijos en la pestaña "Mis hijos" para gestionar sus consentimientos individuales.
+              </p>
+            )}
+          </div>
         </div>
       )}
 

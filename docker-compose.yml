@@ -18,5 +18,25 @@ services:
       timeout: 5s
       retries: 5
 
+  ml-service:
+    build:
+      context: ./ml-service
+    container_name: ashakids-ml-local
+    restart: unless-stopped
+    environment:
+      TREATMENT_MODEL_MANIFEST: ${TREATMENT_MODEL_MANIFEST:-/models/treatment-manifest.json}
+    ports:
+      - "127.0.0.1:8001:8001"
+    volumes:
+      - ./ml-artifacts:/models:ro
+      - ashakids-ml-cache:/home/ashakids/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+
 volumes:
   ashakids-pgdata-v18:
+  ashakids-ml-cache:

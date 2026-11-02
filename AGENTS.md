@@ -43,8 +43,11 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
 
 ### Regla 1: Integridad de Contratos de API y Servicios Externos
 - **Videollamadas y revisión de audio**:
-  - AshaKids no crea reuniones de Google Meet. Las sesiones virtuales se gestionan mediante Google Meet y selecciona la pista local individual del participante para una revisión experimental que debe confirmar antes de guardar.
-  - Google Calendar conserva la creación de eventos de cita sin solicitar datos de conferencia.
+  - AshaKids puede crear una reunión de Google Meet al reservar una cita virtual solo cuando `MEET_ENABLED` y las credenciales OAuth requeridas estén configuradas. Si la integración no está disponible, el terapeuta puede guardar un enlace manual validado de `meet.google.com`.
+  - La aplicación abre Meet y el panel clínico en paralelo; no captura ni selecciona la pista remota de un participante de Meet. El widget clínico captura una muestra breve desde el micrófono local del terapeuta, solo después de comprobar el consentimiento vigente del niño y con acción explícita.
+  - Para una sesión virtual, el terapeuta también puede solicitar una muestra desde el dispositivo familiar: el adulto la inicia explícitamente desde el portal familiar, y el resultado vuelve al terapeuta para revisión. Esta ruta usa el micrófono local familiar, nunca la pista remota de Meet, y mantiene el audio solo temporalmente en memoria.
+  - La salida de Wav2Vec se trata únicamente como transcripción tentativa: no calcula similitud fonética validada, no califica pronunciación ni emite diagnósticos. El terapeuta debe revisar y confirmar o descartar el texto antes de incorporarlo al reporte.
+  - Google Calendar conserva los eventos de cita. La integración de Meet solicita datos de conferencia solo desde `MeetService` cuando `MEET_ENABLED` está activo.
 - **Servicios de Correo / Gmail**:
   - Las variables y firmas en `backend/src/core/config.ts` y auth deben mantenerse backward-compatible.
 - **Base de Datos y PostgreSQL**:
@@ -78,17 +81,29 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
 - Verificar siempre con `git status` antes y después de hacer cambios.
 
 ### Regla 4: Batería de Pruebas Obligatoria
-Antes de dar por terminada cualquier tarea o entrega, se deben ejecutar y aprobar satisfactoriamente las siguientes tres comprobaciones:
+Antes de dar por terminada cualquier tarea o entrega, ejecutar las comprobaciones aplicables y reportar claramente las que no se pudieron correr:
 
 ```bash
-# 1. Pruebas de integración del backend (12/12 passing)
+# 1. Pruebas de integración del backend. Usan PostgreSQL y escriben fixtures: ejecutar solo con una base de prueba aislada y configurada explícitamente.
 npm --prefix backend run test
 
-# 2. Pruebas de enrutamiento y guardias de seguridad del frontend (25/25 passing)
+# 2. Pruebas de enrutamiento y guardias de seguridad del frontend
 npm --prefix frontend run test:routing
 
-# 3. Compilación de producción en TypeScript y Vite (0 errores)
-npm --prefix frontend run build
+# 3. Pruebas de componentes frontend
+npm --prefix frontend run test:components
+
+# 4. Verificación de límites, imports y cliente HTTP
+npm --prefix frontend run check:frontend
+
+# 5. Pruebas unitarias del microservicio ML
+python -m unittest discover -s ml-service
+
+# 6. Compilación de producción del backend y frontend
+npm run build
+
+# 7. Tipado de backend y frontend
+npm run typecheck
 ```
 
 ---

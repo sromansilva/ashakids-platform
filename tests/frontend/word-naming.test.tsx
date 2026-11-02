@@ -2,6 +2,8 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest';
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { NamingGame } from '@/modules/padre/presentation/Sessions/WordGames/NamingGame';
 import { voiceService, type TranscripcionRespuesta } from '@/modules/mundo_asha/infrastructure/voiceService';
+import { learningGames } from '@/modules/mundo_asha/infrastructure/learningGames';
+import { clinicaService } from '@/modules/clinica/infrastructure/clinicalService';
 
 class Recorder {
   static last: Recorder;
@@ -22,15 +24,15 @@ class Recorder {
 const trackStop = vi.fn();
 const stream = { getTracks: () => [{ stop: trackStop }] };
 const speech = { speak: vi.fn(), stop: vi.fn(), notice: '' };
-const response = (match = true, text = 'gato'): TranscripcionRespuesta => ({
+const response = (match = true, text = 'gato', target = 'Gato'): TranscripcionRespuesta => ({
   estado: 'OK', transcripcion: text, comparacion: {
-    frase_esperada: 'Gato', frase_obtenida: text,
-    palabras_esperadas: ['gato'], palabras_obtenidas: [text], palabras_omitidas: [], palabras_adicionales: [],
+    frase_esperada: target, frase_obtenida: text,
+    palabras_esperadas: [target.toLocaleLowerCase('es')], palabras_obtenidas: [text], palabras_omitidas: [], palabras_adicionales: [],
     es_coincidente: match, desglose: [], aviso: 'Comparación textual',
   },
 });
 const click = (name: string) => fireEvent.click(screen.getByRole('button', { name }));
-const play = () => { const finish = vi.fn(); return { ...render(<NamingGame speech={speech} mode="gentle" finish={finish}/>), finish }; };
+const play = () => { const finish = vi.fn(); return { ...render(<NamingGame speech={speech} mode="gentle" finish={finish} patientId={1}/>), finish }; };
 async function record() { click('Pulsar para hablar'); await screen.findByRole('button', { name: 'Terminar grabación' }); click('Terminar grabación'); }
 
 beforeEach(() => {
@@ -41,6 +43,7 @@ beforeEach(() => {
   });
   Object.defineProperty(navigator, 'mediaDevices', { configurable: true, value: { getUserMedia: vi.fn().mockResolvedValue(stream) } });
   vi.spyOn(voiceService, 'transcribe').mockResolvedValue(response());
+  vi.spyOn(clinicaService, 'getConsent').mockResolvedValue({ id_paciente: 1, consentido: true, estado: 'CONCEDIDO', tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA', fecha_concesion: '2026-01-01T00:00:00Z' });
   trackStop.mockClear(); speech.stop.mockClear(); speech.speak.mockClear();
 });
 afterEach(() => { vi.useRealTimers(); vi.restoreAllMocks(); vi.unstubAllGlobals(); });
@@ -56,7 +59,7 @@ it('permite oír el modelo, graba sólo por acción y exige confirmación antes 
   click('Terminar grabación');
   await screen.findByText('«gato»');
   expect(trackStop).toHaveBeenCalled();
-  expect(voiceService.transcribe).toHaveBeenCalledWith(expect.any(Blob), { targetPhrase: 'Gato', signal: expect.any(AbortSignal) });
+  expect(voiceService.transcribe).toHaveBeenCalledWith(expect.any(Blob), { targetPhrase: 'Gato', patientId: 1, signal: expect.any(AbortSignal) });
   expect(screen.getByLabelText('Escuchar mi grabación')).toHaveAttribute('src', 'blob:word-test');
   expect(screen.queryByRole('button', { name: 'Continuar' })).not.toBeInTheDocument();
   click('¡Ya dije la palabra!'); click('Continuar');
@@ -81,7 +84,7 @@ it('ofrece una salida sin micrófono y completa tres rondas sólo con respuestas
   }
   expect(finish).toHaveBeenCalledOnce(); expect(voiceService.transcribe).not.toHaveBeenCalled();
 });
-it('completa tres grabaciones coincidentes sin enviar paciente, nivel ni intento', async () => {
+it('completa tres grabaciones coincidentes con consentimiento por paciente y sin nivel ni intento', async () => {
   const { finish } = play();
   for (const word of ['Gato', 'Casa', 'Pelota']) {
     vi.mocked(voiceService.transcribe).mockResolvedValue(response(true, word.toLowerCase()));
@@ -89,7 +92,15 @@ it('completa tres grabaciones coincidentes sin enviar paciente, nivel ni intento
     click('¡Ya dije la palabra!'); click(word === 'Pelota' ? 'Terminar juego' : 'Continuar');
   }
   expect(finish).toHaveBeenCalledOnce();
-  for (const [, options] of vi.mocked(voiceService.transcribe).mock.calls) expect(Object.keys(options!)).toEqual(['targetPhrase', 'signal']);
+  for (const [, options] of vi.mocked(voiceService.transcribe).mock.calls) expect(Object.keys(options!)).toEqual(['targetPhrase', 'patientId', 'signal']);
+  for (const [, options] of vi.mocked(voiceService.transcribe).mock.calls) expect(options?.patientId).toBe(1);
+});
+it('does not open the microphone when the selected child has not consented', async () => {
+  vi.mocked(clinicaService.getConsent).mockResolvedValue({ id_paciente: 1, consentido: false, estado: 'REVOCADO', tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA', fecha_concesion: null });
+  play(); click('Pulsar para hablar');
+  await screen.findByText('El tutor debe autorizar el reconocimiento de voz para este niño antes de grabar.');
+  expect(navigator.mediaDevices.getUserMedia).not.toHaveBeenCalled();
+  expect(voiceService.transcribe).not.toHaveBeenCalled();
 });
 it('recupera permisos denegados y permite seguir sin grabar', async () => {
   vi.mocked(navigator.mediaDevices.getUserMedia).mockRejectedValue(new DOMException('denied', 'NotAllowedError'));
@@ -99,7 +110,9 @@ it('recupera permisos denegados y permite seguir sin grabar', async () => {
 it('no conserva un micrófono concedido después de salir de la actividad', async () => {
   let allow!: (value: MediaStream) => void;
   vi.mocked(navigator.mediaDevices.getUserMedia).mockReturnValue(new Promise(resolve => { allow = resolve; }));
-  const view = play(); click('Pulsar para hablar'); view.unmount();
+  const view = play(); click('Pulsar para hablar');
+  await waitFor(() => expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledOnce());
+  view.unmount();
   await act(async () => { allow(stream as unknown as MediaStream); });
   expect(trackStop).toHaveBeenCalled(); expect(voiceService.transcribe).not.toHaveBeenCalled();
 });
@@ -141,4 +154,38 @@ it('detiene y descarta la grabación al ocultar la página', async () => {
   vi.spyOn(document, 'hidden', 'get').mockReturnValue(true);
   fireEvent(document, new Event('visibilitychange'));
   expect(trackStop).toHaveBeenCalled(); expect(voiceService.transcribe).not.toHaveBeenCalled();
+});
+it('guarda el intento de una palabra dirigida en el nivel enlazado por el API', async () => {
+  const progress = {
+    id_paciente: 1, version: 'basica-1', experiencia: 50, nivel: 1,
+    mundos: [], medallas: [], intentos_totales: 1, experiencia_siguiente_nivel: 200,
+  };
+  const attempt = vi.spyOn(learningGames, 'attempt').mockResolvedValue({
+    id_intento: 9, correcto: true, experiencia_otorgada: 50, repetido: false, resumen: progress,
+  });
+  vi.mocked(voiceService.transcribe).mockResolvedValue(response(true, 'perro', 'Perro'));
+  const onProgressSaved = vi.fn();
+  render(<NamingGame
+    speech={speech}
+    finish={vi.fn()}
+    mode="gentle"
+    patientId={1}
+    focusedPhonemes={['/rr/']}
+    focusedWordLevels={[{ wordId: 'dog', phoneme: '/rr/', level: 4 }]}
+    gameVersion="basica-1"
+    onProgressSaved={onProgressSaved}
+  />);
+  await record();
+  await screen.findByText('«perro»');
+  click('¡Ya dije la palabra!');
+  await waitFor(() => expect(attempt).toHaveBeenCalledOnce());
+  expect(attempt).toHaveBeenCalledWith(1, 'LENGUAJE', expect.objectContaining({
+    version: 'basica-1', nivel: 4, respuestas: ['Perro'],
+  }));
+  expect(onProgressSaved).toHaveBeenCalledWith(progress);
+});
+it('no sustituye con palabras genéricas un objetivo de fonema sin nivel asignado', () => {
+  render(<NamingGame speech={speech} finish={vi.fn()} mode="gentle" patientId={1} focusedPhonemes={['/rr/']} focusedWordLevels={[]}/>);
+  expect(screen.getByRole('alert')).toHaveTextContent('No están disponibles las palabras asociadas');
+  expect(screen.queryByText('Gato')).not.toBeInTheDocument();
 });

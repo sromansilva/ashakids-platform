@@ -2,9 +2,11 @@
 
 import io
 import unittest
+from types import SimpleNamespace
 
 import numpy as np
 import soundfile as sf
+import torch
 
 from transcript_service import analizar_transcripcion_sesion
 from wav2vec_engine import Wav2VecPhoneticEngine
@@ -35,6 +37,43 @@ class AudioReviewEngineTests(unittest.TestCase):
     def test_inference_stays_unavailable_without_loaded_model(self):
         with self.assertRaisesRegex(RuntimeError, "no está disponible"):
             self.engine.inferir_audio(b"audio")
+
+    def test_inference_wipes_waveform_processor_tensors_and_logits(self):
+        waveform = np.ones(32_000, dtype=np.float32)
+
+        class SyntheticProcessor:
+            def __init__(self):
+                self.input_values = torch.ones((1, 32_000))
+                self.attention_mask = torch.ones((1, 32_000), dtype=torch.long)
+
+            def __call__(self, *_args, **_kwargs):
+                return SimpleNamespace(input_values=self.input_values, attention_mask=self.attention_mask)
+
+            def batch_decode(self, _predicted_ids):
+                return ["ratón"]
+
+        class SyntheticModel:
+            def __init__(self):
+                self.logits = torch.ones((1, 2, 3))
+
+            def __call__(self, _input_values):
+                return SimpleNamespace(logits=self.logits)
+
+        processor = SyntheticProcessor()
+        model = SyntheticModel()
+        self.engine.device = "cpu"
+        self.engine.processor = processor
+        self.engine.model = model
+        self.engine._is_ready = True
+        self.engine.audio_bytes_to_tensor = lambda _audio: waveform
+
+        result = self.engine.inferir_audio(b"synthetic-audio")
+
+        self.assertEqual(result["transcripcion"], "ratón")
+        self.assertEqual(np.count_nonzero(waveform), 0)
+        self.assertEqual(torch.count_nonzero(processor.input_values).item(), 0)
+        self.assertEqual(torch.count_nonzero(processor.attention_mask).item(), 0)
+        self.assertEqual(torch.count_nonzero(model.logits).item(), 0)
 
     def test_transcript_does_not_assign_named_speakers_to_clinical_roles(self):
         result = analizar_transcripcion_sesion(

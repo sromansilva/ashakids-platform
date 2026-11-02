@@ -1,6 +1,6 @@
 import { settings } from '../../../core/config.js';
 
-export type SpeechTranscriptionEngine = 'openai-whisper' | 'wav2vec2-transcription';
+export type SpeechTranscriptionEngine = 'wav2vec2-transcription';
 
 export interface SpeechTranscription {
   texto: string;
@@ -23,62 +23,51 @@ export class TranscriptionUnavailableError extends Error {
 }
 
 export class WhisperService {
-  async transcribirAudio(audioBase64: string): Promise<SpeechTranscription> {
-    const rawBase64 = audioBase64.replace(/^data:audio\/[^;]+;base64,/, '');
-    if (!rawBase64 || !/^[A-Za-z0-9+/]*={0,2}$/.test(rawBase64)) {
-      throw new Error('El audio no tiene un formato base64 válido.');
-    }
-
-    if (settings.ML_SERVICE_ENABLED && settings.ML_SERVICE_URL) {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 45_000);
-      try {
-        const response = await fetch(new URL('/predict/phonetics', settings.ML_SERVICE_URL), {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ audio_base64: rawBase64 }),
-          signal: controller.signal,
-        });
-
-        if (response.ok) {
-          const data = (await response.json()) as { transcripcion?: unknown };
-          if (typeof data.transcripcion === 'string' && data.transcripcion.trim()) {
-            return { texto: data.transcripcion.trim(), motor: 'wav2vec2-transcription' };
-          }
-        }
-      } catch {
-        // Try the explicitly configured transcription provider, if available.
-      } finally {
-        clearTimeout(timeout);
+  async transcribirAudio(audio: Buffer | string, mimeType = 'audio/wav'): Promise<SpeechTranscription> {
+    const ownsBuffer = !Buffer.isBuffer(audio);
+    let audioBuffer: Buffer;
+    if (Buffer.isBuffer(audio)) {
+      audioBuffer = audio;
+    } else {
+      const rawBase64 = audio.replace(/^data:audio\/[^;]+;base64,/, '');
+      if (!rawBase64 || !/^[A-Za-z0-9+/]*={0,2}$/.test(rawBase64)) {
+        throw new Error('El audio no tiene un formato base64 válido.');
       }
+      audioBuffer = Buffer.from(rawBase64, 'base64');
     }
+    if (!audioBuffer.length) throw new Error('El audio está vacío.');
+    try {
+      const audioBlob = new Blob([audioBuffer], { type: mimeType });
 
-    if (settings.OPENAI_API_KEY) {
-      try {
-        const audioBuffer = Buffer.from(rawBase64, 'base64');
-        const blob = new Blob([audioBuffer], { type: 'audio/wav' });
-        const formData = new FormData();
-        formData.append('file', blob, 'audio.wav');
-        formData.append('model', settings.WHISPER_MODEL || 'whisper-1');
-        formData.append('language', 'es');
+      if (settings.ML_SERVICE_ENABLED && settings.ML_SERVICE_URL) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 45_000);
+        try {
+          const formData = new FormData();
+          formData.append('file', audioBlob, mimeType.includes('wav') ? 'audio.wav' : 'audio.webm');
+          const response = await fetch(new URL('/predict/file', settings.ML_SERVICE_URL), {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal,
+          });
 
-        const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${settings.OPENAI_API_KEY}` },
-          body: formData,
-        });
-        if (response.ok) {
-          const data = (await response.json()) as { text?: unknown };
-          if (typeof data.text === 'string' && data.text.trim()) {
-            return { texto: data.text.trim(), motor: 'openai-whisper' };
+          if (response.ok) {
+            const data = (await response.json()) as { transcripcion?: unknown };
+            if (typeof data.transcripcion === 'string' && data.transcripcion.trim()) {
+              return { texto: data.transcripcion.trim(), motor: 'wav2vec2-transcription' };
+            }
           }
+        } catch {
+          // Keep the sample on the configured local Wav2Vec service only.
+        } finally {
+          clearTimeout(timeout);
         }
-      } catch {
-        // Report a clear unavailable error below; never substitute the expected phrase.
       }
-    }
 
-    throw new TranscriptionUnavailableError();
+      throw new TranscriptionUnavailableError();
+    } finally {
+      if (ownsBuffer) audioBuffer.fill(0);
+    }
   }
 
   /** Transcription can support human review, but does not evaluate pronunciation. */

@@ -1,5 +1,6 @@
 import { settings } from '../../core/config.js';
 import { GmailService } from '../mailer/gmail.service.js';
+import { isGoogleMeetUrl as isMeetingUrl } from '../../core/security/google-meet-url.js';
 
 export interface CalendarEventResult {
   id: string;
@@ -64,14 +65,51 @@ export class GoogleCalendarService {
       return null;
     }
   }
-}
 
-export function isMeetingUrl(value: string | null | undefined): value is string {
-  if (!value) return false;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === 'https:';
-  } catch {
-    return false;
+  static async updateAppointmentEvent(eventId: string, params: {
+    topic: string;
+    startTime: string;
+    durationMinutes?: number;
+    meetUrl?: string | null;
+  }): Promise<boolean> {
+    if (!this.isConfigured()) return false;
+    const token = await GmailService.getAccessToken();
+    if (!token) return false;
+    try {
+      const response = await fetch(
+        'https://www.googleapis.com/calendar/v3/calendars/primary/events/' + encodeURIComponent(eventId) + '?conferenceDataVersion=1',
+        {
+          method: 'PATCH',
+          headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+          body: JSON.stringify(buildCalendarEventPayload(params)),
+        },
+      );
+      if (!response.ok) {
+        console.warn('[GoogleCalendarService] No se pudo actualizar el evento:', response.status, await response.text());
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.warn('[GoogleCalendarService] Error actualizando el evento:', error);
+      return false;
+    }
+  }
+
+  static async cancelAppointmentEvent(eventId: string): Promise<boolean> {
+    if (!this.isConfigured()) return false;
+    const token = await GmailService.getAccessToken();
+    if (!token) return false;
+    try {
+      const response = await fetch(
+        'https://www.googleapis.com/calendar/v3/calendars/primary/events/' + encodeURIComponent(eventId),
+        { method: 'DELETE', headers: { Authorization: 'Bearer ' + token } },
+      );
+      return response.ok || response.status === 404 || response.status === 410;
+    } catch (error) {
+      console.warn('[GoogleCalendarService] Error cancelando el evento:', error);
+      return false;
+    }
   }
 }
+
+export { isMeetingUrl };

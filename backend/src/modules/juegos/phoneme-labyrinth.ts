@@ -1,0 +1,62 @@
+export const PHONEME_LABYRINTH_LEVELS = [
+  {
+    number: 15,
+    title: 'Laberinto: escucha /rr/ · etapa 1',
+    prompt: 'El perro de Roque no tiene rabo. ¿Qué no tiene?',
+    choices: ['Rabo', 'Nombre', 'Casa'],
+    answer: ['Rabo'],
+    sequence: false,
+    fonema_objetivo: '/rr/',
+  },
+  {
+    number: 16,
+    title: 'Laberinto: escucha /rr/ · etapa 2',
+    prompt: 'Ramón Ramírez se llevó el rabo. ¿Quién se lo llevó?',
+    choices: ['Ramón Ramírez', 'Roque', 'Nadie'],
+    answer: ['Ramón Ramírez'],
+    sequence: false,
+    fonema_objetivo: '/rr/',
+  },
+  {
+    number: 17,
+    title: 'Laberinto: escucha /rr/ · etapa 3',
+    prompt: 'En el trabalenguas aparecen varias palabras con /rr/. ¿Cuántas veces aparece la letra R?',
+    choices: ['4 veces', '7 veces', '10 veces'],
+    answer: ['7 veces'],
+    sequence: false,
+    fonema_objetivo: '/rr/',
+  },
+  {
+    number: 18,
+    title: 'Laberinto: escucha /r/ · etapa 1',
+    prompt: 'El caracol recorre despacio el sendero. ¿Qué animal avanza?',
+    choices: ['Caracol', 'Mariposa', 'Gato'],
+    answer: ['Caracol'],
+    sequence: false,
+    fonema_objetivo: '/r/',
+  },
+  {
+    number: 19,
+    title: 'Laberinto: escucha /r/ · etapa 2',
+    prompt: 'María prepara una pera madura. ¿Qué prepara?',
+    choices: ['Una pera', 'Una carta', 'Un sombrero'],
+    answer: ['Una pera'],
+    sequence: false,
+    fonema_objetivo: '/r/',
+  },
+  {
+    number: 20,
+    title: 'Laberinto: escucha /r/ · etapa 3',
+    prompt: 'La mariposa se posa sobre una flor. ¿Dónde descansa?',
+    choices: ['En una flor', 'En el río', 'En una casa'],
+    answer: ['En una flor'],
+    sequence: false,
+    fonema_objetivo: '/r/',
+  },
+] as const;
+
+export const PHONEME_LABYRINTH_TARGETS = PHONEME_LABYRINTH_LEVELS.map((level) => ({
+  number: level.number,
+  word: level.title,
+  fonema_objetivo: level.fonema_objetivo,
+}));

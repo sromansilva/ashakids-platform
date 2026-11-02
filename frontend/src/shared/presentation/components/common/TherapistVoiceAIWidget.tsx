@@ -1,439 +1,472 @@
-import { useState, useRef, useEffect } from 'react';
-import {
-  Mic,
-  Square,
-  Sparkles,
-  CheckCircle2,
-  FileText,
-  ArrowRight,
-  AlertCircle,
-  Zap,
-} from 'lucide-react';
-import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
-import { convertBlobTo16kHzWav } from '@/shared/application/audio/audioRecorderToWav';
-import type { SavedArticulationResult, ReviewedArticulationResult } from '@/shared/application/articulationReportEntries';
+import { useEffect, useRef, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { AlertCircle, CheckCircle2, Mic, Square } from 'lucide-react';
+import { useAuth } from '@/modules/auth/application/useAuth';
+import { clinicaService, sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
+import type { ReviewedArticulationResult } from '@/shared/application/articulationReportEntries';
+import { useFamilyCaptureResult } from '@/shared/application/hooks/useFamilyCaptureResult';
 
-export interface PhoneticTestResult {
-  estado: string;
+interface TranscriptionResult {
+  id_evaluacion: number;
   palabra_esperada: string;
-  transcripcion_acustica: string;
-  similitud_fonetica_porcentaje: number;
-  diagnostico_biomedico: string;
-  fonema_afectado: string | null;
-  observacion_tecnica: string;
+  transcripcion_tentativa: string;
+  duracion_segundos: number | null;
+  aviso: string;
 }
 
 interface TherapistVoiceAIWidgetProps {
   sessionId: number;
+  patientId?: number;
   patientName?: string;
-  priorResults?: SavedArticulationResult[];
   onConfirmResult?: (result: ReviewedArticulationResult) => void;
-  onApplyObservation?: (observationText: string) => void;
 }
 
-const PALABRAS_SUGERIDAS = [
-  { palabra: 'carro', fonema: '/rr/', desc: 'Vibrante múltiple' },
-  { palabra: 'gato', fonema: '/g/', desc: 'Oclusiva velar' },
-  { palabra: 'ratón', fonema: '/r/', desc: 'Vibrante simple inicial' },
-  { palabra: 'plato', fonema: '/pl/', desc: 'Grupo trabado' },
-  { palabra: 'tren', fonema: '/tr/', desc: 'Sinfón coronal' },
-  { palabra: 'zapato', fonema: '/s/', desc: 'Fricativa dental' },
-  { palabra: 'pelota', fonema: '/p/', desc: 'Oclusiva bilabial' },
+const TARGETS = [
+  { word: 'carro', phoneme: '/rr/' },
+  { word: 'ratón', phoneme: '/r/' },
+  { word: 'plato', phoneme: '/pl/' },
+  { word: 'tren', phoneme: '/tr/' },
+  { word: 'zapato', phoneme: '/s/' },
 ];
+
+const SAMPLE_RATE = 16_000;
+const PACKET_SAMPLES = 4_000;
+const MAX_CAPTURE_SAMPLES = SAMPLE_RATE * 3;
+
+function encodePcm16(samples: Float32Array) {
+  const bytes = new Uint8Array(samples.length * 2);
+  const view = new DataView(bytes.buffer);
+  for (let index = 0; index < samples.length; index += 1) {
+    const sample = Math.max(-1, Math.min(1, samples[index]));
+    view.setInt16(index * 2, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
+  }
+  return bytes;
+}
 
 export function TherapistVoiceAIWidget({
   sessionId,
+  patientId,
   patientName = 'el niño',
   onConfirmResult,
-  onApplyObservation,
 }: TherapistVoiceAIWidgetProps) {
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
   const [targetWord, setTargetWord] = useState('carro');
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingSeconds, setRecordingSeconds] = useState(0);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<PhoneticTestResult | null>(null);
-  const [applied, setApplied] = useState(false);
-  const [audioUrl, setAudioUrl] = useState<string | null>(null);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const timerRef = useRef<any>(null);
+  const [recording, setRecording] = useState(false);
+  const [seconds, setSeconds] = useState(0);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [consent, setConsent] = useState<boolean | null>(null);
+  const [transcription, setTranscription] = useState<TranscriptionResult | null>(null);
+  const [editedTranscript, setEditedTranscript] = useState('');
+  const [therapistNote, setTherapistNote] = useState('');
+  const [clinicalOutcome, setClinicalOutcome] = useState('');
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [familyCaptureId, setFamilyCaptureId] = useState<string | null>(null);
+  const [captureOrigin, setCaptureOrigin] = useState('Micrófono de este dispositivo durante la sesión');
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
+  const processorRef = useRef<ScriptProcessorNode | null>(null);
+  const muteRef = useRef<GainNode | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const recordingRef = useRef(false);
+  const captureIdRef = useRef<string | null>(null);
+  const packetNumberRef = useRef(0);
+  const uploadQueueRef = useRef<Promise<void>>(Promise.resolve());
+  const uploadFailedRef = useRef(false);
+  const packetSamplesRef = useRef(new Float32Array(PACKET_SAMPLES));
+  const packetSamplesCountRef = useRef(0);
+  const totalSamplesRef = useRef(0);
+  const captureStartedAtRef = useRef(0);
 
   useEffect(() => {
-    return () => {
-      if (timerRef.current) clearInterval(timerRef.current);
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-        mediaRecorderRef.current.stop();
-      }
-      if (audioUrl) URL.revokeObjectURL(audioUrl);
-    };
-  }, [audioUrl]);
-
-  const handleStartRecording = async () => {
-    setErrorMsg(null);
-    setResult(null);
-    setApplied(false);
-    audioChunksRef.current = [];
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data && event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        stream.getTracks().forEach((track) => track.stop());
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        if (audioUrl) URL.revokeObjectURL(audioUrl);
-        setAudioUrl(URL.createObjectURL(audioBlob));
-
-        // Enviar a análisis fonético con Wav2Vec 2.0
-        await procesarAudio(audioBlob);
-      };
-
-      mediaRecorder.start(250);
-      setIsRecording(true);
-      setRecordingSeconds(0);
-
-      // Temporizador de 3 segundos máximos
-      let elapsed = 0;
-      timerRef.current = setInterval(() => {
-        elapsed += 1;
-        setRecordingSeconds(elapsed);
-        if (elapsed >= 3) {
-          handleStopRecording();
-        }
-      }, 1000);
-    } catch (err) {
-      console.warn('[Micrófono no disponible]:', err);
-      setErrorMsg('No se pudo acceder al micrófono. Puedes usar el botón de prueba rápida para simular la emisión.');
-      setIsRecording(false);
+    let active = true;
+    setConsent(null);
+    if (!patientId) {
+      setConsent(false);
+      return () => { active = false; };
     }
+    clinicaService.getConsent(patientId)
+      .then((result) => { if (active) setConsent(result.consentido); })
+      .catch(() => { if (active) setConsent(false); });
+    return () => { active = false; };
+  }, [patientId]);
+
+  useEffect(() => () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    recordingRef.current = false;
+    if (processorRef.current) processorRef.current.onaudioprocess = null;
+    processorRef.current?.disconnect();
+    sourceRef.current?.disconnect();
+    muteRef.current?.disconnect();
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    packetSamplesRef.current.fill(0);
+    const context = audioContextRef.current;
+    if (context && context.state !== 'closed') void context.close().catch(() => undefined);
+    const captureId = captureIdRef.current;
+    captureIdRef.current = null;
+    if (captureId) {
+      void uploadQueueRef.current.finally(() => sessionsService.descartarCapturaFonologica(sessionId, captureId).catch(() => undefined));
+    }
+  }, [sessionId]);
+
+  useFamilyCaptureResult(sessionId, familyCaptureId, (result) => {
+    setTranscription(result);
+    setEditedTranscript(result.transcripcion_tentativa);
+    setTherapistNote('');
+    setClinicalOutcome('');
+    setCaptureOrigin('Micrófono del dispositivo familiar; sin pista remota de Google Meet');
+    setSaved(false);
+    setFamilyCaptureId(null);
+  }, () => {
+    setError('La solicitud de captura familiar expiró. Solicita una nueva muestra durante la sesión.');
+    setFamilyCaptureId(null);
+  });
+
+  const queuePcmPacket = (samples: Float32Array) => {
+    const captureId = captureIdRef.current;
+    if (!captureId || samples.length === 0) return;
+    const packetNumber = packetNumberRef.current++;
+    const packet = encodePcm16(samples);
+    uploadQueueRef.current = uploadQueueRef.current.then(async () => {
+      if (uploadFailedRef.current) {
+        packet.fill(0);
+        return;
+      }
+      const formData = new FormData();
+      const packetCopy = packet.buffer.slice(packet.byteOffset, packet.byteOffset + packet.byteLength);
+      formData.append('audio', new Blob([packetCopy], { type: 'application/octet-stream' }), `paquete-${packetNumber}.pcm`);
+      formData.append('numero_paquete', String(packetNumber));
+      try {
+        await sessionsService.enviarPaqueteFonologico(sessionId, captureId, formData);
+      } catch {
+        uploadFailedRef.current = true;
+      } finally {
+        formData.delete('audio');
+        packet.fill(0);
+      }
+    });
   };
 
-  const handleStopRecording = () => {
+  const stopAudioDevices = () => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
       timerRef.current = null;
     }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
-      mediaRecorderRef.current.stop();
+    if (processorRef.current) {
+      processorRef.current.onaudioprocess = null;
+      processorRef.current.disconnect();
+      processorRef.current = null;
     }
-    setIsRecording(false);
+    sourceRef.current?.disconnect();
+    sourceRef.current = null;
+    muteRef.current?.disconnect();
+    muteRef.current = null;
+    streamRef.current?.getTracks().forEach((track) => track.stop());
+    streamRef.current = null;
+    const context = audioContextRef.current;
+    audioContextRef.current = null;
+    if (context && context.state !== 'closed') void context.close().catch(() => undefined);
   };
 
-  const procesarAudio = async (audioBlob: Blob) => {
-    setIsAnalyzing(true);
-    setErrorMsg(null);
-
-    try {
-      // Convertir a WAV 16kHz PCM (compatible directamente con Wav2Vec 2.0 y SoundFile)
-      let blobToSend: Blob = audioBlob;
+  const stopRecording = () => {
+    if (!recordingRef.current) return;
+    recordingRef.current = false;
+    setRecording(false);
+    stopAudioDevices();
+    const pendingSamples = packetSamplesCountRef.current;
+    if (pendingSamples > 0) {
+      queuePcmPacket(packetSamplesRef.current.slice(0, pendingSamples));
+      packetSamplesRef.current.fill(0);
+      packetSamplesCountRef.current = 0;
+    }
+    const captureId = captureIdRef.current;
+    if (!captureId) return;
+    setAnalyzing(true);
+    setError(null);
+    void (async () => {
       try {
-        blobToSend = await convertBlobTo16kHzWav(audioBlob);
-      } catch (convErr) {
-        console.warn('[Conversión WAV]:', convErr);
-      }
-
-      const reader = new FileReader();
-      reader.onload = async (e) => {
-        try {
-          const base64 = e.target?.result as string;
-          const res = await sessionsService.evaluarFonemaEnVivo(sessionId, {
-            audio_base64: base64,
-            palabra_esperada: targetWord.trim(),
-          });
-          setResult(res as PhoneticTestResult);
-        } catch (apiErr) {
-          console.error('[Error en evaluación fonética]:', apiErr);
-          setErrorMsg('Error al comunicar con el motor de IA. Inténtalo de nuevo.');
-        } finally {
-          setIsAnalyzing(false);
+        await uploadQueueRef.current;
+        if (uploadFailedRef.current) throw new Error('packet-upload-failed');
+        if (totalSamplesRef.current < SAMPLE_RATE * 2 || totalSamplesRef.current > MAX_CAPTURE_SAMPLES) {
+          throw new Error('invalid-duration');
         }
-      };
-      reader.readAsDataURL(blobToSend);
-    } catch (err) {
-      console.error('[procesarAudio error]:', err);
-      setIsAnalyzing(false);
-    }
-  };
-
-  // Simulación rápida para demostración o prueba sin micrófono
-  const handleSimularPrueba = async (palabra: string, transcripcionSimulada: string) => {
-    setTargetWord(palabra);
-    setIsAnalyzing(true);
-    setErrorMsg(null);
-    setResult(null);
-    setApplied(false);
-
-    try {
-      await new Promise((r) => setTimeout(r, 600));
-      const res = await sessionsService.evaluarFonemaEnVivo(sessionId, {
-        palabra_esperada: palabra,
-      });
-      // Forzar emisión simulada si corresponde
-      if (res && palabra.toLowerCase() === 'carro') {
-        res.transcripcion_acustica = transcripcionSimulada;
-        res.similitud_fonetica_porcentaje = 75;
-        res.diagnostico_biomedico = 'Lambdacismo (Sustitución de vibrante /rr/ por lateral /l/)';
-        res.observacion_tecnica = `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo 'carro' (/rr/) emitida como '${transcripcionSimulada}' (Similitud fonética: 75%). Diagnóstico biomédico: Lambdacismo (Sustitución de vibrante /rr/ por lateral /l/). Se sugiere ejercitar praxias linguales para vibración apical.`;
+        const response = await sessionsService.finalizarCapturaFonologica(sessionId, captureId);
+        setTranscription(response);
+        setEditedTranscript(response.transcripcion_tentativa);
+        setCaptureOrigin('Micrófono de este dispositivo durante la sesión');
+        setTherapistNote('');
+        setClinicalOutcome('');
+        setSaved(false);
+      } catch {
+        setError('No se pudo transcribir la muestra. Revisa la conexión, el consentimiento y que la sesión siga en curso.');
+        void sessionsService.descartarCapturaFonologica(sessionId, captureId).catch(() => undefined);
+      } finally {
+        if (captureIdRef.current === captureId) captureIdRef.current = null;
+        setAnalyzing(false);
       }
-      setResult(res as PhoneticTestResult);
-    } catch (err) {
-      console.error('[Error simular]:', err);
-      setErrorMsg('No se pudo completar la evaluación.');
-    } finally {
-      setIsAnalyzing(false);
+    })();
+  };
+
+  const startRecording = async () => {
+    setError(null);
+    setTranscription(null);
+    setSaved(false);
+    if (consent !== true) {
+      setError('Se requiere consentimiento vigente del tutor para enviar audio al servicio de transcripción.');
+      return;
+    }
+    const target = TARGETS.find((entry) => entry.word === targetWord);
+    if (!target) {
+      setError('Selecciona una palabra y un fonema disponibles.');
+      return;
+    }
+    let captureId: string | null = null;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 } });
+      streamRef.current = stream;
+      captureId = crypto.randomUUID();
+      await sessionsService.iniciarCapturaFonologica(sessionId, {
+        captura_id: captureId,
+        palabra_objetivo: target.word,
+        fonema_objetivo: target.phoneme,
+      });
+      captureIdRef.current = captureId;
+      packetNumberRef.current = 0;
+      uploadQueueRef.current = Promise.resolve();
+      uploadFailedRef.current = false;
+      packetSamplesRef.current.fill(0);
+      packetSamplesCountRef.current = 0;
+      totalSamplesRef.current = 0;
+      captureStartedAtRef.current = Date.now();
+
+      const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+      if (!AudioContextConstructor) throw new Error('audio-context-unavailable');
+      const context = new AudioContextConstructor({ sampleRate: SAMPLE_RATE });
+      audioContextRef.current = context;
+      if (context.sampleRate !== SAMPLE_RATE) throw new Error('unsupported-sample-rate');
+      await context.resume();
+      const source = context.createMediaStreamSource(stream);
+      const processor = context.createScriptProcessor(4096, 1, 1);
+      const mute = context.createGain();
+      mute.gain.value = 0;
+      sourceRef.current = source;
+      processorRef.current = processor;
+      muteRef.current = mute;
+      processor.onaudioprocess = (event) => {
+        const input = event.inputBuffer.getChannelData(0);
+        let index = 0;
+        while (index < input.length && totalSamplesRef.current < MAX_CAPTURE_SAMPLES) {
+          const room = PACKET_SAMPLES - packetSamplesCountRef.current;
+          const remainingCapture = MAX_CAPTURE_SAMPLES - totalSamplesRef.current;
+          const count = Math.min(room, input.length - index, remainingCapture);
+          packetSamplesRef.current.set(input.subarray(index, index + count), packetSamplesCountRef.current);
+          index += count;
+          packetSamplesCountRef.current += count;
+          totalSamplesRef.current += count;
+          if (packetSamplesCountRef.current === PACKET_SAMPLES) {
+            queuePcmPacket(packetSamplesRef.current);
+            packetSamplesRef.current.fill(0);
+            packetSamplesCountRef.current = 0;
+          }
+        }
+        for (let channel = 0; channel < event.outputBuffer.numberOfChannels; channel += 1) {
+          event.outputBuffer.getChannelData(channel).fill(0);
+        }
+        setSeconds(Math.floor(totalSamplesRef.current / SAMPLE_RATE));
+        if (totalSamplesRef.current >= MAX_CAPTURE_SAMPLES) stopRecording();
+      };
+      source.connect(processor);
+      processor.connect(mute);
+      mute.connect(context.destination);
+      recordingRef.current = true;
+      setRecording(true);
+      setSeconds(0);
+      timerRef.current = setInterval(() => {
+        const elapsed = Math.min(3, Math.floor((Date.now() - captureStartedAtRef.current) / 1000));
+        setSeconds(elapsed);
+        if (elapsed >= 3) stopRecording();
+      }, 200);
+    } catch {
+      recordingRef.current = false;
+      stopAudioDevices();
+      packetSamplesRef.current.fill(0);
+      packetSamplesCountRef.current = 0;
+      if (captureId) void sessionsService.descartarCapturaFonologica(sessionId, captureId).catch(() => undefined);
+      if (captureIdRef.current === captureId) captureIdRef.current = null;
+      setRecording(false);
+      setError('No se pudo iniciar la captura de audio PCM a 16 kHz. Revisa el micrófono, el consentimiento y la conexión.');
     }
   };
 
-  const handlePegarEnInforme = () => {
-    if (!result) return;
-
-    if (onApplyObservation) {
-      onApplyObservation(result.observacion_tecnica);
+  const requestFamilyCapture = async () => {
+    setError(null);
+    setTranscription(null);
+    setSaved(false);
+    if (consent !== true) {
+      setError('Se requiere consentimiento vigente del tutor para solicitar una muestra de voz.');
+      return;
     }
-
-    if (onConfirmResult) {
-      onConfirmResult({
-        objetivo_articulacion: `Evaluación de fonema ${result.fonema_afectado ? `/${result.fonema_afectado}/` : ''}`,
-        palabra_esperada: result.palabra_esperada,
-        transcripcion_tentativa: result.transcripcion_acustica,
-        resultado_revisado: result.observacion_tecnica,
-        archivo_origen: 'Audio en vivo (Wav2Vec 2.0)',
-        inicio_segundo: 0,
-        fin_segundo: 2,
+    const target = TARGETS.find((entry) => entry.word === targetWord);
+    if (!target) {
+      setError('Selecciona una palabra y un fonema disponibles.');
+      return;
+    }
+    try {
+      const captureId = crypto.randomUUID();
+      await sessionsService.solicitarCapturaFamiliar(sessionId, {
+        captura_id: captureId,
+        palabra_objetivo: target.word,
+        fonema_objetivo: target.phoneme,
       });
+      setFamilyCaptureId(captureId);
+      setCaptureOrigin('Micrófono del dispositivo familiar; sin pista remota de Google Meet');
+    } catch {
+      setError('No se pudo solicitar la muestra familiar. Confirma que la sesión esté en curso y el consentimiento vigente.');
     }
+  };
 
-    setApplied(true);
-    setTimeout(() => setApplied(false), 3000);
+  const review = async (discard = false) => {
+    if (!transcription) return;
+    if (!discard && (!editedTranscript.trim() || !therapistNote.trim() || !clinicalOutcome)) {
+      setError('Corrige la transcripción, registra una observación y selecciona el resultado observado antes de confirmar.');
+      return;
+    }
+    setError(null);
+    try {
+      await clinicaService.reviewPhoneticEvaluation(transcription.id_evaluacion, {
+        estado: discard ? 'DESCARTADO' : 'CONFIRMADO_TERAPEUTA',
+        transcripcion_revisada: discard ? undefined : editedTranscript.trim(),
+        observacion_terapeuta: discard ? 'Descartada por el terapeuta.' : therapistNote.trim(),
+        resultado_clinico: discard ? undefined : clinicalOutcome as 'ALCANZADO' | 'EN_PROCESO' | 'REQUIERE_APOYO',
+      });
+      if (patientId && user?.id_usuario) {
+        await queryClient.invalidateQueries({ queryKey: [user.id_usuario, 'phonological-evaluations', patientId] });
+      }
+      if (!discard) {
+        const target = TARGETS.find((entry) => entry.word === transcription.palabra_esperada);
+        onConfirmResult?.({
+          objetivo_articulacion: target ? 'Observación del objetivo ' + target.phoneme : 'Observación de pronunciación',
+          palabra_esperada: transcription.palabra_esperada,
+          transcripcion_tentativa: transcription.transcripcion_tentativa,
+          resultado_revisado: therapistNote.trim() + ' Transcripción revisada: "' + editedTranscript.trim() + '". Resultado del objetivo en esta muestra: ' + clinicalOutcome.replaceAll('_', ' ').toLocaleLowerCase('es') + '.',
+          archivo_origen: captureOrigin,
+          inicio_segundo: 0,
+          fin_segundo: Math.max(0.5, transcription.duracion_segundos ?? 3),
+        });
+      }
+      setSaved(true);
+      setTranscription(null);
+    } catch {
+      setError('No se pudo guardar la revisión. La sesión o la evaluación pueden haber cambiado.');
+    }
   };
 
   return (
-    <section className="space-y-4 rounded-2xl border border-violet-200 bg-white p-4 shadow-sm">
-      {/* Cabecera */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#E8E5F4]">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center shrink-0">
-            <Mic size={20} />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-black text-[#1C1135]">
-                Test Fonológico Rápido en la Sesión
-              </h3>
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black bg-violet-100 text-[#6B46FE]">
-                <Sparkles size={11} /> Wav2Vec 2.0 en vivo
-              </span>
-            </div>
-            <p className="text-xs text-[#615274] font-bold mt-0.5">
-              Evalúa objetivamente si {patientName} supera el fonema o si aún persiste la sustitución articulatoria.
-            </p>
-          </div>
-        </div>
+    <section className="space-y-4 rounded-2xl border border-violet-200 bg-white p-4">
+      <div>
+        <h3 className="text-sm font-black text-[#1C1135]">Transcripción fonológica para revisión</h3>
+        <p className="mt-1 text-xs text-[#615274]">
+          Captura de 2 a 3 segundos desde el micrófono de este dispositivo, con paquetes PCM de 250 ms, cuando {patientName} esté junto al terapeuta.
+          El modelo propone una transcripción; no califica sonidos ni emite diagnósticos.
+        </p>
+      </div>
 
-        {/* Botón rápido de simulación */}
-        <button
-          type="button"
-          onClick={() => void handleSimularPrueba('carro', 'calo')}
-          disabled={isRecording || isAnalyzing}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-violet-200 bg-violet-50/70 hover:bg-violet-100 text-[#6B46FE] text-xs font-black transition-all cursor-pointer self-start sm:self-center"
-          title="Prueba rápida inmediata de la red neuronal"
+      {consent !== true && (
+        <p role="note" className="rounded-xl bg-amber-50 p-3 text-xs font-semibold text-amber-800">
+          {consent === null
+            ? 'Consultando el consentimiento vigente…'
+            : 'La transcripción de audio está bloqueada hasta que el tutor otorgue consentimiento vigente.'}
+        </p>
+      )}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <label className="text-xs font-bold text-[#1C1135]" htmlFor={'phonetic-word-' + sessionId}>Palabra objetivo</label>
+        <select
+          id={'phonetic-word-' + sessionId}
+          value={targetWord}
+          disabled={recording || analyzing}
+          onChange={(event) => setTargetWord(event.target.value)}
+          className="rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-3 py-2 text-sm font-bold"
         >
-          <Zap size={13} /> Probar: "carro" → "calo"
+          {TARGETS.map((target) => <option key={target.word} value={target.word}>{target.word} {target.phoneme}</option>)}
+        </select>
+      </div>
+
+      {recording ? (
+        <button type="button" onClick={stopRecording} disabled={seconds < 2} className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">
+          <Square size={14} /> {seconds < 2 ? `Capturando (${seconds}s)` : `Detener (${seconds}s)`}
         </button>
-      </div>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => void startRecording()}
+            disabled={consent !== true || analyzing || !!familyCaptureId || !targetWord.trim()}
+            className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-xs font-bold text-white disabled:opacity-50"
+          >
+            <Mic size={14} /> Grabar en este dispositivo
+          </button>
+          <button
+            type="button"
+            onClick={() => void requestFamilyCapture()}
+            disabled={consent !== true || analyzing || !!familyCaptureId || !targetWord.trim()}
+            className="inline-flex items-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-xs font-bold text-emerald-900 disabled:opacity-50"
+          >
+            <Mic size={14} /> Solicitar muestra en dispositivo familiar
+          </button>
+        </div>
+      )}
 
-      {/* Paso 1: Palabra objetivo */}
-      <div className="space-y-2">
-        <label className="text-xs font-black text-[#1C1135] flex items-center gap-2">
-          <span>1. Pídele al niño decir la palabra objetivo:</span>
-        </label>
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative">
+      {familyCaptureId && <p role="status" className="rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-900">Solicitud enviada. La familia debe abrir esta sesión en su dispositivo y tocar “Iniciar prueba de voz”. No se graba Google Meet.</p>}
+      {analyzing && <p role="status" className="text-xs font-semibold text-violet-700">Procesando audio temporalmente para obtener una transcripción tentativa…</p>}
+      {error && <p role="alert" className="flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-xs font-semibold text-amber-800"><AlertCircle size={15} />{error}</p>}
+      {saved && <p role="status" className="flex items-center gap-2 text-xs font-bold text-emerald-700"><CheckCircle2 size={15} />Revisión guardada; el reporte puede guardarse ahora.</p>}
+
+      {transcription && (
+        <div className="space-y-3 rounded-xl border border-violet-100 bg-violet-50/50 p-3">
+          <p className="text-xs font-semibold text-[#615274]">{transcription.aviso}</p>
+          <label className="block text-xs font-bold text-[#1C1135]">
+            Transcripción tentativa (edítala según lo escuchado)
             <input
-              type="text"
-              value={targetWord}
-              onChange={(e) => setTargetWord(e.target.value)}
-              placeholder="Ej: carro"
-              className="px-4 py-2 rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] text-sm font-black text-[#1C1135] focus:bg-white focus:outline-none focus:border-[#6B46FE] w-40"
+              value={editedTranscript}
+              onChange={(event) => setEditedTranscript(event.target.value)}
+              maxLength={500}
+              className="mt-1 block w-full rounded-lg border border-[#E8E5F4] bg-white p-2 text-sm"
             />
-          </div>
-
-          <div className="flex items-center gap-1.5 flex-wrap">
-            {PALABRAS_SUGERIDAS.map((item) => (
-              <button
-                key={item.palabra}
-                type="button"
-                onClick={() => setTargetWord(item.palabra)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  targetWord.toLowerCase() === item.palabra
-                    ? 'bg-[#6B46FE] text-white shadow-xs'
-                    : 'bg-[#F8F7FC] hover:bg-violet-50 text-[#615274] border border-[#E8E5F4]'
-                }`}
-              >
-                "{item.palabra}" <span className="opacity-70 font-normal">{item.fonema}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Paso 2: Grabación de audio en vivo */}
-      <div className="p-4 rounded-2xl bg-gradient-to-r from-violet-50/50 via-purple-50/30 to-white border border-violet-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <span className="text-xs font-black text-[#1C1135] block">
-            2. Graba 2 a 3 segundos del audio del niño:
-          </span>
-          <p className="text-[11px] text-[#615274] mt-0.5 font-medium">
-            El sistema captura la emisión sonora del micrófono y analiza los formantes de onda con la red neuronal.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3 shrink-0">
-          {isRecording ? (
-            <button
-              type="button"
-              onClick={handleStopRecording}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black shadow-md shadow-red-200 animate-pulse transition-all cursor-pointer"
+          </label>
+          <label className="block text-xs font-bold text-[#1C1135]">
+            Observación del terapeuta
+            <textarea
+              value={therapistNote}
+              onChange={(event) => setTherapistNote(event.target.value)}
+              maxLength={2000}
+              rows={3}
+              className="mt-1 block w-full rounded-lg border border-[#E8E5F4] bg-white p-2 text-sm"
+              placeholder="Describe lo observado, sin convertir la transcripción automática en diagnóstico."
+            />
+          </label>
+          <label className="block text-xs font-bold text-[#1C1135]">
+            Resultado del objetivo observado por el terapeuta
+            <select
+              value={clinicalOutcome}
+              onChange={(event) => setClinicalOutcome(event.target.value)}
+              className="mt-1 block w-full rounded-lg border border-[#E8E5F4] bg-white p-2 text-sm"
             >
-              <Square size={14} className="fill-white" />
-              Detener grabación ({recordingSeconds}s)
+              <option value="">Seleccionar resultado</option>
+              <option value="ALCANZADO">Alcanzado en esta muestra</option>
+              <option value="EN_PROCESO">En proceso</option>
+              <option value="REQUIERE_APOYO">Requiere apoyo</option>
+            </select>
+            <span className="mt-1 block font-normal text-[#615274]">Describe esta muestra revisada; no es una conclusión automática ni un diagnóstico.</span>
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" onClick={() => void review(false)} className="rounded-xl bg-violet-600 px-3 py-2 text-xs font-bold text-white">
+              Guardar revisión y añadir al reporte
             </button>
-          ) : (
-            <button
-              type="button"
-              onClick={() => void handleStartRecording()}
-              disabled={isAnalyzing || !targetWord.trim()}
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-[#6B46FE] hover:bg-[#5833EA] text-white text-xs font-black shadow-md shadow-violet-200 transition-all active:scale-[.98] disabled:opacity-50 cursor-pointer"
-            >
-              <Mic size={15} />
-              Grabar fonema en vivo (2 seg)
-            </button>
-          )}
-
-          {audioUrl && !isRecording && (
-            <audio src={audioUrl} controls className="h-8 max-w-[150px]" />
-          )}
-        </div>
-      </div>
-
-      {errorMsg && (
-        <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs font-bold text-amber-800 flex items-center gap-2">
-          <AlertCircle size={15} className="shrink-0" />
-          {errorMsg}
-        </div>
-      )}
-
-      {isAnalyzing && (
-        <div className="p-4 rounded-2xl bg-violet-50/80 border border-violet-200 flex items-center gap-3">
-          <div className="w-5 h-5 border-2 border-[#6B46FE] border-t-transparent rounded-full animate-spin shrink-0" />
-          <p className="text-xs font-black text-[#6B46FE]">
-            Analizando formantes acústicos y fonológicos con Wav2Vec 2.0...
-          </p>
-        </div>
-      )}
-
-      {/* Paso 3: Resultados de la Red Neuronal */}
-      {result && (
-        <div className="space-y-4 pt-1 animate-in fade-in duration-300">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {/* Tarjeta 1: Transcripción acústica */}
-            <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-              <span className="text-[11px] font-extrabold text-[#615274] uppercase tracking-wider block">
-                Transcripción Acústica
-              </span>
-              <div className="mt-1 flex items-baseline gap-2">
-                <span className="text-2xl font-black text-violet-700 font-mono">
-                  "{result.transcripcion_acustica}"
-                </span>
-              </div>
-              <span className="text-[10px] text-[#615274] font-medium block mt-1">
-                Frente a objetivo: "{result.palabra_esperada}"
-              </span>
-            </div>
-
-            {/* Tarjeta 2: Similitud Fonética */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50/40 border border-violet-100">
-              <span className="text-[11px] font-extrabold text-[#615274] uppercase tracking-wider block">
-                Similitud Fonética
-              </span>
-              <div className="mt-1 flex items-baseline gap-2">
-                <span className="text-3xl font-black text-[#6B46FE]">
-                  {result.similitud_fonetica_porcentaje}%
-                </span>
-                <span
-                  className={`text-xs font-bold ${
-                    result.similitud_fonetica_porcentaje >= 85
-                      ? 'text-emerald-600'
-                      : 'text-amber-600'
-                  }`}
-                >
-                  {result.similitud_fonetica_porcentaje >= 85
-                    ? 'Óptima'
-                    : 'Sustitución'}
-                </span>
-              </div>
-              <span className="text-[10px] text-[#615274] font-medium block mt-1">
-                Afinidad espectral
-              </span>
-            </div>
-
-            {/* Tarjeta 3: Diagnóstico Biomédico */}
-            <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-              <span className="text-[11px] font-extrabold text-[#615274] uppercase tracking-wider block">
-                Diagnóstico Clínico
-              </span>
-              <div className="mt-1.5">
-                <span className="text-xs font-black text-[#1C1135] block leading-tight">
-                  {result.diagnostico_biomedico}
-                </span>
-                {result.fonema_afectado && (
-                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-200">
-                    Fonema: /{result.fonema_afectado}/
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Tarjeta 4: Botón de Pegar en el Informe */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-violet-50 via-purple-50/40 to-white border border-violet-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white shadow-sm border border-violet-100 flex items-center justify-center text-[#6B46FE] shrink-0">
-                <FileText size={18} />
-              </div>
-              <div>
-                <h5 className="text-xs font-black text-[#1C1135]">
-                  Observación técnica lista para el informe
-                </h5>
-                <p className="text-xs text-[#615274] font-medium line-clamp-1">
-                  {result.observacion_tecnica}
-                </p>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              onClick={handlePegarEnInforme}
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-black text-xs shadow-sm shadow-violet-200 transition-all active:scale-[.98] cursor-pointer shrink-0"
-            >
-              {applied ? (
-                <>
-                  <CheckCircle2 size={14} /> ¡Pegado en el informe!
-                </>
-              ) : (
-                <>
-                  <ArrowRight size={14} /> Pegar en el informe
-                </>
-              )}
+            <button type="button" onClick={() => void review(true)} className="rounded-xl border border-[#E8E5F4] px-3 py-2 text-xs font-bold text-[#615274]">
+              Descartar transcripción
             </button>
           </div>
         </div>

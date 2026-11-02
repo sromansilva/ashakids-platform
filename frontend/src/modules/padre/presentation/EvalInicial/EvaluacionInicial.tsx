@@ -36,10 +36,10 @@ if (step === "welcome") {
             <ArrowLeft size={16} /> Volver
           </button>
           <h2 className="text-xl font-black text-[#1C1135] mb-1">Para el adulto</h2>
-          <p className="text-sm text-[#7C6F9A] mb-6">Antes de comenzar, necesitamos tu consentimiento explícito.</p>
+          <p className="text-sm text-[#7C6F9A] mb-6">Esta evaluación orientativa de demostración solicita autorización antes de procesar respuestas. No registra una autorización clínica en la cuenta.</p>
 
           <Crd className="mb-4">
-            <h3 className="font-extrabold text-[#1C1135] mb-3">Consentimiento específico</h3>
+            <h3 className="font-extrabold text-[#1C1135] mb-3">Autorización para esta demostración</h3>
             <div className="space-y-3">
               {[
                 "Autorizo el procesamiento de las respuestas de esta evaluación.",

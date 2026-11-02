@@ -1,12 +1,23 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
+import { authenticate } from '../../core/middleware/auth.middleware.js';
 import { notificacionesService } from './notificaciones.service.js';
 
 export const notificacionesRouter = Router();
+notificacionesRouter.use(authenticate);
+
+const preferencesSchema = z.object({
+  nueva_cita: z.boolean(),
+  cancelacion: z.boolean(),
+  reprogramacion: z.boolean(),
+  recordatorio: z.boolean(),
+  mensajes: z.boolean(),
+}).strict();
 
 // GET /api/v1/notificaciones/preferencias
 notificacionesRouter.get('/preferencias', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 1;
+    const userId = req.user!.id_usuario;
     const prefs = await notificacionesService.getPreferencias(userId);
     res.json(prefs);
   } catch (err) {
@@ -17,8 +28,10 @@ notificacionesRouter.get('/preferencias', async (req: Request, res: Response, ne
 // PUT /api/v1/notificaciones/preferencias
 notificacionesRouter.put('/preferencias', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 1;
-    const prefs = await notificacionesService.guardarPreferencias(userId, req.body);
+    const userId = req.user!.id_usuario;
+    const parsed = preferencesSchema.safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ error: 'Las preferencias de notificación no son válidas.' });
+    const prefs = await notificacionesService.guardarPreferencias(userId, parsed.data);
     res.json(prefs);
   } catch (err) {
     next(err);
@@ -28,9 +41,12 @@ notificacionesRouter.put('/preferencias', async (req: Request, res: Response, ne
 // GET /api/v1/notificaciones
 notificacionesRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 1;
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 20;
-    const offset = req.query.offset ? parseInt(req.query.offset as string, 10) : 0;
+    const userId = req.user!.id_usuario;
+    const limit = req.query.limit ? Number(req.query.limit) : 20;
+    const offset = req.query.offset ? Number(req.query.offset) : 0;
+    if (!Number.isInteger(limit) || limit < 1 || limit > 100 || !Number.isInteger(offset) || offset < 0) {
+      return res.status(400).json({ error: 'La paginación no es válida.' });
+    }
     const soloSinLeer = req.query.solo_sin_leer === 'true';
 
     const bandeja = await notificacionesService.getBandeja(userId, { limit, offset, soloSinLeer });
@@ -43,7 +59,7 @@ notificacionesRouter.get('/', async (req: Request, res: Response, next: NextFunc
 // POST /api/v1/notificaciones/leidas
 notificacionesRouter.post('/leidas', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 1;
+    const userId = req.user!.id_usuario;
     await notificacionesService.marcarTodasLeidas(userId);
     res.status(204).send();
   } catch (err) {
@@ -55,7 +71,7 @@ notificacionesRouter.post('/leidas', async (req: Request, res: Response, next: N
 notificacionesRouter.patch('/:key/leida', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const userId = (req as any).user?.id_usuario || 1;
+    const userId = req.user!.id_usuario;
     const notif = await notificacionesService.marcarLeida(key, userId);
     res.json(notif);
   } catch (err) {

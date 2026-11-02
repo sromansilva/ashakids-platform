@@ -1,4 +1,5 @@
 import { pool } from '../../../core/database.js';
+import { appointmentLocalDateTime, getNextCalendarDate } from '../../../core/appointment-time.js';
 
 export interface ProfessionalItem {
   id_terapeuta: number;
@@ -78,68 +79,95 @@ export class TerapeutaService {
   }
 
   async getDisponibilidad(terapeutaId: number): Promise<AvailabilityData> {
-    try {
-      const res = await pool.query(
-        `SELECT dia, hora FROM turnos_semanales WHERE id_terapeuta = $1 ORDER BY dia, hora ASC;`,
-        [terapeutaId]
-      );
-      if (res.rows.length > 0) {
-        return {
-          turnos: res.rows.map(r => ({ dia: r.dia, hora: r.hora })),
-          bloqueos: [],
-          duracion_minutos: 40,
-        };
-      }
-    } catch (err) {
-      console.warn('[TerapeutaService] Fallback getDisponibilidad:', err);
-    }
-
+    const res = await pool.query(
+      `SELECT dia, hora FROM turnos_semanales WHERE id_terapeuta = $1 ORDER BY dia, hora ASC;`,
+      [terapeutaId]
+    );
     return {
-      turnos: [
-        { dia: 1, hora: 9 }, { dia: 1, hora: 10 }, { dia: 1, hora: 11 },
-        { dia: 2, hora: 9 }, { dia: 2, hora: 10 }, { dia: 2, hora: 11 },
-        { dia: 3, hora: 9 }, { dia: 3, hora: 10 }, { dia: 3, hora: 11 },
-        { dia: 4, hora: 9 }, { dia: 4, hora: 10 }, { dia: 4, hora: 11 },
-        { dia: 5, hora: 9 }, { dia: 5, hora: 10 }, { dia: 5, hora: 11 },
-      ],
+      turnos: res.rows.map((row) => ({ dia: Number(row.dia), hora: Number(row.hora) })),
       bloqueos: [],
       duracion_minutos: 40,
     };
   }
 
-  async updateDisponibilidad(terapeutaId: number, data: any): Promise<any> {
-    try {
-      if (Array.isArray(data.turnos)) {
-        await pool.query(`DELETE FROM turnos_semanales WHERE id_terapeuta = $1;`, [terapeutaId]);
-        for (const t of data.turnos) {
-          await pool.query(
-            `INSERT INTO turnos_semanales (id_terapeuta, dia, hora) VALUES ($1, $2, $3);`,
-            [terapeutaId, t.dia, t.hora]
-          );
-        }
-      }
-    } catch (err) {
-      console.warn('[TerapeutaService] Fallback updateDisponibilidad:', err);
+  async updateDisponibilidad(terapeutaId: number, data: any): Promise<AvailabilityData> {
+    if (!Array.isArray(data.turnos) || data.turnos.length > 70) {
+      throw Object.assign(new Error('La disponibilidad debe incluir una lista válida de turnos.'), { status: 400 });
     }
-    return data;
+    const normalized = data.turnos.map((slot: any) => ({ dia: Number(slot.dia), hora: Number(slot.hora) }));
+    const seen = new Set<string>();
+    for (const slot of normalized) {
+      const key = slot.dia + ':' + slot.hora;
+      if (!Number.isInteger(slot.dia) || slot.dia < 1 || slot.dia > 5 || !Number.isInteger(slot.hora) || slot.hora < 8 || slot.hora > 17 || seen.has(key)) {
+        throw Object.assign(new Error('Cada turno debe ser único y estar entre lunes y viernes, de 08:00 a 17:00.'), { status: 400 });
+      }
+      seen.add(key);
+    }
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN;');
+      // Serialize availability edits with appointment creation/rescheduling,
+      // which use the same per-therapist lock before checking offered slots.
+      await client.query('SELECT pg_advisory_xact_lock(7421, $1::integer);', [terapeutaId]);
+      await client.query('DELETE FROM turnos_semanales WHERE id_terapeuta = $1;', [terapeutaId]);
+      for (const slot of normalized) {
+        await client.query(
+          'INSERT INTO turnos_semanales (id_terapeuta, dia, hora) VALUES ($1, $2, $3);',
+          [terapeutaId, slot.dia, slot.hora],
+        );
+      }
+      await client.query('COMMIT;');
+      return { turnos: normalized, bloqueos: [], duracion_minutos: 40 };
+    } catch (error) {
+      await client.query('ROLLBACK;');
+      throw error;
+    } finally {
+      client.release();
+    }
   }
 
-  async getTurnosDelDia(_terapeutaId: number, fechaStr: string): Promise<AvailableSlotItem[]> {
+  async getTurnosDelDia(terapeutaId: number, fechaStr: string): Promise<AvailableSlotItem[]> {
     const slots: AvailableSlotItem[] = [];
-    const date = new Date(fechaStr);
-    const dayOfWeek = (date.getUTCDay() + 6) % 7 + 1; // 1=Mon .. 7=Sun
-    if (dayOfWeek === 7) return [];
-
-    const horas = [9, 10, 11, 14, 15, 16];
-    for (const h of horas) {
-      const hStr = String(h).padStart(2, '0');
-      const startIso = `${fechaStr}T${hStr}:00:00Z`;
-      const endIso = `${fechaStr}T${hStr}:40:00Z`;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(fechaStr) || Number.isNaN(Date.parse(fechaStr + 'T00:00:00Z'))) {
+      throw Object.assign(new Error('La fecha debe tener formato AAAA-MM-DD.'), { status: 400 });
+    }
+    const date = new Date(fechaStr + 'T00:00:00Z');
+    if (date.toISOString().slice(0, 10) !== fechaStr) {
+      throw Object.assign(new Error('La fecha indicada no existe.'), { status: 400 });
+    }
+    const dayOfWeek = (date.getUTCDay() + 6) % 7 + 1;
+    if (dayOfWeek > 5) return [];
+    const availability = await pool.query(
+      'SELECT hora FROM turnos_semanales WHERE id_terapeuta = $1 AND dia = $2 ORDER BY hora;',
+      [terapeutaId, dayOfWeek],
+    );
+    const nextDate = getNextCalendarDate(fechaStr);
+    const dayStart = appointmentLocalDateTime(fechaStr, 0);
+    const dayEnd = appointmentLocalDateTime(nextDate, 0);
+    const reservations = await pool.query(
+      "SELECT fecha_hora_inicio, fecha_hora_fin FROM reservas WHERE id_terapeuta = $1 AND estado_reserva <> 'CANCELADA' AND fecha_hora_inicio < $3::timestamptz AND fecha_hora_fin > $2::timestamptz;",
+      [terapeutaId, dayStart, dayEnd],
+    );
+    const existing = reservations.rows.map((row) => ({
+      start: new Date(row.fecha_hora_inicio).getTime(),
+      end: new Date(row.fecha_hora_fin).getTime(),
+    }));
+    for (const row of availability.rows) {
+      const hour = Number(row.hora);
+      const hStr = String(hour).padStart(2, '0');
+      const startIso = appointmentLocalDateTime(fechaStr, hour);
+      const endIso = appointmentLocalDateTime(fechaStr, hour, 40);
+      const start = new Date(startIso).getTime();
+      const end = new Date(endIso).getTime();
+      const unavailable = existing.some((booking) => booking.start < end && booking.end > start);
+      const past = start <= Date.now();
       slots.push({
-        inicio: startIso,
-        fin: endIso,
-        disponible: true,
-        motivo: null,
+        inicio: new Date(startIso).toISOString(),
+        fin: new Date(endIso).toISOString(),
+        disponible: !unavailable && !past,
+        motivo: unavailable
+          ? 'Este horario se superpone con una cita existente.'
+          : past ? 'Este horario ya pasó.' : null,
       });
     }
     return slots;

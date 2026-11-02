@@ -218,7 +218,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
       } else {
         const res = await adminService.crearTerapeuta(formTerapeuta);
-        setSuccessBanner(`${res.message} Debe crear su contraseña desde el enlace enviado al correo. ${correoEstado(res.correo_bienvenida)}`.trim());
+        setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
       }
       setModal(null);
       setFormPadre(f => ({ ...f, password: "" }));
@@ -232,8 +232,8 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     }
   }
   function correoEstado(estado?: "ENVIADO" | "PENDIENTE" | "NO_CONFIGURADO" | null) {
-    if (estado === "ENVIADO") return "Correo de bienvenida enviado.";
-    if (estado === "PENDIENTE") return "Cuenta creada; correo pendiente.";
+    if (estado === "ENVIADO") return "Enlace de activación enviado; debe crear su contraseña en dos horas.";
+    if (estado === "PENDIENTE") return "Cuenta creada; enlace de activación pendiente.";
     if (estado === "NO_CONFIGURADO") return "Cuenta creada; correo no configurado.";
     return "";
   }

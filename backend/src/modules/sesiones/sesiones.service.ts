@@ -1,7 +1,10 @@
 import { pool } from '../../core/database.js';
+import { PHONEME_NAMING_TARGETS } from '../juegos/juegos.service.js';
 import { settings } from '../../core/config.js';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
-import { appendPatientScope, assertReservationAccess, assertSessionEditAccess } from '../../core/security/clinical-access.js';
+import { appendPatientScope, assertReservationAccess, assertSessionEditAccess, assertConsentAccess } from '../../core/security/clinical-access.js';
+import { FamilyPhoneticCaptureStore, PhoneticCaptureStore, pcm16MonoWav } from './phonetic-capture.js';
+import { isGoogleMeetUrl as isMeetingUrl } from '../../core/security/google-meet-url.js';
 
 export interface SessionData {
   id_sesion: number;
@@ -40,152 +43,331 @@ export interface ReporteItem {
   objetivos_trabajados: string | null;
   nivel_ayuda: string | null;
   proximos_pasos: string | null;
-}
-
-function levenshteinDist(s1: string, s2: string): number {
-  if (s1 === s2) return 0;
-  if (!s1.length) return s2.length;
-  if (!s2.length) return s1.length;
-  const d: number[][] = [];
-  for (let i = 0; i <= s1.length; i++) d[i] = [i];
-  for (let j = 0; j <= s2.length; j++) d[0][j] = j;
-  for (let i = 1; i <= s1.length; i++) {
-    for (let j = 1; j <= s2.length; j++) {
-      const cost = s1[i - 1] === s2[j - 1] ? 0 : 1;
-      d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
-    }
-  }
-  return d[s1.length][s2.length];
-}
-
-function diagnosticarClinico(palabraEsperada: string, transcripcion: string) {
-  const esp = palabraEsperada.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-  const det = transcripcion.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
-
-  if (esp === det) {
-    return {
-      similitud: 100,
-      diagnostico: 'Articulación adecuada (Sin dislalia detectada)',
-      fonema_afectado: null,
-      observacion: `Test fonológico con IA (Wav2Vec 2.0): Evaluación de palabra objetivo '${palabraEsperada}'. Transcripción acústica detectada: '${transcripcion}' (Similitud: 100%). Articulación fonética adecuada sin dislalias.`,
-    };
-  }
-
-  if ((esp.includes('rr') || esp.includes('r')) && det.includes('l') && !esp.includes('l')) {
-    const fon = esp.includes('rr') ? 'rr' : 'r';
-    const dist = levenshteinDist(esp, det);
-    const similitud = esp === 'carro' && det === 'calo' ? 75 : Math.max(65, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
-    return {
-      similitud,
-      diagnostico: `Lambdacismo (Sustitución de vibrante /${fon}/ por lateral /l/)`,
-      fonema_afectado: fon,
-      observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Lambdacismo (Sustitución de vibrante /${fon}/ por lateral /l/). Se sugiere ejercitar praxias linguales para vibración apical.`,
-    };
-  }
-
-  const trabados = ['pl', 'pr', 'bl', 'br', 'fl', 'fr', 'cl', 'cr', 'gl', 'gr', 'tr', 'dr'];
-  for (const sinfon of trabados) {
-    if (esp.includes(sinfon) && !det.includes(sinfon)) {
-      const dist = levenshteinDist(esp, det);
-      const similitud = Math.max(65, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
-      return {
-        similitud,
-        diagnostico: `Reducción de grupo trabado /${sinfon}/ (Omisión de consonante líquida)`,
-        fonema_afectado: sinfon,
-        observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Reducción de sinfón /${sinfon}/. Se recomienda afianzamiento propioceptivo en sílabas trabadas.`,
-      };
-    }
-  }
-
-  if (esp.includes('s') && det.includes('t') && !esp.includes('t')) {
-    const dist = levenshteinDist(esp, det);
-    const similitud = Math.max(65, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
-    return {
-      similitud,
-      diagnostico: 'Oclusivización de fricativa /s/ por /t/',
-      fonema_afectado: 's',
-      observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Oclusivización de fricativa /s/ por oclusiva dental /t/.`,
-    };
-  }
-
-  const dist = levenshteinDist(esp, det);
-  const similitud = Math.max(30, Math.round((1 - dist / Math.max(esp.length, det.length)) * 100));
-  return {
-    similitud,
-    diagnostico: 'Dislalia funcional (Discrepancia articulatoria detectada)',
-    fonema_afectado: null,
-    observacion: `Test fonológico con IA (Wav2Vec 2.0): Palabra objetivo '${palabraEsperada}' emitida como '${transcripcion}' (Similitud fonética: ${similitud}%). Diagnóstico biomédico: Dislalia funcional. Se sugiere seguimiento en intervención fonoaudiológica.`,
-  };
+  estado_reporte: 'BORRADOR' | 'FIRMADO';
+  id_usuario_firma: number | null;
+  fecha_firma: string | null;
+  firmado_por: string | null;
 }
 
 export class SesionesService {
+  private readonly phoneticCaptureStore = new PhoneticCaptureStore();
+  private readonly familyPhoneticCaptureStore = new FamilyPhoneticCaptureStore();
+  private readonly activePhoneticInferences = new Map<number, Set<AbortController>>();
+
+  private registerPhoneticInference(sessionId: number, controller: AbortController) {
+    const active = this.activePhoneticInferences.get(sessionId) ?? new Set<AbortController>();
+    active.add(controller);
+    this.activePhoneticInferences.set(sessionId, active);
+  }
+
+  private releasePhoneticInference(sessionId: number, controller: AbortController) {
+    const active = this.activePhoneticInferences.get(sessionId);
+    if (!active) return;
+    active.delete(controller);
+    if (active.size === 0) this.activePhoneticInferences.delete(sessionId);
+  }
+
+  private async assertActivePhoneticSession(idSesion: number) {
+    const result = await pool.query(
+      'SELECT s.estado_sesion, r.id_paciente FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva WHERE s.id_sesion = $1 LIMIT 1;',
+      [idSesion],
+    );
+    if (!result.rows[0]) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
+    if (result.rows[0].estado_sesion !== 'EN_CURSO') {
+      throw Object.assign(new Error('La evaluación fonológica solo está disponible durante una sesión en curso.'), { status: 409 });
+    }
+    await assertConsentAccess(Number(result.rows[0].id_paciente));
+  }
+
+  async iniciarCapturaFonologica(
+    idSesion: number,
+    user: AuthenticatedUser,
+    payload: { captura_id: string; palabra_objetivo: string; fonema_objetivo: string },
+  ) {
+    const target = PHONEME_NAMING_TARGETS.find((item) => item.word.toLocaleLowerCase('es') === payload.palabra_objetivo.trim().toLocaleLowerCase('es'));
+    if (!target || target.fonema_objetivo !== payload.fonema_objetivo) {
+      throw Object.assign(new Error('Selecciona una palabra y un fonema de los objetivos clínicos disponibles.'), { status: 400 });
+    }
+    await this.assertActivePhoneticSession(idSesion);
+    return this.phoneticCaptureStore.create({
+      id_sesion: idSesion,
+      id_usuario: user.id_usuario,
+      captura_id: payload.captura_id,
+      palabra_objetivo: target.word,
+      fonema_objetivo: target.fonema_objetivo,
+    });
+  }
+
+  async guardarPaqueteFonologico(
+    idSesion: number,
+    user: AuthenticatedUser,
+    capturaId: string,
+    numeroPaquete: number,
+    audioPcm: Buffer,
+  ) {
+    try {
+      await this.assertActivePhoneticSession(idSesion);
+      return this.phoneticCaptureStore.append(idSesion, user.id_usuario, capturaId, numeroPaquete, audioPcm);
+    } catch (error) {
+      this.phoneticCaptureStore.discard(idSesion, user.id_usuario, capturaId);
+      throw error;
+    }
+  }
+
+  async finalizarCapturaFonologica(idSesion: number, user: AuthenticatedUser, capturaId: string) {
+    let completed: ReturnType<PhoneticCaptureStore['take']> | null = null;
+    let wav: Buffer | null = null;
+    try {
+      await this.assertActivePhoneticSession(idSesion);
+      completed = this.phoneticCaptureStore.take(idSesion, user.id_usuario, capturaId);
+      wav = pcm16MonoWav(completed.pcm);
+      completed.pcm.fill(0);
+      return await this.evaluarFonemaEnVivo(idSesion, {
+        audio_bytes: wav,
+        palabra_objetivo: completed.palabra_objetivo,
+        fonema_objetivo: completed.fonema_objetivo,
+      });
+    } catch (error) {
+      this.phoneticCaptureStore.discard(idSesion, user.id_usuario, capturaId);
+      throw error;
+    } finally {
+      completed?.pcm.fill(0);
+      wav?.fill(0);
+    }
+  }
+
+  descartarCapturaFonologica(idSesion: number, user: AuthenticatedUser, capturaId: string) {
+    return this.phoneticCaptureStore.discard(idSesion, user.id_usuario, capturaId);
+  }
+
+  async solicitarCapturaFamiliar(
+    idSesion: number,
+    user: AuthenticatedUser,
+    payload: { captura_id: string; palabra_objetivo: string; fonema_objetivo: string },
+  ) {
+    const target = PHONEME_NAMING_TARGETS.find((item) => item.word.toLocaleLowerCase('es') === payload.palabra_objetivo.trim().toLocaleLowerCase('es'));
+    if (!target || target.fonema_objetivo !== payload.fonema_objetivo) {
+      throw Object.assign(new Error('Selecciona una palabra y un fonema de los objetivos clínicos disponibles.'), { status: 400 });
+    }
+    await this.assertActivePhoneticSession(idSesion);
+    return this.familyPhoneticCaptureStore.create({
+      id_sesion: idSesion,
+      id_usuario: user.id_usuario,
+      captura_id: payload.captura_id,
+      palabra_objetivo: target.word,
+      fonema_objetivo: target.fonema_objetivo,
+    });
+  }
+
+  async obtenerCapturaFamiliarPendiente(idSesion: number, familyUserId: number) {
+    await this.assertActivePhoneticSession(idSesion);
+    return this.familyPhoneticCaptureStore.pending(idSesion, familyUserId);
+  }
+
+  async iniciarCapturaFamiliar(idSesion: number, familyUserId: number, captureId: string) {
+    await this.assertActivePhoneticSession(idSesion);
+    return this.familyPhoneticCaptureStore.claim(idSesion, familyUserId, captureId);
+  }
+
+  async guardarPaqueteCapturaFamiliar(idSesion: number, familyUserId: number, captureId: string, packetNumber: number, audioPcm: Buffer) {
+    try {
+      await this.assertActivePhoneticSession(idSesion);
+      return this.familyPhoneticCaptureStore.append(idSesion, familyUserId, captureId, packetNumber, audioPcm);
+    } catch (error) {
+      try {
+        this.familyPhoneticCaptureStore.discard(idSesion, captureId, familyUserId);
+      } catch {
+        // A request from another family account must not erase its in-memory audio.
+      }
+      throw error;
+    }
+  }
+
+  async finalizarCapturaFamiliar(idSesion: number, familyUserId: number, captureId: string) {
+    let completed: ReturnType<FamilyPhoneticCaptureStore['take']> | null = null;
+    let wav: Buffer | null = null;
+    try {
+      await this.assertActivePhoneticSession(idSesion);
+      completed = this.familyPhoneticCaptureStore.take(idSesion, familyUserId, captureId);
+      wav = pcm16MonoWav(completed.pcm);
+      completed.pcm.fill(0);
+      const result = await this.evaluarFonemaEnVivo(idSesion, {
+        audio_bytes: wav,
+        palabra_objetivo: completed.palabra_objetivo,
+        fonema_objetivo: completed.fonema_objetivo,
+      });
+      this.familyPhoneticCaptureStore.complete(idSesion, captureId, { ...result, estado: 'PENDIENTE_REVISION' });
+      return { estado: 'ENVIADA' as const, aviso: 'La muestra fue enviada al terapeuta para revisión.' };
+    } catch (error) {
+      try {
+        this.familyPhoneticCaptureStore.discard(idSesion, captureId, familyUserId);
+      } catch {
+        // Preserve the capture owner's data when a different account submits this request.
+      }
+      throw error;
+    } finally {
+      completed?.pcm.fill(0);
+      wav?.fill(0);
+    }
+  }
+
+  descartarCapturaFamiliar(idSesion: number, captureId: string, familyUserId?: number) {
+    return this.familyPhoneticCaptureStore.discard(idSesion, captureId, familyUserId);
+  }
+
+  descartarCapturasDeSesiones(sessionIds: number[]) {
+    const results = sessionIds.map((sessionId) => {
+      if (!Number.isInteger(sessionId) || sessionId <= 0) return 0;
+      for (const controller of this.activePhoneticInferences.get(sessionId) ?? []) controller.abort();
+      this.activePhoneticInferences.delete(sessionId);
+      return this.phoneticCaptureStore.discardSession(sessionId) + this.familyPhoneticCaptureStore.discardSession(sessionId);
+    });
+    return results.reduce((total, value) => total + value, 0);
+  }
+
+  async obtenerResultadoCapturaFamiliar(idSesion: number, captureId: string) {
+    await this.assertActivePhoneticSession(idSesion);
+    return this.familyPhoneticCaptureStore.result(idSesion, captureId);
+  }
+
   async evaluarFonemaEnVivo(
+    idSesion: number,
     payload?: {
       audio_base64?: string;
+      audio_bytes?: Buffer;
       palabra_esperada?: string;
+      palabra_objetivo?: string;
+      fonema_objetivo?: string;
     }
   ) {
-    const palabraEsperada = payload?.palabra_esperada?.trim() || 'carro';
-    let transcripcion = '';
+    const fail = (message: string, status = 400) => Object.assign(new Error(message), { status });
+    const palabraEsperada = (payload?.palabra_objetivo ?? payload?.palabra_esperada)?.trim();
+    let audioBase64 = payload?.audio_base64?.replace(/^data:audio\/[^;]+;base64,/, '').trim() ?? '';
+    let audioBytes: Buffer | null = null;
+    let uploadBytes: Uint8Array | null = null;
+    let formData: FormData | null = null;
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+    if (!Number.isInteger(idSesion) || idSesion <= 0) throw fail('La sesión indicada no es válida.');
+    const controller = new AbortController();
+    this.registerPhoneticInference(idSesion, controller);
+    try {
+      if (!palabraEsperada || palabraEsperada.length > 80) throw fail('Selecciona una palabra objetivo válida.');
+      const target = PHONEME_NAMING_TARGETS.find((item) => item.word.toLocaleLowerCase('es') === palabraEsperada.toLocaleLowerCase('es'));
+      if (!target || (payload?.fonema_objetivo && target.fonema_objetivo !== payload.fonema_objetivo)) {
+        throw fail('Selecciona una palabra y un fonema de los objetivos clínicos disponibles.');
+      }
+      if (!payload?.audio_bytes && (!audioBase64 || !/^[A-Za-z0-9+/]+={0,2}$/.test(audioBase64))) {
+        throw fail('Graba un fragmento de audio válido.');
+      }
+      if (audioBase64.length > 684_000) throw fail('El fragmento supera el tamaño permitido.', 413);
 
-    if (payload?.audio_base64 && settings.ML_SERVICE_ENABLED && settings.ML_SERVICE_URL) {
-      const commaIndex = payload.audio_base64.indexOf(',');
-      const audioBase64 = commaIndex !== -1 ? payload.audio_base64.slice(commaIndex + 1).trim() : payload.audio_base64.trim();
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 20_000);
+      const session = await pool.query(
+        'SELECT s.estado_sesion, r.id_paciente FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva WHERE s.id_sesion = $1 LIMIT 1;',
+        [idSesion],
+      );
+      if (!session.rows[0]) throw fail('Sesión no encontrada.', 404);
+      if (session.rows[0].estado_sesion !== 'EN_CURSO') throw fail('La evaluación fonológica solo está disponible durante una sesión en curso.', 409);
+      await assertConsentAccess(Number(session.rows[0].id_paciente));
+      if (!settings.ML_SERVICE_ENABLED || !settings.ML_SERVICE_URL) throw fail('El servicio de transcripción no está habilitado.', 503);
+
+      audioBytes = payload?.audio_bytes ? Buffer.from(payload.audio_bytes) : Buffer.from(audioBase64, 'base64');
+      if (!audioBytes.length) throw fail('Graba un fragmento de audio válido.');
+      if (audioBytes.length > 512_000) throw fail('El fragmento supera el tamaño permitido.', 413);
+      uploadBytes = Uint8Array.from(audioBytes);
+      formData = new FormData();
+      formData.append('file', new Blob([uploadBytes], { type: 'audio/wav' }), 'session-audio.wav');
+      formData.append('palabra_objetivo', palabraEsperada);
+      formData.append('fonema_objetivo', target.fonema_objetivo);
+
+      timeout = setTimeout(() => controller.abort(), 60_000);
+      let response: Response;
       try {
-        const resp = await fetch(`${settings.ML_SERVICE_URL.replace(/\/$/, '')}/predict/phonetics`, {
+        response = await fetch(settings.ML_SERVICE_URL.replace(/\/$/, '') + '/predict/phonetics', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ audio_base64: audioBase64 }),
+          body: formData,
           signal: controller.signal,
         });
-        if (resp.ok) {
-          const mlResult = (await resp.json()) as { transcripcion?: string };
-          if (typeof mlResult.transcripcion === 'string' && mlResult.transcripcion.trim()) {
-            transcripcion = mlResult.transcripcion.trim().toLowerCase();
-          }
-        } else {
-          console.error('[SesionesService] ML service error:', resp.status, await resp.text());
+      } catch {
+        throw fail('El servicio de transcripción no respondió. Intenta nuevamente más tarde.', 503);
+      }
+      if (!response.ok) throw fail('El modelo de transcripción no pudo procesar el audio.', response.status === 503 ? 503 : 502);
+
+      const modelResult = await response.json() as { transcripcion?: unknown; duracion_segundos?: unknown; motor_red_neuronal_activa?: unknown };
+      const transcription = typeof modelResult.transcripcion === 'string' ? modelResult.transcripcion.trim() : '';
+      const duration = typeof modelResult.duracion_segundos === 'number' ? modelResult.duracion_segundos : NaN;
+      if (modelResult.motor_red_neuronal_activa !== true || !transcription || transcription.length > 500 || duration < 2 || duration > 3) {
+        throw fail('No se obtuvo una muestra válida de 2 a 3 segundos para revisar. Graba nuevamente.', 422);
+      }
+
+      // Serialize persistence with consent updates and session closure. This
+      // prevents a concurrent revocation from passing between the last check
+      // and the transcript insert.
+      const client = await pool.connect();
+      let saved: { rows: Array<{ id_evaluacion: number }> };
+      try {
+        await client.query('BEGIN;');
+        const patient = await client.query(
+          `SELECT p.id_paciente
+           FROM public.pacientes p
+           JOIN public.reservas r ON r.id_paciente = p.id_paciente
+           JOIN public.sesiones s ON s.id_reserva = r.id_reserva
+           WHERE s.id_sesion = $1
+           FOR UPDATE OF p;`,
+          [idSesion],
+        );
+        if (!patient.rows[0]) throw fail('Sesión no encontrada.', 404);
+        const patientId = Number(patient.rows[0].id_paciente);
+
+        const currentSession = await client.query(
+          'SELECT estado_sesion FROM public.sesiones WHERE id_sesion = $1 FOR UPDATE;',
+          [idSesion],
+        );
+        if (currentSession.rows[0]?.estado_sesion !== 'EN_CURSO') {
+          throw fail('La sesión se cerró mientras se procesaba la muestra; no se guardó la transcripción.', 409);
         }
-      } catch (err) {
-        console.warn('[SesionesService] Fallback inferencia acústica fonema:', err);
+
+        const consent = await client.query(
+          `SELECT estado FROM public.consentimientos_ia
+           WHERE id_paciente = $1 AND tipo_consentimiento = 'EVALUACION_FONOLOGICA_IA'
+           ORDER BY fecha_concesion DESC, id_consentimiento DESC LIMIT 1;`,
+          [patientId],
+        );
+        if (consent.rows[0]?.estado !== 'CONCEDIDO') {
+          throw Object.assign(new Error('CONSENT_REQUIRED: El consentimiento fue revocado durante el análisis; no se guardó la transcripción.'), {
+            status: 403,
+            code: 'CONSENT_REQUIRED',
+          });
+        }
+
+        saved = await client.query(
+          "INSERT INTO public.evaluaciones_fonologicas (id_sesion, id_paciente, fonema_objetivo, palabra_objetivo, transcripcion_detectada, estado, origen_evaluacion) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', 'CLINICO') RETURNING id_evaluacion;",
+          [idSesion, patientId, target.fonema_objetivo, target.word, transcription],
+        );
+        await client.query('COMMIT;');
+      } catch (error) {
+        await client.query('ROLLBACK;');
+        throw error;
       } finally {
-        clearTimeout(timeout);
+        client.release();
       }
+      return {
+        id_evaluacion: Number(saved.rows[0].id_evaluacion),
+        estado: 'PENDIENTE_REVISION',
+        palabra_esperada: target.word,
+        transcripcion_tentativa: transcription,
+        duracion_segundos: duration,
+        aviso: 'Transcripción automática preliminar. No mide articulación ni establece un diagnóstico; requiere revisión del terapeuta.',
+      };
+    } finally {
+      if (timeout) clearTimeout(timeout);
+      this.releasePhoneticInference(idSesion, controller);
+      formData?.delete('file');
+      uploadBytes?.fill(0);
+      audioBytes?.fill(0);
+      payload?.audio_bytes?.fill(0);
+      audioBase64 = '';
+      if (payload?.audio_base64 !== undefined) payload.audio_base64 = undefined;
     }
-
-    if (!transcripcion) {
-      if (payload?.audio_base64) {
-        return {
-          estado: 'AUDIO_NO_AUDIBLE',
-          palabra_esperada: palabraEsperada,
-          transcripcion_acustica: '(sin emisión audible detectada)',
-          similitud_fonetica_porcentaje: 0,
-          diagnostico_biomedico: 'Emisión no audible o nivel de audio muy bajo',
-          fonema_afectado: null,
-          observacion_tecnica: `Test fonológico con IA (Wav2Vec 2.0): No se detectó emisión sonora clara para '${palabraEsperada}'. Se recomienda repetir la grabación acercando el micrófono.`,
-        };
-      }
-      const lower = palabraEsperada.toLowerCase();
-      if (lower.includes('carro')) transcripcion = 'calo';
-      else if (lower.includes('plato')) transcripcion = 'pato';
-      else if (lower.includes('rat')) transcripcion = 'laton';
-      else if (lower.includes('zapato')) transcripcion = 'tapato';
-      else transcripcion = lower;
-    }
-
-    const clinica = diagnosticarClinico(palabraEsperada, transcripcion);
-
-    return {
-      estado: 'EVALUACION_EXITOSA',
-      palabra_esperada: palabraEsperada,
-      transcripcion_acustica: transcripcion,
-      similitud_fonetica_porcentaje: clinica.similitud,
-      diagnostico_biomedico: clinica.diagnostico,
-      fonema_afectado: clinica.fonema_afectado,
-      observacion_tecnica: clinica.observacion,
-    };
   }
   async listar(filters: { pacienteId?: number; sesionId?: number; limit?: number; offset?: number }, user: AuthenticatedUser) {
     try {
@@ -289,13 +471,18 @@ export class SesionesService {
     await assertReservationAccess(user, id_reserva);
     try {
       const res = await pool.query(
-        `INSERT INTO sesiones (id_reserva, fecha_hora_inicio_real, estado_sesion)
-         VALUES ($1, NOW(), 'PROGRAMADA')
+        `INSERT INTO sesiones (id_reserva, estado_sesion)
+         SELECT $1, 'PROGRAMADA'
+         WHERE EXISTS (
+           SELECT 1 FROM reservas
+           WHERE id_reserva = $1 AND estado_reserva = 'CONFIRMADA'
+         )
+           AND NOT EXISTS (SELECT 1 FROM sesiones WHERE id_reserva = $1)
          RETURNING id_sesion;`,
         [id_reserva]
       );
       const id_sesion = res.rows[0]?.id_sesion;
-      if (!id_sesion) throw new Error('La base de datos no devolvió la sesión creada.');
+      if (!id_sesion) throw Object.assign(new Error('La cita debe estar confirmada y no tener una sesión registrada.'), { status: 409 });
       const sesion = await this.detalle(id_sesion, user);
       if (!sesion) throw Object.assign(new Error('No se pudo recuperar la sesión creada.'), { status: 404 });
       return sesion;
@@ -307,10 +494,21 @@ export class SesionesService {
   async iniciar(key: number, user: AuthenticatedUser): Promise<SessionData> {
     await assertSessionEditAccess(user, key);
     try {
-      await pool.query(
-        `UPDATE sesiones SET fecha_hora_inicio_real = NOW(), estado_sesion = 'EN_CURSO' WHERE id_sesion = $1;`,
+      const result = await pool.query(
+        `UPDATE sesiones s
+         SET fecha_hora_inicio_real = NOW(), estado_sesion = 'EN_CURSO'
+         FROM reservas r
+         WHERE s.id_sesion = $1
+           AND r.id_reserva = s.id_reserva
+           AND s.estado_sesion = 'PROGRAMADA'
+           AND r.estado_reserva = 'CONFIRMADA'
+           AND r.fecha_hora_inicio <= NOW()
+         RETURNING s.id_sesion;`,
         [key]
       );
+      if (!result.rows[0]) {
+        throw Object.assign(new Error('La sesión solo puede iniciarse cuando la cita esté confirmada y llegue su hora programada.'), { status: 409 });
+      }
     } catch (err) {
       throw err;
     }
@@ -321,14 +519,30 @@ export class SesionesService {
 
   async cerrar(key: number, asistencia: 'ASISTIO' | 'NO_ASISTIO', user: AuthenticatedUser): Promise<SessionData> {
     await assertSessionEditAccess(user, key);
+    const client = await pool.connect();
     try {
-      await pool.query(
-        `UPDATE sesiones SET fecha_hora_fin_real = NOW(), estado_sesion = 'FINALIZADA', asistencia = $1 WHERE id_sesion = $2;`,
+      await client.query('BEGIN;');
+      const result = await client.query(
+        `UPDATE sesiones SET fecha_hora_fin_real = NOW(), estado_sesion = 'FINALIZADA', asistencia = $1
+         WHERE id_sesion = $2 AND estado_sesion = 'EN_CURSO'
+         RETURNING id_reserva;`,
         [asistencia === 'ASISTIO', key]
       );
+      if (!result.rows[0]) {
+        throw Object.assign(new Error('Solo se puede cerrar una sesión que esté en curso.'), { status: 409 });
+      }
+      await client.query(
+        "UPDATE reservas SET estado_reserva = 'COMPLETADA' WHERE id_reserva = $1 AND estado_reserva = 'CONFIRMADA';",
+        [result.rows[0].id_reserva],
+      );
+      await client.query('COMMIT;');
     } catch (err) {
+      await client.query('ROLLBACK;');
       throw err;
+    } finally {
+      client.release();
     }
+    this.descartarCapturasDeSesiones([key]);
     const sesion = await this.detalle(key, user);
     if (!sesion) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
     return { ...sesion, estado_sesion: 'FINALIZADA', asistencia };
@@ -337,8 +551,13 @@ export class SesionesService {
   async reporte(key: number): Promise<ReporteItem | null> {
     try {
       const res = await pool.query(
-        `SELECT id_reporte_sesion, id_sesion, fecha_creacion, observaciones_iniciales, objetivos_trabajados, nivel_ayuda, proximos_pasos
-         FROM reportes_sesion WHERE id_sesion = $1 LIMIT 1;`,
+        `SELECT rep.id_reporte_sesion, rep.id_sesion, rep.fecha_creacion,
+                rep.observaciones_iniciales, rep.objetivos_trabajados, rep.nivel_ayuda, rep.proximos_pasos,
+                rep.estado_reporte, rep.id_usuario_firma, rep.fecha_firma,
+                NULLIF(BTRIM(COALESCE(firma.nombres, '') || ' ' || COALESCE(firma.apellidos, '')), '') AS firmado_por
+         FROM reportes_sesion rep
+         LEFT JOIN usuarios firma ON firma.id_usuario = rep.id_usuario_firma
+         WHERE rep.id_sesion = $1 LIMIT 1;`,
         [key]
       );
       if (res.rows.length > 0) {
@@ -351,6 +570,10 @@ export class SesionesService {
           objetivos_trabajados: r.objetivos_trabajados ?? null,
           nivel_ayuda: r.nivel_ayuda ?? null,
           proximos_pasos: r.proximos_pasos ?? null,
+          estado_reporte: r.estado_reporte,
+          id_usuario_firma: r.id_usuario_firma ?? null,
+          fecha_firma: r.fecha_firma ? new Date(r.fecha_firma).toISOString() : null,
+          firmado_por: r.firmado_por ?? null,
         };
       }
     } catch (err) {
@@ -361,60 +584,131 @@ export class SesionesService {
 
   async guardarReporte(key: number, data: any, user: AuthenticatedUser): Promise<ReporteItem> {
     await assertSessionEditAccess(user, key);
+    const allowedHelpLevels = ['Sin ayuda', 'Ayuda mínima', 'Ayuda moderada', 'Ayuda alta', 'Ayuda total'];
+    const client = await pool.connect();
     try {
-      const check = await pool.query(`SELECT id_reporte_sesion FROM reportes_sesion WHERE id_sesion = $1;`, [key]);
-      if (check.rows.length > 0) {
-        const res = await pool.query(
-          `UPDATE reportes_sesion 
-           SET observaciones_iniciales = $1, objetivos_trabajados = $2, nivel_ayuda = $3, proximos_pasos = $4
-           WHERE id_sesion = $5
-           RETURNING *;`,
-          [data.observaciones_iniciales, data.objetivos_trabajados, data.nivel_ayuda, data.proximos_pasos, key]
-        );
-        const r = res.rows[0];
-        return {
-          id_reporte_sesion: r.id_reporte_sesion,
-          id_sesion: r.id_sesion,
-          fecha_creacion: new Date(r.fecha_creacion).toISOString(),
-          observaciones_iniciales: r.observaciones_iniciales,
-          objetivos_trabajados: r.objetivos_trabajados,
-          nivel_ayuda: r.nivel_ayuda,
-          proximos_pasos: r.proximos_pasos,
-        };
-      } else {
-        const res = await pool.query(
-          `INSERT INTO reportes_sesion (id_sesion, observaciones_iniciales, objetivos_trabajados, nivel_ayuda, proximos_pasos, fecha_creacion)
-           VALUES ($1, $2, $3, $4, $5, NOW())
-           RETURNING *;`,
-          [key, data.observaciones_iniciales, data.objetivos_trabajados, data.nivel_ayuda, data.proximos_pasos]
-        );
-        const r = res.rows[0];
-        return {
-          id_reporte_sesion: r.id_reporte_sesion,
-          id_sesion: r.id_sesion,
-          fecha_creacion: new Date(r.fecha_creacion).toISOString(),
-          observaciones_iniciales: r.observaciones_iniciales,
-          objetivos_trabajados: r.objetivos_trabajados,
-          nivel_ayuda: r.nivel_ayuda,
-          proximos_pasos: r.proximos_pasos,
-        };
+      await client.query('BEGIN;');
+      const existingResult = await client.query(
+        `SELECT estado_reporte, nivel_ayuda
+         FROM reportes_sesion
+         WHERE id_sesion = $1
+         FOR UPDATE;`,
+        [key],
+      );
+      const existing = existingResult.rows[0];
+      if (existing?.estado_reporte === 'FIRMADO') {
+        throw Object.assign(new Error('El reporte ya está firmado y no se puede modificar.'), { status: 409 });
       }
+
+      const level = data.nivel_ayuda;
+      const isBlank = level === null || level === '';
+      const isAllowed = isBlank || allowedHelpLevels.includes(level);
+      const isUnchangedLegacy = Boolean(existing && level === existing.nivel_ayuda);
+      if (!isAllowed && !isUnchangedLegacy) {
+        throw Object.assign(new Error('Selecciona uno de los cinco niveles de ayuda disponibles.'), { status: 400 });
+      }
+
+      const res = await client.query(
+        `INSERT INTO reportes_sesion
+           (id_sesion, observaciones_iniciales, objetivos_trabajados, nivel_ayuda, proximos_pasos, fecha_creacion, estado_reporte)
+         VALUES ($1, $2, $3, $4, $5, NOW(), 'BORRADOR')
+         ON CONFLICT (id_sesion) DO UPDATE
+           SET observaciones_iniciales = EXCLUDED.observaciones_iniciales,
+               objetivos_trabajados = EXCLUDED.objetivos_trabajados,
+               nivel_ayuda = EXCLUDED.nivel_ayuda,
+               proximos_pasos = EXCLUDED.proximos_pasos
+         WHERE reportes_sesion.estado_reporte = 'BORRADOR'
+           AND (
+             EXCLUDED.nivel_ayuda IS NULL
+             OR BTRIM(EXCLUDED.nivel_ayuda) = ''
+             OR EXCLUDED.nivel_ayuda = ANY($6::text[])
+             OR EXCLUDED.nivel_ayuda = reportes_sesion.nivel_ayuda
+           )
+         RETURNING *;`,
+        [key, data.observaciones_iniciales, data.objetivos_trabajados, level, data.proximos_pasos, allowedHelpLevels],
+      );
+      const r = res.rows[0];
+      if (!r) throw Object.assign(new Error('El reporte ya está firmado o el nivel de ayuda dejó de ser válido.'), { status: 409 });
+      await client.query('COMMIT;');
+      return {
+        id_reporte_sesion: r.id_reporte_sesion,
+        id_sesion: r.id_sesion,
+        fecha_creacion: new Date(r.fecha_creacion).toISOString(),
+        observaciones_iniciales: r.observaciones_iniciales,
+        objetivos_trabajados: r.objetivos_trabajados,
+        nivel_ayuda: r.nivel_ayuda,
+        proximos_pasos: r.proximos_pasos,
+        estado_reporte: r.estado_reporte,
+        id_usuario_firma: r.id_usuario_firma ?? null,
+        fecha_firma: r.fecha_firma ? new Date(r.fecha_firma).toISOString() : null,
+        firmado_por: null,
+      };
     } catch (err) {
+      await client.query('ROLLBACK;');
       throw err;
+    } finally {
+      client.release();
     }
   }
 
-  async plan(key: number) {
+  async firmarReporte(key: number, user: AuthenticatedUser): Promise<ReporteItem> {
+    await assertSessionEditAccess(user, key);
+    const result = await pool.query(
+      `UPDATE reportes_sesion
+       SET estado_reporte = 'FIRMADO', id_usuario_firma = $2, fecha_firma = NOW()
+       WHERE id_sesion = $1 AND estado_reporte = 'BORRADOR'
+         AND NULLIF(BTRIM(observaciones_iniciales), '') IS NOT NULL
+         AND NULLIF(BTRIM(objetivos_trabajados), '') IS NOT NULL
+         AND nivel_ayuda = ANY(ARRAY['Sin ayuda', 'Ayuda mínima', 'Ayuda moderada', 'Ayuda alta', 'Ayuda total']::text[])
+         AND NULLIF(BTRIM(proximos_pasos), '') IS NOT NULL
+       RETURNING *;`,
+      [key, user.id_usuario],
+    );
+    if (!result.rows[0]) {
+      const existing = await this.reporte(key);
+      if (!existing) throw Object.assign(new Error('Guarda el reporte antes de firmarlo.'), { status: 404 });
+      if (existing.estado_reporte === 'FIRMADO') throw Object.assign(new Error('El reporte ya está firmado.'), { status: 409 });
+      throw Object.assign(new Error('Completa los cuatro campos del reporte antes de firmarlo.'), { status: 400 });
+    }
+    const row = result.rows[0];
+    return {
+      id_reporte_sesion: row.id_reporte_sesion,
+      id_sesion: row.id_sesion,
+      fecha_creacion: new Date(row.fecha_creacion).toISOString(),
+      observaciones_iniciales: row.observaciones_iniciales,
+      objetivos_trabajados: row.objetivos_trabajados,
+      nivel_ayuda: row.nivel_ayuda,
+      proximos_pasos: row.proximos_pasos,
+      estado_reporte: row.estado_reporte,
+      id_usuario_firma: row.id_usuario_firma,
+      fecha_firma: new Date(row.fecha_firma).toISOString(),
+      firmado_por: (user.nombres + ' ' + user.apellidos).trim(),
+    };
+  }
+
+  async plan(key: number, user?: AuthenticatedUser) {
     try {
       const res = await pool.query(
         `SELECT t.*, CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) as paciente_nombre,
-                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre
+                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre,
+                prediction.sesiones_estimadas AS sesiones_modelo_estimadas,
+                prediction.rango_min AS modelo_rango_min,
+                prediction.rango_max AS modelo_rango_max,
+                prediction.confianza AS confianza_modelo,
+                prediction.estado_confirmacion AS estado_prediccion,
+                (SELECT COUNT(*)::integer
+                 FROM sesiones attended_session
+                 JOIN reservas attended_reservation ON attended_reservation.id_reserva = attended_session.id_reserva
+                 WHERE attended_reservation.id_tratamiento = t.id_tratamiento
+                   AND attended_session.estado_sesion = 'FINALIZADA'
+                   AND attended_session.asistencia = 'ASISTIO') AS sesiones_realizadas
          FROM tratamientos t
          JOIN sesiones s ON s.id_sesion = $1
          JOIN reservas r ON s.id_reserva = r.id_reserva
          LEFT JOIN pacientes p ON r.id_paciente = p.id_paciente
          LEFT JOIN terapeutas ter ON r.id_terapeuta = ter.id_terapeuta
          LEFT JOIN usuarios u ON ter.id_usuario = u.id_usuario
+         LEFT JOIN public.predicciones_tratamiento prediction ON prediction.id_prediccion = t.id_prediccion
          WHERE t.id_sesion_origen = $1 OR t.id_tratamiento = r.id_tratamiento
          ORDER BY CASE WHEN t.id_sesion_origen = $1 THEN 0 ELSE 1 END, t.id_tratamiento DESC
          LIMIT 1;`,
@@ -427,10 +721,21 @@ export class SesionesService {
           id_expediente: r.id_expediente,
           id_paciente: r.id_paciente,
           id_terapeuta: r.id_terapeuta,
+          id_prediccion: r.id_prediccion == null ? null : Number(r.id_prediccion),
           nombre_tratamiento: r.nombre_tratamiento,
           descripcion: r.descripcion,
           area: r.area ?? null,
           mundos_asignados: r.mundos_asignados ?? [],
+          frecuencia_semanal: r.frecuencia_semanal == null ? null : Number(r.frecuencia_semanal),
+          fonemas_priorizados: Array.isArray(r.fonemas_priorizados) ? r.fonemas_priorizados : [],
+          sesiones_realizadas: Number(r.sesiones_realizadas ?? 0),
+          ...(user?.rol === 'TERAPEUTA' || user?.rol === 'ADMIN' ? {
+            sesiones_modelo_estimadas: r.sesiones_modelo_estimadas == null ? null : Number(r.sesiones_modelo_estimadas),
+            modelo_rango_min: r.modelo_rango_min == null ? null : Number(r.modelo_rango_min),
+            modelo_rango_max: r.modelo_rango_max == null ? null : Number(r.modelo_rango_max),
+            confianza_modelo: r.confianza_modelo == null ? null : Number(r.confianza_modelo),
+            estado_prediccion: r.estado_prediccion ?? null,
+          } : {}),
           sesiones_recomendadas: r.sesiones_recomendadas,
           estado_tratamiento: r.estado_tratamiento || 'ACTIVO',
           paciente_nombre: r.paciente_nombre?.trim() || 'Paciente',
@@ -447,9 +752,11 @@ export class SesionesService {
 
   async publicarPlan(key: number, data: any, user: AuthenticatedUser) {
     await assertSessionEditAccess(user, key);
+    const client = await pool.connect();
     try {
-      const ses = await pool.query(
-        `SELECT r.id_paciente, r.id_terapeuta,
+      await client.query('BEGIN;');
+      const ses = await client.query(
+        `SELECT s.estado_sesion, s.asistencia, r.id_paciente, r.id_terapeuta,
                 CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) AS paciente_nombre,
                 CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) AS terapeuta_nombre
          FROM reservas r
@@ -457,30 +764,97 @@ export class SesionesService {
          LEFT JOIN pacientes p ON p.id_paciente = r.id_paciente
          LEFT JOIN terapeutas ter ON ter.id_terapeuta = r.id_terapeuta
          LEFT JOIN usuarios u ON u.id_usuario = ter.id_usuario
-         WHERE s.id_sesion = $1;`,
+         WHERE s.id_sesion = $1
+         FOR UPDATE OF s;`,
         [key],
       );
       const p = ses.rows[0];
       if (!p) throw Object.assign(new Error('No se encontró la sesión para crear el plan.'), { status: 404 });
+      if (!['EN_CURSO', 'FINALIZADA'].includes(p.estado_sesion) || p.asistencia === 'NO_ASISTIO') {
+        throw Object.assign(new Error('Solo se puede publicar un plan para una sesión atendida.'), { status: 409 });
+      }
+      const report = await client.query(
+        `SELECT observaciones_iniciales, objetivos_trabajados, proximos_pasos
+         FROM reportes_sesion WHERE id_sesion = $1 FOR UPDATE;`,
+        [key],
+      );
+      const reportRow = report.rows[0];
+      if (!reportRow || ![
+        reportRow.observaciones_iniciales,
+        reportRow.objetivos_trabajados,
+        reportRow.proximos_pasos,
+      ].some((value) => typeof value === 'string' && value.trim())) {
+        throw Object.assign(new Error('Guarda observaciones, objetivos o próximos pasos en el informe antes de publicar el plan.'), { status: 409 });
+      }
+      const existingPlan = await client.query(
+        'SELECT 1 FROM tratamientos WHERE id_sesion_origen = $1 LIMIT 1 FOR UPDATE;',
+        [key],
+      );
+      if (existingPlan.rows.length) {
+        throw Object.assign(new Error('Esta sesión ya tiene un plan asociado.'), { status: 409 });
+      }
+
+      let prediction: any = null;
+      if (data.id_prediccion !== undefined) {
+        const predictionResult = await client.query(
+          `SELECT id_prediccion, id_sesion, id_paciente, id_terapeuta, sesiones_estimadas, estado_confirmacion
+           FROM public.predicciones_tratamiento
+           WHERE id_prediccion = $1
+           FOR UPDATE;`,
+          [data.id_prediccion],
+        );
+        prediction = predictionResult.rows[0];
+        if (!prediction || Number(prediction.id_sesion) !== key || Number(prediction.id_paciente) !== Number(p.id_paciente)) {
+          throw Object.assign(new Error('La predicción no corresponde a esta sesión y paciente.'), { status: 409 });
+        }
+        if (prediction.id_terapeuta != null && Number(prediction.id_terapeuta) !== Number(p.id_terapeuta)) {
+          throw Object.assign(new Error('La predicción pertenece a otro terapeuta.'), { status: 403 });
+        }
+        if (prediction.estado_confirmacion !== 'SUGERIDO') {
+          throw Object.assign(new Error('La sugerencia ya fue resuelta.'), { status: 409 });
+        }
+        const suggestedSessions = Math.round(Number(prediction.sesiones_estimadas));
+        if (data.decision_prediccion === 'CONFIRMADO_CLINICO' && data.sesiones_recomendadas !== suggestedSessions) {
+          throw Object.assign(new Error('El plan confirmado debe conservar la cantidad sugerida por el modelo.'), { status: 400 });
+        }
+        if (data.decision_prediccion === 'MODIFICADO_MANUAL' && data.sesiones_recomendadas === suggestedSessions) {
+          throw Object.assign(new Error('Selecciona “confirmado” si mantienes la cantidad sugerida.'), { status: 400 });
+        }
+        if (data.decision_prediccion === 'MODIFICADO_MANUAL' && !data.observaciones_prediccion?.trim()) {
+          throw Object.assign(new Error('Explica el ajuste manual de la predicción.'), { status: 400 });
+        }
+      }
       const pacienteId = p.id_paciente;
       const terapeutaId = p.id_terapeuta;
 
       // Ensure expediente exists
-      let expRes = await pool.query(`SELECT id_expediente FROM expedientes WHERE id_paciente = $1;`, [pacienteId]);
+      let expRes = await client.query(`SELECT id_expediente FROM expedientes WHERE id_paciente = $1 FOR UPDATE;`, [pacienteId]);
       let idExpediente = expRes.rows[0]?.id_expediente;
       if (!idExpediente) {
-        const newExp = await pool.query(`INSERT INTO expedientes (id_paciente, fecha_apertura) VALUES ($1, NOW()) RETURNING id_expediente;`, [pacienteId]);
+        const newExp = await client.query(`INSERT INTO expedientes (id_paciente, fecha_apertura) VALUES ($1, NOW()) RETURNING id_expediente;`, [pacienteId]);
         idExpediente = newExp.rows[0]?.id_expediente;
       }
       if (!idExpediente) throw new Error('No se pudo crear o recuperar el expediente del paciente.');
 
-      const res = await pool.query(
-        `INSERT INTO tratamientos (id_expediente, id_terapeuta, nombre_tratamiento, descripcion, area, mundos_asignados, sesiones_recomendadas, estado_tratamiento, fecha_inicio, id_sesion_origen)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 'ACTIVO', CURRENT_DATE, $8)
+      const res = await client.query(
+        `INSERT INTO tratamientos (id_expediente, id_terapeuta, nombre_tratamiento, descripcion, area, mundos_asignados, sesiones_recomendadas, estado_tratamiento, fecha_inicio, id_sesion_origen, id_prediccion, frecuencia_semanal, fonemas_priorizados)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 'ACTIVO', CURRENT_DATE, $8, $9, $10, $11)
          RETURNING *;`,
-        [idExpediente, terapeutaId, data.nombre_tratamiento, data.descripcion ?? null, data.area, data.mundos_asignados, data.sesiones_recomendadas, key]
+        [idExpediente, terapeutaId, data.nombre_tratamiento, data.descripcion ?? null, data.area, data.mundos_asignados, data.sesiones_recomendadas, key, data.id_prediccion ?? null, data.frecuencia_semanal, data.fonemas_priorizados]
       );
       const row = res.rows[0];
+      if (prediction) {
+        const confirmation = data.decision_prediccion;
+        await client.query(
+          `UPDATE public.predicciones_tratamiento
+           SET estado_confirmacion = $2,
+               sesiones_confirmadas = CASE WHEN $2 = 'DESCARTADO' THEN NULL ELSE $3 END,
+               observaciones_terapeuta = $4
+           WHERE id_prediccion = $1 AND estado_confirmacion = 'SUGERIDO';`,
+          [data.id_prediccion, confirmation, data.sesiones_recomendadas, data.observaciones_prediccion ?? null],
+        );
+      }
+      await client.query('COMMIT;');
       return {
         id_tratamiento: row.id_tratamiento,
         id_expediente: row.id_expediente,
@@ -489,7 +863,10 @@ export class SesionesService {
         nombre_tratamiento: row.nombre_tratamiento,
         descripcion: row.descripcion,
         area: row.area,
+        id_prediccion: row.id_prediccion == null ? null : Number(row.id_prediccion),
         mundos_asignados: row.mundos_asignados,
+        frecuencia_semanal: Number(row.frecuencia_semanal),
+        fonemas_priorizados: Array.isArray(row.fonemas_priorizados) ? row.fonemas_priorizados : [],
         sesiones_recomendadas: row.sesiones_recomendadas,
         estado_tratamiento: row.estado_tratamiento,
         paciente_nombre: p.paciente_nombre?.trim() || 'Paciente',
@@ -498,7 +875,10 @@ export class SesionesService {
         fecha_fin: null,
       };
     } catch (err) {
+      await client.query('ROLLBACK;').catch(() => undefined);
       throw err;
+    } finally {
+      client.release();
     }
   }
 
@@ -568,6 +948,13 @@ export class SesionesService {
     if (typeof inicio !== 'number' || typeof fin !== 'number' || !Number.isFinite(inicio) || !Number.isFinite(fin) || inicio < 0 || fin <= inicio || fin - inicio < 0.5 || fin - inicio > 30) {
       throw fail('El fragmento debe durar entre 0,5 y 30 segundos y tener tiempos válidos.');
     }
+    const session = await pool.query(
+      'SELECT s.estado_sesion, r.id_paciente FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva WHERE s.id_sesion = $1 LIMIT 1;',
+      [idSesion],
+    );
+    if (!session.rows[0]) throw fail('Sesión no encontrada.', 404);
+    if (session.rows[0].estado_sesion !== 'EN_CURSO') throw fail('El análisis solo está disponible durante una sesión en curso.', 409);
+    await assertConsentAccess(Number(session.rows[0].id_paciente));
     if (!settings.ML_SERVICE_ENABLED || !settings.ML_SERVICE_URL) throw fail('El servicio de análisis de audio no está habilitado.', 503);
 
     const controller = new AbortController();
@@ -690,13 +1077,5 @@ export class SesionesService {
 
 export const sesionesService = new SesionesService();
 
-export function isMeetingUrl(value: unknown): value is string {
-  if (typeof value !== 'string') return false;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
+export { isMeetingUrl };
 

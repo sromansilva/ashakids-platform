@@ -2,6 +2,7 @@ import { pool } from '../../../core/database.js';
 import { MeetService } from '../../../infrastructure/meet/meet.service.js';
 import type { AuthenticatedUser } from '../../../core/middleware/auth.middleware.js';
 import { appendReservationScope } from '../../../core/security/clinical-access.js';
+import { isGoogleMeetUrl as isMeetingUrl } from '../../../core/security/google-meet-url.js';
 
 export class AgendaService {
   async getCitas(filters: { fecha?: string; terapeutaId?: number }, user: AuthenticatedUser) {
@@ -58,13 +59,5 @@ export class AgendaService {
 
 export const agendaService = new AgendaService();
 
-export function isMeetingUrl(value: unknown): value is string {
-  if (typeof value !== 'string') return false;
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === 'https:';
-  } catch {
-    return false;
-  }
-}
+export { isMeetingUrl };
 

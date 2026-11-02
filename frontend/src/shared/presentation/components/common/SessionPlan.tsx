@@ -3,7 +3,8 @@ import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
-import type { PlanData, Session, WorldArea } from '@/modules/clinica/domain/clinical';
+import type { PhonemeTarget, PlanData, Session, WorldArea } from '@/modules/clinica/domain/clinical';
+import { clinicaService, type TreatmentPredictionResponse } from '@/modules/clinica/infrastructure/clinicalService';
 import { parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 import {
   emptyPlanNarrative,
@@ -11,19 +12,13 @@ import {
   followUpPlanDraftFromSavedResults,
   introPlanDraftFromReport,
   parsePlanNarrative,
-  planNarrativeLabels,
   type PlanNarrativeDraft,
 } from '@/shared/application/planDraft';
 import { Btn } from './Btn';
+import { PlanClinicalFocus, phonemeTargets } from './PlanClinicalFocus';
+import { SavedPlanSummary } from './SavedPlanSummary';
+import { areaLabels } from './planLabels';
 import { RemoteFeedback } from './RemoteFeedback';
-
-export const areaLabels: Record<WorldArea, string> = {
-  FLUIDEZ: 'Fluidez y ritmo',
-  HABLA: 'Habla y articulación',
-  LENGUAJE: 'Comprensión y expresión',
-  VOZ: 'Voz',
-  OROFACIAL: 'Motricidad orofacial',
-};
 
 type PlanFormState = Omit<PlanData, 'area'> & { area: WorldArea | '' };
 const emptyPlanForm = (): PlanFormState => ({
@@ -32,6 +27,8 @@ const emptyPlanForm = (): PlanFormState => ({
   area: '',
   mundos_asignados: [],
   sesiones_recomendadas: 0,
+  frecuencia_semanal: 0,
+  fonemas_priorizados: [],
 });
 
 const planSteps = ['Datos del plan', 'Línea base', 'Intervención', 'Recomendaciones'];
@@ -65,12 +62,26 @@ export function SessionPlan({
     (signal) => sessionsService.articulationHistory(session.id_sesion, signal),
     !isIntro && Number.isInteger(patientId) && patientId > 0,
   );
+  const phoneticEvaluationsQuery = useRemote(
+    ['phonological-evaluations', patientId],
+    (signal) => clinicaService.phonologicalEvaluations(patientId, signal),
+    Number.isInteger(patientId) && patientId > 0,
+  );
+  const confirmedSessionPhonemes = Array.from(new Set(
+    (phoneticEvaluationsQuery.data ?? [])
+      .filter((evaluation) => evaluation.id_sesion === session.id_sesion && evaluation.estado === 'CONFIRMADO_TERAPEUTA')
+      .map((evaluation) => evaluation.fonema_objetivo)
+      .filter((phoneme): phoneme is PhonemeTarget => phonemeTargets.includes(phoneme as PhonemeTarget)),
+  ));
   const savedResults = parseArticulationHistory(historyQuery.data ?? []);
   const [editing, setEditing] = useState(false);
   const [step, setStep] = useState(0);
   const [stepError, setStepError] = useState('');
   const [form, setForm] = useState<PlanFormState>(emptyPlanForm);
   const [narrative, setNarrative] = useState<PlanNarrativeDraft>(emptyPlanNarrative);
+  const [prediction, setPrediction] = useState<TreatmentPredictionResponse | null>(null);
+  const [predictionApplied, setPredictionApplied] = useState(false);
+  const [predictionNote, setPredictionNote] = useState('');
   const save = useWrite(
     (plan: PlanData) => sessionsService.publishPlan(session.id_sesion, plan),
     () => setEditing(false),
@@ -113,16 +124,31 @@ export function SessionPlan({
     const source = isIntro && report
       ? introPlanDraftFromReport(report)
       : followUpPlanDraftFromSavedResults(savedResults);
-    setForm(emptyPlanForm());
+    setForm({ ...emptyPlanForm(), fonemas_priorizados: confirmedSessionPhonemes });
     setNarrative(source);
+    setPrediction(null);
+    setPredictionApplied(false);
+    setPredictionNote('');
     setStep(0);
     setStepError('');
     setEditing(true);
   };
 
+  const predictionDecision = prediction
+    ? !predictionApplied
+      ? 'DESCARTADO'
+      : form.sesiones_recomendadas === Math.round(prediction.sesiones_estimadas)
+        ? 'CONFIRMADO_CLINICO'
+        : 'MODIFICADO_MANUAL'
+    : undefined;
+  const requiresPredictionNote = predictionDecision === 'MODIFICADO_MANUAL';
   const readyToPublish = Boolean(
     form.nombre_tratamiento.trim() && form.area && Number.isInteger(form.sesiones_recomendadas) && form.sesiones_recomendadas >= 1 &&
-    form.sesiones_recomendadas <= 31 && form.mundos_asignados.length > 0 &&
+    form.sesiones_recomendadas <= 31 && Number.isInteger(form.frecuencia_semanal) && form.frecuencia_semanal >= 1 && form.frecuencia_semanal <= 3 &&
+    form.mundos_asignados.length > 0 && new Set(form.fonemas_priorizados).size === form.fonemas_priorizados.length &&
+    (!['HABLA', 'VOZ'].includes(form.area) || form.fonemas_priorizados.length > 0) &&
+    (form.fonemas_priorizados.length === 0 || form.mundos_asignados.includes('LENGUAJE')) &&
+    (!requiresPredictionNote || predictionNote.trim()) &&
     narrative.objectives.trim() && narrative.activities.trim()
   );
 
@@ -133,7 +159,16 @@ export function SessionPlan({
       if (!Number.isInteger(form.sesiones_recomendadas) || form.sesiones_recomendadas < 1 || form.sesiones_recomendadas > 31) {
         return setStepError('Indica un número entero entre 1 y 31 sesiones recomendadas.');
       }
+      if (!Number.isInteger(form.frecuencia_semanal) || form.frecuencia_semanal < 1 || form.frecuencia_semanal > 3) {
+        return setStepError('Indica una frecuencia semanal entre 1 y 3 sesiones.');
+      }
       if (form.mundos_asignados.length === 0) return setStepError('Selecciona al menos un mundo para practicar.');
+      if (['HABLA', 'VOZ'].includes(form.area) && form.fonemas_priorizados.length === 0) {
+        return setStepError('Selecciona los fonemas revisados por el terapeuta para este plan.');
+      }
+      if (form.fonemas_priorizados.length > 0 && !form.mundos_asignados.includes('LENGUAJE')) {
+        return setStepError('Incluye La Isla de las Palabras para activar la práctica dirigida a los fonemas seleccionados.');
+      }
     }
     if (step === 2 && (!narrative.objectives.trim() || !narrative.activities.trim())) {
       return setStepError('Completa los objetivos y las actividades propuestas para continuar.');
@@ -161,29 +196,7 @@ export function SessionPlan({
       <RemoteFeedback pending={query.isPending} error={query.error || reportQuery.error || save.error} retry={() => void query.refetch()} />
 
       {query.data && !editing && (
-        <section className="space-y-3 rounded-2xl border border-[#E8E5F4] bg-[#FBFAFE] p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="font-extrabold text-[#1C1135]">{query.data.nombre_tratamiento} · {query.data.estado_tratamiento}</h3>
-          </div>
-          <div className="grid gap-2 text-sm text-[#4B4264] sm:grid-cols-2">
-            <p><strong>Nombre:</strong> {query.data.nombre_tratamiento}</p>
-            <p><strong>Área:</strong> {query.data.area && areaLabels[query.data.area]}</p>
-            <p><strong>Sesiones:</strong> {query.data.sesiones_recomendadas}</p>
-            <p><strong>Mundos:</strong> {query.data.mundos_asignados?.map((world) => areaLabels[world]).join(', ')}</p>
-          </div>
-          <dl className="grid gap-3 border-t border-[#E8E5F4] pt-3 sm:grid-cols-2">
-            {Object.entries(planNarrativeLabels).map(([key, label]) => {
-              const value = savedNarrative[key as keyof PlanNarrativeDraft];
-              return value.trim() ? (
-                <div key={key}>
-                  <dt className="text-xs font-bold text-[#6B46FE]">{label}</dt>
-                  <dd className="mt-1 whitespace-pre-wrap text-sm text-[#4B4264]">{value}</dd>
-                </div>
-              ) : null;
-            })}
-          </dl>
-          <p className="text-xs text-[#8C82A8]">Autor: {query.data.terapeuta_nombre} · Mes: {query.data.fecha_inicio} · Sesión #{query.data.id_sesion_origen}</p>
-        </section>
+        <SavedPlanSummary plan={query.data} narrative={savedNarrative} showPredictionDetails={role === 'TERAPEUTA' || role === 'ADMIN'} />
       )}
 
       {query.isSuccess && !editing && !canPublish && !query.data && (
@@ -226,6 +239,11 @@ export function SessionPlan({
               ...form,
               area: form.area,
               descripcion: encodePlanNarrative(narrative),
+              ...(prediction ? {
+                id_prediccion: prediction.id_prediccion,
+                decision_prediccion: predictionDecision,
+                ...(requiresPredictionNote ? { observaciones_prediccion: predictionNote.trim() } : {}),
+              } : {}),
             };
             void save.submit(plan);
           }}
@@ -282,9 +300,28 @@ export function SessionPlan({
                   Sesiones recomendadas por el terapeuta
                   <input required type="number" min={1} max={31} step={1} placeholder="1 a 31" className={`${inputClass} mt-1.5`} value={form.sesiones_recomendadas || ''} onChange={(event) => setForm((current) => ({ ...current, sesiones_recomendadas: Number(event.target.value) }))} />
                 </label>
+                <PlanClinicalFocus
+                  sessionId={session.id_sesion}
+                  patientId={patientId}
+                  confirmedPhonemes={confirmedSessionPhonemes}
+                  fonemasPrioritarios={form.fonemas_priorizados}
+                  frecuenciaSemanal={form.frecuencia_semanal}
+                  nivelAyuda={report?.nivel_ayuda}
+                  prediction={prediction}
+                  predictorEnabled={isIntro}
+                  onPhonemesChange={(phonemes) => setForm((current) => ({ ...current, fonemas_priorizados: phonemes }))}
+                  onFrequencyChange={(frequency) => setForm((current) => ({ ...current, frecuencia_semanal: frequency }))}
+                  onPredictionLoaded={(value) => { setPrediction(value); setPredictionApplied(false); }}
+                  onPredictionDismissed={() => { setPrediction(null); setPredictionApplied(false); setPredictionNote(''); }}
+                  onApplySessions={(sessions) => {
+                    setForm((current) => ({ ...current, sesiones_recomendadas: sessions }));
+                    setPredictionApplied(true);
+                  }}
+                />
               </div>
               <fieldset className="space-y-2 rounded-2xl border border-[#E8E5F4] p-4">
                 <legend className="px-1 text-sm font-bold text-[#1C1135]">Mundos para practicar · elige al menos uno *</legend>
+                <p className="text-xs text-[#615274]">Si priorizas fonemas, incluye La Isla de las Palabras para habilitar palabras específicas en «Nombra el dibujo».</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {Object.entries(areaLabels).map(([key, label]) => (
                     <label key={key} className="flex cursor-pointer items-center gap-2.5 rounded-xl bg-[#F8F7FC] px-3 py-2.5 text-sm text-[#4B4264]">
@@ -349,7 +386,14 @@ export function SessionPlan({
                 El terapeuta revisa y completa cada campo antes de aprobar y publicar. Los resultados y la línea base sirven como contexto, no generan conclusiones clínicas automáticamente.
               </div>
               {!readyToPublish && (
-                <p className="text-xs font-semibold text-amber-800">Completa nombre, área, sesiones, al menos un mundo, objetivos y actividades antes de publicar.</p>
+                <p className="text-xs font-semibold text-amber-800">Completa nombre, área, sesiones, frecuencia, mundos y objetivos. En planes de habla o voz, selecciona fonemas revisados y asigna La Isla de las Palabras.</p>
+              )}
+              {requiresPredictionNote && (
+                <label className="block text-sm font-bold text-[#1C1135]">
+                  Motivo del ajuste manual de la sugerencia *
+                  <textarea required maxLength={2000} rows={3} className={`${inputClass} mt-1.5`} value={predictionNote} onChange={(event) => setPredictionNote(event.target.value)} />
+                  <span className="mt-1 block text-xs font-normal text-[#615274]">La decisión y este motivo quedarán vinculados al plan.</span>
+                </label>
               )}
             </section>
           )}

@@ -14,7 +14,12 @@ export interface TreatmentData {
   descripcion?: string | null; sesiones_recomendadas?: number | null; fecha_inicio?: string | null;
 }
 export interface Treatment extends TreatmentData {
-  id_sesion_origen?: number | null; area?: WorldArea | null; mundos_asignados?: WorldArea[];
+  id_sesion_origen?: number | null; id_prediccion?: number | null; area?: WorldArea | null; mundos_asignados?: WorldArea[];
+  frecuencia_semanal?: number | null; fonemas_priorizados?: PhonemeTarget[];
+  sesiones_realizadas?: number;
+  sesiones_modelo_estimadas?: number | null; modelo_rango_min?: number | null; modelo_rango_max?: number | null;
+  confianza_modelo?: number | null;
+  estado_prediccion?: 'SUGERIDO' | 'CONFIRMADO_CLINICO' | 'MODIFICADO_MANUAL' | 'DESCARTADO' | null;
   id_tratamiento: number; id_expediente: number; estado_tratamiento: string;
   paciente_nombre: string; terapeuta_nombre: string; fecha_fin: string | null;
 }
@@ -37,10 +42,29 @@ export interface ReportData {
   observaciones_iniciales: string | null; objetivos_trabajados: string | null;
   nivel_ayuda: string | null; proximos_pasos: string | null;
 }
-export interface Report extends ReportData { id_reporte_sesion: number; id_sesion: number; fecha_creacion: string }
+export interface Report extends ReportData {
+  id_reporte_sesion: number; id_sesion: number; fecha_creacion: string;
+  estado_reporte: 'BORRADOR' | 'FIRMADO';
+  id_usuario_firma: number | null;
+  fecha_firma: string | null;
+  firmado_por: string | null;
+}
 export interface Professional { id_terapeuta: number; nombres: string; apellidos: string; especialidad: string | null; descripcion_profesional: string | null; foto_perfil_url?: string | null }
 export interface Availability { turnos: { dia: number; hora: number }[]; bloqueos: { inicio: string; fin: string }[]; duracion_minutos?: number }
 export interface AvailableSlot { inicio: string; fin: string; disponible: boolean; motivo: string | null }
 export interface JourneyState { introduccion_atendida: boolean; introduccion_pendiente: number | null; terapia_habilitada: boolean }
 export type WorldArea = 'FLUIDEZ' | 'HABLA' | 'LENGUAJE' | 'VOZ' | 'OROFACIAL';
-export interface PlanData { nombre_tratamiento: string; descripcion: string | null; area: WorldArea; mundos_asignados: WorldArea[]; sesiones_recomendadas: number }
+export type PhonemeTarget = '/rr/' | '/r/' | '/s/' | '/pl/' | '/tr/';
+export type TreatmentPredictionDecision = 'CONFIRMADO_CLINICO' | 'MODIFICADO_MANUAL' | 'DESCARTADO';
+export interface PlanData {
+  nombre_tratamiento: string;
+  descripcion: string | null;
+  area: WorldArea;
+  mundos_asignados: WorldArea[];
+  sesiones_recomendadas: number;
+  frecuencia_semanal: number;
+  fonemas_priorizados: PhonemeTarget[];
+  id_prediccion?: number;
+  decision_prediccion?: TreatmentPredictionDecision;
+  observaciones_prediccion?: string;
+}

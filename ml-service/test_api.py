@@ -1,12 +1,62 @@
 """Local API checks with model loading disabled to prevent downloads."""
 
 import unittest
+import base64
 from fastapi.testclient import TestClient
 
 from app import app, engine
 
 
 class LocalAudioApiTests(unittest.TestCase):
+    def test_phonetics_endpoint_accepts_json_and_wav_multipart_and_wipes_buffers(self):
+        original_initialize = engine.initialize
+        original_inference = engine.inferir_fonetica
+        buffers = []
+
+        def fake_inference(audio_bytes, palabra_objetivo=None, fonema_objetivo=None):
+            buffers.append(audio_bytes)
+            return {
+                "transcripcion": "ratón",
+                "duracion_segundos": 2.5,
+                "palabra_objetivo": palabra_objetivo,
+                "fonema_objetivo": fonema_objetivo,
+                "motor_red_neuronal_activa": True,
+            }
+
+        engine.initialize = lambda: None
+        engine.inferir_fonetica = fake_inference
+        try:
+            with TestClient(app) as client:
+                json_result = client.post(
+                    "/predict/phonetics",
+                    json={
+                        "audio_base64": base64.b64encode(b"json-audio").decode("ascii"),
+                        "palabra_objetivo": "ratón",
+                        "fonema_objetivo": "/r/",
+                    },
+                )
+                self.assertEqual(json_result.status_code, 200)
+                self.assertEqual(json_result.json()["transcripcion"], "ratón")
+                self.assertEqual(buffers[0], bytearray(len(buffers[0])))
+
+                multipart_result = client.post(
+                    "/predict/phonetics",
+                    files={"file": ("muestra.wav", b"wav-audio", "audio/wav")},
+                    data={"palabra_objetivo": "ratón", "fonema_objetivo": "/r/"},
+                )
+                self.assertEqual(multipart_result.status_code, 200)
+                self.assertEqual(buffers[1], bytearray(len(buffers[1])))
+
+                oversized = client.post(
+                    "/predict/phonetics",
+                    files={"file": ("muestra.wav", b"x" * 512_001, "audio/wav")},
+                    data={"palabra_objetivo": "ratón"},
+                )
+                self.assertEqual(oversized.status_code, 413)
+        finally:
+            engine.initialize = original_initialize
+            engine.inferir_fonetica = original_inference
+
     def test_health_and_transcript_endpoints_do_not_require_external_providers(self):
         original_initialize = engine.initialize
         engine.initialize = lambda: None
@@ -33,6 +83,18 @@ class LocalAudioApiTests(unittest.TestCase):
 
                 old_route = client.post("/analyze/meet-transcript", json={"texto": "texto"})
                 self.assertEqual(old_route.status_code, 404)
+
+                plan_response = client.post(
+                    "/predict/treatment-plan",
+                    json={
+                        "edad_meses": 72,
+                        "codigo_diagnostico": 1,
+                        "cantidad_fonemas_afectados": 2,
+                        "nivel_colaboracion": 4,
+                        "frecuencia_semanal": 2,
+                    },
+                )
+                self.assertEqual(plan_response.status_code, 503)
         finally:
             engine.initialize = original_initialize
 

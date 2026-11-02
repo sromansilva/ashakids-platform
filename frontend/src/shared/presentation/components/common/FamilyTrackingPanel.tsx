@@ -1,4 +1,4 @@
-import { areaLabels } from "./SessionPlan";
+import { areaLabels } from "./planLabels";
 import { parsePlanNarrative, planNarrativeLabels } from "@/shared/application/planDraft";
 import { IntroductionStatus } from "./IntroductionStatus";
 import { useState } from "react";
@@ -99,11 +99,24 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded
   const data = useFamilyTracking();
   const [tab, setTab] = useState<typeof tabs[number]>("Resumen");
   const { patient, summary } = data;
+  const activeTreatment = data.treatments.find((t) => t.estado_tratamiento === "ACTIVO");
+  const totalRec = activeTreatment?.sesiones_recomendadas;
+  const attendedCount = summary
+    ? activeTreatment
+      ? summary.attended.filter((session) => session.cita.id_tratamiento === activeTreatment.id_tratamiento).length
+      : summary.attended.length
+    : 0;
+  const clinicalProgress = totalRec != null && totalRec > 0
+    ? `${attendedCount} de ${totalRec} sesiones`
+    : attendedCount > 0
+    ? `${attendedCount} realizadas`
+    : "Sin medición";
+
   const metrics = summary ? [
     { label: "Sesiones realizadas", value: summary.attended.length, icon: CalendarDays, tone: "text-violet-700 bg-violet-100" },
     { label: "Este mes", value: summary.thisMonth, icon: HeartPulse, tone: "text-teal-700 bg-teal-100" },
     { label: "Reportes disponibles", value: summary.reportSessions.length, icon: FileText, tone: "text-orange-700 bg-orange-100" },
-    { label: "Progreso clínico", value: "Sin medición", icon: Target, tone: "text-sky-700 bg-sky-100" },
+    { label: "Progreso clínico", value: clinicalProgress, icon: Target, tone: "text-sky-700 bg-sky-100" },
   ] : [];
   return <div style={{ fontFamily: '"Nunito", system-ui, sans-serif' }} className={`family-panel ${mode === "journey" ? "family-journey" : ""} mx-auto max-w-7xl space-y-6 p-4 pb-10 sm:p-6`}>
     {embedded && <div className="flex justify-end"><Btn variant="outline" disabled={data.refreshing} onClick={data.retry}><RefreshCw size={16} aria-hidden="true" className={data.refreshing ? "animate-spin" : ""} /> Actualizar seguimiento</Btn></div>}
@@ -137,7 +150,24 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded
         </div>
       </section>}
       <IntroductionStatus key={patient.id_paciente} patientId={patient.id_paciente} />
-      {mode === 'home' && data.treatments.some(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen) && <section className="family-plan space-y-3"><h2 className="text-lg font-extrabold">Plan vigente</h2>{data.treatments.filter(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen).map(t => <div key={t.id_tratamiento} className="text-[#4B4264] space-y-2"><p className="font-bold">{t.nombre_tratamiento} · {t.terapeuta_nombre}</p><p>{t.area && areaLabels[t.area]} · {t.sesiones_recomendadas} sesiones recomendadas · Mes: {t.fecha_inicio}</p><p>Mundos: {t.mundos_asignados?.map(w => areaLabels[w]).join(', ')}</p><Btn variant="outline" onClick={() => go('mundo-asha')}>Practicar en Mundo ASHA</Btn></div>)}</section>}
+      {mode === 'home' && data.treatments.some(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen) && (
+        <section className="family-plan space-y-3">
+          <h2 className="text-lg font-extrabold">Plan vigente</h2>
+          {data.treatments.filter(t => t.estado_tratamiento === 'ACTIVO' && t.id_sesion_origen).map(t => (
+            <div key={t.id_tratamiento} className="text-[#4B4264] space-y-2 rounded-2xl bg-white p-5 border border-[#E8E5F4]">
+              <p className="font-bold text-[#1C1135]">{t.nombre_tratamiento} · {t.terapeuta_nombre}</p>
+              <p>{t.area && areaLabels[t.area]} · {t.sesiones_recomendadas ? `${t.sesiones_recomendadas} sesiones recomendadas` : "Sesiones según evolución"} · Mes: {t.fecha_inicio}</p>
+              {!!t.mundos_asignados?.length && (
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200">
+                  <p className="text-xs font-black text-amber-900 mb-0.5">Mundos asignados en este plan:</p>
+                  <p className="text-xs font-bold text-amber-800">{t.mundos_asignados.map(w => areaLabels[w]).join(', ')}</p>
+                </div>
+              )}
+              <Btn variant="outline" onClick={() => go('mundo-asha')}>Practicar en Mundo ASHA</Btn>
+            </div>
+          ))}
+        </section>
+      )}
       {!embedded && <dl aria-label="Registros del hijo seleccionado" className="family-stats grid grid-cols-2 gap-3 lg:grid-cols-4">
         {metrics.map(s => { const Icon = s.icon; return <div key={s.label} className="group rounded-3xl border border-white/80 bg-white/85 p-4 shadow-sm shadow-violet-100/50 transition hover:-translate-y-0.5 hover:shadow-md sm:p-5"><div className="flex items-start justify-between gap-2"><span className={`grid h-10 w-10 place-items-center rounded-2xl ${s.tone}`}><Icon size={18} aria-hidden="true" /></span><span className="text-xs font-black text-[#B0A8C1]">ASHA</span></div><dd className={`mt-4 break-words font-black ${typeof s.value === "number" ? "text-2xl" : "text-base"} text-[#1C1135]`}>{s.value}</dd><dt className="mt-1 text-xs font-bold text-[#615274]">{s.label}</dt></div>; })}
       </dl>}

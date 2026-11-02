@@ -15,8 +15,8 @@ const date = (value: string) =>
     timeStyle: 'short',
   }).format(new Date(value));
 
-export function NotificationCenter({ go }: { go: (view: View) => void }) {
-  const { user } = useAuth();
+export function NotificationCenter({ go, compact = false }: { go: (view: View) => void; compact?: boolean }) {
+  const { user, role } = useAuth();
   const [open, setOpen] = useState(false);
   const [offset, setOffset] = useState(0);
   const [unread, setUnread] = useState(false);
@@ -55,19 +55,20 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
         type="button"
         aria-expanded={open}
         aria-controls={panelId}
+        aria-label={`Notificaciones${query.error ? ', sin conexión' : query.data ? `, ${count} sin leer` : ''}`}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2.5 rounded-2xl border border-[#E8E5F4] bg-white px-3 py-1.5 text-xs font-bold text-[#594A6F] shadow-sm transition-all hover:border-violet-200 hover:bg-violet-50/70 active:scale-[.98]"
+        className={`flex items-center ${compact ? 'gap-1.5 px-2' : 'gap-2.5 px-3'} py-1.5 rounded-2xl border border-[#E8E5F4] bg-white text-xs font-bold text-[#594A6F] shadow-sm transition-all hover:border-violet-200 hover:bg-violet-50/70 active:scale-[.98]`}
       >
         <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]"><Bell size={15} /></span>
-        <span>Notificaciones</span>
+        <span className={compact ? 'hidden sm:inline' : undefined}>Notificaciones</span>
         {query.error ? (
-          <span className="text-red-700 font-bold">Sin conexión</span>
+          <span className={`${compact ? 'hidden sm:inline ' : ''}text-red-700 font-bold`}>Sin conexión</span>
         ) : query.isPending ? (
-          <span>Cargando…</span>
+          <span className={compact ? 'hidden sm:inline' : undefined}>Cargando…</span>
         ) : (
           <span aria-label={`${count} sin leer`} className="inline-flex h-6 min-w-6 items-center justify-center rounded-full bg-[#EDE9FE] px-2 text-[11px] font-black tabular-nums text-[#6B46FE]">{count}</span>
         )}
-        <ChevronDown size={14} className={`transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <ChevronDown size={14} className={`${compact ? 'hidden sm:block ' : ''}transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
 
       {open && (
@@ -80,7 +81,7 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
         >
           <div className="flex justify-between gap-3 flex-wrap items-center pb-3 border-b border-[#E8E5F4]">
             <h2 className="text-base font-extrabold text-[#1C1135]">Notificaciones</h2>
-            <Btn variant="outline" size="sm" onClick={() => { setOpen(false); go('terapeuta/config'); }}>
+            <Btn variant="outline" size="sm" onClick={() => { setOpen(false); go(role === 'PADRE' ? 'padre/config' : role === 'ADMIN' ? 'admin/config' : 'terapeuta/config'); }}>
               Configurar avisos
             </Btn>
           </div>
@@ -136,12 +137,22 @@ export function NotificationCenter({ go }: { go: (view: View) => void }) {
                     </time>
                     <div className="flex gap-2 pt-1">
                       {item.id_reserva && (
-                        <Btn size="sm" variant="outline" onClick={() => { setOpen(false); go('terapeuta/agenda'); }}>
+                        <Btn size="sm" variant="outline" onClick={() => { setOpen(false); go(role === 'PADRE' ? 'padre/agenda' : role === 'ADMIN' ? 'admin/citas' : 'terapeuta/agenda'); }}>
                           Ver agenda
                         </Btn>
                       )}
+                      {item.meet_url && (
+                        <a
+                          className="inline-flex h-8 items-center justify-center rounded-xl border border-[#E8E5F4] px-3 text-[11px] font-bold text-[#594A6F] transition-colors hover:bg-violet-50"
+                          href={item.meet_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Iniciar reunión
+                        </a>
+                      )}
                       {item.id_conversacion && (
-                        <Btn size="sm" variant="outline" onClick={() => { setOpen(false); go('terapeuta/mensajes'); }}>
+                        <Btn size="sm" variant="outline" onClick={() => { setOpen(false); go(role === 'PADRE' ? 'padre/mensajes' : 'terapeuta/mensajes'); }}>
                           Ver mensajes
                         </Btn>
                       )}

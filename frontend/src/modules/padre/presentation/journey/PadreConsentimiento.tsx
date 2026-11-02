@@ -1,18 +1,36 @@
-import { useNavigate } from "react-router-dom";
-import type { View } from "@/shared/domain/types/navigation";
-import { Btn } from "@/shared/presentation/components/common/Btn";
+import type { View } from '@/shared/domain/types/navigation';
+import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
+import { FamilyConsentManager } from '@/shared/presentation/components/common/FamilyConsentManager';
+import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
+import { Btn } from '@/shared/presentation/components/common/Btn';
 
 export function PadreConsentimiento({ go }: { go: (view: View) => void }) {
-  const navigate = useNavigate();
-  return <section className="p-4 sm:p-6 max-w-3xl mx-auto text-[#1C1135]">
-    <h1 className="text-2xl font-black mb-4">Preferencias y consentimientos</h1>
-    <p className="text-base leading-relaxed text-[#4B4264] mb-6">El registro de consentimientos está pendiente de implementación. Esta pantalla no solicita aceptaciones ni guarda autorizaciones.</p>
-    <div className="bg-white border border-[#E8E5F4] rounded-2xl p-5 mb-6">
-      <h2 className="text-lg font-extrabold mb-3">Qué está disponible</h2>
-      <p className="text-base leading-relaxed">Puedes gestionar los perfiles de tus hijos y consultar sus citas, tratamientos y reportes. Los permisos de acceso corresponden a tu cuenta y a las asignaciones del sistema.</p>
-      <h2 className="text-lg font-extrabold mt-6 mb-3">Antes de habilitar autorizaciones</h2>
-      <p className="text-base leading-relaxed">El equipo debe definir los textos y el registro por hijo, versión, fecha y representante. Los permisos de cámara o micrófono del navegador se solicitan por separado cuando una actividad los utiliza.</p>
-    </div>
-    <div className="flex flex-wrap gap-3"><Btn onClick={() => go("padre/config")}>Gestionar hijos</Btn><Btn variant="outline" onClick={() => navigate("/padre?section=journey")}>Consultar Mi Camino ASHA</Btn></div>
-  </section>;
+  const { patients, children } = useSelectedFamilyPatient();
+  return (
+    <section className="mx-auto max-w-4xl space-y-5 p-4 text-[#1C1135] sm:p-6">
+      <header>
+        <h1 className="text-2xl font-black">Privacidad y consentimientos</h1>
+        <p className="mt-2 text-base leading-relaxed text-[#4B4264]">
+          Revisa y cambia, por separado para cada hijo, el permiso opcional para procesar audio con reconocimiento de voz en actividades clínicas y juegos de voz. La atención y las actividades sin micrófono siguen disponibles si no autorizas o si revocas el permiso.
+        </p>
+      </header>
+      <RemoteFeedback pending={patients.isPending} error={patients.error} retry={() => void patients.refetch()} />
+      {patients.isSuccess && !patients.error && children.length === 0 && (
+        <div className="rounded-2xl border border-[#E8E5F4] bg-white p-5">
+          <p className="text-sm text-[#4B4264]">Aún no hay perfiles infantiles activos en esta cuenta.</p>
+          <Btn className="mt-4" onClick={() => go('padre/config')}>Gestionar hijos</Btn>
+        </div>
+      )}
+      {children.map((child) => (
+        <FamilyConsentManager
+          key={child.id_paciente}
+          patientId={child.id_paciente}
+          patientName={`${child.nombres_paciente} ${child.apellidos_paciente ?? ''}`.trim()}
+        />
+      ))}
+      <p className="text-xs leading-relaxed text-[#615274]">
+        El permiso se guarda por hijo y puede revocarse en cualquier momento. La aplicación no guarda la grabación como archivo. En una sesión clínica, la transcripción tentativa queda pendiente de revisión del terapeuta; no se comparte con la familia hasta que el profesional la confirme.
+      </p>
+    </section>
+  );
 }

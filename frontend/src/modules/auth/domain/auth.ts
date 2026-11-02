@@ -125,7 +125,7 @@ export interface CrearPadrePayload {
   nombres: string;
   apellidos: string;
   email: string;
-  password: string;
+  password?: string;
   parentesco?: string;
   telefono?: string;
   direccion?: string;
@@ -147,7 +147,7 @@ export interface CrearTerapeutaPayload {
   nombres: string;
   apellidos: string;
   email: string;
-  password: string;
+  password?: string;
   especialidad?: string;
   anios_experiencia?: number;
   idiomas?: string;

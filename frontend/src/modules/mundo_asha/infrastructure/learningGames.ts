@@ -1,9 +1,25 @@
 import { apiClient } from '@/core/api/client';
-import type { WorldArea } from '@/modules/clinica/domain/clinical';
-export interface BasicLevel { number: number; title: string; prompt: string; choices: string[]; sequence: boolean }
+import type { PhonemeTarget, WorldArea } from '@/modules/clinica/domain/clinical';
+export interface BasicLevel {
+  number: number;
+  title: string;
+  prompt: string;
+  choices: string[];
+  sequence: boolean;
+  target_word_id?: string;
+  fonema_objetivo?: PhonemeTarget;
+}
 export interface BasicWorld { id: WorldArea; version: string; name: string; description: string; levels: BasicLevel[] }
 export type PublicWorld = Omit<BasicWorld, "levels"> & { levels: Pick<BasicLevel, "number">[] };
-export interface WorldProgress extends BasicWorld { asignado: boolean; completados: number[]; intentos: number; medalla: boolean }
+export interface WorldProgress extends BasicWorld {
+  asignado: boolean;
+  recomendado_esta_semana?: boolean;
+  fonemas_recomendados?: PhonemeTarget[];
+  frecuencia_semanal?: number | null;
+  completados: number[];
+  intentos: number;
+  medalla: boolean;
+}
 export interface GameProgress {
   id_paciente: number; version: string; experiencia: number; nivel: number;
   mundos: WorldProgress[]; medallas: { codigo: WorldArea; nombre: string; fecha: string }[];

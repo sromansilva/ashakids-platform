@@ -2,6 +2,7 @@ import { Router, Request, Response, NextFunction } from 'express';
 import multer from 'multer';
 import { z } from 'zod';
 import { terapeutaService } from '../services/terapeuta.service.js';
+import { getTherapistId } from '../../../core/security/clinical-access.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
 
 export const terapeutaRouter = Router();
@@ -114,7 +115,7 @@ terapeutaRouter.delete('/me/foto-perfil', requireRoles(['TERAPEUTA']), async (re
 // GET /api/v1/terapeutas/disponibilidad (para terapeuta autenticado y tests)
 terapeutaRouter.get('/disponibilidad', requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userId = (req as any).user?.id_usuario || 1;
+    const userId = req.user!.id_usuario;
     const disp = await terapeutaService.getDisponibilidad(userId);
     res.json({
       ...disp,
@@ -145,6 +146,11 @@ terapeutaRouter.get('/:key/disponibilidad', async (req: Request, res: Response, 
 terapeutaRouter.put('/:key/disponibilidad', requireRoles(['TERAPEUTA', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'ID de terapeuta inválido.' });
+    if (req.user!.rol === 'TERAPEUTA' && await getTherapistId(req.user!.id_usuario) !== key) {
+      return res.status(403).json({ error: 'Solo puedes modificar tu propia disponibilidad.' });
+    }
+    if (!Array.isArray(req.body?.turnos)) return res.status(400).json({ error: 'Envía la lista de turnos semanales.' });
     const disp = await terapeutaService.updateDisponibilidad(key, req.body);
     res.json(disp);
   } catch (err) {
