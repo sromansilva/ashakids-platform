@@ -1,7 +1,9 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { citasService } from './citas.service.js';
+import { authenticate, requireRoles } from '../../core/middleware/auth.middleware.js';
 
 export const citasRouter = Router();
+citasRouter.use(authenticate);
 
 // GET /api/v1/citas
 citasRouter.get('/', async (req: Request, res: Response, next: NextFunction) => {
@@ -12,7 +14,7 @@ citasRouter.get('/', async (req: Request, res: Response, next: NextFunction) => 
     const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 50;
     const offset = req.query.offset ? parseInt(req.query.offset as string, 10) : 0;
 
-    const result = await citasService.listar({ estado, terapeutaId, pacienteId, limit, offset });
+    const result = await citasService.listar({ estado, terapeutaId, pacienteId, limit, offset }, req.user!);
     res.header('X-Total-Count', String(result.total));
     res.json(result.items);
   } catch (err) {
@@ -21,9 +23,9 @@ citasRouter.get('/', async (req: Request, res: Response, next: NextFunction) => 
 });
 
 // POST /api/v1/citas
-citasRouter.post('/', async (req: Request, res: Response, next: NextFunction) => {
+citasRouter.post('/', requireRoles(['PADRE', 'ADMIN']), async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const cita = await citasService.crear(req.body);
+    const cita = await citasService.crear(req.body, req.user!);
     res.status(201).json(cita);
   } catch (err) {
     next(err);
@@ -34,7 +36,7 @@ citasRouter.post('/', async (req: Request, res: Response, next: NextFunction) =>
 citasRouter.get('/:key', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const cita = await citasService.detalle(key);
+    const cita = await citasService.detalle(key, req.user!);
     if (!cita) {
       return res.status(404).json({ detail: 'Cita no encontrada' });
     }
@@ -48,7 +50,7 @@ citasRouter.get('/:key', async (req: Request, res: Response, next: NextFunction)
 citasRouter.put('/:key', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
-    const cita = await citasService.reprogramar(key, req.body);
+    const cita = await citasService.reprogramar(key, req.body, req.user!);
     res.json(cita);
   } catch (err) {
     next(err);
@@ -60,7 +62,7 @@ citasRouter.patch('/:key/estado', async (req: Request, res: Response, next: Next
   try {
     const key = parseInt(String(req.params.key), 10);
     const { estado_reserva } = req.body;
-    const cita = await citasService.cambiarEstado(key, estado_reserva);
+    const cita = await citasService.cambiarEstado(key, estado_reserva, req.user!);
     res.json(cita);
   } catch (err) {
     next(err);
@@ -72,7 +74,7 @@ citasRouter.put('/:key/reunion', async (req: Request, res: Response, next: NextF
   try {
     const key = parseInt(String(req.params.key), 10);
     const { meet_url } = req.body;
-    const cita = await citasService.actualizarReunion(key, meet_url ?? null);
+    const cita = await citasService.actualizarReunion(key, meet_url ?? null, req.user!);
     res.json(cita);
   } catch (err) {
     next(err);

@@ -3,6 +3,13 @@ import { GoogleCalendarService } from '../../infrastructure/calendar/google-cale
 import { MeetService } from '../../infrastructure/meet/meet.service.js';
 import { GmailService } from '../../infrastructure/mailer/gmail.service.js';
 import { settings } from '../../core/config.js';
+import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
+import {
+  appendReservationScope,
+  assertPatientOwner,
+  assertReservationAccess,
+  isActiveTherapist,
+} from '../../core/security/clinical-access.js';
 
 export interface CitaRow {
   id_reserva: number;
@@ -24,7 +31,7 @@ export interface CitaRow {
 }
 
 export class CitasService {
-  async listar(filters?: { idReserva?: number; estado?: string; terapeutaId?: number; pacienteId?: number; limit?: number; offset?: number }) {
+  async listar(filters: { idReserva?: number; estado?: string; terapeutaId?: number; pacienteId?: number; limit?: number; offset?: number }, user: AuthenticatedUser) {
     try {
       let sql = `
         SELECT 
@@ -72,6 +79,11 @@ export class CitasService {
         sql += ` AND r.id_paciente = $${params.length}`;
       }
 
+      const reservationScope = appendReservationScope(params, user, 'r');
+      sql += reservationScope;
+      const countParams = [...params];
+      const countSql = `SELECT COUNT(DISTINCT r.id_reserva) AS total ${sql.slice(sql.indexOf('FROM reservas r'))};`;
+
       sql += ` ORDER BY r.fecha_hora_inicio ASC`;
 
       const limit = filters?.limit ?? 50;
@@ -80,7 +92,7 @@ export class CitasService {
       sql += ` LIMIT $${params.length - 1} OFFSET $${params.length};`;
 
       const res = await pool.query(sql, params);
-      const totalRes = await pool.query('SELECT count(*) as total FROM reservas;');
+      const totalRes = await pool.query(countSql, countParams);
       const total = parseInt(totalRes.rows[0]?.total ?? '0', 10);
 
       const items: CitaRow[] = res.rows.map(r => ({
@@ -108,13 +120,32 @@ export class CitasService {
     }
   }
 
-  async detalle(key: number): Promise<CitaRow | null> {
-    const { items } = await this.listar({ idReserva: key, limit: 1 });
+  async detalle(key: number, user: AuthenticatedUser): Promise<CitaRow | null> {
+    const { items } = await this.listar({ idReserva: key, limit: 1 }, user);
     return items.find(c => c.id_reserva === key) ?? null;
   }
 
-  async crear(data: any): Promise<CitaRow> {
+  async crear(data: any, user: AuthenticatedUser): Promise<CitaRow> {
     try {
+      if (!['PADRE', 'ADMIN'].includes(user.rol)) {
+        throw Object.assign(new Error('Solo el padre del paciente o administración pueden crear una cita.'), { status: 403 });
+      }
+      const patientId = Number(data.id_paciente);
+      const therapistId = Number(data.id_terapeuta);
+      await assertPatientOwner(user, patientId);
+      if (!Number.isInteger(therapistId) || !(await isActiveTherapist(therapistId))) {
+        throw Object.assign(new Error('El terapeuta seleccionado no existe o está inactivo.'), { status: 400 });
+      }
+      if (data.id_tratamiento !== undefined && data.id_tratamiento !== null) {
+        const plan = await pool.query(
+          `SELECT 1 FROM tratamientos t
+           JOIN expedientes e ON e.id_expediente = t.id_expediente
+           WHERE t.id_tratamiento = $1 AND e.id_paciente = $2 AND t.estado_tratamiento = 'ACTIVO'
+           LIMIT 1;`,
+          [data.id_tratamiento, patientId],
+        );
+        if (!plan.rows.length) throw Object.assign(new Error('El plan no pertenece al paciente o no está activo.'), { status: 400 });
+      }
       const fechaInicio = data.fecha_hora_inicio;
       const fechaFin = data.fecha_hora_fin || new Date(new Date(fechaInicio).getTime() + 40 * 60000).toISOString();
       const modalidad = data.modalidad === 'PRESENCIAL' ? 'PRESENCIAL' : 'VIRTUAL';
@@ -138,7 +169,7 @@ export class CitasService {
         `INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, meet_id, meet_url)
          VALUES ($1, $2, $3, $4::timestamptz, $5::timestamptz, $6, COALESCE($7, 'INTRODUCTORIA'), 'CONFIRMADA', NOW(), $8, $9)
          RETURNING *;`,
-        [data.id_paciente, data.id_terapeuta, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita, meetMeetingId, meetJoinUrl]
+        [patientId, therapistId, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita, meetMeetingId, meetJoinUrl]
       );
       const row = res.rows[0];
 
@@ -233,29 +264,35 @@ export class CitasService {
     }
   }
 
-  async reprogramar(key: number, data: { fecha_hora_inicio: string; fecha_hora_fin?: string }): Promise<CitaRow> {
+  async reprogramar(key: number, data: { fecha_hora_inicio: string; fecha_hora_fin?: string }, user: AuthenticatedUser): Promise<CitaRow> {
+    await assertReservationAccess(user, key);
     const fechaFin = data.fecha_hora_fin || new Date(new Date(data.fecha_hora_inicio).getTime() + 40 * 60000).toISOString();
     // Calendar event IDs are not stored, so this updates the reservation only.
     await pool.query(
       `UPDATE reservas SET fecha_hora_inicio = $1::timestamptz, fecha_hora_fin = $2::timestamptz WHERE id_reserva = $3;`,
       [data.fecha_hora_inicio, fechaFin, key]
     );
-    const cita = await this.detalle(key);
+    const cita = await this.detalle(key, user);
     if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
     return cita;
   }
 
-  async cambiarEstado(key: number, estado_reserva: string): Promise<CitaRow> {
+  async cambiarEstado(key: number, estado_reserva: string, user: AuthenticatedUser): Promise<CitaRow> {
+    await assertReservationAccess(user, key);
     await pool.query(
       `UPDATE reservas SET estado_reserva = $1 WHERE id_reserva = $2;`,
       [estado_reserva, key]
     );
-    const cita = await this.detalle(key);
+    const cita = await this.detalle(key, user);
     if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
     return { ...cita, estado_reserva: estado_reserva as any };
   }
 
-  async actualizarReunion(key: number, meet_url: string | null): Promise<CitaRow> {
+  async actualizarReunion(key: number, meet_url: string | null, user: AuthenticatedUser): Promise<CitaRow> {
+    if (user.rol !== 'ADMIN' && user.rol !== 'TERAPEUTA') {
+      throw Object.assign(new Error('Solo el terapeuta asignado o administración pueden modificar el enlace.'), { status: 403 });
+    }
+    await assertReservationAccess(user, key);
     if (meet_url && !isMeetingUrl(meet_url)) {
       throw Object.assign(new Error('Comparte un enlace HTTPS de Google Meet válido.'), { status: 400 });
     }
@@ -263,7 +300,7 @@ export class CitasService {
       `UPDATE reservas SET meet_url = $1, meet_id = NULL WHERE id_reserva = $2;`,
       [meet_url, key]
     );
-    const cita = await this.detalle(key);
+    const cita = await this.detalle(key, user);
     if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
     // Calendar event IDs are not stored, so a manually changed link updates the reservation only.
     return { ...cita, meet_url, meet_origen: meet_url ? 'MANUAL' : null, meet_automatico_configurado: MeetService.isConfigured() };

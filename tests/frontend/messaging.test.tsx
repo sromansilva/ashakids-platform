@@ -1,4 +1,5 @@
 import { fireEvent, screen, waitFor, within } from '@testing-library/react';
+import { QueryClient } from '@tanstack/react-query';
 import { vi, it, expect } from 'vitest';
 import { renderRoute } from './helpers';
 
@@ -198,4 +199,55 @@ it('rejects an open response for a different participant pair', async () => {
   renderRoute('/padre/mensajes','PADRE');fireEvent.click(await screen.findByRole('button',{name:/Profesional sintético Abrir conversación$/}));
   expect(await screen.findByRole('alert')).toHaveTextContent('no confirmó una conversación válida');
   expect(screen.queryByLabelText('Escribir mensaje')).not.toBeInTheDocument();
+});
+
+it('does not reuse therapist contacts from another identity in the query cache', async () => {
+  let currentAccount: 'A' | 'B' = 'A';
+  const therapistAContact = {
+    ...contact,
+    id_tutor: 31,
+    id_terapeuta: 41,
+    tutor_nombre: 'Familia de terapeuta A',
+    terapeuta_nombre: 'Terapeuta A',
+  };
+  const therapistBContact = {
+    ...contact,
+    id_tutor: 32,
+    id_terapeuta: 42,
+    tutor_nombre: 'Familia de terapeuta B',
+    terapeuta_nombre: 'Terapeuta B',
+  };
+  const therapistAConversation = {
+    ...conversation,
+    ...therapistAContact,
+    id_conversacion: 121,
+    id_usuario_terapeuta: 101,
+  };
+  const therapistBConversation = {
+    ...conversation,
+    ...therapistBContact,
+    id_conversacion: 122,
+    id_usuario_terapeuta: 202,
+  };
+  const requests = api((path, method) => {
+    if (path === '/conversaciones/contactos') {
+      return response([currentAccount === 'A' ? therapistAContact : therapistBContact]);
+    }
+    if (path === '/conversaciones' && method === 'GET') {
+      return response({
+        items: [currentAccount === 'A' ? therapistAConversation : therapistBConversation],
+        next_before_id: null,
+      });
+    }
+  });
+  const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const firstSession = renderRoute('/terapeuta/mensajes', 'TERAPEUTA', false, 101, queryClient);
+  expect(await screen.findByRole('button', { name: /Familia de terapeuta A Asignación activa$/ })).toBeInTheDocument();
+  firstSession.unmount();
+
+  currentAccount = 'B';
+  renderRoute('/terapeuta/mensajes', 'TERAPEUTA', false, 202, queryClient);
+  expect(await screen.findByRole('button', { name: /Familia de terapeuta B Asignación activa$/ })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /Familia de terapeuta A Asignación activa$/ })).not.toBeInTheDocument();
+  expect(requests.mock.calls.filter(([input]) => String(input).includes('/conversaciones/contactos'))).toHaveLength(2);
 });
