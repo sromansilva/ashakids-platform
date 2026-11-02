@@ -1,5 +1,7 @@
 import { pool } from '../../core/database.js';
 import { settings } from '../../core/config.js';
+import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
+import { appendPatientScope, assertReservationAccess, assertSessionEditAccess } from '../../core/security/clinical-access.js';
 
 export interface SessionData {
   id_sesion: number;
@@ -185,7 +187,7 @@ export class SesionesService {
       observacion_tecnica: clinica.observacion,
     };
   }
-  async listar(filters?: { pacienteId?: number; sesionId?: number; limit?: number; offset?: number }) {
+  async listar(filters: { pacienteId?: number; sesionId?: number; limit?: number; offset?: number }, user: AuthenticatedUser) {
     try {
       let sql = `
         SELECT 
@@ -197,6 +199,7 @@ export class SesionesService {
           COALESCE(s.estado_sesion, 'FINALIZADA') as estado_sesion,
           r.id_paciente,
           r.id_terapeuta,
+          t.id_usuario as id_terapeuta_user_id,
           r.id_tratamiento,
           COALESCE(r.tipo_cita, 'INTRODUCTORIA') as tipo_cita,
           CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) as paciente_nombre,
@@ -225,6 +228,10 @@ export class SesionesService {
         sql += ` AND r.id_paciente = $${params.length}`;
       }
 
+      sql += appendPatientScope(params, user, 'r.id_paciente');
+      const countParams = [...params];
+      const countSql = `SELECT COUNT(DISTINCT s.id_sesion) AS total ${sql.slice(sql.indexOf('FROM sesiones s'))};`;
+
       sql += ` ORDER BY s.id_sesion DESC`;
       const limit = filters?.limit ?? 50;
       const offset = filters?.offset ?? 0;
@@ -232,13 +239,13 @@ export class SesionesService {
       sql += ` LIMIT $${params.length - 1} OFFSET $${params.length};`;
 
       const res = await pool.query(sql, params);
-      const totalRes = await pool.query('SELECT count(*) as total FROM sesiones;');
+      const totalRes = await pool.query(countSql, countParams);
       const total = parseInt(totalRes.rows[0]?.total ?? '0', 10);
 
       const items: SessionData[] = res.rows.map(r => ({
         id_sesion: r.id_sesion,
         id_reserva: r.id_reserva,
-        puede_editar: true,
+        puede_editar: user.rol === 'ADMIN' || (user.rol === 'TERAPEUTA' && Number(r.id_terapeuta_user_id) === user.id_usuario),
         reporte_disponible: parseInt(r.count_reporte ?? '0', 10) > 0,
         fecha_hora_inicio_real: r.fecha_hora_inicio_real ? new Date(r.fecha_hora_inicio_real).toISOString() : null,
         fecha_hora_fin_real: r.fecha_hora_fin_real ? new Date(r.fecha_hora_fin_real).toISOString() : null,
@@ -270,12 +277,16 @@ export class SesionesService {
     }
   }
 
-  async detalle(key: number): Promise<SessionData | null> {
-    const { items } = await this.listar({ sesionId: key, limit: 1 });
+  async detalle(key: number, user: AuthenticatedUser): Promise<SessionData | null> {
+    const { items } = await this.listar({ sesionId: key, limit: 1 }, user);
     return (items.find(s => s.id_sesion === key) ?? null) as SessionData | null;
   }
 
-  async crear(id_reserva: number): Promise<SessionData> {
+  async crear(id_reserva: number, user: AuthenticatedUser): Promise<SessionData> {
+    if (user.rol !== 'ADMIN' && user.rol !== 'TERAPEUTA') {
+      throw Object.assign(new Error('Solo el terapeuta asignado puede crear una sesión.'), { status: 403 });
+    }
+    await assertReservationAccess(user, id_reserva);
     try {
       const res = await pool.query(
         `INSERT INTO sesiones (id_reserva, fecha_hora_inicio_real, estado_sesion)
@@ -285,7 +296,7 @@ export class SesionesService {
       );
       const id_sesion = res.rows[0]?.id_sesion;
       if (!id_sesion) throw new Error('La base de datos no devolvió la sesión creada.');
-      const sesion = await this.detalle(id_sesion);
+      const sesion = await this.detalle(id_sesion, user);
       if (!sesion) throw Object.assign(new Error('No se pudo recuperar la sesión creada.'), { status: 404 });
       return sesion;
     } catch (err) {
@@ -293,7 +304,8 @@ export class SesionesService {
     }
   }
 
-  async iniciar(key: number): Promise<SessionData> {
+  async iniciar(key: number, user: AuthenticatedUser): Promise<SessionData> {
+    await assertSessionEditAccess(user, key);
     try {
       await pool.query(
         `UPDATE sesiones SET fecha_hora_inicio_real = NOW(), estado_sesion = 'EN_CURSO' WHERE id_sesion = $1;`,
@@ -302,12 +314,13 @@ export class SesionesService {
     } catch (err) {
       throw err;
     }
-    const sesion = await this.detalle(key);
+    const sesion = await this.detalle(key, user);
     if (!sesion) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
     return { ...sesion, estado_sesion: 'EN_CURSO' };
   }
 
-  async cerrar(key: number, asistencia: 'ASISTIO' | 'NO_ASISTIO'): Promise<SessionData> {
+  async cerrar(key: number, asistencia: 'ASISTIO' | 'NO_ASISTIO', user: AuthenticatedUser): Promise<SessionData> {
+    await assertSessionEditAccess(user, key);
     try {
       await pool.query(
         `UPDATE sesiones SET fecha_hora_fin_real = NOW(), estado_sesion = 'FINALIZADA', asistencia = $1 WHERE id_sesion = $2;`,
@@ -316,7 +329,7 @@ export class SesionesService {
     } catch (err) {
       throw err;
     }
-    const sesion = await this.detalle(key);
+    const sesion = await this.detalle(key, user);
     if (!sesion) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
     return { ...sesion, estado_sesion: 'FINALIZADA', asistencia };
   }
@@ -346,7 +359,8 @@ export class SesionesService {
     return null;
   }
 
-  async guardarReporte(key: number, data: any): Promise<ReporteItem> {
+  async guardarReporte(key: number, data: any, user: AuthenticatedUser): Promise<ReporteItem> {
+    await assertSessionEditAccess(user, key);
     try {
       const check = await pool.query(`SELECT id_reporte_sesion FROM reportes_sesion WHERE id_sesion = $1;`, [key]);
       if (check.rows.length > 0) {
@@ -431,7 +445,8 @@ export class SesionesService {
     return null;
   }
 
-  async publicarPlan(key: number, data: any) {
+  async publicarPlan(key: number, data: any, user: AuthenticatedUser) {
+    await assertSessionEditAccess(user, key);
     try {
       const ses = await pool.query(
         `SELECT r.id_paciente, r.id_terapeuta,

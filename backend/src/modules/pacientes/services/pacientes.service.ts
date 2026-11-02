@@ -1,4 +1,6 @@
 import { pool } from '../../../core/database.js';
+import type { AuthenticatedUser } from '../../../core/middleware/auth.middleware.js';
+import { appendPatientScope, canAccessPatient, getTherapistId, isActiveTherapist } from '../../../core/security/clinical-access.js';
 
 export interface PacienteItem {
   id_paciente: number;
@@ -13,7 +15,7 @@ export interface PacienteItem {
 }
 
 export class PacientesService {
-  async getAll(filters?: { q?: string; activo?: boolean; limit?: number; offset?: number; id_usuario_padre?: number }) {
+  async getAll(filters?: { q?: string; activo?: boolean; limit?: number; offset?: number; id_usuario_padre?: number; user?: AuthenticatedUser }) {
     try {
       let sql = `
         SELECT 
@@ -30,6 +32,8 @@ export class PacientesService {
         WHERE 1=1
       `;
       const params: any[] = [];
+      const patientScope = filters?.user ? appendPatientScope(params, filters.user, 'p.id_paciente') : '';
+      sql += patientScope;
       if (filters?.id_usuario_padre) {
         params.push(filters.id_usuario_padre);
         sql += ' AND p.id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $' + params.length + ')';
@@ -53,6 +57,8 @@ export class PacientesService {
 
       let countSql = 'SELECT count(*) as total FROM pacientes p WHERE 1=1';
       const countParams: any[] = [];
+      const countScope = filters?.user ? appendPatientScope(countParams, filters.user, 'p.id_paciente') : '';
+      countSql += countScope;
       if (filters?.id_usuario_padre) {
         countParams.push(filters.id_usuario_padre);
         countSql += ' AND p.id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $' + countParams.length + ')';
@@ -73,47 +79,48 @@ export class PacientesService {
         id_tutor: row.id_tutor,
         nombres_paciente: row.nombres_paciente,
         apellidos_paciente: row.apellidos_paciente,
-        fecha_nacimiento: row.fecha_nacimiento ? new Date(row.fecha_nacimiento).toISOString().split('T')[0] : '2020-05-15',
+          fecha_nacimiento: row.fecha_nacimiento ? new Date(row.fecha_nacimiento).toISOString().split('T')[0] : '',
         sexo: row.sexo,
         avatar_nombre: row.avatar_nombre,
         activo: row.activo,
         fecha_registro: new Date(row.fecha_registro).toISOString(),
       }));
 
-      return { items, total: Math.max(total, items.length) };
+      return { items, total };
     } catch (err) {
-      console.warn('[PacientesService] Fallback getAll:', err);
-      if (filters?.id_usuario_padre) {
-        return { items: [], total: 0 };
-      }
-      return {
-        items: [
-          {
-            id_paciente: 1,
-            id_tutor: 1,
-            nombres_paciente: 'Liam',
-            apellidos_paciente: 'García',
-            fecha_nacimiento: '2020-05-15',
-            sexo: 'M',
-            avatar_nombre: 'zorro',
-            activo: true,
-            fecha_registro: new Date().toISOString(),
-          },
-        ],
-        total: 1,
-      };
+      throw err;
     }
   }
 
-  async getById(id: number): Promise<PacienteItem | null> {
-    const { items } = await this.getAll({ limit: 100 });
-    return items.find(p => p.id_paciente === id) ?? items[0] ?? null;
+  async getById(id: number, user?: AuthenticatedUser): Promise<PacienteItem | null> {
+    if (!Number.isInteger(id) || id <= 0) return null;
+    const params: unknown[] = [id];
+    const scope = user ? appendPatientScope(params, user, 'p.id_paciente') : '';
+    const res = await pool.query(
+      `SELECT p.id_paciente, p.id_tutor, p.nombres_paciente, p.apellidos_paciente,
+              p.fecha_nacimiento, p.sexo, p.avatar_nombre, p.activo, p.fecha_registro
+       FROM pacientes p WHERE p.id_paciente = $1${scope} LIMIT 1;`,
+      params,
+    );
+    const row = res.rows[0];
+    if (!row) return null;
+    return {
+      id_paciente: Number(row.id_paciente),
+      id_tutor: Number(row.id_tutor),
+      nombres_paciente: row.nombres_paciente,
+      apellidos_paciente: row.apellidos_paciente,
+      fecha_nacimiento: row.fecha_nacimiento ? new Date(row.fecha_nacimiento).toISOString().split('T')[0] : '',
+      sexo: row.sexo,
+      avatar_nombre: row.avatar_nombre,
+      activo: row.activo,
+      fecha_registro: new Date(row.fecha_registro).toISOString(),
+    };
   }
 
   async create(data: any, userId?: number): Promise<PacienteItem> {
     try {
-      let idTutor = data.id_tutor;
-      if (!idTutor && userId) {
+      let idTutor = userId ? undefined : data.id_tutor;
+      if (userId) {
         const tutRes = await pool.query('SELECT id_tutor FROM tutores WHERE id_usuario = $1 LIMIT 1;', [userId]);
         if (tutRes.rows.length > 0) {
           idTutor = tutRes.rows[0].id_tutor;
@@ -125,9 +132,7 @@ export class PacientesService {
           idTutor = insertTut.rows[0]?.id_tutor;
         }
       }
-      if (!idTutor) {
-        idTutor = 1;
-      }
+      if (!idTutor) throw Object.assign(new Error('Debe especificarse un tutor válido.'), { status: 400 });
 
       const res = await pool.query(
         `INSERT INTO pacientes (id_tutor, nombres_paciente, apellidos_paciente, fecha_nacimiento, sexo, avatar_nombre, activo, fecha_registro)
@@ -148,22 +153,12 @@ export class PacientesService {
         fecha_registro: new Date(r.fecha_registro).toISOString(),
       };
     } catch (err) {
-      console.warn('[PacientesService] Fallback create:', err);
-      return {
-        id_paciente: Date.now(),
-        id_tutor: data.id_tutor || 1,
-        nombres_paciente: data.nombres_paciente,
-        apellidos_paciente: data.apellidos_paciente,
-        fecha_nacimiento: data.fecha_nacimiento,
-        sexo: data.sexo || 'M',
-        avatar_nombre: data.avatar_nombre || 'zorro',
-        activo: true,
-        fecha_registro: new Date().toISOString(),
-      };
+      throw err;
     }
   }
 
   async update(id: number, data: any, userId?: number): Promise<PacienteItem> {
+    if (!Number.isInteger(id) || id <= 0) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
     try {
       let sql = `UPDATE pacientes 
                  SET nombres_paciente = COALESCE($1, nombres_paciente),
@@ -177,16 +172,18 @@ export class PacientesService {
         params.push(userId);
         sql += ` AND id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $${params.length})`;
       }
-      sql += ';';
-      await pool.query(sql, params);
+      const result = await pool.query(sql + ' RETURNING id_paciente;', params);
+      if (!result.rows.length) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
     } catch (err) {
-      console.warn('[PacientesService] Fallback update:', err);
+      throw err;
     }
     const pac = await this.getById(id);
-    return pac || { id_paciente: id, ...data } as any;
+    if (!pac) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
+    return pac;
   }
 
   async deactivate(id: number, userId?: number): Promise<PacienteItem> {
+    if (!Number.isInteger(id) || id <= 0) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
     try {
       let sql = `UPDATE pacientes SET activo = false WHERE id_paciente = $1`;
       const params: any[] = [id];
@@ -194,13 +191,14 @@ export class PacientesService {
         params.push(userId);
         sql += ` AND id_tutor IN (SELECT id_tutor FROM tutores WHERE id_usuario = $${params.length})`;
       }
-      sql += ';';
-      await pool.query(sql, params);
+      const result = await pool.query(sql + ' RETURNING id_paciente;', params);
+      if (!result.rows.length) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
     } catch (err) {
-      console.warn('[PacientesService] Fallback deactivate:', err);
+      throw err;
     }
     const pac = await this.getById(id);
-    return { ...pac!, activo: false };
+    if (!pac) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
+    return { ...pac, activo: false };
   }
 
   async recorrido(id: number) {
@@ -274,33 +272,24 @@ export class PacientesService {
 
       return { items, total: items.length };
     } catch (err) {
-      console.warn('[PacientesService] Fallback tratamientos:', err);
-      return {
-        items: [
-          {
-            id_tratamiento: 1,
-            id_expediente: 1,
-            id_paciente: id,
-            id_terapeuta: 1,
-            nombre_tratamiento: 'Plan Integral de Fonemas y Articulación',
-            descripcion: 'Refuerzo de fonemas velares y motricidad orofacial.',
-            area: 'HABLA',
-            mundos_asignados: ['HABLA', 'LENGUAJE'],
-            sesiones_recomendadas: 10,
-            estado_tratamiento: 'ACTIVO',
-            paciente_nombre: 'Liam García',
-            terapeuta_nombre: 'Sergei Ramirez',
-            fecha_inicio: '2026-10-01',
-            fecha_fin: null,
-          },
-        ],
-        total: 1,
-      };
+      throw err;
     }
   }
 
-  async crearTratamiento(data: any) {
+  async crearTratamiento(data: any, user: AuthenticatedUser) {
     try {
+      if (!['ADMIN', 'TERAPEUTA'].includes(user.rol)) {
+        throw Object.assign(new Error('Solo administración o el terapeuta asignado pueden crear un plan.'), { status: 403 });
+      }
+      const therapistId = user.rol === 'TERAPEUTA' ? await getTherapistId(user.id_usuario) : Number(data.id_terapeuta);
+      if (!therapistId || !(await isActiveTherapist(therapistId))) {
+        throw Object.assign(new Error('Terapeuta no encontrado o inactivo.'), { status: 400 });
+      }
+      if (user.rol === 'TERAPEUTA') {
+        if (!(await canAccessPatient(user, Number(data.id_paciente)))) {
+          throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
+        }
+      }
       let expRes = await pool.query(`SELECT id_expediente FROM expedientes WHERE id_paciente = $1;`, [data.id_paciente]);
       let idExpediente = expRes.rows[0]?.id_expediente;
       if (!idExpediente) {
@@ -312,14 +301,14 @@ export class PacientesService {
         `INSERT INTO tratamientos (id_expediente, id_terapeuta, nombre_tratamiento, descripcion, sesiones_recomendadas, estado_tratamiento, fecha_inicio)
          VALUES ($1, $2, $3, $4, $5, 'ACTIVO', COALESCE($6::date, CURRENT_DATE))
          RETURNING *;`,
-        [idExpediente, data.id_terapeuta, data.nombre_tratamiento, data.descripcion ?? null, data.sesiones_recomendadas ?? 10, data.fecha_inicio]
+        [idExpediente, therapistId, data.nombre_tratamiento, data.descripcion ?? null, data.sesiones_recomendadas ?? 10, data.fecha_inicio]
       );
       const row = res.rows[0];
       return {
         id_tratamiento: row.id_tratamiento,
         id_expediente: row.id_expediente,
         id_paciente: data.id_paciente,
-        id_terapeuta: data.id_terapeuta,
+        id_terapeuta: therapistId,
         nombre_tratamiento: row.nombre_tratamiento,
         descripcion: row.descripcion,
         sesiones_recomendadas: row.sesiones_recomendadas,
@@ -330,21 +319,7 @@ export class PacientesService {
         fecha_fin: null,
       };
     } catch (err) {
-      console.warn('[PacientesService] Fallback crearTratamiento:', err);
-      return {
-        id_tratamiento: Date.now(),
-        id_expediente: 1,
-        id_paciente: data.id_paciente,
-        id_terapeuta: data.id_terapeuta,
-        nombre_tratamiento: data.nombre_tratamiento,
-        descripcion: data.descripcion,
-        sesiones_recomendadas: data.sesiones_recomendadas,
-        estado_tratamiento: 'ACTIVO',
-        paciente_nombre: 'Paciente Registrado',
-        terapeuta_nombre: 'Terapeuta Especialista',
-        fecha_inicio: new Date().toISOString().split('T')[0],
-        fecha_fin: null,
-      };
+      throw err;
     }
   }
 }
