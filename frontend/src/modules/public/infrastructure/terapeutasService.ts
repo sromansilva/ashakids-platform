@@ -13,4 +13,16 @@ export const terapeutasService = {
   async getMe(): Promise<TerapeutaProfileResponse> {
     return apiClient.get<TerapeutaProfileResponse>("/terapeutas/me");
   },
+
+  async updateMyProfile(data: { telefono: string; cedula_profesional: string }) {
+    return apiClient.patch<{ message: string }>("/terapeutas/me/perfil", data);
+  },
+
+  async uploadMyProfilePhoto(data: FormData) {
+    return apiClient.upload<{ message: string }>("/terapeutas/me/foto-perfil", data);
+  },
+
+  async removeMyProfilePhoto() {
+    return apiClient.del<{ message: string }>("/terapeutas/me/foto-perfil");
+  },
 };

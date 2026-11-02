@@ -47,7 +47,9 @@ export function PadrePsicologos() {
                   {/* Avatar circle with chat icon badge */}
                   <div className="relative mb-4">
                     <div className={`w-24 h-24 rounded-full ${bgClass} flex items-center justify-center text-2xl font-black text-[#6B46FE] shadow-inner`}>
-                      {initials}
+                      {t.foto_perfil_url
+                        ? <img src={t.foto_perfil_url} alt={`Foto de ${t.nombres} ${t.apellidos}`} loading="lazy" className="w-full h-full rounded-full object-cover" />
+                        : initials}
                     </div>
                     <div className="absolute bottom-0 right-0 w-8 h-8 rounded-full bg-white border border-[#E8E5F4] flex items-center justify-center text-[#6B46FE] shadow-xs">
                       <MessageCircle size={15} />

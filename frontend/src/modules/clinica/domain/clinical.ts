@@ -38,7 +38,7 @@ export interface ReportData {
   nivel_ayuda: string | null; proximos_pasos: string | null;
 }
 export interface Report extends ReportData { id_reporte_sesion: number; id_sesion: number; fecha_creacion: string }
-export interface Professional { id_terapeuta: number; nombres: string; apellidos: string; especialidad: string | null; descripcion_profesional: string | null }
+export interface Professional { id_terapeuta: number; nombres: string; apellidos: string; especialidad: string | null; descripcion_profesional: string | null; foto_perfil_url?: string | null }
 export interface Availability { turnos: { dia: number; hora: number }[]; bloqueos: { inicio: string; fin: string }[]; duracion_minutos?: number }
 export interface AvailableSlot { inicio: string; fin: string; disponible: boolean; motivo: string | null }
 export interface JourneyState { introduccion_atendida: boolean; introduccion_pendiente: number | null; terapia_habilitada: boolean }

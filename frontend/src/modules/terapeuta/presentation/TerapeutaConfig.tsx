@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   UserRound,
   CalendarDays,
@@ -25,6 +25,7 @@ import { useRoleProfile } from '@/shared/application/hooks/useRoleProfile';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useWrite } from '@/shared/application/hooks/useRemoteData';
 import { usersService } from '@/modules/clinica/infrastructure/clinicalService';
+import { terapeutasService } from '@/modules/public/infrastructure/terapeutasService';
 export { TerapeutaIncidencias } from './TerapeutaIncidencias';
 
 export function TerapeutaConfig() {
@@ -34,6 +35,42 @@ export function TerapeutaConfig() {
   const data = profile.error ? undefined : profile.data;
   const account = data?.user;
   const therapist = data && 'perfil_terapeuta' in data ? data.perfil_terapeuta : null;
+  const photoInput = useRef<HTMLInputElement>(null);
+  const [phone, setPhone] = useState('');
+  const [professionalId, setProfessionalId] = useState('');
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [profileValidation, setProfileValidation] = useState('');
+  const [profileNotice, setProfileNotice] = useState('');
+
+  useEffect(() => {
+    if (!therapist) return;
+    setPhone(therapist.telefono ?? '');
+    setProfessionalId(therapist.cedula_profesional ?? '');
+    setPhotoPreview(null);
+  }, [therapist]);
+
+  useEffect(() => () => {
+    if (photoPreview?.startsWith('blob:')) URL.revokeObjectURL(photoPreview);
+  }, [photoPreview]);
+
+  const saveProfile = useWrite(
+    (changes: { telefono: string; cedula_profesional: string }) => terapeutasService.updateMyProfile(changes),
+    () => {
+      setProfileNotice('Teléfono y cédula profesional actualizados.');
+      setProfileValidation('');
+    }
+  );
+  const uploadPhoto = useWrite(
+    (form: FormData) => terapeutasService.uploadMyProfilePhoto(form),
+    () => setProfileNotice('Foto de perfil actualizada.')
+  );
+  const removePhoto = useWrite(
+    () => terapeutasService.removeMyProfilePhoto(),
+    () => {
+      setPhotoPreview(null);
+      setProfileNotice('Foto de perfil eliminada.');
+    }
+  );
 
   const [passwords, setPasswords] = useState({ current: '', next: '', confirm: '' });
   const [visible, setVisible] = useState<Record<string, boolean>>({});
@@ -67,6 +104,29 @@ export function TerapeutaConfig() {
     .map((w) => w[0])
     .join('')
     .toUpperCase() || 'PA';
+  const profilePhoto = photoPreview || therapist?.foto_perfil_url || null;
+  const profileBusy = saveProfile.isPending || uploadPhoto.isPending || removePhoto.isPending;
+
+  const handlePhotoSelection = (file?: File) => {
+    if (!file) return;
+    setProfileNotice('');
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+      setProfileValidation('Elige una imagen JPG, PNG o WebP.');
+      if (photoInput.current) photoInput.current.value = '';
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      setProfileValidation('La foto no puede superar 3 MB.');
+      if (photoInput.current) photoInput.current.value = '';
+      return;
+    }
+    setProfileValidation('');
+    setPhotoPreview(URL.createObjectURL(file));
+    const form = new FormData();
+    form.append('foto', file);
+    void uploadPhoto.submit(form);
+    if (photoInput.current) photoInput.current.value = '';
+  };
 
   return (
     <div className="therapist-page w-full px-4 py-4 text-[#1C1135] sm:px-6 sm:py-5 xl:px-8">
@@ -118,7 +178,7 @@ export function TerapeutaConfig() {
             {/* Profile Avatar & Name */}
             <div className="flex items-center gap-4 pb-2">
               <div className="w-16 h-16 rounded-full bg-[#EDE9FE] text-[#6B46FE] font-black text-xl flex items-center justify-center shrink-0 shadow-sm">
-                {initials}
+                {profilePhoto ? <img src={profilePhoto} alt={`Foto de ${fullName}`} className="w-full h-full rounded-full object-cover" /> : initials}
               </div>
               <div>
                 <p className="text-lg font-black text-[#1C1135]">{fullName}</p>
@@ -214,7 +274,7 @@ export function TerapeutaConfig() {
               <div className="flex items-center gap-2.5">
                 <Info size={17} className="text-[#6B46FE] shrink-0" />
                 <p className="text-xs font-bold text-[#4C1D95]">
-                  Para corregir los datos registrados, contacta con la administración del centro.
+                  Los datos institucionales se actualizan con administración. Aquí puedes editar tu teléfono, cédula y foto.
                 </p>
               </div>
               <a
@@ -226,45 +286,118 @@ export function TerapeutaConfig() {
             </div>
 
             {/* Bottom 3 Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4 border-t border-[#E8E5F4]">
+            <form
+              className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-4 border-t border-[#E8E5F4]"
+              onSubmit={(event) => {
+                event.preventDefault();
+                setProfileNotice('');
+                const cleanPhone = phone.trim();
+                const cleanProfessionalId = professionalId.trim();
+                if (cleanPhone && !/^[+()\d\s.-]{7,20}$/.test(cleanPhone)) {
+                  setProfileValidation('Ingresa un teléfono válido de 7 a 20 caracteres.');
+                  return;
+                }
+                if (cleanProfessionalId && !/^[A-Za-z0-9./ -]{1,40}$/.test(cleanProfessionalId)) {
+                  setProfileValidation('La cédula solo puede contener letras, números, espacios, puntos, guiones o barras.');
+                  return;
+                }
+                setProfileValidation('');
+                void saveProfile.submit({ telefono: cleanPhone, cedula_profesional: cleanProfessionalId });
+              }}
+            >
               {/* Photo */}
               <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
                 <p className="text-xs font-extrabold text-[#1C1135] mb-3">Foto de perfil</p>
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-[#EDE9FE] text-[#6B46FE] font-black text-sm flex items-center justify-center shrink-0">
-                    {initials}
+                    {profilePhoto ? <img src={profilePhoto} alt="" className="w-full h-full rounded-full object-cover" /> : initials}
                   </div>
-                  <div>
+                  <div className="min-w-0">
+                    <input
+                      ref={photoInput}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="sr-only"
+                      aria-label="Seleccionar foto de perfil"
+                      onChange={(event) => handlePhotoSelection(event.currentTarget.files?.[0])}
+                    />
                     <button
                       type="button"
+                      disabled={profileBusy || !therapist}
+                      onClick={() => photoInput.current?.click()}
                       className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[#E8E5F4] bg-white text-xs font-bold text-[#6B46FE] hover:bg-violet-50 transition-colors cursor-pointer"
                     >
                       <Camera size={13} />
-                      Cambiar foto
+                      {uploadPhoto.isPending ? 'Subiendo…' : 'Cambiar foto'}
                     </button>
-                    <p className="text-[10px] text-[#9E95B7] mt-1">Próximamente</p>
+                    {therapist?.foto_perfil_url && !photoPreview && (
+                      <button
+                        type="button"
+                        disabled={profileBusy}
+                        onClick={() => {
+                          setProfileNotice('');
+                          void removePhoto.submit(undefined);
+                        }}
+                        className="ml-2 text-[10px] font-bold text-red-600 hover:underline disabled:opacity-50"
+                      >
+                        Quitar foto
+                      </button>
+                    )}
+                    <p className="text-[10px] text-[#9E95B7] mt-1">JPG, PNG o WebP · máximo 3 MB</p>
                   </div>
                 </div>
               </div>
 
               {/* Phone */}
               <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-                <p className="text-xs font-extrabold text-[#1C1135] mb-3">Teléfono</p>
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-dashed border-[#C8C2DC] bg-white text-xs text-[#9E95B7]">
-                  <Phone size={14} />
-                  <span>Próximamente</span>
+                <label htmlFor="therapist-profile-phone" className="block text-xs font-extrabold text-[#1C1135] mb-3">Teléfono</label>
+                <div className="flex items-center gap-2 px-3 rounded-xl border border-[#E8E5F4] bg-white">
+                  <Phone size={14} className="shrink-0 text-[#9E95B7]" />
+                  <input
+                    id="therapist-profile-phone"
+                    type="tel"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    maxLength={20}
+                    disabled={profileBusy || !therapist}
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder="Agregar teléfono"
+                    className="min-w-0 w-full py-2.5 text-xs font-bold text-[#1C1135] outline-none placeholder:text-[#9E95B7]"
+                  />
                 </div>
               </div>
 
               {/* Credential */}
               <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4]">
-                <p className="text-xs font-extrabold text-[#1C1135] mb-3">Cédula profesional</p>
-                <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-dashed border-[#C8C2DC] bg-white text-xs text-[#9E95B7]">
-                  <CreditCard size={14} />
-                  <span>Próximamente</span>
+                <label htmlFor="therapist-profile-license" className="block text-xs font-extrabold text-[#1C1135] mb-3">Cédula profesional</label>
+                <div className="flex items-center gap-2 px-3 rounded-xl border border-[#E8E5F4] bg-white">
+                  <CreditCard size={14} className="shrink-0 text-[#9E95B7]" />
+                  <input
+                    id="therapist-profile-license"
+                    type="text"
+                    autoComplete="off"
+                    maxLength={40}
+                    disabled={profileBusy || !therapist}
+                    value={professionalId}
+                    onChange={(event) => setProfessionalId(event.target.value)}
+                    placeholder="Agregar número de cédula"
+                    className="min-w-0 w-full py-2.5 text-xs font-bold text-[#1C1135] outline-none placeholder:text-[#9E95B7]"
+                  />
                 </div>
               </div>
-            </div>
+              <div className="md:col-span-3 flex flex-col sm:flex-row sm:items-center gap-3">
+                <Btn type="submit" disabled={profileBusy || !therapist}>
+                  {saveProfile.isPending ? 'Guardando…' : 'Guardar teléfono y cédula'}
+                </Btn>
+                <p className="text-[10px] text-[#9E95B7]">Estos datos se guardan de forma privada en tu perfil profesional.</p>
+              </div>
+              <div className="md:col-span-3 space-y-2">
+                <RemoteFeedback error={saveProfile.error || uploadPhoto.error || removePhoto.error} />
+                {profileValidation && <p role="alert" className="text-xs font-bold text-red-700">{profileValidation}</p>}
+                {profileNotice && <p role="status" className="text-xs font-bold text-green-700">✓ {profileNotice}</p>}
+              </div>
+            </form>
           </div>
         )}
 

@@ -77,6 +77,9 @@ export interface TerapeutaData {
   anios_experiencia: number | null;
   idiomas: string | null;
   descripcion_profesional: string | null;
+  telefono?: string | null;
+  cedula_profesional?: string | null;
+  foto_perfil_url?: string | null;
 }
 
 export interface TerapeutaProfileResponse {

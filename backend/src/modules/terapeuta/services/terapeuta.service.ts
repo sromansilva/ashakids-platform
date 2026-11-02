@@ -6,6 +6,7 @@ export interface ProfessionalItem {
   apellidos: string;
   especialidad: string | null;
   descripcion_profesional: string | null;
+  foto_perfil_url: string | null;
 }
 
 export interface AvailabilityData {
@@ -21,6 +22,11 @@ export interface AvailableSlotItem {
   motivo: string | null;
 }
 
+export interface TherapistProfileChanges {
+  telefono?: string | null;
+  cedula_profesional?: string | null;
+}
+
 export class TerapeutaService {
   async getDirectorio(filters?: { limit?: number; offset?: number }): Promise<{ items: ProfessionalItem[]; total: number }> {
     try {
@@ -30,7 +36,9 @@ export class TerapeutaService {
           u.nombres,
           u.apellidos,
           COALESCE(t.especialidad, 'Terapia del Lenguaje') as especialidad,
-          COALESCE(t.descripcion_profesional, 'Especialista en fonoaudiología y comunicación infantil.') as descripcion_profesional
+          COALESCE(t.descripcion_profesional, 'Especialista en fonoaudiología y comunicación infantil.') as descripcion_profesional,
+          t.foto_perfil,
+          t.foto_perfil_mime
         FROM terapeutas t
         JOIN usuarios u ON t.id_usuario = u.id_usuario
         WHERE u.activo = true
@@ -46,6 +54,9 @@ export class TerapeutaService {
         apellidos: r.apellidos,
         especialidad: r.especialidad,
         descripcion_profesional: r.descripcion_profesional,
+        foto_perfil_url: Buffer.isBuffer(r.foto_perfil) && r.foto_perfil_mime
+          ? `data:${r.foto_perfil_mime};base64,${r.foto_perfil.toString('base64')}`
+          : null,
       }));
       return { items, total: items.length };
     } catch (err) {
@@ -58,6 +69,7 @@ export class TerapeutaService {
             apellidos: 'Ramirez',
             especialidad: 'Terapia del Lenguaje y Fonología',
             descripcion_profesional: 'Certificado en intervención temprana y habla infantil.',
+            foto_perfil_url: null,
           },
         ],
         total: 1,
@@ -137,7 +149,8 @@ export class TerapeutaService {
     try {
       const res = await pool.query(
         `SELECT u.id_usuario, u.codigo_usuario, u.email, u.nombres, u.apellidos, u.activo,
-                t.id_terapeuta, t.especialidad, t.anios_experiencia, t.idiomas, t.descripcion_profesional
+                t.id_terapeuta, t.especialidad, t.anios_experiencia, t.idiomas, t.descripcion_profesional,
+                t.telefono, t.cedula_profesional, t.foto_perfil, t.foto_perfil_mime
          FROM usuarios u
          JOIN terapeutas t ON u.id_usuario = t.id_usuario
          WHERE u.id_usuario = $1 LIMIT 1;`,
@@ -163,6 +176,11 @@ export class TerapeutaService {
             anios_experiencia: r.anios_experiencia,
             idiomas: r.idiomas || 'Español',
             descripcion_profesional: r.descripcion_profesional,
+            telefono: r.telefono ?? null,
+            cedula_profesional: r.cedula_profesional ?? null,
+            foto_perfil_url: Buffer.isBuffer(r.foto_perfil) && r.foto_perfil_mime
+              ? `data:${r.foto_perfil_mime};base64,${r.foto_perfil.toString('base64')}`
+              : null,
           },
         };
       }
@@ -188,8 +206,60 @@ export class TerapeutaService {
         anios_experiencia: 5,
         idiomas: 'Español',
         descripcion_profesional: 'Especialista en fonoaudiología y comunicación infantil.',
+        telefono: null,
+        cedula_profesional: null,
+        foto_perfil_url: null,
       },
     };
+  }
+
+  async updateMyProfile(userId: number, changes: TherapistProfileChanges): Promise<void> {
+    const columns: string[] = [];
+    const values: Array<string | null | number> = [];
+    if (Object.prototype.hasOwnProperty.call(changes, 'telefono')) {
+      values.push(changes.telefono?.trim() || null);
+      columns.push(`telefono = $${values.length}`);
+    }
+    if (Object.prototype.hasOwnProperty.call(changes, 'cedula_profesional')) {
+      values.push(changes.cedula_profesional?.trim() || null);
+      columns.push(`cedula_profesional = $${values.length}`);
+    }
+    if (columns.length === 0) return;
+
+    values.push(userId);
+    const result = await pool.query(
+      `UPDATE public.terapeutas SET ${columns.join(', ')} WHERE id_usuario = $${values.length} RETURNING id_terapeuta;`,
+      values,
+    );
+    if (result.rowCount === 0) {
+      throw Object.assign(new Error('No se encontró el perfil profesional asociado a tu usuario.'), { status: 404 });
+    }
+  }
+
+  async updateMyProfilePhoto(userId: number, image: Buffer, mimeType: string): Promise<void> {
+    const result = await pool.query(
+      `UPDATE public.terapeutas
+       SET foto_perfil = $1, foto_perfil_mime = $2
+       WHERE id_usuario = $3
+       RETURNING id_terapeuta;`,
+      [image, mimeType, userId],
+    );
+    if (result.rowCount === 0) {
+      throw Object.assign(new Error('No se encontró el perfil profesional asociado a tu usuario.'), { status: 404 });
+    }
+  }
+
+  async removeMyProfilePhoto(userId: number): Promise<void> {
+    const result = await pool.query(
+      `UPDATE public.terapeutas
+       SET foto_perfil = NULL, foto_perfil_mime = NULL
+       WHERE id_usuario = $1
+       RETURNING id_terapeuta;`,
+      [userId],
+    );
+    if (result.rowCount === 0) {
+      throw Object.assign(new Error('No se encontró el perfil profesional asociado a tu usuario.'), { status: 404 });
+    }
   }
 
   async getPacientes(terapeutaId: number) {

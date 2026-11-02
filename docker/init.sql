@@ -834,6 +834,10 @@ CREATE TABLE public.terapeutas (
     anios_experiencia integer,
     idiomas character varying(50),
     descripcion_profesional text,
+    telefono character varying(20),
+    cedula_profesional character varying(40),
+    foto_perfil bytea,
+    foto_perfil_mime character varying(30),
     CONSTRAINT chk_terapeutas_experiencia CHECK (((anios_experiencia IS NULL) OR (anios_experiencia >= 0)))
 );
 
