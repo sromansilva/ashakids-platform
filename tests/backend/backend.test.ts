@@ -2,6 +2,11 @@ import { describe, it, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { app } from '../../backend/dist/app.js';
 import { pool } from '../../backend/dist/core/database.js';
+import { migrateIncidencias } from '../../backend/dist/modules/incidencias/incidencias.migration.js';
+import { seedIncidencias } from '../../backend/dist/modules/incidencias/incidencias.seed.js';
+import { migrateTerapeutaProfile } from '../../backend/dist/modules/terapeuta/terapeuta-profile.migration.js';
+import { migrateClinicaSchema } from '../../backend/dist/modules/clinica/clinica.migration.js';
+import { migrateNotificacionesSchema } from '../../backend/dist/modules/notificaciones/notificaciones.migration.js';
 import type { Server } from 'node:http';
 
 let server: Server;
@@ -337,6 +342,13 @@ function stopServer(): Promise<void> {
 
 describe('ASHAKids Modular TypeScript Backend Tests', () => {
   before(async () => {
+    // Match the production bootstrap so a fresh isolated database has every
+    // schema change required by the API tests before requests start.
+    await migrateIncidencias();
+    await migrateTerapeutaProfile();
+    await migrateClinicaSchema();
+    await migrateNotificacionesSchema();
+    await seedIncidencias();
     await startServer();
     await createClinicalAccessFixture();
     await createMessagingFixture();
