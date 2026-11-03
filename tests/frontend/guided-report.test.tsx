@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderRoute } from './helpers';
 
 const patientName = 'Leo Ejemplo';
@@ -15,6 +15,25 @@ function api(initial = legacy) {
     return new Response(JSON.stringify(data), {headers:{'Content-Type':'application/json','X-Total-Count':String(Array.isArray(data)?data.length:1)}});
   });
 }
+
+it('autosaves partial clinical notes as a draft without waiting for the completed report', async () => {
+  const calls = api({ observaciones_iniciales: '', objetivos_trabajados: '', nivel_ayuda: '', proximos_pasos: '' });
+  renderRoute('/terapeuta/reportes', 'TERAPEUTA');
+  const observations = await screen.findByLabelText('Observaciones iniciales');
+  fireEvent.change(observations, { target: { value: 'Nota clínica durante la sesión.' } });
+  expect(screen.getByRole('status')).toHaveTextContent('Se guardarán automáticamente en unos segundos.');
+
+  await waitFor(() => {
+    const writes = calls.mock.calls.filter(([, init]) => init?.method === 'PUT');
+    expect(writes).toHaveLength(1);
+    expect(JSON.parse(String(writes[0][1]?.body))).toEqual({
+      observaciones_iniciales: 'Nota clínica durante la sesión.',
+      objetivos_trabajados: '',
+      nivel_ayuda: '',
+      proximos_pasos: '',
+    });
+  }, { timeout: 2500 });
+});
 
 it('inserts personalized templates on demand, blocks incomplete text and saves completed narratives with the selected help level', async () => {
   const calls = api({observaciones_iniciales:'',objetivos_trabajados:'',nivel_ayuda:'',proximos_pasos:''});

@@ -196,3 +196,47 @@ export async function assertSessionEditAccess(user: AuthenticatedUser, sessionId
   if (user.rol !== 'TERAPEUTA') throw fail('Solo el terapeuta asignado puede modificar esta sesión.', 403);
   if (!(await canEditSession(user, sessionId))) throw fail('Sesión no encontrada.');
 }
+
+export async function hasConsentForAI(
+  patientId: number,
+  tipo = 'EVALUACION_FONOLOGICA_IA',
+): Promise<boolean> {
+  if (!Number.isInteger(patientId) || patientId <= 0) return false;
+  try {
+    const result = await pool.query(
+      `SELECT estado FROM public.consentimientos_ia
+       WHERE id_paciente = $1 AND tipo_consentimiento = $2
+       ORDER BY fecha_concesion DESC, id_consentimiento DESC
+       LIMIT 1;`,
+      [patientId, tipo],
+    );
+    return result.rows[0]?.estado === 'CONCEDIDO';
+  } catch {
+    return false;
+  }
+}
+export async function getSessionPatientId(sessionId: number): Promise<number | null> {
+  if (!Number.isInteger(sessionId) || sessionId <= 0) return null;
+  const result = await pool.query(
+    `SELECT r.id_paciente
+     FROM sesiones s
+     JOIN reservas r ON r.id_reserva = s.id_reserva
+     WHERE s.id_sesion = $1
+     LIMIT 1;`,
+    [sessionId],
+  );
+  return result.rows[0] ? Number(result.rows[0].id_paciente) : null;
+}
+
+export async function assertConsentAccess(
+  patientId: number,
+  tipo = 'EVALUACION_FONOLOGICA_IA',
+): Promise<void> {
+  const granted = await hasConsentForAI(patientId, tipo);
+  if (!granted) {
+    throw Object.assign(
+      new Error('CONSENT_REQUIRED: Se requiere la autorización explícita del tutor para evaluación asistida por IA (Ley 29733).'),
+      { status: 403, code: 'CONSENT_REQUIRED' },
+    );
+  }
+}

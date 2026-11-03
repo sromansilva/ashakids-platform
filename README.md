@@ -45,7 +45,7 @@ ashakids-platform/
 ├── backend/                  # API REST en TypeScript + Express + Drizzle ORM
 │   └── src/
 │       ├── core/             # Configuración Zod, conexión a PostgreSQL, middlewares, seguridad
-│       ├── infrastructure/   # Integraciones externas (Gmail API OAuth2, Google Meet API, Reconocimiento Whisper)
+│       ├── infrastructure/   # Integraciones externas (Gmail API OAuth2, Google Meet API y Wav2Vec 2.0)
 │       └── modules/          # 20 Módulos de dominio (auth, admin, agenda, clinica, mundo_asha, etc.)
 │           ├── routes/       # Definición declarativa de endpoints REST (/api/v1/...)
 │           └── services/     # Lógica de negocio, reglas de dominio y persistencia segura con fallbacks
@@ -120,24 +120,33 @@ La base de datos viene precargada con usuarios de prueba para validar cada flujo
 
 ## 🧪 Batería de Pruebas y Calidad de Código
 
-El proyecto cuenta con un sistema estricto de pruebas automatizadas que debe pasar al 100% antes de cada integración:
+Ejecuta la suite aplicable antes de integrar cambios. Las cifras de pruebas cambian al agregar cobertura; los resultados de cada ejecución son la referencia actual.
 
-```bash
-# 1. Pruebas de integración del Backend (17/17 passing)
+```powershell
+# Backend. Usa fixtures y requiere PostgreSQL de prueba aislado.
 npm --prefix backend run test
 
-# 2. Pruebas de rutas públicas y guardias por rol (27/27 passing)
-npm --prefix frontend run test:routing
+# Flujo E2E. Solo con ENVIRONMENT=test, DB_HOST local, DB_NAME con sufijo _test o _e2e y la base de prueba aislada.
+$env:ASHAKIDS_RUN_DB_E2E = '1'
+npm run test:e2e
 
-# 3. Pruebas unitarias y de componentes frontend (433/433 passing)
+# Rutas, permisos y componentes del frontend
+npm --prefix frontend run test:routing
 npm --prefix frontend run test:components
 
-# 4. Verificación estricta de límites arquitectónicos e importaciones
+# Límites de arquitectura, imports y cliente HTTP
 npm --prefix frontend run check:frontend
 
-# 5. Compilación de producción (0 errores TypeScript / Vite)
-npm --prefix frontend run build
-npm --prefix backend run build
+# Pruebas del microservicio ML. Ejecutar desde un entorno Python con ml-service/requirements-test.txt instalado.
+python -m unittest discover -s ml-service
+
+# Typecheck y builds de producción
+npm run typecheck
+npm run build
+
+# Builds de contenedores que también valida CI
+docker build --tag ashakids-ci .
+docker build --tag ashakids-ml-ci --file ml-service/Dockerfile ml-service
 ```
 
 ---

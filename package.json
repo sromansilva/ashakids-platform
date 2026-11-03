@@ -8,6 +8,7 @@
     "test": "npm --prefix frontend test && npm --prefix backend test",
     "test:frontend": "npm --prefix frontend test",
     "test:backend": "npm --prefix backend test",
+    "test:e2e": "npm --prefix backend run build && node --experimental-strip-types --test tests/e2e/e2e_full_flow.test.ts",
     "typecheck": "npm --prefix frontend run typecheck && npm --prefix backend run typecheck",
     "typecheck:frontend": "npm --prefix frontend run typecheck",
     "typecheck:backend": "npm --prefix backend run typecheck",

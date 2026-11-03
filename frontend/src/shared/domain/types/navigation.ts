@@ -14,7 +14,7 @@ export type View =
   | "admin/reportes" | "admin/usuarios" | "admin/pacientes" | "admin/citas" | "admin/sesiones"
   | "admin/analiticas" | "admin/mensajes" | "admin/moderacion" | "admin/solicitudes" | "admin/core"
   | "mundo-asha" | "mundo-asha/cuentos" | "mundo-asha/canciones" | "mundo-asha/trabalenguas"
-  | "mundo-asha/adivinanzas" | "mundo-asha/juegos" | "mundo-asha/isla" | "mundo-asha/academia"
+  | "mundo-asha/adivinanzas" | "mundo-asha/juegos" | "mundo-asha/academia"
   | "mundo-asha/retos" | "mundo-asha/insignias" | "mundo-asha/perfil" | "mundo-asha/laberinto"
   | "session" | "session/prep" | "session/waiting" | "session/active"
   | "session/end" | "session/summary" | "session/rating" | "session/rewards"

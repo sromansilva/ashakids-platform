@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as argon2 from '@node-rs/argon2';
-import { loginSchema, registerSchema, forgotPasswordSchema } from '../dtos/auth.dto.js';
+import { loginSchema, forgotPasswordSchema } from '../dtos/auth.dto.js';
 import { authService } from '../services/auth.service.js';
 import { settings } from '../../../core/config.js';
 import { getSessionToken } from '../../../core/middleware/auth.middleware.js';
@@ -29,17 +29,6 @@ export class AuthController {
       const { user, token } = await authService.login(dto);
       setSessionCookie(res, token);
       res.json({ message: 'Inicio de sesión exitoso', token, user });
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  async register(req: Request, res: Response, next: NextFunction): Promise<void> {
-    try {
-      const dto = registerSchema.parse(req.body);
-      const { user, token } = await authService.register(dto);
-      setSessionCookie(res, token);
-      res.status(201).json({ message: 'Usuario registrado exitosamente', token, user });
     } catch (err) {
       next(err);
     }
@@ -207,8 +196,9 @@ export class AuthController {
       }
 
       const userRes = await pool.query(
-        `SELECT id_usuario, codigo_usuario, email, password_hash FROM usuarios
-         WHERE (UPPER(codigo_usuario) = UPPER($1) OR LOWER(email) = LOWER($1)) AND activo = true
+        `SELECT id_usuario, codigo_usuario, email, password_hash, nombres, apellidos FROM usuarios
+         WHERE (UPPER(codigo_usuario) = UPPER($1) OR LOWER(email) = LOWER($1))
+           AND activo = true AND password_change_required = true
          LIMIT 1;`,
         [rawInput]
       );
@@ -221,15 +211,18 @@ export class AuthController {
         }
         const token = createResetToken(user.id_usuario, user.codigo_usuario, user.password_hash);
         const origin = (settings.PUBLIC_ORIGIN || 'https://ashakids.life').replace(/\/+$/, '');
-        const resetUrl = `${origin}/crear-contrasena?token=${token}`;
-        void GmailService.sendPasswordResetEmail({
+        const activationUrl = `${origin}/crear-contrasena?token=${encodeURIComponent(token)}`;
+        void GmailService.sendAccountActivationEmail({
           to: targetEmail,
-          resetUrl,
+          name: `${user.nombres} ${user.apellidos || ''}`.trim(),
+          role: 'Familia o terapeuta',
+          code: user.codigo_usuario,
+          activationUrl,
         }).catch((e) => console.warn('[AuthController] Error reenviando enlace:', e));
       }
 
       res.json({
-        message: 'Si la cuenta existe, hemos enviado un enlace a tu correo.',
+        message: 'Si la cuenta está pendiente de activación, enviaremos un enlace a tu correo.',
       });
     } catch (err) {
       next(err);

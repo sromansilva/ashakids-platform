@@ -9,6 +9,7 @@ import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { agendaService, appointmentsService, patientsService, treatmentsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { readAllPages } from '@/core/api/readAllPages';
 import type { Appointment } from '@/modules/clinica/domain/clinical';
+import { FamilyConsentManager } from './FamilyConsentManager';
 const field = 'booking-field-input';
 const localDate = (date: string) => new Date(Date.parse(date) - 5 * 3600000).toISOString().slice(0, 10);
 const clock = (date: string) => new Date(date).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -133,6 +134,17 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
             <div className="booking-review-card"><span className="booking-review-card-icon">{mode === 'PRESENCIAL' ? <Building2 size={17} aria-hidden="true" /> : <Video size={17} aria-hidden="true" />}</span><div><small>{mode === 'PRESENCIAL' ? 'Atención presencial' : 'Atención virtual'}</small><strong>{location}</strong></div></div>
           </div>
           <p className="booking-review-note">La reserva quedará confirmada al guardar. El sistema volverá a comprobar que el horario siga disponible.</p>
+          {!appointment && type === 'INTRODUCTORIA' && patient > 0 && (
+            <aside className="mt-4 space-y-2 rounded-2xl border border-violet-100 bg-white p-4" aria-label="Permiso opcional para evaluación fonológica">
+              <div>
+                <h4 className="text-sm font-extrabold text-[#1C1135]">Antes de la primera consulta</h4>
+                <p className="mt-1 text-xs leading-relaxed text-[#615274]">
+                  Puedes autorizar el uso de reconocimiento de voz para una prueba breve durante la sesión. Es opcional y no afecta la reserva; sin autorización, la prueba por voz permanecerá desactivada. Puedes cambiar esta decisión desde Privacidad y consentimientos.
+                </p>
+              </div>
+              <FamilyConsentManager patientId={patient} patientName={patientName} />
+            </aside>
+          )}
         </section>}
         <RemoteFeedback error={save.error} />
       </fieldset>

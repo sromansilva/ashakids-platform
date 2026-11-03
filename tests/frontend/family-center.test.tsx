@@ -127,6 +127,10 @@ it.each([
   fireEvent.click(within(dialog).getByRole('button',{name:'Revisar reserva'}));
   expect(within(dialog).getByText(mode==='PRESENCIAL'?'Atención presencial':'Atención virtual')).toBeInTheDocument();
   expect(within(dialog).getByText(mode==='PRESENCIAL'?address:meet)).toBeInTheDocument();
+  if (!therapy) {
+    expect(within(dialog).getByText(/es opcional y no afecta la reserva/i)).toBeInTheDocument();
+    expect(await within(dialog).findByRole('button', { name: /Autorizar uso de IA fonológica/ })).toBeInTheDocument();
+  }
   fireEvent.click(within(dialog).getByRole('button',{name:'Confirmar cita'}));
   await waitFor(()=>expect(create).toHaveBeenCalledWith(expect.objectContaining({id_paciente:21,id_terapeuta:4,id_tratamiento:therapy?8:null,tipo_cita:therapy?'TERAPIA':'INTRODUCTORIA',fecha_hora_inicio:start,fecha_hora_fin:end,modalidad:mode,localizacion:mode==='PRESENCIAL'?address:meet})));
   await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());

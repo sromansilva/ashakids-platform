@@ -1,6 +1,7 @@
 import { beforeEach, expect, it, vi } from "vitest";
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { renderRoute } from "./helpers";
+import { LandingElApoyoQue } from "@/modules/public/presentation/landing/LandingElApoyoQue";
 import { LEARNING_WORLDS, deriveWorldProgress, type VerifiedLearningAttempt } from "@/modules/mundo_asha/application/learningWorlds";
 import { capabilityNotice } from "@/core/router/routeCapabilities";
 import type { Patient, Appointment, Session } from "@/modules/clinica/domain/clinical";
@@ -11,6 +12,20 @@ const future: Appointment = { id_reserva: 1, id_paciente: 1, id_tratamiento: 1, 
 const completed: Session = { id_sesion: 1, id_reserva: 2, cita: { ...future, id_reserva: 2, estado_reserva: "COMPLETADA" }, estado_sesion: "FINALIZADA", asistencia: "ASISTIO", reporte_disponible: false, fecha_hora_inicio_real: "2026-10-09T10:00:00Z", fecha_hora_fin_real: "2026-10-09T10:45:00Z" };
 const response = (body: unknown, status = 200) => new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json", "X-Total-Count": String(Array.isArray(body) ? body.length : 1) } });
 beforeEach(() => sessionStorage.clear());
+
+it("Landing account request opens the official WhatsApp channel", () => {
+  render(<LandingElApoyoQue />);
+  expect(screen.getByRole("link", { name: "Solicitar información de cuenta por WhatsApp" }))
+    .toHaveAttribute("href", expect.stringContaining("https://wa.me/51986309426"));
+});
+
+it("Public contact offers a working WhatsApp path without placeholder details", async () => {
+  renderRoute("/contacto", null);
+  expect(await screen.findByRole("heading", { name: "Conversemos por WhatsApp" })).toBeInTheDocument();
+  expect(screen.getByRole("link", { name: "Solicitar información por WhatsApp" }))
+    .toHaveAttribute("href", expect.stringContaining("https://wa.me/51986309426"));
+  expect(screen.queryByText(/555|Ciudad de México|hola@ashakids\.com/i)).not.toBeInTheDocument();
+});
 function api(options: { error?: boolean; pending?: boolean; children?: Patient[]; writeError?: boolean } = {}) {
   vi.mocked(fetch).mockImplementation(async (input, init) => {
     if (options.writeError && init?.method === "POST") return response({ detail: "Registro de hijo no disponible" }, 503);
@@ -19,6 +34,11 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
     const path = new URL(String(input), "http://localhost").pathname.replace(/^\/api\/v1/, "");
     if (path === "/terapeutas") return response([{ id_terapeuta: 1, nombres: "Profesional", apellidos: "Uno", especialidad: "Lenguaje" }]);
     if (path === "/pacientes") return response(options.children ?? [child, sibling]);
+    if (/^\/clinica\/consentimientos\/\d+$/.test(path)) return response({ id_paciente: Number(path.split('/').pop()), consentido: false, estado: 'NO_SOLICITADO', tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA', fecha_concesion: null });
+    if (path === "/clinica/consentimientos" && init?.method === "POST") {
+      const body = JSON.parse(String(init.body));
+      return response({ id_consentimiento: 1, id_paciente: body.id_paciente, consentido: body.estado === 'CONCEDIDO', estado: body.estado, tipo_consentimiento: body.tipo_consentimiento });
+    }
     if (/^\/pacientes\/\d+\/juegos$/.test(path)) return response({ id_paciente: Number(path.split('/')[2]), mundos: [], experiencia: 0, nivel: 1, medallas: [], intentos_totales: 0, experiencia_siguiente_nivel: 200 });
     if (path === "/citas") return response([future, completed.cita, { ...future, id_reserva: 3, estado_reserva: "CANCELADA" }, { ...future, id_reserva: 4, fecha_hora_fin: "2020-01-01T00:00:00Z" }]);
     if (path === "/sesiones") return response([completed, { ...completed, id_sesion: 2, asistencia: "NO_ASISTIO" }]);
@@ -32,6 +52,7 @@ function api(options: { error?: boolean; pending?: boolean; children?: Patient[]
 it.each(["/register", "/register/padre", "/register/terapeuta", "/register/verify", "/register/terapeuta/success", "/onboarding"])("%s explains real access without invented credentials, email or success", async path => {
   renderRoute(path, null);
   await screen.findByRole("button", { name: "Ir al inicio de sesión" });
+  expect(screen.getByRole("link", { name: /(Contactar|Pedir ayuda) por WhatsApp/i })).toHaveAttribute("href", expect.stringContaining("wa.me/51986309426"));
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   expect(screen.queryByText(/Correo reenviado|Contraseña actualizada|Solicitud enviada|ana@email.com|Ya verifiqué/)).not.toBeInTheDocument();
   expect(fetch).not.toHaveBeenCalled();
@@ -50,13 +71,17 @@ it("/forgot-password offers real recovery form and submits to auth API", async (
   expect(await screen.findByText(/Instrucciones enviadas/i)).toBeInTheDocument();
 });
 
-it("Consent is pending, does not record acceptance, and leads to real family settings", async () => {
+it("Consent is scoped to each child and records the tutor's explicit choice", async () => {
   api(); renderRoute("/padre/consentimiento", "PADRE");
-  await screen.findByRole("heading", { name: "Preferencias y consentimientos" });
+  await screen.findByRole("heading", { name: "Privacidad y consentimientos" });
   expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
-  expect(screen.queryByText("Preferencias registradas")).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole("button", { name: "Gestionar hijos" }));
-  await screen.findByRole("heading", { name: "Configuración" });
+  expect(await screen.findAllByText("Consentimiento para evaluación asistida por IA")).toHaveLength(2);
+  const authorizeButtons = await screen.findAllByRole("button", { name: "Autorizar uso de IA fonológica" });
+  fireEvent.click(authorizeButtons[0]);
+  await screen.findByText("Consentimiento otorgado con éxito para evaluaciones fonológicas asistidas.");
+  const consentWrite = vi.mocked(fetch).mock.calls.find(([input, options]) =>
+    new URL(String(input), "http://localhost").pathname.endsWith("/clinica/consentimientos") && options?.method === "POST");
+  expect(JSON.parse(String(consentWrite?.[1]?.body))).toMatchObject({ id_paciente: 1, estado: "CONCEDIDO" });
 });
 it("Family settings expose both siblings without a plan restriction and describe a historical soft delete", async () => {
   api(); renderRoute("/padre/config", "PADRE");

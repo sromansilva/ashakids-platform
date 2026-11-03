@@ -45,6 +45,7 @@
 .asha-island-label svg { flex-shrink: 0; }
 .asha-world-island:not(:disabled):is(:hover,:focus-visible) .asha-island-label { background: var(--world-soft); }
 .asha-island-progress { display: flex; align-items: center; justify-content: center; gap: 8px; background: #ffffffed; color: #51405e; padding: 5px 10px; border-radius: 0 0 10px 10px; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.asha-island-recommendation { display: flex; align-items: center; justify-content: center; gap: 6px; background: #fff0bf; color: #714509; padding: 5px 10px; border: 1px solid #e6b94f; border-radius: 0 0 10px 10px; font-size: 11px; font-weight: 900; line-height: 1.25; text-align: center; }
 .asha-level-dots { display: flex; gap: 3px; }
 .asha-level-dots > span { display: grid; place-items: center; width: 12px; height: 12px; border-radius: 3px; background: #dfd7eb; }
 .asha-level-dots > span.is-complete { background: var(--world-color); color: #fff; }
@@ -79,6 +80,7 @@
 .asha-worlds .is-next .asha-level-square { background: var(--world-color); color: #fff; }
 .asha-worlds .is-next .asha-level-square:hover { background: var(--world-color); }
 .asha-worlds .is-complete .asha-level-square { background: #0f766e; color: #fff; border-color: #0f766e; box-shadow: 0 6px 0 #99dfcd,0 10px 14px #45247812; }
+.asha-worlds .is-recommended .asha-level-square { outline: 4px solid #f4c65e; outline-offset: 3px; }
 .asha-level-number { position: absolute; display: grid; place-items: center; bottom: -12px; right: -10px; width: 29px; height: 29px; border-radius: 9px; background: #fff; color: var(--world-color); font-size: 15px; font-weight: 900; box-shadow: 0 3px 9px #45247821; }
 .asha-level-stop h3 { color: #24153b; font-size: 17px; font-weight: 900; line-height: 1.25; }
 .asha-level-stop > p { color: #615274; font-size: 12px; margin-top: 4px; font-weight: 700; }
@@ -110,6 +112,7 @@
   .asha-map-stop:last-child { grid-column: 1 / -1; width: 50%; justify-self: center; }
   .asha-island-label { font-size: 13px; }
   .asha-island-progress { font-size: 11px; }
+  .asha-island-recommendation { font-size: 10px; }
   .asha-level-path { width: 100%; }
   .asha-level-stop { width: 65%; }
   .asha-level-stop:nth-child(even) { margin-left: 24%; }

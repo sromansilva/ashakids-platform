@@ -24,7 +24,7 @@ ashakids-platform/
 ├── backend/                  # API REST en TypeScript + Express + Drizzle ORM
 │   └── src/
 │       ├── core/             # Configuración (Zod env), conexión a PostgreSQL, middleware de cookies
-│       ├── infrastructure/   # Integraciones externas: Google Calendar, Mailer/Gmail, Reconocimiento de Voz Whisper
+│       ├── infrastructure/   # Integraciones externas: Google Calendar, Mailer/Gmail y transcripción local con Wav2Vec 2.0
 │       └── modules/          # Módulos de dominio (agenda, auth, clinica, comunicacion, cuentas, mundo_asha, pacientes)
 ├── frontend/                 # SPA en React 18 + TypeScript + Vite + Tailwind CSS
 │   └── src/
@@ -43,10 +43,16 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
 
 ### Regla 1: Integridad de Contratos de API y Servicios Externos
 - **Videollamadas y revisión de audio**:
-  - AshaKids no crea reuniones de Google Meet. Las sesiones virtuales se gestionan mediante Google Meet y selecciona la pista local individual del participante para una revisión experimental que debe confirmar antes de guardar.
-  - Google Calendar conserva la creación de eventos de cita sin solicitar datos de conferencia.
+  - AshaKids puede crear una reunión de Google Meet al reservar una cita virtual solo cuando `MEET_ENABLED` y las credenciales OAuth requeridas estén configuradas. Si la integración no está disponible, el terapeuta puede guardar un enlace manual validado de `meet.google.com`.
+  - La aplicación abre Meet y el panel clínico en paralelo; no captura ni selecciona la pista remota de un participante de Meet. El widget clínico captura una muestra breve desde el micrófono local del terapeuta, solo después de comprobar el consentimiento vigente del niño y con acción explícita.
+  - Para una sesión virtual, el terapeuta también puede solicitar una muestra desde el dispositivo familiar: el adulto la inicia explícitamente desde el portal familiar, y el resultado vuelve al terapeuta para revisión. Esta ruta usa el micrófono local familiar, nunca la pista remota de Meet, y mantiene el audio solo temporalmente en memoria.
+  - La salida de Wav2Vec se trata únicamente como transcripción tentativa: no calcula similitud fonética validada, no califica pronunciación ni emite diagnósticos. El terapeuta debe revisar y confirmar o descartar el texto antes de incorporarlo al reporte.
+  - Google Calendar conserva los eventos de cita. La integración de Meet solicita datos de conferencia solo desde `MeetService` cuando `MEET_ENABLED` está activo.
 - **Servicios de Correo / Gmail**:
   - Las variables y firmas en `backend/src/core/config.ts` y auth deben mantenerse backward-compatible.
+- **Alta de familias y acceso**:
+  - El registro público permanece cerrado tanto en la API (`POST /api/v1/auth/register`) como en la experiencia del frontend, que solo explica cómo solicitar acceso.
+  - Las cuentas familiares se crean manualmente desde la administración autenticada (`POST /api/v1/admin/familias` o `/api/v1/admin/cuentas/padres`) y reciben un enlace temporal para activar su contraseña. No habilitar auto-registro familiar.
 - **Base de Datos y PostgreSQL**:
   - Respetar la integridad referencial. Si se prueba la reserva de citas para un paciente (ej. `id_paciente: 3`), verificar que existan su `expediente` y su `tratamiento` activo para evitar violaciones de clave foránea (`fk_reservas_paciente`, `fk_reservas_tratamiento`).
 
@@ -78,17 +84,32 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
 - Verificar siempre con `git status` antes y después de hacer cambios.
 
 ### Regla 4: Batería de Pruebas Obligatoria
-Antes de dar por terminada cualquier tarea o entrega, se deben ejecutar y aprobar satisfactoriamente las siguientes tres comprobaciones:
+Antes de dar por terminada cualquier tarea o entrega, ejecutar las comprobaciones aplicables y reportar claramente las que no se pudieron correr:
 
 ```bash
-# 1. Pruebas de integración del backend (12/12 passing)
+# 1. Pruebas de integración del backend. Usan PostgreSQL y escriben fixtures: ejecutar solo con una base de prueba aislada y configurada explícitamente.
 npm --prefix backend run test
 
-# 2. Pruebas de enrutamiento y guardias de seguridad del frontend (25/25 passing)
+# 2. Flujo E2E en PostgreSQL local aislado. Requiere ENVIRONMENT=test, DB_HOST local, DB_NAME terminado en _test o _e2e y ASHAKIDS_RUN_DB_E2E=1.
+npm run test:e2e
+
+# 3. Pruebas de enrutamiento y guardias de seguridad del frontend
 npm --prefix frontend run test:routing
 
-# 3. Compilación de producción en TypeScript y Vite (0 errores)
-npm --prefix frontend run build
+# 4. Pruebas de componentes frontend
+npm --prefix frontend run test:components
+
+# 5. Verificación de límites, imports y cliente HTTP
+npm --prefix frontend run check:frontend
+
+# 6. Pruebas unitarias del microservicio ML
+python -m unittest discover -s ml-service
+
+# 7. Compilación de producción del backend y frontend
+npm run build
+
+# 8. Tipado de backend y frontend
+npm run typecheck
 ```
 
 ---

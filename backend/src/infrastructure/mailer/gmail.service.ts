@@ -313,6 +313,56 @@ https://ashakids.life`;
     });
   }
 
+  static async sendAppointmentReminder(params: {
+    to: string;
+    responsibleName: string;
+    childName: string;
+    date: string;
+    time: string;
+    meetUrl?: string;
+  }): Promise<MailSendResult> {
+    const text = `Hola ${params.responsibleName},
+
+Te recordamos que la sesión de ${params.childName} en ASHAKids empieza en cinco minutos.
+• Fecha: ${params.date}
+• Hora: ${params.time}
+${params.meetUrl ? `• Enlace de Google Meet: ${params.meetUrl}\n` : ''}
+Si la hora cambió, revisa la agenda en tu cuenta de Ashakids.
+
+Equipo Ashakids
+https://ashakids.life`;
+    return this.sendMail({
+      to: params.to,
+      subject: 'Tu sesión de Ashakids empieza en 5 minutos',
+      text,
+    });
+  }
+
+  static async sendAccountActivationEmail(params: {
+    to: string;
+    name: string;
+    role: string;
+    code: string;
+    activationUrl: string;
+  }): Promise<MailSendResult> {
+    return this.sendMail({
+      to: params.to,
+      subject: 'Activa tu cuenta de Ashakids',
+      text: `Hola ${params.name},
+
+Se creó tu cuenta de Ashakids como ${params.role}.
+Código de acceso: ${params.code}
+
+Abre este enlace para crear tu contraseña personal. El enlace vence en dos horas y solo puede utilizarse una vez:
+${params.activationUrl}
+
+Si no esperabas esta invitación, contacta al centro.
+
+Equipo Ashakids
+https://ashakids.life`,
+    });
+  }
+
   /**
    * Envía correo para restablecimiento de contraseña.
    */

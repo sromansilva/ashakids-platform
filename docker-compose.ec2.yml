@@ -23,6 +23,31 @@ services:
     networks:
       - internal
 
+  ml-service:
+    build:
+      context: ./ml-service
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      TREATMENT_MODEL_MANIFEST: ${TREATMENT_MODEL_MANIFEST:-/models/treatment-manifest.json}
+    expose:
+      - "8001"
+    volumes:
+      - ./ml-artifacts:/models:ro
+      - ashakids-ml-cache:/home/ashakids/.cache/huggingface
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=3)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      - internal
+
   app:
     build:
       context: .
@@ -44,6 +69,8 @@ services:
       SESSION_TTL_HOURS: 24
       CORS_ORIGINS: https://${APP_HOST:?Set APP_HOST in .env.ec2}
       PUBLIC_ORIGIN: https://${APP_HOST:?Set APP_HOST in .env.ec2}
+      ML_SERVICE_URL: http://ml-service:8001
+      ML_SERVICE_ENABLED: ${ML_SERVICE_ENABLED:-true}
       GMAIL_ENABLED: ${GMAIL_ENABLED:-false}
       GMAIL_CLIENT_ID: ${GMAIL_CLIENT_ID:-}
       GMAIL_CLIENT_SECRET: ${GMAIL_CLIENT_SECRET:-}
@@ -56,6 +83,8 @@ services:
       - "8000"
     depends_on:
       postgres:
+        condition: service_healthy
+      ml-service:
         condition: service_healthy
     healthcheck:
       test:
@@ -95,6 +124,7 @@ services:
 
 volumes:
   ashakids-pgdata:
+  ashakids-ml-cache:
   caddy-data:
   caddy-config:
 

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 384" role="img" aria-label="Ilustración de un ratón">
+  <defs><linearGradient id="body" x2="0" y2="1"><stop stop-color="#F4F0FF"/><stop offset="1" stop-color="#D8CCF6"/></linearGradient></defs>
+  <circle cx="145" cy="125" r="54" fill="#F4F0FF" stroke="#7757C2" stroke-width="10"/>
+  <circle cx="240" cy="125" r="54" fill="#F4F0FF" stroke="#7757C2" stroke-width="10"/>
+  <circle cx="145" cy="125" r="27" fill="#F5A8C7"/><circle cx="240" cy="125" r="27" fill="#F5A8C7"/>
+  <ellipse cx="193" cy="220" rx="101" ry="92" fill="url(#body)" stroke="#7757C2" stroke-width="10"/>
+  <ellipse cx="193" cy="266" rx="56" ry="42" fill="#FFF9FD"/>
+  <circle cx="158" cy="203" r="9" fill="#241B3B"/><circle cx="228" cy="203" r="9" fill="#241B3B"/>
+  <ellipse cx="193" cy="230" rx="12" ry="9" fill="#EB75A5"/>
+  <path d="M193 239c-7 13-22 15-31 7m31-7c7 13 22 15 31 7" fill="none" stroke="#67499E" stroke-width="7" stroke-linecap="round"/>
+  <path d="M93 228 49 216m48 28-50 1m242-17 46-12m-46 28 50 1" fill="none" stroke="#67499E" stroke-width="6" stroke-linecap="round"/>
+  <path d="M287 267c70 2 49 74 8 61-15-5-13-23 0-23" fill="none" stroke="#EB75A5" stroke-width="9" stroke-linecap="round"/>
+  <ellipse cx="159" cy="306" rx="24" ry="11" fill="#F5A8C7"/><ellipse cx="226" cy="306" rx="24" ry="11" fill="#F5A8C7"/>
+</svg>

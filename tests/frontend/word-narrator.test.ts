@@ -21,8 +21,18 @@ it('sirve audio natural del proyecto, sin usar síntesis del navegador', () => {
   expect(Player.last.play).toHaveBeenCalledOnce(); expect(speak).not.toHaveBeenCalled();
 });
 it('incluye las palabras, metas e instrucciones de los once juegos y la muestra', () => {
+  const targetsWithoutRecording = new Set(['Ratón', 'Plato', 'Tren']);
   for (const text of [narratorPreview, ...Object.values(words).map(word => word.name), ...wordGames.flatMap(game => [game.goal, `${game.goal} ${game.steps.join(' ')}`])]) {
-    expect(wordVoiceFiles[voiceKey(text)], text).toMatch(/^[a-f0-9]{16}\.mp3$/);
+    const file = wordVoiceFiles[voiceKey(text)];
+    if (targetsWithoutRecording.has(text)) expect(file).toBeUndefined();
+    else expect(file, text).toMatch(/^[a-f0-9]{16}\.mp3$/);
+  }
+});
+it('avisa y permite seguir con imágenes para los tres objetivos sin grabación', () => {
+  const notice = vi.fn(), narrator = createWordNarrator(notice);
+  for (const word of ['Ratón', 'Plato', 'Tren']) {
+    narrator.speak(word);
+    expect(notice).toHaveBeenLastCalledWith(expect.stringContaining('imágenes y el texto'));
   }
 });
 it('detiene y descarga el audio anterior al repetir o cancelar', () => {

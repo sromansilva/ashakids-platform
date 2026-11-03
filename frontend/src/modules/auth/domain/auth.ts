@@ -77,6 +77,9 @@ export interface TerapeutaData {
   anios_experiencia: number | null;
   idiomas: string | null;
   descripcion_profesional: string | null;
+  telefono?: string | null;
+  cedula_profesional?: string | null;
+  foto_perfil_url?: string | null;
 }
 
 export interface TerapeutaProfileResponse {
@@ -122,7 +125,7 @@ export interface CrearPadrePayload {
   nombres: string;
   apellidos: string;
   email: string;
-  password: string;
+  password?: string;
   parentesco?: string;
   telefono?: string;
   direccion?: string;
@@ -144,7 +147,7 @@ export interface CrearTerapeutaPayload {
   nombres: string;
   apellidos: string;
   email: string;
-  password: string;
+  password?: string;
   especialidad?: string;
   anios_experiencia?: number;
   idiomas?: string;

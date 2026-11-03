@@ -5,6 +5,7 @@ import { useAuth } from '@/modules/auth/application/useAuth';
 import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
 import { getPacienteAvatarImage } from '@/core/config/avatars';
 import { Isotipo } from '@/shared/presentation/components/illustrations/Isotipo';
+import { NotificationCenter } from '@/shared/presentation/components/common/NotificationCenter';
 import type { View } from '@/shared/domain/types/navigation';
 import './family-top-nav.css';
 
@@ -19,7 +20,7 @@ export interface FamilyTopNavProps {
 
 export function FamilyTopNav({
   cur: _cur,
-  go: _go,
+  go,
   logout,
   padreUserName,
   activeSection,
@@ -182,6 +183,7 @@ export function FamilyTopNav({
 
       {/* Right side: User Profile Badge + Salir Button */}
       <div className="ftn-user-section flex items-center gap-3">
+        <NotificationCenter go={go} compact />
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-full bg-violet-100/80 border border-violet-200 flex items-center justify-center text-[#6B46FE] font-black text-sm shrink-0">
             <User size={18} />

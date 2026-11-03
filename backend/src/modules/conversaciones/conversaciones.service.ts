@@ -3,6 +3,7 @@ import type { PoolClient } from 'pg';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
 import { pool } from '../../core/database.js';
 import { getTherapistId } from '../../core/security/clinical-access.js';
+import { emitNotificationEvent } from '../notificaciones/notification-events.js';
 
 export interface ContactItem {
   id_tutor: number;
@@ -415,6 +416,18 @@ export class ConversacionesService {
       const inserted = await this.insertTextMessage(client, user, conversation.id_conversacion, content);
       if (!inserted) throw fail('Esta conversación está en modo de solo lectura.', 403);
       await client.query('UPDATE conversaciones SET ultima_actividad = NOW() WHERE id_conversacion = $1;', [conversation.id_conversacion]);
+      const recipientId = user.id_usuario === conversation.id_usuario_tutor
+        ? conversation.id_usuario_terapeuta
+        : conversation.id_usuario_tutor;
+      await emitNotificationEvent(client, {
+        userId: recipientId,
+        preference: 'mensajes',
+        type: 'MENSAJE',
+        title: user.rol === 'PADRE' ? 'Nuevo mensaje de una familia' : 'Nuevo mensaje de tu terapeuta',
+        text: 'Tienes un mensaje nuevo en una conversación autorizada de ASHAKids.',
+        conversationId: conversation.id_conversacion,
+        eventKey: `mensaje:${inserted.id_mensaje}`,
+      });
       await client.query('COMMIT;');
       return mapMessage(inserted);
     } catch (err) {
@@ -517,6 +530,18 @@ export class ConversacionesService {
         ],
       );
       await client.query('UPDATE conversaciones SET ultima_actividad = NOW() WHERE id_conversacion = $1;', [conversation.id_conversacion]);
+      const recipientId = user.id_usuario === conversation.id_usuario_tutor
+        ? conversation.id_usuario_terapeuta
+        : conversation.id_usuario_tutor;
+      await emitNotificationEvent(client, {
+        userId: recipientId,
+        preference: 'mensajes',
+        type: 'MENSAJE',
+        title: user.rol === 'PADRE' ? 'Nuevo mensaje de una familia' : 'Nuevo mensaje de tu terapeuta',
+        text: 'Tienes un mensaje o archivo nuevo en una conversación autorizada de ASHAKids.',
+        conversationId: conversation.id_conversacion,
+        eventKey: `mensaje:${inserted.id_mensaje}`,
+      });
       await client.query('COMMIT;');
       return mapMessage(inserted, [mapAttachment(attachmentResult.rows[0])]);
     } catch (err) {

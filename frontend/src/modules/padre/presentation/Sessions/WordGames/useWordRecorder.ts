@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { voiceService, type TranscripcionRespuesta } from '@/modules/mundo_asha/infrastructure/voiceService';
+import { clinicaService } from '@/modules/clinica/infrastructure/clinicalService';
 
 type Phase = 'ready' | 'requesting' | 'recording' | 'processing' | 'result' | 'error';
 
-export function useWordRecorder(target: string, stopSpeech: () => void) {
+export function useWordRecorder(target: string, stopSpeech: () => void, patientId: number) {
   const [phase, setPhase] = useState<Phase>('ready');
   const [message, setMessage] = useState('');
   const [result, setResult] = useState<TranscripcionRespuesta | null>(null);
@@ -65,6 +66,22 @@ export function useWordRecorder(target: string, stopSpeech: () => void) {
     }
     update('requesting');
     try {
+      if (!Number.isInteger(patientId) || patientId <= 0) {
+        update('error'); setMessage('Selecciona el perfil del niño y confirma su consentimiento antes de grabar.'); return;
+      }
+      setMessage('Verificando el consentimiento vigente…');
+      let consent;
+      try {
+        consent = await clinicaService.getConsent(patientId);
+      } catch {
+        if (current()) { update('error'); setMessage('No pudimos verificar el consentimiento. Comprueba la conexión antes de grabar.'); }
+        return;
+      }
+      if (!current()) return;
+      if (consent.consentido !== true) {
+        update('error'); setMessage('El tutor debe autorizar el reconocimiento de voz para este niño antes de grabar.'); return;
+      }
+      setMessage('');
       const device = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true } });
       if (!current()) { device.getTracks().forEach(track => track.stop()); return; }
       stream.current = device;
@@ -98,8 +115,7 @@ export function useWordRecorder(target: string, stopSpeech: () => void) {
         const controller = new AbortController(); request.current = controller;
         timer.current = setTimeout(() => controller.abort(), 45000);
         try {
-          // No patient, level or attempt ID: this is transient LENGUAJE practice.
-          const response = await voiceService.transcribe(audio, { targetPhrase: target, signal: controller.signal });
+          const response = await voiceService.transcribe(audio, { targetPhrase: target, patientId, signal: controller.signal });
           if (!current()) return;
           if (response.estado !== 'OK' || !response.transcripcion.trim() || !response.comparacion) {
             update('error'); setMessage('No logramos reconocer la palabra. Escúchala y vuelve a probar, o sigue con las imágenes.'); return;

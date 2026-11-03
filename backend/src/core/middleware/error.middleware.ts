@@ -18,7 +18,10 @@ export function errorHandler(
     return;
   }
 
-  const statusCode = (err as any).status || 500;
+  const requestedStatus = (err as any).status;
+  const statusCode = Number.isInteger(requestedStatus) && requestedStatus >= 400 && requestedStatus <= 599
+    ? requestedStatus
+    : 500;
   if (statusCode < 500) {
     res.status(statusCode).json({
       error: err.message,
@@ -28,7 +31,7 @@ export function errorHandler(
   }
 
   console.error('[API Error]:', err);
-  res.status(500).json({
+  res.status(statusCode).json({
     error: 'Error interno del servidor.',
     mensaje: process.env.NODE_ENV === 'production' ? undefined : err.message,
   });

@@ -10,20 +10,6 @@ export const loginSchema = z.object({
 
 export type LoginDTO = z.infer<typeof loginSchema>;
 
-export const registerSchema = z.object({
-  nombres: z.string().min(2, 'El nombre es obligatorio'),
-  apellidos: z.string().min(2, 'El apellido es obligatorio'),
-  email: z.string().email('Email no válido'),
-  password: z.string().min(12, 'Contraseña de al menos 12 caracteres'),
-  codigo_usuario: z.string().optional(),
-  telefono: z.string().optional(),
-  tipo_documento: z.string().optional(),
-  numero_documento: z.string().optional(),
-  rol: z.enum(['ADMIN', 'TERAPEUTA', 'PADRE']).default('PADRE'),
-});
-
-export type RegisterDTO = z.infer<typeof registerSchema>;
-
 export const forgotPasswordSchema = z.object({
   email: z.string().email().optional(),
   codigo_usuario: z.string().optional(),

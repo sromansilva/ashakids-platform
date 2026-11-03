@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { pacientesService } from '../services/pacientes.service.js';
-import { getProgresoJuegos, registrarIntentoJuegos } from '../../juegos/juegos.routes.js';
+import { getProgresoJuegos, registrarIntentoJuegos, registrarActividadLudica } from '../../juegos/juegos.routes.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
 import { assertPatientAccess } from '../../../core/security/clinical-access.js';
 
@@ -110,11 +110,37 @@ pacientesRouter.get('/:key/juegos', requireRoles(['ADMIN', 'PADRE', 'TERAPEUTA']
   }
 });
 
+// Clinical outcomes and at-home game practice are returned as separate datasets.
+pacientesRouter.get('/:key/analiticas/fonemas', requireRoles(['ADMIN', 'TERAPEUTA']), async (req, res, next) => {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    const periodDays = req.query.periodo_dias === undefined ? 30 : parseInt(String(req.query.periodo_dias), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'El paciente indicado no es válido.' });
+    if (!Number.isInteger(periodDays) || periodDays < 1 || periodDays > 365) {
+      return res.status(400).json({ error: 'El periodo debe estar entre 1 y 365 días.' });
+    }
+    await assertPatientAccess(req.user!, key);
+    res.json(await pacientesService.getFonemeActivityAnalytics(key, periodDays));
+  } catch (err) {
+    next(err);
+  }
+});
+
 // POST /api/v1/pacientes/:key/juegos/:world/intentos
 pacientesRouter.post('/:key/juegos/:world/intentos', requireRoles(['ADMIN', 'PADRE', 'TERAPEUTA']), async (req, res, next) => {
   try {
     await assertPatientAccess(req.user!, parseInt(String(req.params.key), 10));
     return registrarIntentoJuegos(req, res, next);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/pacientes/:key/juegos/:world/actividades
+pacientesRouter.post('/:key/juegos/:world/actividades', requireRoles(['ADMIN', 'PADRE', 'TERAPEUTA']), async (req, res, next) => {
+  try {
+    await assertPatientAccess(req.user!, parseInt(String(req.params.key), 10));
+    return registrarActividadLudica(req, res, next);
   } catch (err) {
     next(err);
   }

@@ -15,6 +15,7 @@ export function WorldMap({ worlds, onOpen }: { worlds: WorldProgress[]; onOpen: 
             <PublicIllustration src={`/illustrations/world-${art.image}-v54.png`} alt="" width={240} height={160} sizes="(max-width: 600px) 150px, 240px" className="asha-island-art"/>
             <span className="asha-island-label"><span>{world.name}</span>{world.asignado ? <ArrowRight size={16} aria-hidden="true"/> : <LockKeyhole size={16} aria-hidden="true"/>}</span>
             <span className="asha-island-progress">{world.asignado ? ['HABLA','LENGUAJE'].includes(world.id) ? '9 juegos para ti · según tu edad' : <>{world.completados.length}/{world.levels.length} niveles <span className="asha-level-dots" aria-hidden="true">{world.levels.map(level => <span key={level.number} className={world.completados.includes(level.number) ? 'is-complete' : ''}>{world.completados.includes(level.number) && <Check size={10}/>}</span>)}</span></> : 'Pendiente de asignación'}</span>
+            {world.recomendado_esta_semana && <span className="asha-island-recommendation">Recomendado esta semana{world.fonemas_recomendados?.length ? ` · ${world.fonemas_recomendados.join(', ')}` : ''}</span>}
           </button>
         </li>;
       })}

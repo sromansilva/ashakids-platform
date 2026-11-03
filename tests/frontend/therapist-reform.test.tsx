@@ -30,11 +30,14 @@ it('therapist dashboard keeps refresh and removes redundant actions and note', a
   expect(screen.queryByText(/Los conteos reflejan/)).not.toBeInTheDocument();
 });
 
-it('profile uses recorded values and removes fake edits, MFA and deletion', async () => {
+it('profile shows recorded values and keeps the editable profile controls without MFA or deletion actions', async () => {
   api(); renderRoute('/terapeuta/config','TERAPEUTA');
   expect(await screen.findByDisplayValue('Profesional Sintético')).toHaveAttribute('readonly');
   expect(screen.getByDisplayValue('0')).toBeInTheDocument();
-  expect(screen.getAllByText('Próximamente')).toHaveLength(3);
+  expect(screen.getByRole('button',{name:'Cambiar foto'})).toBeInTheDocument();
+  expect(screen.getByLabelText('Teléfono')).toBeInTheDocument();
+  expect(screen.getByLabelText('Cédula profesional')).toBeInTheDocument();
+  expect(screen.queryByText('Próximamente')).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button',{name:'Seguridad'}));
   expect(screen.getByLabelText('Nueva contraseña')).toBeInTheDocument();
   expect(screen.queryByText(/Autenticación en dos pasos|Zona de peligro/)).not.toBeInTheDocument();

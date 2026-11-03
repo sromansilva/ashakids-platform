@@ -23,6 +23,18 @@ it('conserva el catálogo familiar, bienvenida, restauración de foco y limpieza
  click('Volver a los juegos');expect(screen.getByRole('button',{name:'Jugar El tesoro de palabras'})).toHaveFocus();expect(screen.getAllByRole('button',{name:/^Jugar /})).toHaveLength(11);
  expect(document.querySelectorAll('.word-game-card img[src^="/words/games/"]')).toHaveLength(10);view.unmount();expect(window.speechSynthesis.cancel).toHaveBeenCalled();expect(fetch).not.toHaveBeenCalled();
 });
+it('enlaza cualquier fonema recomendado con el Laberinto y solo muestra el enlace si hay foco clínico',()=>{
+ const openLabyrinth=vi.fn();
+ const view=render(<WordWorld back={vi.fn()} legacy={vi.fn()} patientId={1} focusedPhonemes={['/rr/']} focusedWordLevels={[{wordId:'dog',phoneme:'/rr/',level:4}]} openLabyrinth={openLabyrinth}/>);
+ fireEvent.click(screen.getByRole('button',{name:'Ir al Laberinto de Trabalenguas recomendado'}));
+ expect(openLabyrinth).toHaveBeenCalledOnce();
+ view.rerender(<WordWorld back={vi.fn()} legacy={vi.fn()} patientId={1} focusedPhonemes={['/s/']} focusedWordLevels={[{wordId:'sun',phoneme:'/s/',level:11}]} openLabyrinth={openLabyrinth}/>);
+ expect(screen.getByText(/aparecerán palabras como Sol/)).toBeInTheDocument();
+ fireEvent.click(screen.getByRole('button',{name:'Ir al Laberinto de Trabalenguas recomendado'}));
+ expect(openLabyrinth).toHaveBeenCalledTimes(2);
+ view.rerender(<WordWorld back={vi.fn()} legacy={vi.fn()} patientId={1} focusedPhonemes={[]} focusedWordLevels={[]} openLabyrinth={openLabyrinth}/>);
+ expect(screen.queryByRole('button',{name:'Ir al Laberinto de Trabalenguas recomendado'})).not.toBeInTheDocument();
+});
 it.each(modes)('vocabulario %s: pistas, errores sin premio y tres tesoros',mode=>{
  open('treasure',mode);expect(document.querySelectorAll('.word-choice-grid button')).toHaveLength(mode==='gentle'?2:3);click('Perro');expect(screen.queryByRole('button',{name:'Continuar'})).not.toBeInTheDocument();click('Perro');expect(screen.getByRole('note')).toHaveTextContent('bigotes');
  for(const name of ['Gato','Barco','Flor']){click(name);advance();}done();click('Elegir otro juego');expect(screen.getByText('Jugado en esta visita')).toBeInTheDocument();

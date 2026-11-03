@@ -9,25 +9,40 @@ import { SoundChallenges } from './SoundChallenges';
 import { SoundMemory } from './SoundMemory';
 import type { ChallengeKind } from './soundRounds';
 import { useSoundAudio } from './useSoundAudio';
+import { usePracticeActivityLog } from '@/modules/mundo_asha/application/usePracticeActivityLog';
 import { soundNarratorPreview, useSoundNarration } from './useSoundNarration';
+import type { PhonemeTarget } from '@/modules/clinica/domain/clinical';
 import './sound-world.css';
 import '../WordGames/word-world.css';
 import './sound-challenges.css';
 import './sound-ui.css';
 
-export function SoundWorld({ back, legacy, birthDate }: { back: () => void; legacy: () => void; birthDate?: string }) {
+export function SoundWorld({ back, legacy, birthDate, patientId, focusedPhonemes = [], openRecommendedLevels }: {
+  back: () => void;
+  legacy: () => void;
+  birthDate?: string;
+  patientId: number;
+  focusedPhonemes?: PhonemeTarget[];
+  openRecommendedLevels?: () => void;
+}) {
   const selection = selectSoundGames(birthDate);
   const [level, setLevel] = useState<string | null>(null), [started, setStarted] = useState(false), [run, setRun] = useState(0);
   const [challenge, setChallenge] = useState(selection.band !== 'early'), [catalog, setCatalog] = useState(false), [visited, setVisited] = useState<string[]>([]);
   const narration = useSoundNarration(), audio = useSoundAudio(narration.stop);
+  const practice = usePracticeActivityLog(patientId, 'HABLA');
   const title = useRef<HTMLHeadingElement>(null), opener = useRef<string | null>(null), buttons = useRef<Record<string, HTMLButtonElement | null>>({});
   const menu = catalog ? soundGames : selection.games, game = soundGames.find(item => item.id === level);
   const visitedCount = menu.filter(item => visited.includes(item.id)).length;
-  const markVisited = useCallback(() => { if (level) setVisited(previous => previous.includes(level) ? previous : [...previous, level]); }, [level]);
+  const markVisited = useCallback(() => {
+    if (level) {
+      setVisited(previous => previous.includes(level) ? previous : [...previous, level]);
+      void practice.record(`sound:${level}`);
+    }
+  }, [level, practice.record]);
   useEffect(() => { if (level !== null) title.current?.focus(); else if (opener.current) buttons.current[opener.current]?.focus(); }, [level, run, started]);
   function stop() { audio.stop(); narration.stop(); }
   function open(value: string | null) {
-    stop(); setLevel(value); setStarted(false); setRun(previous => previous + 1);
+    stop(); practice.begin(); setLevel(value); setStarted(false); setRun(previous => previous + 1);
     const selected = soundGames.find(item => item.id === value);
     if (selected && !audio.muted) narration.speak(`${selected.goal} ${selected.steps.join(' ')}`);
   }
@@ -40,17 +55,26 @@ export function SoundWorld({ back, legacy, birthDate }: { back: () => void; lega
     {audio.muted && <p className="sound-audio-notice" role="status">El sonido está silenciado. Actívalo para escuchar y continuar.</p>}
     {audio.error && <p className="sound-audio-notice" role="alert">{audio.error}</p>}
     {narration.notice && <p className="sound-audio-notice" role="status">{narration.notice}</p>}
+    {practice.state !== 'idle' && <p className="sound-audio-notice" role={practice.state === 'error' ? 'alert' : 'status'}>
+      {practice.state === 'saving' ? 'Guardando la participación…' : practice.state === 'saved' ? 'Participación y duración registradas. No representan un resultado clínico.' : 'No se pudo guardar la actividad.'}
+      {practice.state === 'error' && <button type="button" className="word-back" onClick={() => void practice.retry()}>Reintentar guardado</button>}
+    </p>}
     <span className="sound-sr" role="status">{audio.loading ? 'Cargando sonido' : audio.active ? 'Reproduciendo sonido' : ''}</span>
     {!game ? <>
       <div className="word-narrator-preview"><button type="button" className="word-button is-light" disabled={audio.muted} onClick={() => speak(soundNarratorPreview)}><Volume2 size={20}/> Escuchar voz de ASHA</button><span>Escucha con calma. Aquí puedes volver a probar.</span></div>
+      {focusedPhonemes.length > 0 && <section className="word-family" aria-label="Recomendación del terapeuta: Isla Mágica">
+        <strong>Práctica sugerida esta semana · Isla Mágica</strong>
+        <p>El plan prioriza {focusedPhonemes.join(', ')}. En los niveles del Taller de los Sonidos se proponen actividades de escucha relacionadas; son práctica lúdica y no una evaluación clínica.</p>
+        {openRecommendedLevels && <button type="button" className="word-button is-light" onClick={openRecommendedLevels}>Abrir niveles recomendados</button>}
+      </section>}
       <div className="word-welcome"><p><Sprout size={20}/> {catalog ? 'El catálogo para explorar en familia' : selection.label}. {menu.length} aventuras, a tu ritmo.</p><div className="word-modes" role="group" aria-label="Cómo quieres jugar"><button type="button" aria-pressed={!challenge} onClick={() => setChallenge(false)}><Sprout size={22}/><span><strong>Primeros pasos</strong><small>Menos sonidos y más ayuda</small></span></button><button type="button" aria-pressed={challenge} onClick={() => setChallenge(true)}><Sparkles size={22}/><span><strong>Un poquito más</strong><small>Más sonidos para descubrir</small></span></button></div><div className="word-visit" aria-label={`${visitedCount} de ${menu.length} aventuras en esta visita`}><Shell size={23}/><span>Tu taller de hoy</span><strong>{visitedCount}/{menu.length} aventuras</strong></div></div>
       {catalog && <button type="button" className="word-back" onClick={() => setCatalog(false)}>Volver a mis nueve juegos</button>}
       <div className="word-menu" aria-label="Juegos del taller">{menu.map((item, index) => <button type="button" ref={node => { buttons.current[item.id] = node; }} className="word-game-card" style={{ '--card-color': item.color, '--card-order': index } as CSSProperties} key={item.id} aria-label={`Jugar ${item.title}`} onClick={() => { opener.current = item.id; open(item.id); }}><span className={`word-game-number ${visited.includes(item.id) ? 'is-visited' : ''}`}>{visited.includes(item.id) ? <Check size={15}/> : index + 1}</span><SoundGamePicture src={item.image} title={item.title}/><span className="word-skill">{item.action}</span><h3>{item.title}</h3><p>{item.description}</p><span className={`word-visited ${visited.includes(item.id) ? '' : 'is-empty'}`} aria-hidden={!visited.includes(item.id)}>{visited.includes(item.id) && <><Check size={16}/> Jugado en esta visita</>}</span><span className="word-game-action">¡A jugar! <ArrowRight size={20}/></span></button>)}</div>
       <p className="word-menu-note">Escucha, descubre y vuelve a jugar. Sin prisa y sin perder vidas.</p>
-      <details className="word-family"><summary>Para la familia</summary><p>La fecha de nacimiento orienta nueve juegos para 4–5, 6–7 y 8 años en adelante. Son agrupaciones editoriales, no una evaluación del desarrollo. Ajusta las ayudas y acompaña al niño. Los mundos asignados por el terapeuta se conservan.</p>{selection.age === null && <p>No tenemos una fecha de nacimiento válida. Mostramos nueve actividades iniciales con ayuda.</p>}{selection.age !== null && selection.age < 4 && <p>Esta colección está pensada desde los 4 años. Consulta al profesional y acompaña la actividad.</p>}<button type="button" className="word-back" onClick={() => setCatalog(value => !value)}>{catalog ? 'Mostrar mis nueve juegos' : `Explorar los ${soundGames.length} juegos en familia`}</button><p>Sonidos reales de animales y narración suave. Esta práctica no guarda intentos, XP ni medallas. No es una evaluación clínica; la colección de visita se reinicia al salir o cambiar de niño.</p><button type="button" className="word-back" onClick={legacy}>Actividades con progreso guardado <ArrowRight size={18}/></button><a href="/sounds/animals/CREDITS.md" target="_blank" rel="noreferrer">Créditos de sonidos e ilustraciones</a><a href="/sounds/voice/CREDITS.md" target="_blank" rel="noreferrer">Créditos de la narración</a></details>
+      <details className="word-family"><summary>Para la familia</summary><p>La fecha de nacimiento orienta nueve juegos para 4–5, 6–7 y 8 años en adelante. Son agrupaciones editoriales, no una evaluación del desarrollo. Ajusta las ayudas y acompaña al niño. Los mundos asignados por el terapeuta se conservan.</p>{selection.age === null && <p>No tenemos una fecha de nacimiento válida. Mostramos nueve actividades iniciales con ayuda.</p>}{selection.age !== null && selection.age < 4 && <p>Esta colección está pensada desde los 4 años. Consulta al profesional y acompaña la actividad.</p>}<button type="button" className="word-back" onClick={() => setCatalog(value => !value)}>{catalog ? 'Mostrar mis nueve juegos' : `Explorar los ${soundGames.length} juegos en familia`}</button><p>Sonidos reales de animales y narración suave. Al completar un juego se registra participación y duración; no evalúa fonemas ni otorga XP o medallas. La colección de visita se reinicia al salir o cambiar de niño.</p>{practice.state==='saving'&&<p role="status">Guardando la participación…</p>}{practice.state==='error'&&<p role="alert">No se pudo guardar la actividad. <button type="button" className="word-back" onClick={()=>void practice.retry()}>Reintentar guardado</button></p>}<button type="button" className="word-back" onClick={legacy}>Actividades con progreso guardado <ArrowRight size={18}/></button><a href="/sounds/animals/CREDITS.md" target="_blank" rel="noreferrer">Créditos de sonidos e ilustraciones</a><a href="/sounds/voice/CREDITS.md" target="_blank" rel="noreferrer">Créditos de la narración</a></details>
     </> : <div className="sound-playground">
-      {!started ? <div className="sound-first-steps"><div className="sound-first-steps-art"><SoundGamePicture src={game.image} title={game.title}/><p className="word-mission-mode">{challenge ? 'Un poquito más' : 'Primeros pasos'}</p></div><SoundTutorial title={game.title} gameId={game.id} goal={game.goal} steps={game.steps} audio={audio} onSpeak={() => speak(`${game.goal} ${game.steps.join(' ')}`)} onStart={() => { stop(); setStarted(true); }}/></div> : <>
-        <div className="sound-session-controls"><button type="button" className="sound-back" onClick={() => { stop(); setRun(value => value + 1); }}><RotateCcw size={18}/> Empezar otra vez</button><button type="button" className="sound-back" disabled={audio.muted} onClick={() => speak(`${game.goal} ${game.steps.join(' ')}`)}><Volume2 size={18}/> Repetir instrucciones</button></div>
+      {!started ? <div className="sound-first-steps"><div className="sound-first-steps-art"><SoundGamePicture src={game.image} title={game.title}/><p className="word-mission-mode">{challenge ? 'Un poquito más' : 'Primeros pasos'}</p></div><SoundTutorial title={game.title} gameId={game.id} goal={game.goal} steps={game.steps} audio={audio} onSpeak={() => speak(`${game.goal} ${game.steps.join(' ')}`)} onStart={() => { stop(); practice.begin(); setStarted(true); }}/></div> : <>
+        <div className="sound-session-controls"><button type="button" className="sound-back" onClick={() => { stop(); practice.begin(); setRun(value => value + 1); }}><RotateCcw size={18}/> Empezar otra vez</button><button type="button" className="sound-back" disabled={audio.muted} onClick={() => speak(`${game.goal} ${game.steps.join(' ')}`)}><Volume2 size={18}/> Repetir instrucciones</button></div>
         {level === 'explore' ? <ExploreSounds key={run} audio={audio} next={next} onComplete={markVisited}/> : level === 'identify' ? <IdentifySounds key={run} audio={audio} next={next} onComplete={markVisited}/> : level === 'pairs2' || level === 'pairs3' ? <MatchSounds key={run} audio={audio} count={level === 'pairs2' ? 2 : 3} next={next} onComplete={markVisited}/> : level === 'memory' ? <SoundMemory key={run} audio={audio} challenge={challenge} next={next} onComplete={markVisited}/> : <SoundChallenges key={run} kind={level as ChallengeKind} audio={audio} challenge={challenge} next={next} onComplete={markVisited}/>}
       </>}
     </div>}

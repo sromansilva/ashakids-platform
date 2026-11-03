@@ -321,7 +321,7 @@ export function AdminCuentasCrearModal({
                     <label htmlFor="account-surnames" className={labelClass}>Apellidos *<input id="account-surnames" autoComplete="family-name" required maxLength={80} disabled={submitting} value={formPadre.apellidos} onChange={(event) => setFormPadre((form) => ({ ...form, apellidos: event.target.value }))} placeholder="Ej. Pérez" className={`${inputClass} mt-1.5`} /></label>
                   </div>
                   <label htmlFor="account-email" className={`${labelClass} mt-4`}>Correo electrónico *<span className="relative mt-1.5 block"><Mail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#9E95B7]" size={18} /><input id="account-email" autoComplete="email" required maxLength={150} disabled={submitting} type="email" value={formPadre.email} onChange={(event) => setFormPadre((form) => ({ ...form, email: event.target.value }))} placeholder="correo@ejemplo.com" className={`${inputClass} pl-10`} /></span></label>
-                  <p className={helpClass}>Se enviará un enlace para crear la contraseña. Vence en 24 horas.</p>
+                  <p className={helpClass}>Se enviará un enlace de un solo uso para crear la contraseña. Vence en dos horas.</p>
                 </div>
 
                 <aside className="hidden flex-col items-center justify-center rounded-[20px] bg-[#F5F3FF] p-4 text-center lg:flex">
@@ -353,7 +353,7 @@ export function AdminCuentasCrearModal({
                 <div className="mb-4" />
                 <div className="grid gap-3 sm:grid-cols-2"><label htmlFor="therapist-names" className={labelClass}>Nombres *<input id="therapist-names" required maxLength={60} disabled={submitting} value={formTerapeuta.nombres} onChange={(event) => setFormTerapeuta((form) => ({ ...form, nombres: event.target.value }))} placeholder="Ej. Ana" className={`${inputClass} mt-1.5`} /></label><label htmlFor="therapist-surnames" className={labelClass}>Apellidos *<input id="therapist-surnames" required maxLength={80} disabled={submitting} value={formTerapeuta.apellidos} onChange={(event) => setFormTerapeuta((form) => ({ ...form, apellidos: event.target.value }))} placeholder="Ej. Ruiz" className={`${inputClass} mt-1.5`} /></label></div>
                 <label htmlFor="therapist-email" className={`${labelClass} mt-4`}>Correo electrónico *<input id="therapist-email" required maxLength={150} type="email" disabled={submitting} value={formTerapeuta.email} onChange={(event) => setFormTerapeuta((form) => ({ ...form, email: event.target.value }))} placeholder="correo@ejemplo.com" className={`${inputClass} mt-1.5`} /></label>
-                <p className={helpClass}>Se enviará un enlace para crear la contraseña. Vence en 24 horas.</p>
+                <p className={helpClass}>Se enviará un enlace de un solo uso para crear la contraseña. Vence en dos horas.</p>
               </div>
             </section>
           )}
