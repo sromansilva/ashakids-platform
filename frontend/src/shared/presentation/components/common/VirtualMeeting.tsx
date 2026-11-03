@@ -26,7 +26,7 @@ export function VirtualMeeting({ appointment, professional }: { appointment: App
       >
         Abrir reunión (Google Meet)
       </a>
-      <p>{appointment.meet_origen === 'AUTOMATICA' ? 'Reunión creada automáticamente por Google Meet.' : 'Enlace compartido por el profesional.'} El inicio y la asistencia clínica se registran por separado.</p>
+      <p>{appointment.meet_origen === 'AUTOMATICA' ? 'Reunión creada automáticamente por Google Meet.' : 'Enlace compartido por el profesional.'} Al iniciar la cita se abrirá en paralelo al panel clínico de Ashakids.</p>
     </> : <p>
       {appointment.meet_automatico_configurado === false
         ? 'Google Meet automático no está configurado en este entorno.'
@@ -40,7 +40,7 @@ export function VirtualMeeting({ appointment, professional }: { appointment: App
       event.preventDefault();
       const value = url.trim();
       if (value && !isMeetingUrl(value)) {
-        setUrlError('Ingresa un enlace HTTPS válido (ej. https://meet.google.com/…).');
+        setUrlError('Ingresa un enlace HTTPS de meet.google.com válido.');
         return;
       }
       setUrlError(null);
@@ -64,7 +64,8 @@ export function isMeetingUrl(value: string | null | undefined): boolean {
   if (!value) return false;
   try {
     const parsed = new URL(value);
-    return parsed.protocol === 'https:';
+    return parsed.protocol === 'https:' && parsed.hostname.toLowerCase() === 'meet.google.com' &&
+      !parsed.port && !parsed.username && !parsed.password;
   } catch {
     return false;
   }

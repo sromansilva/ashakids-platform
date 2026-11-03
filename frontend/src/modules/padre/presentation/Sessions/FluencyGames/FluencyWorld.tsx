@@ -7,6 +7,7 @@ import { selectFluencyGames } from './fluencySelection';
 import { FluencyGameDemo } from './FluencyGameDemo';
 import { FluencyActivityScene } from './FluencyActivityScene';
 import { useFluencySpeech } from './useFluencySpeech';
+import { usePracticeActivityLog } from '@/modules/mundo_asha/application/usePracticeActivityLog';
 import './fluency-world.css';
 
 function FluencyTutorial({ game, speech, onStart }: {
@@ -32,7 +33,7 @@ function FluencyTutorial({ game, speech, onStart }: {
   </section>;
 }
 
-export function FluencyWorld({ back, legacy, birthDate }: { back: () => void; legacy: () => void; birthDate?: string }) {
+export function FluencyWorld({ back, legacy, birthDate, patientId }: { back: () => void; legacy: () => void; birthDate?: string; patientId: number }) {
   const selection = selectFluencyGames(birthDate);
   const [active, setActive] = useState<FluencyGameId | null>(null);
   const [started, setStarted] = useState(false);
@@ -40,6 +41,7 @@ export function FluencyWorld({ back, legacy, birthDate }: { back: () => void; le
   const [catalog, setCatalog] = useState(false);
   const [visited, setVisited] = useState<FluencyGameId[]>([]);
   const speech = useFluencySpeech();
+  const practice = usePracticeActivityLog(patientId, 'FLUIDEZ');
   const heading = useRef<HTMLHeadingElement>(null);
   const game = fluencyGames.find(item => item.id === active);
   const menu = catalog ? fluencyGames : selection.games;
@@ -47,12 +49,12 @@ export function FluencyWorld({ back, legacy, birthDate }: { back: () => void; le
   useEffect(() => { if (active) heading.current?.focus(); }, [active, started, complete]);
 
   function open(id: FluencyGameId | null) {
-    speech.stop(); setActive(id); setStarted(false); setComplete(false);
+    speech.stop(); practice.begin(); setActive(id); setStarted(false); setComplete(false);
     const selected = fluencyGames.find(item => item.id === id);
     if (selected) speech.speak(`${selected.goal} ${selected.steps.join(' ')}`);
   }
-  function finish() { if (active) setVisited(previous => previous.includes(active) ? previous : [...previous, active]); setComplete(true); }
-  function repeat() { speech.stop(); setComplete(false); setStarted(true); }
+  function finish() { if (active) { setVisited(previous => previous.includes(active) ? previous : [...previous, active]); void practice.record(`fluency:${active}`); } setComplete(true); }
+  function repeat() { speech.stop(); practice.begin(); setComplete(false); setStarted(true); }
 
   return <section className="fluency-world" aria-label="Ritmo de las Palabras" style={game ? { '--fluency-accent': game.color } as CSSProperties : undefined}>
     <nav className="fluency-toolbar" aria-label="Navegación del mundo"><button type="button" onClick={() => { speech.stop(); active ? open(null) : back(); }}><ArrowLeft/> {active ? 'Volver a los juegos' : 'Volver a mundos'}</button>
@@ -69,14 +71,15 @@ export function FluencyWorld({ back, legacy, birthDate }: { back: () => void; le
         <span className="fluency-card-number">{visited.includes(item.id) ? <Check/> : index + 1}</span><WordPicture id={item.art} label/><small>{item.action}</small><strong>{item.title}</strong><span>{item.detail}</span><span className="fluency-card-link">¡A jugar! <ArrowRight/></span>
       </button>)}</div>
       <p className="fluency-menu-note">Puedes hacer una pausa, cambiar de juego o volver a intentarlo cuando quieras.</p>
-      <details className="fluency-family"><summary>Para la familia</summary><p>Las actividades proponen turnos, pausas y ritmo en forma de juego. No evalúan fluidez, pronunciación ni desarrollo; no usan el micrófono ni guardan intentos. La colección se reinicia al salir. Los niveles asignados y su progreso guardado siguen disponibles.</p>
+      <details className="fluency-family"><summary>Para la familia</summary><p>Las actividades proponen turnos, pausas y ritmo en forma de juego. No evalúan fluidez, pronunciación ni desarrollo; no usan el micrófono. Al completar un juego se registra participación y duración, sin XP ni medallas. La colección se reinicia al salir. Los niveles asignados y su progreso guardado siguen disponibles.</p>
         {selection.age === null && <p>No hay una fecha de nacimiento válida para elegir la colección inicial. Se muestran nueve actividades con apoyo.</p>}
         <button type="button" className="fluency-secondary" onClick={() => setCatalog(value => !value)}>{catalog ? 'Mostrar mis nueve juegos' : `Explorar los ${fluencyGames.length} juegos en familia`}</button>
         <button type="button" className="fluency-secondary" onClick={legacy}>Abrir niveles asignados con progreso guardado <ArrowRight/></button>
       </details>
     </> : <div className="fluency-playground">
-      {!started ? <FluencyTutorial game={game!} speech={speech} onStart={() => { speech.stop(); setStarted(true); }}/>
+      {!started ? <FluencyTutorial game={game!} speech={speech} onStart={() => { speech.stop(); practice.begin(); setStarted(true); }}/>
         : complete ? <section className="fluency-celebration" aria-label="Juego terminado"><div><Sparkles/><Heart size={48}/><Sparkles/></div><h3>¡Qué buena ronda!</h3><WordPicture id={game!.art} label/><p>{game!.detail} Cada quien tiene su manera de compartir.</p>
+          <p role="status">{practice.state==='saving'?'Guardando la participación…':practice.state==='saved'?'Participación y duración registradas. No representan un resultado clínico.':practice.state==='error'?'No se pudo guardar la actividad. Puedes reintentarlo.':''}</p>{practice.state==='error'&&<button type="button" className="fluency-secondary" onClick={()=>void practice.retry()}>Reintentar guardado</button>}
           <button type="button" className="fluency-secondary" onClick={repeat}><RotateCcw/> Otra vez</button><button type="button" className="fluency-action" onClick={() => open(null)}>Elegir otro juego <ArrowRight/></button>
         </section> : <>
           <div className="fluency-session-bar"><button type="button" className="fluency-secondary" onClick={repeat}><RotateCcw/> Empezar otra vez</button><button type="button" className="fluency-secondary" onClick={() => speech.speak(`${game!.goal} ${game!.steps.join(' ')}`)}><Volume2/> Repetir instrucciones</button></div>

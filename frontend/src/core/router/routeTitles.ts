@@ -53,7 +53,6 @@ export const titles: Partial<Record<View, string>> = {
     "mundo-asha/trabalenguas": "Trabalenguas",
     "mundo-asha/adivinanzas": "Adivinanzas",
     "mundo-asha/juegos": "Laboratorio",
-    "mundo-asha/isla": "Isla Creativa",
     "mundo-asha/laberinto": "Laberinto de Trabalenguas",
     "mundo-asha/academia": "Academia",
     "mundo-asha/retos": "Retos",

@@ -1,97 +1,98 @@
-import { BookOpen, Sparkles, MessageCircle, Zap, Shield } from "lucide-react";
+import { AlertTriangle, CalendarCheck, ClipboardList, ShieldCheck, Sparkles } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
-import { View } from "@/shared/domain/types/navigation";
+import type { View } from "@/shared/domain/types/navigation";
 import { Btn } from "@/shared/presentation/components/common/Btn";
 import { Crd } from "@/shared/presentation/components/common/Crd";
-
-// ─── Shared public nav ────────────────────────────────────────────────────────
 import { PublicNav } from "@/modules/public/presentation/Public/PublicNav";
 import { PublicFooter } from "@/modules/public/presentation/Public/PublicFooter";
 
-export function PublicAshi({ go }: { go: (v: View) => void }) {
-  const personas = [
-    { icon: "👨‍👩‍👧", title: "Para Familias",     color: B.violet,  convos: [
-      { role: "user", text: "¿Puedes explicarme el último reporte de Mateo?" },
-      { role: "ashi", text: "¡Claro! El reporte muestra que Mateo mejoró su articulación un 15% este mes. En palabras simples: está pronunciando mejor las palabras difíciles. 🌟" },
-    ]},
-    { icon: "👩‍⚕️", title: "Para Terapeutas",  color: B.teal,    convos: [
-      { role: "user", text: "Ayúdame a redactar los objetivos para la próxima sesión de Bruno" },
-      { role: "ashi", text: "Basándome en el historial de Bruno, propongo: (1) Ejercicios de soplo 10 min, (2) Lectura guiada nivel B, (3) Juego fonológico de sílabas. ¿Lo ajustamos?" },
-    ]},
-    { icon: "🛡️", title: "Para Administradores", color: B.orange, convos: [
-      { role: "user", text: "¿Cuáles son las tendencias de este mes?" },
-      { role: "ashi", text: "Detecté 3 tendencias clave: sesiones virtuales +18%, hora pico 9-11 AM, y 89% retención en pacientes con 4+ sesiones. Recomiendo ampliar disponibilidad matutina." },
-    ]},
-  ];
+const examples = [
+  {
+    icon: "👨‍👩‍👧",
+    title: "Para familias",
+    color: B.violet,
+    prompt: "¿Dónde reviso un informe?",
+    response: "Los informes publicados están en la sección Reportes de tu cuenta. La interpretación clínica corresponde a tu terapeuta.",
+  },
+  {
+    icon: "👩‍⚕️",
+    title: "Para terapeutas",
+    color: B.teal,
+    prompt: "¿Qué pasa con una transcripción de voz?",
+    response: "La transcripción es tentativa y queda pendiente de revisión profesional antes de incorporarse al reporte.",
+  },
+  {
+    icon: "🛡️",
+    title: "Privacidad",
+    color: B.orange,
+    prompt: "¿Se procesa voz sin autorización?",
+    response: "No. La muestra de voz es opcional y el consentimiento vigente del tutor se comprueba antes del análisis.",
+  },
+];
+
+export function PublicAshi({ go }: { go: (view: View) => void }) {
   return (
     <div style={{ fontFamily: '"Nunito", system-ui, sans-serif', background: B.bg }}>
       <PublicNav go={go} cur="public/ashi" />
-      {/* Hero */}
-      <div className="py-16 px-4 text-center" style={{ background: `linear-gradient(135deg, #0a7a71, ${B.violetDeep})` }}>
-        <div className="w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6" style={{ background: "rgba(255,255,255,.15)" }}>
-          <Sparkles size={36} color="white" />
+      <section className="px-4 py-16 text-center" style={{ background: `linear-gradient(135deg, #0a7a71, ${B.violetDeep})` }}>
+        <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl" style={{ background: "rgba(255,255,255,.15)" }}>
+          <Sparkles size={36} color="white" aria-hidden="true" />
         </div>
-        <h1 className="text-3xl sm:text-5xl font-black text-white mb-4">ASHI Intelligence</h1>
-        <p className="text-lg max-w-2xl mx-auto mb-8 font-medium" style={{ color: "rgba(255,255,255,.8)" }}>
-          La inteligencia artificial que acompaña a toda la plataforma. No es un chatbot — es un copiloto que observa, anticipa y ayuda.
+        <p className="mx-auto mb-4 w-fit rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-extrabold uppercase tracking-wide text-white">
+          Vista demostrativa
         </p>
-        <div className="flex items-center justify-center gap-6 flex-wrap mb-8">
-          {[{ v: "24/7", l: "Disponible siempre" }, { v: "👨‍👩‍👧 👩‍⚕️ 🛡️", l: "Adapta su rol" }, { v: "🔒", l: "Datos privados" }].map(s => (
-            <div key={s.l} className="text-center">
-              <p className="text-2xl font-black text-white">{s.v}</p>
-              <p className="text-sm font-medium" style={{ color: "rgba(255,255,255,.65)" }}>{s.l}</p>
-            </div>
+        <h1 className="mb-4 text-3xl font-black text-white sm:text-5xl">ASHI en Ashakids</h1>
+        <p className="mx-auto mb-8 max-w-2xl text-lg font-medium text-white/80">
+          Ejemplos estáticos para explicar los flujos de la plataforma. Esta página pública no consulta expedientes,
+          no genera recomendaciones y no muestra estadísticas reales.
+        </p>
+        <div className="mx-auto mb-8 flex max-w-2xl flex-wrap items-center justify-center gap-3 text-sm font-bold text-white">
+          {["Ejemplos ilustrativos", "Sin datos reales", "Revisión profesional"].map((label) => (
+            <span key={label} className="rounded-full border border-white/25 bg-white/10 px-4 py-2">{label}</span>
           ))}
         </div>
-        <Btn variant="cta" size="lg" onClick={() => go("login")}>Probar ASHI ahora</Btn>
-      </div>
-      {/* Demo conversations */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <h2 className="text-2xl font-black text-[#1C1135] text-center mb-3">ASHI se adapta a cada usuario</h2>
-        <p className="text-center text-[#7C6F9A] font-medium mb-10">Diferente contexto, diferente experiencia. Siempre la más útil.</p>
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto justify-items-center">
-          {personas.map(p => (
-            <Crd key={p.title} className="p-5">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-xl" style={{ background: `${p.color}15` }}>{p.icon}</div>
-                <h3 className="font-extrabold text-[#1C1135]">{p.title}</h3>
+        <Btn variant="cta" size="lg" onClick={() => go("login")}>Ingresar al portal</Btn>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+        <div className="mb-8 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="note">
+          <div className="flex items-start gap-3">
+            <AlertTriangle size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
+            <p><strong>Importante:</strong> las conversaciones siguientes son ilustraciones de interfaz. No representan pacientes, resultados ni respuestas generadas en tiempo real.</p>
+          </div>
+        </div>
+        <h2 className="mb-3 text-center text-2xl font-black text-[#1C1135]">Ejemplos de orientación dentro del flujo</h2>
+        <p className="mb-10 text-center font-medium text-[#7C6F9A]">Las decisiones clínicas y las conclusiones de una evaluación quedan a cargo del terapeuta.</p>
+
+        <div className="mx-auto grid max-w-5xl justify-items-center gap-6 md:grid-cols-3">
+          {examples.map((example) => (
+            <Crd key={example.title} className="w-full p-5">
+              <div className="mb-4 flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-2xl text-xl" style={{ background: `${example.color}15` }} aria-hidden="true">{example.icon}</div>
+                <h3 className="font-extrabold text-[#1C1135]">{example.title}</h3>
               </div>
               <div className="flex flex-col gap-3">
-                {p.convos.map((c, i) => (
-                  <div key={i} className={`flex gap-2 ${c.role === "user" ? "flex-row-reverse" : ""}`}>
-                    {c.role === "ashi" && (
-                      <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: `linear-gradient(135deg, #0D9488, ${p.color})` }}>
-                        <Sparkles size={10} color="white" />
-                      </div>
-                    )}
-                    <div className="max-w-[85%] rounded-2xl px-3 py-2 text-xs font-medium leading-relaxed"
-                      style={c.role === "ashi"
-                        ? { background: `${p.color}10`, color: "#1C1135", borderTopLeftRadius: 4 }
-                        : { background: `linear-gradient(135deg, #0D9488, ${p.color})`, color: "white", borderTopRightRadius: 4 }}>
-                      {c.text}
-                    </div>
-                  </div>
-                ))}
+                <p className="max-w-[90%] self-end rounded-2xl rounded-tr-sm px-3 py-2 text-xs font-medium leading-relaxed text-white" style={{ background: `linear-gradient(135deg, #0D9488, ${example.color})` }}>{example.prompt}</p>
+                <p className="rounded-2xl rounded-tl-sm px-3 py-2 text-xs font-medium leading-relaxed text-[#1C1135]" style={{ background: `${example.color}10` }}>{example.response}</p>
               </div>
             </Crd>
           ))}
         </div>
-        {/* Features */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12 max-w-5xl mx-auto justify-items-center">
+
+        <div className="mx-auto mt-12 grid max-w-5xl justify-items-center gap-4 sm:grid-cols-3">
           {[
-            { icon: <Zap size={20} />,          title: "Proactivo",          desc: "Anticipa necesidades antes de que preguntes" },
-            { icon: <Shield size={20} />,        title: "Privado y seguro",   desc: "Tus datos nunca salen de la plataforma" },
-            { icon: <BookOpen size={20} />,      title: "Basado en evidencia",desc: "Respuestas con base clínica y terapéutica" },
-            { icon: <MessageCircle size={20} />, title: "Siempre disponible", desc: "24 horas al día, 7 días a la semana" },
-          ].map(f => (
-            <div key={f.title} className="bg-white rounded-2xl p-4 border border-[#E8E5F4] text-center">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3" style={{ background: B.violetLight, color: B.violet }}>{f.icon}</div>
-              <p className="font-extrabold text-sm text-[#1C1135] mb-1">{f.title}</p>
-              <p className="text-xs text-[#7C6F9A] font-medium">{f.desc}</p>
+            { icon: <CalendarCheck size={20} />, title: "Agenda", desc: "Las familias pueden consultar profesionales y solicitar horarios disponibles." },
+            { icon: <ClipboardList size={20} />, title: "Registro clínico", desc: "La evaluación y el reporte se revisan en el flujo de sesión." },
+            { icon: <ShieldCheck size={20} />, title: "Consentimiento", desc: "El procesamiento de una muestra de voz requiere autorización del tutor." },
+          ].map((feature) => (
+            <div key={feature.title} className="w-full rounded-2xl border border-[#E8E5F4] bg-white p-4 text-center">
+              <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-xl" style={{ background: B.violetLight, color: B.violet }}>{feature.icon}</div>
+              <p className="mb-1 text-sm font-extrabold text-[#1C1135]">{feature.title}</p>
+              <p className="text-xs font-medium text-[#7C6F9A]">{feature.desc}</p>
             </div>
           ))}
         </div>
-      </div>
+      </section>
       <PublicFooter go={go} />
     </div>
   );

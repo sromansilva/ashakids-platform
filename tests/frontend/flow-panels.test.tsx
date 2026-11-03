@@ -1,6 +1,7 @@
 import { expect, it, vi } from 'vitest';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderRoute } from './helpers';
+import { isMeetingUrl } from '@/shared/presentation/components/common/VirtualMeeting';
 
 const response = (data: unknown, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'Content-Type': 'application/json', 'X-Total-Count': String(Array.isArray(data) ? data.length : 1) } });
 const day = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Lima', year:'numeric',month:'2-digit',day:'2-digit' }).format(new Date());
@@ -9,6 +10,14 @@ const appointment = (id = 1, patientId = 1, name = 'Ana Demostración') => ({ id
 function mockApi(read: (path: string, init: RequestInit) => Response | undefined) {
   return vi.mocked(fetch).mockImplementation(async (input, init = {}) => read(new URL(String(input)).pathname.replace('/api/v1',''),init) ?? response([]));
 }
+
+it('accepts only HTTPS Google Meet links without custom ports or embedded credentials', () => {
+  expect(isMeetingUrl('https://meet.google.com/abc-defg-hij')).toBe(true);
+  expect(isMeetingUrl('https://meet.google.com.evil.example/abc')).toBe(false);
+  expect(isMeetingUrl('https://user:pass@meet.google.com/abc')).toBe(false);
+  expect(isMeetingUrl('https://meet.google.com:8443/abc')).toBe(false);
+  expect(isMeetingUrl('http://meet.google.com/abc')).toBe(false);
+});
 
 it('separates siblings in the agenda and preserves completed appointment details', async () => {
   sessionStorage.clear();
@@ -26,6 +35,24 @@ it('separates siblings in the agenda and preserves completed appointment details
   expect(await screen.findByRole('button',{name:/Luis Demostración.*Confirmada/})).toBeInTheDocument();
   expect(screen.queryByText(/Consulta introductoria · COMPLETADA/)).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:/Ana Demostración.*Completada/})).not.toBeInTheDocument();
+});
+
+it('solicita consentimiento en una cita de terapia si el tutor aun no ha decidido', async () => {
+  const a = { ...appointment(), tipo_cita: 'TERAPIA' };
+  mockApi(path => path === '/pacientes' ? response([patient(1, 'Ana')])
+    : path === '/citas' ? response([a])
+    : path === '/citas/1' ? response(a)
+    : path === '/clinica/consentimientos/1' ? response({
+      id_paciente: 1,
+      consentido: false,
+      estado: 'NO_SOLICITADO',
+      tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA',
+      fecha_concesion: null,
+    })
+    : undefined);
+  renderRoute('/padre/agenda', 'PADRE');
+  fireEvent.click(await screen.findByRole('button', { name: /Ana Demostración.*Confirmada/ }));
+  expect(await screen.findByRole('dialog', { name: '¿Autorizas una prueba breve de voz?' })).toBeInTheDocument();
 });
 
 it('counts only future appointments and exposes running sessions separately', async () => {

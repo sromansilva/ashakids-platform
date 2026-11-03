@@ -31,8 +31,6 @@ const envSchema = z.object({
   DB_SSL_ENABLED: z.string().optional().default('false').transform((v) => v === 'true'),
   SESSION_COOKIE_NAME: z.string().default('ashakids_session'),
   SESSION_TTL_HOURS: z.string().regex(/^\d+$/, 'debe ser un número entero').default('24').transform((v) => parseInt(v, 10)),
-  OPENAI_API_KEY: z.string().optional(),
-  WHISPER_MODEL: z.string().default('whisper-1'),
   ML_SERVICE_URL: z.string().default('http://127.0.0.1:8001'),
   ML_SERVICE_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
   MEET_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),

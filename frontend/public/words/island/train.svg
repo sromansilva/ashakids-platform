@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 384" role="img" aria-label="Ilustración de un tren">
+  <path d="M72 275h240" stroke="#76609B" stroke-width="12" stroke-linecap="round"/>
+  <path d="M86 158h159a28 28 0 0 1 28 28v91H86z" fill="#FFB45D" stroke="#8055B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M273 202h43l30 34v41h-73z" fill="#77C7E5" stroke="#8055B5" stroke-width="10" stroke-linejoin="round"/>
+  <path d="M279 213h30l20 22h-50z" fill="#EAF9FF" stroke="#8055B5" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M117 158v-44h71v44m31 0v-30h32v30" fill="#F28FA8" stroke="#8055B5" stroke-width="9" stroke-linejoin="round"/>
+  <path d="M132 114h40" stroke="#8055B5" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="130" cy="278" r="28" fill="#51436F"/><circle cx="130" cy="278" r="12" fill="#EEE8FA"/>
+  <circle cx="230" cy="278" r="28" fill="#51436F"/><circle cx="230" cy="278" r="12" fill="#EEE8FA"/>
+  <circle cx="307" cy="278" r="28" fill="#51436F"/><circle cx="307" cy="278" r="12" fill="#EEE8FA"/>
+  <circle cx="124" cy="205" r="10" fill="#FFFDF8"/><circle cx="162" cy="205" r="10" fill="#FFFDF8"/><circle cx="200" cy="205" r="10" fill="#FFFDF8"/>
+  <path d="M62 311h260" stroke="#83CDB0" stroke-width="10" stroke-linecap="round" stroke-dasharray="4 22"/>
+</svg>

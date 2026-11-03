@@ -94,7 +94,18 @@ export function FamilyWorlds({
                         />
                       </div>
                       <div className="family-world-card-content">
+                        {w.recomendado_esta_semana && (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 font-extrabold text-[11px] mb-1.5 self-start shadow-xs">
+                            ⭐ Juegos recomendados por tu terapeuta para esta semana
+                          </span>
+                        )}
                         <h2>{w.name}</h2>
+                        {w.recomendado_esta_semana && w.fonemas_recomendados?.length ? (
+                          <p className="mb-2 text-xs font-semibold text-[#615274]">
+                            En «Nombra el dibujo», practica palabras con: {w.fonemas_recomendados.join(', ')}
+                            {w.frecuencia_semanal ? ` · ${w.frecuencia_semanal} ${w.frecuencia_semanal === 1 ? 'sesión' : 'sesiones'} por semana` : ''}.
+                          </p>
+                        ) : null}
                         <button
                           type="button"
                           onClick={() => onOpen(w.id)}

@@ -2,6 +2,10 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { VoiceSpeechGame } from '@/modules/padre/presentation/Sessions/VoiceSpeechGame';
 import { voiceService, type TranscripcionRespuesta } from '@/modules/mundo_asha/infrastructure/voiceService';
+import { clinicaService } from '@/modules/clinica/infrastructure/clinicalService';
+
+const renderGame = (props: React.ComponentProps<typeof VoiceSpeechGame> = {}) =>
+  render(<VoiceSpeechGame patientId={1} {...props} />);
 
 // Mock de MediaStreamTrack y MediaStream
 class MockMediaStreamTrack {
@@ -45,6 +49,13 @@ class MockMediaRecorder {
 describe('VoiceSpeechGame Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(clinicaService, 'getConsent').mockResolvedValue({
+      id_paciente: 1,
+      consentido: true,
+      estado: 'CONCEDIDO',
+      tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA',
+      fecha_concesion: '2026-01-01T00:00:00Z',
+    });
     // Inyectar mocks globales
     (window as unknown as { MediaRecorder: typeof MockMediaRecorder }).MediaRecorder = MockMediaRecorder;
     Object.defineProperty(navigator, 'mediaDevices', {
@@ -61,7 +72,7 @@ describe('VoiceSpeechGame Component', () => {
   });
 
   it('renderiza la frase objetivo y el estado inicial "ready"', () => {
-    render(<VoiceSpeechGame targetPhrase="El gato duerme" />);
+    renderGame({ targetPhrase: 'El gato duerme' });
     expect(screen.getByTestId('target-phrase')).toHaveTextContent('«El gato duerme»');
     expect(screen.getByTestId('record-btn')).toBeInTheDocument();
     expect(screen.getByText(/Escuchar frase modelo/i)).toBeInTheDocument();
@@ -72,7 +83,7 @@ describe('VoiceSpeechGame Component', () => {
     const error = new DOMException('Permission denied', 'NotAllowedError');
     navigator.mediaDevices.getUserMedia = vi.fn().mockRejectedValue(error);
 
-    render(<VoiceSpeechGame targetPhrase="El gato duerme" />);
+    renderGame({ targetPhrase: 'El gato duerme' });
     fireEvent.click(screen.getByTestId('record-btn'));
 
     await waitFor(() => {
@@ -106,7 +117,7 @@ describe('VoiceSpeechGame Component', () => {
 
     vi.spyOn(voiceService, 'transcribe').mockResolvedValue(mockRespuesta);
 
-    render(<VoiceSpeechGame targetPhrase="El gato duerme" />);
+    renderGame({ targetPhrase: 'El gato duerme' });
 
     // Iniciar grabación
     fireEvent.click(screen.getByTestId('record-btn'));
@@ -153,7 +164,7 @@ describe('VoiceSpeechGame Component', () => {
 
     vi.spyOn(voiceService, 'transcribe').mockResolvedValue(mockRespuesta);
 
-    render(<VoiceSpeechGame targetPhrase="El gato duerme" />);
+    renderGame({ targetPhrase: 'El gato duerme' });
     fireEvent.click(screen.getByTestId('record-btn'));
 
     await waitFor(() => expect(screen.getByTestId('stop-btn')).toBeInTheDocument());
@@ -178,7 +189,7 @@ describe('VoiceSpeechGame Component', () => {
 
     vi.spyOn(voiceService, 'transcribe').mockResolvedValue(mockVacio);
 
-    render(<VoiceSpeechGame targetPhrase="El gato duerme" />);
+    renderGame({ targetPhrase: 'El gato duerme' });
     fireEvent.click(screen.getByTestId('record-btn'));
 
     await waitFor(() => expect(screen.getByTestId('stop-btn')).toBeInTheDocument());

@@ -1,3 +1,5 @@
+import type { PhonemeTarget } from '@/modules/clinica/domain/clinical';
+
 export const wordItems = [
   ['cat','Gato','ga-to','animal'], ['dog','Perro','pe-rro','animal'],
   ['apple','Manzana','man-za-na','fruta'], ['banana','Banana','ba-na-na','fruta'],
@@ -12,10 +14,13 @@ export const wordItems = [
   ['bag','Mochila','mo-chi-la','escuela'], ['cup','Taza','ta-za','objeto'],
   ['tomato','Tomate','to-ma-te','verdura'], ['grapes','Uvas','u-vas','fruta'],
   ['snail','Caracol','ca-ra-col','animal'], ['drum','Tambor','tam-bor','juguete'],
+  ['mouse','Ratón','ra-tón','animal'], ['plate','Plato','pla-to','objeto'], ['train','Tren','tren','transporte'],
 ] as const;
 export type WordId = typeof wordItems[number][0];
+export interface FocusedWordLevel { wordId: string; phoneme: PhonemeTarget; level: number }
 export const words = Object.fromEntries(wordItems.map(([id,name,syllables,category]) => [id, {
-  id, name, syllables: syllables.split('-'), category, image: `/words/island/${id}.webp`,
+  id, name, syllables: syllables.split('-'), category,
+  image: ['mouse', 'plate', 'train'].includes(id) ? `/words/island/${id}.svg` : `/words/island/${id}.webp`,
 }])) as Record<WordId, { id: WordId; name: string; syllables: string[]; category: string; image: string }>;
 export type WordPlayMode = 'gentle' | 'challenge';
 export const wordGames = [

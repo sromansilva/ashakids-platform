@@ -31,3 +31,15 @@ export async function registrarIntentoJuegos(req: Request, res: Response, next: 
     next(err);
   }
 }
+
+// POST /api/v1/pacientes/:key/juegos/:world/actividades
+export async function registrarActividadLudica(req: Request, res: Response, next: NextFunction) {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    const world = String(req.params.world).toUpperCase();
+    const resultado = await juegosService.registrarActividadLudica(key, world, req.body);
+    res.json(resultado);
+  } catch (err) {
+    next(err);
+  }
+}

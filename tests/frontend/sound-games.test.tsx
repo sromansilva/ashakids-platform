@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { SoundWorld } from '@/modules/padre/presentation/Sessions/SoundGames/SoundWorld';
+import { DemoWorldPlayer } from '@/modules/padre/presentation/Sessions/DemoWorldPlayer';
 import { animals, soundLevels } from '@/modules/padre/presentation/Sessions/SoundGames/soundContent';
 import { SoundTutorialScene } from '@/modules/padre/presentation/Sessions/SoundGames/SoundTutorialScene';
 import { soundGames, type SoundGameId } from '@/modules/padre/presentation/Sessions/SoundGames/soundGames';
@@ -217,4 +218,30 @@ it('mantiene nueve juegos independientes, vuelve al menú tras completar y resta
   fireEvent.click(screen.getByRole('button', { name: 'Volver a los juegos' }));
   expect(screen.getByRole('button', { name: 'Jugar El reto de tres parejas' })).toHaveFocus();
   expect(fetch).not.toHaveBeenCalled();
+});
+
+it('abre la Isla Mágica desde su recomendación y resalta el nivel del fonema priorizado', () => {
+  const world = {
+    id: 'HABLA',
+    version: 'basica-1',
+    name: 'Taller de los Sonidos',
+    description: 'Práctica de escucha.',
+    levels: [
+      { number: 4, title: 'Encuentra /rr/', prompt: '¿Qué palabra empieza con /rr/?', choices: ['Risa', 'Mesa'], sequence: false, fonema_objetivo: '/rr/' },
+      { number: 5, title: 'Encuentra /r/', prompt: '¿Qué palabra tiene /r/?', choices: ['Caracol', 'Silla'], sequence: false, fonema_objetivo: '/r/' },
+    ],
+    asignado: true,
+    recomendado_esta_semana: true,
+    fonemas_recomendados: ['/r/'],
+    frecuencia_semanal: 2,
+    completados: [],
+    intentos: 0,
+    medalla: false,
+  } as const;
+
+  render(<DemoWorldPlayer world={world} patientId={1} onSaved={vi.fn()} back={vi.fn()} />);
+  expect(screen.getByRole('region', { name: 'Recomendación del terapeuta: Isla Mágica' })).toHaveTextContent('/r/');
+  fireEvent.click(screen.getByRole('button', { name: 'Abrir niveles recomendados' }));
+  expect(screen.getByRole('button', { name: 'Jugar nivel 5 recomendado para /r/' })).toBeInTheDocument();
+  expect(screen.getByText('Recomendado esta semana · /r/')).toBeInTheDocument();
 });

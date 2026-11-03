@@ -18,8 +18,19 @@ describe('Decolecta DNI RENIEC & SUNAT RUC Integration Tests (TypeScript)', () =
     }
   });
 
-  it('3. Successfully returns person identification data for a valid 8-digit DNI', async () => {
+  it('3. Successfully returns synthetic person identification data for a valid 8-digit DNI', async (t) => {
     const validDni = '70854321';
+    t.mock.method(globalThis, 'fetch', async (input) => {
+      const url = new URL(String(input));
+      assert.equal(url.pathname, '/v1/reniec/dni');
+      assert.equal(url.searchParams.get('numero'), validDni);
+      return new Response(JSON.stringify({
+        numero: validDni,
+        first_name: 'Persona Sintetica',
+        first_last_name: 'Prueba',
+        second_last_name: 'Local',
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    });
     const res = await DecolectaService.consultarDni(validDni);
 
     assert.equal(res.success, true);
@@ -41,8 +52,20 @@ describe('Decolecta DNI RENIEC & SUNAT RUC Integration Tests (TypeScript)', () =
     }
   });
 
-  it('5. Successfully returns fiscal data for a valid 11-digit RUC', async () => {
+  it('5. Successfully returns synthetic fiscal data for a valid 11-digit RUC', async (t) => {
     const validRuc = '20100070970';
+    t.mock.method(globalThis, 'fetch', async (input) => {
+      const url = new URL(String(input));
+      assert.equal(url.pathname, '/v1/sunat/ruc');
+      assert.equal(url.searchParams.get('numero'), validRuc);
+      return new Response(JSON.stringify({
+        numero_documento: validRuc,
+        razon_social: 'Empresa Sintetica de Prueba',
+        estado: 'ACTIVO',
+        condicion: 'HABIDO',
+        direccion: 'Calle de Prueba 123',
+      }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    });
     const res = await DecolectaService.consultarRuc(validRuc);
 
     assert.equal(res.success, true);
