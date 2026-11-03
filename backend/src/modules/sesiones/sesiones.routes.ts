@@ -201,6 +201,10 @@ async function evaluateSessionPhonetics(req: Request, res: Response, next: NextF
     next(err);
   } finally {
     req.file?.buffer.fill(0);
+    if (req.body && typeof req.body.audio_base64 === 'string') {
+      req.body.audio_base64 = '';
+      delete req.body.audio_base64;
+    }
   }
 }
 
@@ -399,8 +403,8 @@ const planSchema = z.object({
   (data) => !['HABLA', 'VOZ'].includes(data.area) || data.fonemas_priorizados.length > 0,
   { message: 'Selecciona los fonemas de intervención revisados por el terapeuta.' },
 ).refine(
-  (data) => data.fonemas_priorizados.length === 0 || data.mundos_asignados.includes('LENGUAJE'),
-  { message: 'Asigna La Isla de las Palabras para activar la práctica dirigida a fonemas.' },
+  (data) => data.fonemas_priorizados.length === 0 || (data.mundos_asignados.includes('HABLA') && data.mundos_asignados.includes('LENGUAJE')),
+  { message: 'Asigna el Taller de los Sonidos (Isla Mágica) y La Isla de las Palabras para activar la práctica dirigida a fonemas.' },
 );
 
 // POST /api/v1/sesiones/:key/plan
@@ -449,18 +453,11 @@ sesionesRouter.post('/:key/evaluacion-fonema', requireRoles(['ADMIN', 'TERAPEUTA
 // Backward-compatible JSON route for existing clients.
 sesionesRouter.post('/:key/evaluar-fonema-en-vivo', requireRoles(['ADMIN', 'TERAPEUTA']), evaluateSessionPhonetics);
 
-// POST /api/v1/sesiones/:key/evaluar-fragmento-fonetico
-sesionesRouter.post('/:key/evaluar-fragmento-fonetico', requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const key = parseInt(String(req.params.key), 10);
-    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
-    await assertSessionEditAccess(req.user!, key);
-    const resultado = await sesionesService.evaluarFragmentoFonetico(key, req.body);
-    res.json(resultado);
-  } catch (err) {
-    next(err);
-  }
-});
+// Retired endpoint: samples must go through the canonical, consent-checked
+// 2–3 second workflow and be saved for therapist review.
+sesionesRouter.post('/:key/evaluar-fragmento-fonetico', requireRoles(['ADMIN', 'TERAPEUTA']), (_req, res) =>
+  res.status(410).json({ error: 'Esta ruta fue retirada. Usa la evaluación fonológica vigente de la sesión.' })
+);
 
 // GET /api/v1/sesiones/:key/seguimiento-articulacion
 sesionesRouter.get('/:key/seguimiento-articulacion', requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
@@ -474,15 +471,7 @@ sesionesRouter.get('/:key/seguimiento-articulacion', requireRoles(['ADMIN', 'TER
   }
 });
 
-// POST /api/v1/sesiones/:key/analizar-transcripcion-sesion
-sesionesRouter.post('/:key/analizar-transcripcion-sesion', requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const key = parseInt(String(req.params.key), 10);
-    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'La sesión indicada no es válida.' });
-    await assertSessionEditAccess(req.user!, key);
-    const resultado = await sesionesService.analizarTranscripcionSesion(key, req.body);
-    res.json(resultado);
-  } catch (err) {
-    next(err);
-  }
-});
+// Whole-session transcripts are outside the approved short-sample workflow.
+sesionesRouter.post('/:key/analizar-transcripcion-sesion', requireRoles(['ADMIN', 'TERAPEUTA']), (_req, res) =>
+  res.status(410).json({ error: 'El análisis de transcripciones de sesión fue retirado. Usa muestras breves con consentimiento y revisión profesional.' })
+);

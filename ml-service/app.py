@@ -3,7 +3,6 @@ Servidor FastAPI para el microservicio de Machine Learning de AshaKids.
 Puerto por defecto: 8001
 Incluye:
 - Transcripción preliminar de voz (Wav2Vec 2.0); no calcula similitud acústica ni diagnostica.
-- Análisis estructurado de transcripción de sesión.
 - Modelo predictivo de sesiones y riesgo de deserción (Random Forest supervisado).
 """
 
@@ -15,8 +14,7 @@ from typing import Optional
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Request
 from pydantic import BaseModel, Field
 
-from transcript_service import analizar_transcripcion_sesion, extraer_texto_de_docx_o_bytes
-from wav2vec_engine import engine
+from wav2vec_engine import engine, MODEL_REVISION
 from audio_memory import (
     AudioBodySizeLimitMiddleware,
     AudioPayloadTooLarge,
@@ -76,6 +74,7 @@ def health_check():
         "service": "AshaKids Phonetic Speech & Treatment AI",
         "dispositivo": engine.device,
         "modelo": engine.model_name,
+        "modelo_revision": MODEL_REVISION,
         "modelo_listo": engine._is_ready,
         "predictor_listo": treatment_predictor.is_ready,
     }
@@ -204,44 +203,18 @@ def treatment_prediction_catalog():
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"No se pudo cargar el catálogo clínico: {str(exc)}")
 
-class TranscriptAnalysisRequest(BaseModel):
-    texto: Optional[str] = Field(None, description="Texto de la transcripción de una sesión")
-    archivo_base64: Optional[str] = Field(None, description="Contenido de archivo .docx o .txt en base64")
-    nombre_archivo: Optional[str] = Field(None, description="Nombre del archivo cargado")
-
 @app.post("/analyze/session-transcript")
-async def analyze_session_transcript_json(payload: TranscriptAnalysisRequest):
-    """
-    Organiza el texto de una transcripción local sin inferir roles no declarados.
-    """
-    try:
-        texto = payload.texto or ""
-        if payload.archivo_base64:
-            raw_b64 = payload.archivo_base64
-            if "," in raw_b64:
-                raw_b64 = raw_b64.split(",", 1)[1]
-            raw_bytes = base64.b64decode(raw_b64)
-            texto_extraido = extraer_texto_de_docx_o_bytes(raw_bytes)
-            if texto_extraido and len(texto_extraido.strip()) > 10:
-                texto = texto_extraido
-
-        resultado = analizar_transcripcion_sesion(texto_transcripcion=texto)
-        resultado["texto_extraido"] = texto
-        if payload.nombre_archivo:
-            resultado["nombre_archivo"] = payload.nombre_archivo
-        return resultado
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Error analizando la transcripción: {str(exc)}")
+async def analyze_session_transcript_json():
+    """Retire whole-session transcript analysis from the clinical ML API."""
+    raise HTTPException(
+        status_code=410,
+        detail="El análisis de transcripciones completas fue retirado. El servicio solo admite muestras breves autorizadas.",
+    )
 
 @app.post("/analyze/session-transcript-file")
-async def analyze_session_transcript_file(file: UploadFile = File(...)):
-    """
-    Recibe una transcripción local en .docx o .txt.
-    """
-    try:
-        raw_bytes = await file.read()
-        texto = extraer_texto_de_docx_o_bytes(raw_bytes)
-        resultado = analizar_transcripcion_sesion(texto_transcripcion=texto)
-        return resultado
-    except Exception as exc:
-        raise HTTPException(status_code=500, detail=f"Error analizando el archivo de transcripción: {str(exc)}")
+async def analyze_session_transcript_file():
+    """Retire the legacy file upload endpoint without reading or retaining its body."""
+    raise HTTPException(
+        status_code=410,
+        detail="El análisis de archivos con transcripciones completas fue retirado.",
+    )

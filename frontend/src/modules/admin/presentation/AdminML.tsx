@@ -117,6 +117,7 @@ export function AdminML({ go: _go }: { go: (view: View) => void }) {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <StatusCard label="Conexión" value={online ? 'Servicio en línea' : 'Sin verificar'} ready={online} />
             <StatusCard label="Transcripción Wav2Vec" value={health?.modelo_listo ? health.modelo : 'Modelo no disponible'} ready={health?.modelo_listo === true} />
+            <StatusCard label="Revisión configurada" value={health?.modelo_revision || 'No informada'} ready={Boolean(health?.modelo_revision)} />
             <StatusCard label="Predictor de tratamiento" value={health?.predictor_listo ? 'Artefacto cargado' : 'Modelo clínico no disponible'} ready={health?.predictor_listo === true} />
             <StatusCard label="Dispositivo" value={health?.dispositivo || 'No informado'} ready={online} />
           </div>

@@ -18,6 +18,7 @@ export interface Treatment extends TreatmentData {
   frecuencia_semanal?: number | null; fonemas_priorizados?: PhonemeTarget[];
   sesiones_realizadas?: number;
   sesiones_modelo_estimadas?: number | null; modelo_rango_min?: number | null; modelo_rango_max?: number | null;
+  riesgo_desercion_modelo?: 'BAJO' | 'MEDIO' | 'ALTO' | null; probabilidad_desercion_modelo?: number | null;
   confianza_modelo?: number | null;
   estado_prediccion?: 'SUGERIDO' | 'CONFIRMADO_CLINICO' | 'MODIFICADO_MANUAL' | 'DESCARTADO' | null;
   id_tratamiento: number; id_expediente: number; estado_tratamiento: string;
@@ -38,6 +39,12 @@ export interface Session {
   fecha_hora_inicio_real: string | null; fecha_hora_fin_real: string | null;
   asistencia: "ASISTIO" | "NO_ASISTIO" | null; estado_sesion: "PROGRAMADA" | "EN_CURSO" | "FINALIZADA";
 }
+
+export function canDocumentClinicalSession(session: Pick<Session, 'estado_sesion' | 'asistencia'>): boolean {
+  if (session.estado_sesion === 'EN_CURSO') return session.asistencia !== 'NO_ASISTIO';
+  return session.estado_sesion === 'FINALIZADA' && session.asistencia === 'ASISTIO';
+}
+
 export interface ReportData {
   observaciones_iniciales: string | null; objetivos_trabajados: string | null;
   nivel_ayuda: string | null; proximos_pasos: string | null;

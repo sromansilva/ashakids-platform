@@ -31,6 +31,16 @@ export function encodeArticulationResult(result: ReviewedArticulationResult): st
   return `${OPEN_MARKER}\n${values.map(([label, value]) => `${label}: ${oneLine(value)}`).join('\n')}\n${CLOSE_MARKER}`;
 }
 
+export function appendArticulationResultToObservations(
+  current: string | null | undefined,
+  result: ReviewedArticulationResult,
+): string {
+  const entry = encodeArticulationResult(result);
+  const existing = current?.trim() ?? '';
+  if (existing.includes(entry)) return current ?? '';
+  return existing ? `${existing}\n\n${entry}` : entry;
+}
+
 export function parseArticulationResults(text: string | null | undefined): ReviewedArticulationResult[] {
   if (!text) return [];
   const results: ReviewedArticulationResult[] = [];
@@ -65,14 +75,20 @@ export function parseArticulationHistory<T extends {
   id_sesion: number;
   tipo_cita: 'INTRODUCTORIA' | 'TERAPIA';
   fecha_hora_inicio: string;
-  objetivos_trabajados: string;
+  observaciones_iniciales?: string | null;
+  objetivos_trabajados?: string | null;
 }>(rows: T[]): SavedArticulationResult[] {
-  return rows.flatMap((row) => parseArticulationResults(row.objetivos_trabajados).map((result) => ({
-    ...result,
-    id_sesion: row.id_sesion,
-    tipo_cita: row.tipo_cita,
-    fecha_hora_inicio: row.fecha_hora_inicio,
-  })));
+  return rows.flatMap((row) => {
+    const reportText = [row.observaciones_iniciales, row.objetivos_trabajados]
+      .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+      .join('\n\n');
+    return parseArticulationResults(reportText).map((result) => ({
+      ...result,
+      id_sesion: row.id_sesion,
+      tipo_cita: row.tipo_cita,
+      fecha_hora_inicio: row.fecha_hora_inicio,
+    }));
+  });
 }
 
 function escapeRegExp(value: string): string {

@@ -1,9 +1,9 @@
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import { settings } from '../../backend/dist/core/config.js';
-import { TranscriptionUnavailableError, WhisperService } from '../../backend/dist/modules/mundo_asha/services/whisper.service.js';
+import { TranscriptionUnavailableError, SpeechTranscriptionService } from '../../backend/dist/modules/mundo_asha/services/speech-transcription.service.js';
 
-describe('Whisper transcription service', () => {
+describe('Wav2Vec transcription service', () => {
   it('uses a returned transcript without inventing a pronunciation score', async () => {
     const originalFetch = globalThis.fetch;
     const originalEnabled = settings.ML_SERVICE_ENABLED;
@@ -17,17 +17,11 @@ describe('Whisper transcription service', () => {
     };
 
     try {
-      const service = new WhisperService();
-      const result = await service.evaluarPronunciacion('UklGRiQAAABXQVZFZm10IBAAAAABAAEA', 'pelota');
-      assert.equal(result.transcripcion, 'pelota');
-      assert.equal(result.palabra_esperada, 'pelota');
-      assert.equal(result.requiere_revision, true);
-      assert.match(result.mensaje, /no evalúa|debe revisarla/i);
+      const service = new SpeechTranscriptionService();
+      const result = await service.transcribirAudio('UklGRiQAAABXQVZFZm10IBAAAAABAAEA', 'audio/wav');
+      assert.deepEqual(result, { texto: 'pelota', motor: 'wav2vec2-transcription' });
       assert.equal(requestPath, '/predict/file');
       assert.ok(requestBody?.get('file') instanceof Blob);
-      assert.equal('reconocido' in result, false);
-      assert.equal('similitud' in result, false);
-      assert.equal('diagnostico_clinico' in result, false);
     } finally {
       globalThis.fetch = originalFetch;
       settings.ML_SERVICE_ENABLED = originalEnabled;
@@ -45,9 +39,9 @@ describe('Whisper transcription service', () => {
     };
 
     try {
-      const service = new WhisperService();
+      const service = new SpeechTranscriptionService();
       await assert.rejects(
-        service.evaluarPronunciacion('UklGRiQAAABXQVZFZm10IBAAAAABAAEA', 'manzana'),
+        service.transcribirAudio('UklGRiQAAABXQVZFZm10IBAAAAABAAEA', 'audio/wav'),
         TranscriptionUnavailableError,
       );
       assert.deepEqual(requestHosts, ['127.0.0.1:8001']);

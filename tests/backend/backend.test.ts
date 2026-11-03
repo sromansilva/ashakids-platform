@@ -7,6 +7,7 @@ import { seedIncidencias } from '../../backend/dist/modules/incidencias/incidenc
 import { migrateTerapeutaProfile } from '../../backend/dist/modules/terapeuta/terapeuta-profile.migration.js';
 import { migrateClinicaSchema } from '../../backend/dist/modules/clinica/clinica.migration.js';
 import { migrateNotificacionesSchema } from '../../backend/dist/modules/notificaciones/notificaciones.migration.js';
+import { settings } from '../../backend/dist/core/config.js';
 import type { Server } from 'node:http';
 
 let server: Server;
@@ -43,6 +44,10 @@ const messagingFixture = {
   historySessionId: 0,
   conversationIds: [] as number[],
 };
+
+const localDatabaseHost = ['127.0.0.1', 'localhost', '::1'].includes(settings.DB_HOST.toLowerCase());
+const isolatedDatabase = /(?:_test|_e2e)$/i.test(settings.DB_NAME);
+const canRunDatabaseTests = process.env.ENVIRONMENT === 'test' && localDatabaseHost && isolatedDatabase;
 
 function devAuth(role: 'ADMIN' | 'TERAPEUTA' | 'PADRE', userId: number): string {
   const payload = Buffer.from(JSON.stringify({
@@ -340,7 +345,9 @@ function stopServer(): Promise<void> {
   });
 }
 
-describe('ASHAKids Modular TypeScript Backend Tests', () => {
+describe('ASHAKids Modular TypeScript Backend Tests', {
+  skip: !canRunDatabaseTests && 'Requiere ENVIRONMENT=test, PostgreSQL local y una base cuyo nombre termine en _test o _e2e.',
+}, () => {
   before(async () => {
     // Match the production bootstrap so a fresh isolated database has every
     // schema change required by the API tests before requests start.
@@ -455,7 +462,7 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     assert.equal(res.status, 404);
   });
 
-  it('8. Mundo Asha Module: Returns worlds catalog and validates voice recognition input', async () => {
+  it('8. Mundo Asha Module: Returns worlds catalog and protects the retired voice endpoint', async () => {
     const mundosRes = await fetch(`${baseUrl}/api/v1/mundo-asha/mundos`);
     assert.equal(mundosRes.status, 200);
     const mundos = await mundosRes.json();
@@ -603,6 +610,26 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
       }),
     });
     assert.equal(editOwnSessionReport.status, 200);
+
+    await pool.query(
+      `INSERT INTO reportes_sesion (id_sesion, observaciones_iniciales)
+       VALUES ($1, 'Muestra fonológica revisada por terapeuta para historial')
+       ON CONFLICT (id_sesion)
+       DO UPDATE SET observaciones_iniciales = EXCLUDED.observaciones_iniciales;`,
+      [sessionId],
+    );
+    const articulationHistory = await fetch(`${baseUrl}/api/v1/sesiones/${ownSessionId}/seguimiento-articulacion`, {
+      headers: { authorization: devAuth('TERAPEUTA', therapistId) },
+    });
+    assert.equal(articulationHistory.status, 200);
+    const articulationItems = await articulationHistory.json() as Array<{
+      id_sesion: number;
+      observaciones_iniciales?: string | null;
+    }>;
+    assert.ok(articulationItems.some((item) => (
+      item.id_sesion === sessionId
+      && item.observaciones_iniciales === 'Muestra fonológica revisada por terapeuta para historial'
+    )));
 
     const parentOwnChild = await fetch(`${baseUrl}/api/v1/pacientes/${sharedPatientId}`, {
       headers: { authorization: devAuth('PADRE', 3) },
@@ -1005,7 +1032,142 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     assert.equal(legacySaved.contenido, 'Mensaje del adaptador persistido');
   });
 
-  it('9d. Clinical AI Consent and ML Prediction contracts', async () => {
+  it('9d. Assigned worlds persist a family attempt and expose ludic analytics separately from clinical outcomes', async () => {
+    const patientId = messagingFixture.parentBPatientId;
+    const worlds = ['HABLA', 'LENGUAJE', 'FLUIDEZ', 'VOZ', 'OROFACIAL'];
+    const plan = await pool.query(
+      `UPDATE tratamientos
+       SET area = 'HABLA', mundos_asignados = $1::jsonb, sesiones_recomendadas = 6,
+           fonemas_priorizados = $2::jsonb, frecuencia_semanal = 2
+       WHERE id_expediente = (SELECT id_expediente FROM expedientes WHERE id_paciente = $3)
+         AND estado_tratamiento = 'ACTIVO'
+       RETURNING id_tratamiento;`,
+      [JSON.stringify(worlds), JSON.stringify(['/rr/']), patientId],
+    );
+    assert.equal(plan.rowCount, 1);
+
+    const authRequest = (path: string, role: 'TERAPEUTA' | 'PADRE', userId: number, options: RequestInit = {}) => {
+      const headers = new Headers(options.headers);
+      headers.set('Authorization', devAuth(role, userId));
+      return fetch(baseUrl + path, { ...options, headers });
+    };
+    const catalogResponse = await fetch(`${baseUrl}/api/v1/juegos/catalogo`);
+    assert.equal(catalogResponse.status, 200);
+    const catalog = await catalogResponse.json() as Array<{ id: string }>;
+    assert.deepEqual(new Set(catalog.map((world) => world.id)), new Set(worlds));
+
+    const progressPath = `/api/v1/pacientes/${patientId}/juegos`;
+    const initialProgress = await authRequest(progressPath, 'PADRE', messagingFixture.parentBUserId);
+    assert.equal(initialProgress.status, 200);
+    const initialData = await initialProgress.json() as {
+      mundos: Array<{
+        id: string;
+        asignado: boolean;
+        recomendado_esta_semana: boolean;
+        fonemas_recomendados: string[];
+        levels: Array<{ number: number; fonema_objetivo?: string }>;
+      }>;
+      intentos_totales: number;
+    };
+    assert.deepEqual(new Set(initialData.mundos.filter((world) => world.asignado).map((world) => world.id)), new Set(worlds));
+    assert.equal(initialData.intentos_totales, 0);
+    for (const worldId of ['HABLA', 'LENGUAJE']) {
+      const phonemeWorld = initialData.mundos.find((world) => world.id === worldId);
+      assert.equal(phonemeWorld?.recomendado_esta_semana, true);
+      assert.deepEqual(phonemeWorld?.fonemas_recomendados, ['/rr/']);
+    }
+    assert.equal(initialData.mundos.find((world) => world.id === 'HABLA')?.levels.find((level) => level.number === 4)?.fonema_objetivo, '/rr/');
+    assert.equal(initialData.mundos.find((world) => world.id === 'LENGUAJE')?.levels.find((level) => level.number === 15)?.fonema_objetivo, '/rr/');
+
+    const attemptResponse = await authRequest(
+      `${progressPath}/LENGUAJE/intentos`,
+      'PADRE',
+      messagingFixture.parentBUserId,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clave_intento: '11111111-1111-4111-8111-111111111111',
+          version: 'basica-1',
+          nivel: 4,
+          respuestas: ['Perro'],
+          duracion_segundos: 42,
+          ayudas_usadas: 1,
+        }),
+      },
+    );
+    assert.equal(attemptResponse.status, 200);
+    const attemptData = await attemptResponse.json() as {
+      correcto: boolean;
+      experiencia_otorgada: number;
+      resumen: { intentos_totales: number; mundos: Array<{ id: string; completados: number[] }> };
+    };
+    assert.equal(attemptData.correcto, true);
+    assert.equal(attemptData.experiencia_otorgada, 50);
+    assert.equal(attemptData.resumen.intentos_totales, 1);
+    assert.ok(attemptData.resumen.mundos.find((world) => world.id === 'LENGUAJE')?.completados.includes(4));
+
+    const islandAttemptResponse = await authRequest(
+      `${progressPath}/HABLA/intentos`,
+      'PADRE',
+      messagingFixture.parentBUserId,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clave_intento: '22222222-2222-4222-8222-222222222222',
+          version: 'basica-1',
+          nivel: 4,
+          respuestas: ['Risa'],
+          duracion_segundos: 28,
+          ayudas_usadas: 0,
+        }),
+      },
+    );
+    assert.equal(islandAttemptResponse.status, 200);
+    const islandAttemptData = await islandAttemptResponse.json() as {
+      correcto: boolean;
+      resumen: { intentos_totales: number; mundos: Array<{ id: string; completados: number[] }> };
+    };
+    assert.equal(islandAttemptData.correcto, true);
+    assert.equal(islandAttemptData.resumen.intentos_totales, 2);
+    assert.ok(islandAttemptData.resumen.mundos.find((world) => world.id === 'HABLA')?.completados.includes(4));
+
+    const analytics = await authRequest(
+      `/api/v1/pacientes/${patientId}/analiticas/fonemas?periodo_dias=30`,
+      'TERAPEUTA',
+      messagingFixture.therapistBUserId,
+    );
+    assert.equal(analytics.status, 200);
+    const analyticsData = await analytics.json() as {
+      resultados_clinicos: Array<{ total: number }>;
+      practica_ludica: Array<{ mundo: string; nivel: number; fonema_objetivo: string; intentos: number; respuestas_correctas: number }>;
+    };
+    assert.ok(analyticsData.resultados_clinicos.every((result) => result.total === 0));
+    for (const world of ['HABLA', 'LENGUAJE']) {
+      const phonemePractice = analyticsData.practica_ludica.find((row) => row.mundo === world && row.nivel === 4);
+      assert.deepEqual(
+        phonemePractice && {
+          mundo: phonemePractice.mundo,
+          nivel: phonemePractice.nivel,
+          fonema_objetivo: phonemePractice.fonema_objetivo,
+          intentos: phonemePractice.intentos,
+          respuestas_correctas: phonemePractice.respuestas_correctas,
+        },
+        { mundo: world, nivel: 4, fonema_objetivo: '/rr/', intentos: 1, respuestas_correctas: 1 },
+      );
+      assert.ok(phonemePractice?.ultima_practica && Number.isFinite(Date.parse(phonemePractice.ultima_practica)));
+    }
+
+    const foreignProgress = await authRequest(progressPath, 'PADRE', messagingFixture.parentAUserId);
+    assert.equal(foreignProgress.status, 404);
+  });
+
+  it('9e. Clinical AI Consent and ML Prediction contracts', async () => {
+    await pool.query(
+      "UPDATE sesiones SET estado_sesion = 'EN_CURSO', asistencia = NULL WHERE id_sesion = $1;",
+      [messagingFixture.historySessionId],
+    );
     const authRequest = (
       path: string,
       role: 'ADMIN' | 'TERAPEUTA' | 'PADRE',
@@ -1056,6 +1218,30 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     );
     assert.equal(consentCheckInitial.status, 200);
 
+    const adminConsent = await authRequest(
+      '/api/v1/clinica/consentimientos',
+      'ADMIN',
+      messagingFixture.parentAUserId,
+      jsonOptions('POST', {
+        id_paciente: messagingFixture.sharedPatientId,
+        tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA',
+        estado: 'CONCEDIDO',
+      }),
+    );
+    assert.equal(adminConsent.status, 403, 'only the legal tutor may grant or revoke voice-processing consent');
+
+    const unrelatedParentConsent = await authRequest(
+      '/api/v1/clinica/consentimientos',
+      'PADRE',
+      messagingFixture.parentBUserId,
+      jsonOptions('POST', {
+        id_paciente: messagingFixture.sharedPatientId,
+        tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA',
+        estado: 'CONCEDIDO',
+      }),
+    );
+    assert.equal(unrelatedParentConsent.status, 404, 'a parent may only grant consent for their own child');
+
     const grantConsent = await authRequest(
       '/api/v1/clinica/consentimientos',
       'PADRE',
@@ -1092,6 +1278,28 @@ describe('ASHAKids Modular TypeScript Backend Tests', () => {
     const afterData = await consentCheckAfter.json() as { consentido: boolean; estado: string };
     assert.equal(afterData.consentido, true);
     assert.equal(afterData.estado, 'CONCEDIDO');
+
+    const retiredFragmentEndpoint = await authRequest(
+      '/api/v1/sesiones/1/evaluar-fragmento-fonetico',
+      'TERAPEUTA',
+      messagingFixture.therapistAUserId,
+      jsonOptions('POST', {}),
+    );
+    assert.equal(retiredFragmentEndpoint.status, 410);
+    const retiredTranscriptEndpoint = await authRequest(
+      '/api/v1/sesiones/1/analizar-transcripcion-sesion',
+      'TERAPEUTA',
+      messagingFixture.therapistAUserId,
+      jsonOptions('POST', {}),
+    );
+    assert.equal(retiredTranscriptEndpoint.status, 410);
+    const retiredDuplicateGameVoiceEndpoint = await authRequest(
+      '/api/v1/mundo-asha/voz/reconocimiento',
+      'PADRE',
+      messagingFixture.parentAUserId,
+      jsonOptions('POST', { id_paciente: messagingFixture.sharedPatientId, audio_base64: 'synthetic-audio', palabra_objetivo: 'pelota' }),
+    );
+    assert.equal(retiredDuplicateGameVoiceEndpoint.status, 410);
   });
 
   it('10. 404 Not Found for unmapped routes', async () => {

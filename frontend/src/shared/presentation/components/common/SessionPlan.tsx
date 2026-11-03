@@ -5,6 +5,7 @@ import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
 import type { PhonemeTarget, PlanData, Session, WorldArea } from '@/modules/clinica/domain/clinical';
 import { clinicaService, type TreatmentPredictionResponse } from '@/modules/clinica/infrastructure/clinicalService';
+import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
 import { parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 import {
   emptyPlanNarrative,
@@ -107,8 +108,7 @@ export function SessionPlan({
     report.observaciones_iniciales?.trim() || report.objetivos_trabajados?.trim()
   ));
   const canPublish = role === 'TERAPEUTA' && !readOnly && session.puede_editar !== false &&
-    hasSavedReportContent && ['EN_CURSO', 'FINALIZADA'].includes(session.estado_sesion) &&
-    session.asistencia !== 'NO_ASISTIO';
+    hasSavedReportContent && canDocumentClinicalSession(session);
   const canStartDraft = canPublish && (isIntro ? hasIntroSource : !historyQuery.isPending);
   const inputClass = 'block w-full rounded-xl border border-[#E8E5F4] bg-white px-3 py-2.5 text-sm font-medium text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-500';
   const textFields: Array<[keyof PlanNarrativeDraft, string]> = [
@@ -124,7 +124,11 @@ export function SessionPlan({
     const source = isIntro && report
       ? introPlanDraftFromReport(report)
       : followUpPlanDraftFromSavedResults(savedResults);
-    setForm({ ...emptyPlanForm(), fonemas_priorizados: confirmedSessionPhonemes });
+    setForm({
+      ...emptyPlanForm(),
+      fonemas_priorizados: confirmedSessionPhonemes,
+      mundos_asignados: confirmedSessionPhonemes.length > 0 ? ['HABLA', 'LENGUAJE'] : [],
+    });
     setNarrative(source);
     setPrediction(null);
     setPredictionApplied(false);
@@ -147,7 +151,7 @@ export function SessionPlan({
     form.sesiones_recomendadas <= 31 && Number.isInteger(form.frecuencia_semanal) && form.frecuencia_semanal >= 1 && form.frecuencia_semanal <= 3 &&
     form.mundos_asignados.length > 0 && new Set(form.fonemas_priorizados).size === form.fonemas_priorizados.length &&
     (!['HABLA', 'VOZ'].includes(form.area) || form.fonemas_priorizados.length > 0) &&
-    (form.fonemas_priorizados.length === 0 || form.mundos_asignados.includes('LENGUAJE')) &&
+    (form.fonemas_priorizados.length === 0 || (form.mundos_asignados.includes('HABLA') && form.mundos_asignados.includes('LENGUAJE'))) &&
     (!requiresPredictionNote || predictionNote.trim()) &&
     narrative.objectives.trim() && narrative.activities.trim()
   );
@@ -166,8 +170,8 @@ export function SessionPlan({
       if (['HABLA', 'VOZ'].includes(form.area) && form.fonemas_priorizados.length === 0) {
         return setStepError('Selecciona los fonemas revisados por el terapeuta para este plan.');
       }
-      if (form.fonemas_priorizados.length > 0 && !form.mundos_asignados.includes('LENGUAJE')) {
-        return setStepError('Incluye La Isla de las Palabras para activar la práctica dirigida a los fonemas seleccionados.');
+      if (form.fonemas_priorizados.length > 0 && (!form.mundos_asignados.includes('HABLA') || !form.mundos_asignados.includes('LENGUAJE'))) {
+        return setStepError('Incluye el Taller de los Sonidos (Isla Mágica) y La Isla de las Palabras para activar la práctica dirigida a los fonemas seleccionados.');
       }
     }
     if (step === 2 && (!narrative.objectives.trim() || !narrative.activities.trim())) {
@@ -309,7 +313,13 @@ export function SessionPlan({
                   nivelAyuda={report?.nivel_ayuda}
                   prediction={prediction}
                   predictorEnabled={isIntro}
-                  onPhonemesChange={(phonemes) => setForm((current) => ({ ...current, fonemas_priorizados: phonemes }))}
+                  onPhonemesChange={(phonemes) => setForm((current) => ({
+                    ...current,
+                    fonemas_priorizados: phonemes,
+                    mundos_asignados: phonemes.length > 0
+                      ? Array.from(new Set([...current.mundos_asignados, 'HABLA', 'LENGUAJE']))
+                      : current.mundos_asignados,
+                  }))}
                   onFrequencyChange={(frequency) => setForm((current) => ({ ...current, frecuencia_semanal: frequency }))}
                   onPredictionLoaded={(value) => { setPrediction(value); setPredictionApplied(false); }}
                   onPredictionDismissed={() => { setPrediction(null); setPredictionApplied(false); setPredictionNote(''); }}
@@ -321,13 +331,14 @@ export function SessionPlan({
               </div>
               <fieldset className="space-y-2 rounded-2xl border border-[#E8E5F4] p-4">
                 <legend className="px-1 text-sm font-bold text-[#1C1135]">Mundos para practicar · elige al menos uno *</legend>
-                <p className="text-xs text-[#615274]">Si priorizas fonemas, incluye La Isla de las Palabras para habilitar palabras específicas en «Nombra el dibujo».</p>
+                <p className="text-xs text-[#615274]">Al priorizar fonemas, se asignan el Taller de los Sonidos (Isla Mágica) y La Isla de las Palabras para destacar prácticas relacionadas. Puedes mantener otros mundos del plan.</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {Object.entries(areaLabels).map(([key, label]) => (
-                    <label key={key} className="flex cursor-pointer items-center gap-2.5 rounded-xl bg-[#F8F7FC] px-3 py-2.5 text-sm text-[#4B4264]">
+                    <label key={key} className={`flex items-center gap-2.5 rounded-xl bg-[#F8F7FC] px-3 py-2.5 text-sm text-[#4B4264] ${form.fonemas_priorizados.length > 0 && ['HABLA', 'LENGUAJE'].includes(key) ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'}`}>
                       <input
                         type="checkbox"
                         checked={form.mundos_asignados.includes(key as WorldArea)}
+                        disabled={form.fonemas_priorizados.length > 0 && ['HABLA', 'LENGUAJE'].includes(key)}
                         onChange={(event) => setForm((current) => ({
                           ...current,
                           mundos_asignados: event.target.checked

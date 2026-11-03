@@ -1,5 +1,4 @@
-import type { ProgresoJuegoDTO, ReconocimientoVozDTO } from '../dtos/mundo_asha.dto.js';
-import { whisperService } from './whisper.service.js';
+import type { ProgresoJuegoDTO } from '../dtos/mundo_asha.dto.js';
 import { juegosService } from '../../juegos/juegos.service.js';
 
 export class MundoAshaService {
@@ -12,10 +11,6 @@ export class MundoAshaService {
       duracion_segundos: dto.duracion_segundos,
       ayudas_usadas: dto.ayudas_usadas,
     });
-  }
-
-  async reconocerVoz(dto: ReconocimientoVozDTO) {
-    return whisperService.evaluarPronunciacion(dto.audio_base64, dto.palabra_objetivo);
   }
 
   async getCatalogoMundos() {

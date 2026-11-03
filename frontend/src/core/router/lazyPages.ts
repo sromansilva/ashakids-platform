@@ -55,7 +55,6 @@ export const MundoAshaTrabalenguas = lazy(() => import("@/modules/padre/presenta
 export const MundoAshaAdivinanzas = lazy(() => import("@/modules/padre/presentation/MundoAshaAdivinanzas").then(module => ({ default: module.MundoAshaAdivinanzas })));
 export const MundoAshaJuegos = lazy(() => import("@/modules/padre/presentation/MundoAsha/MundoAshaJuegos").then(module => ({ default: module.MundoAshaJuegos })));
 export const MundoAshaLaberinto = lazy(() => import("@/modules/padre/presentation/MundoAshaLaberinto").then(module => ({ default: module.MundoAshaLaberinto })));
-export const MundoAshaIsla = lazy(() => import("@/modules/padre/presentation/MundoAshaIsla").then(module => ({ default: module.MundoAshaIsla })));
 export const MundoAshaAcademia = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaAcademia })));
 export const MundoAshaRetos = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaRetos })));
 export const MundoAshaInsignias = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaInsignias })));
@@ -71,6 +70,7 @@ export const TerapeutaIngresos = lazy(() => import("@/modules/terapeuta/presenta
 export const TerapeutaValoraciones = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaFinanzas").then(module => ({ default: module.TerapeutaValoraciones })));
 export const TerapeutaConfig = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaConfig").then(module => ({ default: module.TerapeutaConfig })));
 export const TerapeutaDatosActividad = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaDatosActividad").then(module => ({ default: module.TerapeutaDatosActividad })));
+export const ScheduledSessionLaunchGate = lazy(() => import("@/modules/terapeuta/presentation/ScheduledSessionLaunchGate").then(module => ({ default: module.ScheduledSessionLaunchGate })));
 export const TerapeutaIncidencias = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaIncidencias").then(module => ({ default: module.TerapeutaIncidencias })));
 export const AshaPayCheckout = lazy(() => import("@/modules/padre/presentation/AshaPay/AshaPayCheckout").then(module => ({ default: module.AshaPayCheckout })));
 export const AshaPayHistory = lazy(() => import("@/modules/padre/presentation/AshaPay/AshaPayHistory").then(module => ({ default: module.AshaPayHistory })));

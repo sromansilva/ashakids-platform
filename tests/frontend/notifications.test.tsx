@@ -72,6 +72,23 @@ it('shows the family T-5 reminder with a safe Meet link and routes preferences t
   fireEvent.click(screen.getByRole('button',{name:'Notificaciones'}));
   expect(await screen.findByText('Recibe un aviso en el portal 5 minutos antes de una cita confirmada. El correo también se envía cuando el servicio está disponible.')).toBeInTheDocument();
 });
+it('prepares the gated clinical panel and Meet tabs for a professional instead of exposing the raw Meet link',async () => {
+  const reminder = {...notification,tipo:'RECORDATORIO',titulo:'Tu sesión empieza en 10 minutos',meet_url:'https://meet.google.com/abc-defg-hij'};
+  vi.mocked(fetch).mockImplementation(async input => {
+    const path = new URL(String(input)).pathname.replace('/api/v1','');
+    if(path==='/notificaciones') return response({items:[reminder],total:1,sin_leer:1});
+    return response([]);
+  });
+  const open = vi.spyOn(window,'open').mockReturnValue(null);
+  renderRoute('/terapeuta','TERAPEUTA');
+  fireEvent.click(await screen.findByRole('button',{name:'Notificaciones, 1 sin leer'}));
+  fireEvent.click(await screen.findByRole('button',{name:'Preparar inicio de reunión'}));
+  expect(open).toHaveBeenNthCalledWith(1,'/terapeuta/sesion/espera/3/panel','_blank','noopener,noreferrer');
+  expect(open).toHaveBeenNthCalledWith(2,'/terapeuta/sesion/espera/3/meet','_blank','noopener,noreferrer');
+  expect(screen.queryByRole('link',{name:'Iniciar reunión'})).not.toBeInTheDocument();
+  expect(await screen.findByRole('status')).toHaveTextContent('el panel respetará la hora de la cita');
+  open.mockRestore();
+});
 it('reports inbox failure without exposing stale entries and loads notifications in the family center',async () => {
   vi.mocked(fetch).mockImplementation(async input=>String(input).includes('/notificaciones')?response({detail:'Bandeja no disponible'},503):response([]));
   const view=renderRoute('/terapeuta','TERAPEUTA');

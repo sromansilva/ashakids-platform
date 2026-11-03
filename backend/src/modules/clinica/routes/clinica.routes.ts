@@ -25,7 +25,7 @@ clinicaRouter.post('/valoraciones', requireRoles(['ADMIN', 'TERAPEUTA']), (req, 
 clinicaRouter.get('/consentimientos/:id_paciente', (req, res, next) =>
   clinicaController.getConsentimiento(req, res, next)
 );
-clinicaRouter.post('/consentimientos', requireRoles(['ADMIN', 'PADRE']), (req, res, next) =>
+clinicaRouter.post('/consentimientos', requireRoles(['PADRE']), (req, res, next) =>
   clinicaController.registrarConsentimiento(req, res, next)
 );
 

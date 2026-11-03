@@ -11,9 +11,11 @@ import { VirtualMeeting } from "./VirtualMeeting";
 import { SessionPlan } from "./SessionPlan";
 import { SessionReview } from './SessionReview';
 import { FamilyPhoneticCaptureWidget } from './FamilyPhoneticCaptureWidget';
+import { FamilyConsentPrompt } from './FamilyConsentPrompt';
 import { ActiveSessionOverview } from './ActiveSessionOverview';
 import { FileText, ArrowRight, Clock } from "lucide-react";
 import { isMeetingUrl } from './VirtualMeeting';
+import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
 
 export function SessionActions({
   appointmentId,
@@ -50,7 +52,7 @@ export function SessionActions({
   const s = appointment.error || session.error ? undefined : session.data;
   const busy = create.isPending || start.isPending || close.isPending;
   const ownsSession = professional && s?.puede_editar !== false;
-  const canEdit = ownsSession && !!s && ['EN_CURSO', 'FINALIZADA'].includes(s.estado_sesion) && s.asistencia !== 'NO_ASISTIO';
+  const canEdit = ownsSession && !!s && canDocumentClinicalSession(s);
 
   const startMs = Date.parse(s?.cita.fecha_hora_inicio ?? appointment.data?.fecha_hora_inicio ?? '');
   const diffMs = startMs - now;
@@ -66,12 +68,12 @@ export function SessionActions({
   }, [activeSessionPanel, professional, s, now, startMs, busy, start.isSuccess]);
 
   const handleStartSession = () => {
-    const panelPath = role === 'ADMIN'
-      ? `/admin/sesion/${appointmentId}`
-      : `/terapeuta/sesion/${appointmentId}`;
-    window.open(panelPath, '_blank', 'noopener,noreferrer');
+    const launchPath = role === 'ADMIN'
+      ? `/admin/sesion/espera/${appointmentId}`
+      : `/terapeuta/sesion/espera/${appointmentId}`;
+    window.open(`${launchPath}/panel`, '_blank', 'noopener,noreferrer');
     if (isMeetingUrl(appointment.data?.meet_url)) {
-      window.open(appointment.data.meet_url, '_blank', 'noopener,noreferrer');
+      window.open(`${launchPath}/meet`, '_blank', 'noopener,noreferrer');
     }
     setPanelOpened(true);
   };
@@ -97,6 +99,9 @@ export function SessionActions({
         )}
         {appointment.data && !appointment.error && (
           <VirtualMeeting key={appointmentId} appointment={appointment.data} professional={professional} />
+        )}
+        {role === 'PADRE' && appointment.data && (
+          <FamilyConsentPrompt patientId={appointment.data.id_paciente} patientName={appointment.data.paciente_nombre} />
         )}
 
         {professional && !s && appointment.data && isUpcomingSoon && (
@@ -200,7 +205,7 @@ export function SessionActions({
 
       {panelOpened && (
         <p role="status" className="mt-2 text-xs font-medium text-[#615274]">
-          Se abrió el panel clínico en otra pestaña{appointment.data?.meet_url ? ' junto con Google Meet' : ''}. Si no aparece, permite las ventanas emergentes para este sitio.
+          Se prepararon las pestañas de inicio{appointment.data?.meet_url ? ' para el panel clínico y Google Meet' : ' para el panel clínico'}. Se abrirán a la hora programada. Si no aparecen, permite las ventanas emergentes para este sitio.
         </p>
       )}
 

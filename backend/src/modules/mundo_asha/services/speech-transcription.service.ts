@@ -7,14 +7,6 @@ export interface SpeechTranscription {
   motor: SpeechTranscriptionEngine;
 }
 
-export interface VoiceReviewResult {
-  palabra_esperada: string;
-  transcripcion: string;
-  requiere_revision: true;
-  mensaje: string;
-  motor: SpeechTranscriptionEngine;
-}
-
 export class TranscriptionUnavailableError extends Error {
   constructor(message = 'El servicio de transcripción no está disponible.') {
     super(message);
@@ -22,7 +14,7 @@ export class TranscriptionUnavailableError extends Error {
   }
 }
 
-export class WhisperService {
+export class SpeechTranscriptionService {
   async transcribirAudio(audio: Buffer | string, mimeType = 'audio/wav'): Promise<SpeechTranscription> {
     const ownsBuffer = !Buffer.isBuffer(audio);
     let audioBuffer: Buffer;
@@ -69,18 +61,6 @@ export class WhisperService {
       if (ownsBuffer) audioBuffer.fill(0);
     }
   }
-
-  /** Transcription can support human review, but does not evaluate pronunciation. */
-  async evaluarPronunciacion(audioBase64: string, palabraObjetivo: string): Promise<VoiceReviewResult> {
-    const { texto, motor } = await this.transcribirAudio(audioBase64);
-    return {
-      palabra_esperada: palabraObjetivo,
-      transcripcion: texto,
-      requiere_revision: true,
-      mensaje: 'La transcripción es orientativa. La pronunciación debe revisarla un profesional.',
-      motor,
-    };
-  }
 }
 
-export const whisperService = new WhisperService();
+export const speechTranscriptionService = new SpeechTranscriptionService();

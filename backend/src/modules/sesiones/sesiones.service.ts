@@ -4,6 +4,7 @@ import { settings } from '../../core/config.js';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
 import { appendPatientScope, assertReservationAccess, assertSessionEditAccess, assertConsentAccess } from '../../core/security/clinical-access.js';
 import { FamilyPhoneticCaptureStore, PhoneticCaptureStore, pcm16MonoWav } from './phonetic-capture.js';
+import { isAttendedOrActiveSession, normalizeAttendance } from './attendance.js';
 import { isGoogleMeetUrl as isMeetingUrl } from '../../core/security/google-meet-url.js';
 
 export interface SessionData {
@@ -431,7 +432,7 @@ export class SesionesService {
         reporte_disponible: parseInt(r.count_reporte ?? '0', 10) > 0,
         fecha_hora_inicio_real: r.fecha_hora_inicio_real ? new Date(r.fecha_hora_inicio_real).toISOString() : null,
         fecha_hora_fin_real: r.fecha_hora_fin_real ? new Date(r.fecha_hora_fin_real).toISOString() : null,
-        asistencia: r.asistencia === true ? 'ASISTIO' : r.asistencia === false ? 'NO_ASISTIO' : r.asistencia,
+        asistencia: normalizeAttendance(r.asistencia),
         estado_sesion: (r.estado_sesion === 'COMPLETADA' ? 'FINALIZADA' : r.estado_sesion) as any,
         cita: {
           id_reserva: r.id_reserva,
@@ -526,7 +527,7 @@ export class SesionesService {
         `UPDATE sesiones SET fecha_hora_fin_real = NOW(), estado_sesion = 'FINALIZADA', asistencia = $1
          WHERE id_sesion = $2 AND estado_sesion = 'EN_CURSO'
          RETURNING id_reserva;`,
-        [asistencia === 'ASISTIO', key]
+        [asistencia, key]
       );
       if (!result.rows[0]) {
         throw Object.assign(new Error('Solo se puede cerrar una sesión que esté en curso.'), { status: 409 });
@@ -694,6 +695,8 @@ export class SesionesService {
                 prediction.sesiones_estimadas AS sesiones_modelo_estimadas,
                 prediction.rango_min AS modelo_rango_min,
                 prediction.rango_max AS modelo_rango_max,
+                prediction.riesgo_desercion AS riesgo_desercion_modelo,
+                prediction.probabilidad_desercion AS probabilidad_desercion_modelo,
                 prediction.confianza AS confianza_modelo,
                 prediction.estado_confirmacion AS estado_prediccion,
                 (SELECT COUNT(*)::integer
@@ -701,7 +704,7 @@ export class SesionesService {
                  JOIN reservas attended_reservation ON attended_reservation.id_reserva = attended_session.id_reserva
                  WHERE attended_reservation.id_tratamiento = t.id_tratamiento
                    AND attended_session.estado_sesion = 'FINALIZADA'
-                   AND attended_session.asistencia = 'ASISTIO') AS sesiones_realizadas
+                   AND attended_session.asistencia IN ('ASISTIO', 'TRUE', 'T', '1')) AS sesiones_realizadas
          FROM tratamientos t
          JOIN sesiones s ON s.id_sesion = $1
          JOIN reservas r ON s.id_reserva = r.id_reserva
@@ -733,6 +736,8 @@ export class SesionesService {
             sesiones_modelo_estimadas: r.sesiones_modelo_estimadas == null ? null : Number(r.sesiones_modelo_estimadas),
             modelo_rango_min: r.modelo_rango_min == null ? null : Number(r.modelo_rango_min),
             modelo_rango_max: r.modelo_rango_max == null ? null : Number(r.modelo_rango_max),
+            riesgo_desercion_modelo: r.riesgo_desercion_modelo ?? null,
+            probabilidad_desercion_modelo: r.probabilidad_desercion_modelo == null ? null : Number(r.probabilidad_desercion_modelo),
             confianza_modelo: r.confianza_modelo == null ? null : Number(r.confianza_modelo),
             estado_prediccion: r.estado_prediccion ?? null,
           } : {}),
@@ -752,6 +757,13 @@ export class SesionesService {
 
   async publicarPlan(key: number, data: any, user: AuthenticatedUser) {
     await assertSessionEditAccess(user, key);
+    if (Array.isArray(data.fonemas_priorizados) && data.fonemas_priorizados.length > 0 &&
+        (!data.mundos_asignados?.includes('HABLA') || !data.mundos_asignados?.includes('LENGUAJE'))) {
+      throw Object.assign(
+        new Error('Asigna el Taller de los Sonidos (Isla Mágica) y La Isla de las Palabras para activar la práctica dirigida a fonemas.'),
+        { status: 400 },
+      );
+    }
     const client = await pool.connect();
     try {
       await client.query('BEGIN;');
@@ -770,7 +782,7 @@ export class SesionesService {
       );
       const p = ses.rows[0];
       if (!p) throw Object.assign(new Error('No se encontró la sesión para crear el plan.'), { status: 404 });
-      if (!['EN_CURSO', 'FINALIZADA'].includes(p.estado_sesion) || p.asistencia === 'NO_ASISTIO') {
+      if (!isAttendedOrActiveSession(p.estado_sesion, p.asistencia)) {
         throw Object.assign(new Error('Solo se puede publicar un plan para una sesión atendida.'), { status: 409 });
       }
       const report = await client.query(
@@ -827,7 +839,15 @@ export class SesionesService {
       const pacienteId = p.id_paciente;
       const terapeutaId = p.id_terapeuta;
 
-      // Ensure expediente exists
+      // Serialize plan publication per patient so concurrent sessions cannot
+      // create two active treatment plans for the same clinical record.
+      const patientLock = await client.query(
+        'SELECT id_paciente FROM pacientes WHERE id_paciente = $1 FOR UPDATE;',
+        [pacienteId],
+      );
+      if (!patientLock.rows[0]) throw Object.assign(new Error('No se encontró el paciente del plan.'), { status: 404 });
+
+      // Ensure expediente exists.
       let expRes = await client.query(`SELECT id_expediente FROM expedientes WHERE id_paciente = $1 FOR UPDATE;`, [pacienteId]);
       let idExpediente = expRes.rows[0]?.id_expediente;
       if (!idExpediente) {
@@ -836,11 +856,25 @@ export class SesionesService {
       }
       if (!idExpediente) throw new Error('No se pudo crear o recuperar el expediente del paciente.');
 
+      const activePlan = await client.query(
+        `SELECT id_tratamiento FROM tratamientos
+         WHERE id_expediente = $1 AND estado_tratamiento = 'ACTIVO' AND id_sesion_origen IS NOT NULL
+         ORDER BY fecha_inicio DESC NULLS LAST, id_tratamiento DESC
+         LIMIT 1 FOR UPDATE;`,
+        [idExpediente],
+      );
+      if (activePlan.rows[0]) {
+        throw Object.assign(
+          new Error('El paciente ya tiene un plan activo. Finaliza o actualiza ese plan antes de publicar otro.'),
+          { status: 409 },
+        );
+      }
+
       const res = await client.query(
         `INSERT INTO tratamientos (id_expediente, id_terapeuta, nombre_tratamiento, descripcion, area, mundos_asignados, sesiones_recomendadas, estado_tratamiento, fecha_inicio, id_sesion_origen, id_prediccion, frecuencia_semanal, fonemas_priorizados)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 'ACTIVO', CURRENT_DATE, $8, $9, $10, $11)
+         VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7, 'ACTIVO', CURRENT_DATE, $8, $9, $10, $11::jsonb)
          RETURNING *;`,
-        [idExpediente, terapeutaId, data.nombre_tratamiento, data.descripcion ?? null, data.area, data.mundos_asignados, data.sesiones_recomendadas, key, data.id_prediccion ?? null, data.frecuencia_semanal, data.fonemas_priorizados]
+        [idExpediente, terapeutaId, data.nombre_tratamiento, data.descripcion ?? null, data.area, JSON.stringify(data.mundos_asignados), data.sesiones_recomendadas, key, data.id_prediccion ?? null, data.frecuencia_semanal, JSON.stringify(data.fonemas_priorizados)]
       );
       const row = res.rows[0];
       if (prediction) {
@@ -860,6 +894,7 @@ export class SesionesService {
         id_expediente: row.id_expediente,
         id_paciente: pacienteId,
         id_terapeuta: terapeutaId,
+        id_sesion_origen: key,
         nombre_tratamiento: row.nombre_tratamiento,
         descripcion: row.descripcion,
         area: row.area,
@@ -926,74 +961,6 @@ export class SesionesService {
     }
   }
 
-  async evaluarFragmentoFonetico(
-    idSesion: number,
-    payload?: {
-      audio_base64?: string;
-      palabra_esperada?: string;
-      inicio_segundo?: number;
-      fin_segundo?: number;
-    }
-  ) {
-    const fail = (message: string, status = 400) => Object.assign(new Error(message), { status });
-    const audioBase64 = payload?.audio_base64?.replace(/^data:audio\/[^;]+;base64,/, '').trim();
-    const palabraEsperada = payload?.palabra_esperada?.trim();
-    const inicio = payload?.inicio_segundo;
-    const fin = payload?.fin_segundo;
-
-    if (!Number.isInteger(idSesion) || idSesion <= 0) throw fail('La sesión indicada no es válida.');
-    if (!audioBase64 || !/^[A-Za-z0-9+/]+={0,2}$/.test(audioBase64)) throw fail('El fragmento de audio no tiene un formato válido.');
-    if (audioBase64.length > 8_500_000) throw fail('El fragmento supera el tamaño permitido. Selecciona hasta 30 segundos de audio.', 413);
-    if (!palabraEsperada || palabraEsperada.length > 80) throw fail('Indica una palabra o expresión objetivo de hasta 80 caracteres.');
-    if (typeof inicio !== 'number' || typeof fin !== 'number' || !Number.isFinite(inicio) || !Number.isFinite(fin) || inicio < 0 || fin <= inicio || fin - inicio < 0.5 || fin - inicio > 30) {
-      throw fail('El fragmento debe durar entre 0,5 y 30 segundos y tener tiempos válidos.');
-    }
-    const session = await pool.query(
-      'SELECT s.estado_sesion, r.id_paciente FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva WHERE s.id_sesion = $1 LIMIT 1;',
-      [idSesion],
-    );
-    if (!session.rows[0]) throw fail('Sesión no encontrada.', 404);
-    if (session.rows[0].estado_sesion !== 'EN_CURSO') throw fail('El análisis solo está disponible durante una sesión en curso.', 409);
-    await assertConsentAccess(Number(session.rows[0].id_paciente));
-    if (!settings.ML_SERVICE_ENABLED || !settings.ML_SERVICE_URL) throw fail('El servicio de análisis de audio no está habilitado.', 503);
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60_000);
-    let response: Response;
-    try {
-      response = await fetch(`${settings.ML_SERVICE_URL.replace(/\/$/, '')}/predict/phonetics`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ audio_base64: audioBase64 }),
-        signal: controller.signal,
-      });
-    } catch {
-      throw fail('El servicio de análisis de audio no respondió. Intenta nuevamente más tarde.', 503);
-    } finally {
-      clearTimeout(timeout);
-    }
-
-    if (!response.ok) throw fail('El servicio no pudo procesar el fragmento de audio.', 502);
-
-    const modelResult = await response.json() as {
-      transcripcion?: unknown;
-      duracion_segundos?: unknown;
-      motor_red_neuronal_activa?: unknown;
-    };
-    const transcripcion = typeof modelResult.transcripcion === 'string' ? modelResult.transcripcion.trim() : '';
-    if (modelResult.motor_red_neuronal_activa !== true || !transcripcion) {
-      throw fail('No se obtuvo una transcripción utilizable del fragmento. Revisa el audio o vuelve a intentarlo.', 422);
-    }
-
-    return {
-      estado: 'SUGERENCIA_LISTA',
-      palabra_esperada: palabraEsperada,
-      transcripcion_sugerida: transcripcion,
-      fragmento: { inicio_segundo: inicio, fin_segundo: fin },
-      duracion_analizada_segundos: typeof modelResult.duracion_segundos === 'number' ? modelResult.duracion_segundos : fin - inicio,
-    };
-  }
-
   async perteneceATerapeuta(idSesion: number, idUsuario: number): Promise<boolean> {
     const result = await pool.query(
       `SELECT 1
@@ -1012,6 +979,7 @@ export class SesionesService {
       `SELECT past_s.id_sesion,
               COALESCE(past_r.tipo_cita, 'TERAPIA') AS tipo_cita,
               past_r.fecha_hora_inicio,
+              past_report.observaciones_iniciales,
               past_report.objetivos_trabajados
        FROM sesiones current_s
        JOIN reservas current_r ON current_r.id_reserva = current_s.id_reserva
@@ -1020,8 +988,8 @@ export class SesionesService {
        JOIN reportes_sesion past_report ON past_report.id_sesion = past_s.id_sesion
        WHERE current_s.id_sesion = $1
          AND past_r.id_paciente = current_r.id_paciente
-         AND past_report.objetivos_trabajados IS NOT NULL
-         AND past_report.objetivos_trabajados <> ''
+         AND (NULLIF(BTRIM(past_report.observaciones_iniciales), '') IS NOT NULL
+               OR NULLIF(BTRIM(past_report.objetivos_trabajados), '') IS NOT NULL)
        ORDER BY past_r.fecha_hora_inicio DESC
        LIMIT 50;`,
       [idSesion],
@@ -1031,46 +999,9 @@ export class SesionesService {
       id_sesion: Number(row.id_sesion),
       tipo_cita: row.tipo_cita as 'INTRODUCTORIA' | 'TERAPIA',
       fecha_hora_inicio: new Date(row.fecha_hora_inicio).toISOString(),
-      objetivos_trabajados: String(row.objetivos_trabajados),
+      observaciones_iniciales: row.observaciones_iniciales == null ? null : String(row.observaciones_iniciales),
+      objetivos_trabajados: row.objetivos_trabajados == null ? null : String(row.objetivos_trabajados),
     }));
-  }
-
-  async analizarTranscripcionSesion(
-    idSesion: number,
-    payload?: {
-      texto?: string;
-      paciente_nombre?: string;
-      archivo_base64?: string;
-      nombre_archivo?: string;
-    }
-  ) {
-    const fail = (message: string, status = 400) => Object.assign(new Error(message), { status });
-    if (!Number.isInteger(idSesion) || idSesion <= 0) throw fail('La sesión indicada no es válida.');
-    if (!payload?.texto?.trim() && !payload?.archivo_base64?.trim()) throw fail('Carga o pega una transcripción para continuar.');
-    if (!settings.ML_SERVICE_ENABLED || !settings.ML_SERVICE_URL) throw fail('El servicio de transcripción no está habilitado.', 503);
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60_000);
-    let response: Response;
-    try {
-      response = await fetch(`${settings.ML_SERVICE_URL.replace(/\/$/, '')}/analyze/session-transcript`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          texto: payload?.texto || '',
-          archivo_base64: payload?.archivo_base64,
-          nombre_archivo: payload?.nombre_archivo,
-        }),
-        signal: controller.signal,
-      });
-    } catch {
-      throw fail('El servicio de transcripción no respondió. Intenta nuevamente más tarde.', 503);
-    } finally {
-      clearTimeout(timeout);
-    }
-
-    if (!response.ok) throw fail('El servicio no pudo procesar la transcripción.', 502);
-    return await response.json();
   }
 
 }

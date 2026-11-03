@@ -24,7 +24,7 @@ ashakids-platform/
 ├── backend/                  # API REST en TypeScript + Express + Drizzle ORM
 │   └── src/
 │       ├── core/             # Configuración (Zod env), conexión a PostgreSQL, middleware de cookies
-│       ├── infrastructure/   # Integraciones externas: Google Calendar, Mailer/Gmail, Reconocimiento de Voz Whisper
+│       ├── infrastructure/   # Integraciones externas: Google Calendar, Mailer/Gmail y transcripción local con Wav2Vec 2.0
 │       └── modules/          # Módulos de dominio (agenda, auth, clinica, comunicacion, cuentas, mundo_asha, pacientes)
 ├── frontend/                 # SPA en React 18 + TypeScript + Vite + Tailwind CSS
 │   └── src/
@@ -50,6 +50,9 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
   - Google Calendar conserva los eventos de cita. La integración de Meet solicita datos de conferencia solo desde `MeetService` cuando `MEET_ENABLED` está activo.
 - **Servicios de Correo / Gmail**:
   - Las variables y firmas en `backend/src/core/config.ts` y auth deben mantenerse backward-compatible.
+- **Alta de familias y acceso**:
+  - El registro público permanece cerrado tanto en la API (`POST /api/v1/auth/register`) como en la experiencia del frontend, que solo explica cómo solicitar acceso.
+  - Las cuentas familiares se crean manualmente desde la administración autenticada (`POST /api/v1/admin/familias` o `/api/v1/admin/cuentas/padres`) y reciben un enlace temporal para activar su contraseña. No habilitar auto-registro familiar.
 - **Base de Datos y PostgreSQL**:
   - Respetar la integridad referencial. Si se prueba la reserva de citas para un paciente (ej. `id_paciente: 3`), verificar que existan su `expediente` y su `tratamiento` activo para evitar violaciones de clave foránea (`fk_reservas_paciente`, `fk_reservas_tratamiento`).
 
@@ -87,22 +90,25 @@ Antes de dar por terminada cualquier tarea o entrega, ejecutar las comprobacione
 # 1. Pruebas de integración del backend. Usan PostgreSQL y escriben fixtures: ejecutar solo con una base de prueba aislada y configurada explícitamente.
 npm --prefix backend run test
 
-# 2. Pruebas de enrutamiento y guardias de seguridad del frontend
+# 2. Flujo E2E en PostgreSQL local aislado. Requiere ENVIRONMENT=test, DB_HOST local, DB_NAME terminado en _test o _e2e y ASHAKIDS_RUN_DB_E2E=1.
+npm run test:e2e
+
+# 3. Pruebas de enrutamiento y guardias de seguridad del frontend
 npm --prefix frontend run test:routing
 
-# 3. Pruebas de componentes frontend
+# 4. Pruebas de componentes frontend
 npm --prefix frontend run test:components
 
-# 4. Verificación de límites, imports y cliente HTTP
+# 5. Verificación de límites, imports y cliente HTTP
 npm --prefix frontend run check:frontend
 
-# 5. Pruebas unitarias del microservicio ML
+# 6. Pruebas unitarias del microservicio ML
 python -m unittest discover -s ml-service
 
-# 6. Compilación de producción del backend y frontend
+# 7. Compilación de producción del backend y frontend
 npm run build
 
-# 7. Tipado de backend y frontend
+# 8. Tipado de backend y frontend
 npm run typecheck
 ```
 

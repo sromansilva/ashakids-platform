@@ -36,7 +36,8 @@ it('convierte el reporte guardado en contexto editable y exige completar objetiv
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'4'}});
   fireEvent.change(screen.getByLabelText('Frecuencia semanal'),{target:{value:'2'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'/r/'}));
-  fireEvent.click(screen.getByRole('checkbox',{name:'Comprensión y expresión'}));
+  expect(screen.getByRole('checkbox',{name:'Habla y articulación'})).toBeChecked();
+  expect(screen.getByRole('checkbox',{name:'Comprensión y expresión'})).toBeChecked();
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   expect(screen.getByLabelText('Línea base confirmada (editable)')).toHaveValue('Línea base confirmada sintética');
   expect(screen.getByLabelText('Objetivos trabajados en la introductoria (editable)')).toHaveValue('Objetivo trabajado en introductoria');
@@ -53,7 +54,7 @@ it('convierte el reporte guardado en contexto editable y exige completar objetiv
   expect(JSON.parse(String(write?.[1]?.body))).toEqual({
     nombre_tratamiento:'Plan de Ana',
     descripcion:'[LÍNEA BASE CONFIRMADA]\nLínea base confirmada sintética\n\n[OBJETIVOS TRABAJADOS EN INTRODUCTORIA]\nObjetivo trabajado en introductoria\n\n[OBJETIVOS DEL PLAN]\nPracticar el objetivo confirmado según criterio profesional.\n\n[ACTIVIDADES DEL PLAN]\nActividad definida por el terapeuta.',
-    area:'HABLA', mundos_asignados:['LENGUAJE'], sesiones_recomendadas:4,
+    area:'HABLA', mundos_asignados:['HABLA','LENGUAJE'], sesiones_recomendadas:4,
     frecuencia_semanal:2, fonemas_priorizados:['/r/'],
   });
 });
@@ -65,7 +66,6 @@ it('conserva el borrador si el servidor rechaza la publicación', async () => {
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'3'}});
   fireEvent.change(screen.getByLabelText('Frecuencia semanal'),{target:{value:'2'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'/r/'}));
-  fireEvent.click(screen.getByRole('checkbox',{name:'Comprensión y expresión'}));
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Objetivo editable de prueba'}});
@@ -103,7 +103,6 @@ it('usa resultados previos guardados como contexto editable y deja objetivos y a
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'4'}});
   fireEvent.change(screen.getByLabelText('Frecuencia semanal'),{target:{value:'2'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'/r/'}));
-  fireEvent.click(screen.getByRole('checkbox',{name:'Comprensión y expresión'}));
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   const previousResults = screen.getByLabelText('Resultados previos revisados (contexto editable)') as HTMLTextAreaElement;
   expect(previousResults.value).toContain('Sesión #8');

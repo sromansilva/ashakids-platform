@@ -1,6 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { pacientesService } from '../services/pacientes.service.js';
-import { getProgresoJuegos, registrarIntentoJuegos } from '../../juegos/juegos.routes.js';
+import { getProgresoJuegos, registrarIntentoJuegos, registrarActividadLudica } from '../../juegos/juegos.routes.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
 import { assertPatientAccess } from '../../../core/security/clinical-access.js';
 
@@ -131,6 +131,16 @@ pacientesRouter.post('/:key/juegos/:world/intentos', requireRoles(['ADMIN', 'PAD
   try {
     await assertPatientAccess(req.user!, parseInt(String(req.params.key), 10));
     return registrarIntentoJuegos(req, res, next);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// POST /api/v1/pacientes/:key/juegos/:world/actividades
+pacientesRouter.post('/:key/juegos/:world/actividades', requireRoles(['ADMIN', 'PADRE', 'TERAPEUTA']), async (req, res, next) => {
+  try {
+    await assertPatientAccess(req.user!, parseInt(String(req.params.key), 10));
+    return registrarActividadLudica(req, res, next);
   } catch (err) {
     next(err);
   }

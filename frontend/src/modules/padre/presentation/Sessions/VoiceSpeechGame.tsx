@@ -144,7 +144,7 @@ export function VoiceSpeechGame({
           return;
         }
 
-        // Procesar en backend con Whisper y persistir intento si hay contexto de paciente
+        // Procesar en backend con Wav2Vec y persistir intento si hay contexto de paciente
         setState('processing');
         try {
           const claveIntento = crypto.randomUUID();

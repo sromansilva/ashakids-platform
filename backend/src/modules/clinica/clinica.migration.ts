@@ -36,13 +36,20 @@ export async function migrateClinicaSchema() {
         id_paciente integer NOT NULL REFERENCES public.pacientes(id_paciente) ON DELETE CASCADE,
         id_usuario_tutor integer NOT NULL REFERENCES public.usuarios(id_usuario) ON DELETE CASCADE,
         tipo_consentimiento character varying(50) DEFAULT 'EVALUACION_FONOLOGICA_IA' NOT NULL,
-        estado character varying(20) DEFAULT 'CONCEDIDO' NOT NULL CHECK (estado IN ('CONCEDIDO', 'REVOCADO')),
+        estado character varying(20) DEFAULT 'REVOCADO' NOT NULL CHECK (estado IN ('CONCEDIDO', 'REVOCADO')),
         fecha_concesion timestamp with time zone DEFAULT now() NOT NULL,
         fecha_revocacion timestamp with time zone,
         ip_origen character varying(45),
         user_agent text,
         metadata jsonb DEFAULT '{}'::jsonb
       );
+    `);
+
+    // Consent must be granted by an explicit tutor action. Preserve existing
+    // records while making future inserts fail closed when estado is omitted.
+    await client.query(`
+      ALTER TABLE public.consentimientos_ia
+        ALTER COLUMN estado SET DEFAULT 'REVOCADO';
     `);
 
     await client.query(`
@@ -107,6 +114,7 @@ export async function migrateClinicaSchema() {
         rango_min integer NOT NULL,
         rango_max integer NOT NULL,
         riesgo_desercion character varying(20) NOT NULL CHECK (riesgo_desercion IN ('BAJO', 'MEDIO', 'ALTO')),
+        probabilidad_desercion numeric(5,4),
         confianza numeric(5,4),
         version_modelo character varying(100) DEFAULT 'UNVALIDATED' NOT NULL,
         estado_confirmacion character varying(30) DEFAULT 'SUGERIDO' NOT NULL CHECK (estado_confirmacion IN ('SUGERIDO', 'CONFIRMADO_CLINICO', 'MODIFICADO_MANUAL', 'DESCARTADO')),
@@ -118,8 +126,11 @@ export async function migrateClinicaSchema() {
 
     await client.query(`
       ALTER TABLE public.predicciones_tratamiento
-        ADD COLUMN IF NOT EXISTS id_sesion integer;
+        ADD COLUMN IF NOT EXISTS id_sesion integer,
+        ADD COLUMN IF NOT EXISTS probabilidad_desercion numeric(5,4);
     `);
+    await addConstraintIfMissing(client, 'predicciones_tratamiento', 'predicciones_tratamiento_probabilidad_desercion_check',
+      'CHECK (probabilidad_desercion IS NULL OR probabilidad_desercion BETWEEN 0 AND 1)');
     await addConstraintIfMissing(client, 'predicciones_tratamiento', 'predicciones_tratamiento_id_sesion_fkey',
       'FOREIGN KEY (id_sesion) REFERENCES public.sesiones(id_sesion) ON DELETE SET NULL');
 

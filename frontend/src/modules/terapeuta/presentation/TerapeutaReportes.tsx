@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Eye, Send, Edit, Plus, X, FileText, ChevronRight, Mic } from 'lucide-react';
+import { Eye, Send, Plus, X, FileText, ChevronRight, Mic } from 'lucide-react';
 import type { View } from '@/shared/domain/types/navigation';
 import type { Session } from '@/modules/clinica/domain/clinical';
+import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
 import { Btn } from '@/shared/presentation/components/common/Btn';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { useRemote } from '@/shared/application/hooks/useRemoteData';
@@ -27,7 +28,7 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
   const rows = sessions.error ? [] : sessions.data ?? [];
   const reports = rows.filter((s) => s.reporte_disponible);
   const eligible = rows.filter(
-    (s) => !s.reporte_disponible && ['EN_CURSO', 'FINALIZADA'].includes(s.estado_sesion) && s.asistencia !== 'NO_ASISTIO'
+    (s) => !s.reporte_disponible && canDocumentClinicalSession(s)
   );
 
   // Auto-selecciona la primera sesión con reporte o elegible para que el terapeuta nunca vea la pantalla vacía
@@ -171,14 +172,6 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                   >
                     <Send size={14} />
                     Enviar
-                  </button>
-                  <button
-                    disabled
-                    title="No existe API de firma digital"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#EDE9FE] text-xs font-extrabold text-[#6B46FE] cursor-not-allowed"
-                  >
-                    <Edit size={14} />
-                    Firmar
                   </button>
                 </div>
               </div>

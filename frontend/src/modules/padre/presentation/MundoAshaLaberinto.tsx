@@ -31,7 +31,7 @@ type LabyrinthStage = {
   hint: string;
   emoji: string;
 };
-type RhoticTarget = Extract<PhonemeTarget, '/r/' | '/rr/'>;
+type LabyrinthTarget = PhonemeTarget;
 
 const RR_STAGES: LabyrinthStage[] = [
   { level: 15, fragment: "El perro de Roque no tiene rabo", fullText: "El perro de Roque no tiene rabo", question: "¿Qué no tiene el perro de Roque?", options: [{ key: "rabo", label: "Rabo" }, { key: "nombre", label: "Nombre" }, { key: "casa", label: "Casa" }], answer: "rabo", hint: "Escucha la última palabra del trabalenguas: «no tiene…»", emoji: "🐶" },
@@ -45,14 +45,41 @@ const R_STAGES: LabyrinthStage[] = [
   { level: 20, fragment: "La mariposa se posa sobre una flor", fullText: "La mariposa se posa sobre una flor", question: "¿Dónde descansa la mariposa?", options: [{ key: "flor", label: "En una flor" }, { key: "rio", label: "En el río" }, { key: "casa", label: "En una casa" }], answer: "flor", hint: "Escucha dónde se posa la mariposa.", emoji: "🦋" },
 ];
 
+const S_STAGES: LabyrinthStage[] = [
+  { level: 21, fragment: 'Susi siembra siete semillas en su jardín', fullText: 'Susi siembra siete semillas en su jardín', question: '¿Qué siembra Susi?', options: [{ key: 'semillas', label: 'Semillas' }, { key: 'platanos', label: 'Plátanos' }, { key: 'trenes', label: 'Trenes' }], answer: 'semillas', hint: 'Escucha qué guarda Susi en la tierra.', emoji: '🌱' },
+  { level: 22, fragment: 'El sapo salta sobre una silla', fullText: 'El sapo salta sobre una silla', question: '¿Qué animal salta?', options: [{ key: 'sapo', label: 'Sapo' }, { key: 'perro', label: 'Perro' }, { key: 'tigre', label: 'Tigre' }], answer: 'sapo', hint: 'Escucha el nombre del animal que salta.', emoji: '🐸' },
+  { level: 23, fragment: 'Sara usa su sombrero azul', fullText: 'Sara usa su sombrero azul', question: '¿Qué usa Sara?', options: [{ key: 'sombrero', label: 'Sombrero' }, { key: 'plato', label: 'Plato' }, { key: 'tren', label: 'Tren' }], answer: 'sombrero', hint: 'Mira qué lleva Sara en la cabeza.', emoji: '👒' },
+];
+
+const PL_STAGES: LabyrinthStage[] = [
+  { level: 24, fragment: 'Pluto planta plátanos en la plaza', fullText: 'Pluto planta plátanos en la plaza', question: '¿Qué planta Pluto?', options: [{ key: 'platanos', label: 'Plátanos' }, { key: 'semillas', label: 'Semillas' }, { key: 'trenes', label: 'Trenes' }], answer: 'platanos', hint: 'Escucha qué fruta planta Pluto.', emoji: '🍌' },
+  { level: 25, fragment: 'La pluma azul está sobre el plato', fullText: 'La pluma azul está sobre el plato', question: '¿Qué está sobre el plato?', options: [{ key: 'pluma', label: 'La pluma' }, { key: 'sapo', label: 'El sapo' }, { key: 'tren', label: 'El tren' }], answer: 'pluma', hint: 'Busca el objeto azul que está encima del plato.', emoji: '🪶' },
+  { level: 26, fragment: 'Clara limpia los platos', fullText: 'Clara limpia los platos', question: '¿Qué limpia Clara?', options: [{ key: 'platos', label: 'Los platos' }, { key: 'semillas', label: 'Las semillas' }, { key: 'sombrero', label: 'El sombrero' }], answer: 'platos', hint: 'Escucha qué objetos deja limpios Clara.', emoji: '🍽️' },
+];
+
+const TR_STAGES: LabyrinthStage[] = [
+  { level: 27, fragment: 'El tren atraviesa el puente', fullText: 'El tren atraviesa el puente', question: '¿Qué vehículo cruza el puente?', options: [{ key: 'tren', label: 'Tren' }, { key: 'barco', label: 'Barco' }, { key: 'avion', label: 'Avión' }], answer: 'tren', hint: 'Escucha qué vehículo pasa por la vía.', emoji: '🚂' },
+  { level: 28, fragment: 'Trini trae tres trompos', fullText: 'Trini trae tres trompos', question: '¿Qué trae Trini?', options: [{ key: 'trompos', label: 'Tres trompos' }, { key: 'platos', label: 'Tres platos' }, { key: 'semillas', label: 'Tres semillas' }], answer: 'trompos', hint: 'Escucha qué juguetes trae Trini.', emoji: '🪀' },
+  { level: 29, fragment: 'El tractor trabaja tras el trigal', fullText: 'El tractor trabaja tras el trigal', question: '¿Qué vehículo trabaja?', options: [{ key: 'tractor', label: 'Tractor' }, { key: 'tren', label: 'Tren' }, { key: 'barco', label: 'Barco' }], answer: 'tractor', hint: 'Escucha qué máquina trabaja cerca del trigal.', emoji: '🚜' },
+];
+
+const STAGES_BY_PHONEME: Record<LabyrinthTarget, LabyrinthStage[]> = {
+  '/rr/': RR_STAGES,
+  '/r/': R_STAGES,
+  '/s/': S_STAGES,
+  '/pl/': PL_STAGES,
+  '/tr/': TR_STAGES,
+};
+const SUPPORTED_TARGETS: LabyrinthTarget[] = ['/rr/', '/r/', '/s/', '/pl/', '/tr/'];
+
 export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
   const { patients, patient } = useSelectedFamilyPatient();
   const progress = useRemote(['game-progress', patient?.id_paciente], signal => learningGames.progress(patient!.id_paciente, signal), !!patient);
   const language = progress.error ? undefined : progress.data?.mundos.find((world) => world.id === 'LENGUAJE');
   const recommendedPhonemes = language?.fonemas_recomendados ?? [];
-  const recommendedTarget: RhoticTarget | null = recommendedPhonemes.includes('/r/')
-    ? '/r/'
-    : recommendedPhonemes.includes('/rr/') ? '/rr/' : null;
+  const recommendedTargets = SUPPORTED_TARGETS.filter((target) => recommendedPhonemes.includes(target));
+  const preferredTargets: LabyrinthTarget[] = ['/r/', '/rr/', '/s/', '/pl/', '/tr/'];
+  const recommendedTarget = preferredTargets.find((target) => recommendedPhonemes.includes(target)) ?? null;
   const isCheckingPlan = patients.isPending || (!!patient && progress.isPending);
   type Phase = "pre" | "playing" | "paused" | "done";
   const [phase, setPhase] = useState<Phase>("pre");
@@ -64,22 +91,24 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
   const [selected, setSelected] = useState<string | null>(null);
   const [simPlaying, setSimPlaying] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
-  const [activePhoneme, setActivePhoneme] = useState<RhoticTarget | null>(null);
+  const [selectedTarget, setSelectedTarget] = useState<LabyrinthTarget | null>(null);
+  const [activePhoneme, setActivePhoneme] = useState<LabyrinthTarget | null>(null);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const savingRef = useRef(false);
   const attemptKeys = useRef(new Map<number, string>());
   const stageStartedAt = useRef(Date.now());
 
-  const stages = activePhoneme === '/r/' ? R_STAGES : RR_STAGES;
+  const stages = activePhoneme ? STAGES_BY_PHONEME[activePhoneme] : STAGES_BY_PHONEME['/rr/'];
   const cur = stages[stage];
+  const targetToStart = selectedTarget ?? recommendedTarget ?? '/rr/';
   const elapsedSec = Math.round((Date.now() - startTime) / 1000);
-  const isRecommended = Boolean(language?.asignado && language.recomendado_esta_semana && recommendedTarget);
+  const isRecommended = Boolean(language?.asignado && language.recomendado_esta_semana && recommendedTargets.includes(targetToStart));
   const canRecord = Boolean(patient && language?.asignado && activePhoneme && recommendedPhonemes.includes(activePhoneme));
 
   const fmtDur = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")} min`;
 
-  const start = (target = recommendedTarget ?? '/rr/') => {
+  const start = (target: LabyrinthTarget = targetToStart) => {
     setActivePhoneme(target);
     setPhase("playing");
     setStage(0);
@@ -150,7 +179,7 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
     void recordAndAdvance(key, stage);
   };
 
-  const pct = attempts > 0 ? Math.round((correct / RR_STAGES.length) * 100) : 0;
+  const pct = attempts > 0 ? Math.round((correct / stages.length) * 100) : 0;
 
   // ── PRE ──
   if (phase === "pre") return (
@@ -167,7 +196,7 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
             <h1 className="text-3xl font-black text-white">Trabalenguas nivel 2</h1>
             <div className="flex gap-2 mt-2 flex-wrap">
               {isCheckingPlan && <span className="text-xs font-extrabold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>Consultando tu plan…</span>}
-              {isRecommended && <span className="text-xs font-extrabold px-2.5 py-1 rounded-full" style={{ background: "#059669", color: "white" }}>⭐ Recomendada para {recommendedTarget}</span>}
+              {isRecommended && <span className="text-xs font-extrabold px-2.5 py-1 rounded-full" style={{ background: "#059669", color: "white" }}>⭐ Recomendada para {targetToStart}</span>}
               {!isCheckingPlan && !isRecommended && <span className="text-xs font-extrabold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>Práctica libre · sin registro</span>}
               <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>⏱ ~5 min</span>
               <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: "rgba(255,255,255,0.2)", color: "white" }}>3 etapas</span>
@@ -198,6 +227,26 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
               🔒 Privacidad: La síntesis de voz es local. No se graba ni almacena audio.
             </p>
           </div>
+          <fieldset className="rounded-xl border border-violet-200 bg-violet-50 p-3">
+            <legend className="px-1 text-xs font-extrabold text-violet-900">Elige el sonido del trabalenguas</legend>
+            <div role="group" aria-label="Selecciona el sonido" className="flex flex-wrap gap-2">
+              {SUPPORTED_TARGETS.map((target) => {
+                const recommended = Boolean(language?.asignado && language.recomendado_esta_semana && recommendedTargets.includes(target));
+                const selected = targetToStart === target;
+                return <button
+                  key={target}
+                  type="button"
+                  aria-pressed={selected}
+                  aria-label={`Practicar ${target}${recommended ? ' recomendado esta semana' : ''}`}
+                  onClick={() => setSelectedTarget(target)}
+                  className={`rounded-lg border px-3 py-2 text-sm font-extrabold ${selected ? 'border-violet-700 bg-violet-700 text-white' : 'border-violet-200 bg-white text-violet-900'}`}
+                >
+                  {target}{recommended ? ' · recomendado' : ''}
+                </button>;
+              })}
+            </div>
+            {recommendedTargets.length > 1 && <p className="mt-2 text-xs text-violet-900">Tu plan incluye varios sonidos. Puedes elegir cuál practicar primero.</p>}
+          </fieldset>
           {progress.error && <p role="status" className="text-xs text-amber-800">No pudimos verificar tu plan; esta visita no guardará el progreso.</p>}
         </Crd>
         <button onClick={() => start()} disabled={isCheckingPlan} className="flex items-center justify-center gap-2 py-3.5 rounded-2xl font-extrabold text-sm text-white transition-all disabled:opacity-60" style={{ background: "linear-gradient(135deg, #7C3AED, #4C1D95)" }}>
@@ -261,7 +310,7 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
         {/* Actions */}
         <div className="space-y-2">
           <div className="grid grid-cols-2 gap-2">
-            <button onClick={() => start(activePhoneme ?? recommendedTarget ?? '/rr/')}
+            <button onClick={() => start(activePhoneme ?? targetToStart)}
               className="py-3 rounded-2xl font-extrabold text-white text-sm" style={{ background: "#7C3AED" }}>
               Volver a jugar
             </button>

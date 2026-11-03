@@ -20,6 +20,7 @@ import type {
 } from '../dtos/clinica.dto.js';
 import { PHONEME_NAMING_TARGETS } from '../../juegos/juegos.service.js';
 import { sesionesService } from '../../sesiones/sesiones.service.js';
+import { isAttendedOrActiveSession } from '../../sesiones/attendance.js';
 
 export class ClinicaService {
   async getMlServiceHealth(user: AuthenticatedUser) {
@@ -47,6 +48,7 @@ export class ClinicaService {
         service: health.service,
         dispositivo: health.dispositivo,
         modelo: health.modelo,
+        modelo_revision: typeof health.modelo_revision === 'string' ? health.modelo_revision : '',
         modelo_listo: health.modelo_listo,
         predictor_listo: health.predictor_listo === true,
       };
@@ -184,8 +186,8 @@ export class ClinicaService {
     ip?: string,
     userAgent?: string
   ) {
-    if (user.rol !== 'PADRE' && user.rol !== 'ADMIN') {
-      throw Object.assign(new Error('Solo el tutor legal o administración pueden otorgar o revocar consentimiento.'), { status: 403 });
+    if (user.rol !== 'PADRE') {
+      throw Object.assign(new Error('Solo el tutor legal puede otorgar o revocar este consentimiento.'), { status: 403 });
     }
 
     const client = await pool.connect();
@@ -196,13 +198,11 @@ export class ClinicaService {
         [dto.id_paciente],
       );
       if (!patient.rows[0]) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
-      if (user.rol === 'PADRE') {
-        const owner = await client.query(
-          'SELECT 1 FROM public.tutores WHERE id_tutor = $1 AND id_usuario = $2 LIMIT 1;',
-          [patient.rows[0].id_tutor, user.id_usuario],
-        );
-        if (!owner.rows[0]) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
-      }
+      const owner = await client.query(
+        'SELECT 1 FROM public.tutores WHERE id_tutor = $1 AND id_usuario = $2 LIMIT 1;',
+        [patient.rows[0].id_tutor, user.id_usuario],
+      );
+      if (!owner.rows[0]) throw Object.assign(new Error('Paciente no encontrado.'), { status: 404 });
       const res = await client.query(
         `INSERT INTO public.consentimientos_ia (id_paciente, id_usuario_tutor, tipo_consentimiento, estado, fecha_concesion, fecha_revocacion, ip_origen, user_agent)
          VALUES ($1, $2, $3, $4, NOW(), CASE WHEN $4::character varying(20) = 'REVOCADO' THEN NOW() ELSE NULL END, $5, $6)
@@ -302,7 +302,7 @@ export class ClinicaService {
     if (context.tipo_cita !== 'INTRODUCTORIA') {
       throw Object.assign(new Error('El pronóstico predictivo solo está disponible para la consulta introductoria.'), { status: 409 });
     }
-    if (!['EN_CURSO', 'FINALIZADA'].includes(context.estado_sesion) || context.asistencia === 'NO_ASISTIO') {
+    if (!isAttendedOrActiveSession(context.estado_sesion, context.asistencia)) {
       throw Object.assign(new Error('El pronóstico requiere una sesión atendida.'), { status: 409 });
     }
 
@@ -324,6 +324,7 @@ export class ClinicaService {
        WHERE id_sesion = $1 AND id_paciente = $2
          AND estado = 'CONFIRMADO_TERAPEUTA'
          AND origen_evaluacion = 'CLINICO'
+         AND resultado_clinico IN ('EN_PROCESO', 'REQUIERE_APOYO')
          AND fonema_objetivo = ANY($3::varchar[]);`,
       [dto.id_sesion, Number(context.id_paciente), supportedPhonemes],
     );
@@ -405,8 +406,8 @@ export class ClinicaService {
         `INSERT INTO public.predicciones_tratamiento (
           id_sesion, id_paciente, id_terapeuta, edad_meses, codigo_diagnostico, cantidad_fonemas_afectados,
           nivel_colaboracion, frecuencia_semanal, sesiones_estimadas, rango_min, rango_max,
-          riesgo_desercion, confianza, version_modelo, estado_confirmacion
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, 'SUGERIDO')
+          riesgo_desercion, probabilidad_desercion, confianza, version_modelo, estado_confirmacion
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, 'SUGERIDO')
         RETURNING id_prediccion;`,
         [
           dto.id_sesion,
@@ -421,6 +422,7 @@ export class ClinicaService {
           predictionResult.rango_min,
           predictionResult.rango_max,
           predictionResult.riesgo_desercion,
+          predictionResult.probabilidad_desercion,
           predictionResult.confianza ?? null,
           predictionResult.version_modelo,
         ],

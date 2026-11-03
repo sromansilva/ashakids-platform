@@ -7,6 +7,7 @@ import { notificationsService } from '@/modules/comunicacion/infrastructure/noti
 import type { View } from '@/shared/domain/types/navigation';
 import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
+import { isMeetingUrl } from './VirtualMeeting';
 
 const date = (value: string) =>
   new Intl.DateTimeFormat('es-PE', {
@@ -20,6 +21,7 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
   const [open, setOpen] = useState(false);
   const [offset, setOffset] = useState(0);
   const [unread, setUnread] = useState(false);
+  const [launchMessage, setLaunchMessage] = useState<{ reservationId: number; text: string } | null>(null);
   const panelId = useId();
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -141,7 +143,7 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                           Ver agenda
                         </Btn>
                       )}
-                      {item.meet_url && (
+                      {role === 'PADRE' && item.meet_url && (
                         <a
                           className="inline-flex h-8 items-center justify-center rounded-xl border border-[#E8E5F4] px-3 text-[11px] font-bold text-[#594A6F] transition-colors hover:bg-violet-50"
                           href={item.meet_url}
@@ -150,6 +152,21 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                         >
                           Iniciar reunión
                         </a>
+                      )}
+                      {(role === 'ADMIN' || role === 'TERAPEUTA') && item.id_reserva && (
+                        <Btn size="sm" variant="outline" onClick={() => {
+                          const base = role === 'ADMIN' ? '/admin/sesion/espera' : '/terapeuta/sesion/espera';
+                          const launchPath = `${base}/${item.id_reserva}`;
+                          const hasValidMeet = isMeetingUrl(item.meet_url);
+                          window.open(`${launchPath}/panel`, '_blank', 'noopener,noreferrer');
+                          if (hasValidMeet) window.open(`${launchPath}/meet`, '_blank', 'noopener,noreferrer');
+                          setLaunchMessage({
+                            reservationId: item.id_reserva!,
+                            text: `${hasValidMeet ? 'Se solicitaron el panel y la reunión' : 'Se solicitó el panel clínico; falta un enlace de Meet válido'}; el panel respetará la hora de la cita. Si no apareció alguna pestaña, permite ventanas emergentes.`,
+                          });
+                        }}>
+                          Preparar inicio de reunión
+                        </Btn>
                       )}
                       {item.id_conversacion && (
                         <Btn size="sm" variant="outline" onClick={() => { setOpen(false); go(role === 'PADRE' ? 'padre/mensajes' : 'terapeuta/mensajes'); }}>
@@ -168,6 +185,9 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                         </Btn>
                       )}
                     </div>
+                    {launchMessage?.reservationId === item.id_reserva && (role === 'ADMIN' || role === 'TERAPEUTA') && (
+                      <p role="status" className="text-[11px] font-semibold text-violet-800">{launchMessage.text}</p>
+                    )}
                   </li>
                 ))}
               </ul>

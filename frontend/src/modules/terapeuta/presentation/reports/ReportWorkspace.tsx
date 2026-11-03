@@ -4,6 +4,7 @@ import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFe
 import { ClinicalReportEditor, emptyReport, reportLabels } from '@/shared/presentation/components/common/ClinicalReportEditor';
 import { ReportDownload } from '@/shared/presentation/components/common/ReportDownload';
 import { SessionPlan } from '@/shared/presentation/components/common/SessionPlan';
+import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
 import type { Session } from '@/modules/clinica/domain/clinical';
 import type { ReportData } from '@/modules/clinica/domain/clinical';
 import { useEffect, useState } from 'react';
@@ -23,8 +24,7 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
   const canEdit =
     !readOnly &&
     session.puede_editar !== false &&
-    ['EN_CURSO', 'FINALIZADA'].includes(session.estado_sesion) &&
-    session.asistencia !== 'NO_ASISTIO';
+    canDocumentClinicalSession(session);
   const canDownload = report.isSuccess && !report.error && !!report.data && !report.isFetching;
 
   return (

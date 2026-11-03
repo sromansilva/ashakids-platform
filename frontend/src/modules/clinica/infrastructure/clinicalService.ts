@@ -6,7 +6,8 @@ export interface ArticulationHistoryRecord {
   id_sesion: number;
   tipo_cita: 'INTRODUCTORIA' | 'TERAPIA';
   fecha_hora_inicio: string;
-  objetivos_trabajados: string;
+  observaciones_iniciales?: string | null;
+  objetivos_trabajados?: string | null;
 }
 
 export interface PhonologicalEvaluationRecord {
@@ -45,11 +46,20 @@ export interface PhonemeActivityAnalytics {
     total: number;
   }>;
   practica_ludica: Array<{
+    mundo: string;
     nivel: number;
     palabra_objetivo: string;
     fonema_objetivo: string;
     intentos: number;
     respuestas_correctas: number;
+    ultima_practica: string | null;
+  }>;
+  actividades_adaptativas: Array<{
+    mundo: string;
+    actividad: string;
+    intentos: number;
+    completadas: number;
+    duracion_segundos: number;
     ultima_practica: string | null;
   }>;
 }
@@ -150,26 +160,6 @@ export const sessionsService = {
     apiClient.del<{ captura_id: string; descartada: boolean }>(
       `/sesiones/${id}/evaluacion-fonema/capturas/${encodeURIComponent(captureId)}`,
     ),
-  evaluarFragmentoFonetico: (id: number, data: {
-    audio_base64: string;
-    palabra_esperada: string;
-    inicio_segundo: number;
-    fin_segundo: number;
-  }) => apiClient.post<{
-    estado: 'SUGERENCIA_LISTA';
-    palabra_esperada: string;
-    transcripcion_sugerida: string;
-    fragmento: { inicio_segundo: number; fin_segundo: number };
-    duracion_analizada_segundos: number;
-  }>(`/sesiones/${id}/evaluar-fragmento-fonetico`, data),
-  analizarTranscripcionSesion: (
-    id: number,
-    data?: {
-      texto?: string;
-      archivo_base64?: string;
-      nombre_archivo?: string;
-    }
-  ) => apiClient.post<any>(`/sesiones/${id}/analizar-transcripcion-sesion`, data ?? {}),
 };
 export const agendaService = {
   professionals: (params?: QueryParams, signal?: AbortSignal) => apiClient.page<Professional>('/terapeutas', params, signal),
@@ -202,6 +192,7 @@ export interface MlServiceHealth {
   service: string;
   dispositivo: string;
   modelo: string;
+  modelo_revision?: string;
   modelo_listo: boolean;
   predictor_listo: boolean;
 }

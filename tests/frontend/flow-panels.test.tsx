@@ -37,6 +37,24 @@ it('separates siblings in the agenda and preserves completed appointment details
   expect(screen.queryByRole('button',{name:/Ana Demostración.*Completada/})).not.toBeInTheDocument();
 });
 
+it('solicita consentimiento en una cita de terapia si el tutor aun no ha decidido', async () => {
+  const a = { ...appointment(), tipo_cita: 'TERAPIA' };
+  mockApi(path => path === '/pacientes' ? response([patient(1, 'Ana')])
+    : path === '/citas' ? response([a])
+    : path === '/citas/1' ? response(a)
+    : path === '/clinica/consentimientos/1' ? response({
+      id_paciente: 1,
+      consentido: false,
+      estado: 'NO_SOLICITADO',
+      tipo_consentimiento: 'EVALUACION_FONOLOGICA_IA',
+      fecha_concesion: null,
+    })
+    : undefined);
+  renderRoute('/padre/agenda', 'PADRE');
+  fireEvent.click(await screen.findByRole('button', { name: /Ana Demostración.*Confirmada/ }));
+  expect(await screen.findByRole('dialog', { name: '¿Autorizas una prueba breve de voz?' })).toBeInTheDocument();
+});
+
 it('counts only future appointments and exposes running sessions separately', async () => {
   const future = {...appointment(),fecha_hora_inicio:new Date(Date.now()+60000).toISOString(),fecha_hora_fin:new Date(Date.now()+2700000).toISOString()};
   const past = {...appointment(2),fecha_hora_inicio:new Date(Date.now()-3600000).toISOString(),fecha_hora_fin:new Date(Date.now()-900000).toISOString()};

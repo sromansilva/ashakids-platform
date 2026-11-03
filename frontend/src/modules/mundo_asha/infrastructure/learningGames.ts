@@ -27,8 +27,12 @@ export interface GameProgress {
 }
 export interface AttemptData { clave_intento: string; version: string; nivel: number; respuestas: string[]; duracion_segundos: number; ayudas_usadas: number }
 export interface AttemptResult { id_intento: number; correcto: boolean; experiencia_otorgada: number; repetido: boolean; resumen: GameProgress }
+export interface LudicActivityData { clave_intento: string; version: string; actividad: string; duracion_segundos: number; completada: true }
+export interface LudicActivityResult { id_actividad: number; repetida: boolean }
 export const learningGames = {
   catalog: (signal?: AbortSignal) => apiClient.get<PublicWorld[]>('/juegos/catalogo', { signal }),
   progress: (patient: number, signal?: AbortSignal) => apiClient.get<GameProgress>(`/pacientes/${patient}/juegos`, { signal }),
   attempt: (patient: number, world: WorldArea, data: AttemptData) => apiClient.post<AttemptResult>(`/pacientes/${patient}/juegos/${world}/intentos`, data),
+  practiceActivity: (patient: number, world: WorldArea, data: LudicActivityData) =>
+    apiClient.post<LudicActivityResult>(`/pacientes/${patient}/juegos/${world}/actividades`, data),
 };

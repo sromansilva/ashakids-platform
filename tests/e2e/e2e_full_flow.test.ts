@@ -35,7 +35,8 @@ function devAuth(role: 'ADMIN' | 'TERAPEUTA' | 'PADRE', userId: number): string 
 }
 
 const isolatedTestDatabase = /(?:_test|_e2e)$/i.test(settings.DB_NAME);
-const runDatabaseE2E = process.env.ASHAKIDS_RUN_DB_E2E === '1' && settings.ENVIRONMENT === 'test' && isolatedTestDatabase;
+const localDatabaseHost = ['127.0.0.1', 'localhost', '::1'].includes(settings.DB_HOST.toLowerCase());
+const runDatabaseE2E = process.env.ASHAKIDS_RUN_DB_E2E === '1' && settings.ENVIRONMENT === 'test' && localDatabaseHost && isolatedTestDatabase;
 
 async function insertTestUser(prefix: string): Promise<number> {
   const suffix = `${Date.now()}${Math.floor(Math.random() * 10000)}`;
@@ -47,7 +48,7 @@ async function insertTestUser(prefix: string): Promise<number> {
   return Number(result.rows[0].id_usuario);
 }
 
-describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predictivo', { skip: !runDatabaseE2E && 'Requiere ASHAKIDS_RUN_DB_E2E=1, ENVIRONMENT=test y una base cuyo nombre termine en _test o _e2e.' }, () => {
+describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predictivo', { skip: !runDatabaseE2E && 'Requiere ASHAKIDS_RUN_DB_E2E=1, ENVIRONMENT=test, PostgreSQL local y una base cuyo nombre termine en _test o _e2e.' }, () => {
   before(async () => {
     try {
       await migrateClinicaSchema();
@@ -125,45 +126,57 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
 
   after(async () => {
     // Clean up test data
-    if (fixture.patientId) {
-      await pool.query(`DELETE FROM consentimientos_ia WHERE id_paciente = $1`, [fixture.patientId]);
-      await pool.query(`DELETE FROM evaluaciones_fonologicas WHERE id_paciente = $1`, [fixture.patientId]);
-      await pool.query(`DELETE FROM predicciones_tratamiento WHERE id_paciente = $1`, [fixture.patientId]);
+    try {
+      if (fixture.patientId) {
+        await pool.query(`DELETE FROM consentimientos_ia WHERE id_paciente = $1`, [fixture.patientId]);
+        await pool.query(`DELETE FROM evaluaciones_fonologicas WHERE id_paciente = $1`, [fixture.patientId]);
+        await pool.query(`DELETE FROM predicciones_tratamiento WHERE id_paciente = $1`, [fixture.patientId]);
+      }
+      if (fixture.sessionId) {
+        // A plan created by the flow points back to the session and must be
+        // removed before the session itself to satisfy its foreign key.
+        await pool.query(`DELETE FROM tratamientos WHERE id_sesion_origen = $1`, [fixture.sessionId]);
+        await pool.query(`DELETE FROM valoraciones_sesion WHERE id_sesion = $1`, [fixture.sessionId]);
+        await pool.query(`DELETE FROM sesiones WHERE id_sesion = $1`, [fixture.sessionId]);
+      }
+      if (fixture.reservationId) {
+        await pool.query(`DELETE FROM reservas WHERE id_reserva = $1`, [fixture.reservationId]);
+      }
+      if (fixture.treatmentId) {
+        await pool.query(`DELETE FROM tratamientos WHERE id_tratamiento = $1`, [fixture.treatmentId]);
+      }
+      if (fixture.expedienteId) {
+        await pool.query(`DELETE FROM expedientes WHERE id_expediente = $1`, [fixture.expedienteId]);
+      }
+      if (fixture.patientId) {
+        await pool.query(`DELETE FROM pacientes WHERE id_paciente = $1`, [fixture.patientId]);
+      }
+      if (fixture.parentId) {
+        await pool.query(`DELETE FROM tutores WHERE id_tutor = $1`, [fixture.parentId]);
+      }
+      if (fixture.parentUserId) {
+        await pool.query(`DELETE FROM usuario_roles WHERE id_usuario = $1`, [fixture.parentUserId]);
+        await pool.query(`DELETE FROM usuarios WHERE id_usuario = $1`, [fixture.parentUserId]);
+      }
+      if (fixture.therapistId) {
+        await pool.query(`DELETE FROM terapeutas WHERE id_terapeuta = $1`, [fixture.therapistId]);
+      }
+      if (fixture.therapistUserId) {
+        await pool.query(`DELETE FROM usuario_roles WHERE id_usuario = $1`, [fixture.therapistUserId]);
+        await pool.query(`DELETE FROM usuarios WHERE id_usuario = $1`, [fixture.therapistUserId]);
+      }
+    } finally {
+      try {
+        await new Promise<void>((resolve, reject) => {
+          server.close((err) => (err ? reject(err) : resolve()));
+          // Node's fetch client keeps HTTP sockets alive. Close them so the
+          // integration test process can finish deterministically after cleanup.
+          server.closeAllConnections();
+        });
+      } finally {
+        await pool.end();
+      }
     }
-    if (fixture.sessionId) {
-      await pool.query(`DELETE FROM sesiones WHERE id_sesion = $1`, [fixture.sessionId]);
-    }
-    if (fixture.reservationId) {
-      await pool.query(`DELETE FROM reservas WHERE id_reserva = $1`, [fixture.reservationId]);
-    }
-    if (fixture.treatmentId) {
-      await pool.query(`DELETE FROM tratamientos WHERE id_tratamiento = $1`, [fixture.treatmentId]);
-    }
-    if (fixture.expedienteId) {
-      await pool.query(`DELETE FROM expedientes WHERE id_expediente = $1`, [fixture.expedienteId]);
-    }
-    if (fixture.patientId) {
-      await pool.query(`DELETE FROM pacientes WHERE id_paciente = $1`, [fixture.patientId]);
-    }
-    if (fixture.parentId) {
-      await pool.query(`DELETE FROM tutores WHERE id_tutor = $1`, [fixture.parentId]);
-    }
-    if (fixture.parentUserId) {
-      await pool.query(`DELETE FROM usuario_roles WHERE id_usuario = $1`, [fixture.parentUserId]);
-      await pool.query(`DELETE FROM usuarios WHERE id_usuario = $1`, [fixture.parentUserId]);
-    }
-    if (fixture.therapistId) {
-      await pool.query(`DELETE FROM terapeutas WHERE id_terapeuta = $1`, [fixture.therapistId]);
-    }
-    if (fixture.therapistUserId) {
-      await pool.query(`DELETE FROM usuario_roles WHERE id_usuario = $1`, [fixture.therapistUserId]);
-      await pool.query(`DELETE FROM usuarios WHERE id_usuario = $1`, [fixture.therapistUserId]);
-    }
-
-    await new Promise<void>((resolve, reject) => {
-      server.close((err) => (err ? reject(err) : resolve()));
-    });
-    await pool.end();
   });
 
   it('Paso 1: Consentimiento expreso del tutor para uso de IA', async () => {
@@ -256,24 +269,107 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
     assert.equal(await pending.json(), null, 'revocation should erase the pending in-memory capture');
   });
 
-  it('Paso 2: Registro de transcripción y revisión clínica sin simular medición acústica', async () => {
-    const evalRes = await fetch(`${baseUrl}/api/v1/clinica/evaluaciones-fonologicas`, {
+  it('Paso 2: Captura familiar sintética, contrato ML y revisión clínica humana', async () => {
+    const captureId = randomUUID();
+    const therapistAuth = devAuth('TERAPEUTA', fixture.therapistUserId);
+    const parentAuth = devAuth('PADRE', fixture.parentUserId);
+    const mlBaseUrl = 'http://ml-e2e.synthetic';
+    const previousMlEnabled = settings.ML_SERVICE_ENABLED;
+    const previousMlUrl = settings.ML_SERVICE_URL;
+    const nativeFetch = globalThis.fetch.bind(globalThis);
+    let mlRequestValidated = false;
+
+    const request = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: devAuth('TERAPEUTA', fixture.therapistUserId),
-      },
-      body: JSON.stringify({
-        id_sesion: fixture.sessionId,
-        id_paciente: fixture.patientId,
-        fonema_objetivo: '/rr/',
-        palabra_objetivo: 'carro',
-        transcripcion_detectada: 'carro',
-        origen_evaluacion: 'CLINICO',
-      }),
+      headers: { 'Content-Type': 'application/json', Authorization: therapistAuth },
+      body: JSON.stringify({ captura_id: captureId, palabra_objetivo: 'Carro', fonema_objetivo: '/rr/' }),
     });
-    assert.equal(evalRes.status, 201);
-    const evalData = await evalRes.json() as { id_evaluacion: number; fonema_objetivo: string; estado: string };
+    assert.equal(request.status, 201);
+
+    const pending = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia/pendiente`, {
+      headers: { Authorization: parentAuth },
+    });
+    assert.equal(pending.status, 200);
+    assert.equal((await pending.json() as { estado: string }).estado, 'SOLICITADA');
+
+    const claim = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia/${captureId}/iniciar`, {
+      method: 'POST',
+      headers: { Authorization: parentAuth },
+    });
+    assert.equal(claim.status, 200);
+
+    // 32,000 zero-valued PCM samples are synthetic test data (2 s at 16 kHz).
+    for (let packetNumber = 0; packetNumber < 8; packetNumber += 1) {
+      const packet = new FormData();
+      packet.append('audio', new Blob([new Uint8Array(8_000)], { type: 'application/octet-stream' }), 'paquete-sintetico.pcm');
+      packet.append('numero_paquete', String(packetNumber));
+      const upload = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia/${captureId}/paquetes`, {
+        method: 'POST',
+        headers: { Authorization: parentAuth },
+        body: packet,
+      });
+      assert.equal(upload.status, 200);
+    }
+
+    settings.ML_SERVICE_ENABLED = true;
+    settings.ML_SERVICE_URL = mlBaseUrl;
+    globalThis.fetch = async (input, init) => {
+      if (String(input) === `${mlBaseUrl}/predict/phonetics`) {
+        const formData = init?.body as FormData;
+        assert.ok(formData instanceof FormData, 'the backend must send multipart WAV audio');
+        assert.equal(formData.get('palabra_objetivo'), 'Carro');
+        assert.equal(formData.get('fonema_objetivo'), '/rr/');
+        const audio = formData.get('file');
+        assert.ok(audio instanceof Blob);
+        assert.equal(audio.type, 'audio/wav');
+        const wav = Buffer.from(await audio.arrayBuffer());
+        assert.equal(wav.subarray(0, 4).toString('ascii'), 'RIFF');
+        assert.equal(wav.readUInt32LE(24), 16_000);
+        assert.equal(wav.readUInt32LE(40), 64_000);
+        mlRequestValidated = true;
+        return new Response(JSON.stringify({
+          transcripcion: 'carro',
+          duracion_segundos: 2,
+          motor_red_neuronal_activa: true,
+        }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+      }
+      return nativeFetch(input, init);
+    };
+
+    let evalData: { id_evaluacion: number; fonema_objetivo: string; estado: string };
+    try {
+      const finalize = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia/${captureId}/finalizar`, {
+        method: 'POST',
+        headers: { Authorization: parentAuth },
+      });
+      assert.equal(finalize.status, 200);
+      assert.equal((await finalize.json() as { estado: string }).estado, 'ENVIADA');
+      assert.equal(mlRequestValidated, true, 'the capture must reach the synthetic ML contract');
+
+      const result = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia/${captureId}/resultado`, {
+        headers: { Authorization: therapistAuth },
+      });
+      assert.equal(result.status, 200);
+      const captureResult = await result.json() as {
+        estado: string;
+        resultado?: { id_evaluacion: number; transcripcion_tentativa: string; estado: string };
+      };
+      assert.equal(captureResult.estado, 'COMPLETADA');
+      assert.ok(captureResult.resultado);
+      assert.equal(captureResult.resultado.estado, 'PENDIENTE_REVISION');
+      assert.equal(captureResult.resultado.transcripcion_tentativa, 'carro');
+
+      evalData = {
+        id_evaluacion: captureResult.resultado.id_evaluacion,
+        fonema_objetivo: '/rr/',
+        estado: captureResult.resultado.estado,
+      };
+    } finally {
+      globalThis.fetch = nativeFetch;
+      settings.ML_SERVICE_ENABLED = previousMlEnabled;
+      settings.ML_SERVICE_URL = previousMlUrl;
+    }
+
     assert.ok(evalData.id_evaluacion > 0);
     assert.equal(evalData.fonema_objetivo, '/rr/');
     assert.equal(evalData.estado, 'PENDIENTE_REVISION');
@@ -313,9 +409,63 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
       }),
     });
     assert.equal(reportRes.status, 200);
+
+    const signed = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte/firmar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({}),
+    });
+    assert.equal(signed.status, 200);
+    assert.equal((await signed.json() as { estado_reporte: string }).estado_reporte, 'FIRMADO');
+
+    const parentReport = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte`, {
+      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
+    });
+    assert.equal(parentReport.status, 200);
+    assert.equal((await parentReport.json() as { estado_reporte: string }).estado_reporte, 'FIRMADO');
+
+    const parentPdf = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte/pdf`, {
+      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
+    });
+    assert.equal(parentPdf.status, 200);
+    assert.match(parentPdf.headers.get('content-type') ?? '', /application\/pdf/i);
+    assert.equal(Buffer.from(await parentPdf.arrayBuffer()).subarray(0, 5).toString('ascii'), '%PDF-');
   });
 
   it('Paso 3 y 4: El predictor solo responde con un artefacto clínicamente aprobado', async () => {
+    const predictorRequest = {
+      id_sesion: fixture.sessionId,
+      codigo_diagnostico: 1,
+      frecuencia_semanal: 2,
+    };
+    const achievedOnly = await fetch(`${baseUrl}/api/v1/clinica/tratamientos/predecir-plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify(predictorRequest),
+    });
+    assert.equal(achievedOnly.status, 409, 'ALCANZADO no debe contar como fonema afectado para el predictor');
+
+    const secondEvaluation = await fetch(`${baseUrl}/api/v1/clinica/evaluaciones-fonologicas`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({
+        id_sesion: fixture.sessionId,
+        id_paciente: fixture.patientId,
+        fonema_objetivo: '/s/',
+        palabra_objetivo: 'sol',
+        transcripcion_detectada: 'sol',
+        origen_evaluacion: 'CLINICO',
+      }),
+    });
+    assert.equal(secondEvaluation.status, 201);
+    const secondEvaluationData = await secondEvaluation.json() as { id_evaluacion: number };
+    const secondReview = await fetch(`${baseUrl}/api/v1/clinica/evaluaciones-fonologicas/${secondEvaluationData.id_evaluacion}/revision`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({ estado: 'CONFIRMADO_TERAPEUTA', transcripcion_revisada: 'sol', observacion_terapeuta: 'Resultado de revisión sintética para integración.', resultado_clinico: 'REQUIERE_APOYO' }),
+    });
+    assert.equal(secondReview.status, 200);
+
     const catalogRes = await fetch(`${baseUrl}/api/v1/clinica/tratamientos/predictor-catalog`, {
       headers: { Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
     });
@@ -371,6 +521,64 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
     assert.ok(pred.advertencia_clinica.length > 10);
   });
 
+  it('Registra participación lúdica idempotente sin otorgar XP ni cambiar resultados clínicos', async () => {
+    const activityKey = randomUUID();
+    const requestBody = {
+      clave_intento: activityKey,
+      version: 'adaptive-1',
+      actividad: 'sound:explore',
+      duracion_segundos: 47,
+      completada: true,
+    };
+    const endpoint = `${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos/HABLA/actividades`;
+    const first = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('PADRE', fixture.parentUserId) },
+      body: JSON.stringify(requestBody),
+    });
+    assert.equal(first.status, 200);
+    const firstData = await first.json() as { id_actividad: number; repetida: boolean };
+    assert.ok(firstData.id_actividad > 0);
+    assert.equal(firstData.repetida, false);
+
+    const repeated = await fetch(endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('PADRE', fixture.parentUserId) },
+      body: JSON.stringify(requestBody),
+    });
+    assert.equal(repeated.status, 200);
+    const repeatedData = await repeated.json() as { id_actividad: number; repetida: boolean };
+    assert.equal(repeatedData.id_actividad, firstData.id_actividad);
+    assert.equal(repeatedData.repetida, true);
+
+    const progressResponse = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos`, {
+      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
+    });
+    assert.equal(progressResponse.status, 200);
+    const progress = await progressResponse.json() as {
+      experiencia: number;
+      intentos_totales: number;
+      mundos: Array<{ id: string; completados: number[]; medalla: boolean; intentos: number }>;
+    };
+    const speechWorld = progress.mundos.find((world) => world.id === 'HABLA');
+    assert.equal(progress.experiencia, 0);
+    assert.equal(progress.intentos_totales, 0, 'adaptive participation is not a scored level attempt');
+    assert.equal(speechWorld?.intentos, 0);
+    assert.deepEqual(speechWorld?.completados, []);
+    assert.equal(speechWorld?.medalla, false);
+
+    const analyticsResponse = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/analiticas/fonemas`, {
+      headers: { Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+    });
+    assert.equal(analyticsResponse.status, 200);
+    const analytics = await analyticsResponse.json() as { actividades_adaptativas: Array<{ mundo: string; actividad: string; intentos: number; completadas: number; duracion_segundos: number }> };
+    const activity = analytics.actividades_adaptativas.find((item) => item.mundo === 'HABLA' && item.actividad === 'sound:explore');
+    assert.ok(activity);
+    assert.equal(activity.intentos, 1);
+    assert.equal(activity.completadas, 1);
+    assert.equal(activity.duracion_segundos, 47);
+  });
+
   it('Paso 5 y 6: Una sugerencia predictiva no cambia el tratamiento sin decisión del terapeuta', async () => {
     const trRes = await pool.query<{
       sesiones_recomendadas: number;
@@ -390,5 +598,232 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
       ? JSON.parse(treatment.mundos_asignados)
       : treatment.mundos_asignados;
     assert.deepEqual(mundos, ['HABLA']);
+  });
+
+  it('publica un plan manual y enlaza su foco con el Laberinto y la analítica lúdica', async () => {
+    const pendingPrediction = await pool.query<{ id_prediccion: number }>(
+      `SELECT id_prediccion FROM predicciones_tratamiento
+       WHERE id_sesion = $1 AND estado_confirmacion = 'SUGERIDO'
+       ORDER BY id_prediccion DESC LIMIT 1`,
+      [fixture.sessionId],
+    );
+    const predictionDecision = pendingPrediction.rows[0]
+      ? { id_prediccion: Number(pendingPrediction.rows[0].id_prediccion), decision_prediccion: 'DESCARTADO' }
+      : {};
+    const planData = {
+      nombre_tratamiento: 'Plan manual de integración',
+      descripcion: '[LÍNEA BASE CONFIRMADA]\nRegistro sintético revisado.\n\n[OBJETIVOS DEL PLAN]\nPracticar /rr/, /r/, /s/, /pl/ y /tr/.\n\n[ACTIVIDADES DEL PLAN]\nJuegos de Isla Mágica, La Isla de las Palabras y el Laberinto de Trabalenguas.',
+      area: 'HABLA',
+      mundos_asignados: ['HABLA', 'LENGUAJE'],
+      sesiones_recomendadas: 8,
+      frecuencia_semanal: 2,
+      fonemas_priorizados: ['/rr/', '/r/', '/s/', '/pl/', '/tr/'],
+      ...predictionDecision,
+    };
+    const missingIsland = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({ ...planData, mundos_asignados: ['LENGUAJE'] }),
+    });
+    assert.equal(missingIsland.status, 400, 'un plan fonológico debe asignar tanto Isla Mágica como el mundo de palabras');
+    const response = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify(planData),
+    });
+    assert.equal(response.status, 201);
+    const plan = await response.json() as { id_tratamiento: number; id_sesion_origen: number; mundos_asignados: string[] };
+    assert.ok(plan.id_tratamiento > 0);
+    assert.equal(plan.id_sesion_origen, fixture.sessionId);
+    assert.deepEqual(plan.mundos_asignados, ['HABLA', 'LENGUAJE']);
+
+    const savedPlan = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/plan`, {
+      headers: { Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+    });
+    assert.equal(savedPlan.status, 200);
+    const savedPlanData = await savedPlan.json() as { id_tratamiento: number; sesiones_realizadas: number; estado_prediccion?: string };
+    assert.equal(savedPlanData.id_tratamiento, plan.id_tratamiento);
+    assert.equal(savedPlanData.sesiones_realizadas, 0);
+    if (predictionDecision.id_prediccion) assert.equal(savedPlanData.estado_prediccion, 'DESCARTADO');
+
+    const familyProgressResponse = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos`, {
+      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
+    });
+    assert.equal(familyProgressResponse.status, 200);
+    const familyProgress = await familyProgressResponse.json() as {
+      mundos: Array<{
+        id: string;
+        asignado: boolean;
+        recomendado_esta_semana: boolean;
+        fonemas_recomendados: string[];
+        levels: Array<{ number: number; fonema_objetivo?: string; choices: string[] }>;
+      }>;
+    };
+    assert.equal(familyProgress.mundos.length, 5, 'el plan se presenta dentro del catálogo de cinco mundos');
+    assert.deepEqual(new Set(familyProgress.mundos.filter((world) => world.asignado).map((world) => world.id)), new Set(['HABLA', 'LENGUAJE']));
+    const languageWorld = familyProgress.mundos.find((world) => world.id === 'LENGUAJE');
+    assert.equal(languageWorld?.asignado, true);
+    assert.equal(languageWorld?.recomendado_esta_semana, true);
+    assert.deepEqual(languageWorld?.fonemas_recomendados, ['/rr/', '/r/', '/s/', '/pl/', '/tr/']);
+    const speechWorld = familyProgress.mundos.find((world) => world.id === 'HABLA');
+    assert.equal(speechWorld?.asignado, true);
+    assert.equal(speechWorld?.recomendado_esta_semana, true);
+    assert.deepEqual(speechWorld?.fonemas_recomendados, ['/rr/', '/r/', '/s/', '/pl/', '/tr/']);
+    const recommendedIslandLevel = speechWorld?.levels.find((level) => level.number === 5);
+    assert.equal(recommendedIslandLevel?.fonema_objetivo, '/r/');
+    const recommendedLabyrinthLevel = languageWorld?.levels.find((level) => level.number === 18);
+    assert.equal(recommendedLabyrinthLevel?.fonema_objetivo, '/r/');
+    assert.deepEqual(recommendedLabyrinthLevel?.choices, ['Caracol', 'Mariposa', 'Gato']);
+    const recommendedClusterLevel = languageWorld?.levels.find((level) => level.number === 27);
+    assert.equal(recommendedClusterLevel?.fonema_objetivo, '/tr/');
+    assert.deepEqual(recommendedClusterLevel?.choices, ['Tren', 'Barco', 'Avión']);
+
+    const labyrinthAttempt = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos/LENGUAJE/intentos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('PADRE', fixture.parentUserId) },
+      body: JSON.stringify({
+        clave_intento: randomUUID(),
+        version: 'basica-1',
+        nivel: 18,
+        respuestas: ['Caracol'],
+        duracion_segundos: 29,
+        ayudas_usadas: 0,
+      }),
+    });
+    assert.equal(labyrinthAttempt.status, 200);
+    const labyrinthAttemptData = await labyrinthAttempt.json() as {
+      correcto: boolean;
+      resumen: { mundos: Array<{ id: string; completados: number[] }> };
+    };
+    assert.equal(labyrinthAttemptData.correcto, true);
+    assert.ok(labyrinthAttemptData.resumen.mundos.find((world) => world.id === 'LENGUAJE')?.completados.includes(18));
+
+    const clusterLabyrinthAttempt = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos/LENGUAJE/intentos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('PADRE', fixture.parentUserId) },
+      body: JSON.stringify({
+        clave_intento: randomUUID(),
+        version: 'basica-1',
+        nivel: 27,
+        respuestas: ['Tren'],
+        duracion_segundos: 24,
+        ayudas_usadas: 0,
+      }),
+    });
+    assert.equal(clusterLabyrinthAttempt.status, 200);
+    const clusterLabyrinthData = await clusterLabyrinthAttempt.json() as {
+      correcto: boolean;
+      resumen: { mundos: Array<{ id: string; completados: number[] }> };
+    };
+    assert.equal(clusterLabyrinthData.correcto, true);
+    assert.ok(clusterLabyrinthData.resumen.mundos.find((world) => world.id === 'LENGUAJE')?.completados.includes(27));
+
+    const islandAttempt = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos/HABLA/intentos`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('PADRE', fixture.parentUserId) },
+      body: JSON.stringify({
+        clave_intento: randomUUID(),
+        version: 'basica-1',
+        nivel: 5,
+        respuestas: ['Caracol'],
+        duracion_segundos: 21,
+        ayudas_usadas: 0,
+      }),
+    });
+    assert.equal(islandAttempt.status, 200);
+    const islandAttemptData = await islandAttempt.json() as {
+      correcto: boolean;
+      resumen: { mundos: Array<{ id: string; completados: number[] }> };
+    };
+    assert.equal(islandAttemptData.correcto, true);
+    assert.ok(islandAttemptData.resumen.mundos.find((world) => world.id === 'HABLA')?.completados.includes(5));
+
+    const activity = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/juegos/LENGUAJE/actividades`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('PADRE', fixture.parentUserId) },
+      body: JSON.stringify({
+        clave_intento: randomUUID(),
+        version: 'adaptive-1',
+        actividad: 'word:memory',
+        duracion_segundos: 32,
+        completada: true,
+      }),
+    });
+    assert.equal(activity.status, 200);
+
+    const analyticsResponse = await fetch(`${baseUrl}/api/v1/pacientes/${fixture.patientId}/analiticas/fonemas`, {
+      headers: { Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+    });
+    assert.equal(analyticsResponse.status, 200);
+    const analytics = await analyticsResponse.json() as {
+      actividades_adaptativas: Array<{ mundo: string; actividad: string; completadas: number; duracion_segundos: number }>;
+      practica_ludica: Array<{ mundo: string; nivel: number; fonema_objetivo: string; intentos: number; respuestas_correctas: number }>;
+    };
+    const languageActivity = analytics.actividades_adaptativas.find((item) => item.mundo === 'LENGUAJE' && item.actividad === 'word:memory');
+    assert.ok(languageActivity);
+    assert.equal(languageActivity.completadas, 1);
+    assert.equal(languageActivity.duracion_segundos, 32);
+    const islandPractice = analytics.practica_ludica.find((item) => item.mundo === 'HABLA' && item.nivel === 5);
+    assert.deepEqual(islandPractice && {
+      mundo: islandPractice.mundo,
+      nivel: islandPractice.nivel,
+      fonema_objetivo: islandPractice.fonema_objetivo,
+      intentos: islandPractice.intentos,
+      respuestas_correctas: islandPractice.respuestas_correctas,
+    }, { mundo: 'HABLA', nivel: 5, fonema_objetivo: '/r/', intentos: 1, respuestas_correctas: 1 });
+    const labyrinthPractice = analytics.practica_ludica.find((item) => item.mundo === 'LENGUAJE' && item.nivel === 18);
+    assert.deepEqual(labyrinthPractice && {
+      mundo: labyrinthPractice.mundo,
+      nivel: labyrinthPractice.nivel,
+      fonema_objetivo: labyrinthPractice.fonema_objetivo,
+      intentos: labyrinthPractice.intentos,
+      respuestas_correctas: labyrinthPractice.respuestas_correctas,
+    }, { mundo: 'LENGUAJE', nivel: 18, fonema_objetivo: '/r/', intentos: 1, respuestas_correctas: 1 });
+    const clusterLabyrinthPractice = analytics.practica_ludica.find((item) => item.mundo === 'LENGUAJE' && item.nivel === 27);
+    assert.deepEqual(clusterLabyrinthPractice && {
+      mundo: clusterLabyrinthPractice.mundo,
+      nivel: clusterLabyrinthPractice.nivel,
+      fonema_objetivo: clusterLabyrinthPractice.fonema_objetivo,
+      intentos: clusterLabyrinthPractice.intentos,
+      respuestas_correctas: clusterLabyrinthPractice.respuestas_correctas,
+    }, { mundo: 'LENGUAJE', nivel: 27, fonema_objetivo: '/tr/', intentos: 1, respuestas_correctas: 1 });
+  });
+
+  it('persists attendance in the API contract and blocks prediction for a no-show', async () => {
+    const closeResponse = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/cerrar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({ asistencia: 'ASISTIO' }),
+    });
+    assert.equal(closeResponse.status, 200);
+    const closed = await closeResponse.json() as { estado_sesion: string; asistencia: string };
+    assert.equal(closed.estado_sesion, 'FINALIZADA');
+    assert.equal(closed.asistencia, 'ASISTIO');
+
+    const persisted = await pool.query<{ estado_sesion: string; asistencia: string; estado_reserva: string }>(
+      `SELECT s.estado_sesion, s.asistencia, r.estado_reserva
+       FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva
+       WHERE s.id_sesion = $1`,
+      [fixture.sessionId],
+    );
+    assert.equal(persisted.rows[0]?.estado_sesion, 'FINALIZADA');
+    assert.equal(persisted.rows[0]?.asistencia, 'ASISTIO');
+    assert.equal(persisted.rows[0]?.estado_reserva, 'COMPLETADA');
+
+    const refreshed = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}`, {
+      headers: { Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+    });
+    assert.equal(refreshed.status, 200);
+    assert.equal((await refreshed.json() as { asistencia: string }).asistencia, 'ASISTIO');
+
+    await pool.query("UPDATE sesiones SET asistencia = 'NO_ASISTIO' WHERE id_sesion = $1", [fixture.sessionId]);
+    const noShowPrediction = await fetch(`${baseUrl}/api/v1/clinica/tratamientos/predecir-plan`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({ id_sesion: fixture.sessionId, codigo_diagnostico: 1, frecuencia_semanal: 2 }),
+    });
+    assert.equal(noShowPrediction.status, 409);
+    const noShowData = await noShowPrediction.json() as { error?: string };
+    assert.equal(noShowData.error, 'El pronóstico requiere una sesión atendida.');
   });
 });

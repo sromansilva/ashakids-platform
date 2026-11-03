@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import multer from 'multer';
-import { whisperService } from '../mundo_asha/services/whisper.service.js';
+import { speechTranscriptionService } from '../mundo_asha/services/speech-transcription.service.js';
 import { juegosService, MUNDOS_CATALOGO } from '../juegos/juegos.service.js';
 import { authenticate, requireRoles } from '../../core/middleware/auth.middleware.js';
 import { assertPatientOwner, assertPatientAccess, assertConsentAccess } from '../../core/security/clinical-access.js';
@@ -56,7 +56,7 @@ educacionRouter.post('/voz/transcribir', requireRoles(['ADMIN', 'PADRE']), uploa
     }
 
     const startedAt = Date.now();
-    const { texto: transcripcion } = await whisperService.transcribirAudio(file.buffer, file.mimetype || 'audio/webm');
+    const { texto: transcripcion } = await speechTranscriptionService.transcribirAudio(file.buffer, file.mimetype || 'audio/webm');
     if (!transcripcion.trim()) {
       res.status(422).json({ estado: 'ERROR', mensaje: 'El servicio no pudo obtener una transcripción.' });
       return;

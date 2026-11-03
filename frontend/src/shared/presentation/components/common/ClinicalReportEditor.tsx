@@ -7,7 +7,7 @@ import { RemoteFeedback } from './RemoteFeedback';
 import { ReportHelpLevel } from './ReportHelpLevel';
 import { TherapistVoiceAIWidget } from './TherapistVoiceAIWidget';
 import { helpLevels, incompleteTemplateFields, reportTemplates, type NarrativeField } from './reportFormGuidance';
-import { encodeArticulationResult, parseArticulationHistory } from '@/shared/application/articulationReportEntries';
+import { appendArticulationResultToObservations, parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 
 export const reportLabels = {
   observaciones_iniciales: 'Observaciones iniciales',
@@ -189,10 +189,14 @@ export function ClinicalReportEditor({
             patientId={patientId}
             patientName={patientName}
             onConfirmResult={(result) => {
-              const entry = encodeArticulationResult(result);
-              const currentObjectives = form.objetivos_trabajados?.trim() ?? '';
-              if (currentObjectives.includes(entry)) return;
-              update('objetivos_trabajados', currentObjectives ? currentObjectives + '\n\n' + entry : entry);
+              editRevision.current += 1;
+              setDirty(true);
+              setForm((current) => {
+                const nextObservations = appendArticulationResultToObservations(current.observaciones_iniciales, result);
+                return nextObservations === current.observaciones_iniciales
+                  ? current
+                  : { ...current, observaciones_iniciales: nextObservations };
+              });
             }}
           />
         </div>

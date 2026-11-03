@@ -11,11 +11,15 @@ from transformers import Wav2Vec2ForCTC, Wav2Vec2Processor
 
 
 MODEL_NAME = "jonatasgrosman/wav2vec2-large-xlsr-53-spanish"
+MODEL_REVISION = "96d7e9b4e4a78af515a3c6d3cee7c0826045d276"
+MIN_PHONETIC_SAMPLE_SECONDS = 2.0
+MAX_PHONETIC_SAMPLE_SECONDS = 3.0
 
 
 class Wav2VecPhoneticEngine:
-    def __init__(self, model_name: str = MODEL_NAME):
+    def __init__(self, model_name: str = MODEL_NAME, model_revision: str = MODEL_REVISION):
         self.model_name = model_name
+        self.model_revision = model_revision
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         self.processor: Optional[Wav2Vec2Processor] = None
         self.model: Optional[Wav2Vec2ForCTC] = None
@@ -27,8 +31,8 @@ class Wav2VecPhoneticEngine:
             return
         self._is_loading = True
         try:
-            self.processor = Wav2Vec2Processor.from_pretrained(self.model_name)
-            self.model = Wav2Vec2ForCTC.from_pretrained(self.model_name).to(self.device)
+            self.processor = Wav2Vec2Processor.from_pretrained(self.model_name, revision=self.model_revision)
+            self.model = Wav2Vec2ForCTC.from_pretrained(self.model_name, revision=self.model_revision).to(self.device)
             self.model.eval()
             self._is_ready = True
         except Exception as error:
@@ -122,9 +126,22 @@ class Wav2VecPhoneticEngine:
         palabra_objetivo: Optional[str] = None,
         fonema_objetivo: Optional[str] = None,
     ) -> Dict[str, Any]:
+        if not audio_bytes:
+            raise ValueError("El fragmento de audio está vacío.")
+        try:
+            audio_info = sf.info(io.BytesIO(audio_bytes))
+        except Exception as error:
+            raise ValueError("No se pudo decodificar el fragmento de audio.") from error
+        duration_seconds = audio_info.duration
+        if not MIN_PHONETIC_SAMPLE_SECONDS <= duration_seconds <= MAX_PHONETIC_SAMPLE_SECONDS:
+            raise ValueError("La muestra fonológica debe durar entre 2 y 3 segundos.")
+
         resultado_base = self.inferir_audio(audio_bytes=audio_bytes)
+        transcript = resultado_base["transcripcion"].strip()
+        if not transcript:
+            raise ValueError("El modelo no generó una transcripción que el terapeuta pueda revisar.")
         return {
-            "transcripcion": resultado_base["transcripcion"],
+            "transcripcion": transcript,
             "duracion_segundos": resultado_base["duracion_segundos"],
             "palabra_objetivo": palabra_objetivo,
             "fonema_objetivo": fonema_objetivo,

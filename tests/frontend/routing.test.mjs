@@ -57,6 +57,8 @@ describe('ASHAKids Frontend Routing Tests', () => {
       assert.equal(getRequiredRoleForPath('/terapeuta/agenda'), 'TERAPEUTA');
       assert.equal(getRequiredRoleForPath('/terapeuta/pacientes'), 'TERAPEUTA');
       assert.equal(getRequiredRoleForPath('/terapeuta/reportes'), 'TERAPEUTA');
+      assert.equal(getRequiredRoleForPath('/terapeuta/sesion/espera/42/panel'), 'TERAPEUTA');
+      assert.equal(getRequiredRoleForPath('/terapeuta/sesion/espera/42/meet'), 'TERAPEUTA');
     });
 
     it('debe requerir rol ADMIN para rutas de administración', () => {
@@ -64,6 +66,8 @@ describe('ASHAKids Frontend Routing Tests', () => {
       assert.equal(getRequiredRoleForPath('/admin/dashboard'), 'ADMIN');
       assert.equal(getRequiredRoleForPath('/admin/cuentas'), 'ADMIN');
       assert.equal(getRequiredRoleForPath('/admin/ml'), 'ADMIN');
+      assert.equal(getRequiredRoleForPath('/admin/sesion/espera/42/panel'), 'ADMIN');
+      assert.equal(getRequiredRoleForPath('/admin/sesion/espera/42/meet'), 'ADMIN');
     });
   });
 

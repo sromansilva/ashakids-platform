@@ -13,11 +13,3 @@ export const progresoJuegoSchema = z.object({
 
 export type ProgresoJuegoDTO = z.infer<typeof progresoJuegoSchema>;
 
-export const reconocimientoVozSchema = z.object({
-  id_paciente: z.number().int().positive(),
-  audio_base64: z.string().min(10),
-  palabra_objetivo: z.string().min(1).max(500),
-}).strict();
-
-export type ReconocimientoVozDTO = z.infer<typeof reconocimientoVozSchema>;
-

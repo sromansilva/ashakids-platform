@@ -53,10 +53,18 @@ function LevelActivity({ level, world, patientId, onSaved, exit, onPending }: {
 }
 
 export function DemoWorldPlayer(props: {
-  world: WorldProgress; patientId: number; birthDate?: string; onSaved: (progress: GameProgress) => void; back: () => void;
+  world: WorldProgress; patientId: number; birthDate?: string; onSaved: (progress: GameProgress) => void; back: () => void; openLabyrinth?: () => void;
 }) {
   const [previousActivities, setPreviousActivities] = useState(false);
-  if (props.world.id === 'HABLA' && !previousActivities) return <SoundWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
+  if (props.world.id === 'HABLA' && !previousActivities) return <SoundWorld
+    key={`${props.patientId}:${props.birthDate}`}
+    patientId={props.patientId}
+    birthDate={props.birthDate}
+    back={props.back}
+    legacy={() => setPreviousActivities(true)}
+    focusedPhonemes={props.world.fonemas_recomendados ?? []}
+    openRecommendedLevels={() => setPreviousActivities(true)}
+  />;
   if (props.world.id === 'LENGUAJE' && !previousActivities) {
     const focusedWordLevels = props.world.levels.flatMap((level) =>
       level.target_word_id && level.fonema_objetivo
@@ -73,9 +81,10 @@ export function DemoWorldPlayer(props: {
       focusedWordLevels={focusedWordLevels}
       gameVersion={props.world.version}
       onProgressSaved={props.onSaved}
+      openLabyrinth={props.openLabyrinth}
     />;
   }
-  if (props.world.id === 'FLUIDEZ' && !previousActivities) return <FluencyWorld key={`${props.patientId}:${props.birthDate}`} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
+  if (props.world.id === 'FLUIDEZ' && !previousActivities) return <FluencyWorld key={`${props.patientId}:${props.birthDate}`} patientId={props.patientId} birthDate={props.birthDate} back={props.back} legacy={() => setPreviousActivities(true)}/>;
   return <>{['HABLA','LENGUAJE','FLUIDEZ'].includes(props.world.id) && <button type="button" className="asha-map-back" onClick={() => setPreviousActivities(false)}><ArrowLeft size={18}/> Volver a juegos de {props.world.id==='HABLA'?'sonidos':props.world.id==='LENGUAJE'?'palabras':'Ritmo de las Palabras'}</button>}<BasicWorldPlayer {...props}/></>;
 }
 
@@ -94,9 +103,10 @@ function BasicWorldPlayer({ world, patientId, onSaved, back }: {
       <PublicIllustration src={`/illustrations/world-${art.image}-v54.png`} alt="" width={440} height={300} className="asha-route-scenery" sizes="440px"/>
       <ol className="asha-level-path">{world.levels.map(item => {
         const complete = world.completados.includes(item.number);
-        return <li key={item.number} className={`asha-level-stop ${complete ? 'is-complete' : ''} ${next === item.number ? 'is-next' : ''}`}>
-          <button type="button" className="asha-level-square" aria-label={`${complete ? 'Repetir' : 'Jugar'} nivel ${item.number}`} onClick={() => setLevelNumber(item.number)}><span>{complete ? <Check size={32} aria-hidden="true"/> : next === item.number ? <Play size={28} fill="currentColor" aria-hidden="true"/> : <Flag size={28} aria-hidden="true"/>}</span><span className="asha-level-number">{item.number}</span></button>
-          <h3>{item.title}</h3><p>{complete ? 'Completado · puedes repetir' : 'Disponible'}</p>
+        const recommended = Boolean(item.fonema_objetivo && world.fonemas_recomendados?.includes(item.fonema_objetivo));
+        return <li key={item.number} className={`asha-level-stop ${complete ? 'is-complete' : ''} ${next === item.number ? 'is-next' : ''} ${recommended ? 'is-recommended' : ''}`}>
+          <button type="button" className="asha-level-square" aria-label={`${complete ? 'Repetir' : 'Jugar'} nivel ${item.number}${recommended ? ` recomendado para ${item.fonema_objetivo}` : ''}`} onClick={() => setLevelNumber(item.number)}><span>{complete ? <Check size={32} aria-hidden="true"/> : next === item.number ? <Play size={28} fill="currentColor" aria-hidden="true"/> : <Flag size={28} aria-hidden="true"/>}</span><span className="asha-level-number">{item.number}</span></button>
+          <h3>{item.title}</h3><p>{complete ? 'Completado · puedes repetir' : recommended ? `Recomendado esta semana · ${item.fonema_objetivo}` : 'Disponible'}</p>
         </li>;
       })}</ol>
     </div>

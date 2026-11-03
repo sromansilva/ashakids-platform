@@ -1,21 +1,19 @@
 import { useEffect, useState, type CSSProperties } from 'react';
-import type { View } from '@/shared/domain/types/navigation';
-import { ArrowRight, Gamepad2, Info, Mic, Sparkles, Volume2 } from 'lucide-react';
+import { Gamepad2, Info } from 'lucide-react';
 import { patientsService, type PhonemeActivityAnalytics } from '@/modules/clinica/infrastructure/clinicalService';
 import { useRemote } from '@/shared/application/hooks/useRemoteData';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 
-const activities = [
-  { id: 'voz', name: 'El Estudio de la Voz', description: 'Explora tu voz, identifica sonidos y practica.', view: 'mundo-asha/isla' as View, icon: Mic, color: 'bg-[#EDE9FE] text-[#6B46FE]' },
-  { id: 'gestos', name: 'Laboratorio de los Gestos', description: 'Reconoce y practica gestos y expresiones.', view: 'mundo-asha/laberinto' as View, icon: Sparkles, color: 'bg-[#CCFBF1] text-[#0D9488]' },
-  { id: 'sonidos', name: 'Taller de los Sonidos', description: 'Descubre, escucha y reproduce sonidos.', view: 'mundo-asha/juegos' as View, icon: Volume2, color: 'bg-[#FFEDD5] text-[#EA580C]' },
-];
-
 const dateLabel = (value: string | null) => value
   ? new Intl.DateTimeFormat('es-PE', { dateStyle: 'medium' }).format(new Date(value))
   : 'Sin intentos en este periodo';
+const worldLabels: Record<string, string> = {
+  HABLA: 'Taller de los Sonidos',
+  LENGUAJE: 'La Isla de las Palabras',
+  FLUIDEZ: 'Ritmo de las Palabras',
+};
 
-export function TerapeutaDatosActividad({ go }: { go: (view: View) => void }) {
+export function TerapeutaDatosActividad() {
   const patients = useRemote(['activity-patients'], (signal) => patientsService.list({ limit: 100 }, signal));
   const [patientId, setPatientId] = useState<number | null>(null);
   const activePatients = patients.data?.items.filter((patient) => patient.activo) ?? [];
@@ -33,11 +31,12 @@ export function TerapeutaDatosActividad({ go }: { go: (view: View) => void }) {
   );
   const selectedPatient = activePatients.find((patient) => patient.id_paciente === patientId);
   const clinicalRows = analytics.data?.resultados_clinicos ?? [];
-  const practiceByPhoneme = new Map<string, { attempts: number; words: string[]; latest: string | null }>();
+  const practiceByPhoneme = new Map<string, { attempts: number; correct: number; words: string[]; latest: string | null }>();
   for (const item of analytics.data?.practica_ludica ?? []) {
-    const row = practiceByPhoneme.get(item.fonema_objetivo) ?? { attempts: 0, words: [], latest: null };
+    const row = practiceByPhoneme.get(item.fonema_objetivo) ?? { attempts: 0, correct: 0, words: [], latest: null };
     row.attempts += item.intentos;
-    if (item.intentos) row.words.push(item.palabra_objetivo);
+    row.correct += item.respuestas_correctas;
+    if (item.intentos) row.words.push(`${worldLabels[item.mundo] ?? item.mundo}: ${item.palabra_objetivo}`);
     if (item.ultima_practica && (!row.latest || item.ultima_practica > row.latest)) row.latest = item.ultima_practica;
     practiceByPhoneme.set(item.fonema_objetivo, row);
   }
@@ -124,7 +123,7 @@ export function TerapeutaDatosActividad({ go }: { go: (view: View) => void }) {
 
             <section className="rounded-2xl border border-amber-100 bg-amber-50/50 p-4" aria-label="Práctica lúdica guardada por fonema">
               <h3 className="font-extrabold">Práctica en juegos</h3>
-              <p className="mt-1 text-xs text-[#615274]">Intentos guardados en La Isla de las Palabras y el Laberinto; no equivalen a logro clínico.</p>
+              <p className="mt-1 text-xs text-[#615274]">Intentos y aciertos de niveles con corrección automática en La Isla de las Palabras y el Laberinto; no equivalen a logro clínico.</p>
               <div className="mt-4 space-y-4">
                 {practiceRows.map((row) => {
                   const width = `${(row.attempts / maxPractice) * 100}%`;
@@ -132,7 +131,7 @@ export function TerapeutaDatosActividad({ go }: { go: (view: View) => void }) {
                     <article key={row.fonema_objetivo}>
                       <div className="mb-1 flex items-center justify-between gap-2 text-sm">
                         <span className="font-black">{row.fonema_objetivo}</span>
-                        <span className="text-xs font-bold text-[#615274]">{row.attempts} intentos</span>
+                        <span className="text-xs font-bold text-[#615274]">{row.correct}/{row.attempts} aciertos · {row.attempts ? Math.round(row.correct / row.attempts * 100) : 0}%</span>
                       </div>
                       <div className="h-2 overflow-hidden rounded-full bg-white" role="img" aria-label={`${row.fonema_objetivo}: ${row.attempts} intentos de práctica`}>
                         <span className="block h-full rounded-full bg-amber-500" style={{ width } as CSSProperties} />
@@ -149,17 +148,32 @@ export function TerapeutaDatosActividad({ go }: { go: (view: View) => void }) {
         )}
       </section>
 
-      <section aria-label="Actividades educativas" className="grid gap-4 md:grid-cols-3">
-        {activities.map(({ id, name, description, view, icon: Icon, color }) => (
-          <article key={id} className="flex flex-col rounded-3xl border border-[#E8E5F4] bg-white p-5 shadow-sm">
-            <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${color}`}><Icon size={22} aria-hidden="true" /></span>
-            <h2 className="mt-4 text-lg font-black">{name}</h2>
-            <p className="mt-1 flex-1 text-sm text-[#615274]">{description}</p>
-            <button type="button" onClick={() => go(view)} className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#6B46FE] px-4 py-2 text-sm font-extrabold text-white hover:bg-[#5833EA]">
-              Abrir actividad <ArrowRight size={15} aria-hidden="true" />
-            </button>
-          </article>
-        ))}
+      <section className="rounded-3xl border border-[#E8E5F4] bg-white p-5 shadow-sm sm:p-6" aria-labelledby="adaptive-activities-title">
+        <h2 id="adaptive-activities-title" className="text-lg font-black">Participación en actividades adaptativas</h2>
+        <p className="mt-1 text-sm text-[#615274]">Registra juegos completados y su duración. Estas actividades no generan puntuación clínica ni XP.</p>
+        {analytics.data?.actividades_adaptativas.length ? (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full min-w-[620px] text-left text-sm">
+              <thead className="border-b border-[#E8E5F4] text-xs text-[#615274]"><tr><th className="py-2 pr-3">Mundo</th><th className="py-2 pr-3">Juego</th><th className="py-2 pr-3">Completados</th><th className="py-2 pr-3">Tiempo total</th><th className="py-2">Último juego</th></tr></thead>
+              <tbody>{analytics.data.actividades_adaptativas.map((activity) => (
+                <tr key={`${activity.mundo}:${activity.actividad}`} className="border-b border-[#F0EDF6] last:border-0">
+                  <td className="py-3 pr-3 font-bold">{worldLabels[activity.mundo] ?? activity.mundo}</td>
+                  <td className="py-3 pr-3">{activity.actividad.replace(/^(word|sound|fluency):/, '').replaceAll('_', ' ')}</td>
+                  <td className="py-3 pr-3">{activity.completadas}/{activity.intentos}</td>
+                  <td className="py-3 pr-3">{Math.floor(activity.duracion_segundos / 60)} min {activity.duracion_segundos % 60} s</td>
+                  <td className="py-3">{dateLabel(activity.ultima_practica)}</td>
+                </tr>
+              ))}</tbody>
+            </table>
+          </div>
+        ) : <p className="mt-3 rounded-xl bg-[#F8F7FC] p-3 text-sm text-[#615274]">Aún no hay actividades adaptativas registradas en este periodo.</p>}
+      </section>
+
+      <section className="rounded-2xl border border-[#E8E5F4] bg-white p-5" role="note">
+        <h2 className="font-extrabold">Acceso a las actividades</h2>
+        <p className="mt-1 text-sm leading-relaxed text-[#615274]">
+          La familia abre los mundos y juegos desde su Centro Familiar. Aquí se muestran únicamente los intentos que el sistema registra para el paciente seleccionado; la práctica lúdica no se interpreta como avance clínico.
+        </p>
       </section>
     </div>
   );

@@ -1,34 +1,19 @@
 import { pool } from '../../core/database.js';
 import { randomUUID } from 'node:crypto';
 import { PHONEME_LABYRINTH_LEVELS, PHONEME_LABYRINTH_TARGETS } from './phoneme-labyrinth.js';
+import { PHONEME_AWARENESS_LEVELS, PHONEME_AWARENESS_TARGETS } from './phoneme-awareness.js';
+import { PHONEME_NAMING_LEVELS, PHONEME_NAMING_TARGETS } from './phoneme-naming.js';
 export { PHONEME_LABYRINTH_TARGETS } from './phoneme-labyrinth.js';
+export { PHONEME_NAMING_TARGETS } from './phoneme-naming.js';
+export { PHONEME_AWARENESS_TARGETS } from './phoneme-awareness.js';
 
 export const VERSION = 'basica-1';
-
-export const PHONEME_NAMING_TARGETS = [
-  { number: 4, target_word_id: 'dog', fonema_objetivo: '/rr/', word: 'Perro' },
-  { number: 5, target_word_id: 'car', fonema_objetivo: '/rr/', word: 'Carro' },
-  { number: 6, target_word_id: 'mouse', fonema_objetivo: '/r/', word: 'Ratón' },
-  { number: 7, target_word_id: 'tree', fonema_objetivo: '/r/', word: 'Árbol' },
-  { number: 8, target_word_id: 'flower', fonema_objetivo: '/r/', word: 'Flor' },
-  { number: 9, target_word_id: 'snail', fonema_objetivo: '/r/', word: 'Caracol' },
-  { number: 10, target_word_id: 'carrot', fonema_objetivo: '/r/', word: 'Zanahoria' },
-  { number: 11, target_word_id: 'sun', fonema_objetivo: '/s/', word: 'Sol' },
-  { number: 12, target_word_id: 'shoe', fonema_objetivo: '/s/', word: 'Zapato' },
-  { number: 13, target_word_id: 'plate', fonema_objetivo: '/pl/', word: 'Plato' },
-  { number: 14, target_word_id: 'train', fonema_objetivo: '/tr/', word: 'Tren' },
- ] as const;
-
-const phonemeNamingLevels = PHONEME_NAMING_TARGETS.map((target) => ({
-  number: target.number,
-  title: `Nombra ${target.word.toLocaleLowerCase('es')}`,
-  prompt: `Escucha y nombra el dibujo: ${target.word}.`,
-  choices: [target.word],
-  answer: [target.word],
-  sequence: false,
-  target_word_id: target.target_word_id,
-  fonema_objetivo: target.fonema_objetivo,
-}));
+const LUDIC_ACTIVITY_LEVEL = 999;
+const LUDIC_ACTIVITY_CODES: Record<string, ReadonlySet<string>> = {
+  HABLA: new Set(['sound:explore', 'sound:identify', 'sound:pairs2', 'sound:pairs3', 'sound:same', 'sound:sequence', 'sound:count', 'sound:memory', 'sound:missing', 'sound:order', 'sound:odd']),
+  LENGUAJE: new Set(['word:treasure', 'word:memory', 'word:sort', 'word:story', 'word:opposites', 'word:syllables', 'word:count', 'word:positions', 'word:rhymes', 'word:sentence', 'word:naming']),
+  FLUIDEZ: new Set(['fluency:beat', 'fluency:islands', 'fluency:turns', 'fluency:train', 'fluency:echo', 'fluency:chat', 'fluency:wordpath', 'fluency:story', 'fluency:listen', 'fluency:bridge', 'fluency:round']),
+};
 
 export const MUNDOS_CATALOGO: Record<string, any> = {
   HABLA: {
@@ -38,6 +23,7 @@ export const MUNDOS_CATALOGO: Record<string, any> = {
       { number: 1, title: 'Escucha la palabra', prompt: 'Escucha: mesa. ¿Qué palabra oíste?', choices: ['Casa', 'Mesa', 'Sapo'], answer: ['Mesa'], sequence: false },
       { number: 2, title: 'Encuentra el sonido', prompt: 'Mesa empieza con eme. ¿Cuál también empieza con eme?', choices: ['Luna', 'Sol', 'Mano'], answer: ['Mano'], sequence: false },
       { number: 3, title: 'Una frase sonora', prompt: 'Ordena estas palabras: mi mamá me mima.', choices: ['Mima', 'Mi', 'Mamá', 'Me'], answer: ['Mi', 'Mamá', 'Me', 'Mima'], sequence: true },
+      ...PHONEME_AWARENESS_LEVELS,
     ],
   },
   LENGUAJE: {
@@ -47,7 +33,7 @@ export const MUNDOS_CATALOGO: Record<string, any> = {
       { number: 1, title: 'Una pista', prompt: 'Tiene cuatro patas, dice miau y le gusta dormir. ¿Qué animal es?', choices: ['Perro', 'Gato', 'Pez'], answer: ['Gato'], sequence: false },
       { number: 2, title: 'Comprende la historia', prompt: 'Ana lleva un paraguas porque llueve. ¿Para qué lo usa?', choices: ['Para comer', 'Para dormir', 'Para protegerse de la lluvia'], answer: ['Para protegerse de la lluvia'], sequence: false },
       { number: 3, title: 'Cuenta en orden', prompt: 'Primero despertamos, después desayunamos y luego salimos. Elige las acciones en ese orden.', choices: ['Salir', 'Despertar', 'Desayunar'], answer: ['Despertar', 'Desayunar', 'Salir'], sequence: true },
-      ...phonemeNamingLevels,
+      ...PHONEME_NAMING_LEVELS,
       ...PHONEME_LABYRINTH_LEVELS,
     ],
   },
@@ -129,6 +115,16 @@ export class JuegosService {
             );
           }
         }
+        const practiceLevel = await client.query(
+          'SELECT 1 FROM niveles WHERE id_mundo = $1 AND orden = $2 LIMIT 1;',
+          [worldId, LUDIC_ACTIVITY_LEVEL],
+        );
+        if (!practiceLevel.rows.length) {
+          await client.query(
+            'INSERT INTO niveles (id_mundo, nombre_nivel, orden, objetivo, activo) VALUES ($1, $2, $3, $4, true);',
+            [worldId, 'Registro de participación lúdica', LUDIC_ACTIVITY_LEVEL, 'Registro agregado de actividades adaptativas; no otorga XP ni progreso clínico.'],
+          );
+        }
       }
       await client.query('COMMIT;');
     } catch (error) {
@@ -147,7 +143,7 @@ export class JuegosService {
       `SELECT area, mundos_asignados, fonemas_priorizados, frecuencia_semanal FROM tratamientos t
        JOIN expedientes e ON e.id_expediente = t.id_expediente
        WHERE e.id_paciente = $1 AND t.estado_tratamiento = 'ACTIVO'
-       ORDER BY t.fecha_inicio DESC NULLS LAST LIMIT 1;`,
+       ORDER BY t.fecha_inicio DESC NULLS LAST, t.id_tratamiento DESC LIMIT 1;`,
       [pacienteId],
     );
     const activeTreatment = treatment.rows[0];
@@ -158,14 +154,14 @@ export class JuegosService {
     const prioritizedPhonemes = Array.isArray(activeTreatment?.fonemas_priorizados)
       ? activeTreatment.fonemas_priorizados.filter((phoneme: unknown): phoneme is string => typeof phoneme === 'string' && supportedPhonemes.includes(phoneme))
       : [];
-    // Phoneme plans route their weekly focus to the world with target-word
-    // activities; other plans highlight only their therapist-selected area.
-    const preferredWorld = prioritizedPhonemes.length > 0
-      ? 'LENGUAJE'
-      : typeof activeTreatment?.area === 'string' && assignedWorlds.includes(activeTreatment.area)
+    // Phoneme plans highlight listening awareness (HABLA) and target-word
+    // practice (LENGUAJE); other plans highlight their therapist-selected area.
+    const preferredWorlds = prioritizedPhonemes.length > 0
+      ? ['HABLA', 'LENGUAJE'].filter((code) => assignedWorlds.includes(code))
+      : [typeof activeTreatment?.area === 'string' && assignedWorlds.includes(activeTreatment.area)
         ? activeTreatment.area
-        : assignedWorlds[0];
-    const recommendedWorlds = new Set(preferredWorld ? [preferredWorld] : []);
+        : assignedWorlds[0]].filter((code): code is string => Boolean(code));
+    const recommendedWorlds = new Set(preferredWorlds);
     const weeklyFrequency = Number(activeTreatment?.frecuencia_semanal) || null;
     await this.ensurePatientWorlds(pacienteId, assignedWorlds);
 
@@ -177,8 +173,9 @@ export class JuegosService {
        JOIN mundos m ON m.id_mundo = n.id_mundo
        JOIN actividades a ON a.id_actividad = m.id_actividad
        WHERE r.id_paciente = $1 AND a.id_paciente = $1
+         AND n.orden <> $2
        ORDER BY r.fecha_realizacion ASC;`,
-      [pacienteId],
+      [pacienteId, LUDIC_ACTIVITY_LEVEL],
     );
     const completions = new Map<string, Set<number>>();
     const attempts = new Map<string, number>();
@@ -256,7 +253,7 @@ export class JuegosService {
       `SELECT t.mundos_asignados FROM tratamientos t
        JOIN expedientes e ON e.id_expediente = t.id_expediente
        WHERE e.id_paciente = $1 AND t.estado_tratamiento = 'ACTIVO'
-       ORDER BY t.fecha_inicio DESC NULLS LAST LIMIT 1;`,
+       ORDER BY t.fecha_inicio DESC NULLS LAST, t.id_tratamiento DESC LIMIT 1;`,
       [pacienteId],
     );
     const assigned = treatment.rows[0]?.mundos_asignados;
@@ -340,6 +337,92 @@ export class JuegosService {
         repetido: false,
         resumen: await this.getProgresoPaciente(pacienteId),
       };
+    } catch (error) {
+      await client.query('ROLLBACK;');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
+  async registrarActividadLudica(pacienteId: number, world: string, data: any) {
+    const code = String(world).toUpperCase();
+    const activityCode = typeof data?.actividad === 'string' ? data.actividad : '';
+    const allowedActivities = LUDIC_ACTIVITY_CODES[code];
+    const duration = Number(data?.duracion_segundos);
+    if (!Number.isInteger(pacienteId) || pacienteId <= 0 || !allowedActivities || !allowedActivities.has(activityCode)) {
+      throw Object.assign(new Error('La actividad lúdica indicada no existe para este mundo.'), { status: 400 });
+    }
+    if (!Number.isInteger(duration) || duration < 0 || duration > 3600 || data?.completada !== true) {
+      throw Object.assign(new Error('Envía una actividad completada y una duración válida.'), { status: 400 });
+    }
+    const attemptKey = typeof data.clave_intento === 'string' ? data.clave_intento : '';
+    if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(attemptKey)) {
+      throw Object.assign(new Error('La clave de la actividad debe ser un UUID válido.'), { status: 400 });
+    }
+    const treatment = await pool.query(
+      `SELECT t.mundos_asignados FROM tratamientos t
+       JOIN expedientes e ON e.id_expediente = t.id_expediente
+       WHERE e.id_paciente = $1 AND t.estado_tratamiento = 'ACTIVO'
+       ORDER BY t.fecha_inicio DESC NULLS LAST, t.id_tratamiento DESC LIMIT 1;`,
+      [pacienteId],
+    );
+    const assigned = treatment.rows[0]?.mundos_asignados;
+    if (!Array.isArray(assigned) || !assigned.includes(code)) {
+      throw Object.assign(new Error('Este mundo no está asignado al plan activo del paciente.'), { status: 403 });
+    }
+
+    await this.ensurePatientWorlds(pacienteId, [code]);
+
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN;');
+      await client.query('SELECT pg_advisory_xact_lock(7423, $1::integer);', [pacienteId]);
+      const level = await client.query(
+        `SELECT n.id_nivel FROM niveles n
+         JOIN mundos m ON m.id_mundo = n.id_mundo
+         JOIN actividades a ON a.id_actividad = m.id_actividad
+         WHERE a.id_paciente = $1 AND a.codigo_juego = $2 AND n.orden = $3 AND n.activo = true
+         LIMIT 1;`,
+        [pacienteId, code, LUDIC_ACTIVITY_LEVEL],
+      );
+      if (!level.rows[0]) throw Object.assign(new Error('No se encontró el registro lúdico del mundo.'), { status: 503 });
+      const prior = await client.query(
+        'SELECT id_resultado_nivel, id_nivel, id_paciente FROM resultados_nivel WHERE clave_intento = $1 LIMIT 1;',
+        [attemptKey],
+      );
+      if (prior.rows[0]) {
+        if (Number(prior.rows[0].id_nivel) !== Number(level.rows[0].id_nivel) || Number(prior.rows[0].id_paciente) !== pacienteId) {
+          throw Object.assign(new Error('La clave ya se utilizó para otra actividad.'), { status: 409 });
+        }
+        await client.query('COMMIT;');
+        return { id_actividad: Number(prior.rows[0].id_resultado_nivel), repetida: true };
+      }
+      const attempt = await client.query(
+        'SELECT COALESCE(MAX(numero_intento), 0) + 1 AS numero FROM resultados_nivel WHERE id_paciente = $1 AND id_nivel = $2;',
+        [pacienteId, level.rows[0].id_nivel],
+      );
+      const inserted = await client.query(
+        `INSERT INTO resultados_nivel
+          (id_paciente, id_nivel, numero_intento, puntaje, estrellas_obtenidas, detalle_resultados, fecha_realizacion, clave_intento, experiencia_otorgada)
+         VALUES ($1, $2, $3, NULL, NULL, $4::jsonb, NOW(), $5, 0)
+         RETURNING id_resultado_nivel;`,
+        [
+          pacienteId,
+          level.rows[0].id_nivel,
+          Number(attempt.rows[0].numero),
+          JSON.stringify({
+            tipo_registro_ludico: 'ACTIVIDAD_ADAPTATIVA',
+            actividad: activityCode,
+            completada: true,
+            duracion_segundos: duration,
+            version: typeof data.version === 'string' ? data.version.slice(0, 30) : VERSION,
+          }),
+          attemptKey,
+        ],
+      );
+      await client.query('COMMIT;');
+      return { id_actividad: Number(inserted.rows[0].id_resultado_nivel), repetida: false };
     } catch (error) {
       await client.query('ROLLBACK;');
       throw error;

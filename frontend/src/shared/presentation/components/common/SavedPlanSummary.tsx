@@ -22,6 +22,7 @@ export function SavedPlanSummary({ plan, narrative, showPredictionDetails }: {
         <h4 className="font-extrabold text-[#1C1135]">Pronóstico y avance del plan</h4>
         <p>Modelo: {plan.sesiones_modelo_estimadas} sesiones (rango {plan.modelo_rango_min}–{plan.modelo_rango_max}).</p>
         <p>Plan del terapeuta: {plan.sesiones_recomendadas} · Asistidas: {plan.sesiones_realizadas ?? 0}.</p>
+        {plan.riesgo_desercion_modelo && <p>Riesgo estimado de deserción: {plan.riesgo_desercion_modelo}{plan.probabilidad_desercion_modelo != null ? ` (${Math.round(plan.probabilidad_desercion_modelo * 100)}% estimado)` : ''}.</p>}
         {plan.estado_prediccion && <p>Decisión: {predictionDecisionLabels[plan.estado_prediccion]}.</p>}
         {plan.confianza_modelo != null && <p>Confianza calibrada de la clasificación de riesgo: {Math.round(plan.confianza_modelo * 100)}%.</p>}
       </section>

@@ -1,7 +1,7 @@
 import { pool } from '../../../core/database.js';
 import type { AuthenticatedUser } from '../../../core/middleware/auth.middleware.js';
 import { appendPatientScope, canAccessPatient, getTherapistId, isActiveTherapist } from '../../../core/security/clinical-access.js';
-import { PHONEME_LABYRINTH_TARGETS, PHONEME_NAMING_TARGETS } from '../../juegos/juegos.service.js';
+import { PHONEME_AWARENESS_TARGETS, PHONEME_LABYRINTH_TARGETS, PHONEME_NAMING_TARGETS } from '../../juegos/juegos.service.js';
 
 export interface PacienteItem {
   id_paciente: number;
@@ -286,9 +286,13 @@ export class PacientesService {
     if (!Number.isInteger(periodDays) || periodDays < 1 || periodDays > 365) {
       throw Object.assign(new Error('El periodo debe estar entre 1 y 365 días.'), { status: 400 });
     }
-    const practiceTargets = [...PHONEME_NAMING_TARGETS, ...PHONEME_LABYRINTH_TARGETS];
+    const practiceTargets = [
+      ...PHONEME_AWARENESS_TARGETS.map((target) => ({ ...target, mundo: 'HABLA' })),
+      ...PHONEME_NAMING_TARGETS.map((target) => ({ ...target, mundo: 'LENGUAJE' })),
+      ...PHONEME_LABYRINTH_TARGETS.map((target) => ({ ...target, mundo: 'LENGUAJE' })),
+    ];
 
-    const [clinical, practice] = await Promise.all([
+    const [clinical, adaptiveActivities, practice] = await Promise.all([
       pool.query(
         `SELECT fonema_objetivo, resultado_clinico, COUNT(*)::int AS total
          FROM public.evaluaciones_fonologicas
@@ -299,7 +303,26 @@ export class PacientesService {
         [id, periodDays],
       ),
       pool.query(
-        `SELECT n.orden AS nivel,
+        `SELECT a.codigo_juego AS mundo,
+                r.detalle_resultados->>'actividad' AS actividad,
+                COUNT(*)::int AS intentos,
+                COUNT(*) FILTER (WHERE r.detalle_resultados->>'completada' = 'true')::int AS completadas,
+                COALESCE(SUM(CASE WHEN (r.detalle_resultados->>'duracion_segundos') ~ '^[0-9]{1,4}$'
+                                  THEN (r.detalle_resultados->>'duracion_segundos')::int ELSE 0 END), 0)::int AS duracion_segundos,
+                MAX(r.fecha_realizacion) AS ultima_practica
+         FROM public.resultados_nivel r
+         JOIN public.niveles n ON n.id_nivel = r.id_nivel
+         JOIN public.mundos m ON m.id_mundo = n.id_mundo
+         JOIN public.actividades a ON a.id_actividad = m.id_actividad
+         WHERE r.id_paciente = $1 AND a.id_paciente = $1
+           AND r.detalle_resultados->>'tipo_registro_ludico' = 'ACTIVIDAD_ADAPTATIVA'
+           AND r.fecha_realizacion >= NOW() - ($2::int * INTERVAL '1 day')
+         GROUP BY a.codigo_juego, r.detalle_resultados->>'actividad'
+         ORDER BY a.codigo_juego, r.detalle_resultados->>'actividad';`,
+        [id, periodDays],
+      ),
+      pool.query(
+        `SELECT a.codigo_juego AS mundo, n.orden AS nivel,
                 COUNT(DISTINCT r.id_resultado_nivel)::int AS intentos,
                 COUNT(DISTINCT CASE WHEN r.puntaje >= 100 THEN r.id_resultado_nivel END)::int AS respuestas_correctas,
                 MAX(r.fecha_realizacion) AS ultima_practica
@@ -307,10 +330,11 @@ export class PacientesService {
          JOIN public.niveles n ON n.id_nivel = r.id_nivel
          JOIN public.mundos m ON m.id_mundo = n.id_mundo
          JOIN public.actividades a ON a.id_actividad = m.id_actividad
-         WHERE r.id_paciente = $1 AND a.id_paciente = $1 AND a.codigo_juego = 'LENGUAJE'
-           AND n.orden BETWEEN 4 AND 20
+         WHERE r.id_paciente = $1 AND a.id_paciente = $1
+           AND ((a.codigo_juego = 'HABLA' AND n.orden BETWEEN 4 AND 8)
+             OR (a.codigo_juego = 'LENGUAJE' AND n.orden BETWEEN 4 AND 29))
            AND r.fecha_realizacion >= NOW() - ($2::int * INTERVAL '1 day')
-         GROUP BY n.orden;`,
+         GROUP BY a.codigo_juego, n.orden;`,
         [id, periodDays],
       ),
     ]);
@@ -325,7 +349,7 @@ export class PacientesService {
       clinicalCounts.set(row.fonema_objetivo, counts);
     }
 
-    const practiceByLevel = new Map<number, any>(practice.rows.map((row: any) => [Number(row.nivel), row]));
+    const practiceByLevel = new Map<string, any>(practice.rows.map((row: any) => [`${row.mundo}:${Number(row.nivel)}`, row]));
     const phonemes = Array.from(new Set(practiceTargets.map((target) => target.fonema_objetivo)));
     return {
       id_paciente: id,
@@ -335,8 +359,9 @@ export class PacientesService {
         return { fonema_objetivo: fonema, ...counts, total: counts.alcanzado + counts.en_proceso + counts.requiere_apoyo };
       }),
       practica_ludica: practiceTargets.map((target) => {
-        const row = practiceByLevel.get(target.number);
+        const row = practiceByLevel.get(`${target.mundo}:${target.number}`);
         return {
+          mundo: target.mundo,
           nivel: target.number,
           palabra_objetivo: target.word,
           fonema_objetivo: target.fonema_objetivo,
@@ -345,6 +370,14 @@ export class PacientesService {
           ultima_practica: row?.ultima_practica ? new Date(row.ultima_practica).toISOString() : null,
         };
       }),
+      actividades_adaptativas: adaptiveActivities.rows.map((row: any) => ({
+        mundo: String(row.mundo),
+        actividad: String(row.actividad),
+        intentos: Number(row.intentos),
+        completadas: Number(row.completadas),
+        duracion_segundos: Number(row.duracion_segundos),
+        ultima_practica: row.ultima_practica ? new Date(row.ultima_practica).toISOString() : null,
+      })),
     };
   }
 
