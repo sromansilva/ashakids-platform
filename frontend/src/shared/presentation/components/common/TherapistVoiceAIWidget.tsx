@@ -2,45 +2,27 @@ import { useEffect, useRef, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle2, Mic, Square } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
-import { clinicaService, sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
+import { clinicaService, sessionsService, type FamilyCaptureStatus } from '@/modules/clinica/infrastructure/clinicalService';
 import type { ReviewedArticulationResult } from '@/shared/application/articulationReportEntries';
 import { useFamilyCaptureResult } from '@/shared/application/hooks/useFamilyCaptureResult';
+import {
+  PHONETIC_TARGETS,
+  PHONETIC_SAMPLE_RATE,
+  PHONETIC_PACKET_SAMPLES,
+  PHONETIC_MAX_CAPTURE_SAMPLES,
+  encodePcm16,
+} from '@/shared/application/audio/phoneticCaptureConstants';
+import { AudioDecibelMeter } from '@/shared/presentation/components/common/AudioDecibelMeter';
+import { PhoneticAttemptFields, PhoneticSupportIndicatorsPanel } from '@/shared/presentation/components/common/PhoneticSupportIndicatorsPanel';
+import { MLServiceUnavailableBanner } from '@/shared/presentation/components/common/MLServiceUnavailableBanner';
 
-interface TranscriptionResult {
-  id_evaluacion: number;
-  palabra_esperada: string;
-  transcripcion_tentativa: string;
-  duracion_segundos: number | null;
-  aviso: string;
-}
+type TranscriptionResult = NonNullable<FamilyCaptureStatus['resultado']>;
 
 interface TherapistVoiceAIWidgetProps {
   sessionId: number;
   patientId?: number;
   patientName?: string;
   onConfirmResult?: (result: ReviewedArticulationResult) => void;
-}
-
-const TARGETS = [
-  { word: 'carro', phoneme: '/rr/' },
-  { word: 'ratón', phoneme: '/r/' },
-  { word: 'plato', phoneme: '/pl/' },
-  { word: 'tren', phoneme: '/tr/' },
-  { word: 'zapato', phoneme: '/s/' },
-];
-
-const SAMPLE_RATE = 16_000;
-const PACKET_SAMPLES = 4_000;
-const MAX_CAPTURE_SAMPLES = SAMPLE_RATE * 3;
-
-function encodePcm16(samples: Float32Array) {
-  const bytes = new Uint8Array(samples.length * 2);
-  const view = new DataView(bytes.buffer);
-  for (let index = 0; index < samples.length; index += 1) {
-    const sample = Math.max(-1, Math.min(1, samples[index]));
-    view.setInt16(index * 2, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
-  }
-  return bytes;
 }
 
 export function TherapistVoiceAIWidget({
@@ -60,8 +42,11 @@ export function TherapistVoiceAIWidget({
   const [editedTranscript, setEditedTranscript] = useState('');
   const [therapistNote, setTherapistNote] = useState('');
   const [clinicalOutcome, setClinicalOutcome] = useState('');
+  const [attempts, setAttempts] = useState('1');
+  const [quickNote, setQuickNote] = useState('');
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [mlOffline, setMlOffline] = useState(false);
   const [familyCaptureId, setFamilyCaptureId] = useState<string | null>(null);
   const [captureOrigin, setCaptureOrigin] = useState('Micrófono de este dispositivo durante la sesión');
   const streamRef = useRef<MediaStream | null>(null);
@@ -75,7 +60,7 @@ export function TherapistVoiceAIWidget({
   const packetNumberRef = useRef(0);
   const uploadQueueRef = useRef<Promise<void>>(Promise.resolve());
   const uploadFailedRef = useRef(false);
-  const packetSamplesRef = useRef(new Float32Array(PACKET_SAMPLES));
+  const packetSamplesRef = useRef(new Float32Array(PHONETIC_PACKET_SAMPLES));
   const packetSamplesCountRef = useRef(0);
   const totalSamplesRef = useRef(0);
   const captureStartedAtRef = useRef(0);
@@ -116,6 +101,8 @@ export function TherapistVoiceAIWidget({
     setEditedTranscript(result.transcripcion_tentativa);
     setTherapistNote('');
     setClinicalOutcome('');
+    setAttempts('1');
+    setQuickNote('');
     setCaptureOrigin('Micrófono del dispositivo familiar; sin pista remota de Google Meet');
     setSaved(false);
     setFamilyCaptureId(null);
@@ -135,7 +122,7 @@ export function TherapistVoiceAIWidget({
         return;
       }
       const formData = new FormData();
-      const packetCopy = packet.buffer.slice(packet.byteOffset, packet.byteOffset + packet.byteLength);
+      const packetCopy = packet.buffer.slice(packet.byteOffset, packet.byteOffset + packet.byteLength) as ArrayBuffer;
       formData.append('audio', new Blob([packetCopy], { type: 'application/octet-stream' }), `paquete-${packetNumber}.pcm`);
       formData.append('numero_paquete', String(packetNumber));
       try {
@@ -189,7 +176,7 @@ export function TherapistVoiceAIWidget({
       try {
         await uploadQueueRef.current;
         if (uploadFailedRef.current) throw new Error('packet-upload-failed');
-        if (totalSamplesRef.current < SAMPLE_RATE * 2 || totalSamplesRef.current > MAX_CAPTURE_SAMPLES) {
+        if (totalSamplesRef.current < PHONETIC_SAMPLE_RATE * 2 || totalSamplesRef.current > PHONETIC_MAX_CAPTURE_SAMPLES) {
           throw new Error('invalid-duration');
         }
         const response = await sessionsService.finalizarCapturaFonologica(sessionId, captureId);
@@ -198,9 +185,17 @@ export function TherapistVoiceAIWidget({
         setCaptureOrigin('Micrófono de este dispositivo durante la sesión');
         setTherapistNote('');
         setClinicalOutcome('');
+        setAttempts('1');
+        setQuickNote('');
         setSaved(false);
-      } catch {
-        setError('No se pudo transcribir la muestra. Revisa la conexión, el consentimiento y que la sesión siga en curso.');
+        setMlOffline(false);
+      } catch (err: unknown) {
+        const isOffline = typeof err === 'object' && err !== null && ('status' in err && (err as { status: number }).status === 503);
+        if (isOffline) {
+          setMlOffline(true);
+        } else {
+          setError('No se pudo transcribir la muestra. Revisa la conexión, el consentimiento y que la sesión siga en curso.');
+        }
         void sessionsService.descartarCapturaFonologica(sessionId, captureId).catch(() => undefined);
       } finally {
         if (captureIdRef.current === captureId) captureIdRef.current = null;
@@ -213,11 +208,12 @@ export function TherapistVoiceAIWidget({
     setError(null);
     setTranscription(null);
     setSaved(false);
+    setMlOffline(false);
     if (consent !== true) {
       setError('Se requiere consentimiento vigente del tutor para enviar audio al servicio de transcripción.');
       return;
     }
-    const target = TARGETS.find((entry) => entry.word === targetWord);
+    const target = PHONETIC_TARGETS.find((entry) => entry.word === targetWord);
     if (!target) {
       setError('Selecciona una palabra y un fonema disponibles.');
       return;
@@ -243,9 +239,9 @@ export function TherapistVoiceAIWidget({
 
       const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (!AudioContextConstructor) throw new Error('audio-context-unavailable');
-      const context = new AudioContextConstructor({ sampleRate: SAMPLE_RATE });
+      const context = new AudioContextConstructor({ sampleRate: PHONETIC_SAMPLE_RATE });
       audioContextRef.current = context;
-      if (context.sampleRate !== SAMPLE_RATE) throw new Error('unsupported-sample-rate');
+      if (context.sampleRate !== PHONETIC_SAMPLE_RATE) throw new Error('unsupported-sample-rate');
       await context.resume();
       const source = context.createMediaStreamSource(stream);
       const processor = context.createScriptProcessor(4096, 1, 1);
@@ -257,15 +253,15 @@ export function TherapistVoiceAIWidget({
       processor.onaudioprocess = (event) => {
         const input = event.inputBuffer.getChannelData(0);
         let index = 0;
-        while (index < input.length && totalSamplesRef.current < MAX_CAPTURE_SAMPLES) {
-          const room = PACKET_SAMPLES - packetSamplesCountRef.current;
-          const remainingCapture = MAX_CAPTURE_SAMPLES - totalSamplesRef.current;
+        while (index < input.length && totalSamplesRef.current < PHONETIC_MAX_CAPTURE_SAMPLES) {
+          const room = PHONETIC_PACKET_SAMPLES - packetSamplesCountRef.current;
+          const remainingCapture = PHONETIC_MAX_CAPTURE_SAMPLES - totalSamplesRef.current;
           const count = Math.min(room, input.length - index, remainingCapture);
           packetSamplesRef.current.set(input.subarray(index, index + count), packetSamplesCountRef.current);
           index += count;
           packetSamplesCountRef.current += count;
           totalSamplesRef.current += count;
-          if (packetSamplesCountRef.current === PACKET_SAMPLES) {
+          if (packetSamplesCountRef.current === PHONETIC_PACKET_SAMPLES) {
             queuePcmPacket(packetSamplesRef.current);
             packetSamplesRef.current.fill(0);
             packetSamplesCountRef.current = 0;
@@ -274,8 +270,8 @@ export function TherapistVoiceAIWidget({
         for (let channel = 0; channel < event.outputBuffer.numberOfChannels; channel += 1) {
           event.outputBuffer.getChannelData(channel).fill(0);
         }
-        setSeconds(Math.floor(totalSamplesRef.current / SAMPLE_RATE));
-        if (totalSamplesRef.current >= MAX_CAPTURE_SAMPLES) stopRecording();
+        setSeconds(Math.floor(totalSamplesRef.current / PHONETIC_SAMPLE_RATE));
+        if (totalSamplesRef.current >= PHONETIC_MAX_CAPTURE_SAMPLES) stopRecording();
       };
       source.connect(processor);
       processor.connect(mute);
@@ -308,7 +304,7 @@ export function TherapistVoiceAIWidget({
       setError('Se requiere consentimiento vigente del tutor para solicitar una muestra de voz.');
       return;
     }
-    const target = TARGETS.find((entry) => entry.word === targetWord);
+    const target = PHONETIC_TARGETS.find((entry) => entry.word === targetWord);
     if (!target) {
       setError('Selecciona una palabra y un fonema disponibles.');
       return;
@@ -333,6 +329,11 @@ export function TherapistVoiceAIWidget({
       setError('Corrige la transcripción, registra una observación y selecciona el resultado observado antes de confirmar.');
       return;
     }
+    const attemptCount = Number(attempts);
+    if (!discard && (!Number.isInteger(attemptCount) || attemptCount < 1 || attemptCount > 20)) {
+      setError('Indica un número de intentos entre 1 y 20.');
+      return;
+    }
     setError(null);
     try {
       await clinicaService.reviewPhoneticEvaluation(transcription.id_evaluacion, {
@@ -340,12 +341,14 @@ export function TherapistVoiceAIWidget({
         transcripcion_revisada: discard ? undefined : editedTranscript.trim(),
         observacion_terapeuta: discard ? 'Descartada por el terapeuta.' : therapistNote.trim(),
         resultado_clinico: discard ? undefined : clinicalOutcome as 'ALCANZADO' | 'EN_PROCESO' | 'REQUIERE_APOYO',
+        intentos: discard ? undefined : attemptCount,
+        nota_rapida: discard || !quickNote.trim() ? undefined : quickNote.trim(),
       });
       if (patientId && user?.id_usuario) {
         await queryClient.invalidateQueries({ queryKey: [user.id_usuario, 'phonological-evaluations', patientId] });
       }
       if (!discard) {
-        const target = TARGETS.find((entry) => entry.word === transcription.palabra_esperada);
+        const target = PHONETIC_TARGETS.find((entry) => entry.word === transcription.palabra_esperada);
         onConfirmResult?.({
           objetivo_articulacion: target ? 'Observación del objetivo ' + target.phoneme : 'Observación de pronunciación',
           palabra_esperada: transcription.palabra_esperada,
@@ -354,6 +357,8 @@ export function TherapistVoiceAIWidget({
           archivo_origen: captureOrigin,
           inicio_segundo: 0,
           fin_segundo: Math.max(0.5, transcription.duracion_segundos ?? 3),
+          // Solo se pega tras la confirmación del terapeuta; la hipótesis sugerida nunca se incluye.
+          ...(transcription.indicadores_apoyo ? { similitud_apoyo: transcription.indicadores_apoyo.similitud_texto_porcentaje } : {}),
         });
       }
       setSaved(true);
@@ -369,9 +374,15 @@ export function TherapistVoiceAIWidget({
         <h3 className="text-sm font-black text-[#1C1135]">Transcripción fonológica para revisión</h3>
         <p className="mt-1 text-xs text-[#615274]">
           Captura de 2 a 3 segundos desde el micrófono de este dispositivo, con paquetes PCM de 250 ms, cuando {patientName} esté junto al terapeuta.
-          El modelo propone una transcripción; no califica sonidos ni emite diagnósticos.
+          El modelo propone una transcripción; los indicadores de apoyo se calculan desde el texto, no tienen validación clínica ni constituyen un diagnóstico.
         </p>
       </div>
+
+      <MLServiceUnavailableBanner
+        visible={mlOffline}
+        onDismiss={() => setMlOffline(false)}
+        onRetry={() => { setMlOffline(false); void startRecording(); }}
+      />
 
       {consent !== true && (
         <p role="note" className="rounded-xl bg-amber-50 p-3 text-xs font-semibold text-amber-800">
@@ -390,9 +401,17 @@ export function TherapistVoiceAIWidget({
           onChange={(event) => setTargetWord(event.target.value)}
           className="rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-3 py-2 text-sm font-bold"
         >
-          {TARGETS.map((target) => <option key={target.word} value={target.word}>{target.word} {target.phoneme}</option>)}
+          {PHONETIC_TARGETS.map((target) => <option key={target.word} value={target.word}>{target.word} {target.phoneme}</option>)}
         </select>
       </div>
+
+      {recording && (
+        <AudioDecibelMeter
+          recording={recording}
+          stream={streamRef.current}
+          label="Nivel sonoro capturado"
+        />
+      )}
 
       {recording ? (
         <button type="button" onClick={stopRecording} disabled={seconds < 2} className="inline-flex items-center gap-2 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white disabled:opacity-50">
@@ -427,6 +446,8 @@ export function TherapistVoiceAIWidget({
       {transcription && (
         <div className="space-y-3 rounded-xl border border-violet-100 bg-violet-50/50 p-3">
           <p className="text-xs font-semibold text-[#615274]">{transcription.aviso}</p>
+          {transcription.indicadores_apoyo && <PhoneticSupportIndicatorsPanel indicators={transcription.indicadores_apoyo} />}
+          <PhoneticAttemptFields attempts={attempts} note={quickNote} onAttempts={setAttempts} onNote={setQuickNote} />
           <label className="block text-xs font-bold text-[#1C1135]">
             Transcripción tentativa (edítala según lo escuchado)
             <input
@@ -463,7 +484,7 @@ export function TherapistVoiceAIWidget({
           </label>
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => void review(false)} className="rounded-xl bg-violet-600 px-3 py-2 text-xs font-bold text-white">
-              Guardar revisión y añadir al reporte
+              Confirmar y pegar en el informe
             </button>
             <button type="button" onClick={() => void review(true)} className="rounded-xl border border-[#E8E5F4] px-3 py-2 text-xs font-bold text-[#615274]">
               Descartar transcripción

@@ -5,6 +5,7 @@ import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js
 import { appendPatientScope, assertReservationAccess, assertSessionEditAccess, assertConsentAccess } from '../../core/security/clinical-access.js';
 import { FamilyPhoneticCaptureStore, PhoneticCaptureStore, pcm16MonoWav } from './phonetic-capture.js';
 import { isAttendedOrActiveSession, normalizeAttendance } from './attendance.js';
+import { calcularIndicadoresFoneticos, ETIQUETA_INDICADOR_APOYO } from '../clinica/services/phoneticIndicators.js';
 import { isGoogleMeetUrl as isMeetingUrl } from '../../core/security/google-meet-url.js';
 
 export interface SessionData {
@@ -300,6 +301,13 @@ export class SesionesService {
         throw fail('No se obtuvo una muestra válida de 2 a 3 segundos para revisar. Graba nuevamente.', 422);
       }
 
+      // Indicadores de apoyo calculados solo en el servidor a partir del texto; sin validación clínica.
+      const indicadores = calcularIndicadoresFoneticos({
+        palabra_objetivo: target.word,
+        fonema_objetivo: target.fonema_objetivo,
+        transcripcion: transcription,
+      });
+
       // Serialize persistence with consent updates and session closure. This
       // prevents a concurrent revocation from passing between the last check
       // and the transcript insert.
@@ -341,8 +349,11 @@ export class SesionesService {
         }
 
         saved = await client.query(
-          "INSERT INTO public.evaluaciones_fonologicas (id_sesion, id_paciente, fonema_objetivo, palabra_objetivo, transcripcion_detectada, estado, origen_evaluacion) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', 'CLINICO') RETURNING id_evaluacion;",
-          [idSesion, patientId, target.fonema_objetivo, target.word, transcription],
+          "INSERT INTO public.evaluaciones_fonologicas (id_sesion, id_paciente, fonema_objetivo, palabra_objetivo, transcripcion_detectada, estado, origen_evaluacion, similitud_porcentaje, tipo_error_sugerido, diagnostico_sugerido, intentos) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', 'CLINICO', $6, $7, $8, 1) RETURNING id_evaluacion;",
+          [
+            idSesion, patientId, target.fonema_objetivo, target.word, transcription,
+            indicadores.similitud_texto_porcentaje, indicadores.tipo_error_sugerido, indicadores.hipotesis_sugerida,
+          ],
         );
         await client.query('COMMIT;');
       } catch (error) {
@@ -357,7 +368,8 @@ export class SesionesService {
         palabra_esperada: target.word,
         transcripcion_tentativa: transcription,
         duracion_segundos: duration,
-        aviso: 'Transcripción automática preliminar. No mide articulación ni establece un diagnóstico; requiere revisión del terapeuta.',
+        indicadores_apoyo: { ...indicadores, etiqueta: ETIQUETA_INDICADOR_APOYO },
+        aviso: 'Transcripción automática preliminar. Los indicadores de apoyo se calculan solo desde el texto, no miden acústica ni establecen un diagnóstico; requieren revisión y confirmación del terapeuta.',
       };
     } finally {
       if (timeout) clearTimeout(timeout);

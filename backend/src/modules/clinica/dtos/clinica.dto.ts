@@ -52,6 +52,10 @@ export const evaluacionFonologicaSchema = z.object({
   palabra_objetivo: z.string().trim().min(1).max(80),
   transcripcion_detectada: z.string().trim().min(1).max(500),
   origen_evaluacion: z.literal('CLINICO').default('CLINICO'),
+  // Enviados por el terapeuta. Los indicadores de apoyo (similitud, tipo de error, hipótesis)
+  // se calculan siempre en el servidor y se rechazan si llegan desde el cliente (.strict()).
+  intentos: z.number().int().min(1).max(20).optional(),
+  nota_rapida: z.string().trim().max(500).optional(),
 }).strict();
 
 export type EvaluacionFonologicaDTO = z.infer<typeof evaluacionFonologicaSchema>;
@@ -61,6 +65,8 @@ export const revisionEvaluacionFonologicaSchema = z.object({
   transcripcion_revisada: z.string().trim().max(500).optional(),
   observacion_terapeuta: z.string().trim().max(2000).optional(),
   resultado_clinico: z.enum(['ALCANZADO', 'EN_PROCESO', 'REQUIERE_APOYO']).optional(),
+  intentos: z.number().int().min(1).max(20).optional(),
+  nota_rapida: z.string().trim().max(500).optional(),
 }).strict().refine(
   (value) => value.estado !== 'CONFIRMADO_TERAPEUTA' || Boolean(value.transcripcion_revisada && value.observacion_terapeuta),
   { message: 'Confirma la transcripción y agrega una observación del terapeuta.' },

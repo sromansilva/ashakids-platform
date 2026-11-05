@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useRemote } from '@/shared/application/hooks/useRemoteData';
-import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
+import { patientsService, sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { readAllPages } from '@/core/api/readAllPages';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
-import { Users, User, Calendar, BarChart3 } from 'lucide-react';
+import { Users, User, Calendar, BarChart3, TrendingUp } from 'lucide-react';
 
 function period(value: string) {
   const parts = new Intl.DateTimeFormat('en', {
@@ -27,6 +27,7 @@ export function TerapeutaAnaliticas() {
   const [year, setYear] = useState(current.year);
   const [month, setMonth] = useState(0);
 
+  const [evolutionPatient, setEvolutionPatient] = useState(0);
   const rows = query.error ? [] : query.data ?? [];
   const years = [...new Set([current.year, ...rows.map((s) => period(s.cita.fecha_hora_inicio).year)])].sort((a, b) => b - a);
   const yearly = rows.filter((s) => period(s.cita.fecha_hora_inicio).year === year);
@@ -51,6 +52,18 @@ export function TerapeutaAnaliticas() {
   const highestMonthCount = Math.max(0, ...months.map((m) => m.count));
   const max = Math.max(2, Math.ceil(highestMonthCount / 2) * 2);
   const axisTicks = [max, max / 2, 0];
+  const patientOptions = [...new Map(
+    rows
+      .filter((s) => s.estado_sesion === 'FINALIZADA' && s.asistencia === 'ASISTIO')
+      .map((s) => [s.cita.id_paciente, s.cita.paciente_nombre] as const),
+  ).entries()];
+  const activePatient = evolutionPatient || patientOptions[0]?.[0] || 0;
+  const evolutionQuery = useRemote(
+    ['phoneme-evolution', activePatient],
+    (signal) => patientsService.phonemeEvolution(activePatient, signal),
+    activePatient > 0,
+  );
+  const evolution = evolutionQuery.data?.sesiones ?? [];
   const attendedCount = attended.length;
   const uniquePatientsCount = new Set(attended.map((s) => s.cita.id_paciente)).size;
   const missedCount = selected.filter((s) => s.asistencia === 'NO_ASISTIO').length;
@@ -209,6 +222,55 @@ export function TerapeutaAnaliticas() {
             })}
           </div>
         </div>
+      </div>
+
+      {/* Row 3: Evolución fonológica clínica (solo evaluaciones confirmadas por el terapeuta) */}
+      <div className="therapist-animate mb-5 rounded-2xl border border-[#E8E5F4] bg-white p-5 shadow-[0_6px_20px_rgba(48,33,87,0.04)] sm:p-6">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-[#F2EDFF] text-[#6B46FE]"><TrendingUp size={18} /></span>
+            <div>
+              <h2 className="text-base font-black text-[#1C1135]">Evolución fonológica por sesión</h2>
+              <p className="mt-0.5 text-xs font-semibold text-[#8C82A8]">
+                % de evaluaciones clínicas confirmadas por ti con resultado «Alcanzado». No incluye juegos ni el % de similitud de texto.
+              </p>
+            </div>
+          </div>
+          {patientOptions.length > 0 && (
+            <div className="flex flex-col gap-1">
+              <label htmlFor="evolution-patient" className="text-[10px] font-extrabold uppercase tracking-wider text-[#8C82A8]">Paciente</label>
+              <select
+                id="evolution-patient"
+                value={activePatient}
+                onChange={(e) => setEvolutionPatient(Number(e.target.value))}
+                className="rounded-xl border border-[#E8E5F4] bg-white px-3.5 py-2 text-xs font-extrabold text-[#1C1135] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#6B46FE]"
+              >
+                {patientOptions.map(([id, name]) => <option key={id} value={id}>{name}</option>)}
+              </select>
+            </div>
+          )}
+        </div>
+        {evolutionQuery.isError ? (
+          <p role="alert" className="rounded-xl bg-amber-50 p-3 text-xs font-semibold text-amber-800">No se pudo cargar la evolución fonológica.</p>
+        ) : evolution.length === 0 ? (
+          <p className="rounded-xl bg-[#F8F7FC] p-3 text-xs font-semibold text-[#615274]">
+            Aún no hay evaluaciones fonológicas confirmadas para este paciente.
+          </p>
+        ) : (
+          <ul className="space-y-2" aria-label="Evolución fonológica por sesión">
+            {evolution.map((item) => (
+              <li key={item.id_sesion} className="grid grid-cols-[5.5rem_1fr_auto] items-center gap-3 text-xs sm:grid-cols-[7rem_1fr_auto]">
+                <span className="font-bold text-[#615274]">
+                  {new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima', day: '2-digit', month: 'short' }).format(new Date(item.fecha_hora_inicio))}
+                </span>
+                <span className="h-3 overflow-hidden rounded-full bg-[#EDE9FE]" role="img" aria-label={`${item.porcentaje_alcanzado} % alcanzado`}>
+                  <span className="block h-full rounded-full bg-[#6B46FE]" style={{ width: `${item.porcentaje_alcanzado}%` }} />
+                </span>
+                <span className="font-black tabular-nums text-[#1C1135]">{item.porcentaje_alcanzado} % <span className="font-semibold text-[#8C82A8]">({item.alcanzados}/{item.total})</span></span>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
 
     </div>

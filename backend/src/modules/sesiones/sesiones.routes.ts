@@ -3,6 +3,7 @@ import { z } from 'zod';
 import multer from 'multer';
 import { sesionesService } from './sesiones.service.js';
 import { buildReportPdf } from './report-pdf.js';
+import { quitarIndicadoresDelInforme } from '../clinica/services/phoneticIndicators.js';
 import { authenticate, requireRoles } from '../../core/middleware/auth.middleware.js';
 import { assertSessionEditAccess, assertSessionReadAccess } from '../../core/security/clinical-access.js';
 
@@ -288,6 +289,10 @@ sesionesRouter.get('/:key/reporte', async (req: Request, res: Response, next: Ne
       res.status(404).json({ error: 'El reporte estará disponible cuando el terapeuta lo firme.' });
       return;
     }
+    if (req.user!.rol === 'PADRE' && rep) {
+      res.json({ ...rep, observaciones_iniciales: quitarIndicadoresDelInforme(rep.observaciones_iniciales) });
+      return;
+    }
     res.json(rep);
   } catch (err) {
     next(err);
@@ -316,7 +321,7 @@ sesionesRouter.get('/:key/reporte/pdf', async (req: Request, res: Response, next
       patientName: session.cita.paciente_nombre,
       therapistName: session.cita.terapeuta_nombre,
       sessionDate: session.cita.fecha_hora_inicio,
-      observations: report.observaciones_iniciales,
+      observations: req.user!.rol === 'PADRE' ? quitarIndicadoresDelInforme(report.observaciones_iniciales) : report.observaciones_iniciales,
       objectives: report.objetivos_trabajados,
       helpLevel: report.nivel_ayuda,
       nextSteps: report.proximos_pasos,

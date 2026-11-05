@@ -126,6 +126,18 @@ pacientesRouter.get('/:key/analiticas/fonemas', requireRoles(['ADMIN', 'TERAPEUT
   }
 });
 
+// Curva de evolución clínica (solo evaluaciones confirmadas por el terapeuta; sin datos de juegos).
+pacientesRouter.get('/:key/analiticas/evolucion-fonologica', requireRoles(['ADMIN', 'TERAPEUTA']), async (req, res, next) => {
+  try {
+    const key = parseInt(String(req.params.key), 10);
+    if (!Number.isInteger(key) || key <= 0) return res.status(400).json({ error: 'El paciente indicado no es válido.' });
+    await assertPatientAccess(req.user!, key);
+    res.json(await pacientesService.getEvolucionFonologica(key));
+  } catch (err) {
+    next(err);
+  }
+});
+
 // POST /api/v1/pacientes/:key/juegos/:world/intentos
 pacientesRouter.post('/:key/juegos/:world/intentos', requireRoles(['ADMIN', 'PADRE', 'TERAPEUTA']), async (req, res, next) => {
   try {
