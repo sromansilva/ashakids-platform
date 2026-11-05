@@ -33,11 +33,11 @@ export async function migrateIncidencias() {
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_tipo_ck;
     `);
 
-    // 4. Update rol constraint to allow 'ADMIN'
+    // 4. Update rol constraint to allow 'ADMIN' and 'SOPORTE_TECNICO'
     await client.query(`
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_rol_ck;
       ALTER TABLE public.incidencias ADD CONSTRAINT incidencias_rol_ck 
-      CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text]));
+      CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text, 'SOPORTE_TECNICO'::text]));
     `);
 
     // 5. Update estado constraint to allow all required states
@@ -46,7 +46,7 @@ export async function migrateIncidencias() {
       ALTER TABLE public.incidencias ADD CONSTRAINT incidencias_estado_ck 
       CHECK (estado::text = ANY (ARRAY[
         'RECIBIDA'::text, 'LEIDA'::text, 'LEÍDA'::text, 
-        'EN PROCESO'::text, 'EN_PROCESO'::text, 
+        'EN PROCESO'::text, 'EN_PROCESO'::text, 'EN ATENCIÓN'::text, 'EN ATENCION'::text,
         'ATENDIDA'::text, 'SOLUCIONADA'::text, 
         'NUEVA'::text, 'RESUELTA'::text, 'ABIERTA'::text
       ]));

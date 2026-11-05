@@ -125,9 +125,9 @@ const roleCtx = {
           prompt: "Ayúdame a encontrar un especialista",
         },
         {
-          icon: "💳",
-          label: "Resolver pagos",
-          prompt: "Tengo una duda sobre un pago",
+          icon: "💬",
+          label: "Enviar mensaje",
+          prompt: "¿Cómo me comunico con el terapeuta?",
         },
       ],
       chips: [
@@ -278,8 +278,14 @@ const send = (text: string) => {
         "Sugerencia de navegación de ASHI: Preguntas útiles para tu próxima sesión: ¿Qué actividades refuerzan en casa lo trabajado? ¿Con qué frecuencia debería practicar Mateo? ¿Hay señales de progreso que deba observar? ¿Cuándo revisaremos los objetivos actuales? El terapeuta es quien interpreta el progreso clínico.",
       "¿Qué actividades puedo hacer con Mateo esta semana?":
         "Sugerencia de navegación de ASHI: Encontrarás las actividades asignadas por el terapeuta en Mundo ASHA → Actividades de Mateo. Si tienes dudas sobre cuáles hacer o cómo realizarlas, puedes preguntarle al terapeuta en tu próxima sesión.",
+      "Muéstrame la agenda de la próxima semana":
+        "Sugerencia de navegación de ASHI: En la sección Agenda de tu panel familiar encontrarás las sesiones agendadas y podrás reservar nuevas citas con tus especialistas.",
       "¿Cómo va evolucionando Mateo?":
         "Sugerencia de navegación de ASHI: Para revisar el avance de Mateo, consulta los reportes de sesión disponibles en tu panel. El análisis del progreso clínico corresponde únicamente al terapeuta. Si tienes preguntas, puedo ayudarte a prepararlas para tu próxima sesión.",
+      "Ayúdame a encontrar un especialista":
+        "Sugerencia de navegación de ASHI: Puedes revisar el directorio de especialistas y su disponibilidad desde la sección de Terapeutas en tu panel familiar para reservar tu próxima sesión.",
+      "¿Cómo me comunico con el terapeuta?":
+        "Sugerencia de navegación de ASHI: Puedes comunicarte directamente con tu especialista desde el Centro de Mensajes para coordinar dudas sobre las sesiones o actividades de apoyo.",
       "¿Qué tendencias detectas en la plataforma este mes?":
         "Detecté 3 tendencias operativas en julio: (1) Las sesiones virtuales crecieron un 18% vs. junio. (2) La hora pico de mayor demanda es entre 09:00 y 11:00 AM. (3) Los usuarios con 4+ sesiones tienen mayor continuidad. Recomiendo ampliar disponibilidad matutina.",
     };
@@ -297,9 +303,26 @@ const send = (text: string) => {
           { from: "ashi", text: "", time: "Ahora", draft: { id, type: draftSpec.type } },
         ]);
       } else {
-        const reply =
-          replies[t] ||
-          "Entendido. Estoy procesando tu solicitud y preparando la mejor respuesta. Dame un momento más mientras analizo el contexto completo de tu pregunta.";
+        const isTherapeuticPlan =
+          /\bplan(es)?\s+(terap[eé]utico|cl[ií]nico|de\s+tratamiento|de\s+terapia|de\s+intervenci[oó]n)\b/i.test(t) ||
+          /\b(terap[eé]utico|cl[ií]nico|de\s+tratamiento|de\s+terapia)\s+plan(es)?\b/i.test(t) ||
+          /\b(plan\s+de\s+trabajo|objetivos\s+del\s+plan)\b/i.test(t);
+
+        const isPaymentQuery =
+          !isTherapeuticPlan &&
+          (/\b(pago|pagos|pagar|cobro|cobros|tarjeta|tarjetas|precio|precios|factura|facturaci[oó]n|costo|costos)\b/i.test(t) ||
+           (/\bplan(es)?\b/i.test(t) && /\b(pago|pagos|precio|precios|costo|costos|suscripci[oó]n|suscripciones)\b/i.test(t)));
+
+        let reply = replies[t];
+        if (!reply) {
+          if (isTherapeuticPlan) {
+            reply = "Sugerencia de navegación de ASHI: El plan terapéutico corresponde a los objetivos de intervención clínica definidos por el especialista para el paciente. Puedes revisar los avances y objetivos en el expediente y los reportes de evolución.";
+          } else if (isPaymentQuery) {
+            reply = "AshaKids es una plataforma de telerehabilitación e intervención clínica y educativa del habla y lenguaje. En este sistema no se gestionan pagos, cobros ni planes de pago.";
+          } else {
+            reply = "Entendido. Estoy procesando tu solicitud y preparando la mejor respuesta. Dame un momento más mientras analizo el contexto completo de tu pregunta.";
+          }
+        }
         setMsgs((m) => [
           ...m,
           { from: "ashi", text: reply, time: "Ahora" },

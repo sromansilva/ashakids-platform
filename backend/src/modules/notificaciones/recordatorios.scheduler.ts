@@ -59,14 +59,19 @@ export class AppointmentReminderScheduler {
 
   runOnce() {
     if (this.inFlight) return this.inFlight;
-    this.inFlight = this.execute().finally(() => { this.inFlight = null; });
+    this.inFlight = this.execute()
+      .catch((error) => {
+        console.warn('[AppointmentReminderScheduler] Error en ciclo de recordatorios:', error instanceof Error ? error.message : String(error));
+      })
+      .finally(() => { this.inFlight = null; });
     return this.inFlight;
   }
 
   private async execute() {
-    const client = await pool.connect();
+    let client;
     let locked = false;
     try {
+      client = await pool.connect();
       const lockResult = await client.query<{ locked: boolean }>(
         'SELECT pg_try_advisory_lock($1, $2) AS locked;',
         [SCHEDULER_LOCK_A, SCHEDULER_LOCK_B],
@@ -79,11 +84,13 @@ export class AppointmentReminderScheduler {
     } catch (error) {
       console.error('[AppointmentReminderScheduler] No se pudo procesar los recordatorios:', error instanceof Error ? error.message : String(error));
     } finally {
-      if (locked) {
-        try { await client.query('SELECT pg_advisory_unlock($1, $2);', [SCHEDULER_LOCK_A, SCHEDULER_LOCK_B]); }
-        catch (error) { console.error('[AppointmentReminderScheduler] No se pudo liberar el bloqueo del planificador.'); }
+      if (client) {
+        if (locked) {
+          try { await client.query('SELECT pg_advisory_unlock($1, $2);', [SCHEDULER_LOCK_A, SCHEDULER_LOCK_B]); }
+          catch (error) { console.error('[AppointmentReminderScheduler] No se pudo liberar el bloqueo del planificador.'); }
+        }
+        client.release();
       }
-      client.release();
     }
   }
 

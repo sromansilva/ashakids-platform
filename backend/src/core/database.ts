@@ -16,6 +16,10 @@ export const pool = new Pool({
   connectionTimeoutMillis: 10000,
 });
 
+pool.on('error', (err) => {
+  console.warn('[Database Pool] Idle client connection drop caught:', err instanceof Error ? err.message : String(err));
+});
+
 export const db = drizzle(pool);
 
 export async function testDatabaseConnection(): Promise<boolean> {
