@@ -189,7 +189,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : ""}${collapsed ? " sidebar--collapsed" : ""}`}
+      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : role === "terapeuta" ? " therapist-sidebar" : ""}${collapsed ? " sidebar--collapsed" : ""}`}
       style={{ width: mobile ? "100%" : collapsed ? 88 : 240 }}
     >
       {!mobile && <div className={`p-5 pb-4 ${collapsed ? "sidebar-brand-collapsed" : ""}`} style={{ position: "relative", zIndex: 1 }}>

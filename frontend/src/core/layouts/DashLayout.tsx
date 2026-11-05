@@ -49,6 +49,7 @@ export function DashLayout({
     location.pathname.startsWith('/padre/psicologos') ||
     location.pathname.startsWith('/padre/reportes') ||
     location.pathname.startsWith('/padre/config') ||
+    location.pathname.startsWith('/padre/camino') ||
     location.pathname.startsWith('/padre/perfil') ||
     location.pathname.startsWith('/padre/incidencias')
   );

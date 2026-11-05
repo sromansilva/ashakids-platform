@@ -8,8 +8,10 @@ import {
   X,
   RefreshCw,
   ChevronRight,
+  ArrowUpDown,
 } from 'lucide-react';
 import { Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
+import { IncidentDateRangeFilter } from './IncidentDateRangeFilter';
 
 interface IncidentsTableProps {
   items: Incidencia[];
@@ -32,6 +34,9 @@ export function IncidentsTable({
 }: IncidentsTableProps) {
   const [search, setSearch] = useState('');
   const [filterEstado, setFilterEstado] = useState<string>('TODAS');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const [selected, setSelected] = useState<Incidencia | null>(null);
   const [updatingId, setUpdatingId] = useState<number | null>(null);
   const [actionError, setActionError] = useState('');
@@ -56,7 +61,26 @@ export function IncidentsTable({
         (item.area_destino && item.area_destino.toLowerCase().includes(q));
       if (!match) return false;
     }
+
+    if (startDate) {
+      const start = new Date(`${startDate}T00:00:00`);
+      const itemDate = new Date(item.fecha_creacion);
+      if (!isNaN(itemDate.getTime()) && itemDate < start) return false;
+    }
+
+    if (endDate) {
+      const end = new Date(`${endDate}T23:59:59.999`);
+      const itemDate = new Date(item.fecha_creacion);
+      if (!isNaN(itemDate.getTime()) && itemDate > end) return false;
+    }
+
     return true;
+  });
+
+  const sortedItems = [...filtered].sort((a, b) => {
+    const timeA = a.fecha_creacion ? new Date(a.fecha_creacion).getTime() : 0;
+    const timeB = b.fecha_creacion ? new Date(b.fecha_creacion).getTime() : 0;
+    return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
   });
 
   const getStatusBadge = (estado: string) => {
@@ -140,19 +164,45 @@ export function IncidentsTable({
   return (
     <div className="space-y-4">
       {/* Search and Filters Bar */}
-      <div className="bg-white rounded-2xl border border-[#E8E5F4] p-4 flex flex-col md:flex-row gap-3 items-center justify-between shadow-2xs">
-        <div className="relative w-full md:w-80">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Buscar por ticket, asunto o texto..."
-            className="w-full pl-10 pr-4 py-2 bg-[#F8F7FC] rounded-xl text-xs font-semibold text-[#1C1135] placeholder:text-[#9E95B7] border border-[#E8E5F4] focus:outline-hidden focus:border-[#6B46FE]"
-          />
+      <div className="bg-white rounded-2xl border border-[#E8E5F4] p-4 flex flex-col xl:flex-row gap-3 items-stretch xl:items-center justify-between shadow-2xs">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1">
+          <div className="relative flex-1 min-w-[200px]">
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E95B7]" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por ticket, asunto o texto..."
+              className="w-full pl-10 pr-4 py-2 bg-[#F8F7FC] rounded-xl text-xs font-semibold text-[#1C1135] placeholder:text-[#9E95B7] border border-[#E8E5F4] focus:outline-hidden focus:border-[#6B46FE]"
+            />
+          </div>
+
+          <div className="flex items-center gap-2 shrink-0">
+            <IncidentDateRangeFilter
+              startDate={startDate}
+              endDate={endDate}
+              onChange={(s, e) => {
+                setStartDate(s);
+                setEndDate(e);
+              }}
+            />
+
+            <button
+              type="button"
+              onClick={() => setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
+              title={sortOrder === 'desc' ? 'Orden: Más recientes primero' : 'Orden: Más antiguas primero'}
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-2xl border border-[#E8E5F4] bg-white text-xs font-bold text-[#615274] hover:text-[#6B46FE] hover:bg-[#F8F7FC] transition shadow-2xs cursor-pointer shrink-0"
+              aria-label="Alternar orden cronológico"
+            >
+              <ArrowUpDown size={14} className="text-[#6B46FE]" />
+              <span className="hidden sm:inline">
+                {sortOrder === 'desc' ? 'Más recientes' : 'Más antiguas'}
+              </span>
+            </button>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
+        <div className="flex items-center gap-2 w-full xl:w-auto overflow-x-auto pb-1 xl:pb-0">
           <span className="text-xs font-bold text-[#6B5E8A] shrink-0">Estado:</span>
           {(['TODAS', 'RECIBIDA', 'LEIDA', 'EN_PROCESO', 'SOLUCIONADA'] as const).map((st) => (
             <button
@@ -201,7 +251,7 @@ export function IncidentsTable({
             <RefreshCw size={24} className="animate-spin mx-auto mb-2 text-[#6B46FE]" />
             Cargando solicitudes...
           </div>
-        ) : filtered.length === 0 ? (
+        ) : sortedItems.length === 0 ? (
           <div className="py-16 text-center text-[#6B5E8A] px-4">
             <FileText size={36} className="mx-auto mb-3 text-[#C8C2DC]" />
             <p className="font-bold text-base text-[#1C1135]">{emptyMessage}</p>
@@ -218,13 +268,22 @@ export function IncidentsTable({
                   {isReceivedView && <th className="py-3.5 px-4">Solicitante</th>}
                   {!isReceivedView && <th className="py-3.5 px-4">Destinatario / Área</th>}
                   <th className="py-3.5 px-4">Prioridad</th>
-                  <th className="py-3.5 px-4">Fecha</th>
+                  <th
+                    className="py-3.5 px-4 cursor-pointer hover:text-[#6B46FE] transition-colors select-none"
+                    onClick={() => setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
+                    title="Clic para ordenar por fecha"
+                  >
+                    <div className="inline-flex items-center gap-1.5">
+                      <span>Fecha</span>
+                      <ArrowUpDown size={12} className={sortOrder === 'desc' ? 'text-[#6B46FE]' : 'text-[#8C82A8]'} />
+                    </div>
+                  </th>
                   <th className="py-3.5 px-4">Estado</th>
                   <th className="py-3.5 px-4 text-right">Acción</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[#F0EEF8] text-xs font-semibold text-[#1C1135]">
-                {filtered.map((item) => (
+                {sortedItems.map((item) => (
                   <tr
                     key={item.id_incidencia}
                     className="hover:bg-[#F8F7FC] transition-colors cursor-pointer"

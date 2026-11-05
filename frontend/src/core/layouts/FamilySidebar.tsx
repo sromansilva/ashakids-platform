@@ -115,15 +115,13 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
                   go(item.view);
                 }
               }}
-              className={`family-sub-nav-btn flex items-center rounded-2xl text-sm font-bold w-full text-left active:scale-[.98] ${
+              className={`family-sub-nav-btn relative flex items-center justify-center rounded-2xl text-sm font-bold w-full text-left active:scale-[.98] ${
                 active
                   ? 'family-sub-nav-btn--active bg-[#F3EFFE] text-[#6B46FE]'
                   : 'text-[#5C5378] hover:bg-violet-50 hover:text-[#6B46FE]'
               }`}
             >
-              <div className="w-[56px] h-full flex items-center justify-center shrink-0">
-                <Icon size={22} strokeWidth={active ? 2.25 : 1.9} className={`family-nav-icon shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
-              </div>
+              <Icon size={22} strokeWidth={active ? 2.25 : 1.9} className={`family-nav-icon shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
               <span className="family-sidebar-label truncate">{item.label}</span>
             </button>
           );

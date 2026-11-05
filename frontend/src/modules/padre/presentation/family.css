@@ -69,9 +69,9 @@
 .asha-family .family-content > :is(section, div) { scroll-margin-top: 88px; }
 
 .family-role-sidebar {
-  width: 76px;
-  min-width: 76px;
-  flex: 0 0 76px;
+  width: 88px !important;
+  min-width: 88px;
+  flex: 0 0 88px;
   padding: 12px 0 14px;
   margin: 0;
   border: 0;
@@ -81,40 +81,55 @@
   box-shadow: 4px 0 18px rgb(48 33 87 / 3%);
   overflow-x: hidden;
   overflow-y: auto;
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              flex-basis 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width .32s cubic-bezier(.22,.61,.36,1),
+              min-width .32s cubic-bezier(.22,.61,.36,1),
+              flex-basis .32s cubic-bezier(.22,.61,.36,1),
+              box-shadow .22s ease;
   will-change: width, flex-basis;
 }
 
 .family-role-sidebar .family-sidebar-brand,
 .family-role-sidebar .family-sidebar-picker { display: none; }
-.family-role-sidebar nav { gap: 6px; padding: 8px 10px; transition: padding 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+.family-role-sidebar nav {
+  gap: 6px;
+  padding-inline: 10px;
+  transition: padding-inline .32s cubic-bezier(.22,.61,.36,1);
+}
 .family-role-sidebar nav button {
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  gap: 0;
   width: 100%;
-  height: 48px;
-  min-height: 48px;
-  padding: 0;
+  height: 50px;
+  min-height: 50px;
+  padding-inline: 0;
   border-radius: 16px;
   overflow: hidden;
   white-space: nowrap;
   transition: background-color 0.16s ease, color 0.16s ease, box-shadow 0.16s ease;
 }
+.family-role-sidebar .family-nav-icon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  transition: left .32s cubic-bezier(.22,.61,.36,1), transform .32s cubic-bezier(.22,.61,.36,1);
+}
 .family-role-sidebar .family-sidebar-label {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 48px;
+  display: block;
+  width: max-content;
   max-width: 0;
-  transform: translateX(-8px);
+  overflow: hidden;
+  opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.24s cubic-bezier(0.4, 0, 0.2, 1),
-              max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(-50%);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: max-width .32s cubic-bezier(.22,.61,.36,1), opacity .18s ease;
 }
 .family-role-sidebar nav button[aria-current="page"] {
   background: linear-gradient(135deg, #f4efff, #eee9ff);
@@ -124,22 +139,32 @@
 @media (min-width: 768px) {
   .family-role-sidebar:hover,
   .family-role-sidebar:has(:focus-visible) {
-    width: 256px;
-    min-width: 256px;
-    flex-basis: 256px;
+    width: 264px !important;
+    min-width: 264px;
+    flex-basis: 264px;
+    overflow-x: hidden;
     box-shadow: 12px 0 34px rgb(40 28 74 / 14%);
   }
   .family-role-sidebar:hover nav,
-  .family-role-sidebar:has(:focus-visible) nav { padding-right: 12px; padding-left: 12px; }
+  .family-role-sidebar:has(:focus-visible) nav {
+    padding-inline: 12px;
+  }
+  .family-role-sidebar:hover nav button,
+  .family-role-sidebar:has(:focus-visible) nav button {
+    justify-content: center;
+    gap: 0;
+    padding-inline: 0;
+  }
+  .family-role-sidebar:hover .family-nav-icon,
+  .family-role-sidebar:has(:focus-visible) .family-nav-icon {
+    left: 14px;
+    transform: none;
+  }
   .family-role-sidebar:hover .family-sidebar-label,
   .family-role-sidebar:has(:focus-visible) .family-sidebar-label {
-    max-width: 170px;
+    max-width: 180px;
     opacity: 1;
-    transform: translateX(0);
     pointer-events: auto;
-    transition: max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1) 0.04s,
-                transform 0.24s cubic-bezier(0.4, 0, 0.2, 1) 0.02s;
   }
 }
 

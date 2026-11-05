@@ -5,6 +5,7 @@ import {
   Settings,
   User,
   ChevronRight,
+  ArrowUpDown,
 } from 'lucide-react';
 
 export interface AdminOperacionTableProps {
@@ -15,6 +16,8 @@ export interface AdminOperacionTableProps {
   onUpdateEstado: (id: number, estado: 'LEIDA' | 'RESUELTA') => void;
   saving: number | null;
   actionError: string;
+  sortOrder?: 'desc' | 'asc';
+  onToggleSort?: () => void;
 }
 
 export function AdminOperacionTable({
@@ -25,6 +28,8 @@ export function AdminOperacionTable({
   onUpdateEstado,
   saving,
   actionError,
+  sortOrder = 'desc',
+  onToggleSort,
 }: AdminOperacionTableProps) {
   const getTipoIcon = (tipo: string) => {
     switch (tipo.toLowerCase()) {
@@ -52,7 +57,18 @@ export function AdminOperacionTable({
               <th className="py-4 px-6">Reportado por</th>
               <th className="py-4 px-6">Tipo</th>
               <th className="py-4 px-6">Estado</th>
-              <th className="py-4 px-6">Fecha</th>
+              <th
+                className={`py-4 px-6 ${onToggleSort ? 'cursor-pointer hover:text-[#6B46FE] transition-colors select-none' : ''}`}
+                onClick={onToggleSort}
+                title={onToggleSort ? 'Clic para ordenar por fecha' : undefined}
+              >
+                <div className="inline-flex items-center gap-1.5">
+                  <span>Fecha</span>
+                  {onToggleSort && (
+                    <ArrowUpDown size={12} className={sortOrder === 'desc' ? 'text-[#6B46FE]' : 'text-[#8C82A8]'} />
+                  )}
+                </div>
+              </th>
               <th className="py-4 px-6 text-right">Acciones</th>
             </tr>
           </thead>

@@ -16,6 +16,7 @@ import { View } from '@/shared/domain/types/navigation';
 import { incidenciasService, Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
 import { IncidentForm } from '@/shared/presentation/components/common/IncidentForm';
 import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
+import { IncidentDateRangeFilter } from '@/shared/presentation/components/common/IncidentDateRangeFilter';
 import { AdminOperacionTable } from './AdminOperacionTable';
 
 type FilterEstado = 'TODAS' | 'ABIERTA' | 'EN_REVISION' | 'RESUELTA';
@@ -83,6 +84,9 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
   const [filterEstado, setFilterEstado] = useState<FilterEstado>('TODAS');
   const [filterRol, setFilterRol] = useState<FilterRol>('TODOS');
   const [search, setSearch] = useState('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
 
   // Cargar incidencias recibidas por administración
   useEffect(() => {
@@ -182,7 +186,23 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
         (i.usuario && i.usuario.toLowerCase().includes(q));
       if (!match) return false;
     }
+    if (startDate) {
+      const start = new Date(`${startDate}T00:00:00`);
+      const itemDate = new Date(i.fecha_creacion);
+      if (!isNaN(itemDate.getTime()) && itemDate < start) return false;
+    }
+    if (endDate) {
+      const end = new Date(`${endDate}T23:59:59.999`);
+      const itemDate = new Date(i.fecha_creacion);
+      if (!isNaN(itemDate.getTime()) && itemDate > end) return false;
+    }
     return true;
+  });
+
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    const timeA = a.fecha_creacion ? new Date(a.fecha_creacion).getTime() : 0;
+    const timeB = b.fecha_creacion ? new Date(b.fecha_creacion).getTime() : 0;
+    return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
   });
 
   return (
@@ -317,7 +337,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 lg:max-w-xl justify-end">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 lg:max-w-2xl justify-end">
               {/* Search box */}
               <div className="flex-1 w-full flex items-center gap-2 bg-white border border-[#E8E5F4] rounded-2xl px-4 py-2.5 shadow-2xs">
                 <Search size={17} className="text-[#8C82A8] shrink-0" />
@@ -329,6 +349,16 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                   className="flex-1 bg-transparent text-sm font-medium text-[#1C1135] placeholder-[#8C82A8] outline-none"
                 />
               </div>
+
+              {/* Dynamic Date Range Filter beside search */}
+              <IncidentDateRangeFilter
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(s, e) => {
+                  setStartDate(s);
+                  setEndDate(e);
+                }}
+              />
 
               {/* Role select */}
               <div className="relative shrink-0 w-full sm:w-auto">
@@ -355,13 +385,15 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
 
           {/* Incidencias Table Subcomponent */}
           <AdminOperacionTable
-            items={filteredItems}
+            items={sortedItems}
             allItems={items}
             selected={selected}
             setSelected={setSelected}
             onUpdateEstado={update}
             saving={saving}
             actionError={actionError}
+            sortOrder={sortOrder}
+            onToggleSort={() => setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
           />
 
           {/* Bottom informational callout */}
