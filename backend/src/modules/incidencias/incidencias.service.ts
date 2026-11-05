@@ -1,5 +1,6 @@
 import { pool } from '../../core/database.js';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
+import { notasRepository } from './infrastructure/notas.repository.js';
 
 export interface IncidenciaItem {
   id_incidencia: number;
@@ -36,6 +37,10 @@ export interface CreateIncidenciaDTO {
 }
 
 export class IncidenciasService {
+  async notas(id: number, user: AuthenticatedUser) {
+    await this.obtenerPorId(id, user);
+    return notasRepository.listar(id, false);
+  }
   /**
    * Clasifica automáticamente el área de destino según el rol, tipo y descripción
    */
@@ -46,7 +51,7 @@ export class IncidenciasService {
     idTerapeuta?: number | null
   ): { area_destino: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; responsable: string; id_terapeuta: number | null } {
     // Si quien envía es ADMIN, va dirigido a SOPORTE_TECNICO
-    if (rolSolicitante === 'ADMIN') {
+    if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
       return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
     }
 
@@ -193,6 +198,7 @@ export class IncidenciasService {
            tipo = EXCLUDED.tipo,
            solicitud = EXCLUDED.solicitud,
            fecha_actualizacion = NOW()
+         WHERE incidencias.id_usuario = EXCLUDED.id_usuario
          RETURNING *;`,
         [
           userId,
@@ -209,6 +215,7 @@ export class IncidenciasService {
       );
 
       const r = res.rows[0];
+      if (!r) throw Object.assign(new Error('El identificador de envío pertenece a otra solicitud.'), { status: 409 });
 
       // Obtener nombre del terapeuta si fue asignado
       let terapeuta_nombre = null;
@@ -244,6 +251,7 @@ export class IncidenciasService {
         fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),
       };
     } catch (err) {
+      if (rol === 'SOPORTE_TECNICO' || (err instanceof Error && 'status' in err)) throw err;
       console.warn('[IncidenciasService] Fallback crear:', err);
       return {
         id_incidencia: Date.now(),
@@ -508,7 +516,7 @@ export class IncidenciasService {
 
     // Regla: Soporte Técnico no se puede modificar desde las vistas actuales
     if (inc.area_destino === 'SOPORTE_TECNICO') {
-      const err = new Error('Las incidencias de Soporte Técnico permanecen en estado pendiente y no pueden modificarse en esta fase.');
+      const err = new Error('Solo Soporte Técnico puede actualizar las incidencias técnicas desde su panel.');
       (err as any).status = 403;
       throw err;
     }

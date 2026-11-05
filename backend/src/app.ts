@@ -8,6 +8,7 @@ import { pool } from './core/database.js';
 import { securityHeaders } from './core/middleware/security.middleware.js';
 import { optionalAuthenticate } from './core/middleware/auth.middleware.js';
 import { restrictSupportAccess } from './core/middleware/support-access.middleware.js';
+import { soporteRouter } from './modules/soporte/routes/soporte.routes.js';
 import { errorHandler, notFoundHandler } from './core/middleware/error.middleware.js';
 
 // Modular Routers
@@ -100,6 +101,7 @@ export function createApp() {
 
   // Mount Standard REST Routers (Catalog Specification)
   app.use(settings.API_V1_PREFIX, optionalAuthenticate, restrictSupportAccess);
+  app.use(`${settings.API_V1_PREFIX}/soporte`, soporteRouter);
   app.use(`${settings.API_V1_PREFIX}/auth`, authRouter);
   app.use(`${settings.API_V1_PREFIX}/admin`, adminRouter);
   app.use(`${settings.API_V1_PREFIX}/terapeutas`, terapeutaRouter);
