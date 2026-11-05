@@ -151,8 +151,8 @@ export class AdminService {
     return res.cuenta;
   }
 
-  private async createInvitedAccount(data: any, role: 'PADRE' | 'TERAPEUTA', children: any[] = []) {
-    const prefix = role === 'PADRE' ? 'p' : 't';
+  private async createInvitedAccount(data: any, role: 'PADRE' | 'TERAPEUTA' | 'SOPORTE_TECNICO', children: any[] = []) {
+    const prefix = role === 'PADRE' ? 'p' : role === 'TERAPEUTA' ? 't' : 's';
     const codigo_usuario = `${prefix}${randomInt(10000, 100000)}`;
     const oneTimePassword = randomBytes(48);
     let password_hash: string;
@@ -202,7 +202,7 @@ export class AdminService {
             [tutorId, child.nombres_paciente, child.apellidos_paciente, child.fecha_nacimiento, child.sexo, child.avatar_nombre],
           );
         }
-      } else {
+      } else if (role === 'TERAPEUTA') {
         const terRes = await client.query(
           `INSERT INTO public.terapeutas (id_usuario, especialidad, anios_experiencia, idiomas, descripcion_profesional)
            VALUES ($1, $2, $3, $4, $5)
@@ -238,7 +238,7 @@ export class AdminService {
       const mailResult = await GmailService.sendAccountActivationEmail({
         to: recipient,
         name: `${data.nombres} ${data.apellidos || ''}`.trim(),
-        role: role === 'PADRE' ? 'Familia' : 'Terapeuta',
+        role: role === 'PADRE' ? 'Familia' : role === 'TERAPEUTA' ? 'Terapeuta' : 'Soporte Técnico',
         code: String(user.codigo_usuario),
         activationUrl,
       }).catch((error: unknown) => {
@@ -249,7 +249,7 @@ export class AdminService {
       else if (mailResult?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
     }
     return {
-      message: role === 'PADRE' ? 'Cuenta familiar creada con éxito' : 'Cuenta de terapeuta creada con éxito',
+      message: role === 'PADRE' ? 'Cuenta familiar creada con éxito' : role === 'TERAPEUTA' ? 'Cuenta de terapeuta creada con éxito' : 'Cuenta de soporte técnico creada con éxito',
       cuenta: { ...user, rol: role },
       correo_bienvenida,
     };
@@ -261,6 +261,10 @@ export class AdminService {
 
   async crearTerapeuta(data: any) {
     return this.createInvitedAccount(data, 'TERAPEUTA');
+  }
+
+  async crearSoporte(data: { nombres: string; apellidos: string; email: string }) {
+    return this.createInvitedAccount(data, 'SOPORTE_TECNICO');
   }
 
   async registrarFamilia(data: any) {

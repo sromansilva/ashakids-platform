@@ -1,6 +1,7 @@
 
 
 export type View =
+  | "soporte" | "soporte/incidencias"
   | "landing" | "login"
   | "padre" | "padre/welcome" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes" | "padre/compras"
   | "padre/hijos" | "padre/progreso" | "padre/reportes" | "padre/config" | "padre/camino" | "padre/ayuda"
@@ -27,4 +28,4 @@ export type View =
   | "forgot-password"
   | "padre/recorrido" | "padre/consentimiento" | "padre/seguimiento" | "padre/evaluacion";
 
-export type Role = "padre" | "terapeuta" | "admin" | null;
+export type Role = "padre" | "terapeuta" | "admin" | "soporte_tecnico" | null;

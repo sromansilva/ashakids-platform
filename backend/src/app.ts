@@ -6,6 +6,8 @@ import path from 'node:path';
 import { settings } from './core/config.js';
 import { pool } from './core/database.js';
 import { securityHeaders } from './core/middleware/security.middleware.js';
+import { optionalAuthenticate } from './core/middleware/auth.middleware.js';
+import { restrictSupportAccess } from './core/middleware/support-access.middleware.js';
 import { errorHandler, notFoundHandler } from './core/middleware/error.middleware.js';
 
 // Modular Routers
@@ -54,6 +56,15 @@ export function createApp() {
   app.use(cookieParser());
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+  if (settings.DEVELOPMENT_READ_ONLY) {
+    app.use((req, res, next) => {
+      if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
+        res.status(503).json({ error: 'Entorno de solo lectura: las operaciones de escritura están deshabilitadas.' });
+        return;
+      }
+      next();
+    });
+  }
 
   if (servesFrontend) {
     app.use(express.static(frontendDistPath));
@@ -88,6 +99,7 @@ export function createApp() {
   });
 
   // Mount Standard REST Routers (Catalog Specification)
+  app.use(settings.API_V1_PREFIX, optionalAuthenticate, restrictSupportAccess);
   app.use(`${settings.API_V1_PREFIX}/auth`, authRouter);
   app.use(`${settings.API_V1_PREFIX}/admin`, adminRouter);
   app.use(`${settings.API_V1_PREFIX}/terapeutas`, terapeutaRouter);
