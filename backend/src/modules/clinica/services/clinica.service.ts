@@ -21,6 +21,8 @@ import type {
 import { PHONEME_NAMING_TARGETS } from '../../juegos/juegos.service.js';
 import { sesionesService } from '../../sesiones/sesiones.service.js';
 import { isAttendedOrActiveSession } from '../../sesiones/attendance.js';
+import { calcularIndicadoresFoneticos, contenidoInformeParaRol, ETIQUETA_INDICADOR_APOYO } from './phoneticIndicators.js';
+import { serializarEvaluacionFonologica } from './evaluacionFonologicaView.js';
 
 export class ClinicaService {
   async getMlServiceHealth(user: AuthenticatedUser) {
@@ -70,7 +72,8 @@ export class ClinicaService {
         s.fecha_hora_inicio_real as fecha,
         s.estado_sesion as estado,
         COALESCE(rs.observaciones_iniciales, '') as resumen,
-        rs.objetivos_trabajados
+        rs.objetivos_trabajados,
+        rs.estado_reporte
       FROM sesiones s
       JOIN reservas r ON s.id_reserva = r.id_reserva
       LEFT JOIN reportes_sesion rs ON s.id_sesion = rs.id_sesion
@@ -85,25 +88,31 @@ export class ClinicaService {
     sql += ` ORDER BY s.fecha_hora_inicio_real DESC LIMIT 20;`;
 
     const res = await pool.query(sql, params);
-    return res.rows.map((row) => ({
-      id_sesion: row.id_sesion,
-      id_cita: row.id_cita,
-      id_paciente: row.id_paciente,
-      id_terapeuta: row.id_terapeuta,
-      fecha: row.fecha ? new Date(row.fecha).toISOString().split('T')[0] : null,
-      hora_inicio: row.fecha
-        ? new Date(row.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        : null,
-      estado: row.estado || 'COMPLETADA',
-      resumen: row.resumen,
-      objetivos:
-        typeof row.objetivos_trabajados === 'string' && row.objetivos_trabajados
-          ? row.objetivos_trabajados
-              .split(/\r?\n|,/)
-              .map((item: string) => item.trim())
-              .filter(Boolean)
-          : [],
-    }));
+    return res.rows.map((row) => {
+      const informe = contenidoInformeParaRol(
+        { observaciones: row.resumen, objetivos: row.objetivos_trabajados, estado: row.estado_reporte },
+        user.rol,
+      );
+      return {
+        id_sesion: row.id_sesion,
+        id_cita: row.id_cita,
+        id_paciente: row.id_paciente,
+        id_terapeuta: row.id_terapeuta,
+        fecha: row.fecha ? new Date(row.fecha).toISOString().split('T')[0] : null,
+        hora_inicio: row.fecha
+          ? new Date(row.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : null,
+        estado: row.estado || 'COMPLETADA',
+        resumen: informe.observaciones,
+        objetivos:
+          typeof informe.objetivos === 'string' && informe.objetivos
+            ? informe.objetivos
+                .split(/\r?\n|,/)
+                .map((item: string) => item.trim())
+                .filter(Boolean)
+            : [],
+      };
+    });
   }
 
   async crearSesion(dto: SesionClinicaDTO, user: AuthenticatedUser) {
@@ -496,11 +505,17 @@ export class ClinicaService {
     }
     await assertConsentAccess(dto.id_paciente, 'EVALUACION_FONOLOGICA_IA');
 
+    const indicadores = calcularIndicadoresFoneticos({
+      palabra_objetivo: target.word,
+      fonema_objetivo: target.fonema_objetivo,
+      transcripcion: dto.transcripcion_detectada,
+    });
     const res = await pool.query(
       `INSERT INTO public.evaluaciones_fonologicas (
         id_sesion, id_paciente, fonema_objetivo, palabra_objetivo, transcripcion_detectada,
-        estado, origen_evaluacion
-      ) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', $6)
+        estado, origen_evaluacion, similitud_porcentaje, tipo_error_sugerido, diagnostico_sugerido,
+        intentos, nota_rapida
+      ) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', $6, $7, $8, $9, $10, $11)
       RETURNING *;`,
       [
         dto.id_sesion,
@@ -509,22 +524,18 @@ export class ClinicaService {
         target.word,
         dto.transcripcion_detectada,
         dto.origen_evaluacion || 'CLINICO',
+        indicadores.similitud_texto_porcentaje,
+        indicadores.tipo_error_sugerido,
+        indicadores.hipotesis_sugerida,
+        dto.intentos ?? 1,
+        dto.nota_rapida || null,
       ]
     );
 
     const r = res.rows[0];
     return {
-      id_evaluacion: r.id_evaluacion,
-      id_sesion: r.id_sesion,
-      id_paciente: r.id_paciente,
-      fonema_objetivo: r.fonema_objetivo,
-      palabra_objetivo: r.palabra_objetivo,
-      transcripcion_detectada: r.transcripcion_detectada,
-      nivel_ayuda: r.nivel_ayuda,
-      estado: r.estado,
-      origen_evaluacion: r.origen_evaluacion,
-      resultado_clinico: r.resultado_clinico ?? null,
-      fecha_registro: new Date(r.fecha_registro).toISOString(),
+      ...serializarEvaluacionFonologica(r, 'TERAPEUTA'),
+      etiqueta_indicadores: ETIQUETA_INDICADOR_APOYO,
     };
   }
 
@@ -538,23 +549,7 @@ export class ClinicaService {
       [pacienteId, user.rol === 'PADRE']
     );
 
-    return res.rows.map((r) => ({
-      id_evaluacion: r.id_evaluacion,
-      id_sesion: r.id_sesion,
-      id_paciente: r.id_paciente,
-      fonema_objetivo: r.fonema_objetivo,
-      palabra_objetivo: r.palabra_objetivo,
-      transcripcion_detectada: user.rol === 'PADRE' ? r.transcripcion_revisada : r.transcripcion_detectada,
-      ...(user.rol === 'PADRE' ? { observacion_terapeuta: r.observacion_terapeuta } : {
-        transcripcion_revisada: r.transcripcion_revisada,
-        observacion_terapeuta: r.observacion_terapeuta,
-      }),
-      nivel_ayuda: r.nivel_ayuda,
-      estado: r.estado,
-      origen_evaluacion: r.origen_evaluacion,
-      resultado_clinico: r.resultado_clinico ?? null,
-      fecha_registro: new Date(r.fecha_registro).toISOString(),
-    }));
+    return res.rows.map((r) => serializarEvaluacionFonologica(r, user.rol));
   }
 
   async revisarEvaluacionFonologica(idEvaluacion: number, dto: RevisionEvaluacionFonologicaDTO, user: AuthenticatedUser) {
@@ -572,7 +567,8 @@ export class ClinicaService {
     const result = await pool.query(
       `UPDATE public.evaluaciones_fonologicas
        SET estado = $1, transcripcion_revisada = $2, observacion_terapeuta = $3,
-           resultado_clinico = $4, id_usuario_revision = $5, fecha_revision = NOW()
+           resultado_clinico = $4, id_usuario_revision = $5, fecha_revision = NOW(),
+           intentos = COALESCE($7::integer, intentos), nota_rapida = COALESCE($8::varchar, nota_rapida)
        WHERE id_evaluacion = $6 AND estado = 'PENDIENTE_REVISION'
        RETURNING id_evaluacion, id_sesion, id_paciente, palabra_objetivo,
                  transcripcion_detectada, transcripcion_revisada, observacion_terapeuta,
@@ -584,6 +580,8 @@ export class ClinicaService {
         dto.estado === 'CONFIRMADO_TERAPEUTA' ? dto.resultado_clinico : null,
         user.id_usuario,
         idEvaluacion,
+        dto.intentos ?? null,
+        dto.nota_rapida || null,
       ],
     );
     if (!result.rows[0]) throw Object.assign(new Error('La evaluación ya fue revisada; actualiza la página para ver el estado.'), { status: 409 });

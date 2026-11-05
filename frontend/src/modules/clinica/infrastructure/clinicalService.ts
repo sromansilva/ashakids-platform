@@ -10,6 +10,27 @@ export interface ArticulationHistoryRecord {
   objetivos_trabajados?: string | null;
 }
 
+export type PhoneticErrorType = 'SIN_DIFERENCIA' | 'SUSTITUCION' | 'OMISION' | 'ADICION' | 'MIXTO';
+
+/** Indicadores calculados en el servidor a partir del texto. Sin validación clínica; solo equipo clínico. */
+export interface PhoneticSupportIndicators {
+  similitud_texto_porcentaje: number;
+  tipo_error_sugerido: PhoneticErrorType;
+  hipotesis_sugerida: string | null;
+  etiqueta?: string;
+}
+
+export interface PhonemeEvolutionRecord {
+  id_paciente: number;
+  sesiones: Array<{
+    id_sesion: number;
+    fecha_hora_inicio: string;
+    total: number;
+    alcanzados: number;
+    porcentaje_alcanzado: number;
+  }>;
+}
+
 export interface PhonologicalEvaluationRecord {
   id_evaluacion: number;
   id_sesion: number | null;
@@ -17,6 +38,12 @@ export interface PhonologicalEvaluationRecord {
   palabra_objetivo: string | null;
   estado: 'PENDIENTE_REVISION' | 'CONFIRMADO_TERAPEUTA' | 'DESCARTADO';
   resultado_clinico?: 'ALCANZADO' | 'EN_PROCESO' | 'REQUIERE_APOYO' | null;
+  // Solo presentes para terapeuta/admin; el servidor los omite para la familia.
+  similitud_texto_porcentaje?: number | null;
+  tipo_error_sugerido?: PhoneticErrorType | null;
+  hipotesis_sugerida?: string | null;
+  intentos?: number | null;
+  nota_rapida?: string | null;
 }
 
 export interface FamilyCaptureStatus {
@@ -30,6 +57,7 @@ export interface FamilyCaptureStatus {
     palabra_esperada: string;
     transcripcion_tentativa: string;
     duracion_segundos: number | null;
+    indicadores_apoyo?: PhoneticSupportIndicators;
     aviso: string;
   };
 }
@@ -82,6 +110,8 @@ export const patientsService = {
   edit: (id: number, data: PatientData) => apiClient.put<Patient>(`/pacientes/${id}`, data),
   deactivate: (id: number) => apiClient.del<Patient>(`/pacientes/${id}`),
   journey: (id: number, signal?: AbortSignal) => apiClient.get<JourneyState>(`/pacientes/${id}/recorrido`, { signal }),
+  phonemeEvolution: (id: number, signal?: AbortSignal) =>
+    apiClient.get<PhonemeEvolutionRecord>(`/pacientes/${id}/analiticas/evolucion-fonologica`, { signal }),
   phonemeAnalytics: (id: number, periodDays = 30, signal?: AbortSignal) =>
     apiClient.get<PhonemeActivityAnalytics>(`/pacientes/${id}/analiticas/fonemas?periodo_dias=${periodDays}`, { signal }),
 };
@@ -115,6 +145,7 @@ export const sessionsService = {
       palabra_esperada: string;
       transcripcion_tentativa: string;
       duracion_segundos: number | null;
+      indicadores_apoyo?: PhoneticSupportIndicators;
       aviso: string;
     }>(`/sesiones/${id}/evaluacion-fonema`, data),
   iniciarCapturaFonologica: (id: number, data: { captura_id: string; palabra_objetivo: string; fonema_objetivo: string }) =>
@@ -154,6 +185,7 @@ export const sessionsService = {
       palabra_esperada: string;
       transcripcion_tentativa: string;
       duracion_segundos: number | null;
+      indicadores_apoyo?: PhoneticSupportIndicators;
       aviso: string;
     }>(`/sesiones/${id}/evaluacion-fonema/capturas/${encodeURIComponent(captureId)}/finalizar`, {}),
   descartarCapturaFonologica: (id: number, captureId: string) =>
@@ -242,6 +274,8 @@ export const clinicaService = {
     transcripcion_revisada?: string;
     observacion_terapeuta?: string;
     resultado_clinico?: 'ALCANZADO' | 'EN_PROCESO' | 'REQUIERE_APOYO';
+    intentos?: number;
+    nota_rapida?: string;
   }) => apiClient.patch<{
     id_evaluacion: number;
     id_sesion: number;

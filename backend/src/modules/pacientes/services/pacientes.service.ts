@@ -281,6 +281,39 @@ export class PacientesService {
     }
   }
 
+  /**
+   * Evolución fonológica por sesión: % de evaluaciones clínicas confirmadas por el terapeuta
+   * con resultado_clinico = 'ALCANZADO'. No usa el % de similitud ni datos de juegos (LUDICO).
+   */
+  async getEvolucionFonologica(id: number) {
+    if (!Number.isInteger(id) || id <= 0) throw Object.assign(new Error('El paciente indicado no es válido.'), { status: 400 });
+    const result = await pool.query(
+      `SELECT e.id_sesion,
+              MIN(r.fecha_hora_inicio) AS fecha_hora_inicio,
+              COUNT(*)::int AS total,
+              COUNT(*) FILTER (WHERE e.resultado_clinico = 'ALCANZADO')::int AS alcanzados
+       FROM public.evaluaciones_fonologicas e
+       JOIN public.sesiones s ON s.id_sesion = e.id_sesion
+       JOIN public.reservas r ON r.id_reserva = s.id_reserva
+       WHERE e.id_paciente = $1 AND e.origen_evaluacion = 'CLINICO'
+         AND e.estado = 'CONFIRMADO_TERAPEUTA' AND e.resultado_clinico IS NOT NULL
+       GROUP BY e.id_sesion
+       ORDER BY MIN(r.fecha_hora_inicio) ASC
+       LIMIT 100;`,
+      [id],
+    );
+    return {
+      id_paciente: id,
+      sesiones: result.rows.map((row) => ({
+        id_sesion: Number(row.id_sesion),
+        fecha_hora_inicio: new Date(row.fecha_hora_inicio).toISOString(),
+        total: Number(row.total),
+        alcanzados: Number(row.alcanzados),
+        porcentaje_alcanzado: Math.round((Number(row.alcanzados) / Number(row.total)) * 100),
+      })),
+    };
+  }
+
   async getFonemeActivityAnalytics(id: number, periodDays = 30) {
     if (!Number.isInteger(id) || id <= 0) throw Object.assign(new Error('El paciente indicado no es válido.'), { status: 400 });
     if (!Number.isInteger(periodDays) || periodDays < 1 || periodDays > 365) {
