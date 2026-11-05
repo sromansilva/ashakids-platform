@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Search, BookOpen, Music, FileText, LayoutGrid, CheckCircle2, Eye, Pencil, Send, Clock, Globe } from 'lucide-react';
+import { Search, BookOpen, Music, FileText, LayoutGrid, CheckCircle2, Eye, Send, Clock, Globe } from 'lucide-react';
 
 type TabType = 'TODOS' | 'CUENTOS' | 'CANCIONES' | 'RECURSOS';
 
@@ -82,14 +82,8 @@ export function AdminContenido() {
         <div className="flex items-center gap-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-violet-50 text-[#6B46FE] text-xs font-bold">
             <Clock size={13} />
-            <span>Vista demostrativa · Datos de ejemplo</span>
+            <span>Catálogo de ejemplo, solo lectura</span>
           </div>
-          <button
-            onClick={() => alert('Función de nuevo contenido en el próximo sprint.')}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl font-extrabold text-sm text-white bg-[#6B46FE] hover:bg-[#5833EA] shadow-md shadow-violet-200 transition-all active:scale-[.98] cursor-pointer shrink-0"
-          >
-            <Plus size={18} /> Nuevo contenido
-          </button>
         </div>
       </div>
 
@@ -238,12 +232,6 @@ export function AdminContenido() {
                   className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl border border-[#E8E5F4] hover:bg-violet-50 text-xs font-bold text-[#1C1135] transition cursor-pointer"
                 >
                   <Eye size={14} className="text-[#6B46FE]" /> Vista previa
-                </button>
-                <button
-                  onClick={() => alert(`Editar ${item.titulo}`)}
-                  className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-2xl bg-[#6B46FE] hover:bg-[#5833EA] text-xs font-bold text-white shadow-sm transition cursor-pointer"
-                >
-                  <Pencil size={14} /> Editar
                 </button>
               </div>
             </div>

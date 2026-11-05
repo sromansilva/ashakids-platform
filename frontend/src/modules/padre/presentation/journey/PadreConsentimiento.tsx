@@ -1,10 +1,12 @@
+import { useNavigate } from 'react-router-dom';
 import type { View } from '@/shared/domain/types/navigation';
 import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
 import { FamilyConsentManager } from '@/shared/presentation/components/common/FamilyConsentManager';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { Btn } from '@/shared/presentation/components/common/Btn';
 
-export function PadreConsentimiento({ go }: { go: (view: View) => void }) {
+export function PadreConsentimiento(_props: { go: (view: View) => void }) {
+  const navigate = useNavigate();
   const { patients, children } = useSelectedFamilyPatient();
   return (
     <section className="mx-auto max-w-4xl space-y-5 p-4 text-[#1C1135] sm:p-6">
@@ -18,7 +20,7 @@ export function PadreConsentimiento({ go }: { go: (view: View) => void }) {
       {patients.isSuccess && !patients.error && children.length === 0 && (
         <div className="rounded-2xl border border-[#E8E5F4] bg-white p-5">
           <p className="text-sm text-[#4B4264]">Aún no hay perfiles infantiles activos en esta cuenta.</p>
-          <Btn className="mt-4" onClick={() => go('padre/config')}>Gestionar hijos</Btn>
+          <Btn className="mt-4" onClick={() => navigate('/padre/config?tab=hijos')}>Gestionar hijos</Btn>
         </div>
       )}
       {children.map((child) => (

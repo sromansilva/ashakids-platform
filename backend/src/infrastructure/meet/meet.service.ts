@@ -22,6 +22,8 @@ export class MeetService {
   /**
    * Crea una reunión en Google Meet usando la API de Google Calendar con conferenceDataVersion=1.
    * Devuelve el enlace permanente de Google Meet (ej. https://meet.google.com/xxx-yyyy-zzz).
+   * El evento se crea sin `attendees`: la familia no es invitada y no recibe el enlace por
+   * Google Calendar; solo lo ve en AshaKids cuando el terapeuta inicia la sesión.
    */
   static async createMeeting(params: {
     topic: string;

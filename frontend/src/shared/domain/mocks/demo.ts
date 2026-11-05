@@ -14,11 +14,6 @@ export const appointments = [
   { id: 3, therapist: "Dra. Ana Ruiz",       child: "Mateo Gómez",  date: "06 Ago 2026", time: "10:00", type: "virtual",  status: "confirmada", specialty: "Lenguaje"  },
 ];
 
-export const kids = [
-  { id: 1, name: "Mateo", age: 7, therapist: "Dra. Ana Ruiz",       sessions: 12, progress: 78, emoji: "🦊", bg: "#FEF3C7" },
-  { id: 2, name: "Sofía", age: 5, therapist: "Lic. Carlos Mendoza", sessions: 6,  progress: 55, emoji: "🐰", bg: "#EDE9FE" },
-];
-
 export const msgs = [
   { id: 1, from: "Dra. Ana Ruiz", text: "¡Hola Laura! Mateo tuvo un excelente avance hoy con los trabalenguas. 🌟", time: "10:30", own: false, av: "AR", color: B.violet },
   { id: 2, from: "Tú",            text: "¡Qué buenas noticias! Él estaba muy emocionado de la sesión.",             time: "10:45", own: true,  av: "LG", color: B.orange },

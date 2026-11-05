@@ -1,4 +1,5 @@
-import crypto from 'node:crypto';
+import crypto, { randomBytes } from 'node:crypto';
+import * as argon2 from '@node-rs/argon2';
 import { pool } from '../../core/database.js';
 
 interface TicketSeed {
@@ -400,13 +401,14 @@ export async function seedIncidencias() {
         const email = `${emailSlug}@ashakids.test`;
         const prefix = ticket.rol === 'TERAPEUTA' ? 't' : 'p';
         const code = `${prefix}${Math.floor(10000 + Math.random() * 89999)}`;
-        // Password hash Argon2id para '12345'
+        // Estas cuentas solo sostienen tickets de ejemplo: la contraseña aleatoria impide iniciar sesión con ellas.
+        const unusablePasswordHash = await argon2.hash(randomBytes(32).toString('hex'));
         const insertUser = await client.query(`
           INSERT INTO usuarios (nombres, apellidos, codigo_usuario, email, password_hash, activo, fecha_creacion)
-          VALUES ($1, $2, $3, $4, '$argon2id$v=19$m=19456,t=2,p=1$gNRBKknzRIzVijb0Q4pUgg$1UVQo8y+sKyaiqUDWgYkOHNx/7Kt61c27XIZm9+2Mcg', true, NOW())
+          VALUES ($1, $2, $3, $4, $5, true, NOW())
           ON CONFLICT (email) DO UPDATE SET nombres = EXCLUDED.nombres
           RETURNING id_usuario;
-        `, [nombres, apellidos, code, email]);
+        `, [nombres, apellidos, code, email, unusablePasswordHash]);
         const id_usuario = insertUser.rows[0].id_usuario;
         userCache.set(key, id_usuario);
 

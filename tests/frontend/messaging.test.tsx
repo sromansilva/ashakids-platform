@@ -174,8 +174,8 @@ it('does not invent a name for a removed historical sender', async () => {
   expect(within(history).queryByText(/Profesional sintético|Familia sintética|Emisor anterior/)).not.toBeInTheDocument();
 });
 
-it('administrator sees pending campaigns without fake counts or private chats', async () => {
-  const requests=api();renderRoute('/admin/mensajes','ADMIN');await screen.findByRole('heading', {name:'Próximamente'});
+it('removed administrator messaging route shows not found without private chats', async () => {
+  const requests=api();renderRoute('/admin/mensajes','ADMIN');await screen.findByRole('heading', {name:'Página no encontrada'});
   expect(screen.queryByText('342')).not.toBeInTheDocument();expect(screen.queryByRole('button',{name:'Nueva campaña'})).not.toBeInTheDocument();
   expect(requests.mock.calls.some(([input])=>String(input).includes('/conversaciones'))).toBe(false);
 });

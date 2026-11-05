@@ -20,7 +20,7 @@ class TreatmentPredictorReadinessTests(unittest.TestCase):
             "model_path": "model.joblib",
             "model_sha256": "0" * 64,
             "feature_names": FEATURE_NAMES,
-            "diagnosis_codebook": {str(code): f"Diagnosis {code}" for code in range(1, 6)},
+            "diagnosis_codebook": {str(code): f"Diagnosis {code}" for code in range(0, 4)},
             "validation": {
                 "dataset_version": "cohort-test-1",
                 "report_path": report_path,

@@ -8,6 +8,7 @@ import {
   evaluacionFonologicaSchema,
   revisionEvaluacionFonologicaSchema,
   descartarPrediccionSchema,
+  cierreTratamientoSchema,
 } from '../dtos/clinica.dto.js';
 
 export class ClinicaController {
@@ -88,6 +89,36 @@ export class ClinicaController {
   async getTreatmentPredictionCatalog(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       res.json(await clinicaService.getTreatmentPredictionCatalog(req.user!));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getDiagnosticosPreliminares(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      res.json(clinicaService.getDiagnosticosPreliminares(req.user!));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getEstadoPronostico(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      res.json(await clinicaService.getEstadoPronostico(req.user!));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async cerrarTratamiento(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const id = Number(req.params.id);
+      if (!Number.isInteger(id) || id <= 0) {
+        res.status(400).json({ error: 'El tratamiento indicado no es válido.' });
+        return;
+      }
+      const dto = cierreTratamientoSchema.parse(req.body);
+      res.json(await clinicaService.cerrarTratamiento(id, dto, req.user!));
     } catch (err) {
       next(err);
     }

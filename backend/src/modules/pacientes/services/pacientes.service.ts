@@ -242,7 +242,13 @@ export class PacientesService {
     try {
       const res = await pool.query(
         `SELECT t.*, CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) as paciente_nombre,
-                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre
+                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre,
+                (SELECT COUNT(*)::integer
+                 FROM sesiones attended_session
+                 JOIN reservas attended_reservation ON attended_reservation.id_reserva = attended_session.id_reserva
+                 WHERE attended_reservation.id_tratamiento = t.id_tratamiento
+                   AND attended_session.estado_sesion = 'FINALIZADA'
+                   AND UPPER(attended_session.asistencia::text) IN ('ASISTIO', 'TRUE', 'T', '1')) AS sesiones_realizadas
          FROM tratamientos t
          JOIN expedientes e ON t.id_expediente = e.id_expediente
          LEFT JOIN pacientes p ON e.id_paciente = p.id_paciente
@@ -264,6 +270,7 @@ export class PacientesService {
         area: r.area || 'HABLA',
         mundos_asignados: r.mundos_asignados || ['HABLA'],
         sesiones_recomendadas: r.sesiones_recomendadas == null ? null : Number(r.sesiones_recomendadas),
+        sesiones_realizadas: Number(r.sesiones_realizadas ?? 0),
         id_sesion_origen: r.id_sesion_origen ?? null,
         id_prediccion: r.id_prediccion == null ? null : Number(r.id_prediccion),
         frecuencia_semanal: r.frecuencia_semanal == null ? null : Number(r.frecuencia_semanal),

@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { adminService } from "@/modules/admin/infrastructure/adminService";
 import {
   CheckCircle,
   Loader2,
@@ -40,6 +42,15 @@ export function AdminCuentasDetalleModal({
   onConfirmActivar,
   onConfirmEliminar,
 }: AdminCuentasDetalleModalProps) {
+  const [reenviando, setReenviando] = useState(false);
+  const [mensajeReenvio, setMensajeReenvio] = useState('');
+  async function reenviarActivacion() {
+    if (!selected) return;
+    setReenviando(true); setMensajeReenvio('');
+    try { const result = await adminService.reenviarActivacion(selected.id_usuario); setMensajeReenvio(result.correo_estado === 'ENVIADO' ? 'Correo de activación enviado.' : `Correo de activación: ${result.correo_estado}.`); }
+    catch (error) { setMensajeReenvio(error instanceof Error ? error.message : 'No se pudo reenviar la activación.'); }
+    finally { setReenviando(false); }
+  }
   if (!modal || !selected) return null;
 
   return (
@@ -144,11 +155,13 @@ export function AdminCuentasDetalleModal({
                 <div className="flex justify-between border-t border-[#E8E5F4]/70 pt-2">
                   <span className="text-[#9E95B7] font-bold">Fecha de registro</span>
                   <span className="font-extrabold text-[#1C1135]">
-                    {formatDate(selected.fecha_creacion)}
+                    {formatDate(selected.creado_en ?? selected.fecha_creacion)}
                   </span>
                 </div>
               </div>
 
+              <button type="button" disabled={reenviando} onClick={() => void reenviarActivacion()} className="rounded-2xl border border-violet-200 px-4 py-2 text-sm font-bold text-violet-700 disabled:opacity-60">{reenviando ? 'Enviando...' : 'Reenviar activación'}</button>
+              {mensajeReenvio && <p role="status" className="text-sm">{mensajeReenvio}</p>}
               {/* Botonera de acciones */}
               <div className="flex flex-col gap-2 pt-2">
                 {selected.rol === "PADRE" && (

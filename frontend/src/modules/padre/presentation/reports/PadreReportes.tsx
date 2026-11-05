@@ -4,10 +4,10 @@ import { PadreReportesundefined } from "@/modules/padre/presentation/reports/Pad
 
 
 export function PadreReportes() {
-const { sessionsQuery, tab, setTab, openSession, setOpenSession, sessions } = usePadreReportes();
+const { sessionsQuery, openSession, setOpenSession, sessions } = usePadreReportes();
 return (
     <><RemoteFeedback pending={sessionsQuery.isPending} error={sessionsQuery.error} retry={() => void sessionsQuery.refetch()} />
-    <PadreReportesundefined setTab={setTab} tab={tab} sessions={sessions} setOpenSession={setOpenSession} openSession={openSession} ready={sessionsQuery.isSuccess} /></>
+    <PadreReportesundefined sessions={sessions} setOpenSession={setOpenSession} openSession={openSession} ready={sessionsQuery.isSuccess} /></>
   );
 
 }

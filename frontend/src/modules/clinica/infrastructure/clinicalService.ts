@@ -1,4 +1,4 @@
-import { apiClient, type QueryParams } from "@/core/api/client";
+import { apiClient, ApiError, type QueryParams } from "@/core/api/client";
 import type { Account, AccountCreate, AccountEdit, Patient, PatientData, Treatment, TreatmentData,
   Appointment, AppointmentTime, Session, Report, ReportData, Professional, Availability, AvailableSlot, JourneyState, PlanData } from "@/modules/clinica/domain/clinical";
 
@@ -36,6 +36,8 @@ export interface PhonologicalEvaluationRecord {
   id_sesion: number | null;
   fonema_objetivo: string | null;
   palabra_objetivo: string | null;
+  /** Transcripción automática tentativa; solo equipo clínico (la familia recibe la revisada). */
+  transcripcion_detectada?: string | null;
   estado: 'PENDIENTE_REVISION' | 'CONFIRMADO_TERAPEUTA' | 'DESCARTADO';
   resultado_clinico?: 'ALCANZADO' | 'EN_PROCESO' | 'REQUIERE_APOYO' | null;
   // Solo presentes para terapeuta/admin; el servidor los omite para la familia.
@@ -131,9 +133,17 @@ export const sessionsService = {
   publishPlan: (id: number, data: PlanData) => apiClient.post<Treatment>(`/sesiones/${id}/plan`, data),
   ...resource<Session>("/sesiones"),
   create: (id_reserva: number) => apiClient.post<Session>("/sesiones", { id_reserva }),
-  start: (id: number) => apiClient.post<Session>(`/sesiones/${id}/iniciar`),
+  start: (id: number, modoPrueba = false) => apiClient.post<Session>(`/sesiones/${id}/iniciar`, modoPrueba ? { modo_prueba: true } : undefined),
   close: (id: number, asistencia: "ASISTIO" | "NO_ASISTIO") => apiClient.post<Session>(`/sesiones/${id}/cerrar`, { asistencia }),
-  report: (id: number, signal?: AbortSignal) => apiClient.get<Report | null>(`/sesiones/${id}/reporte`, { signal }),
+  /**
+   * Un 404 aquí significa «todavía no hay reporte publicado» (la familia solo recibe reportes
+   * firmados): se trata como estado vacío. Cualquier otro error sigue propagándose.
+   */
+  report: (id: number, signal?: AbortSignal) => apiClient.get<Report | null>(`/sesiones/${id}/reporte`, { signal })
+    .catch((error: unknown) => {
+      if (error instanceof ApiError && error.status === 404) return null;
+      throw error;
+    }),
   articulationHistory: (id: number, signal?: AbortSignal) => apiClient.get<ArticulationHistoryRecord[]>(`/sesiones/${id}/seguimiento-articulacion`, { signal }),
   reportPdf: (id: number, signal?: AbortSignal) => apiClient.pdf(`/sesiones/${id}/reporte/pdf`, signal),
   saveReport: (id: number, data: ReportData) => apiClient.put<Report>(`/sesiones/${id}/reporte`, data),
@@ -214,6 +224,25 @@ export interface TreatmentPredictionResponse {
   version_modelo: string;
 }
 
+export interface PreliminaryDiagnosisCatalog {
+  etiqueta: string;
+  aviso: string;
+  codigos: { code: number; label: string }[];
+}
+
+export interface PrognosisStatus {
+  disponible: boolean;
+  version_modelo: string | null;
+}
+
+export interface TreatmentClosure {
+  id_tratamiento: number;
+  estado_tratamiento: 'ALTA' | 'ABANDONO';
+  fecha_fin: string | null;
+  observaciones_cierre: string | null;
+  citas_futuras_pendientes: number;
+}
+
 export interface TreatmentPredictionCatalog {
   version_modelo: string;
   diagnosis_codes: { code: number; label: string }[];
@@ -233,6 +262,13 @@ export const clinicaService = {
   mlHealth: (signal?: AbortSignal) => apiClient.get<MlServiceHealth>('/clinica/ml/health', { signal }),
   phonologicalEvaluations: (patientId: number, signal?: AbortSignal) =>
     apiClient.get<PhonologicalEvaluationRecord[]>(`/clinica/evaluaciones-fonologicas/${patientId}`, { signal }),
+  preliminaryDiagnoses: (signal?: AbortSignal) =>
+    apiClient.get<PreliminaryDiagnosisCatalog>('/clinica/diagnosticos-preliminares', { signal }),
+  /** Siempre responde 200: `disponible: false` es el estado esperado mientras no haya un modelo aprobado. */
+  prognosisStatus: (signal?: AbortSignal) =>
+    apiClient.get<PrognosisStatus>('/clinica/tratamientos/pronostico-estado', { signal }),
+  closeTreatment: (id: number, data: { desenlace: 'ALTA' | 'ABANDONO'; observacion?: string }) =>
+    apiClient.patch<TreatmentClosure>(`/clinica/tratamientos/${id}/desenlace`, data),
   treatmentPredictionCatalog: (signal?: AbortSignal) =>
     apiClient.get<TreatmentPredictionCatalog>('/clinica/tratamientos/predictor-catalog', { signal }),
   predictTreatmentPlan: (data: {

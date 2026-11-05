@@ -31,6 +31,37 @@ export interface CitaRow {
   meet_url: string | null;
   meet_origen: 'AUTOMATICA' | 'MANUAL' | null;
   meet_automatico_configurado: boolean;
+  estado_sesion: 'PROGRAMADA' | 'EN_CURSO' | 'FINALIZADA' | null;
+  /** Para la familia solo es true cuando el terapeuta ya inició la sesión. */
+  reunion_disponible: boolean;
+  /** Solo TERAPEUTA/ADMIN y únicamente si SESSION_TEST_MODE_ENABLED está activo. */
+  modo_prueba_disponible: boolean;
+}
+
+type EstadoSesion = CitaRow['estado_sesion'];
+
+/**
+ * La familia no recibe el enlace de Meet hasta que el terapeuta inicia la sesión.
+ * Terapeuta y administración lo ven siempre que exista un enlace válido.
+ */
+export function buildMeetFields(
+  input: { meet_url: unknown; meet_origen: CitaRow['meet_origen']; estado_sesion: unknown; estado_reserva?: unknown },
+  user: AuthenticatedUser,
+): Pick<CitaRow, 'meet_url' | 'meet_origen' | 'meet_automatico_configurado' | 'estado_sesion' | 'reunion_disponible' | 'modo_prueba_disponible'> {
+  const estadoSesion: EstadoSesion = ['PROGRAMADA', 'EN_CURSO', 'FINALIZADA'].includes(String(input.estado_sesion))
+    ? (input.estado_sesion as EstadoSesion)
+    : null;
+  const validUrl = isMeetingUrl(input.meet_url as string | null);
+  const isFamily = user.rol === 'PADRE';
+  const visible = validUrl && (!isFamily || estadoSesion === 'EN_CURSO');
+  return {
+    meet_url: visible ? (input.meet_url as string) : null,
+    meet_origen: visible ? input.meet_origen : null,
+    meet_automatico_configurado: MeetService.isConfigured(),
+    estado_sesion: estadoSesion,
+    reunion_disponible: visible,
+    modo_prueba_disponible: !isFamily && settings.SESSION_TEST_MODE_ENABLED === true,
+  };
 }
 
 export class CitasService {
@@ -50,6 +81,7 @@ export class CitasService {
           COALESCE(r.modalidad, 'VIRTUAL') as modalidad,
           COALESCE(r.estado_reserva, 'CONFIRMADA') as estado_reserva,
           s.id_sesion,
+          s.estado_sesion,
           r.meet_id,
           r.meet_url,
           CASE WHEN r.meet_id IS NOT NULL THEN 'AUTOMATICA'
@@ -112,9 +144,7 @@ export class CitasService {
         estado_reserva: r.estado_reserva as any,
         id_sesion: r.id_sesion ?? null,
         puede_editar: true,
-        meet_url: isMeetingUrl(r.meet_url) ? r.meet_url : null,
-        meet_origen: isMeetingUrl(r.meet_url) ? r.meet_origen as any : null,
-        meet_automatico_configurado: MeetService.isConfigured(),
+        ...buildMeetFields({ meet_url: r.meet_url, meet_origen: r.meet_origen, estado_sesion: r.estado_sesion }, user),
       }));
 
       return { items, total: Math.max(total, items.length) };
@@ -313,7 +343,8 @@ export class CitasService {
             topic: `Sesión de ${data.tipo_cita === 'TERAPIA' ? 'Terapia' : 'Consulta Introductoria'}`,
             date: dateStr,
             time: timeStr,
-            meetUrl: row.meet_url || undefined,
+            // La familia entra desde AshaKids cuando el terapeuta inicia la sesión; no se le envía el enlace.
+            portalNotice: true,
           }).catch((e) => console.warn('[CitasService] Error enviando correo de cita al tutor:', e));
         }
 
@@ -345,9 +376,11 @@ export class CitasService {
         estado_reserva: row.estado_reserva,
         id_sesion: null,
         puede_editar: true,
-        meet_url: row.meet_url,
-        meet_origen: row.meet_id ? 'AUTOMATICA' : row.meet_url ? 'MANUAL' : null,
-        meet_automatico_configurado: MeetService.isConfigured(),
+        ...buildMeetFields({
+          meet_url: row.meet_url,
+          meet_origen: row.meet_id ? 'AUTOMATICA' : row.meet_url ? 'MANUAL' : null,
+          estado_sesion: null,
+        }, user),
       };
     } catch (err) {
       throw err;
@@ -540,7 +573,10 @@ export class CitasService {
     const cita = await this.detalle(key, user);
     if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
     // Calendar event IDs are not stored, so a manually changed link updates the reservation only.
-    return { ...cita, meet_url, meet_origen: meet_url ? 'MANUAL' : null, meet_automatico_configurado: MeetService.isConfigured() };
+    return {
+      ...cita,
+      ...buildMeetFields({ meet_url, meet_origen: meet_url ? 'MANUAL' : null, estado_sesion: cita.estado_sesion }, user),
+    };
   }
 }
 

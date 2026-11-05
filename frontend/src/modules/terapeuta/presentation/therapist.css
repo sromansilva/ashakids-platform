@@ -425,7 +425,7 @@
 .session-actions--agenda .session-actions__workflow {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   background: #faf9fd;
 }
 

@@ -1,6 +1,7 @@
 import { useId, useState, useRef, useEffect } from 'react';
 import { Bell, Check, ChevronDown } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useWrite } from '@/shared/application/hooks/useRemoteData';
 import { notificationsService } from '@/modules/comunicacion/infrastructure/notificationsService';
@@ -8,6 +9,13 @@ import type { View } from '@/shared/domain/types/navigation';
 import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 import { isMeetingUrl } from './VirtualMeeting';
+
+/** Avisos del flujo terapeuta-familia: llevan directo a la cita con una acción concreta. */
+const familyActions: Record<string, string> = {
+  MUESTRA_SOLICITADA: 'Grabar ahora',
+  REPORTE_PUBLICADO: 'Ver reporte',
+  SESION_INICIADA: 'Ver cita',
+};
 
 const date = (value: string) =>
   new Intl.DateTimeFormat('es-PE', {
@@ -18,6 +26,7 @@ const date = (value: string) =>
 
 export function NotificationCenter({ go, compact = false }: { go: (view: View) => void; compact?: boolean }) {
   const { user, role } = useAuth();
+  const routerNavigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [offset, setOffset] = useState(0);
   const [unread, setUnread] = useState(false);
@@ -138,7 +147,12 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                       {date(item.fecha_creacion)}
                     </time>
                     <div className="flex gap-2 pt-1">
-                      {item.id_reserva && (
+                      {item.id_reserva && role === 'PADRE' && familyActions[item.tipo] && (
+                        <Btn size="sm" onClick={() => { setOpen(false); routerNavigate(`/padre/agenda?cita=${item.id_reserva}`); }}>
+                          {familyActions[item.tipo]}
+                        </Btn>
+                      )}
+                      {item.id_reserva && !(role === 'PADRE' && familyActions[item.tipo]) && (
                         <Btn size="sm" variant="outline" onClick={() => { setOpen(false); go(role === 'PADRE' ? 'padre/agenda' : role === 'ADMIN' ? 'admin/citas' : 'terapeuta/agenda'); }}>
                           Ver agenda
                         </Btn>
@@ -150,7 +164,7 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          Iniciar reunión
+                          Entrar a la reunión
                         </a>
                       )}
                       {(role === 'ADMIN' || role === 'TERAPEUTA') && item.id_reserva && (

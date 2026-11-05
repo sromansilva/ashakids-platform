@@ -7,6 +7,7 @@ import { seedIncidencias } from '../../backend/dist/modules/incidencias/incidenc
 import { migrateTerapeutaProfile } from '../../backend/dist/modules/terapeuta/terapeuta-profile.migration.js';
 import { migrateClinicaSchema } from '../../backend/dist/modules/clinica/clinica.migration.js';
 import { migrateNotificacionesSchema } from '../../backend/dist/modules/notificaciones/notificaciones.migration.js';
+import { migrateWhatsApp } from '../../backend/dist/modules/whatsapp/whatsapp.migration.js';
 import { settings } from '../../backend/dist/core/config.js';
 import type { Server } from 'node:http';
 
@@ -355,6 +356,7 @@ describe('ASHAKids Modular TypeScript Backend Tests', {
     await migrateTerapeutaProfile();
     await migrateClinicaSchema();
     await migrateNotificacionesSchema();
+    await migrateWhatsApp();
     await seedIncidencias();
     await startServer();
     await createClinicalAccessFixture();
@@ -1191,7 +1193,7 @@ describe('ASHAKids Modular TypeScript Backend Tests', {
     let diagnosisCode = 1;
     if (predictionCatalog.status === 200) {
       const catalog = await predictionCatalog.json() as { diagnosis_codes: { code: number; label: string }[] };
-      assert.equal(catalog.diagnosis_codes.length, 5);
+      assert.equal(catalog.diagnosis_codes.length, 4);
       assert.ok(catalog.diagnosis_codes.every((item) => item.label.trim().length > 0));
       diagnosisCode = catalog.diagnosis_codes[0].code;
     } else {

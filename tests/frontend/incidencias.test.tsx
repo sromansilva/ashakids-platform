@@ -19,11 +19,11 @@ it('conserva borrador y UUID si falla; confirma solo el envío real', async () =
   fireEvent.change(screen.getByLabelText('Tipo de incidencia'), {target: {value:'Funcional'}});
   fireEvent.change(screen.getByLabelText('Título'), {target: {value:'Guardar falla'}});
   fireEvent.change(screen.getByLabelText('Descripción breve'), {target: {value:'No termina de guardar.'}});
-  fireEvent.click(screen.getByRole('button', {name:'Enviar a administración'}));
+  fireEvent.click(screen.getByRole('button', {name:'Enviar solicitud'}));
   await screen.findByRole('alert');
   expect(screen.getByLabelText('Título')).toHaveValue('Guardar falla');
   expect(screen.queryByText(/Reporte #/)).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', {name:'Enviar a administración'}));
+  fireEvent.click(screen.getByRole('button', {name:'Enviar solicitud'}));
   await screen.findByText('Reporte #7 enviado');
   const calls = vi.mocked(incidenciasService.crear).mock.calls;
   expect(calls[0][0].envio_id).toBe(calls[1][0].envio_id);

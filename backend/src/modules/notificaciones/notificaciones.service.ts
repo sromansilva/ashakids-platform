@@ -9,6 +9,8 @@ export interface NotificationItem {
   id_reserva: number | null;
   id_conversacion: number | null;
   meet_url?: string | null;
+  /** La sesión de la cita sigue en curso (permite destacar avisos vigentes sin consultar citas). */
+  sesion_en_curso?: boolean;
   fecha_creacion: string;
   leida_en: string | null;
 }
@@ -42,16 +44,21 @@ export class NotificacionesService {
       pool.query(
         `SELECT n.id_notificacion, n.tipo, n.titulo, n.texto, n.id_reserva, n.id_conversacion,
                 n.fecha_creacion, n.leida_en,
-                CASE WHEN n.tipo = 'RECORDATORIO'
+                CASE WHEN n.tipo IN ('RECORDATORIO', 'SESION_INICIADA')
                        AND r.estado_reserva = 'CONFIRMADA'
                        AND r.modalidad IN ('VIRTUAL', 'ONLINE')
                        AND r.fecha_hora_fin > NOW()
-                       AND (family.id_usuario = n.id_usuario OR therapist_user.id_usuario = n.id_usuario)
+                       AND (
+                         therapist_user.id_usuario = n.id_usuario
+                         OR (family.id_usuario = n.id_usuario AND ses.estado_sesion = 'EN_CURSO')
+                       )
                      THEN r.meet_url
                      ELSE NULL
-                END AS meet_url
+                END AS meet_url,
+                COALESCE(ses.estado_sesion = 'EN_CURSO', FALSE) AS sesion_en_curso
          FROM public.notificaciones n
          LEFT JOIN public.reservas r ON r.id_reserva = n.id_reserva
+         LEFT JOIN public.sesiones ses ON ses.id_reserva = r.id_reserva
          LEFT JOIN public.pacientes p ON p.id_paciente = r.id_paciente
          LEFT JOIN public.tutores family ON family.id_tutor = p.id_tutor
          LEFT JOIN public.terapeutas therapist ON therapist.id_terapeuta = r.id_terapeuta
@@ -75,6 +82,7 @@ export class NotificacionesService {
         id_reserva: row.id_reserva === null ? null : Number(row.id_reserva),
         id_conversacion: row.id_conversacion === null ? null : Number(row.id_conversacion),
         meet_url: safeGoogleMeetUrl(row.meet_url),
+        sesion_en_curso: Boolean(row.sesion_en_curso),
         fecha_creacion: new Date(row.fecha_creacion).toISOString(),
         leida_en: row.leida_en ? new Date(row.leida_en).toISOString() : null,
       })),

@@ -298,10 +298,11 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
     });
     assert.equal(claim.status, 200);
 
-    // 32,000 zero-valued PCM samples are synthetic test data (2 s at 16 kHz).
+    // 32,000 PCM samples of a synthetic tone (2 s at 16 kHz): the server rejects silent captures.
+    const voicedPacket = new Uint8Array(new Int16Array(Array.from({ length: 4_000 }, (_, i) => Math.round(12_000 * Math.sin((2 * Math.PI * 220 * i) / 16_000)))).buffer);
     for (let packetNumber = 0; packetNumber < 8; packetNumber += 1) {
       const packet = new FormData();
-      packet.append('audio', new Blob([new Uint8Array(8_000)], { type: 'application/octet-stream' }), 'paquete-sintetico.pcm');
+      packet.append('audio', new Blob([voicedPacket], { type: 'application/octet-stream' }), 'paquete-sintetico.pcm');
       packet.append('numero_paquete', String(packetNumber));
       const upload = await nativeFetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/evaluacion-fonema/capturas-familia/${captureId}/paquetes`, {
         method: 'POST',
@@ -486,7 +487,7 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
     assert.equal(catalogRes.status, 200);
     const catalog = await catalogRes.json() as { version_modelo: string; diagnosis_codes: Array<{ code: number; label: string }> };
     assert.ok(catalog.version_modelo.length > 0);
-    assert.equal(catalog.diagnosis_codes.length, 5);
+    assert.equal(catalog.diagnosis_codes.length, 4);
 
     const predRes = await fetch(`${baseUrl}/api/v1/clinica/tratamientos/predecir-plan`, {
       method: 'POST',
@@ -617,6 +618,7 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
       mundos_asignados: ['HABLA', 'LENGUAJE'],
       sesiones_recomendadas: 8,
       frecuencia_semanal: 2,
+      codigo_diagnostico: 0,
       fonemas_priorizados: ['/rr/', '/r/', '/s/', '/pl/', '/tr/'],
       ...predictionDecision,
     };

@@ -1,3 +1,4 @@
+import { routePaths } from '../../frontend/src/core/router/routeManifest.ts';
 import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -47,8 +48,6 @@ describe('ASHAKids Frontend Routing Tests', () => {
       assert.equal(getRequiredRoleForPath('/padre'), 'PADRE');
       assert.equal(getRequiredRoleForPath('/padre/pacientes'), 'PADRE');
       assert.equal(getRequiredRoleForPath('/padre/agenda'), 'PADRE');
-      assert.equal(getRequiredRoleForPath('/session/active'), 'PADRE');
-      assert.equal(getRequiredRoleForPath('/pay/history'), 'PADRE');
       assert.equal(getRequiredRoleForPath('/mundo-asha', 'PADRE'), 'PADRE');
     });
 
@@ -181,5 +180,12 @@ describe('ASHAKids Frontend Routing Tests', () => {
       assert.equal(pathToView('/padre/perfil'), 'padre/config');
       assert.equal(pathToView('/admin/dashboard'), 'admin');
     });
+  });
+});
+
+
+describe('Rutas retiradas', () => {
+  it('no registra pagos ni rutas de ejemplo retiradas', () => {
+    for (const path of ['/pay', '/pay/history', '/pay/wallet', '/padre/compras', '/admin/pagos', '/admin/analiticas', '/admin/mensajes', '/admin/moderacion', '/admin/core', '/admin/reportes', '/terapeuta/ingresos', '/session', '/session/active']) assert.equal(routePaths.includes(path), false, path);
   });
 });

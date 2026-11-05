@@ -23,7 +23,7 @@ def make_rows(count, seed, offset=0):
     while len(rows) < count:
         features = [
             rng.randint(24, 180),
-            rng.randint(1, 5),
+            rng.randint(0, 3),
             rng.randint(1, 5),
             rng.randint(1, 5),
             rng.randint(1, 3),
@@ -53,7 +53,7 @@ class TrainPredictiveModelTests(unittest.TestCase):
         self.validation = self.root / "validation.csv"
         self.codebook = self.root / "codebook.json"
         self.codebook.write_text(
-            json.dumps({str(c): f"Etiqueta ficticia {c}" for c in range(1, 6)}), encoding="utf-8"
+            json.dumps({str(c): f"Etiqueta ficticia {c}" for c in range(0, 4)}), encoding="utf-8"
         )
         rows = make_rows(180, seed=1)
         write_csv(self.train, rows[:120])
@@ -129,7 +129,7 @@ class TrainPredictiveModelTests(unittest.TestCase):
         write_csv(self.train, [[i] + r for i, r in enumerate(rows)], header=["id_paciente", *HEADER])
         self.assert_fails_without_output("identificadores")
 
-    def test_codebook_must_have_codes_one_to_five(self):
+    def test_codebook_must_have_codes_zero_to_three(self):
         self.codebook.write_text(json.dumps({"1": "a", "2": "b"}), encoding="utf-8")
         self.assert_fails_without_output("catalogo")
 

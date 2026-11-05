@@ -139,16 +139,14 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const famCount = cuentas.filter(a => a.rol === "PADRE").length;
   const terCount = cuentas.filter(a => a.rol === "TERAPEUTA").length;
   const suspCount = cuentas.filter(a => !a.activo).length;
-  function formatDate(dStr: string) {
-    try {
-      return new Date(dStr).toLocaleDateString("es-PE", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    } catch {
-      return dStr;
-    }
+  function formatDate(dStr?: string | null) {
+    const date = dStr ? new Date(dStr) : null;
+    if (!date || Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleDateString("es-PE", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   }
   // Apertura de Modales
   function openNueva() {

@@ -366,14 +366,14 @@ export class IncidenciasService {
                 COALESCE(i.rol_solicitante, 'PADRE') as rol,
                 i.solicitante as usuario
          FROM public.incidencias i
-         WHERE i.area_destino = 'ADMINISTRACION'
+         WHERE i.area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO') AND i.rol_solicitante IN ('PADRE', 'TERAPEUTA')
          ORDER BY i.fecha_creacion DESC
          LIMIT $1 OFFSET $2;`,
         [limit, offset]
       );
 
       const totalRes = await pool.query(
-        "SELECT count(*) as total FROM public.incidencias WHERE area_destino = 'ADMINISTRACION';"
+        "SELECT count(*) as total FROM public.incidencias WHERE area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO') AND rol_solicitante IN ('PADRE', 'TERAPEUTA');"
       );
       const total = parseInt(totalRes.rows[0]?.total ?? '0', 10);
 
@@ -506,9 +506,8 @@ export class IncidenciasService {
       throw err;
     }
 
-    // Regla: Soporte Técnico no se puede modificar desde las vistas actuales
-    if (inc.area_destino === 'SOPORTE_TECNICO') {
-      const err = new Error('Las incidencias de Soporte Técnico permanecen en estado pendiente y no pueden modificarse en esta fase.');
+    if (inc.area_destino === 'SOPORTE_TECNICO' && user.rol !== 'ADMIN' && !user.roles?.includes('ADMIN')) {
+      const err = new Error('Solo administracion puede gestionar incidencias de soporte.');
       (err as any).status = 403;
       throw err;
     }
@@ -526,7 +525,7 @@ export class IncidenciasService {
 
     // Regla: Administración solo puede modificar incidencias asignadas a Administración
     if (user.rol === 'ADMIN' || user.roles?.includes('ADMIN')) {
-      if (inc.area_destino !== 'ADMINISTRACION') {
+      if (!['ADMINISTRACION', 'SOPORTE_TECNICO'].includes(inc.area_destino)) {
         const err = new Error('Administración solo puede modificar incidencias dirigidas a su área.');
         (err as any).status = 403;
         throw err;

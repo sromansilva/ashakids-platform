@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, CheckCircle2, Mic, Square } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { clinicaService, sessionsService, type FamilyCaptureStatus } from '@/modules/clinica/infrastructure/clinicalService';
+import { ApiError } from '@/core/api/client';
 import type { ReviewedArticulationResult } from '@/shared/application/articulationReportEntries';
 import { useFamilyCaptureResult } from '@/shared/application/hooks/useFamilyCaptureResult';
 import {
@@ -12,11 +13,16 @@ import {
   PHONETIC_MAX_CAPTURE_SAMPLES,
   encodePcm16,
 } from '@/shared/application/audio/phoneticCaptureConstants';
+import { NO_VOICE_MESSAGE, VoiceLevelTracker } from '@/shared/application/audio/voiceSignal';
 import { AudioDecibelMeter } from '@/shared/presentation/components/common/AudioDecibelMeter';
-import { PhoneticAttemptFields, PhoneticSupportIndicatorsPanel } from '@/shared/presentation/components/common/PhoneticSupportIndicatorsPanel';
+import { PhoneticReviewCard, type PendingPhoneticReview } from '@/shared/presentation/components/common/PhoneticReviewCard';
 import { MLServiceUnavailableBanner } from '@/shared/presentation/components/common/MLServiceUnavailableBanner';
 
 type TranscriptionResult = NonNullable<FamilyCaptureStatus['resultado']>;
+
+const OWN_ORIGIN = 'Micrófono de este dispositivo durante la sesión';
+const FAMILY_ORIGIN = 'Micrófono del dispositivo familiar; sin pista remota de Google Meet';
+const RECOVERED_ORIGIN = 'Muestra de la sesión recuperada para revisión del terapeuta';
 
 interface TherapistVoiceAIWidgetProps {
   sessionId: number;
@@ -38,17 +44,10 @@ export function TherapistVoiceAIWidget({
   const [seconds, setSeconds] = useState(0);
   const [analyzing, setAnalyzing] = useState(false);
   const [consent, setConsent] = useState<boolean | null>(null);
-  const [transcription, setTranscription] = useState<TranscriptionResult | null>(null);
-  const [editedTranscript, setEditedTranscript] = useState('');
-  const [therapistNote, setTherapistNote] = useState('');
-  const [clinicalOutcome, setClinicalOutcome] = useState('');
-  const [attempts, setAttempts] = useState('1');
-  const [quickNote, setQuickNote] = useState('');
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [mlOffline, setMlOffline] = useState(false);
   const [familyCaptureId, setFamilyCaptureId] = useState<string | null>(null);
-  const [captureOrigin, setCaptureOrigin] = useState('Micrófono de este dispositivo durante la sesión');
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const sourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
@@ -64,6 +63,43 @@ export function TherapistVoiceAIWidget({
   const packetSamplesCountRef = useRef(0);
   const totalSamplesRef = useRef(0);
   const captureStartedAtRef = useRef(0);
+  const levelRef = useRef(new VoiceLevelTracker());
+  const originsRef = useRef(new Map<number, { origin: string; duration: number | null }>());
+
+  // Las muestras PENDIENTE_REVISION sobreviven a una recarga y a un panel cerrado: se leen del
+  // servidor (indicadores recalculados allí). Solo equipo clínico; la familia no recibe estos datos.
+  const pendingKey = [user?.id_usuario, 'phonological-evaluations', patientId];
+  const pendingQuery = useQuery({
+    queryKey: pendingKey,
+    queryFn: ({ signal }) => clinicaService.phonologicalEvaluations(patientId!, signal),
+    enabled: !!user && !!patientId,
+    refetchInterval: 10_000,
+  });
+  const pending: PendingPhoneticReview[] = (pendingQuery.error ? [] : pendingQuery.data ?? [])
+    .filter((row) => row.id_sesion === sessionId && row.estado === 'PENDIENTE_REVISION' && !!row.palabra_objetivo)
+    .map((row) => {
+      const known = originsRef.current.get(row.id_evaluacion);
+      return {
+        id_evaluacion: row.id_evaluacion,
+        palabra_esperada: row.palabra_objetivo!,
+        transcripcion_tentativa: row.transcripcion_detectada ?? '',
+        duracion_segundos: known?.duration ?? null,
+        origen: known?.origin ?? RECOVERED_ORIGIN,
+        ...(row.similitud_texto_porcentaje != null && row.tipo_error_sugerido ? {
+          indicadores_apoyo: {
+            similitud_texto_porcentaje: row.similitud_texto_porcentaje,
+            tipo_error_sugerido: row.tipo_error_sugerido,
+            hipotesis_sugerida: row.hipotesis_sugerida ?? null,
+          },
+        } : {}),
+      };
+    });
+  const registerResult = (result: TranscriptionResult, origin: string) => {
+    originsRef.current.set(result.id_evaluacion, { origin, duration: result.duracion_segundos });
+    setError(null);
+    setSaved(false);
+    void pendingQuery.refetch();
+  };
 
   useEffect(() => {
     let active = true;
@@ -97,14 +133,7 @@ export function TherapistVoiceAIWidget({
   }, [sessionId]);
 
   useFamilyCaptureResult(sessionId, familyCaptureId, (result) => {
-    setTranscription(result);
-    setEditedTranscript(result.transcripcion_tentativa);
-    setTherapistNote('');
-    setClinicalOutcome('');
-    setAttempts('1');
-    setQuickNote('');
-    setCaptureOrigin('Micrófono del dispositivo familiar; sin pista remota de Google Meet');
-    setSaved(false);
+    registerResult(result, FAMILY_ORIGIN);
     setFamilyCaptureId(null);
   }, () => {
     setError('La solicitud de captura familiar expiró. Solicita una nueva muestra durante la sesión.');
@@ -170,8 +199,15 @@ export function TherapistVoiceAIWidget({
     }
     const captureId = captureIdRef.current;
     if (!captureId) return;
-    setAnalyzing(true);
     setError(null);
+    if (!levelRef.current.hasVoice) {
+      // Señal insuficiente: no se envía al modelo ni se crea ninguna evaluación.
+      setError(NO_VOICE_MESSAGE);
+      captureIdRef.current = null;
+      void uploadQueueRef.current.finally(() => sessionsService.descartarCapturaFonologica(sessionId, captureId).catch(() => undefined));
+      return;
+    }
+    setAnalyzing(true);
     void (async () => {
       try {
         await uploadQueueRef.current;
@@ -180,19 +216,14 @@ export function TherapistVoiceAIWidget({
           throw new Error('invalid-duration');
         }
         const response = await sessionsService.finalizarCapturaFonologica(sessionId, captureId);
-        setTranscription(response);
-        setEditedTranscript(response.transcripcion_tentativa);
-        setCaptureOrigin('Micrófono de este dispositivo durante la sesión');
-        setTherapistNote('');
-        setClinicalOutcome('');
-        setAttempts('1');
-        setQuickNote('');
-        setSaved(false);
+        registerResult(response, OWN_ORIGIN);
         setMlOffline(false);
       } catch (err: unknown) {
         const isOffline = typeof err === 'object' && err !== null && ('status' in err && (err as { status: number }).status === 503);
         if (isOffline) {
           setMlOffline(true);
+        } else if (err instanceof ApiError && err.status === 422 && err.message === NO_VOICE_MESSAGE) {
+          setError(NO_VOICE_MESSAGE);
         } else {
           setError('No se pudo transcribir la muestra. Revisa la conexión, el consentimiento y que la sesión siga en curso.');
         }
@@ -206,7 +237,6 @@ export function TherapistVoiceAIWidget({
 
   const startRecording = async () => {
     setError(null);
-    setTranscription(null);
     setSaved(false);
     setMlOffline(false);
     if (consent !== true) {
@@ -235,6 +265,7 @@ export function TherapistVoiceAIWidget({
       packetSamplesRef.current.fill(0);
       packetSamplesCountRef.current = 0;
       totalSamplesRef.current = 0;
+      levelRef.current.reset();
       captureStartedAtRef.current = Date.now();
 
       const AudioContextConstructor = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
@@ -257,6 +288,7 @@ export function TherapistVoiceAIWidget({
           const room = PHONETIC_PACKET_SAMPLES - packetSamplesCountRef.current;
           const remainingCapture = PHONETIC_MAX_CAPTURE_SAMPLES - totalSamplesRef.current;
           const count = Math.min(room, input.length - index, remainingCapture);
+          levelRef.current.push(input.subarray(index, index + count));
           packetSamplesRef.current.set(input.subarray(index, index + count), packetSamplesCountRef.current);
           index += count;
           packetSamplesCountRef.current += count;
@@ -298,7 +330,6 @@ export function TherapistVoiceAIWidget({
 
   const requestFamilyCapture = async () => {
     setError(null);
-    setTranscription(null);
     setSaved(false);
     if (consent !== true) {
       setError('Se requiere consentimiento vigente del tutor para solicitar una muestra de voz.');
@@ -317,54 +348,8 @@ export function TherapistVoiceAIWidget({
         fonema_objetivo: target.phoneme,
       });
       setFamilyCaptureId(captureId);
-      setCaptureOrigin('Micrófono del dispositivo familiar; sin pista remota de Google Meet');
     } catch {
       setError('No se pudo solicitar la muestra familiar. Confirma que la sesión esté en curso y el consentimiento vigente.');
-    }
-  };
-
-  const review = async (discard = false) => {
-    if (!transcription) return;
-    if (!discard && (!editedTranscript.trim() || !therapistNote.trim() || !clinicalOutcome)) {
-      setError('Corrige la transcripción, registra una observación y selecciona el resultado observado antes de confirmar.');
-      return;
-    }
-    const attemptCount = Number(attempts);
-    if (!discard && (!Number.isInteger(attemptCount) || attemptCount < 1 || attemptCount > 20)) {
-      setError('Indica un número de intentos entre 1 y 20.');
-      return;
-    }
-    setError(null);
-    try {
-      await clinicaService.reviewPhoneticEvaluation(transcription.id_evaluacion, {
-        estado: discard ? 'DESCARTADO' : 'CONFIRMADO_TERAPEUTA',
-        transcripcion_revisada: discard ? undefined : editedTranscript.trim(),
-        observacion_terapeuta: discard ? 'Descartada por el terapeuta.' : therapistNote.trim(),
-        resultado_clinico: discard ? undefined : clinicalOutcome as 'ALCANZADO' | 'EN_PROCESO' | 'REQUIERE_APOYO',
-        intentos: discard ? undefined : attemptCount,
-        nota_rapida: discard || !quickNote.trim() ? undefined : quickNote.trim(),
-      });
-      if (patientId && user?.id_usuario) {
-        await queryClient.invalidateQueries({ queryKey: [user.id_usuario, 'phonological-evaluations', patientId] });
-      }
-      if (!discard) {
-        const target = PHONETIC_TARGETS.find((entry) => entry.word === transcription.palabra_esperada);
-        onConfirmResult?.({
-          objetivo_articulacion: target ? 'Observación del objetivo ' + target.phoneme : 'Observación de pronunciación',
-          palabra_esperada: transcription.palabra_esperada,
-          transcripcion_tentativa: transcription.transcripcion_tentativa,
-          resultado_revisado: therapistNote.trim() + ' Transcripción revisada: "' + editedTranscript.trim() + '". Resultado del objetivo en esta muestra: ' + clinicalOutcome.replaceAll('_', ' ').toLocaleLowerCase('es') + '.',
-          archivo_origen: captureOrigin,
-          inicio_segundo: 0,
-          fin_segundo: Math.max(0.5, transcription.duracion_segundos ?? 3),
-          // Solo se pega tras la confirmación del terapeuta; la hipótesis sugerida nunca se incluye.
-          ...(transcription.indicadores_apoyo ? { similitud_apoyo: transcription.indicadores_apoyo.similitud_texto_porcentaje } : {}),
-        });
-      }
-      setSaved(true);
-      setTranscription(null);
-    } catch {
-      setError('No se pudo guardar la revisión. La sesión o la evaluación pueden haber cambiado.');
     }
   };
 
@@ -443,53 +428,22 @@ export function TherapistVoiceAIWidget({
       {error && <p role="alert" className="flex items-start gap-2 rounded-xl bg-amber-50 p-3 text-xs font-semibold text-amber-800"><AlertCircle size={15} />{error}</p>}
       {saved && <p role="status" className="flex items-center gap-2 text-xs font-bold text-emerald-700"><CheckCircle2 size={15} />Revisión guardada; el reporte puede guardarse ahora.</p>}
 
-      {transcription && (
-        <div className="space-y-3 rounded-xl border border-violet-100 bg-violet-50/50 p-3">
-          <p className="text-xs font-semibold text-[#615274]">{transcription.aviso}</p>
-          {transcription.indicadores_apoyo && <PhoneticSupportIndicatorsPanel indicators={transcription.indicadores_apoyo} />}
-          <PhoneticAttemptFields attempts={attempts} note={quickNote} onAttempts={setAttempts} onNote={setQuickNote} />
-          <label className="block text-xs font-bold text-[#1C1135]">
-            Transcripción tentativa (edítala según lo escuchado)
-            <input
-              value={editedTranscript}
-              onChange={(event) => setEditedTranscript(event.target.value)}
-              maxLength={500}
-              className="mt-1 block w-full rounded-lg border border-[#E8E5F4] bg-white p-2 text-sm"
-            />
-          </label>
-          <label className="block text-xs font-bold text-[#1C1135]">
-            Observación del terapeuta
-            <textarea
-              value={therapistNote}
-              onChange={(event) => setTherapistNote(event.target.value)}
-              maxLength={2000}
-              rows={3}
-              className="mt-1 block w-full rounded-lg border border-[#E8E5F4] bg-white p-2 text-sm"
-              placeholder="Describe lo observado, sin convertir la transcripción automática en diagnóstico."
-            />
-          </label>
-          <label className="block text-xs font-bold text-[#1C1135]">
-            Resultado del objetivo observado por el terapeuta
-            <select
-              value={clinicalOutcome}
-              onChange={(event) => setClinicalOutcome(event.target.value)}
-              className="mt-1 block w-full rounded-lg border border-[#E8E5F4] bg-white p-2 text-sm"
-            >
-              <option value="">Seleccionar resultado</option>
-              <option value="ALCANZADO">Alcanzado en esta muestra</option>
-              <option value="EN_PROCESO">En proceso</option>
-              <option value="REQUIERE_APOYO">Requiere apoyo</option>
-            </select>
-            <span className="mt-1 block font-normal text-[#615274]">Describe esta muestra revisada; no es una conclusión automática ni un diagnóstico.</span>
-          </label>
-          <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => void review(false)} className="rounded-xl bg-violet-600 px-3 py-2 text-xs font-bold text-white">
-              Confirmar y pegar en el informe
-            </button>
-            <button type="button" onClick={() => void review(true)} className="rounded-xl border border-[#E8E5F4] px-3 py-2 text-xs font-bold text-[#615274]">
-              Descartar transcripción
-            </button>
-          </div>
+      {pending.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="text-xs font-black text-[#1C1135]">Muestras pendientes de revisión ({pending.length})</h4>
+          <ul className="space-y-3">
+            {pending.map((item) => (
+              <PhoneticReviewCard
+                key={item.id_evaluacion}
+                item={item}
+                onConfirmResult={onConfirmResult}
+                onDone={() => {
+                  setSaved(true);
+                  void queryClient.invalidateQueries({ queryKey: pendingKey });
+                }}
+              />
+            ))}
+          </ul>
         </div>
       )}
     </section>

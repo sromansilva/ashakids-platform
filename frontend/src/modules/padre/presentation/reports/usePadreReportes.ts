@@ -4,7 +4,6 @@ import { sessionsService } from '@/modules/clinica/infrastructure/clinicalServic
 import { readAllPages } from '@/core/api/readAllPages';
 
 export function usePadreReportes() {
-  const [tab, setTab] = useState<'sesiones' | 'progreso'>('sesiones');
   const [openSession, setOpenSession] = useState<number | null>(null);
   const sessionsQuery = useRemote(['sessions'], signal => readAllPages(offset => sessionsService.list({ limit: 100, offset }, signal), signal));
   const sessions = (sessionsQuery.isError ? [] : sessionsQuery.data ?? []).map(s => ({
@@ -15,5 +14,5 @@ export function usePadreReportes() {
     therapist: s.cita.terapeuta_nombre, type: s.cita.modalidad === 'VIRTUAL' ? 'virtual' : 'presencial',
     state: s.estado_sesion, reportAvailable: s.reporte_disponible,
   }));
-  return { sessionsQuery, tab, setTab, openSession, setOpenSession, sessions };
+  return { sessionsQuery, openSession, setOpenSession, sessions };
 }

@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { useSearchParams, Navigate } from 'react-router-dom';
+import { useSearchParams, Navigate, useNavigate } from 'react-router-dom';
 import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
 import { useRemote } from '@/shared/application/hooks/useRemoteData';
 import { learningGames } from '@/modules/mundo_asha/infrastructure/learningGames';
@@ -15,6 +15,7 @@ type Section = 'world' | 'journey' | 'family';
 const sectionTitles = { world: 'Mi mundo', journey: 'Mi camino ASHA', family: 'Para mi familia' };
 
 export function FamilyCenter({ go, familyName }: { go: (view: View) => void; familyName?: string }) {
+  const routerNavigate = useNavigate();
   const { patients, patient } = useSelectedFamilyPatient();
   const progress = useRemote(
     ['game-progress', patient?.id_paciente],
@@ -95,6 +96,21 @@ export function FamilyCenter({ go, familyName }: { go: (view: View) => void; fam
           onWorld={() => open('world')}
           onFamily={() => open('family')}
         />
+      )}
+      {!patient && !patients.error && !patients.isPending && section === 'journey' && (
+        <div className="fc-empty my-6 mx-auto max-w-xl rounded-3xl border border-[#E8E5F4] bg-white p-8 text-center shadow-sm sm:p-12">
+          <h2 className="text-2xl font-black text-[#1C1135]">Aún no hay un perfil registrado</h2>
+          <p className="mt-2 text-[#615274]">
+            Registra el perfil de tu hijo o hija para comenzar su camino y seguir su evolución.
+          </p>
+          <button
+            type="button"
+            className="mt-6 inline-flex items-center justify-center rounded-2xl bg-[#6B46FE] px-6 py-3 font-bold text-white shadow-sm transition hover:bg-[#5833EA]"
+            onClick={() => routerNavigate('/padre/config?tab=hijos')}
+          >
+            Añadir a mi hijo o hija
+          </button>
+        </div>
       )}
       {!patients.error && section === 'family' && (
         <FamilyAdultArea

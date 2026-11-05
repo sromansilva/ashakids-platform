@@ -63,7 +63,7 @@ it('shows the family T-5 reminder with a safe Meet link and routes preferences t
   });
   renderRoute('/padre/welcome','PADRE');
   fireEvent.click(await screen.findByRole('button',{name:'Notificaciones, 1 sin leer'}));
-  const meet = await screen.findByRole('link',{name:'Iniciar reunión'});
+  const meet = await screen.findByRole('link',{name:'Entrar a la reunión'});
   expect(meet).toHaveAttribute('href',reminder.meet_url);
   expect(meet).toHaveAttribute('target','_blank');
   expect(meet).toHaveAttribute('rel','noopener noreferrer');

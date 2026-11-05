@@ -29,7 +29,7 @@ describe('Reportes profesionales persistentes, sin rediseño', () => {
     expect(await screen.findByDisplayValue('AUDITORIA guardada')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Descargar reporte PDF' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Firmar y publicar reporte' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: 'Enviar' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: 'Enviar' })).not.toBeInTheDocument();
     expect(screen.queryByText('Dra. Ana Ruiz')).not.toBeInTheDocument();
     expect(calls.mock.calls.some(([url]) => String(url).includes('/usuarios'))).toBe(false);
   });

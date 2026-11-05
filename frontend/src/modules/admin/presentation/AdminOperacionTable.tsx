@@ -51,6 +51,7 @@ export function AdminOperacionTable({
               <th className="py-4 px-6">Incidencia</th>
               <th className="py-4 px-6">Reportado por</th>
               <th className="py-4 px-6">Tipo</th>
+              <th className="py-4 px-6">Área</th>
               <th className="py-4 px-6">Estado</th>
               <th className="py-4 px-6">Fecha</th>
               <th className="py-4 px-6 text-right">Acciones</th>
@@ -59,7 +60,7 @@ export function AdminOperacionTable({
           <tbody className="divide-y divide-[#E8E5F4] text-sm">
             {items.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-12 text-center text-sm font-bold text-[#615274]">
+                <td colSpan={7} className="py-12 text-center text-sm font-bold text-[#615274]">
                   No hay incidencias en esta página
                 </td>
               </tr>
@@ -101,6 +102,7 @@ export function AdminOperacionTable({
                       </div>
                     </td>
 
+                    <td className="py-4 px-6">{item.area_destino === 'SOPORTE_TECNICO' ? 'Soporte técnico' : 'Administración'}</td>
                     <td className="py-4 px-6">
                       {['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(item.estado) && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FEE2E2] text-[#DC2626]">

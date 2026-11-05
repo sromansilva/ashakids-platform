@@ -31,9 +31,13 @@ export const consentimientoSchema = z.object({
 
 export type ConsentimientoDTO = z.infer<typeof consentimientoSchema>;
 
+/** Código diagnóstico preliminar del catálogo institucional (0 a 3), elegido por el terapeuta.
+ * Sin imports locales para poder probarse con node --experimental-strip-types; debe coincidir con DIAGNOSTICOS_PRELIMINARES. */
+export const codigoDiagnosticoSchema = z.number().int().min(0).max(3);
+
 export const prediccionPlanSchema = z.object({
   id_sesion: z.number().int().positive(),
-  codigo_diagnostico: z.number().int().min(1).max(5),
+  codigo_diagnostico: codigoDiagnosticoSchema,
   frecuencia_semanal: z.number().int().min(1).max(3),
 }).strict();
 
@@ -76,3 +80,10 @@ export const revisionEvaluacionFonologicaSchema = z.object({
 );
 
 export type RevisionEvaluacionFonologicaDTO = z.infer<typeof revisionEvaluacionFonologicaSchema>;
+
+export const cierreTratamientoSchema = z.object({
+  desenlace: z.enum(['ALTA', 'ABANDONO']),
+  observacion: z.string().trim().max(2000).optional(),
+}).strict();
+
+export type CierreTratamientoDTO = z.infer<typeof cierreTratamientoSchema>;

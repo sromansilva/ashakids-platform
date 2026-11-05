@@ -7,6 +7,7 @@ import { Crd } from '@/shared/presentation/components/common/Crd';
 import { SessionActions } from '@/shared/presentation/components/common/SessionActions';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { B } from '@/shared/presentation/theme/brand/B';
+import { sessionStatusLabel } from '@/shared/domain/statusLabels';
 
 export function PatientClinicalHistory({ patientId, reportsOnly = false }: { patientId: number; reportsOnly?: boolean }) {
   const [expanded, setExpanded] = useState<number | null>(null);
@@ -21,7 +22,7 @@ export function PatientClinicalHistory({ patientId, reportsOnly = false }: { pat
         <div className="flex items-center justify-between gap-3"><div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-2xl flex items-center justify-center" style={{ background: B.tealLight }}><Video size={16} style={{ color: B.teal }} /></div>
           <div><p className="font-extrabold text-[#1C1135] text-sm">Sesión #{session.id_sesion} · {new Date(session.cita.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima' })}</p>
-            <p className="text-xs text-[#7C6F9A]">{session.estado_sesion} · {session.cita.terapeuta_nombre} · {session.reporte_disponible ? 'Reporte guardado' : 'Sin reporte'}</p></div>
+            <p className="text-xs text-[#7C6F9A]">{sessionStatusLabel(session.estado_sesion)} · {session.cita.terapeuta_nombre} · {session.reporte_disponible ? 'Reporte guardado' : 'Sin reporte'}</p></div>
         </div><ChevronRight size={14} style={{ transform: expanded === session.id_sesion ? 'rotate(90deg)' : undefined }} /></div>
       </button>
       {expanded === session.id_sesion && <div className="px-5 pb-5"><SessionActions appointmentId={session.id_reserva} /></div>}

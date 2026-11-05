@@ -30,7 +30,7 @@ MAX_RECOMMENDED_SESSIONS = 31
 
 class TreatmentPredictionInput(BaseModel):
     edad_meses: int = Field(ge=24, le=180)
-    codigo_diagnostico: int = Field(ge=1, le=5)
+    codigo_diagnostico: int = Field(ge=0, le=3)
     cantidad_fonemas_afectados: int = Field(ge=1, le=5)
     nivel_colaboracion: int = Field(ge=1, le=5)
     frecuencia_semanal: int = Field(ge=1, le=3)
@@ -132,7 +132,7 @@ class TreatmentPredictor:
             raise ValueError("El manifiesto no contiene un SHA-256 válido.")
 
         codebook = manifest.get("diagnosis_codebook")
-        expected_codes = {str(code) for code in range(1, 6)}
+        expected_codes = {str(code) for code in range(0, 4)}
         if not isinstance(codebook, dict) or set(codebook) != expected_codes or any(not isinstance(label, str) or not label.strip() for label in codebook.values()):
             raise ValueError("El catálogo institucional de códigos diagnósticos está incompleto.")
 
