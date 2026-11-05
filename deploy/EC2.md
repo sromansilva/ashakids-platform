@@ -22,7 +22,7 @@ Ya en la terminal de EC2, instala Git y clona la rama que contiene el commit pub
 
 ```bash
 sudo apt-get update && sudo apt-get install -y git
-git clone -b feat/sroman https://github.com/sromansilva/ashakids-platform.git
+git clone -b main https://github.com/sromansilva/ashakids-platform.git
 cd ashakids-platform
 chmod +x scripts/deploy-ec2.sh
 ./scripts/deploy-ec2.sh

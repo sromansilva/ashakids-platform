@@ -60,6 +60,17 @@ echo "[1/5] Instalando dependencias base..."
 "${SUDO[@]}" apt-get update -y
 "${SUDO[@]}" apt-get install -y ca-certificates curl gnupg openssl
 
+if [[ $(free -m | awk '/^Swap:/ {print $2}') -eq 0 ]]; then
+  echo "Configurando 2GB de swap para asegurar compilación de frontend y soporte ML..."
+  "${SUDO[@]}" fallocate -l 2G /swapfile 2>/dev/null || "${SUDO[@]}" dd if=/dev/zero of=/swapfile bs=1M count=2048
+  "${SUDO[@]}" chmod 600 /swapfile
+  "${SUDO[@]}" mkswap /swapfile
+  "${SUDO[@]}" swapon /swapfile
+  if ! grep -q '/swapfile' /etc/fstab; then
+    echo '/swapfile none swap sw 0 0' | "${SUDO[@]}" tee -a /etc/fstab >/dev/null
+  fi
+fi
+
 if ! PUBLIC_IP="$(curl --fail --silent --show-error --max-time 10 https://checkip.amazonaws.com | tr -d '[:space:]')"; then
   fail "No pude detectar la IPv4 pública de la instancia."
 fi
@@ -151,6 +162,9 @@ if [[ "$TLS_MODE" == "domain" ]]; then
     grep -Fxq "$PUBLIC_IP" <<< "$DNS_IPS" || fail "El DNS aún no apunta a $PUBLIC_IP. Espera su propagación y ejecuta de nuevo el script."
   fi
 fi
+
+echo "[3.5/5] Pre-descargando modelo Wav2Vec 2.0 en ashakids-ml-cache..."
+compose run --rm ml-service python download_model.py || true
 
 echo "[4/5] Levantando PostgreSQL 18, la API y Caddy con HTTPS..."
 compose up --detach --build --wait --wait-timeout 300

@@ -28,12 +28,21 @@ async function startServer(): Promise<void> {
         await seedIncidencias();
       }
     }
-  } catch (err) {
+  } catch (err: unknown) {
+    const isPermissionError =
+      typeof err === 'object' &&
+      err !== null &&
+      'code' in err &&
+      (err as { code: string }).code === '42501';
     const message = err instanceof Error ? err.message : String(err);
-    console.error('[Bootstrap] No se pudo completar el esquema requerido; el servidor no iniciará:', message);
-    await pool.end();
-    process.exitCode = 1;
-    return;
+    if (isPermissionError) {
+      console.warn('[Bootstrap] Permisos DDL restringidos para el usuario de base de datos; asumiendo esquema ya aplicado en producción:', message);
+    } else {
+      console.error('[Bootstrap] No se pudo completar el esquema requerido; el servidor no iniciará:', message);
+      await pool.end();
+      process.exitCode = 1;
+      return;
+    }
   }
 
   if (shutdownRequested) {
