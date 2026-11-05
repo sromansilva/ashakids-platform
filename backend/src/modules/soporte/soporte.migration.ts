@@ -4,13 +4,23 @@ import { pool } from '../../core/database.js';
 export async function migrateSoporteSchema() {
   const client = await pool.connect();
   try {
+    const existing = await client.query(
+      "SELECT 1 FROM public.roles WHERE nombre_rol = 'SOPORTE_TECNICO' LIMIT 1;"
+    );
+    if (existing.rowCount && existing.rowCount > 0) {
+      return;
+    }
     await client.query('BEGIN');
-    await client.query(`ALTER TABLE public.roles ALTER COLUMN nombre_rol TYPE varchar(30);
+    await client.query(`
       INSERT INTO public.roles (nombre_rol, descripcion) VALUES ('SOPORTE_TECNICO', 'Atención de incidencias técnicas')
-      ON CONFLICT (nombre_rol) DO NOTHING;`);
+      ON CONFLICT (nombre_rol) DO NOTHING;
+    `);
     await client.query('COMMIT');
   } catch (error) {
-    await client.query('ROLLBACK');
+    await client.query('ROLLBACK').catch(() => undefined);
     throw error;
-  } finally { client.release(); }
+  } finally {
+    client.release();
+  }
 }
+
