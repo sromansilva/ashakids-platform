@@ -122,7 +122,7 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
               }`}
             >
               <Icon size={22} strokeWidth={active ? 2.25 : 1.9} className={`family-nav-icon shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
-              <span className="family-sidebar-label truncate">{item.label}</span>
+              <span className="family-sidebar-label">{item.label}</span>
             </button>
           );
         })}

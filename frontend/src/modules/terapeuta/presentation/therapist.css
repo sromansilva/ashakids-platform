@@ -35,7 +35,8 @@
 }
 
 @media (min-width: 768px) {
-  .asha-professional > aside {
+  .asha-professional > aside.therapist-sidebar,
+  aside.therapist-sidebar {
     width: 252px !important;
     height: 100vh;
     margin: 0;
@@ -46,14 +47,17 @@
     transition: width .32s cubic-bezier(.22,.61,.36,1), flex-basis .32s cubic-bezier(.22,.61,.36,1);
   }
 
-  .asha-professional > aside.sidebar--collapsed {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed,
+  aside.therapist-sidebar.sidebar--collapsed {
     width: 88px !important;
-    flex: 0 0 88px;
+    flex: 0 0 88px !important;
+    flex-basis: 88px !important;
     overflow-x: hidden;
     transition: width .32s cubic-bezier(.22,.61,.36,1), flex-basis .32s cubic-bezier(.22,.61,.36,1), box-shadow .22s ease;
   }
 
-  .asha-professional > aside > div:first-child {
+  .asha-professional > aside.therapist-sidebar > div:first-child,
+  aside.therapist-sidebar > div:first-child {
     display: flex;
     height: 72px;
     min-height: 72px;
@@ -64,11 +68,16 @@
     border-bottom: 1px solid #e8e5f4;
     background: rgb(255 255 255 / 88%);
   }
-  .asha-professional > aside nav { padding-inline: 12px; }
-  .asha-professional > aside nav button { min-height: 46px; border-radius: 15px; }
-  .asha-professional > aside.sidebar--collapsed > div:first-child { padding-inline: 18px !important; }
-  .asha-professional > aside.sidebar--collapsed > div:first-child > div { justify-content: flex-start; gap: 10px; }
-  .asha-professional > aside.sidebar--collapsed .sidebar-brand-label--collapsed {
+  .asha-professional > aside.therapist-sidebar nav,
+  aside.therapist-sidebar nav { padding-inline: 12px; }
+  .asha-professional > aside.therapist-sidebar nav button,
+  aside.therapist-sidebar nav button { min-height: 46px; border-radius: 15px; }
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed > div:first-child,
+  aside.therapist-sidebar.sidebar--collapsed > div:first-child { padding-inline: 18px !important; }
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed > div:first-child > div,
+  aside.therapist-sidebar.sidebar--collapsed > div:first-child > div { justify-content: flex-start; gap: 10px; }
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-brand-label--collapsed,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-brand-label--collapsed {
     display: block;
     max-width: 0;
     overflow: hidden;
@@ -76,8 +85,10 @@
     white-space: nowrap;
     transition: max-width .32s cubic-bezier(.22,.61,.36,1), opacity .18s ease;
   }
-  .asha-professional > aside.sidebar--collapsed nav { padding-inline: 10px; transition: padding-inline .32s cubic-bezier(.22,.61,.36,1); }
-  .asha-professional > aside.sidebar--collapsed nav button {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed nav,
+  aside.therapist-sidebar.sidebar--collapsed nav { padding-inline: 10px; transition: padding-inline .32s cubic-bezier(.22,.61,.36,1); }
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed nav button,
+  aside.therapist-sidebar.sidebar--collapsed nav button {
     position: relative;
     justify-content: center;
     gap: 0;
@@ -85,13 +96,15 @@
     padding-inline: 0;
     border-radius: 16px;
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-nav-icon {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-nav-icon,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-nav-icon {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     transition: left .32s cubic-bezier(.22,.61,.36,1), transform .32s cubic-bezier(.22,.61,.36,1);
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-nav-label--collapsed {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-nav-label--collapsed,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-nav-label--collapsed {
     position: absolute;
     top: 50%;
     left: 48px;
@@ -106,23 +119,27 @@
     text-overflow: ellipsis;
     transition: max-width .32s cubic-bezier(.22,.61,.36,1), opacity .18s ease;
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-user-footer-collapsed {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-user-footer-collapsed,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-user-footer-collapsed {
     align-items: center;
     padding-inline: 8px;
     transition: padding-inline .32s cubic-bezier(.22,.61,.36,1);
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-user-row-collapsed {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-user-row-collapsed,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-user-row-collapsed {
     flex-direction: row;
     justify-content: center;
     gap: 0;
     transition: gap .32s cubic-bezier(.22,.61,.36,1);
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-user-avatar {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-user-avatar,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-user-avatar {
     width: 32px !important;
     height: 32px !important;
     transition: width .32s cubic-bezier(.22,.61,.36,1), height .32s cubic-bezier(.22,.61,.36,1);
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-logout-button {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-logout-button,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-logout-button {
     flex: 0 0 0px !important;
     width: 0 !important;
     height: 0 !important;
@@ -133,7 +150,8 @@
     pointer-events: none;
     transition: opacity .18s ease, flex-basis .32s cubic-bezier(.22,.61,.36,1), width .32s cubic-bezier(.22,.61,.36,1), height .32s cubic-bezier(.22,.61,.36,1);
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-user-copy--collapsed {
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-user-copy--collapsed,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-user-copy--collapsed {
     flex: 0 0 0px !important;
     width: 0 !important;
     max-width: 0;
@@ -145,62 +163,40 @@
     opacity: 0;
     transition: flex-basis .32s cubic-bezier(.22,.61,.36,1), max-width .32s cubic-bezier(.22,.61,.36,1), opacity .18s ease;
   }
-  .asha-professional > aside.sidebar--collapsed .sidebar-logout-confirm { position: fixed; left: 96px; bottom: 14px; z-index: 70; width: 210px; box-shadow: 0 12px 32px rgb(48 33 87 / 16%); }
+  .asha-professional > aside.therapist-sidebar.sidebar--collapsed .sidebar-logout-confirm,
+  aside.therapist-sidebar.sidebar--collapsed .sidebar-logout-confirm { position: fixed; left: 96px; bottom: 14px; z-index: 70; width: 210px; box-shadow: 0 12px 32px rgb(48 33 87 / 16%); }
 
-  .asha-professional > aside.sidebar--collapsed:hover,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) {
     width: 264px !important;
-    flex-basis: 264px;
+    flex: 0 0 264px !important;
+    flex-basis: 264px !important;
     overflow-x: hidden;
     box-shadow: 12px 0 34px rgb(40 28 74 / 14%);
   }
-
-  .asha-professional > aside.sidebar--collapsed:hover > div:first-child,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) > div:first-child {
-    padding-inline: 18px !important;
-  }
-  .asha-professional > aside.sidebar--collapsed:hover > div:first-child > div,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) > div:first-child > div {
-    justify-content: flex-start;
-    gap: 10px;
-  }
-  .asha-professional > aside.sidebar--collapsed:hover nav,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) nav { padding-inline: 12px; }
-  .asha-professional > aside.sidebar--collapsed:hover nav button,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) nav button {
-    justify-content: center;
-    gap: 0;
-    padding-inline: 0;
-  }
-  .asha-professional > aside.sidebar--collapsed:hover .sidebar-brand-label--collapsed,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) .sidebar-brand-label--collapsed {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) > div:first-child { padding-inline: 18px !important; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) > div:first-child > div { justify-content: flex-start; gap: 10px; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) nav { padding-inline: 12px; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) nav button { justify-content: center; gap: 0; padding-inline: 0; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-brand-label--collapsed {
     display: block;
     max-width: 110px;
     overflow: hidden;
     opacity: 1;
     white-space: nowrap;
   }
-  .asha-professional > aside.sidebar--collapsed:hover .sidebar-nav-icon,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) .sidebar-nav-icon {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-nav-icon {
     left: 14px;
     transform: none;
   }
-  .asha-professional > aside.sidebar--collapsed:hover .sidebar-nav-label--collapsed,
-  .asha-professional > aside.sidebar--collapsed:has(:focus-visible) .sidebar-nav-label--collapsed {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-nav-label--collapsed {
     max-width: 180px;
     opacity: 1;
     pointer-events: auto;
   }
-  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-footer-collapsed { padding-inline: 16px; }
-  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-row-collapsed {
-    flex-direction: row;
-    gap: 12px;
-  }
-  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-avatar {
-    width: 40px !important;
-    height: 40px !important;
-  }
-  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-logout-button {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-footer-collapsed { padding-inline: 16px; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-row-collapsed { flex-direction: row; gap: 12px; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-avatar { width: 40px !important; height: 40px !important; }
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-logout-button {
     flex: 0 0 40px !important;
     width: 40px !important;
     height: 40px !important;
@@ -208,13 +204,13 @@
     opacity: 1;
     pointer-events: auto;
   }
-  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-copy--collapsed {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-user-copy--collapsed {
     flex: 1 1 0px !important;
     width: auto !important;
     max-width: 150px;
     opacity: 1;
   }
-  .asha-professional > aside.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-logout-confirm {
+  :is(.asha-professional > aside, aside).therapist-sidebar.sidebar--collapsed:is(:hover, :has(:focus-visible)) .sidebar-logout-confirm {
     position: static;
     width: auto;
     box-shadow: none;
@@ -465,10 +461,4 @@
   .session-actions--agenda .session-actions__clinical > div:last-child { grid-column: auto; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .asha-professional * {
-    transition: none !important;
-    animation: none !important;
-    scroll-behavior: auto !important;
-  }
-}
+

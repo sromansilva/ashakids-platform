@@ -51,7 +51,6 @@
   .asha-family table th { color: #615274; }
   .asha-family table td { padding-block: 16px; }
   @supports not (backdrop-filter: blur(16px)) { .asha-family .family-sidebar,.family-toolbar { background: #fff !important; } }
-  @media (prefers-reduced-motion: reduce) { .asha-family * { animation: none !important; transition: none !important; } .asha-family button:active { transform: none !important; } }
 }
 .family-toolbar { display: none; }
 @media (min-width: 768px) { .family-toolbar { display: flex; } }
@@ -70,8 +69,8 @@
 
 .family-role-sidebar {
   width: 88px !important;
-  min-width: 88px;
-  flex: 0 0 88px;
+  flex: 0 0 88px !important;
+  flex-basis: 88px !important;
   padding: 12px 0 14px;
   margin: 0;
   border: 0;
@@ -82,9 +81,8 @@
   overflow-x: hidden;
   overflow-y: auto;
   transition: width .32s cubic-bezier(.22,.61,.36,1),
-              min-width .32s cubic-bezier(.22,.61,.36,1),
               flex-basis .32s cubic-bezier(.22,.61,.36,1),
-              box-shadow .22s ease;
+              box-shadow .22s ease !important;
   will-change: width, flex-basis;
 }
 
@@ -95,7 +93,8 @@
   padding-inline: 10px;
   transition: padding-inline .32s cubic-bezier(.22,.61,.36,1);
 }
-.family-role-sidebar nav button {
+.family-role-sidebar nav button,
+.family-role-sidebar nav button.family-sub-nav-btn {
   position: relative;
   display: flex;
   align-items: center;
@@ -105,6 +104,7 @@
   height: 50px;
   min-height: 50px;
   padding-inline: 0;
+  border: 0 !important;
   border-radius: 16px;
   overflow: hidden;
   white-space: nowrap;
@@ -140,8 +140,8 @@
   .family-role-sidebar:hover,
   .family-role-sidebar:has(:focus-visible) {
     width: 264px !important;
-    min-width: 264px;
-    flex-basis: 264px;
+    flex: 0 0 264px !important;
+    flex-basis: 264px !important;
     overflow-x: hidden;
     box-shadow: 12px 0 34px rgb(40 28 74 / 14%);
   }
