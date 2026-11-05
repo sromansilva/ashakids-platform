@@ -8,10 +8,11 @@ Este documento define las directrices arquitectónicas, los flujos operativos y 
 
 **Ashakids** es una plataforma integral de telerehabilitación e intervención clínica/educativa infantil para habla, lenguaje, fluidez, voz y motricidad orofacial.
 
-El sistema opera con tres roles principales:
+El sistema opera con cuatro roles independientes:
 - **`ADMIN` (Administración)**: Gestión de cuentas familiares y terapeutas, supervisión clínica, soporte, analíticas globales y auditoría.
 - **`TERAPEUTA` (Especialistas)**: Agenda clínica, atención presencial o vía Google Meet, expedientes, generación de reportes clínicos estructurados, analíticas y seguimiento de actividad educativa.
 - **`PADRE` (Familias y Pacientes)**: Centro familiar (*Mi mundo*, *Mi camino ASHA*, *Para mi familia*), selector de hijos activos, agendamiento de citas, reportes de evolución, pagos y juegos educativos del Mundo ASHA.
+- **`SOPORTE_TECNICO` (Soporte Técnico)**: Cuenta propia y panel separado para atender únicamente incidencias del área técnica, con respuestas al solicitante, notas internas y resolución. No tiene acceso administrativo ni clínico.
 
 ---
 
@@ -48,11 +49,17 @@ Cualquier cambio propuesto o realizado en el código debe respetar estas reglas:
   - Para una sesión virtual, el terapeuta también puede solicitar una muestra desde el dispositivo familiar: el adulto la inicia explícitamente desde el portal familiar, y el resultado vuelve al terapeuta para revisión. Esta ruta usa el micrófono local familiar, nunca la pista remota de Meet, y mantiene el audio solo temporalmente en memoria.
   - La salida de Wav2Vec se trata como transcripción tentativa. El servidor calcula además indicadores de apoyo a partir del texto (`similitud_texto_porcentaje`, `tipo_error_sugerido`, `hipotesis_sugerida`; ver `phoneticIndicators.ts`): son sugerencias sin validación clínica, no miden acústica, no detectan distorsiones, no califican pronunciación ni emiten diagnósticos. Nunca se aceptan desde el cliente, se muestran con la etiqueta «Indicador de apoyo · sin validación clínica» y no deben llegar a la familia (rol `PADRE`). El terapeuta debe revisar y confirmar o descartar el resultado antes de incorporarlo al reporte; solo evaluaciones confirmadas pueden pegarse al informe y la hipótesis sugerida nunca se pega.
   - Google Calendar conserva los eventos de cita. La integración de Meet solicita datos de conferencia solo desde `MeetService` cuando `MEET_ENABLED` está activo.
+  - **Puerta de la reunión**: la familia (rol `PADRE`) no recibe `meet_url` en ninguna respuesta, correo ni recordatorio hasta que el terapeuta inicie la sesión (`estado_sesion = EN_CURSO`). La regla vive en el servidor, no solo en la interfaz. La familia nunca es invitada al evento de Calendar.
+  - **Horario estricto**: `POST /sesiones/:key/iniciar` solo se acepta desde 5 minutos antes de la cita hasta su fin. `SESSION_TEST_MODE_ENABLED` habilita el botón «Iniciar ahora (modo prueba)», que omite solo la ventana horaria (permisos y estados siguen vigentes); con `ENVIRONMENT=production` el backend no arranca si está activo.
+- **Pronóstico y datos de entrenamiento**:
+  - El pronóstico permanece apagado (HTTP 503 en el predictor, `disponible: false` en `/clinica/tratamientos/pronostico-estado`) hasta que un humano apruebe un modelo con manifiesto (ver `ml-artifacts/README.md`). No generar modelos, cohortes sintéticas ni aprobaciones para encenderlo.
+  - Todo plan guarda sus variables en `tratamiento_variables_modelo`, con independencia del modelo; el desenlace se registra al cerrar el tratamiento (`ALTA` o `ABANDONO`). El código diagnóstico preliminar lo asigna el terapeuta. Las muestras sin voz no generan evaluaciones.
 - **Servicios de Correo / Gmail**:
   - Las variables y firmas en `backend/src/core/config.ts` y auth deben mantenerse backward-compatible.
 - **Alta de familias y acceso**:
   - El registro público permanece cerrado tanto en la API (`POST /api/v1/auth/register`) como en la experiencia del frontend, que solo explica cómo solicitar acceso.
   - Las cuentas familiares se crean manualmente desde la administración autenticada (`POST /api/v1/admin/familias` o `/api/v1/admin/cuentas/padres`) y reciben un enlace temporal para activar su contraseña. No habilitar auto-registro familiar.
+  - El chatbot de WhatsApp (`/api/v1/whatsapp/webhook`, Meta Cloud API) solo recoge solicitudes de acceso en estado `PENDIENTE`; nunca crea cuentas. La cuenta se crea únicamente cuando un admin aprueba la solicitud desde `/admin/solicitudes` (vía `adminService.crearPadre`), y el DNI recogido solo se expone en esas rutas de admin.
 - **Base de Datos y PostgreSQL**:
   - Respetar la integridad referencial. Si se prueba la reserva de citas para un paciente (ej. `id_paciente: 3`), verificar que existan su `expediente` y su `tratamiento` activo para evitar violaciones de clave foránea (`fk_reservas_paciente`, `fk_reservas_tratamiento`).
 
@@ -140,6 +147,15 @@ npm run typecheck
   - `AdminCuentas.tsx`: Gestión integral de tutores y terapeutas, validación de contraseñas y activación.
 
 ---
+
+### D. Rol SOPORTE_TECNICO
+- Rutas: `/soporte`, `/soporte/incidencias` y `/soporte/incidencias/:id`; API exclusiva `/api/v1/soporte/incidencias`.
+- Cuentas: solo Administración puede crearlas mediante `/api/v1/admin/cuentas/soporte`; activación temporal y contraseña individual, sin perfil de terapeuta o tutor.
+- Backend: dominio, repositorio, servicio y rutas dentro de `modules/soporte`; notas compartidas dentro de `modules/incidencias`.
+- No ampliar permisos de soporte a cuentas, pagos o información clínica. Las notas internas no llegan al solicitante; las respuestas se leen con el control de acceso de la incidencia existente.
+- Al conectar desarrollo a una base de producción, usar `DEVELOPMENT_READ_ONLY=true` por defecto. Si el responsable autoriza expresamente escrituras reales, puede usarse `DEVELOPMENT_READ_ONLY=false` junto a `DEVELOPMENT_SKIP_BOOTSTRAP=true` para habilitar la API sin ejecutar migraciones, semillas ni recordatorios automáticos.
+- Pruebas específicas sin PostgreSQL externo: `npm --prefix backend run test:auth-soporte`, `npm --prefix backend run test:soporte`. Verificación visual con API ficticia: `npm --prefix frontend run qa:soporte`.
+- Guía operativa: `docs/Soporte_Tecnico.md`.
 
 ## 5. Procedimiento para Implementar Nuevas Funcionalidades
 

@@ -117,8 +117,8 @@ export function DashLayout({
       {isFamily && isFamilyContextual && <FamilySidebar go={go} />}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {role === "admin" && (
-          <header className="flex items-center justify-between px-6 sm:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20">
-            <div className="flex items-center gap-2 text-sm font-bold text-[#625779]">
+          <header className="flex items-center justify-between gap-3 px-4 sm:px-8 py-3 bg-white/80 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20">
+            <div className="flex min-w-0 items-center gap-2 truncate text-sm font-bold text-[#625779]">
               <span className="text-[#1C1135]">Inicio</span>
               {cur !== "admin" &&
                 cur !== "admin/dashboard" && (

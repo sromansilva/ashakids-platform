@@ -1,3 +1,4 @@
+import type { IncidentState } from '@/shared/domain/types/IncidentState';
 import { useEffect, useState } from 'react';
 import { View } from '@/shared/domain/types/navigation';
 import { IncidentForm } from '@/shared/presentation/components/common/IncidentForm';
@@ -67,7 +68,7 @@ export function TerapeutaIncidencias({ go: _go }: { go: (v: View) => void }) {
     };
   }, [tab]);
 
-  const handleStatusChange = async (id: number, newStatus: string) => {
+  const handleStatusChange = async (id: number, newStatus: IncidentState) => {
     await incidenciasService.cambiarEstado(id, newStatus);
     setRecibidas((prev) =>
       prev.map((item) => (item.id_incidencia === id ? { ...item, estado: newStatus } : item))

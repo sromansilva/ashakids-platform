@@ -2,7 +2,6 @@ import type { PoolClient } from 'pg';
 import { pool } from '../../core/database.js';
 import { GmailService } from '../../infrastructure/mailer/gmail.service.js';
 import { isReminderRecipientEnabled } from './notification-recipient.js';
-import { safeGoogleMeetUrl } from '../../core/security/google-meet-url.js';
 
 const SCHEDULER_LOCK_A = 8612;
 const SCHEDULER_LOCK_B = 3;
@@ -195,11 +194,9 @@ export class AppointmentReminderScheduler {
         email: string;
         parent_name: string;
         patient_name: string;
-        meet_url: string | null;
       }>(
         `SELECT u.email, CONCAT(u.nombres, ' ', u.apellidos) AS parent_name,
-                CONCAT(p.nombres_paciente, ' ', p.apellidos_paciente) AS patient_name,
-                r.meet_url
+                CONCAT(p.nombres_paciente, ' ', p.apellidos_paciente) AS patient_name
          FROM public.notificacion_email_outbox outbox
          JOIN public.reservas r ON r.id_reserva = outbox.id_reserva
            AND r.fecha_hora_inicio = outbox.fecha_hora_inicio
@@ -234,7 +231,7 @@ export class AppointmentReminderScheduler {
         childName: row.patient_name,
         date,
         time,
-        meetUrl: safeGoogleMeetUrl(row.meet_url) ?? undefined,
+        portalNotice: true,
       });
       if (result.success && result.status === 'ENVIADO') {
         await client.query(

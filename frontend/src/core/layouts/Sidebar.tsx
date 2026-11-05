@@ -138,6 +138,14 @@ export function Sidebar({
               label: "Cuentas",
               view: "admin/cuentas" as View,
             },
+            { icon: Users, label: "Pacientes", view: "admin/pacientes" as View },
+            { icon: Calendar, label: "Citas", view: "admin/citas" as View },
+            { icon: Activity, label: "Sesiones", view: "admin/sesiones" as View },
+            {
+              icon: UserPlus,
+              label: "Solicitudes de acceso",
+              view: "admin/solicitudes" as View,
+            },
             {
               icon: Activity,
               label: "Incidencias",

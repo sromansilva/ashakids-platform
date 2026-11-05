@@ -33,7 +33,7 @@ it('combina terapeuta, modalidad, fecha de Lima y estado; limpia todos los filtr
   expect(screen.getByText('Paciente 2')).toBeInTheDocument();
   expect(screen.getByText('Paciente 5')).toBeInTheDocument();
   for (const id of [1, 3, 4, 6]) expect(screen.queryByText(`Paciente ${id}`)).not.toBeInTheDocument();
-  fireEvent.click(screen.getByRole('button', { name: /^confirmada$/ }));
+  fireEvent.click(screen.getByRole('button', { name: /^confirmada$/i }));
   expect(screen.getByText('Mostrando 1 de 6 citas.')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: 'Limpiar filtros' }));
   expect(screen.getByText('Mostrando 6 de 6 citas.')).toBeInTheDocument();

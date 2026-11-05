@@ -19,55 +19,8 @@ import { IncidentsTable } from '@/shared/presentation/components/common/Incident
 import { IncidentDateRangeFilter } from '@/shared/presentation/components/common/IncidentDateRangeFilter';
 import { AdminOperacionTable } from './AdminOperacionTable';
 
-type FilterEstado = 'TODAS' | 'ABIERTA' | 'EN_REVISION' | 'RESUELTA';
+type FilterEstado = 'TODAS' | 'RECIBIDA' | 'EN ATENCIÓN' | 'RESUELTA';
 type FilterRol = 'TODOS' | 'PADRE' | 'TERAPEUTA';
-
-const demoIncidencias: any[] = [
-  {
-    id_incidencia: 101,
-    codigo: 'INC-00001',
-    titulo: 'El botón de guardar no responde',
-    descripcion: 'Al intentar guardar los cambios en la sección de datos familiares, el botón se queda deshabilitado y no envía la petición.',
-    usuario: 'Padre de familia',
-    rol: 'PADRE',
-    tipo: 'Funcionalidad',
-    estado: 'ABIERTA',
-    fecha_creacion: '2026-10-25T14:30:00Z',
-  },
-  {
-    id_incidencia: 102,
-    codigo: 'INC-00002',
-    titulo: 'No puedo visualizar un reporte',
-    descripcion: 'Al hacer clic en el reporte clínico de la sesión anterior no abre la vista previa del documento PDF.',
-    usuario: 'Terapeuta',
-    rol: 'TERAPEUTA',
-    tipo: 'Reportes',
-    estado: 'EN_REVISION',
-    fecha_creacion: '2026-10-25T10:15:00Z',
-  },
-  {
-    id_incidencia: 103,
-    codigo: 'INC-00003',
-    titulo: 'Dificultad para reservar una cita',
-    descripcion: 'El calendario muestra horarios disponibles pero al seleccionar un turno marca error de sincronización.',
-    usuario: 'Padre de familia',
-    rol: 'PADRE',
-    tipo: 'Reservas',
-    estado: 'ABIERTA',
-    fecha_creacion: '2026-10-24T18:45:00Z',
-  },
-  {
-    id_incidencia: 104,
-    codigo: 'INC-00004',
-    titulo: 'Problema al cargar una imagen',
-    descripcion: 'El avatar de perfil del niño arroja formato no soportado a pesar de ser un archivo PNG estándar.',
-    usuario: 'Terapeuta',
-    rol: 'TERAPEUTA',
-    tipo: 'Visualización',
-    estado: 'RESUELTA',
-    fecha_creacion: '2026-10-24T09:20:00Z',
-  },
-];
 
 export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
   const [adminTab, setAdminTab] = useState<'RECIBIDAS' | 'ENVIAR' | 'HISTORIAL'>('RECIBIDAS');
@@ -83,6 +36,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
   const [saving, setSaving] = useState<number | null>(null);
   const [filterEstado, setFilterEstado] = useState<FilterEstado>('TODAS');
   const [filterRol, setFilterRol] = useState<FilterRol>('TODOS');
+  const [filterArea, setFilterArea] = useState('TODAS');
   const [search, setSearch] = useState('');
   const [startDate, setStartDate] = useState<string>('');
   const [endDate, setEndDate] = useState<string>('');
@@ -117,8 +71,9 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
       })
       .catch((cause) => {
         if (!controller.signal.aborted) {
-          console.warn('[AdminOperacion] Using fallback mock data:', cause);
-          setItems(demoIncidencias);
+          console.warn('[AdminOperacion] Error al cargar incidencias:', cause);
+          setItems([]);
+          setError('No se pudieron cargar las incidencias.');
         }
       })
       .finally(() => {
@@ -149,7 +104,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   }, [adminTab]);
 
-  const update = async (id: number, estado: 'LEIDA' | 'RESUELTA') => {
+  const update = async (id: number, estado: 'EN ATENCIÓN' | 'RESUELTA') => {
     setSaving(id);
     setActionError('');
     try {
@@ -166,14 +121,15 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   };
 
-  const countAbiertas = items.filter((i) => ['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)).length;
-  const countEnRevision = items.filter((i) => ['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO'].includes(i.estado)).length;
-  const countResueltas = items.filter((i) => ['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)).length;
+  const countAbiertas = items.filter((i) => i.estado === 'RECIBIDA').length;
+  const countEnRevision = items.filter((i) => i.estado === 'EN ATENCIÓN').length;
+  const countResueltas = items.filter((i) => i.estado === 'RESUELTA').length;
 
   const filteredItems = items.filter((i) => {
-    if (filterEstado === 'ABIERTA' && !['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
-    if (filterEstado === 'EN_REVISION' && !['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO'].includes(i.estado)) return false;
+    if (filterEstado === 'RECIBIDA' && !['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
+    if (filterEstado === 'EN ATENCIÓN' && !['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN'].includes(i.estado)) return false;
     if (filterEstado === 'RESUELTA' && !['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)) return false;
+    if (filterArea !== 'TODAS' && i.area_destino !== filterArea) return false;
     if (filterRol === 'PADRE' && i.rol !== 'PADRE') return false;
     if (filterRol === 'TERAPEUTA' && i.rol !== 'TERAPEUTA') return false;
     if (search.trim()) {
@@ -243,7 +199,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
         <button
           type="button"
           onClick={() => setAdminTab('RECIBIDAS')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all ${
+          className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black transition-all ${
             adminTab === 'RECIBIDAS'
               ? 'bg-[#6B46FE] text-white shadow-xs'
               : 'text-[#615274] hover:bg-[#F0EEF8]'
@@ -254,7 +210,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
         <button
           type="button"
           onClick={() => setAdminTab('ENVIAR')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all ${
+          className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black transition-all ${
             adminTab === 'ENVIAR'
               ? 'bg-[#6B46FE] text-white shadow-xs'
               : 'text-[#615274] hover:bg-[#F0EEF8]'
@@ -265,7 +221,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
         <button
           type="button"
           onClick={() => setAdminTab('HISTORIAL')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black transition-all ${
+          className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-4 py-2 rounded-xl text-xs font-black transition-all ${
             adminTab === 'HISTORIAL'
               ? 'bg-[#6B46FE] text-white shadow-xs'
               : 'text-[#615274] hover:bg-[#F0EEF8]'
@@ -285,7 +241,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <FileText size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">Abiertas / Recibidas</p>
+                <p className="text-xs font-bold text-[#615274]">Recibidas</p>
                 <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countAbiertas}</p>
               </div>
             </div>
@@ -295,7 +251,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <Clock size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">En revisión / Proceso</p>
+                <p className="text-xs font-bold text-[#615274]">En atención</p>
                 <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countEnRevision}</p>
               </div>
             </div>
@@ -305,7 +261,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <CheckCircle2 size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">Resueltas / Atendidas</p>
+                <p className="text-xs font-bold text-[#615274]">Resueltas</p>
                 <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countResueltas}</p>
               </div>
             </div>
@@ -318,8 +274,8 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
               {(
                 [
                   { key: 'TODAS', label: 'Todas' },
-                  { key: 'ABIERTA', label: 'Abiertas' },
-                  { key: 'EN_REVISION', label: 'En revisión' },
+                  { key: 'RECIBIDA', label: 'Recibidas' },
+                  { key: 'EN ATENCIÓN', label: 'En atención' },
                   { key: 'RESUELTA', label: 'Resueltas' },
                 ] as const
               ).map((tab) => (
@@ -360,6 +316,17 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 }}
               />
 
+              {/* Area select */}
+              <select
+                aria-label="Filtrar por área"
+                value={filterArea}
+                onChange={(e) => setFilterArea(e.target.value)}
+                className="rounded-2xl border border-[#E8E5F4] bg-white px-4 py-2.5 text-sm font-bold text-[#1C1135] shadow-2xs"
+              >
+                <option value="TODAS">Todas las áreas</option>
+                <option value="ADMINISTRACION">Administración</option>
+                <option value="SOPORTE_TECNICO">Soporte técnico</option>
+              </select>
               {/* Role select */}
               <div className="relative shrink-0 w-full sm:w-auto">
                 <select
@@ -379,7 +346,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
 
           {error && (
             <div role="alert" className="rounded-2xl bg-red-50 border border-red-200 p-5 mb-6 text-red-900 font-bold">
-              {error}
+              {error} <button type="button" onClick={() => setReload((v) => v + 1)} className="underline">Reintentar</button>
             </div>
           )}
 

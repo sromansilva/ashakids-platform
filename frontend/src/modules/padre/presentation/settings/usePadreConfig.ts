@@ -1,19 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { View } from "@/shared/domain/types/navigation";
 import { useFamilyPatients } from "@/modules/padre/application/useFamilyPatients";
-import { useEffect } from "react";
 import { useRoleProfile } from "@/shared/application/hooks/useRoleProfile";
 import { useAuth } from "@/modules/auth/application/useAuth";
 import { usersService } from "@/modules/clinica/infrastructure/clinicalService";
 
+const VALID_TABS = ["cuenta", "hijos", "notificaciones", "privacidad", "seguridad"] as const;
+type ConfigTab = typeof VALID_TABS[number];
+
 export function usePadreConfig({ onNameChange, padrePlan = "exploracion", go: configGo }: { onNameChange?: (n: string) => void; padrePlan?: "exploracion" | "familia"; go?: (v: View) => void }) {
-const [tab, setTab] = useState<
-    | "cuenta"
-    | "hijos"
-    | "notificaciones"
-    | "privacidad"
-    | "seguridad"
-  >("cuenta");
+const [searchParams, setSearchParams] = useSearchParams();
+const queryTab = searchParams.get("tab");
+const initialTab: ConfigTab = VALID_TABS.includes(queryTab as ConfigTab) ? (queryTab as ConfigTab) : "cuenta";
+
+const [tab, setTabState] = useState<ConfigTab>(initialTab);
+
+useEffect(() => {
+  const currentTab = searchParams.get("tab");
+  if (currentTab && VALID_TABS.includes(currentTab as ConfigTab)) {
+    setTabState(currentTab as ConfigTab);
+  }
+}, [searchParams]);
+
+const setTab = (nextTab: ConfigTab) => {
+  setTabState(nextTab);
+  setSearchParams((prev) => {
+    const next = new URLSearchParams(prev);
+    next.set("tab", nextTab);
+    return next;
+  }, { replace: true });
+};
 const [toast, setToast] = useState("");
 const showToast = (msg: string) => {
     setToast(msg);

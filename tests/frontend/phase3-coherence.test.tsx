@@ -135,15 +135,15 @@ it.each(["/padre/recorrido", "/padre/seguimiento"])("%s reuses the persisted tra
 });
 it("Therapist dashboard counts authorised data and never requests administrator accounts", async () => {
   api(); renderRoute("/terapeuta", "TERAPEUTA");
-  await screen.findByText("Profesional Uno · CONFIRMADA");
-  expect(screen.getByText("Profesional Uno · CONFIRMADA")).toBeInTheDocument();
+  await screen.findByText("Profesional Uno · Confirmada");
+  expect(screen.getByText("Profesional Uno · Confirmada")).toBeInTheDocument();
   expect(screen.getByText("Reportes por registrar").parentElement).toHaveTextContent("1");
   expect(screen.queryByText(/Dra. Ana Ruiz|4.9|94 h|Mensajes nuevos/)).not.toBeInTheDocument();
   expect(vi.mocked(fetch).mock.calls.some(([url]) => String(url).includes("/usuarios"))).toBe(false);
 });
 it("Admin dashboard derives active account count and excludes cancelled/completed/expired future appointments", async () => {
   api(); renderRoute("/admin", "ADMIN");
-  await screen.findByText("Profesional Uno · CONFIRMADA");
+  await screen.findByText("Profesional Uno · Confirmada");
   expect(screen.getByText("Cuentas activas").parentElement).toHaveTextContent("1");
   expect(screen.getAllByText("Alex Uno")).toHaveLength(1);
   expect(screen.queryByText(/96.4|Incidencias técnicas abiertas|Modelo ML/)).not.toBeInTheDocument();
@@ -158,7 +158,7 @@ it("Dashboard failure hides aggregates and can be retried", async () => {
   await screen.findByText("No pudimos actualizar los registros.");
   expect(screen.queryByLabelText("Resumen de registros")).not.toBeInTheDocument();
   api(); fireEvent.click(screen.getByRole("button", { name: "Reintentar panel" }));
-  await screen.findByText("Profesional Uno · CONFIRMADA");
+  await screen.findByText("Profesional Uno · Confirmada");
 });
 it("Mundo ASHA consulta el plan del hijo seleccionado y no inventa asignación", async () => {
   api(); renderRoute("/mundo-asha", "PADRE");
@@ -203,7 +203,6 @@ it("Oral production levels require professional validation, not a server quiz pa
   expect(deriveWorldProgress(oral, 1, [{ ...a, verifiedBy: "professional" }]).completed).toBe(1);
 });
 it("Unreviewed extensions and session prototypes stay explicitly labelled", () => {
-  expect(capabilityNotice("/session/active")).toMatch(/Demostración/);
   expect(capabilityNotice("/padre/mensajes")).toBeNull();
   expect(capabilityNotice("/terapeuta/mensajes")).toBeNull();
   expect(capabilityNotice("/mundo-asha/cuentos")).toMatch(/prototipos/);

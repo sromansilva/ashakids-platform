@@ -7,6 +7,9 @@ import { isMeetingUrl } from '@/shared/presentation/components/common/VirtualMee
 
 type Destination = 'panel' | 'meet';
 
+const SESSION_WAIT_ATTEMPTS = 8;
+const SESSION_WAIT_INTERVAL_MS = 1000;
+
 export function ScheduledSessionLaunchGate() {
   const { appointmentId: rawId, destination: rawDestination } = useParams();
   const appointmentId = Number(rawId);
@@ -24,6 +27,9 @@ export function ScheduledSessionLaunchGate() {
   const launchStarted = useRef(false);
   const mounted = useRef(true);
   const startMs = Date.parse(appointment.data?.fecha_hora_inicio ?? '');
+  // El terapeuta puede iniciar unos minutos antes: en ese caso no hay que esperar a la hora exacta.
+  const alreadyRunning = appointment.data?.estado_sesion === 'EN_CURSO';
+  const ready = Number.isFinite(startMs) && (now >= startMs || alreadyRunning);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -35,26 +41,41 @@ export function ScheduledSessionLaunchGate() {
     return () => { mounted.current = false; };
   }, []);
 
+  // Mientras se espera, consulta el estado cada pocos segundos para detectar que la sesión ya inició.
   useEffect(() => {
-    if (!validId || !destination || !appointment.data || !Number.isFinite(startMs) || now < startMs || launchStarted.current) return;
+    if (!validId || !destination || ready || launchStarted.current) return;
+    const timer = window.setInterval(() => void appointment.refetch(), 5000);
+    return () => window.clearInterval(timer);
+  }, [appointment.refetch, destination, ready, validId]);
+
+  useEffect(() => {
+    if (!validId || !destination || !appointment.data || !ready || launchStarted.current) return;
     launchStarted.current = true;
-    void appointmentsService.get(appointmentId).then((current) => {
+    const wait = (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
+    void (async () => {
+      // La sesión puede estar todavía creándose desde la otra pestaña: reintenta unos segundos.
+      let current = await appointmentsService.get(appointmentId);
+      for (let attempt = 0; destination === 'panel' && !current.id_sesion && attempt < SESSION_WAIT_ATTEMPTS && mounted.current; attempt += 1) {
+        await wait(SESSION_WAIT_INTERVAL_MS);
+        current = await appointmentsService.get(appointmentId);
+      }
       if (!mounted.current) return;
-      if (current.estado_reserva !== 'CONFIRMADA' || Date.parse(current.fecha_hora_inicio) > Date.now()) {
+      const running = current.estado_sesion === 'EN_CURSO';
+      if (current.estado_reserva !== 'CONFIRMADA' || (!running && Date.parse(current.fecha_hora_inicio) > Date.now())) {
         throw new Error('appointment-not-ready');
       }
       if (destination === 'meet') {
         if (!isMeetingUrl(current.meet_url)) throw new Error('meeting-link-unavailable');
-        window.location.replace(current.meet_url);
+        window.location.replace(current.meet_url!);
         return;
       }
       if (!Number.isInteger(current.id_sesion) || !current.id_sesion) throw new Error('session-not-ready');
       const path = role === 'ADMIN' ? `/admin/sesion/${appointmentId}` : `/terapeuta/sesion/${appointmentId}`;
       navigate(path, { replace: true });
-    }).catch(() => {
+    })().catch(() => {
       if (mounted.current) setLaunchError('La cita cambió o no está lista para iniciar. Vuelve a la agenda para revisar su estado.');
     });
-  }, [appointment.data, appointmentId, destination, navigate, now, role, startMs, validId]);
+  }, [appointment.data, appointmentId, destination, navigate, ready, role, validId]);
 
   const timeLabel = Number.isFinite(startMs)
     ? new Date(startMs).toLocaleTimeString('es-PE', { hour: '2-digit', minute: '2-digit' })

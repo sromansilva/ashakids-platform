@@ -17,8 +17,15 @@ export interface IndicadoresFoneticos {
 
 export const ETIQUETA_INDICADOR_APOYO = 'Indicador de apoyo · sin validación clínica';
 
-/** Debe coincidir con la etiqueta que escribe frontend/src/shared/application/articulationReportEntries.ts. */
-const ETIQUETA_SIMILITUD_INFORME = 'Similitud de texto (indicador de apoyo, sin validación clínica)';
+/**
+ * Etiqueta de la línea de similitud que el editor pega al informe (debe coincidir con
+ * frontend/src/shared/application/articulationReportEntries.ts). Los informes anteriores usaron
+ * una etiqueta distinta: se siguen reconociendo para no mostrarlos a la familia.
+ */
+const ETIQUETAS_SIMILITUD_INFORME = [
+  ETIQUETA_INDICADOR_APOYO,
+  'Similitud de texto (indicador de apoyo, sin validación clínica)',
+];
 
 /** Quita del texto de un informe la línea de similitud pegada: la familia nunca debe recibirla. */
 export function quitarIndicadoresDelInforme(text: string): string;
@@ -27,8 +34,66 @@ export function quitarIndicadoresDelInforme(text: string | null): string | null 
   if (text == null) return null;
   return text
     .split(/\r?\n/)
-    .filter((line) => !line.trimStart().startsWith(`${ETIQUETA_SIMILITUD_INFORME}:`))
+    .filter((line) => {
+      const trimmed = line.trimStart();
+      return !ETIQUETAS_SIMILITUD_INFORME.some((label) => trimmed.startsWith(`${label}:`));
+    })
     .join('\n');
+}
+
+const MARCADOR_APERTURA = '[Resultado de articulación: análisis clínico]';
+const MARCADOR_CIERRE = '[/Resultado de articulación]';
+const RESULTADOS_LEGIBLES: Record<string, string> = {
+  'alcanzado en esta muestra': 'alcanzado',
+  alcanzado: 'alcanzado',
+  'en proceso': 'en proceso',
+  'requiere apoyo': 'requiere apoyo',
+};
+
+function bloqueArticulacionLegible(cuerpo: string): string {
+  const campos = new Map<string, string>();
+  for (const line of cuerpo.split(/\r?\n/)) {
+    const separador = line.indexOf(':');
+    if (separador > 0) campos.set(line.slice(0, separador).trim(), line.slice(separador + 1).trim());
+  }
+  const palabra = campos.get('Palabra esperada');
+  const revisado = campos.get('Resultado revisado por terapeuta') ?? '';
+  const coincidencia = revisado.match(/Resultado del objetivo en esta muestra:\s*([^.]+)\.?/i);
+  const resultado = coincidencia ? RESULTADOS_LEGIBLES[coincidencia[1].trim().toLocaleLowerCase('es')] : undefined;
+  const observacion = revisado
+    .replace(/Transcripción revisada:\s*"[^"]*"\.?/gi, '')
+    .replace(/Resultado del objetivo en esta muestra:\s*[^.]*\.?/gi, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const partes: string[] = [];
+  if (palabra) partes.push(`Palabra practicada: ${palabra.charAt(0).toLocaleUpperCase('es')}${palabra.slice(1)}.`);
+  if (resultado) partes.push(`Resultado: ${resultado}.`);
+  if (observacion) partes.push(`Observación: ${/[.!?]$/.test(observacion) ? observacion : `${observacion}.`}`);
+  return partes.join(' ');
+}
+
+/**
+ * Presentación del informe para la familia: sin marcadores técnicos, fuente de audio, fragmento,
+ * transcripciones del modelo ni indicadores de apoyo. Solo cambia lo que se muestra; el texto
+ * guardado no se modifica.
+ */
+export function presentarInformeParaFamilia(text: string): string;
+export function presentarInformeParaFamilia(text: string | null): string | null;
+export function presentarInformeParaFamilia(text: string | null): string | null {
+  if (text == null) return null;
+  const sinIndicadores = quitarIndicadoresDelInforme(text);
+  const bloques = /\[Resultado de articulación: análisis clínico\]\r?\n?([\s\S]*?)\r?\n?\[\/Resultado de articulación\]/g;
+  return sinIndicadores
+    .replace(bloques, (_match, cuerpo: string) => bloqueArticulacionLegible(cuerpo))
+    .split(/\r?\n/)
+    .filter((line) => {
+      const trimmed = line.trim();
+      return trimmed !== MARCADOR_APERTURA && trimmed !== MARCADOR_CIERRE &&
+        !/^(Fuente de audio revisada|Fuente confirmada por terapeuta|Fragmento|Transcripción tentativa del modelo):/.test(trimmed);
+    })
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
 
 export const HIPOTESIS = {
@@ -48,7 +113,10 @@ export function contenidoInformeParaRol(
 ): { observaciones: string; objetivos: string | null } {
   if (rol !== 'PADRE') return { observaciones: informe.observaciones ?? '', objetivos: informe.objetivos };
   if (informe.estado !== 'FIRMADO') return { observaciones: '', objetivos: null };
-  return { observaciones: quitarIndicadoresDelInforme(informe.observaciones ?? ''), objetivos: informe.objetivos };
+  return {
+    observaciones: presentarInformeParaFamilia(informe.observaciones ?? ''),
+    objetivos: informe.objetivos === null ? null : presentarInformeParaFamilia(informe.objetivos),
+  };
 }
 
 type Op =

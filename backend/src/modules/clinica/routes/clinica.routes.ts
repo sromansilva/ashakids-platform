@@ -29,7 +29,20 @@ clinicaRouter.post('/consentimientos', requireRoles(['PADRE']), (req, res, next)
   clinicaController.registrarConsentimiento(req, res, next)
 );
 
+// Código diagnóstico preliminar: catálogo institucional, independiente del modelo.
+clinicaRouter.get('/diagnosticos-preliminares', requireRoles(['ADMIN', 'TERAPEUTA']), (req, res, next) =>
+  clinicaController.getDiagnosticosPreliminares(req, res, next)
+);
+
+// Desenlace del tratamiento (ALTA o ABANDONO); un plan cerrado no vuelve a ACTIVO.
+clinicaRouter.patch('/tratamientos/:id/desenlace', requireRoles(['ADMIN', 'TERAPEUTA']), (req, res, next) =>
+  clinicaController.cerrarTratamiento(req, res, next)
+);
+
 // Predicción Asistida de Tratamiento (Machine Learning / Random Forest)
+clinicaRouter.get('/tratamientos/pronostico-estado', requireRoles(['ADMIN', 'TERAPEUTA']), (req, res, next) =>
+  clinicaController.getEstadoPronostico(req, res, next)
+);
 clinicaRouter.get('/tratamientos/predictor-catalog', requireRoles(['ADMIN', 'TERAPEUTA']), (req, res, next) =>
   clinicaController.getTreatmentPredictionCatalog(req, res, next)
 );

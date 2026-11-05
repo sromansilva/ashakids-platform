@@ -9,6 +9,8 @@ import {
   PHONETIC_MAX_CAPTURE_SAMPLES as MAX_SAMPLES,
   encodePcm16,
 } from '@/shared/application/audio/phoneticCaptureConstants';
+import { NO_VOICE_MESSAGE } from '@/shared/application/audio/voiceSignal';
+import { ApiError } from '@/core/api/client';
 import { AudioDecibelMeter } from '@/shared/presentation/components/common/AudioDecibelMeter';
 
 export function FamilyPhoneticCaptureWidget({ sessionId, patientName = 'el niño' }: { sessionId: number; patientName?: string }) {
@@ -109,9 +111,13 @@ export function FamilyPhoneticCaptureWidget({ sessionId, patientName = 'el niño
         await sessionsService.finalizarCapturaFamiliar(sessionId, id);
         setSent(true);
         await queryClient.invalidateQueries({ queryKey: ['family-phonetic-capture', sessionId] });
-      } catch {
-        setError('No se pudo enviar la muestra. Confirma que la sesión continúa y que el consentimiento sigue vigente.');
-        discard(id);
+      } catch (err) {
+        // El servidor mide el PCM recibido; si no hay voz reabre la solicitud para repetir la muestra.
+        const noVoice = err instanceof ApiError && err.status === 422 && err.message === NO_VOICE_MESSAGE;
+        setError(noVoice
+          ? NO_VOICE_MESSAGE
+          : 'No se pudo enviar la muestra. Confirma que la sesión continúa y que el consentimiento sigue vigente.');
+        if (!noVoice) discard(id);
       } finally {
         if (captureIdRef.current === id) captureIdRef.current = null;
       }
@@ -232,7 +238,7 @@ export function FamilyPhoneticCaptureWidget({ sessionId, patientName = 'el niño
   }, [query.isError]);
 
   return (
-    <section className="space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4" aria-live="polite">
+    <section id={`family-capture-${sessionId}`} tabIndex={-1} className="space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50/50 p-4 outline-none" aria-live="polite">
       <div>
         <h3 className="text-sm font-black text-[#1C1135]">Prueba breve desde el dispositivo familiar</h3>
         <p className="mt-1 text-xs leading-relaxed text-[#615274]">

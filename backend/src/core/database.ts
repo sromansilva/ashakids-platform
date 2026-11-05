@@ -14,6 +14,7 @@ export const pool = new Pool({
   max: 10,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
+  ...(settings.DEVELOPMENT_READ_ONLY ? { options: '-c default_transaction_read_only=on' } : {}),
 });
 
 pool.on('error', (err) => {

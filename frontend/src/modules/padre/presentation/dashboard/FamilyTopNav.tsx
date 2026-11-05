@@ -91,7 +91,7 @@ export function FamilyTopNav({
         >
           <Isotipo size={34} />
           <span className="font-black text-[#1C1135] text-xl tracking-tight hidden sm:inline">AshaKids</span>
-          <span className="text-xs font-bold text-[#8C82A8] border-l border-[#E8E5F4] pl-2.5 hidden md:inline">Centro Familiar</span>
+          <span className="ftn-brand-sub text-xs font-bold text-[#8C82A8] border-l border-[#E8E5F4] pl-2.5">Centro Familiar</span>
         </button>
 
         {patient && (

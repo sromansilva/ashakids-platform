@@ -249,8 +249,11 @@ https://ashakids.life`;
     date: string;
     time: string;
     meetUrl?: string;
+    /** Familias: sin enlace; se les indica que entren desde AshaKids cuando el terapeuta inicie. */
+    portalNotice?: boolean;
   }): Promise<MailSendResult> {
     const link = params.meetUrl;
+    const portalLine = 'Para la videoconsulta, entra a tu cuenta de AshaKids: podrás unirte cuando tu terapeuta inicie la reunión.';
     const buttonBg = '#1A73E8';
 
     const text = `Hola ${params.patientOrTherapistName},
@@ -259,7 +262,7 @@ Se ha confirmado tu cita terapéutica en ASHAKids:
 • Motivo: ${params.topic}
 • Fecha: ${params.date}
 • Hora: ${params.time}
-${link ? `• Enlace de videoconsulta (Google Meet): ${link}\n` : ''}
+${link ? `• Enlace de videoconsulta (Google Meet): ${link}\n` : params.portalNotice ? `• ${portalLine}\n` : ''}
 Te recomendamos conectarte 5 minutos antes de la sesión.
 
 Equipo ASHAKids
@@ -296,7 +299,7 @@ https://ashakids.life`;
     ${
       link
         ? `<a href="${link}" class="btn">Unirse con Google Meet</a>`
-        : ''
+        : params.portalNotice ? `<p>${portalLine}</p>` : ''
     }
     <div class="footer">
       © ${new Date().getFullYear()} ASHAKids • Plataforma de Telerehabilitación
@@ -320,13 +323,14 @@ https://ashakids.life`;
     date: string;
     time: string;
     meetUrl?: string;
+    portalNotice?: boolean;
   }): Promise<MailSendResult> {
     const text = `Hola ${params.responsibleName},
 
 Te recordamos que la sesión de ${params.childName} en ASHAKids empieza en cinco minutos.
 • Fecha: ${params.date}
 • Hora: ${params.time}
-${params.meetUrl ? `• Enlace de Google Meet: ${params.meetUrl}\n` : ''}
+${params.meetUrl ? `• Enlace de Google Meet: ${params.meetUrl}\n` : params.portalNotice ? '• Entra desde tu cuenta de AshaKids: podrás unirte a la reunión cuando tu terapeuta la inicie.\n' : ''}
 Si la hora cambió, revisa la agenda en tu cuenta de Ashakids.
 
 Equipo Ashakids

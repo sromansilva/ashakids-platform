@@ -28,9 +28,11 @@ function mockApi(overrides?: (path: string, init: RequestInit) => Response | Pro
 
 it('Family reports distinguish persisted session data from demo metrics', async () => {
   mockApi(); renderRoute('/padre/reportes', 'PADRE');
-  expect(await screen.findByText('Sin medición')).toBeInTheDocument();
-  expect(screen.getByText('Sin registro')).toBeInTheDocument();
-  expect(screen.getByRole('button', { name: 'Progreso mensual (pendiente)' })).toBeInTheDocument();
+  await screen.findByRole('button', { name: /Paciente Aislado/ });
+  expect(screen.queryByText('Progreso general')).not.toBeInTheDocument();
+  expect(screen.queryByText('Sin medición')).not.toBeInTheDocument();
+  expect(screen.queryByText('Valoración terapeuta')).not.toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: 'Progreso mensual (pendiente)' })).not.toBeInTheDocument();
   expect(screen.queryByText('78%')).not.toBeInTheDocument();
 });
 
@@ -89,7 +91,11 @@ it('Books a confirmed therapy slot with a professional selected separately from 
   expect(screen.getByRole('heading', { name: 'Revisa tu cita' })).toBeInTheDocument();
   expect(requests.mock.calls.some(([, init]) => init?.method === 'POST')).toBe(false);
   fireEvent.click(screen.getByRole('button', { name: 'Confirmar cita' }));
-  await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  expect(await screen.findByRole('heading', { name: /Cita confirmada para el/ })).toBeInTheDocument();
+  const confirmation = within(screen.getByRole('dialog'));
+  expect(confirmation.getByRole('button', { name: 'Cerrar' })).toBeInTheDocument();
+  fireEvent.click(confirmation.getByRole('button', { name: 'Ver mi agenda' }));
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
   const call = requests.mock.calls.find(([, init]) => init?.method === 'POST');
   expect(JSON.parse(String(call?.[1]?.body))).toMatchObject({ tipo_cita: 'TERAPIA', id_tratamiento: 5, id_paciente: 12, id_terapeuta: 4, fecha_hora_inicio: start, fecha_hora_fin: day + 'T10:40:00-05:00' });
 });

@@ -13,6 +13,7 @@ import type { View } from "@/shared/domain/types/navigation";
 import { Btn } from "./Btn";
 import { Crd } from "./Crd";
 import { SessionActions } from "./SessionActions";
+import { attendanceLabel, reservationStatusLabel, sessionStatusLabel } from '@/shared/domain/statusLabels';
 
 type Tracking = ReturnType<typeof useFamilyTracking>;
 const labels = { observaciones_iniciales: "Observaciones iniciales", objetivos_trabajados: "Objetivos trabajados", nivel_ayuda: "Nivel de ayuda", proximos_pasos: "Próximos pasos" } as const;
@@ -89,7 +90,7 @@ function History({ data, reportsOnly = false }: { data: Tracking; reportsOnly?: 
       <button type="button" aria-expanded={open === s.id_sesion} aria-controls={`family-session-${s.id_sesion}`} onClick={() => setOpen(open === s.id_sesion ? null : s.id_sesion)}
         className="w-full text-left rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-700">
         <span className="font-bold text-[#1C1135] block">Sesión #{s.id_sesion} · {familyDate(s.cita.fecha_hora_inicio)} · {familyTime(s.cita.fecha_hora_inicio)}</span>
-        <span className="text-sm text-[#4B4264] block mt-1 break-words">{s.cita.terapeuta_nombre} · {s.estado_sesion} · {s.asistencia ?? "Asistencia pendiente"}</span>
+        <span className="text-sm text-[#4B4264] block mt-1 break-words">{s.cita.terapeuta_nombre} · {sessionStatusLabel(s.estado_sesion)} · {attendanceLabel(s.asistencia)}</span>
         <span className="text-sm text-violet-800 block mt-2">{open === s.id_sesion ? "Ocultar detalle" : "Ver sesión y reporte"}</span>
       </button>
       {open === s.id_sesion && <div id={`family-session-${s.id_sesion}`}><SessionActions appointmentId={s.id_reserva} /></div>}
@@ -179,7 +180,7 @@ export function FamilyTrackingPanel({ mode, go, familyName = "Familia", embedded
         {!embedded && <Milestones summary={summary} />}
         <div className="family-workspace grid lg:grid-cols-2 gap-5 items-start">
           <Crd className="p-5 sm:p-6 space-y-3"><CalendarDays size={22} className="text-violet-700" aria-hidden="true" /><h2 className="text-lg font-extrabold text-[#1C1135]">Próxima cita o sesión en curso</h2>
-            {summary.next ? <><p className="font-bold text-[#1C1135] break-words">{summary.next.terapeuta_nombre}</p><p className="text-[#4B4264]">{familyDate(summary.next.fecha_hora_inicio)} · {familyTime(summary.next.fecha_hora_inicio)} · {summary.next.modalidad}</p><p className="text-sm text-[#4B4264]">Estado de cita: {summary.next.estado_reserva}</p></> : <p className="text-[#4B4264]">No hay próximas citas ni sesiones en curso para este hijo.</p>}
+            {summary.next ? <><p className="font-bold text-[#1C1135] break-words">{summary.next.terapeuta_nombre}</p><p className="text-[#4B4264]">{familyDate(summary.next.fecha_hora_inicio)} · {familyTime(summary.next.fecha_hora_inicio)} · {summary.next.modalidad === 'VIRTUAL' ? 'Virtual' : 'Presencial'}</p><p className="text-sm text-[#4B4264]">Estado de cita: {reservationStatusLabel(summary.next.estado_reserva)}</p></> : <p className="text-[#4B4264]">No hay próximas citas ni sesiones en curso para este hijo.</p>}
             <Btn onClick={() => go("padre/agenda")}>{summary.next ? "Consultar o reprogramar en agenda" : "Ir a agenda para reservar"}</Btn>
           </Crd>
           <Crd className="p-5 sm:p-6"><ReportSummary data={data} /><Btn variant="outline" className="mt-4" onClick={() => go("padre/reportes")}><FileText size={16} aria-hidden="true" /> Ver reportes de la familia</Btn></Crd>

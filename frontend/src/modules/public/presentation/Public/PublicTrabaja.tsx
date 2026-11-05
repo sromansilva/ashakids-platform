@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Send } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
-import { Btn } from "@/shared/presentation/components/common/Btn";
+import { getAshaKidsWhatsAppUrl } from "@/shared/domain/contact";
 import { Crd } from "@/shared/presentation/components/common/Crd";
 
 // ─── Shared public nav ────────────────────────────────────────────────────────
@@ -71,7 +71,7 @@ export function PublicTrabaja({ go }: { go: (v: View) => void }) {
                   placeholder={f.ph} value={(form as Record<string, string>)[f.key]} onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} />
               </div>
             ))}
-            <Btn variant="cta" onClick={() => {}} className="justify-center"><Send size={14} /> Enviar postulación</Btn>
+            <a href={getAshaKidsWhatsAppUrl(`Hola AshaKids, quisiera postular. Nombre: ${form.name}. Correo: ${form.email}. Especialidad: ${form.specialty}. Experiencia: ${form.years}.`)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-2xl bg-[#6B46FE] px-5 py-3 font-bold text-white"><Send size={14} /> Enviar postulación</a>
           </div>
         </Crd>
       </div>

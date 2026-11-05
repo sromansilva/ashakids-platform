@@ -9,7 +9,7 @@ export function RouteAccess({ children }: { children: ReactNode }) {
   const location = useLocation();
   const { user, role, isAuthenticated, isLoading, sessionError, refreshUser } = useAuth();
   const required = getRequiredRoleForPath(location.pathname, role);
-  const home = role === "ADMIN" ? "/admin" : role === "TERAPEUTA" ? "/terapeuta" : "/padre";
+  const home = role === 'SOPORTE_TECNICO' ? '/soporte' : role === "ADMIN" ? "/admin" : role === "TERAPEUTA" ? "/terapeuta" : "/padre";
   if (sessionError && (required || user?.password_change_required)) return <main className="p-8" role="alert"><p>{sessionError}</p><button onClick={() => void refreshUser()}>Reintentar verificación</button></main>;
   if (isLoading && (required || isAuthenticated || location.pathname === "/login" || location.pathname === "/mundo-asha")) {
     return <RouteLoading label="Verificando sesión segura…" />;

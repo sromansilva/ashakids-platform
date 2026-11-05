@@ -33,20 +33,22 @@ export async function migrateIncidencias() {
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_tipo_ck;
     `);
 
-    // 4. Update rol constraint to allow 'ADMIN' and 'SOPORTE_TECNICO'
+    // 4. Update rol constraint to allow 'ADMIN', 'SOPORTE_TECNICO' and standard roles
     await client.query(`
+      ALTER TABLE public.incidencias ALTER COLUMN rol_solicitante TYPE varchar(30);
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_rol_ck;
       ALTER TABLE public.incidencias ADD CONSTRAINT incidencias_rol_ck 
-      CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text, 'SOPORTE_TECNICO'::text]));
+      CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text, 'SOPORTE_TECNICO'::text, 'SOPORTE'::text]));
     `);
 
-    // 5. Update estado constraint to allow all required states
+    // 5. Preserve historical progress while reducing the workflow to three states.
     await client.query(`
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_estado_ck;
       ALTER TABLE public.incidencias ADD CONSTRAINT incidencias_estado_ck 
       CHECK (estado::text = ANY (ARRAY[
         'RECIBIDA'::text, 'LEIDA'::text, 'LEÍDA'::text, 
-        'EN PROCESO'::text, 'EN_PROCESO'::text, 'EN ATENCIÓN'::text, 'EN ATENCION'::text,
+        'EN PROCESO'::text, 'EN_PROCESO'::text, 
+        'EN ATENCIÓN'::text, 'EN ATENCION'::text, 'EN_REVISION'::text,
         'ATENDIDA'::text, 'SOLUCIONADA'::text, 
         'NUEVA'::text, 'RESUELTA'::text, 'ABIERTA'::text
       ]));
@@ -54,6 +56,15 @@ export async function migrateIncidencias() {
 
     // 6. Create indexes for performance
     await client.query(`
+      CREATE TABLE IF NOT EXISTS public.incidencia_notas (
+        id_nota integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        id_incidencia integer NOT NULL REFERENCES public.incidencias(id_incidencia) ON DELETE CASCADE,
+        id_autor integer NOT NULL REFERENCES public.usuarios(id_usuario),
+        contenido varchar(4000) NOT NULL CHECK (length(trim(contenido)) > 0),
+        interna boolean NOT NULL DEFAULT false,
+        fecha_creacion timestamptz NOT NULL DEFAULT now()
+      );
+      CREATE INDEX IF NOT EXISTS incidencia_notas_ticket_idx ON public.incidencia_notas(id_incidencia, id_nota);
       CREATE INDEX IF NOT EXISTS idx_incidencias_area_destino ON public.incidencias (area_destino);
       CREATE INDEX IF NOT EXISTS idx_incidencias_id_terapeuta ON public.incidencias (id_terapeuta);
     `);
@@ -67,8 +78,4 @@ export async function migrateIncidencias() {
   } finally {
     client.release();
   }
-}
-
-if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
-  migrateIncidencias().then(() => pool.end());
 }

@@ -7,6 +7,7 @@ import { DashLayout } from "@/core/layouts/DashLayout";
 import { titles } from "@/core/router/routeTitles";
 import { isUpcomingModule } from "@/core/router/routeCapabilities";
 import { ComingSoon } from '@/shared/presentation/components/common/ComingSoon';
+import { SoporteLayout } from '@/modules/soporte/presentation/SoporteLayout';
 
 type Props = {
   view: View; role: Role; go: (view: View) => void; logout: () => void;
@@ -15,8 +16,8 @@ type Props = {
 export function PageFrame(props: Props) {
   const { pathname } = useLocation();
   const { role } = useAuth();
-  const fullScreen = ["session/waiting", "session/active", "session/end"].includes(props.view);
   const content = isUpcomingModule(pathname) ? <ComingSoon title={titles[props.view] || 'ASHAKids'}/> : <Outlet />;
-  if (!getRequiredRoleForPath(pathname, role) || fullScreen) return content;
+  if (!getRequiredRoleForPath(pathname, role)) return content;
+  if (role === 'SOPORTE_TECNICO') return <SoporteLayout>{content}</SoporteLayout>;
   return <DashLayout {...props} cur={props.view} title={titles[props.view] || "ASHAKids"}>{content}</DashLayout>;
 }

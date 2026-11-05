@@ -10,6 +10,7 @@ import { sessionsService } from '@/modules/clinica/infrastructure/clinicalServic
 import { readAllPages } from '@/core/api/readAllPages';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { SessionActions } from '@/shared/presentation/components/common/SessionActions';
+import { sessionStatusLabel } from '@/shared/domain/statusLabels';
 
 export function AdminSesiones() {
   const [selectedSession, setSelectedSession] = useState<number | null>(null);
@@ -20,7 +21,7 @@ export function AdminSesiones() {
     dur: s.fecha_hora_inicio_real && s.fecha_hora_fin_real ? `${Math.round((Date.parse(s.fecha_hora_fin_real) - Date.parse(s.fecha_hora_inicio_real)) / 60000)} min` : 'Sin duración final',
     type: s.cita.modalidad === 'VIRTUAL' ? 'Virtual' : 'Presencial',
     status: s.estado_sesion === 'EN_CURSO' ? 'activa' : s.estado_sesion === 'FINALIZADA' ? 'finalizada' : 'programada',
-    name: s.cita.paciente_nombre, report: s.reporte_disponible,
+    raw: s.estado_sesion, name: s.cita.paciente_nombre, report: s.reporte_disponible,
   }));
   const sel = sessions.find(s => s.id === selectedSession);
   return (
@@ -66,7 +67,7 @@ export function AdminSesiones() {
                   <Bdg color="violet">{s.type}</Bdg>
                   <span className="text-xs font-bold px-2.5 py-1 rounded-full"
                     style={{ background: s.status === "activa" ? "#D1FAE5" : B.violetLight, color: s.status === "activa" ? "#059669" : B.violet }}>
-                    {s.status}
+                    {sessionStatusLabel(s.raw)}
                   </span>
                   {s.status === "activa" && (
                     <Btn size="sm" variant="ghost" onClick={e => { e.stopPropagation(); setSelectedSession(s.id); }}>
@@ -92,7 +93,7 @@ export function AdminSesiones() {
                   { label: "Horario de inicio",   val: sel.started },
                   { label: "Duración",            val: sel.dur },
                   { label: "Modalidad",           val: sel.type },
-                  { label: "Estado",              val: sel.status },
+                  { label: "Estado",              val: sessionStatusLabel(sel.raw) },
                 ].map(r => (
                   <div key={r.label} className="flex justify-between items-center py-2 border-b border-[#F5F3FF] last:border-0">
                     <span className="text-[#9E95B7] font-medium">{r.label}</span>

@@ -6,6 +6,7 @@ export interface Notification {
   id_notificacion: number; tipo: string; titulo: string; texto: string;
   id_reserva: number | null; id_conversacion: number | null; fecha_creacion: string; leida_en: string | null;
   meet_url?: string | null;
+  sesion_en_curso?: boolean;
 }
 export interface NotificationInbox { items: Notification[]; total: number; sin_leer: number }
 export const notificationsService = {

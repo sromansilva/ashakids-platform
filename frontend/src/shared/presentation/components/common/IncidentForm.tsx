@@ -8,7 +8,8 @@ import {
 } from '@/modules/comunicacion/infrastructure/incidenciasService';
 
 interface IncidentFormProps {
-  role?: 'PADRE' | 'TERAPEUTA' | 'ADMIN';
+  role?: 'PADRE' | 'TERAPEUTA' | 'ADMIN' | 'SOPORTE_TECNICO';
+  submitIncident?: typeof incidenciasService.crear;
   defaultTipo?: string;
   submitButtonText?: string;
   title?: string;
@@ -20,11 +21,12 @@ interface IncidentFormProps {
 export function IncidentForm({
   role = 'PADRE',
   defaultTipo = '',
-  submitButtonText = 'Enviar a administración',
+  submitButtonText = 'Enviar solicitud',
   title = 'Reportar incidencia',
   subtitle = 'Cuéntanos qué problema encontraste. El área correspondiente atenderá tu solicitud.',
   className = '',
   onSuccess,
+  submitIncident = incidenciasService.crear,
 }: IncidentFormProps) {
   const [tipo, setTipo] = useState(defaultTipo);
   const [titulo, setTitulo] = useState('');
@@ -129,7 +131,7 @@ export function IncidentForm({
                 setSending(true);
                 setError('');
                 try {
-                  const result = await incidenciasService.crear({
+                  const result = await submitIncident({
                     envio_id: envio,
                     tipo,
                     titulo: titulo.trim(),

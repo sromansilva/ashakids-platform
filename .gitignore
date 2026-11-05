@@ -95,3 +95,8 @@ validation.csv
 ml-artifacts/*
 !ml-artifacts/README.md
 *.joblib
+
+# Generated output artifacts (keep pdf reports only)
+output/*
+!output/pdf/
+!output/pdf/**

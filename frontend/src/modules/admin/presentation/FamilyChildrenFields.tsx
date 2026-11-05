@@ -72,7 +72,7 @@ export function FamilyChildrenFields({ children, onChange, draft, onDraftChange,
           <button type="button" onClick={onSaveChild} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-violet-100 px-4 text-sm font-black text-violet-800 transition hover:bg-violet-200"><Save size={16} />Guardar niño</button>
         </div>
       </fieldset>
-      <button type="button" disabled className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-xl text-sm font-black text-violet-400 opacity-70"><Plus size={16} />Se abrirá otro formulario al guardar</button>
+      <span className="mt-3 inline-flex min-h-10 items-center gap-2 rounded-xl text-sm font-black text-violet-400 opacity-70"><Plus size={16} />Se abrirá otro formulario al guardar</span>
     </fieldset>
   );
 }

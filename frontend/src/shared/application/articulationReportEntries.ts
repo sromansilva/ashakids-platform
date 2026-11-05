@@ -19,11 +19,17 @@ export interface SavedArticulationResult extends ReviewedArticulationResult {
 const OPEN_MARKER = '[Resultado de articulación: análisis clínico]';
 const CLOSE_MARKER = '[/Resultado de articulación]';
 
-const SIMILARITY_LABEL = 'Similitud de texto (indicador de apoyo, sin validación clínica)';
+/** Etiqueta obligatoria de los indicadores de apoyo; el servidor la usa para ocultar esta línea a la familia. */
+const SIMILARITY_LABEL = 'Indicador de apoyo · sin validación clínica';
+/** Etiqueta usada por informes anteriores: se sigue reconociendo al leer y al ocultar. */
+const LEGACY_SIMILARITY_LABEL = 'Similitud de texto (indicador de apoyo, sin validación clínica)';
 
 /** Quita la línea de similitud de un texto que puede llegar a la familia (p. ej. el plan publicado). */
 export function removeSupportSimilarity(text: string): string {
-  return text.split(/\r?\n/).filter((line) => !line.trimStart().startsWith(`${SIMILARITY_LABEL}:`)).join('\n');
+  return text.split(/\r?\n/).filter((line) => {
+    const trimmed = line.trimStart();
+    return !trimmed.startsWith(`${SIMILARITY_LABEL}:`) && !trimmed.startsWith(`${LEGACY_SIMILARITY_LABEL}:`);
+  }).join('\n');
 }
 
 const oneLine = (value: string) => value.replace(/[\r\n]+/g, ' ').replace(/\s+/g, ' ').trim();
@@ -69,7 +75,7 @@ export function parseArticulationResults(text: string | null | undefined): Revie
     const reviewed = fields.get('Resultado revisado por terapeuta');
     const source = fields.get('Fuente de audio revisada') ?? fields.get('Fuente confirmada por terapeuta');
     const fragment = fields.get('Fragmento')?.match(/([\d.]+)–([\d.]+)\s*s/);
-    const similarity = fields.get(SIMILARITY_LABEL)?.match(/^(\d{1,3})\s*%$/);
+    const similarity = (fields.get(SIMILARITY_LABEL) ?? fields.get(LEGACY_SIMILARITY_LABEL))?.match(/^(\d{1,3})\s*%$/);
     if (!objective || !expected || !tentative || !reviewed || !source || !fragment) continue;
     results.push({
       objetivo_articulacion: objective,

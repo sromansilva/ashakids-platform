@@ -3,6 +3,11 @@ import { z } from 'zod';
 import { adminService } from '../services/admin.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
 import { listarIncidenciasAdmin, cambiarEstadoIncidenciaAdmin } from '../../incidencias/incidencias.routes.js';
+import {
+  listarSolicitudesAcceso,
+  aprobarSolicitudAcceso,
+  rechazarSolicitudAcceso,
+} from '../../whatsapp/solicitudes.routes.js';
 
 export const adminRouter = Router();
 
@@ -104,6 +109,14 @@ adminRouter.post('/cuentas/padres', async (req: Request, res: Response, next: Ne
 });
 
 // POST /api/v1/admin/cuentas/terapeutas
+adminRouter.post('/cuentas/soporte', async (req, res, next) => {
+  try {
+    const parsed = accountIdentitySchema.strict().safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos y correo.' }); return; }
+    res.status(201).json(await adminService.crearSoporte(parsed.data));
+  } catch (error) { next(error); }
+});
+
 adminRouter.post('/cuentas/terapeutas', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const parsed = therapistAccountSchema.safeParse(req.body);
@@ -177,6 +190,14 @@ adminRouter.delete('/cuentas/:id', async (req: Request, res: Response, next: Nex
   }
 });
 
+adminRouter.post('/cuentas/:id/reenviar-activacion', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = z.coerce.number().int().positive().safeParse(req.params.id);
+    if (!id.success) return res.status(400).json({ detail: 'Identificador invalido.' });
+    return res.json(await adminService.reenviarActivacion(id.data));
+  } catch (err) { return next(err); }
+});
+
 // GET /api/v1/admin/cuentas/:id/hijos
 adminRouter.get('/cuentas/:id/hijos', async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -204,3 +225,8 @@ adminRouter.put('/pacientes/:id/reactivar', reactivarHijoHandler);
 // Admin Incidencias endpoints
 adminRouter.get('/incidencias', listarIncidenciasAdmin);
 adminRouter.patch('/incidencias/:id', cambiarEstadoIncidenciaAdmin);
+
+// Solicitudes de acceso familiar recibidas por WhatsApp (el DNI solo se expone aquí)
+adminRouter.get('/solicitudes-acceso', listarSolicitudesAcceso);
+adminRouter.post('/solicitudes-acceso/:id/aprobar', aprobarSolicitudAcceso);
+adminRouter.post('/solicitudes-acceso/:id/rechazar', rechazarSolicitudAcceso);
