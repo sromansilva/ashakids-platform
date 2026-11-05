@@ -10,6 +10,12 @@ export async function migrateSoporteSchema() {
     if (existing.rowCount && existing.rowCount > 0) {
       return;
     }
+    // Attempt column expansion if permissions permit (fails safely on unprivileged connections)
+    try {
+      await client.query('ALTER TABLE public.roles ALTER COLUMN nombre_rol TYPE varchar(30);');
+    } catch {
+      // Continue if user lacks DDL ownership
+    }
     await client.query('BEGIN');
     await client.query(`
       INSERT INTO public.roles (nombre_rol, descripcion) VALUES ('SOPORTE_TECNICO', 'Atención de incidencias técnicas')
@@ -23,4 +29,5 @@ export async function migrateSoporteSchema() {
     client.release();
   }
 }
+
 
