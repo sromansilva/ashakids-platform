@@ -142,6 +142,15 @@ export class UsuariosService {
       } else if (data.rol === 'TERAPEUTA') {
         const terRes = await pool.query(`INSERT INTO terapeutas (id_usuario, especialidad, anios_experiencia) VALUES ($1, 'Fonoaudiología', 3) RETURNING id_terapeuta;`, [user.id_usuario]);
         id_terapeuta = terRes.rows[0]?.id_terapeuta ?? null;
+        if (id_terapeuta) {
+          await pool.query(`
+            INSERT INTO turnos_semanales (id_terapeuta, dia, hora)
+            SELECT $1, d.dia, h.hora
+            FROM (VALUES (1), (2), (3), (4), (5)) AS d(dia)
+            CROSS JOIN (VALUES (9), (10), (11), (14), (15), (16)) AS h(hora)
+            ON CONFLICT (id_terapeuta, dia, hora) DO NOTHING;
+          `, [id_terapeuta]);
+        }
       }
 
       return {

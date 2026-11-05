@@ -171,15 +171,25 @@ export function PadreAgendaMiAgenda({
               <h3 className="text-lg font-black text-[#1C1135]">
                 Citas del {currentDay} de {MONTHS[month]} ({selectedApts.length})
               </h3>
-              {selDay && (
+              <div className="flex items-center gap-2">
+                {selDay && (
+                  <button
+                    type="button"
+                    onClick={() => setSelDay(null)}
+                    className="text-xs font-extrabold text-[#6B46FE] hover:underline"
+                  >
+                    Ver todas
+                  </button>
+                )}
                 <button
                   type="button"
-                  onClick={() => setSelDay(null)}
-                  className="text-xs font-extrabold text-[#6B46FE] hover:underline"
+                  onClick={() => setShowNew(true)}
+                  className="flex items-center gap-1.5 bg-[#6B46FE] hover:bg-[#5835E5] text-white px-3.5 py-1.5 rounded-xl font-bold text-xs shadow-sm shadow-[#6B46FE]/20 transition-all active:scale-[.98]"
                 >
-                  Ver todas
+                  <Plus size={14} />
+                  <span>Reservar cita</span>
                 </button>
-              )}
+              </div>
             </div>
 
             {/* List or Empty State */}
