@@ -27,7 +27,7 @@ export function AdminSesiones() {
     <div className="p-4 sm:p-6 max-w-6xl mx-auto">
       <div className="mb-5">
         <h2 className="text-2xl font-black text-[#1C1135] mb-1">Sesiones · ASHA Session</h2>
-        <p className="text-sm text-[#7C6F9A] font-medium">Sesiones clínicas registradas · America/Lima</p>
+        <p className="text-sm text-[#7C6F9A] font-medium">Sesiones clínicas registradas</p>
       </div>
       <RemoteFeedback pending={query.isPending} error={query.error} retry={() => void query.refetch()} />
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">

@@ -16,6 +16,7 @@ import { ActiveSessionOverview } from './ActiveSessionOverview';
 import { FileText, ArrowRight, Clock } from "lucide-react";
 import { isMeetingUrl } from './VirtualMeeting';
 import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
+import { ApiError } from "@/core/api/client";
 
 export function SessionActions({
   appointmentId,
@@ -211,38 +212,57 @@ export function SessionActions({
 
       {s && (
         <div className={compact ? 'session-actions__clinical' : undefined}>
-          {s.reporte_disponible && (
-            <RemoteFeedback pending={report.isPending} error={report.error} retry={() => void report.refetch()} />
-          )}
-
-          {/* En modo compacto (Modal de Agenda) se muestra enlace rápido para no sobrecargar el popup */}
-          {compact ? (
-            canEdit && (
-              <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4] space-y-2 mt-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-black text-[#1C1135]">Informe clínico de sesión</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowInPlaceEditor((prev) => !prev)}
-                    className="text-[11px] font-bold text-[#6B46FE] hover:underline cursor-pointer"
-                  >
-                    {showInPlaceEditor ? 'Ocultar editor aquí' : 'Abrir editor aquí'}
-                  </button>
-                </div>
-                <p className="text-xs text-[#615274] font-medium">
-                  Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. Los indicadores de apoyo que acompañan al texto no tienen validación clínica ni diagnostican.
-                </p>
-                {onGoToReports && (
-                  <button
-                    type="button"
-                    onClick={onGoToReports}
-                    className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-extrabold text-xs shadow-sm transition-all cursor-pointer"
-                  >
-                    <FileText size={14} /> Ir al editor completo de reportes <ArrowRight size={14} />
-                  </button>
+          {(() => {
+            const isReport404 = report.error instanceof ApiError && (report.error.status === 404 || report.error.message.includes('404'));
+            return (
+              <>
+                {s.reporte_disponible && (
+                  <RemoteFeedback pending={report.isPending} error={!canEdit && isReport404 ? null : report.error} retry={() => void report.refetch()} />
                 )}
-                {showInPlaceEditor && (!s.reporte_disponible || (report.isSuccess && !report.error)) && (
-                  <div className="pt-3 border-t border-[#E8E5F4]">
+
+                {/* En modo compacto (Modal de Agenda) se muestra enlace rápido para no sobrecargar el popup */}
+                {compact ? (
+                  canEdit && (
+                    <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4] space-y-2 mt-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-xs font-black text-[#1C1135]">Informe clínico de sesión</span>
+                        <button
+                          type="button"
+                          onClick={() => setShowInPlaceEditor((prev) => !prev)}
+                          className="text-[11px] font-bold text-[#6B46FE] hover:underline cursor-pointer"
+                        >
+                          {showInPlaceEditor ? 'Ocultar editor aquí' : 'Abrir editor aquí'}
+                        </button>
+                      </div>
+                      <p className="text-xs text-[#615274] font-medium">
+                        Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. Los indicadores de apoyo que acompañan al texto no tienen validación clínica ni diagnostican.
+                      </p>
+                      {onGoToReports && (
+                        <button
+                          type="button"
+                          onClick={onGoToReports}
+                          className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-extrabold text-xs shadow-sm transition-all cursor-pointer"
+                        >
+                          <FileText size={14} /> Ir al editor completo de reportes <ArrowRight size={14} />
+                        </button>
+                      )}
+                      {showInPlaceEditor && (!s.reporte_disponible || (report.isSuccess && !report.error)) && (
+                        <div className="pt-3 border-t border-[#E8E5F4]">
+                          <ClinicalReportEditor
+                            key={id}
+                            id={id!}
+                            initial={report.data ?? emptyReport}
+                            patientName={s.cita.paciente_nombre}
+                            patientId={s.cita.id_paciente}
+                            sessionType={s.cita.tipo_cita}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )
+                ) : (
+                  canEdit &&
+                  (!s.reporte_disponible || (report.isSuccess && !report.error)) && (
                     <ClinicalReportEditor
                       key={id}
                       id={id!}
@@ -251,36 +271,28 @@ export function SessionActions({
                       patientId={s.cita.id_paciente}
                       sessionType={s.cita.tipo_cita}
                     />
-                  </div>
+                  )
                 )}
-              </div>
-            )
-          ) : (
-            canEdit &&
-            (!s.reporte_disponible || (report.isSuccess && !report.error)) && (
-              <ClinicalReportEditor
-                key={id}
-                id={id!}
-                initial={report.data ?? emptyReport}
-                patientName={s.cita.paciente_nombre}
-                patientId={s.cita.id_paciente}
-                sessionType={s.cita.tipo_cita}
-              />
-            )
-          )}
 
-          {!canEdit && report.data && !report.error && (
-            <dl className="space-y-2">
-              {Object.entries(labels).map(([key, label]) => (
-                <div key={key}>
-                  <dt className="font-bold text-sm">{label}</dt>
-                  <dd className="text-sm whitespace-pre-wrap">
-                    {report.data[key as keyof ReportData] || 'No registrado'}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          )}
+                {!canEdit && (
+                  report.data && !report.error ? (
+                    <dl className="space-y-2">
+                      {Object.entries(labels).map(([key, label]) => (
+                        <div key={key}>
+                          <dt className="font-bold text-sm">{label}</dt>
+                          <dd className="text-sm whitespace-pre-wrap">
+                            {report.data[key as keyof ReportData] || 'No registrado'}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                  ) : (!s.reporte_disponible || isReport404) && !report.isPending ? (
+                    <p className="text-sm text-[#4B4264] py-1">Todavía no hay un reporte guardado para esta sesión.</p>
+                  ) : null
+                )}
+              </>
+            );
+          })()}
 
           <SessionPlan session={s} />
 

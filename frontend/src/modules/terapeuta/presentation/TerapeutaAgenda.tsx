@@ -136,7 +136,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
       <div className="mb-5 flex flex-wrap items-center justify-between gap-4">
         <div>
           <p className="inline-flex items-center gap-1.5 rounded-full bg-violet-50 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide text-[#6B46FE]">
-            <Clock size={12} aria-hidden="true" /> Horario local · America/Lima
+            <Clock size={12} aria-hidden="true" /> Horario local
           </p>
           <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
             <h1 className="text-2xl font-black tracking-tight text-[#1C1135] sm:text-3xl">Agenda</h1>

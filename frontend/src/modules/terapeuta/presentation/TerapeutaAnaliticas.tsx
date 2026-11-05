@@ -75,7 +75,7 @@ export function TerapeutaAnaliticas() {
         <div className="min-w-0">
           <h1 className="text-2xl font-black tracking-tight text-[#1C1135] sm:text-3xl">Analíticas</h1>
           <p className="mt-1 text-sm font-semibold text-[#615274]">
-            Tus sesiones registradas por mes y año, en horario de Lima.
+            Tus sesiones registradas por mes y año.
           </p>
         </div>
         <div className="flex flex-wrap items-end gap-3">

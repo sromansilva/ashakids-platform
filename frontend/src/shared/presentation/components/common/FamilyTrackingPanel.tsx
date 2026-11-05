@@ -61,12 +61,15 @@ function Milestones({ summary }: { summary: NonNullable<Tracking["summary"]> }) 
 function ReportSummary({ data }: { data: Tracking }) {
   const { summary, report } = data;
   const session = summary?.latestReportSession;
+  const is404 = report.error instanceof ApiError && (report.error.status === 404 || report.error.message.includes("404"));
+  const hasNoReport = !session || is404 || (!report.isPending && !report.data && !report.error);
+
   return <section className="space-y-3" aria-label="Último reporte">
     <h2 className="text-lg font-extrabold text-[#1C1135]">Último reporte de sesión</h2>
-    {!session && <p className="text-[#4B4264]">Todavía no hay reportes guardados para este hijo.</p>}
-    {session && report.isPending && <p role="status">Cargando reporte…</p>}
-    {session && report.error && <ReadError error={report.error} retry={() => void report.refetch()} />}
-    {session && report.data && !report.error && <>
+    {hasNoReport && <p className="text-[#4B4264]">Todavía no hay reportes guardados para este hijo.</p>}
+    {session && !is404 && report.isPending && <p role="status">Cargando reporte…</p>}
+    {session && !is404 && report.error && <ReadError error={report.error} retry={() => void report.refetch()} />}
+    {session && !is404 && report.data && !report.error && <>
       <p className="text-sm text-[#4B4264]">{session.cita.terapeuta_nombre} · {familyDate(session.cita.fecha_hora_inicio)}</p>
       <dl className="space-y-4">{Object.entries(labels).map(([key, label]) => <div key={key}>
         <dt className="font-bold text-[#1C1135]">{label}</dt>

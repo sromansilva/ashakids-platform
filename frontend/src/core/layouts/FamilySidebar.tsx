@@ -41,7 +41,7 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
   };
 
   return (
-    <aside className="family-role-sidebar hidden md:flex h-full min-h-0 sticky top-0 border-r border-[#E8E5F4] flex-col bg-white overflow-y-auto flex-shrink-0 w-64 z-30" aria-label="Navegación familiar">
+    <aside className="family-role-sidebar hidden md:flex h-full min-h-0 sticky top-0 border-r border-[#E8E5F4] flex-col bg-white flex-shrink-0 z-30" aria-label="Navegación familiar">
       {/* Brand Header */}
       <div className="family-sidebar-brand flex items-center gap-2.5 px-6 py-5 shrink-0">
         <Isotipo size={34} />
@@ -115,13 +115,15 @@ export function FamilySidebar({ go }: { go: (view: View) => void }) {
                   go(item.view);
                 }
               }}
-              className={`family-sub-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98] ${active ? 'family-sub-nav-btn--active' : ''} ${
+              className={`family-sub-nav-btn flex items-center rounded-2xl text-sm font-bold w-full text-left active:scale-[.98] ${
                 active
-                  ? 'bg-[#F3EFFE] text-[#6B46FE]'
+                  ? 'family-sub-nav-btn--active bg-[#F3EFFE] text-[#6B46FE]'
                   : 'text-[#5C5378] hover:bg-violet-50 hover:text-[#6B46FE]'
               }`}
             >
-              <Icon size={23} strokeWidth={active ? 2.25 : 1.9} className={`flex-shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
+              <div className="w-[56px] h-full flex items-center justify-center shrink-0">
+                <Icon size={22} strokeWidth={active ? 2.25 : 1.9} className={`family-nav-icon shrink-0 ${active ? 'text-[#6B46FE]' : 'text-[#7C6F9A]'}`} />
+              </div>
               <span className="family-sidebar-label truncate">{item.label}</span>
             </button>
           );

@@ -49,7 +49,7 @@ export function AdminCitas() {
       <div className="flex items-center justify-between flex-wrap gap-3 mb-5">
         <div>
           <h2 className="text-2xl font-black text-[#1C1135] mb-1">Gestión de Citas</h2>
-          <p className="text-sm text-[#7C6F9A] font-medium">Calendario global de la plataforma · America/Lima</p>
+          <p className="text-sm text-[#7C6F9A] font-medium">Calendario global de la plataforma</p>
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
@@ -85,7 +85,7 @@ export function AdminCitas() {
           </label>
         </div>
         <div className="flex items-center justify-between flex-wrap gap-3 mt-4">
-          <p id="appointment-date-help" className="text-xs text-[#625779]">Filtra por inicio de la cita. Ambas fechas incluyen el día completo en horario de Lima.</p>
+          <p id="appointment-date-help" className="text-xs text-[#625779]">Filtra por inicio de la cita. Ambas fechas incluyen el día completo.</p>
           <Btn size="sm" variant="secondary" onClick={clearFilters}>Limpiar filtros</Btn>
         </div>
         {invalidRange && <p role="alert" className="text-sm text-red-800 mt-3">La fecha hasta debe ser igual o posterior a la fecha desde.</p>}
