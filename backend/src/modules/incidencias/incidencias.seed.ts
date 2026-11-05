@@ -369,6 +369,8 @@ export async function seedIncidencias() {
   const client = await pool.connect();
   try {
     await client.query('BEGIN;');
+    // Serialize ticket writes while synchronizing the default sequence.
+    await client.query('LOCK TABLE public.incidencias IN SHARE ROW EXCLUSIVE MODE;');
 
     // 1. Obtener o crear usuarios para los solicitantes
     const userCache = new Map<string, number>();
@@ -477,9 +479,15 @@ export async function seedIncidencias() {
       }
     }
 
-    // Sincronizar secuencia de tickets para que los nuevos tickets comiencen en INC-00031
+    // Existing databases can already contain tickets beyond the demo's 30 rows.
+    // Never rewind the sequence when bootstrap runs again.
     await client.query(`
-      SELECT setval('public.incidencias_ticket_seq', 30, true);
+      SELECT setval('public.incidencias_ticket_seq', GREATEST(
+        30,
+        (SELECT last_value FROM public.incidencias_ticket_seq),
+        (SELECT COALESCE(MAX(substring(ticket from '^INC-([0-9]+)$')::bigint), 0)
+         FROM public.incidencias WHERE ticket ~ '^INC-[0-9]+$')
+      ), true);
     `);
 
     await client.query('COMMIT;');

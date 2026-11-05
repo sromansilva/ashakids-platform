@@ -14,20 +14,19 @@ let shutdownRequested = false;
 
 async function startServer(): Promise<void> {
   try {
-    if (settings.DEVELOPMENT_READ_ONLY) {
+    if (settings.DEVELOPMENT_READ_ONLY || settings.DEVELOPMENT_SKIP_BOOTSTRAP) {
       // PostgreSQL also enforces this mode on every connection in core/database.ts.
       await pool.query('SELECT 1');
-      console.log('[Bootstrap] Solo lectura: sin migraciones, semillas ni recordatorios.');
+      console.log(settings.DEVELOPMENT_READ_ONLY
+        ? '[Bootstrap] Solo lectura: sin migraciones, semillas ni recordatorios.'
+        : '[Bootstrap] API conectada: escrituras habilitadas, sin migraciones, semillas ni recordatorios.');
     } else {
       // Schema migrations finish before requests can reach routes that use the new columns.
-      const migrations = await Promise.allSettled([
-        migrateIncidencias(),
-        migrateTerapeutaProfile(),
-        migrateClinicaSchema(),
-        migrateNotificacionesSchema(),
-      ]);
-      const failedMigration = migrations.find((result) => result.status === 'rejected');
-      if (failedMigration?.status === 'rejected') throw failedMigration.reason;
+      // Run in order because migrations can lock the same PostgreSQL tables.
+      await migrateIncidencias();
+      await migrateTerapeutaProfile();
+      await migrateClinicaSchema();
+      await migrateNotificacionesSchema();
       await migrateSoporteSchema();
       await seedIncidencias();
     }
@@ -47,7 +46,7 @@ async function startServer(): Promise<void> {
     console.log(`🚀 ASHAKids TypeScript Backend listening on http://${settings.HOST}:${settings.PORT}`);
     console.log(`📁 Modular Layered Architecture enabled.`);
     console.log(`🔗 API Prefix: ${settings.API_V1_PREFIX}`);
-    if (!settings.DEVELOPMENT_READ_ONLY) appointmentReminderScheduler.start();
+    if (!settings.DEVELOPMENT_READ_ONLY && !settings.DEVELOPMENT_SKIP_BOOTSTRAP) appointmentReminderScheduler.start();
   });
 }
 

@@ -10,10 +10,11 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "test:soporte": "npm run build && node --test ../tests/backend/soporte.test.mjs",
-    "test": "node --experimental-strip-types --test ../tests/backend/backend.test.ts ../tests/backend/auth-public-registration.test.ts ../tests/backend/speech-transcription.test.ts ../tests/backend/gmail.test.ts ../tests/backend/meet.test.ts ../tests/backend/decolecta.test.ts ../tests/backend/clinical-outcome.test.ts ../tests/backend/phonetic-capture.test.ts ../tests/backend/attendance.test.ts ../tests/backend/games-phoneme-catalog.test.ts ../tests/backend/notification-recipient.test.ts ../tests/backend/notification-events.test.ts ../tests/backend/google-meet-url.test.ts ../tests/backend/ml-health-contract.test.ts ../tests/backend/phonetic-indicators.test.ts ../tests/backend/auth-soporte.test.mjs ../tests/backend/soporte.test.mjs ../tests/backend/read-only.test.mjs",
+    "test": "node --experimental-strip-types --test ../tests/backend/backend.test.ts ../tests/backend/auth-public-registration.test.ts ../tests/backend/speech-transcription.test.ts ../tests/backend/gmail.test.ts ../tests/backend/meet.test.ts ../tests/backend/decolecta.test.ts ../tests/backend/clinical-outcome.test.ts ../tests/backend/phonetic-capture.test.ts ../tests/backend/attendance.test.ts ../tests/backend/games-phoneme-catalog.test.ts ../tests/backend/notification-recipient.test.ts ../tests/backend/notification-events.test.ts ../tests/backend/google-meet-url.test.ts ../tests/backend/ml-health-contract.test.ts ../tests/backend/phonetic-indicators.test.ts ../tests/backend/auth-soporte.test.mjs ../tests/backend/soporte.test.mjs ../tests/backend/read-only.test.mjs ../tests/backend/api-only-startup.test.mjs ../tests/backend/incidencias-sequence.test.mjs",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "test:auth-soporte": "npm run build && node --test ../tests/backend/auth-soporte.test.mjs ../tests/backend/read-only.test.mjs"
+    "test:auth-soporte": "npm run build && node --test ../tests/backend/auth-soporte.test.mjs ../tests/backend/read-only.test.mjs",
+    "test:startup": "npm run build && node --test ../tests/backend/api-only-startup.test.mjs ../tests/backend/read-only.test.mjs ../tests/backend/incidencias-sequence.test.mjs"
   },
   "dependencies": {
     "@node-rs/argon2": "^2.0.2",

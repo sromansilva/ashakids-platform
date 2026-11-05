@@ -147,7 +147,7 @@ npm run typecheck
 - Cuentas: solo Administración puede crearlas mediante `/api/v1/admin/cuentas/soporte`; activación temporal y contraseña individual, sin perfil de terapeuta o tutor.
 - Backend: dominio, repositorio, servicio y rutas dentro de `modules/soporte`; notas compartidas dentro de `modules/incidencias`.
 - No ampliar permisos de soporte a cuentas, pagos o información clínica. Las notas internas no llegan al solicitante; las respuestas se leen con el control de acceso de la incidencia existente.
-- Al conectar desarrollo a una base de producción, mantener `DEVELOPMENT_READ_ONLY=true`: omite migraciones, semillas y recordatorios, bloquea escrituras HTTP y activa solo lectura en PostgreSQL.
+- Al conectar desarrollo a una base de producción, usar `DEVELOPMENT_READ_ONLY=true` por defecto. Si el responsable autoriza expresamente escrituras reales, puede usarse `DEVELOPMENT_READ_ONLY=false` junto a `DEVELOPMENT_SKIP_BOOTSTRAP=true` para habilitar la API sin ejecutar migraciones, semillas ni recordatorios automáticos.
 - Pruebas específicas sin PostgreSQL externo: `npm --prefix backend run test:auth-soporte`, `npm --prefix backend run test:soporte`. Verificación visual con API ficticia: `npm --prefix frontend run qa:soporte`.
 - Guía operativa: `docs/Soporte_Tecnico.md`.
 

@@ -22,6 +22,8 @@ const envSchema = z.object({
   ENVIRONMENT: z.enum(['development', 'production', 'test']).default('development'),
   // Explicit opt-in for inspecting a deployed database without migrations or writes.
   DEVELOPMENT_READ_ONLY: z.string().default('false').transform((value) => value === 'true'),
+  // Connect to an already prepared database without migrations, demo seeds or background jobs.
+  DEVELOPMENT_SKIP_BOOTSTRAP: z.string().default('false').transform((value) => value === 'true'),
   PROJECT_NAME: z.string().default('ASHAKids REST API'),
   VERSION: z.string().default('1.0.0'),
   API_V1_PREFIX: z.string().default('/api/v1'),

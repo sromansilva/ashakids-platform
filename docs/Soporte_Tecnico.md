@@ -64,11 +64,25 @@ Invoke-RestMethod http://127.0.0.1:8000/health/ready
 
 Frontend: `http://127.0.0.1:5174`. Backend: `http://127.0.0.1:8000`. No hace falta iniciar contenedores locales para esta configuración. ML queda fuera de esta entrega por indicación del usuario.
 
+### Pruebas locales con escrituras autorizadas en producción
+
+Solo si el responsable autoriza expresamente guardar datos reales, configura el `.env` local con:
+
+```dotenv
+DEVELOPMENT_READ_ONLY=false
+DEVELOPMENT_SKIP_BOOTSTRAP=true
+```
+
+Reinicia el backend con `npm.cmd run dev:backend`. El login y las acciones del panel quedarán habilitados contra la base configurada. Las incidencias, respuestas y cambios de estado serán reales y persistentes. `DEVELOPMENT_SKIP_BOOTSTRAP=true` comprueba la conexión, pero evita ejecutar migraciones, semillas de demostración y recordatorios automáticos. El esquema debe estar preparado antes; las migraciones no se aplican con esta opción. No publiques el `.env` ni contraseñas.
+
+En el arranque habitual, las migraciones se ejecutan secuencialmente para evitar bloqueos entre cambios sobre las mismas tablas. La inicialización de demostración conserva la numeración más alta de tickets existente y nunca reinicia el contador a 30.
+
 ## Pruebas seguras y reproducibles
 
 ```powershell
 npm.cmd --prefix backend run test:auth-soporte
 npm.cmd --prefix backend run test:soporte
+npm.cmd --prefix backend run test:startup
 npm.cmd --prefix frontend run test:routing
 npm.cmd --prefix frontend run test:components
 npm.cmd --prefix frontend run check:frontend
