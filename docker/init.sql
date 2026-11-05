@@ -250,7 +250,7 @@ CREATE TABLE public.incidencias (
     solicitud text NOT NULL,
     solicitante character varying(150) NOT NULL,
     id_usuario integer,
-    rol_solicitante character varying(12) NOT NULL,
+    rol_solicitante character varying(30) NOT NULL,
     responsable character varying(50) DEFAULT 'admin'::character varying NOT NULL,
     prioridad integer NOT NULL,
     estado character varying(30) DEFAULT 'RECIBIDA'::character varying NOT NULL,
@@ -708,7 +708,7 @@ ALTER TABLE public.resultados_nivel ALTER COLUMN id_resultado_nivel ADD GENERATE
 
 CREATE TABLE public.roles (
     id_rol integer NOT NULL,
-    nombre_rol character varying(12) NOT NULL,
+    nombre_rol character varying(30) NOT NULL,
     descripcion character varying(150),
     fecha_creacion timestamp with time zone DEFAULT now() NOT NULL
 );
