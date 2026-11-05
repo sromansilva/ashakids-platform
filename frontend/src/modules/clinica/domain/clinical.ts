@@ -28,6 +28,11 @@ export interface AppointmentTime { fecha_hora_inicio: string; fecha_hora_fin: st
 export interface Appointment extends AppointmentTime {
     puede_editar?: boolean; meet_url?: string | null; meet_origen?: "AUTOMATICA" | "MANUAL" | null;
     meet_automatico_configurado?: boolean;
+  /** Estado de la sesión asociada; la familia solo recibe el enlace de Meet cuando es EN_CURSO. */
+  estado_sesion?: "PROGRAMADA" | "EN_CURSO" | "FINALIZADA" | null;
+  reunion_disponible?: boolean;
+  /** Solo TERAPEUTA/ADMIN y con SESSION_TEST_MODE_ENABLED activo en el servidor. */
+  modo_prueba_disponible?: boolean;
   id_reserva: number; id_paciente: number; id_terapeuta: number; id_tratamiento: number | null;
   tipo_cita?: "INTRODUCTORIA" | "TERAPIA";
   paciente_nombre: string; terapeuta_nombre: string; id_sesion: number | null;
@@ -71,6 +76,8 @@ export interface PlanData {
   sesiones_recomendadas: number;
   frecuencia_semanal: number;
   fonemas_priorizados: PhonemeTarget[];
+  /** Código diagnóstico preliminar asignado por el terapeuta (catálogo institucional 0 a 3). */
+  codigo_diagnostico: number;
   id_prediccion?: number;
   decision_prediccion?: TreatmentPredictionDecision;
   observaciones_prediccion?: string;

@@ -8,6 +8,7 @@ import { useAppointments } from "@/shared/application/hooks/useAppointments";
 import { RemoteFeedback } from "@/shared/presentation/components/common/RemoteFeedback";
 import { SessionActions } from "@/shared/presentation/components/common/SessionActions";
 import { Av } from "@/shared/presentation/components/common/Av";
+import { reservationStatusLabel } from '@/shared/domain/statusLabels';
 
 export function AdminCitas() {
   const [statusFilter, setStatusFilter] = useState("todas");
@@ -94,7 +95,7 @@ export function AdminCitas() {
         {statuses.map(s => (
           <button key={s} className="px-3 py-1.5 rounded-2xl text-xs font-bold capitalize transition-all"
             style={{ background: statusFilter === s ? B.violet : B.violetLight, color: statusFilter === s ? "white" : B.textMid }}
-            aria-pressed={statusFilter === s} onClick={() => setStatusFilter(s)}>{s}</button>
+            aria-pressed={statusFilter === s} onClick={() => setStatusFilter(s)}>{s === 'todas' ? 'Todas' : reservationStatusLabel(s)}</button>
         ))}
       </div>
       <div className="flex flex-col gap-3">
@@ -112,7 +113,7 @@ export function AdminCitas() {
                 </div>
                 <div className="text-xs text-[#7C6F9A] font-medium">{c.date} · {c.dur}</div>
                 <Bdg color={c.type === "Virtual" ? "violet" : "gray"}>{c.type}</Bdg>
-                <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: sc.bg, color: sc.color }}>{c.status}</span>
+                <span className="text-xs font-bold px-2.5 py-1 rounded-full" style={{ background: sc.bg, color: sc.color }}>{reservationStatusLabel(c.status)}</span>
                 <div className="flex gap-1 flex-wrap">
                   <Btn size="sm" variant="ghost" onClick={() => setDetail(c.id)}>Detalle</Btn>
                 </div>

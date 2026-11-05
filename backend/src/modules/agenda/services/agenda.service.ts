@@ -18,9 +18,11 @@ export class AgendaService {
           r.estado_reserva as estado,
           r.modalidad,
           r.meet_id,
-          r.meet_url
+          r.meet_url,
+          s.estado_sesion
         FROM reservas r
         LEFT JOIN pacientes p ON r.id_paciente = p.id_paciente
+        LEFT JOIN sesiones s ON s.id_reserva = r.id_reserva
         WHERE 1=1
       `;
       const params: any[] = [];
@@ -47,8 +49,10 @@ export class AgendaService {
           hora_fin: r.fecha_hora_fin ? new Date(r.fecha_hora_fin).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : null,
           estado: r.estado,
           modalidad: r.modalidad || 'TELETERAPIA',
-          meet_url: isMeetingUrl(r.meet_url) ? r.meet_url : null,
-          meet_origen: r.meet_id ? 'AUTOMATICA' : isMeetingUrl(r.meet_url) ? 'MANUAL' : null,
+          // La familia solo recibe el enlace cuando el terapeuta ya inició la sesión.
+          meet_url: isMeetingUrl(r.meet_url) && (user.rol !== 'PADRE' || r.estado_sesion === 'EN_CURSO') ? r.meet_url : null,
+          meet_origen: isMeetingUrl(r.meet_url) && (user.rol !== 'PADRE' || r.estado_sesion === 'EN_CURSO')
+            ? (r.meet_id ? 'AUTOMATICA' : 'MANUAL') : null,
           meet_automatico_configurado: MeetService.isConfigured(),
         }));
     } catch (err) {

@@ -28,6 +28,14 @@ export async function migrateNotificacionesSchema() {
         WHERE estado IN ('PENDIENTE', 'FALLO', 'ENVIANDO');
       ALTER TABLE public.notificacion_email_outbox ENABLE ROW LEVEL SECURITY;
     `);
+    // Amplía (de forma idempotente) los tipos permitidos con los avisos críticos del flujo clínico.
+    await client.query(`
+      ALTER TABLE public.notificaciones DROP CONSTRAINT IF EXISTS notificaciones_tipo_check;
+      ALTER TABLE public.notificaciones ADD CONSTRAINT notificaciones_tipo_check CHECK (
+        tipo::text = ANY (ARRAY['NUEVA_CITA', 'CANCELACION', 'REPROGRAMACION', 'RECORDATORIO', 'MENSAJE',
+                                'SESION_INICIADA', 'MUESTRA_SOLICITADA', 'REPORTE_PUBLICADO']::text[])
+      );
+    `);
     await client.query(`
       DO $$ BEGIN
         IF NOT EXISTS (

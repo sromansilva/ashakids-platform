@@ -297,6 +297,21 @@ export class FamilyPhoneticCaptureStore {
     return completed;
   }
 
+  /** Devuelve una captura en proceso a «solicitada» para que la familia pueda repetir la muestra. */
+  reopen(sessionId: number, captureId: string, familyUserId: number) {
+    const key = this.key(sessionId, captureId);
+    const capture = this.captures.get(key);
+    if (!capture || capture.estado !== 'PROCESANDO' || capture.id_usuario_familia !== familyUserId) return false;
+    for (const packet of capture.packets) packet.fill(0);
+    capture.packets = [];
+    capture.total_samples = 0;
+    capture.next_packet = 0;
+    capture.estado = 'SOLICITADA';
+    capture.id_usuario_familia = null;
+    this.refreshExpiry(key, capture);
+    return true;
+  }
+
   complete(sessionId: number, captureId: string, result: FamilyCaptureResult) {
     const key = this.key(sessionId, captureId);
     const capture = this.captures.get(key);

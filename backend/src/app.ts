@@ -26,6 +26,7 @@ import { educacionRouter } from './modules/educacion/educacion.routes.js';
 import { valoracionesRouter } from './modules/valoraciones/valoraciones.routes.js';
 import { newsletterRouter } from './modules/newsletter/newsletter.routes.js';
 import { identidadRouter } from './modules/identidad/identidad.routes.js';
+import { whatsappRouter } from './modules/whatsapp/whatsapp.routes.js';
 
 // Legacy Module Routers for backward compatibility
 import { agendaRouter } from './modules/agenda/routes/agenda.routes.js';
@@ -52,6 +53,8 @@ export function createApp() {
     })
   );
   app.use(cookieParser());
+  // El webhook de WhatsApp necesita el cuerpo CRUDO para validar la firma HMAC de Meta.
+  app.use(`${settings.API_V1_PREFIX}/whatsapp/webhook`, express.raw({ type: 'application/json', limit: '1mb' }));
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
@@ -105,6 +108,7 @@ export function createApp() {
   app.use(`${settings.API_V1_PREFIX}/valoraciones`, valoracionesRouter);
   app.use(`${settings.API_V1_PREFIX}/newsletter`, newsletterRouter);
   app.use(`${settings.API_V1_PREFIX}/identidad`, identidadRouter);
+  app.use(`${settings.API_V1_PREFIX}/whatsapp`, whatsappRouter);
 
   // Backward compatibility alias mounts
   app.use(`${settings.API_V1_PREFIX}/agenda`, agendaRouter);

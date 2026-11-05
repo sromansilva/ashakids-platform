@@ -15,8 +15,7 @@ type Props = {
 export function PageFrame(props: Props) {
   const { pathname } = useLocation();
   const { role } = useAuth();
-  const fullScreen = ["session/waiting", "session/active", "session/end"].includes(props.view);
   const content = isUpcomingModule(pathname) ? <ComingSoon title={titles[props.view] || 'ASHAKids'}/> : <Outlet />;
-  if (!getRequiredRoleForPath(pathname, role) || fullScreen) return content;
+  if (!getRequiredRoleForPath(pathname, role)) return content;
   return <DashLayout {...props} cur={props.view} title={titles[props.view] || "ASHAKids"}>{content}</DashLayout>;
 }

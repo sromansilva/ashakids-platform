@@ -7,6 +7,7 @@ import { familyDate, familyTime } from "@/modules/padre/application/familyTracki
 import type { View } from "@/shared/domain/types/navigation";
 import { Btn } from "./Btn";
 import { CalendarDays, ClipboardList, FileText, Users, ArrowRight, RotateCw, Clock } from "lucide-react";
+import { reservationStatusLabel } from '@/shared/domain/statusLabels';
 
 const limaDay = (date: string | number) =>
   new Intl.DateTimeFormat("en-CA", {
@@ -314,7 +315,7 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
                       <li key={a.id_reserva} className="p-3.5 bg-[#F8F7FC] rounded-2xl border border-[#E8E5F4] flex items-center justify-between">
                         <div>
                           <p className="font-extrabold text-sm text-[#1C1135]">{a.paciente_nombre}</p>
-                          <p className="text-xs text-[#615274] mt-0.5">{a.terapeuta_nombre} · {a.estado_reserva}</p>
+                          <p className="text-xs text-[#615274] mt-0.5">{a.terapeuta_nombre} · {reservationStatusLabel(a.estado_reserva)}</p>
                           <p className="text-xs text-[#9E95B7]">
                             {familyDate(a.fecha_hora_inicio)} · {familyTime(a.fecha_hora_inicio)} · {a.modalidad}
                           </p>

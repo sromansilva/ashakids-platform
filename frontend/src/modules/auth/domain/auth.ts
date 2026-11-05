@@ -105,7 +105,9 @@ export interface CuentaItem {
   apellidos: string;
   rol: SemanticRole;
   activo: boolean;
-  fecha_creacion: string;
+  /** Nombre que envía el listado de cuentas de administración. */
+  creado_en?: string;
+  fecha_creacion?: string;
   tutor?: TutorData | null;
   terapeuta?: TerapeutaData | null;
 }

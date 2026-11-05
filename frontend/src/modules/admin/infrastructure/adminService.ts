@@ -15,8 +15,21 @@ import {
 import { HijoListResponse, OperacionHijoResponse } from "@/modules/pacientes/domain/pacientes";
 
 export const adminService = {
+  async reenviarActivacion(id: number): Promise<{ correo_estado: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' }> {
+    return apiClient.post(`/admin/cuentas/${id}/reenviar-activacion`);
+  },
   async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
     return apiClient.get("/admin/auditoria");
+  },
+  /** Solicitudes de acceso familiar recibidas por WhatsApp (GET /admin/solicitudes-acceso). */
+  async getSolicitudesAcceso(estado?: SolicitudAccesoEstado): Promise<SolicitudesAccesoResponse> {
+    return apiClient.get<SolicitudesAccesoResponse>("/admin/solicitudes-acceso", { params: { estado } });
+  },
+  async aprobarSolicitudAcceso(id: number): Promise<ResultadoSolicitudAcceso> {
+    return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/aprobar`);
+  },
+  async rechazarSolicitudAcceso(id: number): Promise<ResultadoSolicitudAcceso> {
+    return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/rechazar`);
   },
   async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
     const { password, hijos, tipo_documento: _tipoDocumento, numero_documento: _numeroDocumento, ...adulto } = payload;
@@ -136,6 +149,40 @@ export const adminService = {
     );
   },
 };
+
+export type SolicitudAccesoEstado = "PENDIENTE" | "PROCESANDO" | "APROBADA" | "RECHAZADA";
+
+export interface SolicitudAcceso {
+  id_solicitud: number;
+  telefono: string;
+  nombres: string;
+  apellidos: string;
+  dni: string;
+  email: string;
+  estado: SolicitudAccesoEstado;
+  consentimiento_en: string;
+  id_usuario_creado: number | null;
+  revisado_por: number | null;
+  revisado_en: string | null;
+  correo_estado: string | null;
+  aviso_whatsapp_estado: string | null;
+  ultimo_mensaje_en: string;
+  creado_en: string;
+}
+
+export interface SolicitudesAccesoResponse {
+  items: SolicitudAcceso[];
+  total: number;
+}
+
+export interface ResultadoSolicitudAcceso {
+  message: string;
+  solicitud: SolicitudAcceso;
+  /** 'ENVIADO' solo si el enlace de activación salió por correo. */
+  correo_bienvenida?: string | null;
+  /** ENVIADO | NO_CONFIGURADO | ERROR | FUERA_DE_VENTANA | OMITIDO */
+  aviso_whatsapp?: string;
+}
 
 export type AuditoriaItem = {
   id_auditoria: number;

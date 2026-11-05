@@ -118,9 +118,7 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
   if (
     cleanPath === "/padre" ||
     cleanPath.startsWith("/padre/") ||
-    cleanPath.startsWith("/mundo-asha") ||
-    cleanPath.startsWith("/session") ||
-    cleanPath.startsWith("/pay")
+    cleanPath.startsWith("/mundo-asha")
   ) {
     return "PADRE";
   }

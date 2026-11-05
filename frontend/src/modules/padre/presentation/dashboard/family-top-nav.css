@@ -100,14 +100,22 @@
 
 .ftn-header .ftn-logout-btn:hover { background: #fff3f4; border-color: #eaa8b1; }
 
-@media (max-width: 1000px) and (min-width: 768px) {
-  .ftn-header { gap: 8px; padding-inline: 14px; }
-  .ftn-top-row { gap: 8px; }
-  .ftn-brand-btn { padding-inline: 4px; }
-  .ftn-child-picker > summary { max-width: 150px; }
-  .ftn-nav-scroll { gap: 1px; }
-  .ftn-header .ftn-nav-btn { padding-inline: 9px; font-size: 12px; }
-  .ftn-user-section { gap: 8px; }
+.ftn-brand-sub { display: none; }
+@media (min-width: 1440px) { .ftn-brand-sub { display: inline; } }
+
+/* Hasta 1279px la cabecera usa dos filas (marca, perfil y usuario arriba; secciones debajo) para que nada se corte ni se solape. */
+@media (max-width: 1279px) {
+  .ftn-header {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 12px;
+    padding: 10px clamp(12px, 2.2vw, 28px) 8px;
+  }
+  .ftn-top-row { grid-column: 1; grid-row: 1; }
+  .ftn-user-section { grid-column: 2; grid-row: 1; }
+  .ftn-nav-bar { grid-column: 1 / -1; grid-row: 2; width: 100%; justify-content: center; }
+  .ftn-nav-scroll { gap: 6px; }
 }
 
 @media (max-width: 767px) {

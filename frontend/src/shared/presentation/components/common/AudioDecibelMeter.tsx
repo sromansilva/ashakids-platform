@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Mic, Volume2 } from 'lucide-react';
+import { decibelsFromRms, VOICE_MIN_DB } from '@/shared/application/audio/voiceSignal';
 
 interface AudioDecibelMeterProps {
   stream?: MediaStream | null;
@@ -60,7 +61,7 @@ export function AudioDecibelMeter({
         }
         const rms = Math.sqrt(sumSquares / dataArray.length);
         // Mapear RMS a decibeles aproximados de 30 dB a 85 dB
-        const dbCalculated = Math.round(30 + Math.min(55, rms * 140));
+        const dbCalculated = decibelsFromRms(rms);
         const percent = Math.min(100, Math.max(0, Math.round(((dbCalculated - 30) / 55) * 100)));
 
         setDecibels(dbCalculated);
@@ -84,14 +85,14 @@ export function AudioDecibelMeter({
 
   const getStatusText = () => {
     if (!recording) return 'Inactivo';
-    if (decibels < 42) return 'Silencio o voz lejana';
+    if (decibels < VOICE_MIN_DB) return 'Silencio o voz lejana';
     if (decibels <= 72) return 'Nivel óptimo de voz';
     return 'Volumen alto / saturación';
   };
 
   const getStatusColor = () => {
     if (!recording) return 'text-[#9E95B7]';
-    if (decibels < 42) return 'text-[#615274]';
+    if (decibels < VOICE_MIN_DB) return 'text-[#615274]';
     if (decibels <= 72) return 'text-emerald-700 font-bold';
     return 'text-amber-700 font-bold';
   };

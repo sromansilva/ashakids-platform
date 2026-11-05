@@ -34,15 +34,15 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
 
       {!loading && visible.length > 0 && (
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[700px]">
+          <table className="w-full text-left border-collapse md:min-w-[700px]">
             <thead>
               <tr className="border-b border-[#E8E5F4] bg-[#F8F7FD] text-xs font-extrabold text-[#615274]">
-                <th className="py-4 px-6">Usuario</th>
-                <th className="py-4 px-6">Código</th>
-                <th className="py-4 px-6">Correo</th>
-                <th className="py-4 px-6">Estado</th>
-                <th className="py-4 px-6">Registro</th>
-                <th className="py-4 px-6 text-right">Acciones</th>
+                <th className="py-4 px-3 sm:px-6">Usuario</th>
+                <th className="hidden py-4 px-3 sm:px-6 sm:table-cell">Código</th>
+                <th className="hidden py-4 px-3 sm:px-6 md:table-cell">Correo</th>
+                <th className="py-4 px-3 sm:px-6">Estado</th>
+                <th className="hidden py-4 px-3 sm:px-6 lg:table-cell">Registro</th>
+                <th className="py-4 px-3 sm:px-6 text-right">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#E8E5F4] text-sm">
@@ -54,7 +54,7 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
                     className="hover:bg-[#F9F8FD] transition-colors"
                   >
                     {/* Usuario */}
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-3 sm:px-6">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-[#6B46FE] text-white flex items-center justify-center font-black text-sm shrink-0 shadow-sm">
                           {initials}
@@ -66,19 +66,19 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
                     </td>
 
                     {/* Código */}
-                    <td className="py-4 px-6">
+                    <td className="hidden py-4 px-3 sm:px-6 sm:table-cell">
                       <span className="inline-block px-2.5 py-1 rounded-lg bg-gray-100 text-gray-700 font-mono text-xs font-bold uppercase">
                         {acc.codigo_usuario}
                       </span>
                     </td>
 
                     {/* Correo */}
-                    <td className="py-4 px-6 text-[#615274] font-medium">
+                    <td className="hidden py-4 px-3 sm:px-6 text-[#615274] font-medium md:table-cell">
                       {acc.email}
                     </td>
 
                     {/* Estado */}
-                    <td className="py-4 px-6">
+                    <td className="py-4 px-3 sm:px-6">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${
                           acc.activo
@@ -91,12 +91,12 @@ export const AdminCuentasTable: React.FC<AdminCuentasTableProps> = ({
                     </td>
 
                     {/* Registro */}
-                    <td className="py-4 px-6 text-[#615274]">
-                      {formatDate(acc.fecha_creacion)}
+                    <td className="hidden py-4 px-3 sm:px-6 text-[#615274] lg:table-cell">
+                      {formatDate(acc.creado_en ?? acc.fecha_creacion)}
                     </td>
 
                     {/* Acciones */}
-                    <td className="py-4 px-6 text-right">
+                    <td className="py-4 px-3 sm:px-6 text-right">
                       <div className="inline-flex items-center gap-2 justify-end">
                         <button
                           onClick={() => openEditar(acc)}

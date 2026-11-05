@@ -9,6 +9,7 @@ import type { Session } from '@/modules/clinica/domain/clinical';
 import type { ReportData } from '@/modules/clinica/domain/clinical';
 import { useEffect, useState } from 'react';
 import { User, Calendar, FileText, ClipboardList } from 'lucide-react';
+import { sessionStatusLabel } from '@/shared/domain/statusLabels';
 
 export function ReportWorkspace({ session, readOnly = false }: { session: Session; readOnly?: boolean }) {
   const report = useRemote(
@@ -46,7 +47,7 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
         </div>
         <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-[#D5F4EE] bg-[#F0FDF9] px-4 py-3">
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#CCFBF1] text-[#0D9488]"><FileText size={15} /></span>
-          <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Estado</p><p className="truncate text-xs font-black text-[#1C1135]">{session.estado_sesion}</p></div>
+          <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Estado</p><p className="truncate text-xs font-black text-[#1C1135]">{sessionStatusLabel(session.estado_sesion)}</p></div>
         </div>
       </div>
 

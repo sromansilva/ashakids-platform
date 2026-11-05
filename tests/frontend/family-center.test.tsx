@@ -133,5 +133,9 @@ it.each([
   }
   fireEvent.click(within(dialog).getByRole('button',{name:'Confirmar cita'}));
   await waitFor(()=>expect(create).toHaveBeenCalledWith(expect.objectContaining({id_paciente:21,id_terapeuta:4,id_tratamiento:therapy?8:null,tipo_cita:therapy?'TERAPIA':'INTRODUCTORIA',fecha_hora_inicio:start,fecha_hora_fin:end,modalidad:mode,localizacion:mode==='PRESENCIAL'?address:meet})));
-  await waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+  expect(await screen.findByRole('heading',{name:/Cita confirmada para el/})).toBeInTheDocument();
+  const confirmation = within(screen.getByRole('dialog'));
+  expect(confirmation.getByRole('button',{name:'Ver mi agenda'})).toBeInTheDocument();
+  fireEvent.click(confirmation.getByRole('button',{name:'Cerrar'}));
+  expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
 });

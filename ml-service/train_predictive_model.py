@@ -72,7 +72,7 @@ IDENTIFIER_FRAGMENTS = (
     "expediente", "id_tratamiento", "id_reserva", "id_sesion", "fecha_nacimiento",
     "nacimiento", "tutor", "padre", "madre", "curp", "ssn", "passport", "pasaporte",
 )
-DIAGNOSIS_CODES = [str(code) for code in range(1, 6)]
+DIAGNOSIS_CODES = [str(code) for code in range(0, 4)]
 
 
 class TrainingError(Exception):
@@ -206,7 +206,7 @@ def load_codebook(path: Path) -> dict[str, str]:
         or set(data) != set(DIAGNOSIS_CODES)
         or any(not isinstance(label, str) or not label.strip() for label in data.values())
     ):
-        raise TrainingError("El catálogo diagnóstico debe ser un JSON con exactamente los códigos 1 a 5 y etiquetas no vacías.")
+        raise TrainingError("El catálogo diagnóstico debe ser un JSON con exactamente los códigos 0 a 3 y etiquetas no vacías.")
     return {code: data[code].strip() for code in DIAGNOSIS_CODES}
 
 
@@ -482,7 +482,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--validation-csv", required=True, help="CSV de cohorte independiente para validación.")
     parser.add_argument("--output-dir", required=True, help="Directorio nuevo o vacío para los artefactos.")
     parser.add_argument("--dataset-version", required=True, help="Identificador de versión de la cohorte.")
-    parser.add_argument("--diagnosis-codebook", required=True, help='JSON {"1": "...", ..., "5": "..."} institucional.')
+    parser.add_argument("--diagnosis-codebook", required=True, help='JSON {"0": "...", ..., "3": "..."} institucional (debe coincidir con el catálogo del backend).')
     parser.add_argument("--min-train-samples", type=int, default=DEFAULT_MIN_TRAIN)
     parser.add_argument("--min-validation-samples", type=int, default=DEFAULT_MIN_VALIDATION)
     parser.add_argument("--min-completed", type=int, default=DEFAULT_MIN_COMPLETED,

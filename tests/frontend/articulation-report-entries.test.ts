@@ -52,7 +52,7 @@ describe('clinical articulation report entries', () => {
 
   it('rotula la similitud como indicador de apoyo, la conserva al releer y nunca incluye la hipótesis', () => {
     const entry = encodeArticulationResult({ ...result, similitud_apoyo: 75 });
-    expect(entry).toContain('Similitud de texto (indicador de apoyo, sin validación clínica): 75 %');
+    expect(entry).toContain('Indicador de apoyo · sin validación clínica: 75 %');
     expect(entry).not.toMatch(/hip[oó]tesis|lambdacismo|rotacismo|sigmatismo/i);
     const [record] = parseArticulationHistory([
       { id_sesion: 1, tipo_cita: 'TERAPIA' as const, fecha_hora_inicio: '2026-10-19T15:00:00.000Z', observaciones_iniciales: entry },

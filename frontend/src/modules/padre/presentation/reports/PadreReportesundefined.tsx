@@ -1,10 +1,10 @@
 import type { usePadreReportes } from './usePadreReportes';
-import { ChevronRight, Video, Building2, Calendar, BarChart2, User, FileText } from 'lucide-react';
+import { ChevronRight, Video, Building2, Calendar, FileText } from 'lucide-react';
 import { SessionActions } from '@/shared/presentation/components/common/SessionActions';
 
-type Props = Pick<ReturnType<typeof usePadreReportes>, 'tab' | 'setTab' | 'sessions' | 'openSession' | 'setOpenSession'> & { ready: boolean };
+type Props = Pick<ReturnType<typeof usePadreReportes>, 'sessions' | 'openSession' | 'setOpenSession'> & { ready: boolean };
 
-export function PadreReportesundefined({ tab, setTab, sessions, openSession, setOpenSession, ready }: Props) {
+export function PadreReportesundefined({ sessions, openSession, setOpenSession, ready }: Props) {
   return (
     <div className="w-full max-w-[1500px] mx-auto p-4 sm:p-8 text-[#1C1135]" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
       {/* Page Title & Subtitle */}
@@ -15,7 +15,7 @@ export function PadreReportesundefined({ tab, setTab, sessions, openSession, set
         </p>
       </div>
 
-      {/* 3 KPI Cards */}
+      {/* Resumen */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-7">
         {/* KPI 1 */}
         <div className="bg-white rounded-3xl p-5 border border-[#E8E5F4] shadow-xs flex items-center gap-4">
@@ -29,71 +29,10 @@ export function PadreReportesundefined({ tab, setTab, sessions, openSession, set
             </p>
           </div>
         </div>
-
-        {/* KPI 2 */}
-        <div className="bg-white rounded-3xl p-5 border border-[#E8E5F4] shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#E6F8F5] flex items-center justify-center text-[#0D9488] shrink-0">
-            <BarChart2 size={22} />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-[#8C82A8]">Progreso general</p>
-            <p className="text-lg font-black text-[#6B46FE] mt-0.5">Sin medición</p>
-          </div>
-        </div>
-
-        {/* KPI 3 */}
-        <div className="bg-white rounded-3xl p-5 border border-[#E8E5F4] shadow-xs flex items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#FFF3E8] flex items-center justify-center text-[#EA580C] shrink-0">
-            <User size={22} />
-          </div>
-          <div>
-            <p className="text-xs font-bold text-[#8C82A8]">Valoración terapeuta</p>
-            <p className="text-lg font-black text-[#6B46FE] mt-0.5">Sin registro</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Tabs Pill Bar */}
-      <div className="flex flex-wrap items-center gap-2 mb-6 p-1.5 bg-white border border-[#E8E5F4] rounded-2xl w-fit">
-        <button
-          type="button"
-          onClick={() => setTab('sesiones')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-extrabold transition-all ${
-            tab === 'sesiones'
-              ? 'bg-[#6B46FE] text-white shadow-md shadow-[#6B46FE]/20'
-              : 'text-[#6B5E8A] hover:text-[#6B46FE]'
-          }`}
-        >
-          <FileText size={16} />
-          <span>Sesiones</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => setTab('progreso')}
-          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-extrabold transition-all ${
-            tab === 'progreso'
-              ? 'bg-[#6B46FE] text-white shadow-md shadow-[#6B46FE]/20'
-              : 'text-[#6B5E8A] hover:text-[#6B46FE]'
-          }`}
-        >
-          <BarChart2 size={16} />
-          <span>Progreso mensual (pendiente)</span>
-        </button>
       </div>
 
       {/* Content */}
-      {tab === 'progreso' ? (
-        <section className="bg-white rounded-3xl border border-[#E8E5F4] p-8 text-sm text-[#6B5E8A] space-y-3">
-          <h2 className="font-black text-xl text-[#1C1135]">Informes mensuales pendientes</h2>
-          <p className="leading-relaxed">
-            Todavía no hay un registro de evaluación mensual consolidado. Consulta los reportes de sesión para ver las observaciones clínicas y los próximos pasos fijados por el profesional.
-          </p>
-          <p className="text-xs text-[#8C82A8] font-bold">
-            Nota: El número de sesiones no mide de forma lineal la mejoría clínica.
-          </p>
-        </section>
-      ) : (
-        <div className="space-y-4">
+      <div className="space-y-4">
           {ready && sessions.length === 0 && (
             <div className="bg-white rounded-3xl border border-[#E8E5F4] p-8 text-center text-sm font-bold text-[#8C82A8]">
               No hay sesiones registradas actualmente para este hijo.
@@ -188,8 +127,7 @@ export function PadreReportesundefined({ tab, setTab, sessions, openSession, set
               </div>
             );
           })}
-        </div>
-      )}
+      </div>
     </div>
   );
 }

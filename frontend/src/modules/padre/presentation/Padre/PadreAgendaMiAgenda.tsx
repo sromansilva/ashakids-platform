@@ -205,7 +205,7 @@ export function PadreAgendaMiAgenda({
                 </button>
               </div>
             ) : (
-              <div className="space-y-3 overflow-y-auto max-h-[360px] pr-1">
+              <div className="space-y-3 pr-1 lg:max-h-[min(78vh,760px)] lg:overflow-y-auto">
                 {waitingApts.map((apt) => (
                   <div
                     key={apt.id}
@@ -259,10 +259,10 @@ export function PadreAgendaMiAgenda({
                           size="sm"
                         />
                         <div className="min-w-0 flex-1">
-                          <p className="font-extrabold text-sm text-[#1C1135] truncate">
+                          <p className="font-extrabold text-sm text-[#1C1135] break-words sm:truncate">
                             {apt.date} · {apt.time}
                           </p>
-                          <p className="text-xs text-[#8C82A8] font-medium truncate mt-0.5">
+                          <p className="text-xs text-[#8C82A8] font-medium break-words sm:truncate mt-0.5">
                             {apt.therapist} · {apt.child} · {apt.type === "presencial" ? "Presencial" : "Virtual"}
                           </p>
                         </div>

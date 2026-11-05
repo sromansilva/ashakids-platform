@@ -17,6 +17,8 @@ async function open(options: { readonly?: boolean; published?: boolean; fail?: b
     if (path === '/citas/45') return reply(currentAppointment);
     if (path === '/sesiones/9') return reply({ ...currentSession, puede_editar: !options.readonly });
     if (path === '/sesiones/9/reporte') return reply({ observaciones_iniciales: 'Línea base confirmada sintética', objetivos_trabajados: 'Objetivo trabajado en introductoria' });
+    if (path === '/clinica/diagnosticos-preliminares') return reply({ etiqueta: 'Código diagnóstico preliminar asignado por el terapeuta', aviso: 'Preliminar.', codigos: [{ code: 0, label: 'Dislalia funcional' }, { code: 1, label: 'Retraso simple del habla' }] });
+    if (path === '/clinica/tratamientos/pronostico-estado') return reply({ disponible: false, version_modelo: null });
     if (path === '/sesiones/9/seguimiento-articulacion') return reply(options.savedResults ?? []);
     if (path === '/sesiones/9/plan') {
       if(init.method === 'POST') { if(options.fail) return reply({ detail: 'Conflicto del servidor' },409); published=true; return reply(plan,201); }
@@ -35,6 +37,8 @@ it('convierte el reporte guardado en contexto editable y exige completar objetiv
   fireEvent.change(screen.getByLabelText('Área principal definida por el terapeuta'),{target:{value:'HABLA'}});
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'4'}});
   fireEvent.change(screen.getByLabelText('Frecuencia semanal'),{target:{value:'2'}});
+  await screen.findByRole('option',{name:'Retraso simple del habla'});
+  fireEvent.change(screen.getByLabelText('Código diagnóstico preliminar asignado por el terapeuta'),{target:{value:'1'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'/r/'}));
   expect(screen.getByRole('checkbox',{name:'Habla y articulación'})).toBeChecked();
   expect(screen.getByRole('checkbox',{name:'Comprensión y expresión'})).toBeChecked();
@@ -47,15 +51,16 @@ it('convierte el reporte guardado en contexto editable y exige completar objetiv
   fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Practicar el objetivo confirmado según criterio profesional.'}});
   fireEvent.change(screen.getByLabelText('Actividades propuestas *'),{target:{value:'Actividad definida por el terapeuta.'}});
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
+  fireEvent.change(screen.getByLabelText('Recomendaciones'),{target:{value:'Pautas para la familia'}});
   fireEvent.click(screen.getByRole('button',{name:'Aprobar y publicar plan'}));
   expect(await screen.findByText('Plan de Ana · ACTIVO')).toBeInTheDocument();
   const write=calls.mock.calls.find(([,init])=>init?.method==='POST');
   expect(String(write?.[0])).toContain('/sesiones/9/plan');
   expect(JSON.parse(String(write?.[1]?.body))).toEqual({
     nombre_tratamiento:'Plan de Ana',
-    descripcion:'[LÍNEA BASE CONFIRMADA]\nLínea base confirmada sintética\n\n[OBJETIVOS TRABAJADOS EN INTRODUCTORIA]\nObjetivo trabajado en introductoria\n\n[OBJETIVOS DEL PLAN]\nPracticar el objetivo confirmado según criterio profesional.\n\n[ACTIVIDADES DEL PLAN]\nActividad definida por el terapeuta.',
+    descripcion:'[LÍNEA BASE CONFIRMADA]\nLínea base confirmada sintética\n\n[OBJETIVOS TRABAJADOS EN INTRODUCTORIA]\nObjetivo trabajado en introductoria\n\n[OBJETIVOS DEL PLAN]\nPracticar el objetivo confirmado según criterio profesional.\n\n[ACTIVIDADES DEL PLAN]\nActividad definida por el terapeuta.\n\n[RECOMENDACIONES PARA LA FAMILIA]\nPautas para la familia',
     area:'HABLA', mundos_asignados:['HABLA','LENGUAJE'], sesiones_recomendadas:4,
-    frecuencia_semanal:2, fonemas_priorizados:['/r/'],
+    frecuencia_semanal:2, fonemas_priorizados:['/r/'], codigo_diagnostico:1,
   });
 });
 it('conserva el borrador si el servidor rechaza la publicación', async () => {
@@ -65,12 +70,15 @@ it('conserva el borrador si el servidor rechaza la publicación', async () => {
   fireEvent.change(screen.getByLabelText('Área principal definida por el terapeuta'),{target:{value:'HABLA'}});
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'3'}});
   fireEvent.change(screen.getByLabelText('Frecuencia semanal'),{target:{value:'2'}});
+  await screen.findByRole('option',{name:'Retraso simple del habla'});
+  fireEvent.change(screen.getByLabelText('Código diagnóstico preliminar asignado por el terapeuta'),{target:{value:'1'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'/r/'}));
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   fireEvent.change(screen.getByLabelText('Objetivos del plan *'),{target:{value:'Objetivo editable de prueba'}});
   fireEvent.change(screen.getByLabelText('Actividades propuestas *'),{target:{value:'Actividad editable de prueba'}});
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
+  fireEvent.change(screen.getByLabelText('Recomendaciones'),{target:{value:'Pautas para la familia'}});
   fireEvent.click(screen.getByRole('button',{name:'Aprobar y publicar plan'}));
   expect(await screen.findByRole('alert')).toHaveTextContent('Conflicto del servidor');
   fireEvent.click(screen.getByRole('button',{name:'Paso anterior'}));
@@ -102,6 +110,8 @@ it('usa resultados previos guardados como contexto editable y deja objetivos y a
   fireEvent.change(screen.getByLabelText('Área principal definida por el terapeuta'),{target:{value:'HABLA'}});
   fireEvent.change(screen.getByLabelText('Sesiones recomendadas por el terapeuta'),{target:{value:'4'}});
   fireEvent.change(screen.getByLabelText('Frecuencia semanal'),{target:{value:'2'}});
+  await screen.findByRole('option',{name:'Retraso simple del habla'});
+  fireEvent.change(screen.getByLabelText('Código diagnóstico preliminar asignado por el terapeuta'),{target:{value:'1'}});
   fireEvent.click(screen.getByRole('checkbox',{name:'/r/'}));
   fireEvent.click(screen.getByRole('button',{name:/Continuar/}));
   const previousResults = screen.getByLabelText('Resultados previos revisados (contexto editable)') as HTMLTextAreaElement;

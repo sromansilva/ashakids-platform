@@ -6,7 +6,13 @@ import { appendPatientScope, assertReservationAccess, assertSessionEditAccess, a
 import { FamilyPhoneticCaptureStore, PhoneticCaptureStore, pcm16MonoWav } from './phonetic-capture.js';
 import { isAttendedOrActiveSession, normalizeAttendance } from './attendance.js';
 import { calcularIndicadoresFoneticos, ETIQUETA_INDICADOR_APOYO } from '../clinica/services/phoneticIndicators.js';
+import { registrarVariablesModeloTratamiento } from '../clinica/services/tratamientoCohorte.js';
 import { isGoogleMeetUrl as isMeetingUrl } from '../../core/security/google-meet-url.js';
+import { emitNotificationEvent, type CriticalNotificationType } from '../notificaciones/notification-events.js';
+import { analyzeWavSignal, VOICE_SIGNAL_MESSAGE } from './voice-signal.js';
+
+/** Minutos antes de la hora programada desde los que el terapeuta puede iniciar la sesión. */
+export const SESSION_EARLY_START_MINUTES = 5;
 
 export interface SessionData {
   id_sesion: number;
@@ -152,13 +158,54 @@ export class SesionesService {
       throw Object.assign(new Error('Selecciona una palabra y un fonema de los objetivos clínicos disponibles.'), { status: 400 });
     }
     await this.assertActivePhoneticSession(idSesion);
-    return this.familyPhoneticCaptureStore.create({
+    const capture = this.familyPhoneticCaptureStore.create({
       id_sesion: idSesion,
       id_usuario: user.id_usuario,
       captura_id: payload.captura_id,
       palabra_objetivo: target.word,
       fonema_objetivo: target.fonema_objetivo,
     });
+    await this.notificarFamiliaDeSesion(idSesion, 'MUESTRA_SOLICITADA', {
+      title: 'Tu terapeuta pidió una muestra de voz',
+      text: `Graba una palabra breve (${target.word}) desde este dispositivo. Entra a la cita y toca «Grabar ahora».`,
+      eventKey: `muestra_solicitada:${idSesion}:${payload.captura_id}`,
+    });
+    return capture;
+  }
+
+  /**
+   * Avisa a la familia del paciente de la sesión con un aviso crítico (no depende de las
+   * preferencias). Un fallo de notificación nunca debe impedir la acción clínica.
+   */
+  private async notificarFamiliaDeSesion(
+    idSesion: number,
+    type: CriticalNotificationType,
+    notice: { title: string; text: string; eventKey: string },
+  ): Promise<void> {
+    try {
+      const family = await pool.query(
+        `SELECT r.id_reserva, tutor.id_usuario AS parent_user_id
+         FROM sesiones s
+         JOIN reservas r ON r.id_reserva = s.id_reserva
+         JOIN pacientes p ON p.id_paciente = r.id_paciente
+         JOIN tutores tutor ON tutor.id_tutor = p.id_tutor
+         WHERE s.id_sesion = $1;`,
+        [idSesion],
+      );
+      for (const row of family.rows) {
+        await emitNotificationEvent(pool, {
+          userId: Number(row.parent_user_id),
+          preference: null,
+          type,
+          title: notice.title,
+          text: notice.text,
+          reservationId: Number(row.id_reserva),
+          eventKey: notice.eventKey,
+        });
+      }
+    } catch (error) {
+      console.warn(`[SesionesService] No se pudo avisar a la familia (${type}):`, error);
+    }
   }
 
   async obtenerCapturaFamiliarPendiente(idSesion: number, familyUserId: number) {
@@ -199,8 +246,22 @@ export class SesionesService {
         fonema_objetivo: completed.fonema_objetivo,
       });
       this.familyPhoneticCaptureStore.complete(idSesion, captureId, { ...result, estado: 'PENDIENTE_REVISION' });
+      // La familia ya atendió el pedido: el aviso deja de mostrarse como pendiente.
+      await pool.query(
+        `UPDATE public.notificaciones SET leida_en = NOW()
+         WHERE id_usuario = $1 AND tipo = 'MUESTRA_SOLICITADA' AND leida_en IS NULL
+           AND id_reserva = (SELECT id_reserva FROM public.sesiones WHERE id_sesion = $2);`,
+        [familyUserId, idSesion],
+      ).catch((error: unknown) => {
+        console.warn('[Sesiones] No se pudo marcar como atendido el aviso de muestra:', error instanceof Error ? error.message : String(error));
+      });
       return { estado: 'ENVIADA' as const, aviso: 'La muestra fue enviada al terapeuta para revisión.' };
     } catch (error) {
+      // Señal sin voz: la solicitud sigue vigente para que la familia repita la muestra.
+      if ((error as { code?: string }).code === 'SENAL_INSUFICIENTE' &&
+          this.familyPhoneticCaptureStore.reopen(idSesion, captureId, familyUserId)) {
+        throw error;
+      }
       try {
         this.familyPhoneticCaptureStore.discard(idSesion, captureId, familyUserId);
       } catch {
@@ -275,6 +336,10 @@ export class SesionesService {
       audioBytes = payload?.audio_bytes ? Buffer.from(payload.audio_bytes) : Buffer.from(audioBase64, 'base64');
       if (!audioBytes.length) throw fail('Graba un fragmento de audio válido.');
       if (audioBytes.length > 512_000) throw fail('El fragmento supera el tamaño permitido.', 413);
+      // Sin voz audible no se consulta al modelo ni se crea ninguna evaluación; el audio no se guarda.
+      if (!analyzeWavSignal(audioBytes).suficiente) {
+        throw Object.assign(fail(VOICE_SIGNAL_MESSAGE, 422), { code: 'SENAL_INSUFICIENTE' });
+      }
       uploadBytes = Uint8Array.from(audioBytes);
       formData = new FormData();
       formData.append('file', new Blob([uploadBytes], { type: 'audio/wav' }), 'session-audio.wav');
@@ -297,7 +362,10 @@ export class SesionesService {
       const modelResult = await response.json() as { transcripcion?: unknown; duracion_segundos?: unknown; motor_red_neuronal_activa?: unknown };
       const transcription = typeof modelResult.transcripcion === 'string' ? modelResult.transcripcion.trim() : '';
       const duration = typeof modelResult.duracion_segundos === 'number' ? modelResult.duracion_segundos : NaN;
-      if (modelResult.motor_red_neuronal_activa !== true || !transcription || transcription.length > 500 || duration < 2 || duration > 3) {
+      if (modelResult.motor_red_neuronal_activa === true && !transcription) {
+        throw Object.assign(fail(VOICE_SIGNAL_MESSAGE, 422), { code: 'SENAL_INSUFICIENTE' });
+      }
+      if (modelResult.motor_red_neuronal_activa !== true || transcription.length > 500 || duration < 2 || duration > 3) {
         throw fail('No se obtuvo una muestra válida de 2 a 3 segundos para revisar. Graba nuevamente.', 422);
       }
 
@@ -460,7 +528,8 @@ export class SesionesService {
           localizacion: null,
           estado_reserva: r.estado_reserva as any,
           fecha_creacion: r.fecha_creacion ? new Date(r.fecha_creacion).toISOString() : new Date().toISOString(),
-          meet_url: isMeetingUrl(r.meet_url) ? r.meet_url : null,
+          // La familia solo ve el enlace cuando el terapeuta ya inició la sesión.
+          meet_url: isMeetingUrl(r.meet_url) && (user.rol !== 'PADRE' || r.estado_sesion === 'EN_CURSO') ? r.meet_url : null,
           meet_origen: null,
           id_sesion: r.id_sesion,
         },
@@ -504,30 +573,88 @@ export class SesionesService {
     }
   }
 
-  async iniciar(key: number, user: AuthenticatedUser): Promise<SessionData> {
-    await assertSessionEditAccess(user, key);
-    try {
-      const result = await pool.query(
-        `UPDATE sesiones s
-         SET fecha_hora_inicio_real = NOW(), estado_sesion = 'EN_CURSO'
-         FROM reservas r
-         WHERE s.id_sesion = $1
-           AND r.id_reserva = s.id_reserva
-           AND s.estado_sesion = 'PROGRAMADA'
-           AND r.estado_reserva = 'CONFIRMADA'
-           AND r.fecha_hora_inicio <= NOW()
-         RETURNING s.id_sesion;`,
-        [key]
-      );
-      if (!result.rows[0]) {
-        throw Object.assign(new Error('La sesión solo puede iniciarse cuando la cita esté confirmada y llegue su hora programada.'), { status: 409 });
-      }
-    } catch (err) {
-      throw err;
+  async iniciar(key: number, user: AuthenticatedUser, options: { modoPrueba?: boolean } = {}): Promise<SessionData> {
+    const modoPrueba = options.modoPrueba === true;
+    if (modoPrueba && !settings.SESSION_TEST_MODE_ENABLED) {
+      throw Object.assign(new Error('El modo prueba de sesiones no está habilitado en este entorno.'), { status: 403 });
     }
+    await assertSessionEditAccess(user, key);
+    const current = await pool.query(
+      `SELECT s.estado_sesion, s.id_reserva, r.estado_reserva, r.fecha_hora_inicio, r.fecha_hora_fin,
+              NOW() >= r.fecha_hora_inicio - ($2::int * INTERVAL '1 minute') AS ya_es_hora,
+              NOW() >= r.fecha_hora_fin AS ya_termino
+       FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva
+       WHERE s.id_sesion = $1;`,
+      [key, SESSION_EARLY_START_MINUTES],
+    );
+    const row = current.rows[0];
+    if (!row) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
+    if (row.estado_reserva !== 'CONFIRMADA') {
+      throw Object.assign(new Error('La cita debe estar confirmada para iniciar la sesión.'), { status: 409 });
+    }
+    if (row.estado_sesion !== 'PROGRAMADA') {
+      throw Object.assign(new Error('La sesión ya fue iniciada o cerrada.'), { status: 409 });
+    }
+    if (!modoPrueba) {
+      if (row.ya_termino) {
+        throw Object.assign(new Error('La cita ya terminó: no se puede iniciar la sesión fuera de su horario.'), { status: 409 });
+      }
+      if (!row.ya_es_hora) {
+        const enabledAt = new Date(new Date(row.fecha_hora_inicio).getTime() - SESSION_EARLY_START_MINUTES * 60000);
+        const label = new Intl.DateTimeFormat('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', hour12: false }).format(enabledAt);
+        throw Object.assign(new Error(`Aún no es la hora: la sesión puede iniciarse desde las ${label}.`), { status: 409 });
+      }
+    }
+    const result = await pool.query(
+      `UPDATE sesiones s
+       SET fecha_hora_inicio_real = NOW(), estado_sesion = 'EN_CURSO'
+       FROM reservas r
+       WHERE s.id_sesion = $1
+         AND r.id_reserva = s.id_reserva
+         AND s.estado_sesion = 'PROGRAMADA'
+         AND r.estado_reserva = 'CONFIRMADA'
+         AND ($3::boolean OR (NOW() >= r.fecha_hora_inicio - ($2::int * INTERVAL '1 minute') AND NOW() < r.fecha_hora_fin))
+       RETURNING s.id_sesion;`,
+      [key, SESSION_EARLY_START_MINUTES, modoPrueba],
+    );
+    if (!result.rows[0]) {
+      throw Object.assign(new Error('La sesión no pudo iniciarse: cambió el estado o el horario de la cita.'), { status: 409 });
+    }
+    if (modoPrueba) {
+      // No existe un helper de auditoría reutilizable; queda registro en el log del servidor.
+      console.warn(`[SesionesService] MODO PRUEBA: sesión ${key} iniciada fuera de horario por el usuario ${user.id_usuario} (${user.rol}).`);
+    }
+    await this.notificarInicioAFamilia(Number(row.id_reserva));
     const sesion = await this.detalle(key, user);
     if (!sesion) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
     return { ...sesion, estado_sesion: 'EN_CURSO' };
+  }
+
+  private async notificarInicioAFamilia(idReserva: number): Promise<void> {
+    try {
+      const family = await pool.query(
+        `SELECT family.id_usuario AS parent_user_id
+         FROM reservas r
+         JOIN pacientes p ON p.id_paciente = r.id_paciente
+         JOIN tutores family ON family.id_tutor = p.id_tutor
+         WHERE r.id_reserva = $1 AND r.modalidad IN ('VIRTUAL', 'ONLINE');`,
+        [idReserva],
+      );
+      for (const participant of family.rows) {
+        await emitNotificationEvent(pool, {
+          userId: Number(participant.parent_user_id),
+          // Crítico: sin acceso a la reunión la familia no puede asistir, aunque haya apagado recordatorios.
+          preference: null,
+          type: 'SESION_INICIADA',
+          title: 'Tu terapeuta inició la reunión',
+          text: 'Ya puedes entrar a la reunión desde AshaKids.',
+          reservationId: idReserva,
+          eventKey: `sesion_iniciada:${idReserva}`,
+        });
+      }
+    } catch (error) {
+      console.warn('[SesionesService] La sesión inició, pero no se pudo notificar a la familia:', error);
+    }
   }
 
   async cerrar(key: number, asistencia: 'ASISTIO' | 'NO_ASISTIO', user: AuthenticatedUser): Promise<SessionData> {
@@ -684,6 +811,11 @@ export class SesionesService {
       throw Object.assign(new Error('Completa los cuatro campos del reporte antes de firmarlo.'), { status: 400 });
     }
     const row = result.rows[0];
+    await this.notificarFamiliaDeSesion(key, 'REPORTE_PUBLICADO', {
+      title: 'Tu terapeuta publicó el reporte de la sesión',
+      text: 'Ya puedes leer el reporte y descargarlo desde la cita.',
+      eventKey: `reporte_publicado:${key}`,
+    });
     return {
       id_reporte_sesion: row.id_reporte_sesion,
       id_sesion: row.id_sesion,
@@ -889,12 +1021,16 @@ export class SesionesService {
         [idExpediente, terapeutaId, data.nombre_tratamiento, data.descripcion ?? null, data.area, JSON.stringify(data.mundos_asignados), data.sesiones_recomendadas, key, data.id_prediccion ?? null, data.frecuencia_semanal, JSON.stringify(data.fonemas_priorizados)]
       );
       const row = res.rows[0];
+      await registrarVariablesModeloTratamiento(client, {
+        idTratamiento: Number(row.id_tratamiento),
+        codigoDiagnostico: data.codigo_diagnostico,
+      });
       if (prediction) {
         const confirmation = data.decision_prediccion;
         await client.query(
           `UPDATE public.predicciones_tratamiento
-           SET estado_confirmacion = $2,
-               sesiones_confirmadas = CASE WHEN $2 = 'DESCARTADO' THEN NULL ELSE $3 END,
+           SET estado_confirmacion = $2::character varying(30),
+               sesiones_confirmadas = CASE WHEN $2::character varying(30) = 'DESCARTADO' THEN NULL ELSE $3::integer END,
                observaciones_terapeuta = $4
            WHERE id_prediccion = $1 AND estado_confirmacion = 'SUGERIDO';`,
           [data.id_prediccion, confirmation, data.sesiones_recomendadas, data.observaciones_prediccion ?? null],

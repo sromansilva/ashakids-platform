@@ -6,6 +6,7 @@ import { seedIncidencias } from './modules/incidencias/incidencias.seed.js';
 import { migrateTerapeutaProfile } from './modules/terapeuta/terapeuta-profile.migration.js';
 import { migrateClinicaSchema } from './modules/clinica/clinica.migration.js';
 import { migrateNotificacionesSchema } from './modules/notificaciones/notificaciones.migration.js';
+import { migrateWhatsApp } from './modules/whatsapp/whatsapp.migration.js';
 import { appointmentReminderScheduler } from './modules/notificaciones/recordatorios.scheduler.js';
 
 let server: ReturnType<typeof app.listen> | undefined;
@@ -19,10 +20,14 @@ async function startServer(): Promise<void> {
       migrateTerapeutaProfile(),
       migrateClinicaSchema(),
       migrateNotificacionesSchema(),
+      migrateWhatsApp(),
     ]);
     const failedMigration = migrations.find((result) => result.status === 'rejected');
     if (failedMigration?.status === 'rejected') throw failedMigration.reason;
-    await seedIncidencias();
+    // Los tickets y cuentas de ejemplo nunca se crean solos: requieren activación explícita fuera de producción.
+    if (process.env.SEED_DEMO_INCIDENCIAS === 'true' && settings.ENVIRONMENT !== 'production') {
+      await seedIncidencias();
+    }
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     console.error('[Bootstrap] No se pudo completar el esquema requerido; el servidor no iniciará:', message);

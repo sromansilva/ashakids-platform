@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
 import { Building2, CalendarDays, Check, MapPin, Sparkles, Stethoscope, UserRound, Video, X } from 'lucide-react';
 import { Btn } from './Btn';
@@ -26,7 +27,14 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   const [mode, setMode] = useState<'VIRTUAL' | 'PRESENCIAL'>(appointment?.modalidad ?? 'PRESENCIAL');
   const location = mode === 'PRESENCIAL' ? 'Jr. Ricardo Treneman 252, Chorrillos 15064' : 'La reunión será mediante Google Meet.';
   const [review, setReview] = useState(false);
+  const [confirmedLabel, setConfirmedLabel] = useState('');
+  const pendingLabel = useRef('');
+  const navigate = useNavigate();
   const form = useRef<HTMLFormElement>(null);
+  const onlyChildId = family.children.length === 1 ? family.children[0].id : 0;
+  useEffect(() => {
+    if (!appointment && onlyChildId) setPatient(current => current || onlyChildId);
+  }, [appointment, onlyChildId]);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
     form.current?.querySelector<HTMLElement>('button,select')?.focus();
@@ -49,12 +57,32 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
     const body = { fecha_hora_inicio: selected.inicio, fecha_hora_fin: selected.fin, modalidad: mode, localizacion: location };
     return appointment ? appointmentsService.reschedule(appointment.id_reserva, body) : appointmentsService.create({ ...body,
       id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? (selectedPlan || null) : null, tipo_cita: type });
-  }, close);
-  const change = () => { setStart(''); setReview(false); };
+  }, () => setConfirmedLabel(pendingLabel.current));
+  const change =() => { setStart(''); setReview(false); };
   const selectedChild = family.children.find(p => p.id === patient);
   const patientName = selectedChild ? `${selectedChild.name} ${selectedChild.surname}` : appointment?.paciente_nombre || 'Sin seleccionar';
   const selectedProfessional = professionals.data?.find(p => p.id_terapeuta === therapist);
   const formattedDay = day ? day.split('-').reverse().join('/') : 'Elige una fecha';
+  if (confirmedLabel) {
+    return createPortal(<div className="booking-dialog-overlay" onMouseDown={event => { if (event.target === event.currentTarget) close(); }}>
+      <section role="dialog" aria-modal="true" aria-labelledby="booking-confirmed-title" className="booking-dialog" onKeyDown={e => { if (e.key === 'Escape') close(); }}>
+        <div className="booking-dialog-body booking-review">
+          <div className="booking-review-heading">
+            <span className="booking-review-icon"><Check size={19} aria-hidden="true" /></span>
+            <div role="status">
+              <p className="booking-eyebrow">{appointment ? 'Cita reprogramada' : 'Cita confirmada'}</p>
+              <h3 id="booking-confirmed-title">{appointment ? 'Tu cita quedó para el' : 'Cita confirmada para el'} {confirmedLabel}</h3>
+              <p>También la encontrarás en tu agenda y recibirás un aviso.</p>
+            </div>
+          </div>
+        </div>
+        <footer className="booking-dialog-footer"><p>Horario en Lima.</p><div>
+          <Btn variant="secondary" onClick={close}>Cerrar</Btn>
+          <Btn onClick={() => { close(); navigate('/padre/agenda'); }}>Ver mi agenda</Btn>
+        </div></footer>
+      </section>
+    </div>, document.body);
+  }
   return createPortal(<div className="booking-dialog-overlay" onMouseDown={event => {
     if (event.target === event.currentTarget && !save.isPending) close();
   }}>
@@ -67,7 +95,9 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
         else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
       }
     }} onSubmit={e => {
-      e.preventDefault(); if (!ready) return; if (!review) setReview(true); else void save.submit(undefined);
+      e.preventDefault(); if (!ready) return; if (!review) { setReview(true); return; }
+      pendingLabel.current = `${formattedDay}${selected ? ` a las ${clock(selected.inicio)}` : ''}`;
+      void save.submit(undefined);
     }}>
       <header className="booking-dialog-header">
         <div className="booking-dialog-heading">

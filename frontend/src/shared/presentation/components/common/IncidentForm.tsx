@@ -20,7 +20,7 @@ interface IncidentFormProps {
 export function IncidentForm({
   role = 'PADRE',
   defaultTipo = '',
-  submitButtonText = 'Enviar a administración',
+  submitButtonText = 'Enviar solicitud',
   title = 'Reportar incidencia',
   subtitle = 'Cuéntanos qué problema encontraste. El área correspondiente atenderá tu solicitud.',
   className = '',

@@ -8,11 +8,10 @@ import { PublicIllustration } from '@/shared/presentation/components/illustratio
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import type { View } from '@/shared/domain/types/navigation';
 import { worldArt } from '../Sessions/worldArt';
+import { FamilyLiveSessions } from './FamilyLiveSessions';
 import './family-center.css';
 
-export function PadreWelcome({
-  go,
-}: {
+export function PadreWelcome(_props: {
   go: (view: View) => void;
 }) {
   const navigate = useNavigate();
@@ -49,13 +48,14 @@ export function PadreWelcome({
         </div>
       </div>
 
+      <FamilyLiveSessions />
       <RemoteFeedback pending={patients.isPending} error={patients.error} retry={() => void patients.refetch()} />
 
       {!patients.error && !patients.isPending && !patient && (
         <div className="fc-empty">
           <h2>Aún no tienes hijos registrados</h2>
           <p>Tu familia puede añadir un perfil para empezar.</p>
-          <button className="fc-button" type="button" onClick={() => go('padre/config')}>
+          <button className="fc-button" type="button" onClick={() => navigate('/padre/config?tab=hijos')}>
             Gestionar hijos
             <ArrowRight size={18} aria-hidden="true" />
           </button>

@@ -188,6 +188,38 @@ export async function migrateClinicaSchema() {
       END $$;
     `);
 
+    // 5. Variables del plan para entrenar el pronóstico, independientes de que exista un modelo.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS public.tratamiento_variables_modelo (
+        id_tratamiento integer PRIMARY KEY REFERENCES public.tratamientos(id_tratamiento) ON DELETE CASCADE,
+        edad_meses integer CHECK (edad_meses IS NULL OR edad_meses >= 0),
+        codigo_diagnostico smallint NOT NULL CHECK (codigo_diagnostico BETWEEN 0 AND 3),
+        cantidad_fonemas_afectados integer CHECK (cantidad_fonemas_afectados IS NULL OR cantidad_fonemas_afectados >= 0),
+        nivel_colaboracion smallint CHECK (nivel_colaboracion IS NULL OR nivel_colaboracion BETWEEN 1 AND 5),
+        frecuencia_semanal smallint CHECK (frecuencia_semanal IS NULL OR frecuencia_semanal BETWEEN 1 AND 3),
+        fecha_captura timestamp with time zone DEFAULT now() NOT NULL,
+        fecha_desenlace date
+      );
+    `);
+
+    // 6. Un tratamiento cerrado (ALTA o ABANDONO) no puede volver a otro estado.
+    await client.query(`
+      CREATE OR REPLACE FUNCTION public.proteger_desenlace_tratamiento() RETURNS trigger AS $$
+      BEGIN
+        IF OLD.estado_tratamiento IN ('ALTA', 'ABANDONO') AND NEW.estado_tratamiento IS DISTINCT FROM OLD.estado_tratamiento THEN
+          RAISE EXCEPTION 'Un tratamiento cerrado no puede reabrirse.' USING ERRCODE = '23514';
+        END IF;
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+    `);
+    await client.query('DROP TRIGGER IF EXISTS trg_proteger_desenlace_tratamiento ON public.tratamientos;');
+    await client.query(`
+      CREATE TRIGGER trg_proteger_desenlace_tratamiento
+        BEFORE UPDATE OF estado_tratamiento ON public.tratamientos
+        FOR EACH ROW EXECUTE FUNCTION public.proteger_desenlace_tratamiento();
+    `);
+
     await client.query('COMMIT;');
     console.log('[Migration] Clinical persistence & AI consent schema successfully applied.');
   } catch (err) {

@@ -33,11 +33,11 @@ export async function migrateIncidencias() {
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_tipo_ck;
     `);
 
-    // 4. Update rol constraint to allow 'ADMIN'
+    // 4. Update rol constraint to allow 'ADMIN', 'SOPORTE_TECNICO' and standard roles
     await client.query(`
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_rol_ck;
       ALTER TABLE public.incidencias ADD CONSTRAINT incidencias_rol_ck 
-      CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text]));
+      CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text, 'SOPORTE_TECNICO'::text, 'SOPORTE'::text]));
     `);
 
     // 5. Update estado constraint to allow all required states
@@ -47,6 +47,7 @@ export async function migrateIncidencias() {
       CHECK (estado::text = ANY (ARRAY[
         'RECIBIDA'::text, 'LEIDA'::text, 'LEÍDA'::text, 
         'EN PROCESO'::text, 'EN_PROCESO'::text, 
+        'EN ATENCIÓN'::text, 'EN ATENCION'::text,
         'ATENDIDA'::text, 'SOLUCIONADA'::text, 
         'NUEVA'::text, 'RESUELTA'::text, 'ABIERTA'::text
       ]));
@@ -67,8 +68,4 @@ export async function migrateIncidencias() {
   } finally {
     client.release();
   }
-}
-
-if (process.argv[1] && import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
-  migrateIncidencias().then(() => pool.end());
 }

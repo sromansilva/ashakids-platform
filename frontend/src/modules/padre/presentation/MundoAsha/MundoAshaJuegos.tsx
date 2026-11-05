@@ -30,12 +30,6 @@ export function MundoAshaJuegos({ go }: { go: (v: View) => void }) {
           {/* Game navbar */}
           <div className="flex items-center gap-2 p-3 border-b border-[#E8E5F4] flex-shrink-0" style={{ background: "#F8F7FF" }}>
             <button
-              className="flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-extrabold transition-all"
-              style={{ background: "linear-gradient(135deg, #7C3AED, #0D9488)", color: "white" }}
-            >
-              🎤 Voz Aventura
-            </button>
-            <button
               onClick={() => setMisterioModal(true)}
               className="flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-extrabold transition-all"
               style={{ background: "white", color: "#7C6F9A", border: "1.5px solid #E8E5F4" }}

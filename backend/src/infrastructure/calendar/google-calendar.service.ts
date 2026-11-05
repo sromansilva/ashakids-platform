@@ -7,6 +7,12 @@ export interface CalendarEventResult {
   htmlLink?: string;
 }
 
+/**
+ * El evento vive solo en el calendario de la cuenta organizadora de AshaKids y se crea SIN
+ * `attendees`: la familia no es invitada ni recibe correos de Google con el enlace de Meet.
+ * Esto es intencional: la familia obtiene el enlace únicamente desde AshaKids cuando el
+ * terapeuta inicia la sesión (ver buildMeetFields en citas.service.ts). No agregar invitados.
+ */
 export function buildCalendarEventPayload(params: {
   topic: string;
   startTime: string;
