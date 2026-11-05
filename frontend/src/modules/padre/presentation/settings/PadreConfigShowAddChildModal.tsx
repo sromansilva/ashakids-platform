@@ -11,13 +11,21 @@ import { PACIENTE_AVATARES } from "@/core/config/avatars";
 type Props = Pick<ReturnType<typeof usePadreConfig>, "setShowAddChildModal" | "setNewCN" | "setNewBirth" | "setNewAvatar" | "newAvatar" | "avatarOptions" | "newCN" | "newBirth" | "setNewCA" | "newCA" | "setChildList" | "showToast">;
 export function PadreConfigShowAddChildModal({ setShowAddChildModal, setNewCN, setNewBirth, setNewAvatar, newAvatar, avatarOptions: _avatarOptions, newCN, newBirth, setNewCA, newCA, setChildList, showToast }: Props) {
 const [surname, setSurname] = useState(""); const [sex, setSex] = useState("Masculino");
-const save = useWrite(() => patientsService.create({
-  nombres_paciente: newCN,
-  apellidos_paciente: surname,
-  fecha_nacimiento: newBirth,
-  sexo: sex || "Masculino",
-  avatar_nombre: newAvatar || "zorro",
-}), () => {
+const save = useWrite(async () => {
+  const created = await patientsService.create({
+    nombres_paciente: newCN,
+    apellidos_paciente: surname,
+    fecha_nacimiento: newBirth,
+    sexo: sex || "Masculino",
+    avatar_nombre: newAvatar || "zorro",
+  });
+  if (created && typeof created === 'object' && 'id_paciente' in created) {
+    try {
+      localStorage.setItem(`ashakids:pending-first-intro:${created.id_paciente}`, 'true');
+    } catch { /* storage not available */ }
+  }
+  return created;
+}, () => {
   setChildList(); setShowAddChildModal(false); setNewCN(""); setNewBirth(""); setNewAvatar("zorro"); setNewCA(""); showToast("Hijo registrado en el servidor");
 });
 return (<div className="fixed inset-0 z-50 flex items-center justify-center p-4">

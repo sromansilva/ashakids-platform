@@ -112,11 +112,11 @@ it.each([
   renderRoute('/padre?section=family','PADRE');
   fireEvent.click(await screen.findByRole('button',{name:therapy?'Reservar sesión de terapia':'Reservar introducción'}));
   const dialog=await screen.findByRole('dialog');
-  expect(within(dialog).getByLabelText('Hijo o hija')).toHaveValue('21');
+  expect(within(dialog).getByLabelText(/Hijo o hija/)).toHaveValue('Leo Ejemplo');
+  expect(within(dialog).getByLabelText(/Hijo o hija/)).toBeDisabled();
   const address='Jr. Ricardo Treneman 252, Chorrillos 15064';
   const meet='La reunión será mediante Google Meet.';
   expect(within(dialog).getByText(address)).toBeInTheDocument();
-  expect(within(dialog).queryByRole('textbox')).not.toBeInTheDocument();
   fireEvent.click(within(dialog).getByRole('radio',{name:/^Virtual/}));
   expect(within(dialog).getByText(meet)).toBeInTheDocument();
   expect(within(dialog).queryByText(address)).not.toBeInTheDocument();
