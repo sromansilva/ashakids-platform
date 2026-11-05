@@ -32,7 +32,8 @@ it('separates siblings in the agenda and preserves completed appointment details
   expect(screen.queryByRole('link',{name:'Abrir reunión de Google Meet'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Compartir enlace de Google Meet'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Cancelar cita'})).not.toBeInTheDocument();
-  fireEvent.change(screen.getByLabelText('Hijo o hija'),{target:{value:'2'}});
+  fireEvent.click(screen.getByLabelText(/Elegir perfil: Ana/));
+  fireEvent.click(screen.getByRole('button', { name: /Luis/ }));
   expect(await screen.findByRole('button',{name:/Luis Demostración.*Confirmada/})).toBeInTheDocument();
   expect(screen.queryByText(/Consulta introductoria · Completada/)).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:/Ana Demostración.*Completada/})).not.toBeInTheDocument();

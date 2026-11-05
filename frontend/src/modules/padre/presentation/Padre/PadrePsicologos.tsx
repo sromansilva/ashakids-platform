@@ -4,9 +4,11 @@ import { agendaService } from "@/modules/clinica/infrastructure/clinicalService"
 import { readAllPages } from "@/core/api/readAllPages";
 import { RemoteFeedback } from "@/shared/presentation/components/common/RemoteFeedback";
 import { BookingDialog } from "@/shared/presentation/components/common/BookingDialog";
+import { useSelectedFamilyPatient } from "@/modules/padre/application/useSelectedFamilyPatient";
 import { ArrowRight, MessageCircle, Sparkles } from "lucide-react";
 
 export function PadrePsicologos() {
+  const { patient } = useSelectedFamilyPatient();
   const data = useRemote(['professionals'], (s) =>
     readAllPages((o) => agendaService.professionals({ limit: 100, offset: o }, s), s)
   );
@@ -95,7 +97,7 @@ export function PadrePsicologos() {
 
       </div>
 
-      {booking !== null && <BookingDialog therapistId={booking} close={() => setBooking(null)} />}
+      {booking !== null && <BookingDialog patientId={patient?.id_paciente} therapistId={booking} fixedTherapist close={() => setBooking(null)} />}
     </section>
   );
 }

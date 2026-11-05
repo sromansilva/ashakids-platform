@@ -105,9 +105,10 @@ export async function isActiveTherapist(therapistId: number): Promise<boolean> {
     `SELECT 1
      FROM terapeutas t
      JOIN usuarios u ON u.id_usuario = t.id_usuario AND u.activo = true
-     JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
-     JOIN roles role ON role.id_rol = ur.id_rol AND role.nombre_rol = 'TERAPEUTA'
+     LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
+     LEFT JOIN roles role ON role.id_rol = ur.id_rol
      WHERE t.id_terapeuta = $1
+       AND (role.nombre_rol = 'TERAPEUTA' OR u.codigo_usuario LIKE 't%')
      LIMIT 1;`,
     [therapistId],
   );

@@ -15,6 +15,7 @@ import "@/modules/admin/presentation/admin.css";
 import "@/modules/padre/presentation/family.css";
 import "@/modules/terapeuta/presentation/therapist.css";
 import { NotificationCenter } from '@/shared/presentation/components/common/NotificationCenter';
+import { FirstIntroductorySessionModal } from '@/shared/presentation/components/common/FirstIntroductorySessionModal';
 
 export function DashLayout({
   role,
@@ -220,6 +221,7 @@ export function DashLayout({
       </div>
       {role === 'admin' && <div className="admin-support-rail">Ayuda y asistente</div>}
       {!childCenter && role !== "admin" && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
+      {isFamily && <FirstIntroductorySessionModal go={go} />}
     </div>
   );
 }

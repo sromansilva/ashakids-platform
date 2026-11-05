@@ -78,8 +78,8 @@ it('Books a confirmed therapy slot with a professional selected separately from 
   renderRoute('/padre/agenda', 'PADRE');
   fireEvent.click((await screen.findAllByRole('button', { name: /Reservar cita/ }))[0]);
   const booking = within(screen.getByRole('dialog'));
-  await booking.findByRole('option', { name: 'Paciente Aislado' });
-  expect(booking.getByLabelText('Hijo o hija')).toHaveValue('12');
+  expect(booking.getByLabelText(/Hijo o hija/)).toHaveValue('Paciente Aislado');
+  expect(booking.getByLabelText(/Hijo o hija/)).toBeDisabled();
   await screen.findByRole('option', { name: 'Lenguaje' });
   fireEvent.change(screen.getByLabelText('Profesional'), { target: { value: '4' } });
   fireEvent.change(screen.getByLabelText('Día'), { target: { value: day } });

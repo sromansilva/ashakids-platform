@@ -23,7 +23,25 @@ const [year, setYear]     = useState(today.getFullYear());
 const [month, setMonth]   = useState(today.getMonth());
 const [selDay, setSelDay] = useState<number | null>(today.getDate());
 
-const [showNew, setShowNew] = useState(false);
+const [searchParams, setSearchParams] = useSearchParams();
+const autoBooking = searchParams.get('booking') === 'true' || searchParams.get('reservar') === 'true';
+const [showNew, setShowNewState] = useState(autoBooking);
+
+useEffect(() => {
+  if (autoBooking && !showNew) {
+    setShowNewState(true);
+  }
+}, [autoBooking]);
+
+const setShowNew = (open: boolean) => {
+  setShowNewState(open);
+  if (!open && (searchParams.has('booking') || searchParams.has('reservar'))) {
+    const next = new URLSearchParams(searchParams);
+    next.delete('booking');
+    next.delete('reservar');
+    setSearchParams(next, { replace: true });
+  }
+};
 const [cancelId, setCancelId] = useState<number | null>(null);
 const [toast, setToast]   = useState("");
 const [expandedReservationIds, setExpandedReservationIds] = useState<number[]>([]);
@@ -47,7 +65,6 @@ const nextMonth = () => {
     setSelDay(null);
   };
 // Enlace desde un aviso (?cita=ID): abre el día de esa cita y la deja expandida, una sola vez.
-const [searchParams] = useSearchParams();
 const requestedCita = Number(searchParams.get("cita"));
 const openedCita = useRef<number | null>(null);
 useEffect(() => {
