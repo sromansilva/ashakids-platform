@@ -8,7 +8,7 @@ interface TicketSeed {
   rol: 'PADRE' | 'TERAPEUTA';
   destino: 'Terapeuta' | 'Administración' | 'Soporte técnico';
   prioridad: 'BAJA' | 'MEDIA' | 'ALTA';
-  estado: 'ATENDIDA' | 'LEÍDA' | 'RECIBIDA';
+  estado: 'RESUELTA' | 'EN ATENCIÓN' | 'RECIBIDA';
   solicitud: string;
   es_prueba: boolean;
 }
@@ -20,7 +20,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'PADRE',
     destino: 'Terapeuta',
     prioridad: 'MEDIA',
-    estado: 'ATENDIDA',
+    estado: 'RESUELTA',
     solicitud: 'Consultar historial completo de sesiones y reportes evolutivos del hijo.',
     es_prueba: false,
   },
@@ -30,7 +30,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'TERAPEUTA',
     destino: 'Administración',
     prioridad: 'ALTA',
-    estado: 'LEÍDA',
+    estado: 'EN ATENCIÓN',
     solicitud: 'Habilitar permisos de acceso al módulo de analíticas avanzadas para revisar pacientes.',
     es_prueba: false,
   },
@@ -40,7 +40,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'PADRE',
     destino: 'Administración',
     prioridad: 'BAJA',
-    estado: 'ATENDIDA',
+    estado: 'RESUELTA',
     solicitud: 'Actualizar teléfono de contacto y dirección de domicilio del perfil.',
     es_prueba: false,
   },
@@ -60,7 +60,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'TERAPEUTA',
     destino: 'Administración',
     prioridad: 'MEDIA',
-    estado: 'LEÍDA',
+    estado: 'EN ATENCIÓN',
     solicitud: 'Crear y habilitar la cuenta profesional de un terapeuta asistente.',
     es_prueba: false,
   },
@@ -70,7 +70,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'PADRE',
     destino: 'Administración',
     prioridad: 'ALTA',
-    estado: 'ATENDIDA',
+    estado: 'RESUELTA',
     solicitud: 'Restablecer contraseña para ingresar a la sesión programada para hoy.',
     es_prueba: false,
   },
@@ -80,7 +80,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'TERAPEUTA',
     destino: 'Soporte técnico',
     prioridad: 'BAJA',
-    estado: 'LEÍDA',
+    estado: 'EN ATENCIÓN',
     solicitud: 'Consultar cómo generar y descargar un reporte de sesión en PDF firmado.',
     es_prueba: false,
   },
@@ -110,7 +110,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'PADRE',
     destino: 'Terapeuta',
     prioridad: 'BAJA',
-    estado: 'ATENDIDA',
+    estado: 'RESUELTA',
     solicitud: 'Consultar progreso de niveles e insignias alcanzadas en Mundo ASHA.',
     es_prueba: false,
   },
@@ -120,7 +120,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'TERAPEUTA',
     destino: 'Administración',
     prioridad: 'ALTA',
-    estado: 'ATENDIDA',
+    estado: 'RESUELTA',
     solicitud: 'Revocar y desactivar el acceso de un terapeuta que concluyó sus prácticas.',
     es_prueba: false,
   },
@@ -130,7 +130,7 @@ export const TICKETS_SPRINT_05: TicketSeed[] = [
     rol: 'PADRE',
     destino: 'Soporte técnico',
     prioridad: 'MEDIA',
-    estado: 'LEÍDA',
+    estado: 'EN ATENCIÓN',
     solicitud: 'Configurar notificaciones por correo para confirmaciones y recordatorios de citas.',
     es_prueba: false,
   },
@@ -370,6 +370,8 @@ export async function seedIncidencias() {
   const client = await pool.connect();
   try {
     await client.query('BEGIN;');
+    // Serialize ticket writes while synchronizing the default sequence.
+    await client.query('LOCK TABLE public.incidencias IN SHARE ROW EXCLUSIVE MODE;');
 
     // 1. Obtener o crear usuarios para los solicitantes
     const userCache = new Map<string, number>();
@@ -479,9 +481,15 @@ export async function seedIncidencias() {
       }
     }
 
-    // Sincronizar secuencia de tickets para que los nuevos tickets comiencen en INC-00031
+    // Existing databases can already contain tickets beyond the demo's 30 rows.
+    // Never rewind the sequence when bootstrap runs again.
     await client.query(`
-      SELECT setval('public.incidencias_ticket_seq', 30, true);
+      SELECT setval('public.incidencias_ticket_seq', GREATEST(
+        30,
+        (SELECT last_value FROM public.incidencias_ticket_seq),
+        (SELECT COALESCE(MAX(substring(ticket from '^INC-([0-9]+)$')::bigint), 0)
+         FROM public.incidencias WHERE ticket ~ '^INC-[0-9]+$')
+      ), true);
     `);
 
     await client.query('COMMIT;');

@@ -21,9 +21,10 @@ it('bandeja consulta ambas areas y devuelve solicitudes de padre y terapeuta con
 });
 
 it('admin cambia estado de soporte y terapeuta no puede hacerlo', async (t) => {
-  t.mock.method(pool, 'query', async (sql: string) => ({ rows: [sql.includes('UPDATE') ? { ...row, estado: 'SOLUCIONADA' } : row] }));
+  const query = t.mock.method(pool, 'query', async (sql: string) => ({ rows: [sql.includes('UPDATE') ? { ...row, estado: 'SOLUCIONADA' } : row] }));
   const admin = { id_usuario: 1, rol: 'ADMIN', roles: ['ADMIN'] };
-  assert.equal((await incidenciasService.cambiarEstado(1, 'RESUELTA', admin)).estado, 'SOLUCIONADA');
+  assert.equal((await incidenciasService.cambiarEstado(1, 'RESUELTA', admin)).estado, 'RESUELTA');
+  assert.ok(query.mock.calls.some((call: any) => call.arguments[0].includes('UPDATE') && call.arguments[1].includes('RESUELTA')));
   await assert.rejects(() => incidenciasService.cambiarEstado(1, 'RESUELTA', { id_usuario: 2, rol: 'TERAPEUTA', roles: ['TERAPEUTA'] }), (err: any) => err.status === 403);
 });
 

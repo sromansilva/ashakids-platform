@@ -4,10 +4,11 @@ import { IncidentForm } from '@/shared/presentation/components/common/IncidentFo
 import { AdminOperacion } from '@/modules/admin/presentation/AdminOperacion';
 import { incidenciasService } from '@/modules/comunicacion/infrastructure/incidenciasService';
 import { capabilityNotice } from '@/core/router/routeCapabilities';
+import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
 
 vi.mock('@/modules/comunicacion/infrastructure/incidenciasService', () => ({
   tiposIncidencia: ['Funcional','Otro'],
-  incidenciasService: { crear: vi.fn(), listar: vi.fn(), estado: vi.fn() },
+  incidenciasService: { crear: vi.fn(), listar: vi.fn(), estado: vi.fn(), notas: vi.fn() },
 }));
 beforeEach(() => vi.resetAllMocks());
 
@@ -31,7 +32,7 @@ it('conserva borrador y UUID si falla; confirma solo el envío real', async () =
 
 it('solo muestra registros del servidor y conserva estado ante fallo', async () => {
   vi.mocked(incidenciasService.listar).mockResolvedValue({total:1, items:[{
-    id_incidencia:2, usuario:'Usuario de prueba', rol:'PADRE', tipo:'Otro', titulo:'Problema reportado', descripcion:'Descripción real del reporte', estado:'NUEVA', fecha_creacion:'2026-10-10T12:00:00Z',
+    id_incidencia:2, usuario:'Usuario de prueba', rol:'PADRE', tipo:'Otro', titulo:'Problema reportado', descripcion:'Descripción real del reporte', estado:'RECIBIDA', fecha_creacion:'2026-10-10T12:00:00Z',
   }]});
   vi.mocked(incidenciasService.estado).mockRejectedValue(new Error('No guardado'));
   render(<AdminOperacion go={vi.fn()} />);
@@ -39,11 +40,22 @@ it('solo muestra registros del servidor y conserva estado ante fallo', async () 
   expect(screen.getByText('Descripción real del reporte')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', {name:'Marcar como resuelta'}));
   await screen.findByText('No guardado');
-  expect(screen.getByText('Nueva')).toBeInTheDocument();
+  expect(screen.getByText('RECIBIDA')).toBeInTheDocument();
   expect(screen.queryByText('Sesiones activas')).not.toBeInTheDocument();
   await waitFor(() => expect(incidenciasService.estado).toHaveBeenCalledWith(2,'RESUELTA'));
 });
 
 it('no presenta auditoría ni incidencias reales como demostración', () => {
   for (const path of ['/admin/auditoria','/admin/operacion','/admin/config','/padre/incidencias','/terapeuta/incidencias']) expect(capabilityNotice(path)).toBeNull();
+});
+
+it('la tabla compartida usa solo los tres estados y permite poner una incidencia en atención', async () => {
+  vi.mocked(incidenciasService.notas).mockResolvedValue({ items: [] });
+  const update = vi.fn().mockResolvedValue(undefined);
+  render(<IncidentsTable items={[{ id_incidencia: 32, tipo: 'Funcional', titulo: 'Problema técnico', descripcion: 'Descripción técnica', estado: 'RECIBIDA', fecha_creacion: '2026-11-05T12:00:00Z' }]} loading={false} onRefresh={vi.fn()} canUpdateStatus onStatusChange={update} />);
+  for (const estado of ['RECIBIDA', 'EN ATENCIÓN', 'RESUELTA']) expect(screen.getByRole('button', { name: estado, exact: true })).toBeInTheDocument();
+  expect(screen.queryByRole('button', { name: /Leída|Solucionada|En Proceso/i })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByText('Descripción técnica'));
+  fireEvent.click(screen.getAllByRole('button', { name: 'EN ATENCIÓN', exact: true }).at(-1)!);
+  await waitFor(() => expect(update).toHaveBeenCalledWith(32, 'EN ATENCIÓN'));
 });

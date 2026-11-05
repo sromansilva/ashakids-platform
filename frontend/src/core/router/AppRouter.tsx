@@ -4,6 +4,7 @@ import { RouteAccess } from "@/core/router/RouteAccess";
 import { PageFrame } from "@/core/layouts/PageFrame";
 import { PageBoundary } from "@/core/router/PageBoundary";
 import { NotFoundPage } from "@/modules/public/presentation/NotFoundPage";
+import { SoporteIncidencias, SoporteDetalle } from './lazyPages';
 import { useDemoWorkflow } from "@/shared/application/hooks/useDemoWorkflow";
 import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminSolicitudes, ScheduledSessionLaunchGate } from "./lazyPages";
 import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
@@ -20,6 +21,9 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/terapeuta/sesion/espera/:appointmentId/:destination" element={<ScheduledSessionLaunchGate />} />
 <Route path="/admin/sesion/espera/:appointmentId/:destination" element={<ScheduledSessionLaunchGate />} />
 <Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} />}>
+<Route path="/soporte" element={<SoporteIncidencias />} />
+<Route path="/soporte/incidencias" element={<SoporteIncidencias />} />
+<Route path="/soporte/incidencias/:id" element={<SoporteDetalle />} />
 <Route path="/" element={<Landing go={go} />} />
 <Route path="/crear-contrasena" element={<CreatePassword />} />
 <Route path="/reset-password" element={<CreatePassword />} />

@@ -1,5 +1,8 @@
 // Every destination is explicit. Compatibility aliases keep their original URL.
 export const routePaths = [
+  "/soporte",
+  "/soporte/incidencias",
+  "/soporte/incidencias/:id",
   "/",
   "/login",
   "/crear-contrasena",

@@ -3,7 +3,7 @@ import { pool } from '../database.js';
 import { settings } from '../config.js';
 import { hashSessionToken } from '../security/session-token.js';
 
-export type UserRole = 'ADMIN' | 'TERAPEUTA' | 'PADRE';
+export type UserRole = 'ADMIN' | 'TERAPEUTA' | 'PADRE' | 'SOPORTE_TECNICO';
 
 export interface AuthenticatedUser {
   id_usuario: number;
@@ -25,7 +25,8 @@ declare global {
   }
 }
 
-const validRoles: UserRole[] = ['ADMIN', 'TERAPEUTA', 'PADRE'];
+const validRoles: UserRole[] = ['SOPORTE_TECNICO', 'ADMIN', 'TERAPEUTA', 'PADRE'];
+const developmentRoles = ['ADMIN', 'TERAPEUTA', 'PADRE'];
 
 export function getSessionToken(req: Request): string | undefined {
   const authHeader = req.headers.authorization;
@@ -67,9 +68,9 @@ function parseDevelopmentToken(token: string): AuthenticatedUser | null {
       typeof candidate.email !== 'string' ||
       typeof candidate.nombres !== 'string' ||
       typeof candidate.apellidos !== 'string' ||
-      !validRoles.includes(candidate.rol as UserRole) ||
+      !developmentRoles.includes(candidate.rol as string) ||
       !Array.isArray(candidate.roles) ||
-      !candidate.roles.every((role) => typeof role === 'string' && validRoles.includes(role as UserRole))
+      !candidate.roles.every((role) => typeof role === 'string' && developmentRoles.includes(role))
     ) return null;
     return candidate as AuthenticatedUser;
   } catch {
@@ -82,11 +83,12 @@ function sendUnauthorized(res: Response): void {
 }
 
 export async function authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
+  if (req.user) { next(); return; }
   const token = getSessionToken(req);
 
   if (!token) {
     const mockRole = req.headers['x-mock-role'];
-    if (settings.ENVIRONMENT !== 'production' && typeof mockRole === 'string' && validRoles.includes(mockRole.toUpperCase() as UserRole)) {
+    if (settings.ENVIRONMENT !== 'production' && typeof mockRole === 'string' && developmentRoles.includes(mockRole.toUpperCase())) {
       const role = mockRole.toUpperCase() as UserRole;
       req.user = {
         id_usuario: 1,
@@ -147,7 +149,7 @@ export async function optionalAuthenticate(req: Request, _res: Response, next: N
 
   if (!token) {
     const mockRole = req.headers['x-mock-role'];
-    if (settings.ENVIRONMENT !== 'production' && typeof mockRole === 'string' && validRoles.includes(mockRole.toUpperCase() as UserRole)) {
+    if (settings.ENVIRONMENT !== 'production' && typeof mockRole === 'string' && developmentRoles.includes(mockRole.toUpperCase())) {
       const role = mockRole.toUpperCase() as UserRole;
       req.user = {
         id_usuario: 1,
@@ -204,7 +206,8 @@ export function requireRoles(roles: UserRole[]) {
       return;
     }
 
-    const hasRole = roles.includes(req.user.rol) || req.user.roles.some((role) => roles.includes(role as UserRole));
+    const support = req.user.rol === 'SOPORTE_TECNICO' || req.user.roles.includes('SOPORTE_TECNICO');
+    const hasRole = support ? roles.includes('SOPORTE_TECNICO') : roles.includes(req.user.rol) || req.user.roles.some((role) => roles.includes(role as UserRole));
     if (!hasRole) {
       res.status(403).json({ error: 'Permisos insuficientes para este recurso.' });
       return;

@@ -12,6 +12,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      // Tests live outside frontend/, so resolve its application dependencies explicitly.
+      "react-router-dom": fileURLToPath(new URL("./node_modules/react-router-dom", import.meta.url)),
+      "@tanstack/react-query": fileURLToPath(new URL("./node_modules/@tanstack/react-query", import.meta.url)),
       "@testing-library/react": fileURLToPath(new URL("./node_modules/@testing-library/react", import.meta.url)),
       "@testing-library/dom": fileURLToPath(new URL("./node_modules/@testing-library/dom", import.meta.url)),
       "@testing-library/jest-dom/vitest": fileURLToPath(new URL("./node_modules/@testing-library/jest-dom/dist/vitest.mjs", import.meta.url)),

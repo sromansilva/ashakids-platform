@@ -109,6 +109,14 @@ adminRouter.post('/cuentas/padres', async (req: Request, res: Response, next: Ne
 });
 
 // POST /api/v1/admin/cuentas/terapeutas
+adminRouter.post('/cuentas/soporte', async (req, res, next) => {
+  try {
+    const parsed = accountIdentitySchema.strict().safeParse(req.body);
+    if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos y correo.' }); return; }
+    res.status(201).json(await adminService.crearSoporte(parsed.data));
+  } catch (error) { next(error); }
+});
+
 adminRouter.post('/cuentas/terapeutas', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const parsed = therapistAccountSchema.safeParse(req.body);
