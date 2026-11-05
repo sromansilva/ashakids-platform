@@ -82,3 +82,16 @@ coverage/
 # Local databases
 *.sqlite
 *.sqlite3
+
+# ML: cohortes reales y artefactos del pronóstico (nunca versionar datos clínicos ni modelos)
+/cohort*/
+/cohorte*/
+ml-service/cohort*/
+*.cohort.csv
+*_cohort*.csv
+cohort_*.csv
+train.csv
+validation.csv
+ml-artifacts/*
+!ml-artifacts/README.md
+*.joblib

@@ -8,4 +8,4 @@ numpy>=1.26.0
 transformers>=4.46.0
 torch
 scikit-learn>=1.5.0
-
+joblib>=1.4.0

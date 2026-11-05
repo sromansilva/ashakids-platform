@@ -230,7 +230,7 @@ export function SessionActions({
                   </button>
                 </div>
                 <p className="text-xs text-[#615274] font-medium">
-                  Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. No califica pronunciación ni diagnostica.
+                  Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. Los indicadores de apoyo que acompañan al texto no tienen validación clínica ni diagnostican.
                 </p>
                 {onGoToReports && (
                   <button

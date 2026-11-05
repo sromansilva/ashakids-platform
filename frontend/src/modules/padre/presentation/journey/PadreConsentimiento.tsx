@@ -29,7 +29,7 @@ export function PadreConsentimiento({ go }: { go: (view: View) => void }) {
         />
       ))}
       <p className="text-xs leading-relaxed text-[#615274]">
-        El permiso se guarda por hijo y puede revocarse en cualquier momento. La aplicación no guarda la grabación como archivo. En una sesión clínica, la transcripción tentativa queda pendiente de revisión del terapeuta; no se comparte con la familia hasta que el profesional la confirme.
+        El permiso se guarda por hijo y puede revocarse en cualquier momento. La aplicación no guarda la grabación como archivo. En una sesión clínica, la transcripción tentativa queda pendiente de revisión del terapeuta; no se comparte con la familia hasta que el profesional la confirme. Junto a la transcripción, el terapeuta puede ver indicadores de apoyo calculados desde el texto, sin validación clínica; esos indicadores no se muestran a la familia.
       </p>
     </section>
   );

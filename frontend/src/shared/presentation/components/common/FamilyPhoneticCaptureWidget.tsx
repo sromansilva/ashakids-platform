@@ -2,21 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertCircle, Mic, Square } from 'lucide-react';
 import { sessionsService, type FamilyCapturePending } from '@/modules/clinica/infrastructure/clinicalService';
-
-const SAMPLE_RATE = 16_000;
-const PACKET_SAMPLES = 4_000;
-const MIN_SAMPLES = SAMPLE_RATE * 2;
-const MAX_SAMPLES = SAMPLE_RATE * 3;
-
-function encodePcm16(samples: Float32Array) {
-  const bytes = new Uint8Array(samples.length * 2);
-  const view = new DataView(bytes.buffer);
-  for (let index = 0; index < samples.length; index += 1) {
-    const sample = Math.max(-1, Math.min(1, samples[index]));
-    view.setInt16(index * 2, sample < 0 ? sample * 0x8000 : sample * 0x7fff, true);
-  }
-  return bytes;
-}
+import {
+  PHONETIC_SAMPLE_RATE as SAMPLE_RATE,
+  PHONETIC_PACKET_SAMPLES as PACKET_SAMPLES,
+  PHONETIC_MIN_CAPTURE_SAMPLES as MIN_SAMPLES,
+  PHONETIC_MAX_CAPTURE_SAMPLES as MAX_SAMPLES,
+  encodePcm16,
+} from '@/shared/application/audio/phoneticCaptureConstants';
+import { AudioDecibelMeter } from '@/shared/presentation/components/common/AudioDecibelMeter';
 
 export function FamilyPhoneticCaptureWidget({ sessionId, patientName = 'el niño' }: { sessionId: number; patientName?: string }) {
   const queryClient = useQueryClient();
@@ -81,7 +74,7 @@ export function FamilyPhoneticCaptureWidget({ sessionId, patientName = 'el niño
         return;
       }
       const formData = new FormData();
-      const copy = packet.buffer.slice(packet.byteOffset, packet.byteOffset + packet.byteLength);
+      const copy = packet.buffer.slice(packet.byteOffset, packet.byteOffset + packet.byteLength) as ArrayBuffer;
       formData.append('audio', new Blob([copy], { type: 'application/octet-stream' }), `paquete-${packetNumber}.pcm`);
       formData.append('numero_paquete', String(packetNumber));
       try {
@@ -265,6 +258,15 @@ export function FamilyPhoneticCaptureWidget({ sessionId, patientName = 'el niño
         </div>
       )}
       {request?.estado === 'PROCESANDO' && <p role="status" className="text-xs font-semibold text-violet-800">La muestra se está procesando temporalmente.</p>}
+      
+      {recording && (
+        <AudioDecibelMeter
+          recording={recording}
+          stream={streamRef.current}
+          label="Nivel de voz del niño"
+        />
+      )}
+
       {recording && (
         <button type="button" onClick={stopRecording} className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-2 text-xs font-bold text-violet-800">
           <Square size={14} /> Detener muestra · {seconds}/3 s

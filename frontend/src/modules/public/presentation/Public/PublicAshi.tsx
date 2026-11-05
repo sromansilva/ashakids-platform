@@ -19,7 +19,7 @@ const examples = [
     title: "Para terapeutas",
     color: B.teal,
     prompt: "¿Qué pasa con una transcripción de voz?",
-    response: "La transcripción es tentativa y queda pendiente de revisión profesional antes de incorporarse al reporte.",
+    response: "La transcripción es tentativa y queda pendiente de revisión profesional antes de incorporarse al reporte. El terapeuta puede ver indicadores de apoyo sin validación clínica, que no se muestran a la familia.",
   },
   {
     icon: "🛡️",
