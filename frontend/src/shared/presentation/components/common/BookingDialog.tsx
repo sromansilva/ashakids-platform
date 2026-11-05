@@ -5,6 +5,7 @@ import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 import './booking-dialog.css';
 import { useFamilyPatients } from '@/modules/padre/application/useFamilyPatients';
+import { useSelectedFamilyPatient } from '@/modules/padre/application/useSelectedFamilyPatient';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { agendaService, appointmentsService, patientsService, treatmentsService } from '@/modules/clinica/infrastructure/clinicalService';
 import { readAllPages } from '@/core/api/readAllPages';
@@ -14,11 +15,23 @@ const field = 'booking-field-input';
 const localDate = (date: string) => new Date(Date.parse(date) - 5 * 3600000).toISOString().slice(0, 10);
 const clock = (date: string) => new Date(date).toLocaleTimeString('es-PE', { timeZone: 'America/Lima', hour: '2-digit', minute: '2-digit', hour12: false });
 
-export function BookingDialog({ close, appointment, patientId = 0, therapistId = 0 }: {
-  close: () => void; appointment?: Appointment; patientId?: number; therapistId?: number;
+export function BookingDialog({
+  close,
+  appointment,
+  patientId = 0,
+  therapistId = 0,
+  fixedTherapist = false,
+}: {
+  close: () => void;
+  appointment?: Appointment;
+  patientId?: number;
+  therapistId?: number;
+  fixedTherapist?: boolean;
 }) {
   const family = useFamilyPatients();
-  const [patient, setPatient] = useState(appointment?.id_paciente ?? patientId);
+  const { patient: activePatient } = useSelectedFamilyPatient();
+  const resolvedPatientId = appointment?.id_paciente || patientId || activePatient?.id_paciente || family.children[0]?.id || 0;
+  const [patient, setPatient] = useState(resolvedPatientId);
   const [therapist, setTherapist] = useState(appointment?.id_terapeuta ?? therapistId);
   const [treatment, setTreatment] = useState(appointment?.id_tratamiento ?? 0);
   const [day, setDay] = useState(appointment ? localDate(appointment.fecha_hora_inicio) : localDate(new Date().toISOString()));
@@ -28,8 +41,21 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
   const [review, setReview] = useState(false);
   const form = useRef<HTMLFormElement>(null);
   useEffect(() => {
+    if (!appointment) {
+      const target = patientId || activePatient?.id_paciente || family.children[0]?.id || 0;
+      if (target && patient !== target) {
+        setPatient(target);
+      }
+    }
+  }, [appointment, patientId, activePatient?.id_paciente, family.children]);
+  useEffect(() => {
+    if (!appointment && therapistId && therapist !== therapistId) {
+      setTherapist(therapistId);
+    }
+  }, [appointment, therapistId, therapist]);
+  useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
-    form.current?.querySelector<HTMLElement>('button,select')?.focus();
+    form.current?.querySelector<HTMLElement>('button,select,input:not(:disabled)')?.focus();
     return () => previous?.focus();
   }, []);
   const professionals = useRemote(['professionals'], s => readAllPages(o => agendaService.professionals({ limit: 100, offset: o }, s), s));
@@ -51,8 +77,13 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
       id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? (selectedPlan || null) : null, tipo_cita: type });
   }, close);
   const change = () => { setStart(''); setReview(false); };
+  const isFixedTherapist = Boolean(fixedTherapist || appointment);
   const selectedChild = family.children.find(p => p.id === patient);
-  const patientName = selectedChild ? `${selectedChild.name} ${selectedChild.surname}` : appointment?.paciente_nombre || 'Sin seleccionar';
+  const patientName = selectedChild
+    ? `${selectedChild.name} ${selectedChild.surname}`
+    : activePatient
+    ? `${activePatient.nombres_paciente} ${activePatient.apellidos_paciente}`
+    : appointment?.paciente_nombre || 'Sin seleccionar';
   const selectedProfessional = professionals.data?.find(p => p.id_terapeuta === therapist);
   const formattedDay = day ? day.split('-').reverse().join('/') : 'Elige una fecha';
   return createPortal(<div className="booking-dialog-overlay" onMouseDown={event => {
@@ -86,7 +117,16 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
         {!review ? <>
           {!appointment && <div className="booking-patient-section">
             <RemoteFeedback pending={family.query.isPending} error={family.query.error} retry={() => void family.query.refetch()} />
-            <label className="booking-field-label">Hijo o hija<select required className={field} value={patient || ''} onChange={e => { setPatient(Number(e.target.value)); setTreatment(0); change(); }}><option value="">Selecciona un niño</option>{family.children.map(p => <option key={p.id} value={p.id}>{p.name} {p.surname}</option>)}</select></label>
+            <label className="booking-field-label">Hijo o hija
+              <input
+                type="text"
+                readOnly
+                disabled
+                className={`${field} cursor-default font-extrabold text-[#1C1135] bg-[#F8F7FC]`}
+                value={patientName}
+                aria-label="Hijo o hija seleccionado"
+              />
+            </label>
             {family.query.isSuccess && family.children.length === 0 && <p className="booking-inline-hint">No hay perfiles infantiles asociados. Añade uno en “Gestionar familia” para poder reservar.</p>}
             {!!patient && <>
               <RemoteFeedback pending={journey.isPending} error={journey.error || plans.error} retry={() => { void journey.refetch(); void plans.refetch(); }} />
@@ -104,7 +144,23 @@ export function BookingDialog({ close, appointment, patientId = 0, therapistId =
           <RemoteFeedback pending={professionals.isPending} error={professionals.error} retry={() => void professionals.refetch()} />
           <div className="booking-selection-grid">
             <div className="booking-selection-controls">
-              <label className="booking-field-label">Profesional<select required disabled={!!appointment} className={field} value={therapist || ''} onChange={e => { setTherapist(Number(e.target.value)); change(); }}><option value="">Selecciona un terapeuta</option>{professionals.data?.map(p => <option key={p.id_terapeuta} value={p.id_terapeuta}>{p.nombres} {p.apellidos}{p.especialidad ? ` · ${p.especialidad}` : ''}</option>)}</select></label>
+              <label className="booking-field-label">Profesional
+                {isFixedTherapist ? (
+                  <input
+                    type="text"
+                    readOnly
+                    disabled
+                    className={`${field} cursor-default font-extrabold text-[#1C1135] bg-[#F8F7FC]`}
+                    value={selectedProfessional ? `${selectedProfessional.nombres} ${selectedProfessional.apellidos}${selectedProfessional.especialidad ? ` · ${selectedProfessional.especialidad}` : ''}` : (appointment?.terapeuta_nombre || 'Cargando profesional...')}
+                    aria-label="Profesional asignado"
+                  />
+                ) : (
+                  <select required className={field} value={therapist || ''} onChange={e => { setTherapist(Number(e.target.value)); change(); }}>
+                    <option value="">Selecciona un terapeuta</option>
+                    {professionals.data?.map(p => <option key={p.id_terapeuta} value={p.id_terapeuta}>{p.nombres} {p.apellidos}{p.especialidad ? ` · ${p.especialidad}` : ''}</option>)}
+                  </select>
+                )}
+              </label>
               <label className="booking-field-label">Día<input required type="date" className={field} min={localDate(new Date().toISOString())} max={localDate(new Date(Date.now() + 90 * 86400000).toISOString())} value={day} onInput={e => { setDay(e.currentTarget.value); change(); }} onChange={e => { setDay(e.target.value); change(); }} /></label>
               <fieldset className="booking-mode-picker"><legend>Modalidad</legend>
                 <label className={`booking-mode-option ${mode === 'PRESENCIAL' ? 'is-selected' : ''}`}><input type="radio" name="booking-mode" value="PRESENCIAL" checked={mode === 'PRESENCIAL'} onChange={() => setMode('PRESENCIAL')} /><span className="booking-mode-icon"><Building2 size={17} aria-hidden="true" /></span><span><strong>Presencial</strong><small>En el centro</small></span>{mode === 'PRESENCIAL' && <Check size={16} className="booking-mode-check" aria-hidden="true" />}</label>

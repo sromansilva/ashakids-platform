@@ -203,11 +203,22 @@ export class AdminService {
           );
         }
       } else {
-        await client.query(
+        const terRes = await client.query(
           `INSERT INTO public.terapeutas (id_usuario, especialidad, anios_experiencia, idiomas, descripcion_profesional)
-           VALUES ($1, $2, $3, $4, $5);`,
+           VALUES ($1, $2, $3, $4, $5)
+           RETURNING id_terapeuta;`,
           [user.id_usuario, data.especialidad || 'Fonoaudiología', data.anios_experiencia ?? 3, data.idiomas || 'Español', data.descripcion_profesional || ''],
         );
+        const newTerId = terRes.rows[0]?.id_terapeuta;
+        if (newTerId) {
+          await client.query(`
+            INSERT INTO turnos_semanales (id_terapeuta, dia, hora)
+            SELECT $1, d.dia, h.hora
+            FROM (VALUES (1), (2), (3), (4), (5)) AS d(dia)
+            CROSS JOIN (VALUES (9), (10), (11), (14), (15), (16)) AS h(hora)
+            ON CONFLICT (id_terapeuta, dia, hora) DO NOTHING;
+          `, [newTerId]);
+        }
       }
       await client.query('COMMIT;');
     } catch (error) {

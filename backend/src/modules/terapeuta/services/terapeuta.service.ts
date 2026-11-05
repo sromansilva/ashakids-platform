@@ -29,7 +29,57 @@ export interface TherapistProfileChanges {
 }
 
 export class TerapeutaService {
+  async syncTherapists(): Promise<void> {
+    try {
+      await pool.query(`
+        INSERT INTO terapeutas (id_usuario, especialidad, anios_experiencia, idiomas, descripcion_profesional)
+        SELECT 
+          u.id_usuario,
+          'Terapia del Lenguaje',
+          3,
+          'Español',
+          'Especialista en fonoaudiología y comunicación infantil.'
+        FROM usuarios u
+        LEFT JOIN terapeutas t ON u.id_usuario = t.id_usuario
+        LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
+        LEFT JOIN roles r ON r.id_rol = ur.id_rol
+        WHERE t.id_terapeuta IS NULL 
+          AND u.activo = true
+          AND (r.nombre_rol = 'TERAPEUTA' OR u.codigo_usuario LIKE 't%')
+        ON CONFLICT (id_usuario) DO NOTHING;
+      `);
+
+      await pool.query(`
+        INSERT INTO usuario_roles (id_usuario, id_rol, fecha_asignacion, activo)
+        SELECT t.id_usuario, r.id_rol, NOW(), true
+        FROM terapeutas t
+        CROSS JOIN roles r
+        WHERE r.nombre_rol = 'TERAPEUTA'
+          AND NOT EXISTS (
+            SELECT 1 FROM usuario_roles ur 
+            WHERE ur.id_usuario = t.id_usuario AND ur.id_rol = r.id_rol
+          )
+        ON CONFLICT (id_usuario, id_rol) DO NOTHING;
+      `);
+
+      await pool.query(`
+        INSERT INTO turnos_semanales (id_terapeuta, dia, hora)
+        SELECT t.id_terapeuta, d.dia, h.hora
+        FROM terapeutas t
+        CROSS JOIN (VALUES (1), (2), (3), (4), (5)) AS d(dia)
+        CROSS JOIN (VALUES (9), (10), (11), (14), (15), (16)) AS h(hora)
+        WHERE NOT EXISTS (
+          SELECT 1 FROM turnos_semanales ts WHERE ts.id_terapeuta = t.id_terapeuta
+        )
+        ON CONFLICT (id_terapeuta, dia, hora) DO NOTHING;
+      `);
+    } catch (err) {
+      console.warn('[TerapeutaService] syncTherapists error:', err);
+    }
+  }
+
   async getDirectorio(filters?: { limit?: number; offset?: number }): Promise<{ items: ProfessionalItem[]; total: number }> {
+    await this.syncTherapists();
     try {
       const sql = `
         SELECT 
@@ -43,12 +93,19 @@ export class TerapeutaService {
         FROM terapeutas t
         JOIN usuarios u ON t.id_usuario = u.id_usuario
         WHERE u.activo = true
-        ORDER BY t.id_terapeuta ASC
+        ORDER BY u.nombres ASC, u.apellidos ASC
         LIMIT $1 OFFSET $2;
       `;
       const limit = filters?.limit ?? 50;
       const offset = filters?.offset ?? 0;
       const res = await pool.query(sql, [limit, offset]);
+      const countRes = await pool.query(`
+        SELECT COUNT(*) as total
+        FROM terapeutas t
+        JOIN usuarios u ON t.id_usuario = u.id_usuario
+        WHERE u.activo = true;
+      `);
+      const total = Number(countRes.rows[0]?.total ?? res.rows.length);
       const items: ProfessionalItem[] = res.rows.map(r => ({
         id_terapeuta: r.id_terapeuta,
         nombres: r.nombres,
@@ -59,7 +116,7 @@ export class TerapeutaService {
           ? `data:${r.foto_perfil_mime};base64,${r.foto_perfil.toString('base64')}`
           : null,
       }));
-      return { items, total: items.length };
+      return { items, total };
     } catch (err) {
       console.warn('[TerapeutaService] Fallback getDirectorio:', err);
       return {
