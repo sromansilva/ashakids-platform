@@ -1,29 +1,49 @@
 import type { PhonemeTarget } from '@/modules/clinica/domain/clinical';
 import { TreatmentPredictiveCard } from './TreatmentPredictiveCard';
-import type { TreatmentPredictionResponse } from '@/modules/clinica/infrastructure/clinicalService';
+import { clinicaService, type TreatmentPredictionResponse } from '@/modules/clinica/infrastructure/clinicalService';
+import { useRemote } from '@/shared/application/hooks/useRemoteData';
 import { helpLevels } from './reportFormGuidance';
+import { planInputClass as inputClass } from './planForm';
 
 export const phonemeTargets: PhonemeTarget[] = ['/rr/', '/r/', '/s/', '/pl/', '/tr/'];
 
-export function PlanClinicalFocus({ sessionId, patientId, confirmedPhonemes, fonemasPrioritarios, frecuenciaSemanal, nivelAyuda, prediction, predictorEnabled, onPhonemesChange, onFrequencyChange, onPredictionLoaded, onPredictionDismissed, onApplySessions }: {
+export function PlanClinicalFocus({ sessionId, patientId, confirmedPhonemes, fonemasPrioritarios, frecuenciaSemanal, codigoDiagnostico, nivelAyuda, prediction, predictionApplied, predictorEnabled, onDiagnosisChange, onPhonemesChange, onFrequencyChange, onPredictionLoaded, onPredictionDismissed, onApplySessions }: {
   sessionId: number;
   patientId: number;
   confirmedPhonemes: PhonemeTarget[];
   fonemasPrioritarios: PhonemeTarget[];
   frecuenciaSemanal: number;
+  codigoDiagnostico: number | '';
   nivelAyuda?: string | null;
   prediction: TreatmentPredictionResponse | null;
+  predictionApplied: boolean;
   predictorEnabled: boolean;
+  onDiagnosisChange: (code: number | '') => void;
   onPhonemesChange: (phonemes: PhonemeTarget[]) => void;
   onFrequencyChange: (frequency: number) => void;
   onPredictionLoaded: (prediction: TreatmentPredictionResponse) => void;
   onPredictionDismissed: () => void;
-  onApplySessions: (sessions: number, prediction: TreatmentPredictionResponse) => void;
+  onApplySessions: (sessions: number) => void;
 }) {
   const helpIndex = helpLevels.findIndex((level) => level.value === nivelAyuda);
   const collaborationScore = helpIndex < 0 ? null : helpLevels.length - helpIndex;
-  const inputClass = 'block w-full rounded-xl border border-[#E8E5F4] bg-white px-3 py-2.5 text-sm font-medium text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-500';
+  // El catálogo institucional no depende del modelo: siempre debe poder elegirse un código.
+  const diagnoses = useRemote(['preliminary-diagnoses'], (signal) => clinicaService.preliminaryDiagnoses(signal));
+  const diagnosisLabel = diagnoses.data?.etiqueta ?? 'Código diagnóstico preliminar asignado por el terapeuta';
   return <>
+    <div>
+      <label className="block text-sm font-bold text-[#1C1135]">
+        {diagnosisLabel}
+        <select required disabled={Boolean(prediction)} className={`${inputClass} mt-1.5 disabled:bg-[#F8F7FC]`} value={codigoDiagnostico} onChange={(event) => onDiagnosisChange(event.target.value === '' ? '' : Number(event.target.value))}>
+          <option value="">Selecciona un código</option>
+          {diagnoses.data?.codigos?.map(({ code, label }) => <option key={code} value={code}>{label}</option>)}
+        </select>
+      </label>
+      <p className="mt-1 text-xs text-[#615274]">
+        {diagnoses.data?.aviso ?? 'Es una clasificación preliminar elegida por el terapeuta; no sustituye una evaluación diagnóstica.'}
+      </p>
+      {diagnoses.error && <p role="alert" className="mt-1 text-xs font-semibold text-rose-700">No se pudo cargar el catálogo diagnóstico. Actualiza la pantalla para continuar.</p>}
+    </div>
     <label className="block text-sm font-bold text-[#1C1135]">
       Frecuencia semanal
       <select required disabled={Boolean(prediction)} className={`${inputClass} mt-1.5 disabled:bg-[#F8F7FC]`} value={frecuenciaSemanal || ''} onChange={(event) => onFrequencyChange(Number(event.target.value))}>
@@ -48,9 +68,12 @@ export function PlanClinicalFocus({ sessionId, patientId, confirmedPhonemes, fon
         <TreatmentPredictiveCard
           sessionId={sessionId}
           patientId={patientId}
+          diagnosisCode={codigoDiagnostico}
+          diagnosisLabel={diagnoses.data?.codigos?.find((item) => item.code === codigoDiagnostico)?.label ?? null}
           phonemeCount={confirmedPhonemes.length}
           collaborationScore={collaborationScore}
           weeklyFrequency={frecuenciaSemanal || null}
+          applied={predictionApplied}
           onPredictionLoaded={onPredictionLoaded}
           onPredictionDismissed={onPredictionDismissed}
           onApplySessions={onApplySessions}

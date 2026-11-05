@@ -97,8 +97,11 @@ it('unmount cancels download and does not create a file afterwards', async () =>
 describe('Family reports', () => {
   it('monthly entry contains no invented report, signature or PDF action', async () => {
     renderRoute('/padre/reportes', 'PADRE');
-    fireEvent.click(await screen.findByRole('button', { name: 'Progreso mensual (pendiente)' }));
-    expect(screen.getByText('Informes mensuales pendientes')).toBeInTheDocument();
+    await screen.findByText('Sin datos');
+    expect(screen.queryByRole('button', { name: 'Progreso mensual (pendiente)' })).not.toBeInTheDocument();
+    expect(screen.queryByText('Progreso general')).not.toBeInTheDocument();
+    expect(screen.queryByText('Sin medición')).not.toBeInTheDocument();
+    expect(screen.queryByText('Valoración terapeuta')).not.toBeInTheDocument();
     expect(screen.queryByText(/Dra. Ana Ruiz|Mateo|TP-2847|Informe Mensual|Firma Digital/)).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: /Descargar|PDF/ })).not.toBeInTheDocument();
   });

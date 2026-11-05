@@ -13,26 +13,32 @@ import { SessionReview } from './SessionReview';
 import { FamilyPhoneticCaptureWidget } from './FamilyPhoneticCaptureWidget';
 import { FamilyConsentPrompt } from './FamilyConsentPrompt';
 import { ActiveSessionOverview } from './ActiveSessionOverview';
-import { FileText, ArrowRight, Clock } from "lucide-react";
-import { isMeetingUrl } from './VirtualMeeting';
+import { SessionLaunchControls } from './SessionLaunchControls';
+import { FileText, ArrowRight } from "lucide-react";
+import { attendanceLabel, sessionStatusLabel } from '@/shared/domain/statusLabels';
 import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
+
 
 export function SessionActions({
   appointmentId,
   compact = false,
   onGoToReports,
   activeSessionPanel = false,
+  showMeeting = true,
 }: {
   appointmentId: number;
   compact?: boolean;
   onGoToReports?: () => void;
   activeSessionPanel?: boolean;
+  /** La vista familiar pinta la reunión por separado, arriba del todo. */
+  showMeeting?: boolean;
 }) {
   const [closing, setClosing] = useState<'ASISTIO' | 'NO_ASISTIO' | null>(null);
   const [showInPlaceEditor, setShowInPlaceEditor] = useState(false);
-  const [panelOpened, setPanelOpened] = useState(false);
   const [now, setNow] = useState(Date.now);
+  const [justClosed, setJustClosed] = useState(false);
   const autoStartAttempted = useRef(false);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 1000);
@@ -47,18 +53,20 @@ export function SessionActions({
   const report = useRemote(['report', id], (s) => sessionsService.report(id!, s), !!id && !!session.data?.reporte_disponible);
   const create = useWrite(() => sessionsService.create(appointmentId));
   const start = useWrite(() => sessionsService.start(id!));
-  const close = useWrite((asistencia: 'ASISTIO' | 'NO_ASISTIO') => sessionsService.close(id!, asistencia));
+  const close = useWrite((asistencia: 'ASISTIO' | 'NO_ASISTIO') => sessionsService.close(id!, asistencia), () => {
+    setClosing(null);
+    setJustClosed(true);
+    setShowInPlaceEditor(true);
+  });
 
   const s = appointment.error || session.error ? undefined : session.data;
   const busy = create.isPending || start.isPending || close.isPending;
+  const refetchAppointment = appointment.refetch;
+  const refetchSession = session.refetch;
   const ownsSession = professional && s?.puede_editar !== false;
   const canEdit = ownsSession && !!s && canDocumentClinicalSession(s);
 
   const startMs = Date.parse(s?.cita.fecha_hora_inicio ?? appointment.data?.fecha_hora_inicio ?? '');
-  const diffMs = startMs - now;
-  const diffMins = Math.max(1, Math.ceil(diffMs / 60000));
-  const isUpcomingSoon = diffMs > 0 && diffMs <= 10 * 60 * 1000;
-  const canStartSession = !s || now >= (startMs - 5 * 60 * 1000);
 
   useEffect(() => {
     if (!activeSessionPanel || !professional || !s || s.estado_sesion !== 'PROGRAMADA' ||
@@ -67,20 +75,42 @@ export function SessionActions({
     void start.submit(undefined);
   }, [activeSessionPanel, professional, s, now, startMs, busy, start.isSuccess]);
 
-  const handleStartSession = () => {
-    const launchPath = role === 'ADMIN'
-      ? `/admin/sesion/espera/${appointmentId}`
-      : `/terapeuta/sesion/espera/${appointmentId}`;
-    window.open(`${launchPath}/panel`, '_blank', 'noopener,noreferrer');
-    if (isMeetingUrl(appointment.data?.meet_url)) {
-      window.open(`${launchPath}/meet`, '_blank', 'noopener,noreferrer');
-    }
-    setPanelOpened(true);
-  };
+  // Al volver a la pestaña (p. ej. tras iniciar la reunión en otra) se refresca el estado.
+  useEffect(() => {
+    const refresh = () => {
+      if (document.visibilityState === 'hidden') return;
+      void refetchAppointment();
+      if (id) void refetchSession();
+    };
+    window.addEventListener('focus', refresh);
+    document.addEventListener('visibilitychange', refresh);
+    return () => {
+      window.removeEventListener('focus', refresh);
+      document.removeEventListener('visibilitychange', refresh);
+    };
+  }, [id, refetchAppointment, refetchSession]);
+
+  // En el panel clínico la sesión se inicia desde otra pestaña: se consulta hasta verla en curso.
+  const waitingForStart = activeSessionPanel && professional && s?.estado_sesion === 'PROGRAMADA';
+  useEffect(() => {
+    if (!waitingForStart) return;
+    const timer = window.setInterval(() => void refetchSession(), 3000);
+    return () => window.clearInterval(timer);
+  }, [waitingForStart, refetchSession]);
+
+  // Tras finalizar, lleva al editor del reporte.
+  const finalized = justClosed && s?.estado_sesion === 'FINALIZADA';
+  const signed = report.data?.estado_reporte === 'FIRMADO';
+  useEffect(() => {
+    if (!finalized) return;
+    const node = reportRef.current;
+    node?.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    node?.focus({ preventScroll: true });
+  }, [finalized]);
 
   return (
-    <section className={`mt-4 border-t border-[#E8E5F4] pt-4 ${compact ? 'session-actions--agenda' : 'space-y-3'}`}>
-      {!compact && <h3 className="font-extrabold text-[#1C1135]">Sesión y reporte clínico</h3>}
+    <section className={`${professional || s ? 'mt-4 border-t border-[#E8E5F4] pt-4' : 'mt-1'} ${compact ? 'session-actions--agenda' : 'space-y-3'}`}>
+      {!compact && professional && <h3 className="font-extrabold text-[#1C1135]">Sesión y reporte clínico</h3>}
 
       <div className={compact ? 'session-actions__feedback' : undefined}>
         <RemoteFeedback
@@ -93,41 +123,33 @@ export function SessionActions({
         />
       </div>
 
-      <div className={compact ? `session-actions__workflow${s ? '' : ' session-actions__workflow--solo'}` : undefined}>
+      <div className={compact ? `session-actions__workflow${s ? '' : ' session-actions__workflow--solo'}` : 'space-y-4'}>
         {activeSessionPanel && appointment.data && (
           <ActiveSessionOverview appointment={appointment.data} session={s} now={now} />
         )}
-        {appointment.data && !appointment.error && (
-          <VirtualMeeting key={appointmentId} appointment={appointment.data} professional={professional} />
+        {showMeeting && appointment.data && !appointment.error && (
+          <VirtualMeeting
+            key={appointmentId}
+            appointment={appointment.data}
+            professional={professional}
+            onRefresh={() => { void refetchAppointment(); if (id) void refetchSession(); }}
+          />
         )}
         {role === 'PADRE' && appointment.data && (
           <FamilyConsentPrompt patientId={appointment.data.id_paciente} patientName={appointment.data.paciente_nombre} />
         )}
 
-        {professional && !s && appointment.data && isUpcomingSoon && (
-          <p role="status" className="w-full rounded-xl border border-amber-200 bg-amber-50 p-2.5 text-xs font-bold text-amber-800">
-            Cita en {diffMins} min. El acceso para iniciar se habilita cinco minutos antes; la sesión comienza a la hora programada.
-          </p>
-        )}
-
-        {!id && appointment.isSuccess && (
+        {professional && !s && appointment.data && appointment.isSuccess && appointment.data.puede_editar !== false && (
           <>
-          <p className="text-sm text-[#7C6F9A]">Sin sesión registrada.</p>
-          {professional && appointment.data.puede_editar !== false && (
-            <Btn
-              disabled={busy || appointment.data.estado_reserva !== 'CONFIRMADA'}
-              onClick={() => void create.submit(undefined)}
-            >
-              Registrar sesión
-            </Btn>
-          )}
+            <p className="text-sm text-[#7C6F9A]">Sin sesión registrada.</p>
+            <SessionLaunchControls appointment={appointment.data} now={now} disabled={busy} panelMode={activeSessionPanel} />
           </>
         )}
 
       {s && (
         <>
           <p className="text-sm font-bold">
-            Sesión #{id} · {s.estado_sesion} · {s.asistencia ?? 'Asistencia pendiente'}
+            Sesión #{id} · {sessionStatusLabel(s.estado_sesion)} · {attendanceLabel(s.asistencia)}
           </p>
           {role === 'PADRE' && s.estado_sesion === 'EN_CURSO' && (
             <FamilyPhoneticCaptureWidget
@@ -135,34 +157,24 @@ export function SessionActions({
               patientName={s.cita.paciente_nombre}
             />
           )}
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2.5 flex-wrap">
             {ownsSession && s.estado_sesion === 'PROGRAMADA' && (
               <>
-                {isUpcomingSoon && !canStartSession && (
-                  <p className="w-full text-xs font-bold text-amber-700 bg-amber-50 p-2.5 rounded-xl border border-amber-200 flex items-center gap-1.5">
-                    <Clock size={14} className="shrink-0 text-amber-600" />
-                    <span>Cita en {diffMins} min. Se habilitará 5 minutos antes del inicio.</span>
-                  </p>
-                )}
                 {activeSessionPanel && now < startMs && (
                   <p role="status" className="w-full rounded-xl border border-violet-200 bg-violet-50 p-2.5 text-xs font-bold text-violet-900">
                     El panel está listo. La sesión se activará automáticamente a la hora de inicio.
                   </p>
                 )}
-                <Btn
-                  disabled={busy || (!canStartSession && !activeSessionPanel) || (activeSessionPanel && now < startMs)}
-                  onClick={activeSessionPanel ? () => void start.submit(undefined) : handleStartSession}
-                >
-                  {activeSessionPanel && now < startMs
-                    ? 'Esperando hora de inicio'
-                    : activeSessionPanel && start.error
-                      ? 'Reintentar inicio de sesión'
-                      : activeSessionPanel
-                        ? 'Iniciando sesión…'
-                        : appointment.data?.modalidad === 'VIRTUAL' && isMeetingUrl(appointment.data.meet_url)
-                          ? 'Iniciar reunión'
-                          : 'Abrir sesión clínica'}
-                </Btn>
+                {activeSessionPanel ? (
+                  <Btn disabled={busy || now < startMs} onClick={() => void start.submit(undefined)}>
+                    {now < startMs ? 'Esperando hora de inicio' : start.error ? 'Reintentar inicio de sesión' : 'Iniciando sesión…'}
+                  </Btn>
+                ) : (
+                  appointment.data && <SessionLaunchControls appointment={appointment.data} session={s} now={now} disabled={busy} />
+                )}
+                {activeSessionPanel && appointment.data && (
+                  <SessionLaunchControls appointment={appointment.data} session={s} now={now} disabled={busy} panelMode />
+                )}
                 <Btn
                   variant="outline"
                   disabled={busy || now < Date.parse(s.cita.fecha_hora_fin)}
@@ -203,14 +215,14 @@ export function SessionActions({
       )}
       </div>
 
-      {panelOpened && (
-        <p role="status" className="mt-2 text-xs font-medium text-[#615274]">
-          Se prepararon las pestañas de inicio{appointment.data?.meet_url ? ' para el panel clínico y Google Meet' : ' para el panel clínico'}. Se abrirán a la hora programada. Si no aparecen, permite las ventanas emergentes para este sitio.
+      {finalized && ownsSession && (
+        <p role="status" className="rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm font-bold text-emerald-900">
+          {signed ? 'Sesión finalizada. El reporte ya está firmado; puedes preparar el plan.' : 'Sesión finalizada. Completa y firma el reporte.'}
         </p>
       )}
 
       {s && (
-        <div className={compact ? 'session-actions__clinical' : undefined}>
+        <div ref={reportRef} tabIndex={-1} className={`${compact ? 'session-actions__clinical ' : ''}outline-none`}>
           {s.reporte_disponible && (
             <RemoteFeedback pending={report.isPending} error={report.error} retry={() => void report.refetch()} />
           )}
@@ -230,7 +242,7 @@ export function SessionActions({
                   </button>
                 </div>
                 <p className="text-xs text-[#615274] font-medium">
-                  Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. No califica pronunciación ni diagnostica.
+                  Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. Los indicadores de apoyo que acompañan al texto no tienen validación clínica ni diagnostican.
                 </p>
                 {onGoToReports && (
                   <button
@@ -267,6 +279,13 @@ export function SessionActions({
                 sessionType={s.cita.tipo_cita}
               />
             )
+          )}
+
+          {role === 'PADRE' && s.estado_sesion === 'FINALIZADA' && s.asistencia === 'ASISTIO' &&
+            (!s.reporte_disponible || report.isSuccess) && !report.data && !report.error && (
+            <p role="status" className="rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] p-4 text-sm font-semibold text-[#615274]">
+              Tu terapeuta aún está preparando el reporte.
+            </p>
           )}
 
           {!canEdit && report.data && !report.error && (

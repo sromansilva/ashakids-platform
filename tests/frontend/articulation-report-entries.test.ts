@@ -5,6 +5,8 @@ import {
   parseArticulationHistory,
   type ReviewedArticulationResult,
 } from '@/shared/application/articulationReportEntries';
+import { introPlanDraftFromReport } from '@/shared/application/planDraft';
+import type { ReportData } from '@/modules/clinica/domain/clinical';
 
 const result: ReviewedArticulationResult = {
   objetivo_articulacion: 'Observación del objetivo /r/',
@@ -46,5 +48,23 @@ describe('clinical articulation report entries', () => {
     expect(records.map((record) => record.id_sesion)).toEqual([4, 3]);
     expect(records[0].palabra_esperada).toBe('ratón');
     expect(records[1].resultado_revisado).toContain('El terapeuta confirmó');
+  });
+
+  it('rotula la similitud como indicador de apoyo, la conserva al releer y nunca incluye la hipótesis', () => {
+    const entry = encodeArticulationResult({ ...result, similitud_apoyo: 75 });
+    expect(entry).toContain('Indicador de apoyo · sin validación clínica: 75 %');
+    expect(entry).not.toMatch(/hip[oó]tesis|lambdacismo|rotacismo|sigmatismo/i);
+    const [record] = parseArticulationHistory([
+      { id_sesion: 1, tipo_cita: 'TERAPIA' as const, fecha_hora_inicio: '2026-10-19T15:00:00.000Z', observaciones_iniciales: entry },
+    ]);
+    expect(record.similitud_apoyo).toBe(75);
+    expect(encodeArticulationResult(result)).not.toContain('Similitud');
+  });
+
+  it('el borrador del plan no arrastra la similitud a un texto visible para la familia', () => {
+    const entry = encodeArticulationResult({ ...result, similitud_apoyo: 75 });
+    const draft = introPlanDraftFromReport({ observaciones_iniciales: entry, objetivos_trabajados: '' } as ReportData);
+    expect(draft.baseline).toContain('ratón');
+    expect(draft.baseline).not.toContain('Similitud');
   });
 });

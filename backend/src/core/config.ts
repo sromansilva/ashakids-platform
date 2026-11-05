@@ -20,6 +20,10 @@ const envSchema = z.object({
   }),
   HOST: z.string().default('0.0.0.0'),
   ENVIRONMENT: z.enum(['development', 'production', 'test']).default('development'),
+  // Explicit opt-in for inspecting a deployed database without migrations or writes.
+  DEVELOPMENT_READ_ONLY: z.string().default('false').transform((value) => value === 'true'),
+  // Connect to an already prepared database without migrations, demo seeds or background jobs.
+  DEVELOPMENT_SKIP_BOOTSTRAP: z.string().default('false').transform((value) => value === 'true'),
   PROJECT_NAME: z.string().default('ASHAKids REST API'),
   VERSION: z.string().default('1.0.0'),
   API_V1_PREFIX: z.string().default('/api/v1'),
@@ -34,6 +38,7 @@ const envSchema = z.object({
   ML_SERVICE_URL: z.string().default('http://127.0.0.1:8001'),
   ML_SERVICE_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
   MEET_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
+  SESSION_TEST_MODE_ENABLED: z.string().optional().default('false').transform((v) => v === 'true'),
   GOOGLE_CALENDAR_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
   GMAIL_ENABLED: z.string().optional().default('false').transform((v) => v === 'true'),
   GMAIL_CLIENT_ID: z.string().optional().default(''),
@@ -43,11 +48,23 @@ const envSchema = z.object({
   GMAIL_SENDER_NAME: z.string().optional().default('Ashakids'),
   DECOLECTA_TOKEN: z.string().optional().default(''),
   DECOLECTA_API_URL: z.string().optional().default('https://api.decolecta.com'),
+  WHATSAPP_ENABLED: z.string().optional().default('false').transform((v) => v === 'true'),
+  WHATSAPP_ACCESS_TOKEN: z.string().optional().default(''),
+  WHATSAPP_PHONE_NUMBER_ID: z.string().optional().default(''),
+  WHATSAPP_APP_SECRET: z.string().optional().default(''),
+  WHATSAPP_VERIFY_TOKEN: z.string().optional().default(''),
+  WHATSAPP_API_VERSION: z.string().optional().default('v23.0'),
+  WHATSAPP_TEMPLATE_ACTIVACION: z.string().optional().default(''),
+  WHATSAPP_TEMPLATE_LANG: z.string().optional().default('es'),
   PUBLIC_ORIGIN: z.string().optional().default('https://ashakids.life'),
   CORS_ORIGINS: z.string().default('http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174')
     .transform((val) => val.split(',').map((s) => s.trim())),
 }).superRefine((env, ctx) => {
   if (env.ENVIRONMENT !== 'production') return;
+
+  if (env.SESSION_TEST_MODE_ENABLED) {
+    ctx.addIssue({ code: 'custom', path: ['SESSION_TEST_MODE_ENABLED'], message: 'el modo prueba de sesiones no puede activarse en producción' });
+  }
 
   for (const key of ['DB_HOST', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'CORS_ORIGINS'] as const) {
     if (!process.env[key]?.trim()) {

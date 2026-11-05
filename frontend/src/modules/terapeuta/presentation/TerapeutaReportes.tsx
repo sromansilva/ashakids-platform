@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Eye, Send, Plus, X, FileText, ChevronRight, Mic } from 'lucide-react';
+import { Eye, Plus, X, FileText, ChevronRight, Mic } from 'lucide-react';
 import type { View } from '@/shared/domain/types/navigation';
 import type { Session } from '@/modules/clinica/domain/clinical';
 import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
@@ -164,14 +164,6 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                   >
                     <Eye size={14} className="text-[#6B46FE]" />
                     Vista previa
-                  </button>
-                  <button
-                    disabled
-                    title="No existe API de envío por correo"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E8E5F4] text-xs font-extrabold text-[#9E95B7] cursor-not-allowed"
-                  >
-                    <Send size={14} />
-                    Enviar
                   </button>
                 </div>
               </div>

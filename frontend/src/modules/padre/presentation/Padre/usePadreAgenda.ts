@@ -2,7 +2,7 @@ import { useSelectedFamilyPatient } from "@/modules/padre/application/useSelecte
 import { useAppointments } from "@/shared/application/hooks/useAppointments";
 import { useWrite } from "@/shared/application/hooks/useRemoteData";
 import { appointmentsService } from "@/modules/clinica/infrastructure/clinicalService";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { View } from "@/shared/domain/types/navigation";
 
@@ -64,6 +64,20 @@ const nextMonth = () => {
     else setMonth(m => m + 1);
     setSelDay(null);
   };
+// Enlace desde un aviso (?cita=ID): abre el día de esa cita y la deja expandida, una sola vez.
+const requestedCita = Number(searchParams.get("cita"));
+const openedCita = useRef<number | null>(null);
+useEffect(() => {
+  if (!Number.isInteger(requestedCita) || requestedCita <= 0 || openedCita.current === requestedCita) return;
+  const target = apts.find(a => a.id === requestedCita);
+  if (!target) return;
+  const parts = target.date.split(" ");
+  const monthIndex = SHORT_MONTHS.indexOf(parts[1]);
+  if (monthIndex < 0) return;
+  openedCita.current = requestedCita;
+  setYear(parseInt(parts[2])); setMonth(monthIndex); setSelDay(parseInt(parts[0]));
+  setExpandedReservationIds(cur => cur.includes(requestedCita) ? cur : [...cur, requestedCita]);
+}, [requestedCita, apts]);
 const selectedApts = selDay
     ? apts.filter(a => { const p = a.date.split(" "); return parseInt(p[0]) === selDay && p[1] === SHORT_MONTHS[month] && parseInt(p[2]) === year; })
     : apts.filter(a => { const p = a.date.split(" "); return p[1] === SHORT_MONTHS[month] && parseInt(p[2]) === year; });

@@ -1,6 +1,7 @@
-import { ChevronLeft, Eye, Video, Search, Calendar, FileText, BarChart3 } from 'lucide-react';
+import { ChevronLeft, Eye, Video, Search, Calendar, FileText } from 'lucide-react';
 import { useTerapeutaPacientes } from './useTerapeutaPacientes';
 import { PatientClinicalHistory } from './PatientClinicalHistory';
+import { PatientTreatmentStatus } from './PatientTreatmentStatus';
 import { RemoteFeedback } from '@/shared/presentation/components/common/RemoteFeedback';
 import { Btn } from '@/shared/presentation/components/common/Btn';
 
@@ -73,18 +74,10 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
               </div>
               <div>
                 <p className="text-xs font-bold text-[#615274]">Sesiones atendidas</p>
-                <p className="text-base font-extrabold text-[#1C1135] mt-0.5">{p.sessions || 2}</p>
+                <p className="text-base font-extrabold text-[#1C1135] mt-0.5">{p.sessions}</p>
               </div>
             </div>
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-full bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0">
-                <BarChart3 size={20} />
-              </div>
-              <div>
-                <p className="text-xs font-bold text-[#615274]">Progreso</p>
-                <p className="text-base font-extrabold text-[#1C1135] mt-0.5">Próximamente</p>
-              </div>
-            </div>
+            <PatientTreatmentStatus patientId={p.id} />
           </div>
         </header>
 
@@ -177,7 +170,7 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
             </div>
 
             {/* Metrics */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1 min-w-0 px-0 lg:px-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1 min-w-0 px-0 lg:px-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center shrink-0">
                   <Calendar size={18} />
@@ -194,17 +187,7 @@ export function TerapeutaPacientes(props: Parameters<typeof useTerapeutaPaciente
                 </div>
                 <div>
                   <p className="text-[11px] font-bold text-[#615274]">Sesiones atendidas</p>
-                  <p className="text-sm font-extrabold text-[#1C1135] mt-0.5">{row.sessions || 2}</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#FEF3C7] text-[#D97706] flex items-center justify-center shrink-0">
-                  <BarChart3 size={18} />
-                </div>
-                <div>
-                  <p className="text-[11px] font-bold text-[#615274]">Progreso</p>
-                  <p className="text-sm font-extrabold text-[#1C1135] mt-0.5">Próximamente</p>
+                  <p className="text-sm font-extrabold text-[#1C1135] mt-0.5">{row.sessions}</p>
                 </div>
               </div>
             </div>

@@ -116,12 +116,16 @@ export function ClinicalReportEditor({
       onSaved?.();
     },
   );
-  const reportComplete = [
-    form.observaciones_iniciales,
-    form.objetivos_trabajados,
-    form.nivel_ayuda,
-    form.proximos_pasos,
-  ].every((value) => Boolean(value?.trim()));
+  const [confirmingSign, setConfirmingSign] = useState(false);
+  // Qué falta para poder firmar: se muestra mientras «Firmar y publicar» está apagado.
+  const signBlockers: string[] = [];
+  if (!form.observaciones_iniciales?.trim()) signBlockers.push('Completa las observaciones iniciales');
+  if (!form.objetivos_trabajados?.trim()) signBlockers.push('Completa los objetivos trabajados');
+  if (!form.nivel_ayuda?.trim()) signBlockers.push('Elige el nivel de ayuda');
+  else if (!hasStandardHelpLevel) signBlockers.push('Selecciona uno de los cinco niveles de ayuda (el nivel histórico solo se conserva al guardar)');
+  if (!form.proximos_pasos?.trim()) signBlockers.push('Completa los próximos pasos');
+  if (dirty || save.isPending) signBlockers.push('Espera a que se guarde el borrador');
+  const blockersId = `${formId}-sign-blockers`;
 
   return (
     <form
@@ -277,19 +281,40 @@ export function ClinicalReportEditor({
               Reporte firmado{signedAt ? ' · ' + new Date(signedAt).toLocaleString('es-PE') : ''}.
             </p>
           ) : (
-            <button
-              type="button"
-              disabled={sign.isPending || dirty || !reportComplete || !hasStandardHelpLevel}
-              onClick={() => void sign.submit(undefined)}
-              className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-extrabold text-emerald-800 disabled:opacity-50"
-            >
-              {sign.isPending ? 'Firmando…' : 'Firmar y publicar reporte'}
-            </button>
-          )}
-          {reportStatus !== 'FIRMADO' && reportComplete && !hasStandardHelpLevel && (
-            <p role="note" className="w-full text-right text-xs text-[#615274]">
-              Conserva el nivel histórico al guardar; selecciona una de las cinco opciones para firmar el reporte.
-            </p>
+            <>
+              <button
+                type="button"
+                disabled={sign.isPending || signBlockers.length > 0}
+                aria-describedby={signBlockers.length ? blockersId : undefined}
+                onClick={() => setConfirmingSign(true)}
+                className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-2.5 text-sm font-extrabold text-emerald-800 disabled:opacity-50"
+              >
+                {sign.isPending ? 'Firmando…' : 'Firmar y publicar reporte'}
+              </button>
+              {signBlockers.length > 0 && (
+                <ul id={blockersId} role="note" aria-label="Qué falta para firmar" className="w-full list-disc space-y-0.5 pl-5 text-left text-xs font-semibold text-[#615274]">
+                  {signBlockers.map((item) => <li key={item}>{item}</li>)}
+                </ul>
+              )}
+              {confirmingSign && signBlockers.length === 0 && (
+                <div role="alertdialog" aria-label="Confirmar firma del reporte" className="w-full space-y-3 rounded-2xl border border-emerald-200 bg-emerald-50 p-4">
+                  <p className="text-sm font-bold text-emerald-900">
+                    Firmar es irreversible: el reporte quedará publicado para la familia y ya no podrás editarlo. ¿Deseas continuar?
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <button type="button" disabled={sign.isPending}
+                      onClick={() => { setConfirmingSign(false); void sign.submit(undefined); }}
+                      className="rounded-xl bg-emerald-700 px-4 py-2 text-xs font-extrabold text-white disabled:opacity-50">
+                      Sí, firmar y publicar
+                    </button>
+                    <button type="button" onClick={() => setConfirmingSign(false)}
+                      className="rounded-xl border border-[#E8E5F4] bg-white px-4 py-2 text-xs font-bold text-[#615274]">
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
           {save.isPending && <p role="status" className="text-xs font-bold text-[#6B46FE]">Guardando borrador automáticamente…</p>}
           {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">Reporte guardado en el servidor.</p>}

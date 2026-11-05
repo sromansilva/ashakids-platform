@@ -1,5 +1,5 @@
 import type { ReportData } from '@/modules/clinica/domain/clinical';
-import type { SavedArticulationResult } from './articulationReportEntries';
+import { removeSupportSimilarity, type SavedArticulationResult } from './articulationReportEntries';
 
 export interface PlanNarrativeDraft {
   baseline: string;
@@ -41,7 +41,8 @@ const markers: Array<[keyof PlanNarrativeDraft, string]> = [
 export function introPlanDraftFromReport(report: ReportData): PlanNarrativeDraft {
   return {
     ...emptyPlanNarrative(),
-    baseline: report.observaciones_iniciales?.trim() ?? '',
+    // El plan es visible para la familia: no arrastra el indicador de apoyo del informe.
+    baseline: removeSupportSimilarity(report.observaciones_iniciales?.trim() ?? ''),
     confirmedObjectives: report.objetivos_trabajados?.trim() ?? '',
   };
 }

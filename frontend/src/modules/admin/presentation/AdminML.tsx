@@ -93,7 +93,7 @@ export function AdminML({ go: _go }: { go: (view: View) => void }) {
             <ul className="space-y-2 text-sm text-[#615274]">
               <li>El panel de administración no recibe ni procesa archivos de voz.</li>
               <li>El audio viaja en paquetes temporales y se elimina de memoria al completar, cancelar o expirar la captura.</li>
-              <li>Wav2Vec propone texto; no califica pronunciación, no calcula similitud clínica y no diagnostica.</li>
+              <li>Wav2Vec propone texto. Los indicadores de apoyo (similitud de texto, tipo de error e hipótesis) se calculan desde ese texto, no tienen validación clínica, solo los ve el equipo clínico y el terapeuta debe confirmarlos; no diagnostican.</li>
               <li>La predicción de tratamiento solo puede orientar un plan tras una decisión expresa del terapeuta.</li>
             </ul>
             <p className="mt-4 border-t border-violet-200 pt-3 text-xs font-semibold text-[#615274]">

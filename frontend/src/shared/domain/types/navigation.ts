@@ -1,15 +1,16 @@
 
 
 export type View =
+  | "soporte" | "soporte/incidencias"
   | "landing" | "login"
-  | "padre" | "padre/welcome" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes" | "padre/compras"
+  | "padre" | "padre/welcome" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes"
   | "padre/hijos" | "padre/progreso" | "padre/reportes" | "padre/config" | "padre/camino" | "padre/ayuda"
   | "padre/incidencias"
   | "terapeuta" | "terapeuta/agenda" | "terapeuta/pacientes" | "terapeuta/mensajes"
   | "terapeuta/reportes" | "terapeuta/analiticas" | "terapeuta/ingresos"
   | "terapeuta/valoraciones" | "terapeuta/config" | "terapeuta/datos-actividad"
   | "terapeuta/incidencias"
-  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/operacion" | "admin/pagos"
+  | "admin" | "admin/dashboard" | "admin/cuentas" | "admin/operacion"
   | "admin/contenido" | "admin/ml" | "admin/auditoria" | "admin/config"
   | "admin/reportes" | "admin/usuarios" | "admin/pacientes" | "admin/citas" | "admin/sesiones"
   | "admin/analiticas" | "admin/mensajes" | "admin/moderacion" | "admin/solicitudes" | "admin/core"
@@ -18,7 +19,6 @@ export type View =
   | "mundo-asha/retos" | "mundo-asha/insignias" | "mundo-asha/perfil" | "mundo-asha/laberinto"
   | "session" | "session/prep" | "session/waiting" | "session/active"
   | "session/end" | "session/summary" | "session/rating" | "session/rewards"
-  | "pay" | "pay/history" | "pay/wallet"
   | "public/especialistas" | "public/especialidades" | "public/mundo"
   | "public/recursos" | "public/ashi" | "public/historias" | "public/nosotros"
   | "public/planes" | "public/ayuda" | "public/contacto" | "public/trabaja"
@@ -27,4 +27,4 @@ export type View =
   | "forgot-password"
   | "padre/recorrido" | "padre/consentimiento" | "padre/seguimiento" | "padre/evaluacion";
 
-export type Role = "padre" | "terapeuta" | "admin" | null;
+export type Role = "padre" | "terapeuta" | "admin" | "soporte_tecnico" | null;

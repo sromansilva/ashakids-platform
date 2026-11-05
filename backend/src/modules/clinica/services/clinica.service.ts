@@ -3,6 +3,7 @@ import { settings } from '../../../core/config.js';
 import type { AuthenticatedUser } from '../../../core/middleware/auth.middleware.js';
 import {
   appendPatientScope,
+  getTherapistId,
   assertPatientAccess,
   assertReservationAccess,
   assertConsentAccess,
@@ -17,10 +18,21 @@ import type {
   EvaluacionFonologicaDTO,
   RevisionEvaluacionFonologicaDTO,
   DescartarPrediccionDTO,
+  CierreTratamientoDTO,
 } from '../dtos/clinica.dto.js';
 import { PHONEME_NAMING_TARGETS } from '../../juegos/juegos.service.js';
 import { sesionesService } from '../../sesiones/sesiones.service.js';
 import { isAttendedOrActiveSession } from '../../sesiones/attendance.js';
+import { calcularIndicadoresFoneticos, contenidoInformeParaRol, ETIQUETA_INDICADOR_APOYO } from './phoneticIndicators.js';
+import { serializarEvaluacionFonologica } from './evaluacionFonologicaView.js';
+import { contarFonemasAfectados } from './tratamientoCohorte.js';
+import {
+  AVISO_DIAGNOSTICO_PRELIMINAR,
+  DIAGNOSTICOS_PRELIMINARES,
+  ETIQUETA_DIAGNOSTICO_PRELIMINAR,
+  catalogoCoincideConInstitucional,
+  colaboracionDesdeNivelAyuda,
+} from '../dtos/diagnosticoPreliminar.js';
 
 export class ClinicaService {
   async getMlServiceHealth(user: AuthenticatedUser) {
@@ -70,7 +82,8 @@ export class ClinicaService {
         s.fecha_hora_inicio_real as fecha,
         s.estado_sesion as estado,
         COALESCE(rs.observaciones_iniciales, '') as resumen,
-        rs.objetivos_trabajados
+        rs.objetivos_trabajados,
+        rs.estado_reporte
       FROM sesiones s
       JOIN reservas r ON s.id_reserva = r.id_reserva
       LEFT JOIN reportes_sesion rs ON s.id_sesion = rs.id_sesion
@@ -85,25 +98,31 @@ export class ClinicaService {
     sql += ` ORDER BY s.fecha_hora_inicio_real DESC LIMIT 20;`;
 
     const res = await pool.query(sql, params);
-    return res.rows.map((row) => ({
-      id_sesion: row.id_sesion,
-      id_cita: row.id_cita,
-      id_paciente: row.id_paciente,
-      id_terapeuta: row.id_terapeuta,
-      fecha: row.fecha ? new Date(row.fecha).toISOString().split('T')[0] : null,
-      hora_inicio: row.fecha
-        ? new Date(row.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        : null,
-      estado: row.estado || 'COMPLETADA',
-      resumen: row.resumen,
-      objetivos:
-        typeof row.objetivos_trabajados === 'string' && row.objetivos_trabajados
-          ? row.objetivos_trabajados
-              .split(/\r?\n|,/)
-              .map((item: string) => item.trim())
-              .filter(Boolean)
-          : [],
-    }));
+    return res.rows.map((row) => {
+      const informe = contenidoInformeParaRol(
+        { observaciones: row.resumen, objetivos: row.objetivos_trabajados, estado: row.estado_reporte },
+        user.rol,
+      );
+      return {
+        id_sesion: row.id_sesion,
+        id_cita: row.id_cita,
+        id_paciente: row.id_paciente,
+        id_terapeuta: row.id_terapeuta,
+        fecha: row.fecha ? new Date(row.fecha).toISOString().split('T')[0] : null,
+        hora_inicio: row.fecha
+          ? new Date(row.fecha).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+          : null,
+        estado: row.estado || 'COMPLETADA',
+        resumen: informe.observaciones,
+        objetivos:
+          typeof informe.objetivos === 'string' && informe.objetivos
+            ? informe.objetivos
+                .split(/\r?\n|,/)
+                .map((item: string) => item.trim())
+                .filter(Boolean)
+            : [],
+      };
+    });
   }
 
   async crearSesion(dto: SesionClinicaDTO, user: AuthenticatedUser) {
@@ -259,9 +278,7 @@ export class ClinicaService {
       const catalog = await response.json() as { version_modelo?: unknown; diagnosis_codes?: unknown };
       const codes = catalog.diagnosis_codes;
       const valid = typeof catalog.version_modelo === 'string' && catalog.version_modelo.trim().length > 0 &&
-        Array.isArray(codes) && codes.length === 5 &&
-        codes.every((item: any) => Number.isInteger(item?.code) && item.code >= 1 && item.code <= 5 && typeof item.label === 'string' && item.label.trim().length > 0) &&
-        new Set(codes.map((item: any) => item.code)).size === 5;
+        Array.isArray(codes) && catalogoCoincideConInstitucional(codes);
       if (!valid) throw Object.assign(new Error('El servicio predictivo publicó un catálogo diagnóstico inválido.'), { status: 502 });
       return {
         version_modelo: catalog.version_modelo as string,
@@ -275,6 +292,95 @@ export class ClinicaService {
       });
     } finally {
       clearTimeout(timeout);
+    }
+  }
+
+  /** Catálogo institucional: siempre disponible, no depende de que exista un modelo. */
+  getDiagnosticosPreliminares(user: AuthenticatedUser) {
+    if (user.rol !== 'ADMIN' && user.rol !== 'TERAPEUTA') {
+      throw Object.assign(new Error('Solo terapeutas o administración pueden consultar el catálogo diagnóstico.'), { status: 403 });
+    }
+    return {
+      etiqueta: ETIQUETA_DIAGNOSTICO_PRELIMINAR,
+      aviso: AVISO_DIAGNOSTICO_PRELIMINAR,
+      codigos: DIAGNOSTICOS_PRELIMINARES.map((item) => ({ ...item })),
+    };
+  }
+
+  /**
+   * Estado esperado del pronóstico: responde 200 aunque no haya modelo aprobado, para que la
+   * interfaz muestre «no disponible» sin errores de red. Solo está disponible si el modelo publica
+   * un catálogo idéntico al institucional.
+   */
+  async getEstadoPronostico(user: AuthenticatedUser) {
+    try {
+      const catalog = await this.getTreatmentPredictionCatalog(user);
+      return { disponible: true, version_modelo: catalog.version_modelo };
+    } catch (error: any) {
+      if (error?.status === 403) throw error;
+      return { disponible: false, version_modelo: null };
+    }
+  }
+
+  async cerrarTratamiento(idTratamiento: number, dto: CierreTratamientoDTO, user: AuthenticatedUser) {
+    if (user.rol !== 'ADMIN' && user.rol !== 'TERAPEUTA') {
+      throw Object.assign(new Error('Solo terapeutas o administración pueden cerrar un tratamiento.'), { status: 403 });
+    }
+    const therapistId = user.rol === 'TERAPEUTA' ? await getTherapistId(user.id_usuario) : null;
+    if (user.rol === 'TERAPEUTA' && therapistId == null) {
+      throw Object.assign(new Error('Tu cuenta no tiene un perfil de terapeuta activo.'), { status: 403 });
+    }
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN;');
+      const found = await client.query(
+        `SELECT t.id_tratamiento, t.id_terapeuta, t.estado_tratamiento
+         FROM public.tratamientos t
+         WHERE t.id_tratamiento = $1
+         FOR UPDATE OF t;`,
+        [idTratamiento],
+      );
+      const plan = found.rows[0];
+      if (!plan) throw Object.assign(new Error('El tratamiento indicado no existe.'), { status: 404 });
+      if (user.rol === 'TERAPEUTA' && Number(plan.id_terapeuta) !== therapistId) {
+        throw Object.assign(new Error('Solo el terapeuta del plan o administración pueden cerrarlo.'), { status: 403 });
+      }
+      if (plan.estado_tratamiento !== 'ACTIVO') {
+        throw Object.assign(new Error('El tratamiento ya está cerrado o no está activo.'), { status: 409 });
+      }
+      const updated = await client.query(
+        `UPDATE public.tratamientos
+         SET estado_tratamiento = $2, fecha_fin = CURRENT_DATE, observaciones_cierre = $3
+         WHERE id_tratamiento = $1 AND estado_tratamiento = 'ACTIVO'
+         RETURNING id_tratamiento, estado_tratamiento, fecha_fin, observaciones_cierre;`,
+        [idTratamiento, dto.desenlace, dto.observacion ?? null],
+      );
+      if (!updated.rows[0]) throw Object.assign(new Error('El tratamiento ya está cerrado o no está activo.'), { status: 409 });
+      await client.query(
+        'UPDATE public.tratamiento_variables_modelo SET fecha_desenlace = CURRENT_DATE WHERE id_tratamiento = $1;',
+        [idTratamiento],
+      );
+      // No se cancelan citas automáticamente (afectaría a la familia y a Google Calendar); se avisa de ellas.
+      const pending = await client.query(
+        `SELECT COUNT(*)::integer AS cantidad FROM public.reservas
+         WHERE id_tratamiento = $1 AND UPPER(COALESCE(estado_reserva, '')) IN ('PENDIENTE', 'CONFIRMADA')
+           AND fecha_hora_inicio > NOW();`,
+        [idTratamiento],
+      );
+      await client.query('COMMIT;');
+      const row = updated.rows[0];
+      return {
+        id_tratamiento: Number(row.id_tratamiento),
+        estado_tratamiento: row.estado_tratamiento as 'ALTA' | 'ABANDONO',
+        fecha_fin: row.fecha_fin ? new Date(row.fecha_fin).toISOString().split('T')[0] : null,
+        observaciones_cierre: row.observaciones_cierre ?? null,
+        citas_futuras_pendientes: Number(pending.rows[0]?.cantidad ?? 0),
+      };
+    } catch (error) {
+      await client.query('ROLLBACK;').catch(() => undefined);
+      throw error;
+    } finally {
+      client.release();
     }
   }
 
@@ -311,24 +417,12 @@ export class ClinicaService {
       throw Object.assign(new Error('La edad registrada del paciente está fuera del rango admitido por el modelo.'), { status: 409 });
     }
 
-    const allowedHelpLevels = ['Sin ayuda', 'Ayuda mínima', 'Ayuda moderada', 'Ayuda alta', 'Ayuda total'];
-    const helpIndex = allowedHelpLevels.indexOf(String(context.nivel_ayuda ?? ''));
-    if (helpIndex < 0) {
+    const collaborationScore = colaboracionDesdeNivelAyuda(context.nivel_ayuda);
+    if (collaborationScore == null) {
       throw Object.assign(new Error('Guarda el nivel de ayuda del informe antes de solicitar un pronóstico.'), { status: 409 });
     }
-    const collaborationScore = allowedHelpLevels.length - helpIndex;
     const supportedPhonemes = Array.from(new Set(PHONEME_NAMING_TARGETS.map((target) => target.fonema_objetivo)));
-    const phonemeResult = await pool.query(
-      `SELECT COUNT(DISTINCT fonema_objetivo)::integer AS cantidad
-       FROM public.evaluaciones_fonologicas
-       WHERE id_sesion = $1 AND id_paciente = $2
-         AND estado = 'CONFIRMADO_TERAPEUTA'
-         AND origen_evaluacion = 'CLINICO'
-         AND resultado_clinico IN ('EN_PROCESO', 'REQUIERE_APOYO')
-         AND fonema_objetivo = ANY($3::varchar[]);`,
-      [dto.id_sesion, Number(context.id_paciente), supportedPhonemes],
-    );
-    const phonemeCount = Number(phonemeResult.rows[0]?.cantidad ?? 0);
+    const phonemeCount = await contarFonemasAfectados(pool, dto.id_sesion, Number(context.id_paciente));
     if (!Number.isInteger(phonemeCount) || phonemeCount < 1 || phonemeCount > supportedPhonemes.length) {
       throw Object.assign(new Error('Confirma al menos un fonema evaluado en esta sesión antes de solicitar el pronóstico.'), { status: 409 });
     }
@@ -496,11 +590,17 @@ export class ClinicaService {
     }
     await assertConsentAccess(dto.id_paciente, 'EVALUACION_FONOLOGICA_IA');
 
+    const indicadores = calcularIndicadoresFoneticos({
+      palabra_objetivo: target.word,
+      fonema_objetivo: target.fonema_objetivo,
+      transcripcion: dto.transcripcion_detectada,
+    });
     const res = await pool.query(
       `INSERT INTO public.evaluaciones_fonologicas (
         id_sesion, id_paciente, fonema_objetivo, palabra_objetivo, transcripcion_detectada,
-        estado, origen_evaluacion
-      ) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', $6)
+        estado, origen_evaluacion, similitud_porcentaje, tipo_error_sugerido, diagnostico_sugerido,
+        intentos, nota_rapida
+      ) VALUES ($1, $2, $3, $4, $5, 'PENDIENTE_REVISION', $6, $7, $8, $9, $10, $11)
       RETURNING *;`,
       [
         dto.id_sesion,
@@ -509,22 +609,18 @@ export class ClinicaService {
         target.word,
         dto.transcripcion_detectada,
         dto.origen_evaluacion || 'CLINICO',
+        indicadores.similitud_texto_porcentaje,
+        indicadores.tipo_error_sugerido,
+        indicadores.hipotesis_sugerida,
+        dto.intentos ?? 1,
+        dto.nota_rapida || null,
       ]
     );
 
     const r = res.rows[0];
     return {
-      id_evaluacion: r.id_evaluacion,
-      id_sesion: r.id_sesion,
-      id_paciente: r.id_paciente,
-      fonema_objetivo: r.fonema_objetivo,
-      palabra_objetivo: r.palabra_objetivo,
-      transcripcion_detectada: r.transcripcion_detectada,
-      nivel_ayuda: r.nivel_ayuda,
-      estado: r.estado,
-      origen_evaluacion: r.origen_evaluacion,
-      resultado_clinico: r.resultado_clinico ?? null,
-      fecha_registro: new Date(r.fecha_registro).toISOString(),
+      ...serializarEvaluacionFonologica(r, 'TERAPEUTA'),
+      etiqueta_indicadores: ETIQUETA_INDICADOR_APOYO,
     };
   }
 
@@ -538,23 +634,24 @@ export class ClinicaService {
       [pacienteId, user.rol === 'PADRE']
     );
 
-    return res.rows.map((r) => ({
-      id_evaluacion: r.id_evaluacion,
-      id_sesion: r.id_sesion,
-      id_paciente: r.id_paciente,
-      fonema_objetivo: r.fonema_objetivo,
-      palabra_objetivo: r.palabra_objetivo,
-      transcripcion_detectada: user.rol === 'PADRE' ? r.transcripcion_revisada : r.transcripcion_detectada,
-      ...(user.rol === 'PADRE' ? { observacion_terapeuta: r.observacion_terapeuta } : {
-        transcripcion_revisada: r.transcripcion_revisada,
-        observacion_terapeuta: r.observacion_terapeuta,
-      }),
-      nivel_ayuda: r.nivel_ayuda,
-      estado: r.estado,
-      origen_evaluacion: r.origen_evaluacion,
-      resultado_clinico: r.resultado_clinico ?? null,
-      fecha_registro: new Date(r.fecha_registro).toISOString(),
-    }));
+    return res.rows.map((r) => {
+      const view = serializarEvaluacionFonologica(r, user.rol);
+      if (user.rol === 'PADRE' || r.estado !== 'PENDIENTE_REVISION' || !r.palabra_objetivo || !r.transcripcion_detectada) return view;
+      // Muestras por revisar: los indicadores se recalculan en el servidor desde el texto guardado
+      // (nunca vienen del cliente) para que sigan siendo coherentes tras recargar el panel.
+      const indicadores = calcularIndicadoresFoneticos({
+        palabra_objetivo: r.palabra_objetivo,
+        fonema_objetivo: r.fonema_objetivo,
+        transcripcion: r.transcripcion_detectada,
+      });
+      return {
+        ...view,
+        similitud_texto_porcentaje: indicadores.similitud_texto_porcentaje,
+        tipo_error_sugerido: indicadores.tipo_error_sugerido,
+        hipotesis_sugerida: indicadores.hipotesis_sugerida,
+        etiqueta_indicadores: ETIQUETA_INDICADOR_APOYO,
+      };
+    });
   }
 
   async revisarEvaluacionFonologica(idEvaluacion: number, dto: RevisionEvaluacionFonologicaDTO, user: AuthenticatedUser) {
@@ -572,7 +669,8 @@ export class ClinicaService {
     const result = await pool.query(
       `UPDATE public.evaluaciones_fonologicas
        SET estado = $1, transcripcion_revisada = $2, observacion_terapeuta = $3,
-           resultado_clinico = $4, id_usuario_revision = $5, fecha_revision = NOW()
+           resultado_clinico = $4, id_usuario_revision = $5, fecha_revision = NOW(),
+           intentos = COALESCE($7::integer, intentos), nota_rapida = COALESCE($8::varchar, nota_rapida)
        WHERE id_evaluacion = $6 AND estado = 'PENDIENTE_REVISION'
        RETURNING id_evaluacion, id_sesion, id_paciente, palabra_objetivo,
                  transcripcion_detectada, transcripcion_revisada, observacion_terapeuta,
@@ -584,6 +682,8 @@ export class ClinicaService {
         dto.estado === 'CONFIRMADO_TERAPEUTA' ? dto.resultado_clinico : null,
         user.id_usuario,
         idEvaluacion,
+        dto.intentos ?? null,
+        dto.nota_rapida || null,
       ],
     );
     if (!result.rows[0]) throw Object.assign(new Error('La evaluación ya fue revisada; actualiza la página para ver el estado.'), { status: 409 });

@@ -26,15 +26,16 @@ it('separates siblings in the agenda and preserves completed appointment details
   mockApi(path => path === '/pacientes' ? response([patient(1,'Ana'),patient(2,'Luis')]) : path === '/citas' ? response([a,b]) : path === '/citas/1' ? response(a) : path === '/citas/2' ? response(b) : undefined);
   renderRoute('/padre/agenda','PADRE');
   fireEvent.click(await screen.findByRole('button',{name:/Ana Demostración.*Completada/}));
-  expect(await screen.findByText(/Consulta introductoria · COMPLETADA/)).toBeInTheDocument();
-  expect(await screen.findByRole('link',{name:'Abrir reunión de Google Meet'})).toHaveAttribute('href',a.meet_url);
-  expect(screen.getByText(/Reunión creada automáticamente por Google Meet/)).toBeInTheDocument();
+  expect(await screen.findByText(/Consulta introductoria · Completada/)).toBeInTheDocument();
+  // La familia no recibe enlace de Meet cuando la reunión terminó.
+  expect(await screen.findByText('Esta reunión ya terminó.')).toBeInTheDocument();
+  expect(screen.queryByRole('link',{name:'Abrir reunión de Google Meet'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Compartir enlace de Google Meet'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Cancelar cita'})).not.toBeInTheDocument();
   fireEvent.click(screen.getByLabelText(/Elegir perfil: Ana/));
   fireEvent.click(screen.getByRole('button', { name: /Luis/ }));
   expect(await screen.findByRole('button',{name:/Luis Demostración.*Confirmada/})).toBeInTheDocument();
-  expect(screen.queryByText(/Consulta introductoria · COMPLETADA/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/Consulta introductoria · Completada/)).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:/Ana Demostración.*Completada/})).not.toBeInTheDocument();
 });
 

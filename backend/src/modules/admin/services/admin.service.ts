@@ -151,17 +151,13 @@ export class AdminService {
     return res.cuenta;
   }
 
-  private async createInvitedAccount(data: any, role: 'PADRE' | 'TERAPEUTA', children: any[] = []) {
-    const prefix = role === 'PADRE' ? 'p' : 't';
+  private async createInvitedAccount(data: any, role: 'PADRE' | 'TERAPEUTA' | 'SOPORTE_TECNICO', children: any[] = []) {
+    const prefix = role === 'PADRE' ? 'p' : role === 'TERAPEUTA' ? 't' : 's';
     const codigo_usuario = `${prefix}${randomInt(10000, 100000)}`;
     const oneTimePassword = randomBytes(48);
     let password_hash: string;
     try {
-      password_hash = await argon2.hash(oneTimePassword, {
-        timeCost: 3,
-        memoryCost: 65536,
-        parallelism: 4,
-      });
+      password_hash = await argon2.hash(oneTimePassword, { timeCost: 3, memoryCost: 65536, parallelism: 4 });
     } finally {
       oneTimePassword.fill(0);
     }
@@ -202,7 +198,7 @@ export class AdminService {
             [tutorId, child.nombres_paciente, child.apellidos_paciente, child.fecha_nacimiento, child.sexo, child.avatar_nombre],
           );
         }
-      } else {
+      } else if (role === 'TERAPEUTA') {
         const terRes = await client.query(
           `INSERT INTO public.terapeutas (id_usuario, especialidad, anios_experiencia, idiomas, descripcion_profesional)
            VALUES ($1, $2, $3, $4, $5)
@@ -238,7 +234,7 @@ export class AdminService {
       const mailResult = await GmailService.sendAccountActivationEmail({
         to: recipient,
         name: `${data.nombres} ${data.apellidos || ''}`.trim(),
-        role: role === 'PADRE' ? 'Familia' : 'Terapeuta',
+        role: role === 'PADRE' ? 'Familia' : role === 'TERAPEUTA' ? 'Terapeuta' : 'Soporte Técnico',
         code: String(user.codigo_usuario),
         activationUrl,
       }).catch((error: unknown) => {
@@ -249,10 +245,33 @@ export class AdminService {
       else if (mailResult?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
     }
     return {
-      message: role === 'PADRE' ? 'Cuenta familiar creada con éxito' : 'Cuenta de terapeuta creada con éxito',
+      message: role === 'PADRE' ? 'Cuenta familiar creada con éxito' : role === 'TERAPEUTA' ? 'Cuenta de terapeuta creada con éxito' : 'Cuenta de soporte técnico creada con éxito',
       cuenta: { ...user, rol: role },
       correo_bienvenida,
     };
+  }
+
+  async reenviarActivacion(id: number) {
+    const result = await pool.query(`SELECT u.id_usuario, u.codigo_usuario, u.email, u.password_hash, u.nombres, u.apellidos, u.activo, u.password_change_required, r.nombre_rol
+      FROM usuarios u LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
+      LEFT JOIN roles r ON r.id_rol = ur.id_rol
+      WHERE u.id_usuario = $1 AND r.nombre_rol IN ('PADRE', 'TERAPEUTA') LIMIT 1`, [id]);
+    const user = result.rows[0];
+    if (!user) { const err = new Error('Cuenta no encontrada.'); (err as any).status = 404; throw err; }
+    if (user.activo !== true || user.password_change_required !== true) {
+      const err = new Error('La cuenta no tiene una activacion pendiente.'); (err as any).status = 409; throw err;
+    }
+    const token = createResetToken(Number(user.id_usuario), String(user.codigo_usuario), String(user.password_hash), 2);
+    const activationUrl = `${settings.PUBLIC_ORIGIN.replace(/\/+$/, '')}/crear-contrasena?token=${encodeURIComponent(token)}`;
+    let recipient = String(user.email ?? '').trim();
+    if (recipient.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) recipient = settings.GMAIL_SENDER_EMAIL;
+    let correo_estado: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' = 'PENDIENTE';
+    if (recipient) {
+      const mail = await GmailService.sendAccountActivationEmail({ to: recipient, name: `${user.nombres} ${user.apellidos || ''}`.trim(), role: user.nombre_rol === 'PADRE' ? 'Familia' : 'Terapeuta', code: String(user.codigo_usuario), activationUrl }).catch(() => null);
+      if (mail?.status === 'ENVIADO' || mail?.status === 'NO_CONFIGURADO') correo_estado = mail.status;
+    }
+    await pool.query("UPDATE public.solicitudes_acceso_familia SET correo_estado = $2 WHERE id_usuario_creado = $1 AND estado = 'APROBADA'", [id, correo_estado]);
+    return { correo_estado };
   }
 
   async crearPadre(data: any) {
@@ -261,6 +280,10 @@ export class AdminService {
 
   async crearTerapeuta(data: any) {
     return this.createInvitedAccount(data, 'TERAPEUTA');
+  }
+
+  async crearSoporte(data: { nombres: string; apellidos: string; email: string }) {
+    return this.createInvitedAccount(data, 'SOPORTE_TECNICO');
   }
 
   async registrarFamilia(data: any) {
@@ -355,7 +378,7 @@ export class AdminService {
   async getAuditoria() {
     try {
       const res = await pool.query(
-        `SELECT id_auditoria, nombre_tabla, accion, fecha_evento, id_registro
+        `SELECT id_auditoria, id_usuario_actor, nombre_tabla, nombre_entidad, accion, fecha_evento
          FROM auditoria_cambios
          ORDER BY fecha_evento DESC
          LIMIT 20;`
@@ -364,9 +387,9 @@ export class AdminService {
         return {
           items: res.rows.map(r => ({
             id_auditoria: r.id_auditoria,
-            actor: 'Admin',
+            actor: r.id_usuario_actor ? `Usuario #${r.id_usuario_actor}` : 'Admin',
             nombre_tabla: r.nombre_tabla,
-            nombre_entidad: String(r.id_registro || 1),
+            nombre_entidad: r.nombre_entidad || '1',
             accion: r.accion,
             fecha_evento: new Date(r.fecha_evento).toISOString(),
           })),

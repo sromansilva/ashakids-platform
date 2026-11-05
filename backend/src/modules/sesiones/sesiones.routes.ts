@@ -3,6 +3,8 @@ import { z } from 'zod';
 import multer from 'multer';
 import { sesionesService } from './sesiones.service.js';
 import { buildReportPdf } from './report-pdf.js';
+import { presentarInformeParaFamilia } from '../clinica/services/phoneticIndicators.js';
+import { codigoDiagnosticoSchema } from '../clinica/dtos/clinica.dto.js';
 import { authenticate, requireRoles } from '../../core/middleware/auth.middleware.js';
 import { assertSessionEditAccess, assertSessionReadAccess } from '../../core/security/clinical-access.js';
 
@@ -253,8 +255,10 @@ sesionesRouter.get('/:key', async (req: Request, res: Response, next: NextFuncti
 sesionesRouter.post('/:key/iniciar', requireRoles(['ADMIN', 'TERAPEUTA']), async (req: Request, res: Response, next: NextFunction) => {
   try {
     const key = parseInt(String(req.params.key), 10);
+    const parsed = z.object({ modo_prueba: z.boolean().optional() }).strict().safeParse(req.body ?? {});
+    if (!parsed.success) return res.status(400).json({ error: 'Los datos para iniciar la sesión no son válidos.' });
     await assertSessionEditAccess(req.user!, key);
-    const sesion = await sesionesService.iniciar(key, req.user!);
+    const sesion = await sesionesService.iniciar(key, req.user!, { modoPrueba: parsed.data.modo_prueba === true });
     res.json(sesion);
   } catch (err) {
     next(err);
@@ -288,6 +292,14 @@ sesionesRouter.get('/:key/reporte', async (req: Request, res: Response, next: Ne
       res.status(404).json({ error: 'El reporte estará disponible cuando el terapeuta lo firme.' });
       return;
     }
+    if (req.user!.rol === 'PADRE' && rep) {
+      res.json({
+        ...rep,
+        observaciones_iniciales: presentarInformeParaFamilia(rep.observaciones_iniciales),
+        objetivos_trabajados: presentarInformeParaFamilia(rep.objetivos_trabajados),
+      });
+      return;
+    }
     res.json(rep);
   } catch (err) {
     next(err);
@@ -316,8 +328,8 @@ sesionesRouter.get('/:key/reporte/pdf', async (req: Request, res: Response, next
       patientName: session.cita.paciente_nombre,
       therapistName: session.cita.terapeuta_nombre,
       sessionDate: session.cita.fecha_hora_inicio,
-      observations: report.observaciones_iniciales,
-      objectives: report.objetivos_trabajados,
+      observations: req.user!.rol === 'PADRE' ? presentarInformeParaFamilia(report.observaciones_iniciales) : report.observaciones_iniciales,
+      objectives: req.user!.rol === 'PADRE' ? presentarInformeParaFamilia(report.objetivos_trabajados) : report.objetivos_trabajados,
       helpLevel: report.nivel_ayuda,
       nextSteps: report.proximos_pasos,
       reportStatus: report.estado_reporte,
@@ -388,6 +400,7 @@ const planSchema = z.object({
     .min(1).max(5).refine((areas) => new Set(areas).size === areas.length),
   sesiones_recomendadas: z.number().int().min(1).max(31),
   frecuencia_semanal: z.number().int().min(1).max(3),
+  codigo_diagnostico: codigoDiagnosticoSchema,
   fonemas_priorizados: z.array(z.enum(['/rr/', '/r/', '/s/', '/pl/', '/tr/']))
     .max(5).refine((phonemes) => new Set(phonemes).size === phonemes.length),
   id_prediccion: z.number().int().positive().optional(),

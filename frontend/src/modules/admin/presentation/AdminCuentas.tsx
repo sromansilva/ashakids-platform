@@ -24,8 +24,9 @@ import { AdminCuentasDetalleModal } from "./AdminCuentasDetalleModal";
 import { AdminCuentasTable } from "./AdminCuentasTable";
 import { AdminCuentasStats } from "./AdminCuentasStats";
 import { emptyChild } from "./FamilyChildrenFields";
+import { AdminSoporteCrearModal } from './AdminSoporteCrearModal';
 // ─── Tipos Locales y Mapeos ────────────────────────────────────────────────────────
-export type TabRole = "PADRE" | "TERAPEUTA";
+export type TabRole = "PADRE" | "TERAPEUTA" | "SOPORTE_TECNICO";
 // Compatibilidad hacia atrás (re-exportado por Admin.tsx)
 export type AccountRole = "familia" | "terapeuta";
 export type AccountStatus = "activa" | "pendiente" | "suspendida";
@@ -139,16 +140,14 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const famCount = cuentas.filter(a => a.rol === "PADRE").length;
   const terCount = cuentas.filter(a => a.rol === "TERAPEUTA").length;
   const suspCount = cuentas.filter(a => !a.activo).length;
-  function formatDate(dStr: string) {
-    try {
-      return new Date(dStr).toLocaleDateString("es-PE", {
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
-      });
-    } catch {
-      return dStr;
-    }
+  function formatDate(dStr?: string | null) {
+    const date = dStr ? new Date(dStr) : null;
+    if (!date || Number.isNaN(date.getTime())) return "—";
+    return date.toLocaleDateString("es-PE", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
   }
   // Apertura de Modales
   function openNueva() {
@@ -215,6 +214,10 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     try {
       if (tab === "PADRE") {
         const res = await adminService.registrarFamilia(formPadre);
+        setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
+      } else if (tab === 'SOPORTE_TECNICO') {
+        const { nombres, apellidos, email } = formTerapeuta;
+        const res = await adminService.crearSoporte({ nombres, apellidos, email });
         setSuccessBanner(`${res.message} ${correoEstado(res.correo_bienvenida)}`.trim());
       } else {
         const res = await adminService.crearTerapeuta(formTerapeuta);
@@ -374,7 +377,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         <div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-[#1C1135] tracking-tight">Gestión de Cuentas</h1>
           <p className="text-sm sm:text-base text-[#615274] font-medium mt-1">
-            Registra familias y terapeutas, consulta sus datos y administra el acceso.
+            Registra familias, terapeutas y soporte técnico; administra sus accesos.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -436,7 +439,7 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       />
 
       <AdminCuentasCrearModal
-        isOpen={modal === "nueva"}
+        isOpen={modal === "nueva" && tab !== 'SOPORTE_TECNICO'}
         tab={tab}
         errorBanner={errorBanner}
         formPadre={formPadre}
@@ -449,6 +452,8 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         onClose={() => setModal(null)}
         onCrear={handleCrear}
       />
+
+      <AdminSoporteCrearModal open={modal === 'nueva' && tab === 'SOPORTE_TECNICO'} value={formTerapeuta} onChange={(identity) => setFormTerapeuta((current) => ({ ...current, ...identity }))} onClose={() => setModal(null)} onCreate={handleCrear} busy={submitting} error={errorBanner} />
 
       <AdminCuentasEditarModal
         isOpen={modal === "editar"}

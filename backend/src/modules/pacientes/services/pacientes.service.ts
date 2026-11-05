@@ -242,7 +242,13 @@ export class PacientesService {
     try {
       const res = await pool.query(
         `SELECT t.*, CONCAT(p.nombres_paciente, ' ', COALESCE(p.apellidos_paciente, '')) as paciente_nombre,
-                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre
+                CONCAT(u.nombres, ' ', COALESCE(u.apellidos, '')) as terapeuta_nombre,
+                (SELECT COUNT(*)::integer
+                 FROM sesiones attended_session
+                 JOIN reservas attended_reservation ON attended_reservation.id_reserva = attended_session.id_reserva
+                 WHERE attended_reservation.id_tratamiento = t.id_tratamiento
+                   AND attended_session.estado_sesion = 'FINALIZADA'
+                   AND UPPER(attended_session.asistencia::text) IN ('ASISTIO', 'TRUE', 'T', '1')) AS sesiones_realizadas
          FROM tratamientos t
          JOIN expedientes e ON t.id_expediente = e.id_expediente
          LEFT JOIN pacientes p ON e.id_paciente = p.id_paciente
@@ -264,6 +270,7 @@ export class PacientesService {
         area: r.area || 'HABLA',
         mundos_asignados: r.mundos_asignados || ['HABLA'],
         sesiones_recomendadas: r.sesiones_recomendadas == null ? null : Number(r.sesiones_recomendadas),
+        sesiones_realizadas: Number(r.sesiones_realizadas ?? 0),
         id_sesion_origen: r.id_sesion_origen ?? null,
         id_prediccion: r.id_prediccion == null ? null : Number(r.id_prediccion),
         frecuencia_semanal: r.frecuencia_semanal == null ? null : Number(r.frecuencia_semanal),
@@ -279,6 +286,39 @@ export class PacientesService {
     } catch (err) {
       throw err;
     }
+  }
+
+  /**
+   * Evolución fonológica por sesión: % de evaluaciones clínicas confirmadas por el terapeuta
+   * con resultado_clinico = 'ALCANZADO'. No usa el % de similitud ni datos de juegos (LUDICO).
+   */
+  async getEvolucionFonologica(id: number) {
+    if (!Number.isInteger(id) || id <= 0) throw Object.assign(new Error('El paciente indicado no es válido.'), { status: 400 });
+    const result = await pool.query(
+      `SELECT e.id_sesion,
+              MIN(r.fecha_hora_inicio) AS fecha_hora_inicio,
+              COUNT(*)::int AS total,
+              COUNT(*) FILTER (WHERE e.resultado_clinico = 'ALCANZADO')::int AS alcanzados
+       FROM public.evaluaciones_fonologicas e
+       JOIN public.sesiones s ON s.id_sesion = e.id_sesion
+       JOIN public.reservas r ON r.id_reserva = s.id_reserva
+       WHERE e.id_paciente = $1 AND e.origen_evaluacion = 'CLINICO'
+         AND e.estado = 'CONFIRMADO_TERAPEUTA' AND e.resultado_clinico IS NOT NULL
+       GROUP BY e.id_sesion
+       ORDER BY MIN(r.fecha_hora_inicio) ASC
+       LIMIT 100;`,
+      [id],
+    );
+    return {
+      id_paciente: id,
+      sesiones: result.rows.map((row) => ({
+        id_sesion: Number(row.id_sesion),
+        fecha_hora_inicio: new Date(row.fecha_hora_inicio).toISOString(),
+        total: Number(row.total),
+        alcanzados: Number(row.alcanzados),
+        porcentaje_alcanzado: Math.round((Number(row.alcanzados) / Number(row.total)) * 100),
+      })),
+    };
   }
 
   async getFonemeActivityAnalytics(id: number, periodDays = 30) {

@@ -98,8 +98,18 @@ it('the family can rate an old attended appointment from its calendar and reload
   } finally { vi.useRealTimers(); }
 });
 
-it.each(['/terapeuta/datos-actividad','/session/rating','/mundo-asha/cuentos'])('%s hides invented content and yellow notices', async path => {
-  api();renderRoute(path,path.startsWith('/terapeuta') ? 'TERAPEUTA' : 'PADRE');
+it('activity data renders server analytics without invented content', async () => {
+  const calls = api(path => path === '/pacientes/1/analiticas/fonemas' ? response({id_paciente:1, periodo_dias:30, resultados_clinicos:[{fonema_objetivo:'/r/', alcanzado:2, en_proceso:1, requiere_apoyo:0, total:3}], practica_ludica:[{mundo:'LENGUAJE', nivel:1, palabra_objetivo:'rana', fonema_objetivo:'/r/', intentos:4, respuestas_correctas:3, ultima_practica:null}], actividades_adaptativas:[]}) : undefined);
+  renderRoute('/terapeuta/datos-actividad','TERAPEUTA');
+  expect(await screen.findByText('3 muestras revisadas')).toBeInTheDocument();
+  expect(screen.getByText(/3\/4 aciertos/)).toBeInTheDocument();
+  expect(screen.getByText(/rana/)).toBeInTheDocument();
+  expect(screen.queryByText(/Módulo de demostración|ASHA-A3F1|78%/)).not.toBeInTheDocument();
+  expect(calls.mock.calls.some(([url]) => String(url).includes('/pacientes/1/analiticas/fonemas?periodo_dias=30'))).toBe(true);
+});
+
+it('stories hides invented content', async () => {
+  api(); renderRoute('/mundo-asha/cuentos','PADRE');
   await screen.findByRole('heading',{name:'Próximamente'});
   expect(screen.queryByText(/Módulo de demostración|ASHA-A3F1/)).not.toBeInTheDocument();
 });

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Check, ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useRemote, useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
-import type { PhonemeTarget, PlanData, Session, WorldArea } from '@/modules/clinica/domain/clinical';
+import type { PhonemeTarget, PlanData, Session } from '@/modules/clinica/domain/clinical';
 import { clinicaService, type TreatmentPredictionResponse } from '@/modules/clinica/infrastructure/clinicalService';
 import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
 import { parseArticulationHistory } from '@/shared/application/articulationReportEntries';
@@ -16,23 +16,12 @@ import {
   type PlanNarrativeDraft,
 } from '@/shared/application/planDraft';
 import { Btn } from './Btn';
-import { PlanClinicalFocus, phonemeTargets } from './PlanClinicalFocus';
+import { phonemeTargets } from './PlanClinicalFocus';
+import { PlanDataStep } from './PlanDataStep';
+import { PlanStepper } from './PlanStepper';
 import { SavedPlanSummary } from './SavedPlanSummary';
-import { areaLabels } from './planLabels';
+import { emptyPlanForm, planInputClass, planSteps, type PlanFormState } from './planForm';
 import { RemoteFeedback } from './RemoteFeedback';
-
-type PlanFormState = Omit<PlanData, 'area'> & { area: WorldArea | '' };
-const emptyPlanForm = (): PlanFormState => ({
-  nombre_tratamiento: '',
-  descripcion: null,
-  area: '',
-  mundos_asignados: [],
-  sesiones_recomendadas: 0,
-  frecuencia_semanal: 0,
-  fonemas_priorizados: [],
-});
-
-const planSteps = ['Datos del plan', 'Línea base', 'Intervención', 'Recomendaciones'];
 
 export function SessionPlan({
   session,
@@ -110,7 +99,7 @@ export function SessionPlan({
   const canPublish = role === 'TERAPEUTA' && !readOnly && session.puede_editar !== false &&
     hasSavedReportContent && canDocumentClinicalSession(session);
   const canStartDraft = canPublish && (isIntro ? hasIntroSource : !historyQuery.isPending);
-  const inputClass = 'block w-full rounded-xl border border-[#E8E5F4] bg-white px-3 py-2.5 text-sm font-medium text-[#1C1135] focus:outline-none focus:ring-2 focus:ring-violet-500';
+  const inputClass = planInputClass;
   const textFields: Array<[keyof PlanNarrativeDraft, string]> = [
     ['baseline', 'Línea base confirmada (editable)'],
     ['confirmedObjectives', 'Objetivos trabajados en la introductoria (editable)'],
@@ -147,19 +136,20 @@ export function SessionPlan({
     : undefined;
   const requiresPredictionNote = predictionDecision === 'MODIFICADO_MANUAL';
   const readyToPublish = Boolean(
-    form.nombre_tratamiento.trim() && form.area && Number.isInteger(form.sesiones_recomendadas) && form.sesiones_recomendadas >= 1 &&
+    form.nombre_tratamiento.trim() && form.area && form.codigo_diagnostico !== '' && Number.isInteger(form.sesiones_recomendadas) && form.sesiones_recomendadas >= 1 &&
     form.sesiones_recomendadas <= 31 && Number.isInteger(form.frecuencia_semanal) && form.frecuencia_semanal >= 1 && form.frecuencia_semanal <= 3 &&
     form.mundos_asignados.length > 0 && new Set(form.fonemas_priorizados).size === form.fonemas_priorizados.length &&
     (!['HABLA', 'VOZ'].includes(form.area) || form.fonemas_priorizados.length > 0) &&
     (form.fonemas_priorizados.length === 0 || (form.mundos_asignados.includes('HABLA') && form.mundos_asignados.includes('LENGUAJE'))) &&
     (!requiresPredictionNote || predictionNote.trim()) &&
-    narrative.objectives.trim() && narrative.activities.trim()
+    narrative.objectives.trim() && narrative.activities.trim() && narrative.recommendations.trim()
   );
 
   const advanceStep = () => {
     if (step === 0) {
       if (!form.nombre_tratamiento.trim()) return setStepError('Escribe un nombre para el plan.');
       if (!form.area) return setStepError('Selecciona el área principal.');
+      if (form.codigo_diagnostico === '') return setStepError('Selecciona el código diagnóstico preliminar.');
       if (!Number.isInteger(form.sesiones_recomendadas) || form.sesiones_recomendadas < 1 || form.sesiones_recomendadas > 31) {
         return setStepError('Indica un número entero entre 1 y 31 sesiones recomendadas.');
       }
@@ -203,7 +193,7 @@ export function SessionPlan({
         <SavedPlanSummary plan={query.data} narrative={savedNarrative} showPredictionDetails={role === 'TERAPEUTA' || role === 'ADMIN'} />
       )}
 
-      {query.isSuccess && !editing && !canPublish && !query.data && (
+      {query.isSuccess && !editing && !canPublish && !query.data && role !== 'PADRE' && (
         <p className="rounded-xl bg-[#F8F7FC] p-4 text-sm text-[#4B4264]">
           {session.reporte_disponible
             ? 'Un terapeuta puede iniciar un plan después de guardar el reporte de esta sesión.'
@@ -238,10 +228,11 @@ export function SessionPlan({
           className="space-y-5"
           onSubmit={(event) => {
             event.preventDefault();
-            if (step !== planSteps.length - 1 || !readyToPublish || !form.area) return;
+            if (step !== planSteps.length - 1 || !readyToPublish || !form.area || form.codigo_diagnostico === '') return;
             const plan: PlanData = {
               ...form,
               area: form.area,
+              codigo_diagnostico: form.codigo_diagnostico,
               descripcion: encodePlanNarrative(narrative),
               ...(prediction ? {
                 id_prediccion: prediction.id_prediccion,
@@ -252,106 +243,26 @@ export function SessionPlan({
             void save.submit(plan);
           }}
         >
-          <ol aria-label="Pasos del plan" className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {planSteps.map((label, index) => (
-              <li key={label}>
-                <button
-                  type="button"
-                  disabled={index > step}
-                  aria-current={index === step ? 'step' : undefined}
-                  onClick={() => {
-                    if (index < step) {
-                      setStep(index);
-                      setStepError('');
-                    }
-                  }}
-                  className={`flex w-full items-center gap-2 rounded-xl border px-3 py-2 text-left text-xs font-bold transition-colors disabled:cursor-default ${
-                    index === step
-                      ? 'border-violet-300 bg-violet-50 text-[#5B35E8]'
-                      : index < step
-                        ? 'border-emerald-200 bg-emerald-50/70 text-emerald-800'
-                        : 'border-[#E8E5F4] bg-white text-[#8C82A8]'
-                  }`}
-                >
-                  <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-white text-[11px]">
-                    {index < step ? <Check size={14} /> : index + 1}
-                  </span>
-                  <span className="leading-tight">{label}</span>
-                </button>
-              </li>
-            ))}
-          </ol>
+          <PlanStepper step={step} onBack={(index) => { setStep(index); setStepError(''); }} />
 
           {step === 0 && (
-            <section className="space-y-4" aria-labelledby="plan-step-data">
-              <div>
-                <h3 id="plan-step-data" className="text-base font-extrabold text-[#1C1135]">Datos del plan</h3>
-                <p className="mt-1 text-sm text-[#615274]">Define el tratamiento, su área y la frecuencia recomendada.</p>
-              </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                <label className="block text-sm font-bold text-[#1C1135]">
-                  Nombre del plan
-                  <input required maxLength={100} className={`${inputClass} mt-1.5`} value={form.nombre_tratamiento} onChange={(event) => setForm((current) => ({ ...current, nombre_tratamiento: event.target.value }))} />
-                </label>
-                <label className="block text-sm font-bold text-[#1C1135]">
-                  Área principal definida por el terapeuta
-                  <select required className={`${inputClass} mt-1.5`} value={form.area} onChange={(event) => setForm((current) => ({ ...current, area: event.target.value as WorldArea | '' }))}>
-                    <option value="">Selecciona un área</option>
-                    {Object.entries(areaLabels).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                  </select>
-                </label>
-                <label className="block text-sm font-bold text-[#1C1135]">
-                  Sesiones recomendadas por el terapeuta
-                  <input required type="number" min={1} max={31} step={1} placeholder="1 a 31" className={`${inputClass} mt-1.5`} value={form.sesiones_recomendadas || ''} onChange={(event) => setForm((current) => ({ ...current, sesiones_recomendadas: Number(event.target.value) }))} />
-                </label>
-                <PlanClinicalFocus
-                  sessionId={session.id_sesion}
-                  patientId={patientId}
-                  confirmedPhonemes={confirmedSessionPhonemes}
-                  fonemasPrioritarios={form.fonemas_priorizados}
-                  frecuenciaSemanal={form.frecuencia_semanal}
-                  nivelAyuda={report?.nivel_ayuda}
-                  prediction={prediction}
-                  predictorEnabled={isIntro}
-                  onPhonemesChange={(phonemes) => setForm((current) => ({
-                    ...current,
-                    fonemas_priorizados: phonemes,
-                    mundos_asignados: phonemes.length > 0
-                      ? Array.from(new Set([...current.mundos_asignados, 'HABLA', 'LENGUAJE']))
-                      : current.mundos_asignados,
-                  }))}
-                  onFrequencyChange={(frequency) => setForm((current) => ({ ...current, frecuencia_semanal: frequency }))}
-                  onPredictionLoaded={(value) => { setPrediction(value); setPredictionApplied(false); }}
-                  onPredictionDismissed={() => { setPrediction(null); setPredictionApplied(false); setPredictionNote(''); }}
-                  onApplySessions={(sessions) => {
-                    setForm((current) => ({ ...current, sesiones_recomendadas: sessions }));
-                    setPredictionApplied(true);
-                  }}
-                />
-              </div>
-              <fieldset className="space-y-2 rounded-2xl border border-[#E8E5F4] p-4">
-                <legend className="px-1 text-sm font-bold text-[#1C1135]">Mundos para practicar · elige al menos uno *</legend>
-                <p className="text-xs text-[#615274]">Al priorizar fonemas, se asignan el Taller de los Sonidos (Isla Mágica) y La Isla de las Palabras para destacar prácticas relacionadas. Puedes mantener otros mundos del plan.</p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {Object.entries(areaLabels).map(([key, label]) => (
-                    <label key={key} className={`flex items-center gap-2.5 rounded-xl bg-[#F8F7FC] px-3 py-2.5 text-sm text-[#4B4264] ${form.fonemas_priorizados.length > 0 && ['HABLA', 'LENGUAJE'].includes(key) ? 'cursor-not-allowed opacity-75' : 'cursor-pointer'}`}>
-                      <input
-                        type="checkbox"
-                        checked={form.mundos_asignados.includes(key as WorldArea)}
-                        disabled={form.fonemas_priorizados.length > 0 && ['HABLA', 'LENGUAJE'].includes(key)}
-                        onChange={(event) => setForm((current) => ({
-                          ...current,
-                          mundos_asignados: event.target.checked
-                            ? [...current.mundos_asignados, key as WorldArea]
-                            : current.mundos_asignados.filter((world) => world !== key),
-                        }))}
-                      />
-                      {label}
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            </section>
+            <PlanDataStep
+              form={form}
+              setForm={setForm}
+              sessionId={session.id_sesion}
+              patientId={patientId}
+              confirmedPhonemes={confirmedSessionPhonemes}
+              nivelAyuda={report?.nivel_ayuda}
+              prediction={prediction}
+              predictionApplied={predictionApplied}
+              predictorEnabled={isIntro}
+              onPredictionLoaded={(value) => { setPrediction(value); setPredictionApplied(false); }}
+              onPredictionDismissed={() => { setPrediction(null); setPredictionApplied(false); setPredictionNote(''); }}
+              onApplySessions={(sessions) => {
+                setForm((current) => ({ ...current, sesiones_recomendadas: sessions }));
+                setPredictionApplied(true);
+              }}
+            />
           )}
 
           {step === 1 && (
@@ -397,7 +308,7 @@ export function SessionPlan({
                 El terapeuta revisa y completa cada campo antes de aprobar y publicar. Los resultados y la línea base sirven como contexto, no generan conclusiones clínicas automáticamente.
               </div>
               {!readyToPublish && (
-                <p className="text-xs font-semibold text-amber-800">Completa nombre, área, sesiones, frecuencia, mundos y objetivos. En planes de habla o voz, selecciona fonemas revisados y asigna La Isla de las Palabras.</p>
+                <p className="text-xs font-semibold text-amber-800">Completa nombre, área, código diagnóstico, sesiones, frecuencia, mundos, objetivos y recomendaciones. En planes de habla o voz, selecciona fonemas revisados y asigna La Isla de las Palabras.</p>
               )}
               {requiresPredictionNote && (
                 <label className="block text-sm font-bold text-[#1C1135]">
@@ -425,11 +336,12 @@ export function SessionPlan({
               {step === 0 ? 'Cancelar' : <><ChevronLeft size={16} /> Anterior</>}
             </Btn>
             {step < planSteps.length - 1 ? (
-              <Btn type="button" variant="primary" onClick={advanceStep}>
+              // Las key evitan que React reutilice el nodo: cambiar su type durante el clic enviaría el formulario.
+              <Btn key="plan-continuar" type="button" variant="primary" onClick={advanceStep}>
                 Continuar <ChevronRight size={16} />
               </Btn>
             ) : (
-              <Btn type="submit" disabled={save.isPending || !readyToPublish}>
+              <Btn key="plan-publicar" type="submit" disabled={save.isPending || !readyToPublish}>
                 {save.isPending ? 'Publicando…' : 'Aprobar y publicar plan'}
               </Btn>
             )}

@@ -1,5 +1,7 @@
 import { pool } from '../../core/database.js';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
+import { notasRepository } from './infrastructure/notas.repository.js';
+import { estadosIncidencia, normalizarEstadoPersistido, type EstadoIncidencia } from './domain/estado.js';
 
 export interface IncidenciaItem {
   id_incidencia: number;
@@ -15,7 +17,7 @@ export interface IncidenciaItem {
   terapeuta_nombre?: string | null;
   prioridad: number;
   prioridad_texto: 'BAJA' | 'MEDIA' | 'ALTA';
-  estado: string;
+  estado: EstadoIncidencia;
   envio_id?: string | null;
   es_prueba: boolean;
   fecha_creacion: string;
@@ -36,6 +38,10 @@ export interface CreateIncidenciaDTO {
 }
 
 export class IncidenciasService {
+  async notas(id: number, user: AuthenticatedUser) {
+    await this.obtenerPorId(id, user);
+    return notasRepository.listar(id, false);
+  }
   /**
    * Clasifica automáticamente el área de destino según el rol, tipo y descripción
    */
@@ -46,7 +52,7 @@ export class IncidenciasService {
     idTerapeuta?: number | null
   ): { area_destino: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; responsable: string; id_terapeuta: number | null } {
     // Si quien envía es ADMIN, va dirigido a SOPORTE_TECNICO
-    if (rolSolicitante === 'ADMIN') {
+    if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
       return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
     }
 
@@ -193,6 +199,7 @@ export class IncidenciasService {
            tipo = EXCLUDED.tipo,
            solicitud = EXCLUDED.solicitud,
            fecha_actualizacion = NOW()
+         WHERE incidencias.id_usuario = EXCLUDED.id_usuario
          RETURNING *;`,
         [
           userId,
@@ -209,6 +216,7 @@ export class IncidenciasService {
       );
 
       const r = res.rows[0];
+      if (!r) throw Object.assign(new Error('El identificador de envío pertenece a otra solicitud.'), { status: 409 });
 
       // Obtener nombre del terapeuta si fue asignado
       let terapeuta_nombre = null;
@@ -237,13 +245,14 @@ export class IncidenciasService {
         terapeuta_nombre,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
         fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),
       };
     } catch (err) {
+      if (rol === 'SOPORTE_TECNICO' || (err instanceof Error && 'status' in err)) throw err;
       console.warn('[IncidenciasService] Fallback crear:', err);
       return {
         id_incidencia: Date.now(),
@@ -295,7 +304,7 @@ export class IncidenciasService {
         terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -341,7 +350,7 @@ export class IncidenciasService {
         terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -366,14 +375,14 @@ export class IncidenciasService {
                 COALESCE(i.rol_solicitante, 'PADRE') as rol,
                 i.solicitante as usuario
          FROM public.incidencias i
-         WHERE i.area_destino = 'ADMINISTRACION'
+         WHERE i.area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO') AND i.rol_solicitante IN ('PADRE', 'TERAPEUTA')
          ORDER BY i.fecha_creacion DESC
          LIMIT $1 OFFSET $2;`,
         [limit, offset]
       );
 
       const totalRes = await pool.query(
-        "SELECT count(*) as total FROM public.incidencias WHERE area_destino = 'ADMINISTRACION';"
+        "SELECT count(*) as total FROM public.incidencias WHERE area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO') AND rol_solicitante IN ('PADRE', 'TERAPEUTA');"
       );
       const total = parseInt(totalRes.rows[0]?.total ?? '0', 10);
 
@@ -390,7 +399,7 @@ export class IncidenciasService {
         id_terapeuta: r.id_terapeuta,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
         fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),
@@ -461,7 +470,7 @@ export class IncidenciasService {
       terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
       prioridad: r.prioridad,
       prioridad_texto: this.prioridadTexto(r.prioridad),
-      estado: r.estado,
+      estado: normalizarEstadoPersistido(r.estado),
       envio_id: r.envio_id,
       es_prueba: r.es_prueba,
       fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -477,14 +486,8 @@ export class IncidenciasService {
     nuevoEstadoRaw: string,
     user: AuthenticatedUser
   ): Promise<IncidenciaItem> {
-    // Normalizar estado
-    let estado = nuevoEstadoRaw.toUpperCase().trim();
-    if (estado === 'LEIDA') estado = 'LEÍDA';
-    if (estado === 'RESUELTA') estado = 'SOLUCIONADA';
-    if (estado === 'ABIERTA') estado = 'RECIBIDA';
-
-    const validStates = ['RECIBIDA', 'LEÍDA', 'LEIDA', 'EN PROCESO', 'SOLUCIONADA', 'ATENDIDA', 'RESUELTA'];
-    if (!validStates.includes(estado)) {
+    const estado = typeof nuevoEstadoRaw === 'string' ? nuevoEstadoRaw : '';
+    if (!estadosIncidencia.some((value) => value === estado)) {
       const err = new Error(`Estado no permitido: ${nuevoEstadoRaw}`);
       (err as any).status = 400;
       throw err;
@@ -506,9 +509,8 @@ export class IncidenciasService {
       throw err;
     }
 
-    // Regla: Soporte Técnico no se puede modificar desde las vistas actuales
-    if (inc.area_destino === 'SOPORTE_TECNICO') {
-      const err = new Error('Las incidencias de Soporte Técnico permanecen en estado pendiente y no pueden modificarse en esta fase.');
+    if (inc.area_destino === 'SOPORTE_TECNICO' && user.rol !== 'ADMIN' && !user.roles?.includes('ADMIN')) {
+      const err = new Error('Solo administracion puede gestionar incidencias de soporte.');
       (err as any).status = 403;
       throw err;
     }
@@ -526,7 +528,7 @@ export class IncidenciasService {
 
     // Regla: Administración solo puede modificar incidencias asignadas a Administración
     if (user.rol === 'ADMIN' || user.roles?.includes('ADMIN')) {
-      if (inc.area_destino !== 'ADMINISTRACION') {
+      if (!['ADMINISTRACION', 'SOPORTE_TECNICO'].includes(inc.area_destino)) {
         const err = new Error('Administración solo puede modificar incidencias dirigidas a su área.');
         (err as any).status = 403;
         throw err;
@@ -555,7 +557,7 @@ export class IncidenciasService {
       id_terapeuta: r.id_terapeuta,
       prioridad: r.prioridad,
       prioridad_texto: this.prioridadTexto(r.prioridad),
-      estado: r.estado,
+      estado: normalizarEstadoPersistido(r.estado),
       es_prueba: r.es_prueba,
       fecha_creacion: new Date(r.fecha_creacion).toISOString(),
       fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),

@@ -1,5 +1,5 @@
 import type { useAshhiFloat } from "@/shared/presentation/components/assistant/useAshhiFloat";
-import { X, Send, Paperclip, HelpCircle } from "lucide-react";
+import { X, Send } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 
 
@@ -384,18 +384,6 @@ return (<div
                 }}
               />
               <div className="flex items-center gap-1">
-                <button
-                  className="p-1.5 rounded-xl text-[#9E95B7] hover:text-violet-500 transition-colors"
-                  title="Adjuntar archivo"
-                >
-                  <Paperclip size={14} />
-                </button>
-                <button
-                  className="p-1.5 rounded-xl text-[#9E95B7] hover:text-violet-500 transition-colors"
-                  title="Voz (próximamente)"
-                >
-                  <HelpCircle size={14} />
-                </button>
                 <button
                   onClick={() => send(input)}
                   className="p-1.5 rounded-xl text-white flex-shrink-0 disabled:opacity-40 transition-all"

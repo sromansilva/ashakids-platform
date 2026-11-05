@@ -31,9 +31,13 @@ export const consentimientoSchema = z.object({
 
 export type ConsentimientoDTO = z.infer<typeof consentimientoSchema>;
 
+/** Código diagnóstico preliminar del catálogo institucional (0 a 3), elegido por el terapeuta.
+ * Sin imports locales para poder probarse con node --experimental-strip-types; debe coincidir con DIAGNOSTICOS_PRELIMINARES. */
+export const codigoDiagnosticoSchema = z.number().int().min(0).max(3);
+
 export const prediccionPlanSchema = z.object({
   id_sesion: z.number().int().positive(),
-  codigo_diagnostico: z.number().int().min(1).max(5),
+  codigo_diagnostico: codigoDiagnosticoSchema,
   frecuencia_semanal: z.number().int().min(1).max(3),
 }).strict();
 
@@ -52,6 +56,10 @@ export const evaluacionFonologicaSchema = z.object({
   palabra_objetivo: z.string().trim().min(1).max(80),
   transcripcion_detectada: z.string().trim().min(1).max(500),
   origen_evaluacion: z.literal('CLINICO').default('CLINICO'),
+  // Enviados por el terapeuta. Los indicadores de apoyo (similitud, tipo de error, hipótesis)
+  // se calculan siempre en el servidor y se rechazan si llegan desde el cliente (.strict()).
+  intentos: z.number().int().min(1).max(20).optional(),
+  nota_rapida: z.string().trim().max(500).optional(),
 }).strict();
 
 export type EvaluacionFonologicaDTO = z.infer<typeof evaluacionFonologicaSchema>;
@@ -61,6 +69,8 @@ export const revisionEvaluacionFonologicaSchema = z.object({
   transcripcion_revisada: z.string().trim().max(500).optional(),
   observacion_terapeuta: z.string().trim().max(2000).optional(),
   resultado_clinico: z.enum(['ALCANZADO', 'EN_PROCESO', 'REQUIERE_APOYO']).optional(),
+  intentos: z.number().int().min(1).max(20).optional(),
+  nota_rapida: z.string().trim().max(500).optional(),
 }).strict().refine(
   (value) => value.estado !== 'CONFIRMADO_TERAPEUTA' || Boolean(value.transcripcion_revisada && value.observacion_terapeuta),
   { message: 'Confirma la transcripción y agrega una observación del terapeuta.' },
@@ -70,3 +80,10 @@ export const revisionEvaluacionFonologicaSchema = z.object({
 );
 
 export type RevisionEvaluacionFonologicaDTO = z.infer<typeof revisionEvaluacionFonologicaSchema>;
+
+export const cierreTratamientoSchema = z.object({
+  desenlace: z.enum(['ALTA', 'ABANDONO']),
+  observacion: z.string().trim().max(2000).optional(),
+}).strict();
+
+export type CierreTratamientoDTO = z.infer<typeof cierreTratamientoSchema>;

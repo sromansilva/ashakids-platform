@@ -118,9 +118,7 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
   if (
     cleanPath === "/padre" ||
     cleanPath.startsWith("/padre/") ||
-    cleanPath.startsWith("/mundo-asha") ||
-    cleanPath.startsWith("/session") ||
-    cleanPath.startsWith("/pay")
+    cleanPath.startsWith("/mundo-asha")
   ) {
     return "PADRE";
   }
@@ -131,6 +129,7 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
   }
 
   // Rutas del área ADMIN
+  if (cleanPath === '/soporte' || cleanPath.startsWith('/soporte/')) return 'SOPORTE_TECNICO';
   if (cleanPath === "/admin" || cleanPath.startsWith("/admin/")) {
     return "ADMIN";
   }
@@ -148,5 +147,5 @@ export function loginDestination(role: SemanticRole, from?: { pathname?: string;
     if (path === '/padre/camino') return '/padre?section=journey';
     return path + world;
   }
-  return role === 'ADMIN' ? '/admin' : role === 'TERAPEUTA' ? '/terapeuta' : '/padre/welcome';
+  return role === 'SOPORTE_TECNICO' ? '/soporte' : role === 'ADMIN' ? '/admin' : role === 'TERAPEUTA' ? '/terapeuta' : '/padre/welcome';
 }

@@ -4,9 +4,10 @@ import { RouteAccess } from "@/core/router/RouteAccess";
 import { PageFrame } from "@/core/layouts/PageFrame";
 import { PageBoundary } from "@/core/router/PageBoundary";
 import { NotFoundPage } from "@/modules/public/presentation/NotFoundPage";
+import { SoporteIncidencias, SoporteDetalle } from './lazyPages';
 import { useDemoWorkflow } from "@/shared/application/hooks/useDemoWorkflow";
-import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminReportes, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminAnaliticas, AdminMensajes, AdminModeracion, AdminSolicitudes, AshaCore, ScheduledSessionLaunchGate } from "./lazyPages";
-import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, AshaSessionWaiting, AshaSessionActive, AshaSessionEnd, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, PadreCompras, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaIngresos, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AshaPayCheckout, AshaPayHistory, AshaPayWallet, AshaSessionHome, AshaSessionPrep, AshaSessionSummary, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminPagos, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
+import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminSolicitudes, ScheduledSessionLaunchGate } from "./lazyPages";
+import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
 
 function RedirectToJourney() {
   const [searchParams] = useSearchParams();
@@ -15,11 +16,14 @@ function RedirectToJourney() {
 }
 
 export default function AppRouter() {
-const { view, role, authRole, go, navigate, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, setParentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, setPadreUserName } = useDemoWorkflow();
+const { view, role, authRole, go, navigate, handleLogin, handleLogout, padreUserName, padrePlan, parentAppointments, padreExtraNotifs, setPadreExtraNotifs, handleTerapeutaRequestUpdate, setPadreUserName } = useDemoWorkflow();
 return <RouteAccess><PageBoundary><Routes>
 <Route path="/terapeuta/sesion/espera/:appointmentId/:destination" element={<ScheduledSessionLaunchGate />} />
 <Route path="/admin/sesion/espera/:appointmentId/:destination" element={<ScheduledSessionLaunchGate />} />
 <Route element={<PageFrame view={view} role={role} go={go} logout={handleLogout} padreUserName={padreUserName} />}>
+<Route path="/soporte" element={<SoporteIncidencias />} />
+<Route path="/soporte/incidencias" element={<SoporteIncidencias />} />
+<Route path="/soporte/incidencias/:id" element={<SoporteDetalle />} />
 <Route path="/" element={<Landing go={go} />} />
 <Route path="/crear-contrasena" element={<CreatePassword />} />
 <Route path="/reset-password" element={<CreatePassword />} />
@@ -43,9 +47,6 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/ayuda" element={<PublicAyuda go={go} />} />
 <Route path="/contacto" element={<PublicContacto go={go} />} />
 <Route path="/trabaja" element={<PublicTrabaja go={go} />} />
-<Route path="/session/waiting" element={<AshaSessionWaiting go={go} />} />
-<Route path="/session/active" element={<AshaSessionActive go={go} />} />
-<Route path="/session/end" element={<AshaSessionEnd go={go} />} />
 <Route path="/padre" element={<PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />} />
 <Route path="/padre/welcome" element={<PadreWelcome go={go} />} />
 <Route path="/padre/camino" element={<RedirectToJourney />} />
@@ -61,7 +62,6 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/padre/psicologos" element={<PadrePsicologos />} />
 <Route path="/padre/agenda" element={<PadreAgenda go={go} />} />
 <Route path="/padre/mensajes" element={<PadreMensajes />} />
-<Route path="/padre/compras" element={<PadreCompras go={go} appointments={parentAppointments} onAppointmentsChange={setParentAppointments} />} />
 <Route path="/padre/recompensas" element={<MundoAshaHome go={go} padrePlan={padrePlan} />} />
 <Route path="/padre/incidencias" element={<PadreIncidencias go={go} />} />
 <Route path="/mundo-asha" element={authRole === "PADRE" ? <MundoAshaHome go={go} padrePlan={padrePlan} /> : <MundoASHAPage go={go} />} />
@@ -83,35 +83,20 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/terapeuta/mensajes" element={<TerapeutaMensajes />} />
 <Route path="/terapeuta/reportes" element={<TerapeutaReportes go={go} />} />
 <Route path="/terapeuta/analiticas" element={<TerapeutaAnaliticas />} />
-<Route path="/terapeuta/ingresos" element={<TerapeutaIngresos />} />
 <Route path="/terapeuta/valoraciones" element={<TerapeutaValoraciones />} />
 <Route path="/terapeuta/config" element={<TerapeutaConfig />} />
 <Route path="/terapeuta/datos-actividad" element={<TerapeutaDatosActividad />} />
 <Route path="/terapeuta/incidencias" element={<TerapeutaIncidencias go={go} />} />
-<Route path="/pay" element={<AshaPayCheckout go={go} />} />
-<Route path="/pay/history" element={<AshaPayHistory go={go} />} />
-<Route path="/pay/wallet" element={<AshaPayWallet go={go} />} />
-<Route path="/session" element={<AshaSessionHome go={go} />} />
-<Route path="/session/prep" element={<AshaSessionPrep go={go} />} />
-<Route path="/session/summary" element={<AshaSessionSummary go={go} />} />
-<Route path="/session/rating" element={<AshaSessionSummary go={go} />} />
-<Route path="/session/rewards" element={<AshaSessionSummary go={go} />} />
 <Route path="/admin" element={<AdminDashboardPage go={go} />} />
 <Route path="/admin/sesion/:appointmentId" element={<ActiveClinicalSessionPage />} />
-<Route path="/admin/reportes" element={<AdminReportes />} />
 <Route path="/admin/usuarios" element={<AdminUsuarios />} />
 <Route path="/admin/pacientes" element={<AdminPacientes />} />
 <Route path="/admin/citas" element={<AdminCitas />} />
 <Route path="/admin/sesiones" element={<AdminSesiones />} />
-<Route path="/admin/analiticas" element={<AdminAnaliticas />} />
-<Route path="/admin/mensajes" element={<AdminMensajes />} />
-<Route path="/admin/moderacion" element={<AdminModeracion />} />
 <Route path="/admin/solicitudes" element={<AdminSolicitudes />} />
-<Route path="/admin/core" element={<AshaCore />} />
 <Route path="/admin/dashboard" element={<AdminDashboardPage go={go} />} />
 <Route path="/admin/cuentas" element={<AdminCuentas go={go} />} />
 <Route path="/admin/operacion" element={<AdminOperacion go={go} />} />
-<Route path="/admin/pagos" element={<AdminPagos />} />
 <Route path="/admin/contenido" element={<AdminContenido />} />
 <Route path="/admin/ml" element={<AdminML go={go} />} />
 <Route path="/admin/auditoria" element={<AdminAuditoria />} />
