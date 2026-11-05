@@ -7,6 +7,7 @@ import { DashLayout } from "@/core/layouts/DashLayout";
 import { titles } from "@/core/router/routeTitles";
 import { isUpcomingModule } from "@/core/router/routeCapabilities";
 import { ComingSoon } from '@/shared/presentation/components/common/ComingSoon';
+import { SoporteLayout } from '@/modules/soporte/presentation/SoporteLayout';
 
 type Props = {
   view: View; role: Role; go: (view: View) => void; logout: () => void;
@@ -17,5 +18,6 @@ export function PageFrame(props: Props) {
   const { role } = useAuth();
   const content = isUpcomingModule(pathname) ? <ComingSoon title={titles[props.view] || 'ASHAKids'}/> : <Outlet />;
   if (!getRequiredRoleForPath(pathname, role)) return content;
+  if (role === 'SOPORTE_TECNICO') return <SoporteLayout>{content}</SoporteLayout>;
   return <DashLayout {...props} cur={props.view} title={titles[props.view] || "ASHAKids"}>{content}</DashLayout>;
 }

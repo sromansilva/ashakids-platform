@@ -12,6 +12,7 @@
     "check:frontend": "node scripts/check-frontend.mjs",
     "typecheck": "tsc --noEmit",
     "qa:e2e": "playwright test ../tests/e2e",
+    "qa:soporte": "node scripts/check-support-ui.mjs",
     "qa:a11y": "playwright test ../tests/e2e/accessibility.spec.ts",
     "qa:lighthouse": "node scripts/run-lighthouse.mjs"
   },

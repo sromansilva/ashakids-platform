@@ -75,6 +75,15 @@ incidenciasRouter.get('/terapeutas-relacionados', async (req: Request, res: Resp
 });
 
 // GET /api/v1/incidencias/:id - Detalle de incidencia con validación de acceso
+incidenciasRouter.get('/:id/notas', async (req, res, next) => {
+  try {
+    const id = Number(req.params.id);
+    if (!Number.isSafeInteger(id) || id < 1) { res.status(400).json({ error: 'Identificador inválido.' }); return; }
+    // Existing participants can read public replies; internal support notes never leave its workspace.
+    res.json({ items: await incidenciasService.notas(id, req.user!) });
+  } catch (error) { next(error); }
+});
+
 incidenciasRouter.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);

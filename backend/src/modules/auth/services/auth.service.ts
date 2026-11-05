@@ -62,7 +62,8 @@ export class AuthService {
       }
 
       // Local development convenience only. It is disabled in production.
-      if (!passwordMatches && settings.ENVIRONMENT !== 'production') {
+      const isSupport = result.rows.some((row) => row.nombre_rol === 'SOPORTE_TECNICO');
+      if (!passwordMatches && !isSupport && settings.ENVIRONMENT !== 'production') {
         if (dto.password === '12345' || dto.password === 'admin123') passwordMatches = true;
       }
       if (!passwordMatches) {
@@ -74,7 +75,7 @@ export class AuthService {
       const roles: string[] = Array.from(new Set(
         result.rows
           .map((row: any) => row.nombre_rol)
-          .filter((role: any): role is string => role === 'ADMIN' || role === 'TERAPEUTA' || role === 'PADRE'),
+          .filter((role: any): role is string => role === 'ADMIN' || role === 'TERAPEUTA' || role === 'PADRE' || role === 'SOPORTE_TECNICO'),
       ));
 
       if (roles.length === 0) {
@@ -83,8 +84,9 @@ export class AuthService {
         throw err;
       }
 
-      let primaryRole: 'ADMIN' | 'TERAPEUTA' | 'PADRE' = 'PADRE';
-      if (roles.includes('ADMIN')) primaryRole = 'ADMIN';
+      let primaryRole: 'ADMIN' | 'TERAPEUTA' | 'PADRE' | 'SOPORTE_TECNICO' = 'PADRE';
+      if (roles.includes('SOPORTE_TECNICO')) primaryRole = 'SOPORTE_TECNICO';
+      else if (roles.includes('ADMIN')) primaryRole = 'ADMIN';
       else if (roles.includes('TERAPEUTA')) primaryRole = 'TERAPEUTA';
       else primaryRole = 'PADRE';
 
@@ -107,50 +109,9 @@ export class AuthService {
       if (err.status) throw err;
       console.error('[AuthService] Error de conexión a PostgreSQL:', err);
 
-      // Preserve the offline development experience; production never authenticates offline.
-      if (settings.ENVIRONMENT !== 'production') {
-        console.warn('[AuthService] Ejecutando fallback offline para desarrollo.');
-        return this.offlineFallbackLogin(dto, rawId);
-      }
+      // Account identity and roles must come from persistence, including during outages.
       throw err;
     }
-  }
-
-  private offlineFallbackLogin(dto: LoginDTO, rawId: string) {
-    let rol: 'ADMIN' | 'TERAPEUTA' | 'PADRE' = 'PADRE';
-    let codigo = dto.codigo_usuario || 'p00001';
-    let nombres = 'Familia';
-    let apellidos = 'AshaKids';
-    let email = dto.email || 'padre@ashakids.pe';
-
-    const lower = rawId.toLowerCase();
-    if (lower.startsWith('a') || lower.includes('admin')) {
-      rol = 'ADMIN';
-      codigo = 'a00001';
-      nombres = 'Administrador';
-      apellidos = 'Sistema';
-      email = 'admin@ashakids.test';
-    } else if (lower.startsWith('t') || lower.includes('terapeuta')) {
-      rol = 'TERAPEUTA';
-      codigo = 't00002';
-      nombres = 'Terapeuta';
-      apellidos = 'Especialista';
-      email = 'terapeuta@ashakids.test';
-    }
-
-    const user = {
-      id_usuario: rol === 'ADMIN' ? 1 : rol === 'TERAPEUTA' ? 14 : 87,
-      codigo_usuario: codigo,
-      email,
-      nombres,
-      apellidos,
-      rol,
-      roles: [rol],
-      activo: true,
-      password_change_required: false,
-    };
-    const token = Buffer.from(JSON.stringify(user)).toString('base64');
-    return { token, user, usuario: user, message: 'Inicio de sesión exitoso (modo respaldo)' };
   }
 
   async revokeSession(token?: string): Promise<void> {

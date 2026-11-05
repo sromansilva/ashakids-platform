@@ -33,7 +33,7 @@ export class ComunicacionService {
       id_incidencia: Date.now(),
       usuario_id: usuarioId,
       ...dto,
-      estado: 'ABIERTA',
+      estado: 'RECIBIDA',
       creada_en: new Date().toISOString(),
     };
   }

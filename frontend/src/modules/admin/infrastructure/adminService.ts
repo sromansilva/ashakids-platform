@@ -18,6 +18,8 @@ export const adminService = {
   async reenviarActivacion(id: number): Promise<{ correo_estado: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' }> {
     return apiClient.post(`/admin/cuentas/${id}/reenviar-activacion`);
   },
+  crearSoporte: (payload: { nombres: string; apellidos: string; email: string }) =>
+    apiClient.post<OperacionCuentaResponse>('/admin/cuentas/soporte', payload),
   async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
     return apiClient.get("/admin/auditoria");
   },

@@ -2,7 +2,7 @@
  * Tipos de dominio para el sistema de autenticación y roles de ASHAKids.
  */
 
-export type SemanticRole = "PADRE" | "TERAPEUTA" | "ADMIN";
+export type SemanticRole = "PADRE" | "TERAPEUTA" | "ADMIN" | "SOPORTE_TECNICO";
 
 export interface User {
   id_usuario: number;

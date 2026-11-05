@@ -8,6 +8,7 @@ const persisted = new Set([
   "/admin", "/admin/dashboard", "/admin/usuarios", "/admin/pacientes", "/admin/citas", "/admin/sesiones",
 ]);
 export function capabilityNotice(path: string) {
+  if (path === '/soporte' || path.startsWith('/soporte/')) return null;
   if (/^\/(terapeuta|admin)\/sesion\/\d+$/.test(path)) return null;
   if (path === '/terapeuta/config') return 'Tu perfil, disponibilidad y preferencias de notificaciones se consultan en el servidor. La disponibilidad se guarda al publicar.';
   if (persisted.has(path) || path.startsWith("/register") || path === "/onboarding" || path === "/forgot-password" || path === "/padre/consentimiento") return null;
