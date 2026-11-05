@@ -1,4 +1,5 @@
 import { apiClient } from '@/core/api/client';
+import type { IncidentNote } from '@/shared/domain/types/IncidentNote';
 
 export const tiposIncidencia = [
   'Funcional',
@@ -45,6 +46,7 @@ export interface TerapeutaOption {
 }
 
 export const incidenciasService = {
+  notas: (id: number, signal?: AbortSignal) => apiClient.get<{ items: IncidentNote[] }>(`/incidencias/${id}/notas`, { signal }),
   crear: (body: {
     envio_id: string;
     tipo: string;

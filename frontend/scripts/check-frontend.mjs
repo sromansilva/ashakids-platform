@@ -37,8 +37,8 @@ for (const file of files) {
       if (specifier && (specifier.startsWith(".") || specifier.startsWith("@/"))) {
         const target = resolve(specifier, file);
         if (!target) errors.push(`${relative}: unresolved ${specifier}`);
-        const ownRole = relative.match(/^src\/modules\/(padre|terapeuta|admin)\//)?.[1];
-        const otherRole = target && path.relative(src, target).replaceAll(path.sep, "/").match(/^modules\/(padre|terapeuta|admin)\//)?.[1];
+        const ownRole = relative.match(/^src\/modules\/(padre|terapeuta|admin|soporte)\//)?.[1];
+        const otherRole = target && path.relative(src, target).replaceAll(path.sep, "/").match(/^modules\/(padre|terapeuta|admin|soporte)\//)?.[1];
         if (ownRole && otherRole && ownRole !== otherRole) errors.push(`${relative}: internal dependency on ${otherRole}`);
       }
       ts.forEachChild(node, check);

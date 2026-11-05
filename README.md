@@ -69,6 +69,8 @@ ashakids-platform/
 - **npm** >= 10.x
 - **Docker** y **Docker Compose** (para PostgreSQL)
 
+Si utilizas la base de datos desplegada de **producción**, configura `backend/.env` con `DEVELOPMENT_READ_ONLY=true`. Este modo permite comprobar conectividad sin ejecutar migraciones ni escribir datos. No necesitas iniciar PostgreSQL con Docker. Consulta [la guía de Soporte Técnico](docs/Soporte_Tecnico.md) para las pruebas aisladas y el alta de cuentas.
+
 ### 1. Clonar el Repositorio
 ```bash
 git clone https://github.com/sromansilva/ashakids-platform.git
@@ -102,11 +104,13 @@ npm install
 # Iniciar servidor de desarrollo Vite
 npm run dev
 ```
-> La aplicación web abrirá en **`http://localhost:5173`**.
+> La configuración actual de Vite publica la aplicación en **`http://127.0.0.1:5174`**.
 
 ---
 
 ## 🔑 Credenciales de Demostración
+
+El cuarto rol, **`SOPORTE_TECNICO`**, tiene su propio panel en `/soporte`. Administración crea sus cuentas desde **Cuentas → Soporte Técnico → Nueva cuenta** y cada persona activa su contraseña mediante el enlace temporal. Gestiona únicamente incidencias técnicas: listado y filtros, detalle, registro, respuestas, notas internas y resolución. No hay una contraseña compartida de soporte. Consulta [permisos, API y pruebas](docs/Soporte_Tecnico.md).
 
 La base de datos viene precargada con usuarios de prueba para validar cada flujo:
 

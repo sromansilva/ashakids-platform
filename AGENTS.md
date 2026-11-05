@@ -8,10 +8,11 @@ Este documento define las directrices arquitectónicas, los flujos operativos y 
 
 **Ashakids** es una plataforma integral de telerehabilitación e intervención clínica/educativa infantil para habla, lenguaje, fluidez, voz y motricidad orofacial.
 
-El sistema opera con tres roles principales:
+El sistema opera con cuatro roles independientes:
 - **`ADMIN` (Administración)**: Gestión de cuentas familiares y terapeutas, supervisión clínica, soporte, analíticas globales y auditoría.
 - **`TERAPEUTA` (Especialistas)**: Agenda clínica, atención presencial o vía Google Meet, expedientes, generación de reportes clínicos estructurados, analíticas y seguimiento de actividad educativa.
 - **`PADRE` (Familias y Pacientes)**: Centro familiar (*Mi mundo*, *Mi camino ASHA*, *Para mi familia*), selector de hijos activos, agendamiento de citas, reportes de evolución, pagos y juegos educativos del Mundo ASHA.
+- **`SOPORTE_TECNICO` (Soporte Técnico)**: Cuenta propia y panel separado para atender únicamente incidencias del área técnica, con respuestas al solicitante, notas internas y resolución. No tiene acceso administrativo ni clínico.
 
 ---
 
@@ -140,6 +141,15 @@ npm run typecheck
   - `AdminCuentas.tsx`: Gestión integral de tutores y terapeutas, validación de contraseñas y activación.
 
 ---
+
+### D. Rol SOPORTE_TECNICO
+- Rutas: `/soporte`, `/soporte/incidencias` y `/soporte/incidencias/:id`; API exclusiva `/api/v1/soporte/incidencias`.
+- Cuentas: solo Administración puede crearlas mediante `/api/v1/admin/cuentas/soporte`; activación temporal y contraseña individual, sin perfil de terapeuta o tutor.
+- Backend: dominio, repositorio, servicio y rutas dentro de `modules/soporte`; notas compartidas dentro de `modules/incidencias`.
+- No ampliar permisos de soporte a cuentas, pagos o información clínica. Las notas internas no llegan al solicitante; las respuestas se leen con el control de acceso de la incidencia existente.
+- Al conectar desarrollo a una base de producción, mantener `DEVELOPMENT_READ_ONLY=true`: omite migraciones, semillas y recordatorios, bloquea escrituras HTTP y activa solo lectura en PostgreSQL.
+- Pruebas específicas sin PostgreSQL externo: `npm --prefix backend run test:auth-soporte`, `npm --prefix backend run test:soporte`. Verificación visual con API ficticia: `npm --prefix frontend run qa:soporte`.
+- Guía operativa: `docs/Soporte_Tecnico.md`.
 
 ## 5. Procedimiento para Implementar Nuevas Funcionalidades
 

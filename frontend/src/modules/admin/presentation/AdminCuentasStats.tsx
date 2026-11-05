@@ -52,8 +52,8 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
 
       {/* Tabs + Search */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mb-6">
-        <div className="inline-flex rounded-2xl border border-[#E8E5F4] bg-white p-1 gap-1 shadow-sm shrink-0">
-          {(["PADRE", "TERAPEUTA"] as TabRole[]).map((t) => (
+        <div className="inline-flex flex-wrap rounded-2xl border border-[#E8E5F4] bg-white p-1 gap-1 shadow-sm shrink-0">
+          {(["PADRE", "TERAPEUTA", "SOPORTE_TECNICO"] as TabRole[]).map((t) => (
             <button
               key={t}
               onClick={() => onTabChange(t)}
@@ -63,7 +63,7 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
                   : "text-[#615274] hover:bg-violet-50 hover:text-[#6B46FE]"
               }`}
             >
-              {t === "PADRE" ? "Familias / Padres" : "Terapeutas"}
+              {t === "PADRE" ? "Familias / Padres" : t === 'SOPORTE_TECNICO' ? 'Soporte Técnico' : "Terapeutas"}
             </button>
           ))}
         </div>

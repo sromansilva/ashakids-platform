@@ -9,7 +9,8 @@ import {
   RefreshCw,
   ChevronRight,
 } from 'lucide-react';
-import { Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
+import { incidenciasService, type Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
+import { IncidentThread } from './IncidentThread';
 
 interface IncidentsTableProps {
   items: Incidencia[];
@@ -345,6 +346,8 @@ export function IncidentsTable({
                   </p>
                 </div>
               </div>
+
+              <IncidentThread key={selected.id_incidencia} id={selected.id_incidencia} load={incidenciasService.notas} />
 
               {/* Cambios de Estado para Responsables Autorizados */}
               {canUpdateStatus && onStatusChange && (

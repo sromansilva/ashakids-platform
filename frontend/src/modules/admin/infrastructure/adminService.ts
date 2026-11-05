@@ -15,6 +15,8 @@ import {
 import { HijoListResponse, OperacionHijoResponse } from "@/modules/pacientes/domain/pacientes";
 
 export const adminService = {
+  crearSoporte: (payload: { nombres: string; apellidos: string; email: string }) =>
+    apiClient.post<OperacionCuentaResponse>('/admin/cuentas/soporte', payload),
   async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
     return apiClient.get("/admin/auditoria");
   },
