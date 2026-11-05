@@ -1,4 +1,5 @@
 import { apiClient } from '@/core/api/client';
+import type { IncidentState } from '@/shared/domain/types/IncidentState';
 import type { IncidentNote } from '@/shared/domain/types/IncidentNote';
 
 export const tiposIncidencia = [
@@ -31,7 +32,7 @@ export type Incidencia = {
   terapeuta_nombre?: string | null;
   prioridad?: number;
   prioridad_texto?: 'BAJA' | 'MEDIA' | 'ALTA';
-  estado: 'NUEVA' | 'LEIDA' | 'LEÍDA' | 'EN PROCESO' | 'SOLUCIONADA' | 'ATENDIDA' | 'RESUELTA' | 'ABIERTA' | string;
+  estado: IncidentState;
   es_prueba?: boolean;
   fecha_creacion: string;
   fecha_actualizacion?: string;
@@ -82,9 +83,9 @@ export const incidenciasService = {
   obtener: (id: number, signal?: AbortSignal) =>
     apiClient.get<Incidencia>(`/incidencias/${id}`, { signal }),
 
-  cambiarEstado: (id: number, estado: string) =>
+  cambiarEstado: (id: number, estado: IncidentState) =>
     apiClient.patch<Incidencia>(`/incidencias/${id}/estado`, { estado }),
 
-  estado: (id: number, estado: 'LEIDA' | 'RESUELTA' | string) =>
+  estado: (id: number, estado: IncidentState) =>
     apiClient.patch<Incidencia>(`/admin/incidencias/${id}`, { estado }),
 };

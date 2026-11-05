@@ -1,5 +1,6 @@
-export const estadosSoporte = ['RECIBIDA', 'LEÍDA', 'EN PROCESO', 'SOLUCIONADA'] as const;
-export type EstadoSoporte = typeof estadosSoporte[number];
+import type { EstadoIncidencia } from '../../incidencias/domain/estado.js';
+export { estadosIncidencia as estadosSoporte } from '../../incidencias/domain/estado.js';
+export type EstadoSoporte = EstadoIncidencia;
 
 /** Explicit projection: no contact details, patient/therapist identifiers or clinical joins. */
 export interface TicketSoporte {
@@ -9,7 +10,7 @@ export interface TicketSoporte {
   descripcion: string;
   rol_solicitante: string;
   prioridad: number;
-  estado: string;
+  estado: EstadoSoporte;
   fecha_creacion: string;
   fecha_actualizacion: string;
 }

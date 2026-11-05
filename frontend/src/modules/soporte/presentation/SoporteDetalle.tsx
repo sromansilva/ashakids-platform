@@ -36,7 +36,6 @@ export function SoporteDetalle() {
           catch (cause) { setError(cause instanceof Error ? cause.message : 'No se pudo actualizar el estado.'); }
           finally { setSaving(false); }
         }}>
-          {!estadosSoporte.includes(ticket.estado as EstadoSoporte) && <option>{ticket.estado}</option>}
           {estadosSoporte.map((estado) => <option key={estado}>{estado}</option>)}
         </select></label>{saving && <p role="status">Guardando estado…</p>}
       </section>

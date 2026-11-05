@@ -12,7 +12,7 @@ export interface AdminOperacionTableProps {
   allItems: any[];
   selected: number | null;
   setSelected: (id: number | null) => void;
-  onUpdateEstado: (id: number, estado: 'LEIDA' | 'RESUELTA') => void;
+  onUpdateEstado: (id: number, estado: 'EN ATENCIÓN' | 'RESUELTA') => void;
   saving: number | null;
   actionError: string;
 }
@@ -102,22 +102,22 @@ export function AdminOperacionTable({
                     </td>
 
                     <td className="py-4 px-6">
-                      {['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(item.estado) && (
+                      {item.estado === 'RECIBIDA' && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FEE2E2] text-[#DC2626]">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]" />
-                          {item.estado === 'NUEVA' ? 'Nueva' : 'Abierta'}
+                          RECIBIDA
                         </span>
                       )}
-                      {['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO'].includes(item.estado) && (
+                      {item.estado === 'EN ATENCIÓN' && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FEF3C7] text-[#D97706]">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#D97706]" />
-                          {item.estado === 'LEIDA' || item.estado === 'LEÍDA' ? 'Leída' : 'En revisión'}
+                          EN ATENCIÓN
                         </span>
                       )}
-                      {['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(item.estado) && (
+                      {item.estado === 'RESUELTA' && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#D1FAE5] text-[#059669]">
                           <span className="w-1.5 h-1.5 rounded-full bg-[#059669]" />
-                          Resuelta
+                          RESUELTA
                         </span>
                       )}
                     </td>
@@ -164,16 +164,16 @@ export function AdminOperacionTable({
               </p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              {['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(selectedItem.estado) && (
+              {selectedItem.estado === 'RECIBIDA' && (
                 <button
                   disabled={saving !== null}
-                  onClick={() => onUpdateEstado(selectedItem.id_incidencia, 'LEIDA')}
+                  onClick={() => onUpdateEstado(selectedItem.id_incidencia, 'EN ATENCIÓN')}
                   className="px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-900 hover:bg-amber-200 transition cursor-pointer"
                 >
-                  Poner en revisión
+                  Poner en atención
                 </button>
               )}
-              {!['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(selectedItem.estado) && (
+              {selectedItem.estado !== 'RESUELTA' && (
                 <button
                   disabled={saving !== null}
                   onClick={() => onUpdateEstado(selectedItem.id_incidencia, 'RESUELTA')}

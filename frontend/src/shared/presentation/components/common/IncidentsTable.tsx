@@ -10,6 +10,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { incidenciasService, type Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
+import { incidentStates, type IncidentState } from '@/shared/domain/types/IncidentState';
 import { IncidentThread } from './IncidentThread';
 
 interface IncidentsTableProps {
@@ -17,7 +18,7 @@ interface IncidentsTableProps {
   loading: boolean;
   onRefresh: () => void;
   canUpdateStatus?: boolean;
-  onStatusChange?: (id: number, newStatus: string) => Promise<void>;
+  onStatusChange?: (id: number, newStatus: IncidentState) => Promise<void>;
   emptyMessage?: string;
   isReceivedView?: boolean;
 }
@@ -39,13 +40,7 @@ export function IncidentsTable({
 
   // Normalizar y filtrar
   const filtered = items.filter((item) => {
-    if (filterEstado !== 'TODAS') {
-      const st = (item.estado || '').toUpperCase();
-      if (filterEstado === 'RECIBIDA' && !['RECIBIDA', 'NUEVA', 'ABIERTA'].includes(st)) return false;
-      if (filterEstado === 'LEIDA' && !['LEIDA', 'LEÍDA'].includes(st)) return false;
-      if (filterEstado === 'EN_PROCESO' && !['EN PROCESO', 'EN_PROCESO'].includes(st)) return false;
-      if (filterEstado === 'SOLUCIONADA' && !['SOLUCIONADA', 'ATENDIDA', 'RESUELTA'].includes(st)) return false;
-    }
+    if (filterEstado !== 'TODAS' && item.estado !== filterEstado) return false;
 
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -60,34 +55,13 @@ export function IncidentsTable({
     return true;
   });
 
-  const getStatusBadge = (estado: string) => {
-    const st = (estado || '').toUpperCase();
-    if (['SOLUCIONADA', 'ATENDIDA', 'RESUELTA'].includes(st)) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-emerald-100 text-emerald-800 border border-emerald-200">
-          <CheckCircle2 size={13} /> Solucionada
-        </span>
-      );
-    }
-    if (['EN PROCESO', 'EN_PROCESO'].includes(st)) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-800 border border-amber-200">
-          <Clock size={13} /> En Proceso
-        </span>
-      );
-    }
-    if (['LEIDA', 'LEÍDA'].includes(st)) {
-      return (
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-800 border border-blue-200">
-          <FileText size={13} /> Leída
-        </span>
-      );
-    }
-    return (
-      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-purple-100 text-purple-800 border border-purple-200">
-        <AlertCircle size={13} /> Recibida
-      </span>
-    );
+  const getStatusBadge = (estado: IncidentState) => {
+    const resolved = estado === 'RESUELTA';
+    const active = estado === 'EN ATENCIÓN';
+    const Icon = resolved ? CheckCircle2 : active ? Clock : AlertCircle;
+    const color = resolved ? 'bg-emerald-100 text-emerald-800 border-emerald-200'
+      : active ? 'bg-amber-100 text-amber-800 border-amber-200' : 'bg-purple-100 text-purple-800 border-purple-200';
+    return <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black border ${color}`}><Icon size={13} />{estado}</span>;
   };
 
   const getPriorityBadge = (prioridad?: number, texto?: string) => {
@@ -122,7 +96,7 @@ export function IncidentsTable({
     return responsable || 'Administración';
   };
 
-  const handleUpdate = async (id: number, newSt: string) => {
+  const handleUpdate = async (id: number, newSt: IncidentState) => {
     if (!onStatusChange) return;
     setUpdatingId(id);
     setActionError('');
@@ -155,7 +129,7 @@ export function IncidentsTable({
 
         <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
           <span className="text-xs font-bold text-[#6B5E8A] shrink-0">Estado:</span>
-          {(['TODAS', 'RECIBIDA', 'LEIDA', 'EN_PROCESO', 'SOLUCIONADA'] as const).map((st) => (
+          {(['TODAS', ...incidentStates] as const).map((st) => (
             <button
               key={st}
               type="button"
@@ -166,15 +140,7 @@ export function IncidentsTable({
                   : 'bg-[#F0EEF8] text-[#615274] hover:bg-[#E8E5F4]'
               }`}
             >
-              {st === 'TODAS'
-                ? 'Todas'
-                : st === 'RECIBIDA'
-                ? 'Recibidas'
-                : st === 'LEIDA'
-                ? 'Leídas'
-                : st === 'EN_PROCESO'
-                ? 'En Proceso'
-                : 'Solucionadas'}
+              {st === 'TODAS' ? 'Todas' : st}
             </button>
           ))}
 
@@ -356,30 +322,13 @@ export function IncidentsTable({
                     Actualizar estado de atención:
                   </h4>
                   <div className="flex flex-wrap gap-2">
-                    <button
+                    {incidentStates.map((estado) => <button
+                      key={estado}
                       type="button"
-                      disabled={updatingId !== null || ['LEIDA', 'LEÍDA'].includes(selected.estado.toUpperCase())}
-                      onClick={() => handleUpdate(selected.id_incidencia, 'LEÍDA')}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 disabled:opacity-50 transition-all"
-                    >
-                      Marcar como Leída
-                    </button>
-                    <button
-                      type="button"
-                      disabled={updatingId !== null || ['EN PROCESO', 'EN_PROCESO'].includes(selected.estado.toUpperCase())}
-                      onClick={() => handleUpdate(selected.id_incidencia, 'EN PROCESO')}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-amber-200 bg-amber-50 text-amber-700 hover:bg-amber-100 disabled:opacity-50 transition-all"
-                    >
-                      Poner En Proceso
-                    </button>
-                    <button
-                      type="button"
-                      disabled={updatingId !== null || ['SOLUCIONADA', 'ATENDIDA', 'RESUELTA'].includes(selected.estado.toUpperCase())}
-                      onClick={() => handleUpdate(selected.id_incidencia, 'SOLUCIONADA')}
-                      className="px-4 py-2 rounded-xl text-xs font-bold border border-emerald-200 bg-emerald-50 text-emerald-800 hover:bg-emerald-100 disabled:opacity-50 transition-all"
-                    >
-                      Marcar como Solucionada
-                    </button>
+                      disabled={updatingId !== null || selected.estado === estado}
+                      onClick={() => handleUpdate(selected.id_incidencia, estado)}
+                      className="px-4 py-2 rounded-xl text-xs font-bold border border-[#E8E5F4] bg-[#EDE9FE] text-[#6B46FE] hover:bg-violet-100 disabled:opacity-50"
+                    >{estado}</button>)}
                   </div>
                 </div>
               )}

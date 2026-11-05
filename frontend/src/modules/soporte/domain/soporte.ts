@@ -1,12 +1,13 @@
-export const estadosSoporte = ['RECIBIDA', 'LEÍDA', 'EN PROCESO', 'SOLUCIONADA'] as const;
-export type EstadoSoporte = typeof estadosSoporte[number];
+import type { IncidentState } from '@/shared/domain/types/IncidentState';
+export { incidentStates as estadosSoporte } from '@/shared/domain/types/IncidentState';
+export type EstadoSoporte = IncidentState;
 export interface TicketSoporte {
   id_incidencia: number;
   ticket: string;
   tipo: string;
   descripcion: string;
   rol_solicitante: string;
-  estado: string;
+  estado: EstadoSoporte;
   prioridad: number;
   fecha_creacion: string;
   fecha_actualizacion: string;

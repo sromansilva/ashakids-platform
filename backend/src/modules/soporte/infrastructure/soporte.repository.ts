@@ -3,9 +3,8 @@ import type { FiltrosSoporte, TicketSoporte, EstadoSoporte } from '../domain/sop
 
 const normalizedState = `CASE
   WHEN estado IN ('NUEVA', 'ABIERTA') THEN 'RECIBIDA'
-  WHEN estado = 'LEIDA' THEN 'LEÍDA'
-  WHEN estado = 'EN_PROCESO' THEN 'EN PROCESO'
-  WHEN estado IN ('ATENDIDA', 'RESUELTA') THEN 'SOLUCIONADA'
+  WHEN estado IN ('LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN_REVISION') THEN 'EN ATENCIÓN'
+  WHEN estado IN ('ATENDIDA', 'SOLUCIONADA') THEN 'RESUELTA'
   ELSE estado END`;
 const projection = `id_incidencia, ticket, tipo, solicitud AS descripcion, rol_solicitante,
   prioridad, ${normalizedState} AS estado, fecha_creacion, fecha_actualizacion`;

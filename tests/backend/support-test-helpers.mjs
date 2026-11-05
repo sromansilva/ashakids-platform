@@ -22,7 +22,7 @@ export const { createResetToken } = await import('../../backend/dist/core/securi
 export async function memoryApp(t, { migrations = [] } = {}) {
   const db = new PGlite();
   await db.waitReady;
-  t.after(async () => { await db.close(); await pool.end(); });
+  t.after(async () => { await db.close(); if (!pool.ended) await pool.end(); });
   const query = async (sql, values = []) => values.length
     ? db.query(sql, values)
     : (await db.exec(sql)).at(-1) ?? { rows: [] };

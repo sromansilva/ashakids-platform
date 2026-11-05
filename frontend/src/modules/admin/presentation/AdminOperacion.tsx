@@ -18,7 +18,7 @@ import { IncidentForm } from '@/shared/presentation/components/common/IncidentFo
 import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
 import { AdminOperacionTable } from './AdminOperacionTable';
 
-type FilterEstado = 'TODAS' | 'ABIERTA' | 'EN_REVISION' | 'RESUELTA';
+type FilterEstado = 'TODAS' | 'RECIBIDA' | 'EN ATENCIÓN' | 'RESUELTA';
 type FilterRol = 'TODOS' | 'PADRE' | 'TERAPEUTA';
 
 const demoIncidencias: any[] = [
@@ -30,7 +30,7 @@ const demoIncidencias: any[] = [
     usuario: 'Padre de familia',
     rol: 'PADRE',
     tipo: 'Funcionalidad',
-    estado: 'ABIERTA',
+    estado: 'RECIBIDA',
     fecha_creacion: '2026-10-25T14:30:00Z',
   },
   {
@@ -41,7 +41,7 @@ const demoIncidencias: any[] = [
     usuario: 'Terapeuta',
     rol: 'TERAPEUTA',
     tipo: 'Reportes',
-    estado: 'EN_REVISION',
+    estado: 'EN ATENCIÓN',
     fecha_creacion: '2026-10-25T10:15:00Z',
   },
   {
@@ -52,7 +52,7 @@ const demoIncidencias: any[] = [
     usuario: 'Padre de familia',
     rol: 'PADRE',
     tipo: 'Reservas',
-    estado: 'ABIERTA',
+    estado: 'RECIBIDA',
     fecha_creacion: '2026-10-24T18:45:00Z',
   },
   {
@@ -145,7 +145,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   }, [adminTab]);
 
-  const update = async (id: number, estado: 'LEIDA' | 'RESUELTA') => {
+  const update = async (id: number, estado: 'EN ATENCIÓN' | 'RESUELTA') => {
     setSaving(id);
     setActionError('');
     try {
@@ -162,14 +162,14 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   };
 
-  const countAbiertas = items.filter((i) => ['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)).length;
-  const countEnRevision = items.filter((i) => ['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO'].includes(i.estado)).length;
-  const countResueltas = items.filter((i) => ['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)).length;
+  const countAbiertas = items.filter((i) => i.estado === 'RECIBIDA').length;
+  const countEnRevision = items.filter((i) => i.estado === 'EN ATENCIÓN').length;
+  const countResueltas = items.filter((i) => i.estado === 'RESUELTA').length;
 
   const filteredItems = items.filter((i) => {
-    if (filterEstado === 'ABIERTA' && !['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
-    if (filterEstado === 'EN_REVISION' && !['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO'].includes(i.estado)) return false;
-    if (filterEstado === 'RESUELTA' && !['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)) return false;
+    if (filterEstado === 'RECIBIDA' && i.estado !== 'RECIBIDA') return false;
+    if (filterEstado === 'EN ATENCIÓN' && i.estado !== 'EN ATENCIÓN') return false;
+    if (filterEstado === 'RESUELTA' && i.estado !== 'RESUELTA') return false;
     if (filterRol === 'PADRE' && i.rol !== 'PADRE') return false;
     if (filterRol === 'TERAPEUTA' && i.rol !== 'TERAPEUTA') return false;
     if (search.trim()) {
@@ -265,7 +265,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <FileText size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">Abiertas / Recibidas</p>
+                <p className="text-xs font-bold text-[#615274]">Recibidas</p>
                 <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countAbiertas}</p>
               </div>
             </div>
@@ -275,7 +275,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <Clock size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">En revisión / Proceso</p>
+                <p className="text-xs font-bold text-[#615274]">En atención</p>
                 <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countEnRevision}</p>
               </div>
             </div>
@@ -285,7 +285,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <CheckCircle2 size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">Resueltas / Atendidas</p>
+                <p className="text-xs font-bold text-[#615274]">Resueltas</p>
                 <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countResueltas}</p>
               </div>
             </div>
@@ -298,8 +298,8 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
               {(
                 [
                   { key: 'TODAS', label: 'Todas' },
-                  { key: 'ABIERTA', label: 'Abiertas' },
-                  { key: 'EN_REVISION', label: 'En revisión' },
+                  { key: 'RECIBIDA', label: 'Recibidas' },
+                  { key: 'EN ATENCIÓN', label: 'En atención' },
                   { key: 'RESUELTA', label: 'Resueltas' },
                 ] as const
               ).map((tab) => (

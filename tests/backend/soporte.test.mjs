@@ -59,7 +59,7 @@ test('Soporte Técnico: migration, account activation, real login, ticket workfl
     for (const area of ['ADMINISTRACION', 'TERAPEUTA']) {
       const other = (await db.query(`INSERT INTO incidencias(tipo, solicitud, solicitante, rol_solicitante, prioridad, area_destino)
         VALUES ('Otro', 'Datos privados fuera de soporte', 'Persona privada', 'PADRE', 2, $1) RETURNING id_incidencia`, [area])).rows[0];
-      for (const [path, method, body] of [[`/${other.id_incidencia}`, 'GET'], [`/${other.id_incidencia}/estado`, 'PATCH', { estado: 'SOLUCIONADA' }], [`/${other.id_incidencia}/notas`, 'POST', { contenido: 'Intento', interna: false }]]) {
+      for (const [path, method, body] of [[`/${other.id_incidencia}`, 'GET'], [`/${other.id_incidencia}/estado`, 'PATCH', { estado: 'RESUELTA' }], [`/${other.id_incidencia}/notas`, 'POST', { contenido: 'Intento', interna: false }]]) {
         assert.equal((await call('/soporte/incidencias' + path, { cookie: support.cookie, method, body })).status, 404);
       }
     }
@@ -76,11 +76,11 @@ test('Soporte Técnico: migration, account activation, real login, ticket workfl
     assert.equal(forbidden.status, 409);
     assert.equal((await call(`/soporte/incidencias/${first.data.id_incidencia}`, { cookie: support.cookie })).data.descripcion, body.descripcion);
   });
-  await t.test('legacy state aliases remain visible through canonical filters', async () => {
-    await db.query("UPDATE incidencias SET estado = 'ATENDIDA' WHERE id_incidencia = $1", [ticket.id_incidencia]);
-    const response = await call(`/soporte/incidencias?estado=SOLUCIONADA&search=${ticket.ticket}`, { cookie: support.cookie });
+  await t.test('resolved incidents remain visible through canonical filters', async () => {
+    await db.query("UPDATE incidencias SET estado = 'RESUELTA' WHERE id_incidencia = $1", [ticket.id_incidencia]);
+    const response = await call(`/soporte/incidencias?estado=RESUELTA&search=${ticket.ticket}`, { cookie: support.cookie });
     assert.equal(response.data.total, 1);
-    assert.equal(response.data.items[0].estado, 'SOLUCIONADA');
+    assert.equal(response.data.items[0].estado, 'RESUELTA');
   });
   await t.test('records replies and private notes, resolves a ticket, and hides internal notes from the requester', async () => {
     // The same technical workflow also receives an incident submitted by a family.
@@ -96,13 +96,16 @@ test('Soporte Técnico: migration, account activation, real login, ticket workfl
     assert.equal(publicNotes.length, 1);
     assert.equal(publicNotes[0].interna, false);
     assert.equal('id_autor' in publicNotes[0], false);
-    for (const estado of ['LEÍDA', 'EN PROCESO', 'SOLUCIONADA']) {
+    for (const estado of ['RECIBIDA', 'EN ATENCIÓN', 'RESUELTA']) {
       const response = await call(`/soporte/incidencias/${id}/estado`, { method: 'PATCH', cookie: support.cookie, body: { estado } });
       assert.equal(response.status, 200);
       assert.equal(response.data.estado, estado);
     }
-    assert.equal((await call(`/incidencias/${id}`, { cookie: users.PADRE.cookie })).data.estado, 'SOLUCIONADA');
+    assert.equal((await call(`/incidencias/${id}`, { cookie: users.PADRE.cookie })).data.estado, 'RESUELTA');
     assert.equal((await call(`/soporte/incidencias/${id}/estado`, { method: 'PATCH', cookie: support.cookie, body: { estado: 'INVALIDO' } })).status, 400);
+    for (const estado of ['LEIDA', 'LEÍDA', 'EN PROCESO', 'SOLUCIONADA', 'ATENDIDA']) {
+      assert.equal((await call(`/soporte/incidencias/${id}/estado`, { method: 'PATCH', cookie: support.cookie, body: { estado } })).status, 400);
+    }
     assert.equal((await call(`/soporte/incidencias/${id}/notas`, { method: 'POST', cookie: support.cookie, body: { contenido: ' ', interna: false } })).status, 400);
   });
   await t.test('inactive support accounts and revoked sessions are denied', async () => {

@@ -41,16 +41,17 @@ export async function migrateIncidencias() {
       CHECK (rol_solicitante::text = ANY (ARRAY['PADRE'::text, 'TERAPEUTA'::text, 'ADMIN'::text, 'SOPORTE_TECNICO'::text]));
     `);
 
-    // 5. Update estado constraint to allow all required states
+    // 5. Preserve historical progress while reducing the workflow to three states.
     await client.query(`
       ALTER TABLE public.incidencias DROP CONSTRAINT IF EXISTS incidencias_estado_ck;
+      UPDATE public.incidencias SET estado = CASE
+        WHEN estado IN ('NUEVA', 'ABIERTA') THEN 'RECIBIDA'
+        WHEN estado IN ('LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN_REVISION') THEN 'EN ATENCIÓN'
+        WHEN estado IN ('ATENDIDA', 'SOLUCIONADA') THEN 'RESUELTA'
+        ELSE estado END
+      WHERE estado NOT IN ('RECIBIDA', 'EN ATENCIÓN', 'RESUELTA');
       ALTER TABLE public.incidencias ADD CONSTRAINT incidencias_estado_ck 
-      CHECK (estado::text = ANY (ARRAY[
-        'RECIBIDA'::text, 'LEIDA'::text, 'LEÍDA'::text, 
-        'EN PROCESO'::text, 'EN_PROCESO'::text, 
-        'ATENDIDA'::text, 'SOLUCIONADA'::text, 
-        'NUEVA'::text, 'RESUELTA'::text, 'ABIERTA'::text
-      ]));
+      CHECK (estado IN ('RECIBIDA', 'EN ATENCIÓN', 'RESUELTA'));
     `);
 
     // 6. Create indexes for performance

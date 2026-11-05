@@ -4,7 +4,7 @@
 
 `SOPORTE_TECNICO` es un cuarto rol independiente. Usa la autenticación por contraseña y la cookie de sesión existente. Tras iniciar sesión entra en `/soporte`; su módulo no reutiliza pantallas de Administración.
 
-Puede listar y filtrar incidencias técnicas por texto, estado y prioridad, navegar por páginas, consultar el detalle, registrar incidencias, responder, agregar notas internas y actualizar el estado hasta solucionarlas. Los estados son `RECIBIDA`, `LEÍDA`, `EN PROCESO` y `SOLUCIONADA`; se normalizan los nombres heredados al leerlos. La clasificación y la prioridad reutilizan el flujo de incidencias existente.
+Puede listar y filtrar incidencias técnicas por texto, estado y prioridad, navegar por páginas, consultar el detalle, registrar incidencias, responder, agregar notas internas y actualizar el estado hasta solucionarlas. Los estados son `RECIBIDA`, `EN ATENCIÓN` y `RESUELTA`; se normalizan los nombres heredados al leerlos. La clasificación y la prioridad reutilizan el flujo de incidencias existente.
 
 Solo ve registros con `area_destino = SOPORTE_TECNICO`. La API proyecta ticket, tipo, descripción, rol solicitante, prioridad, estado y fechas. No devuelve datos de contacto, identificadores de pacientes, terapeutas, expedientes o datos de cuenta del solicitante. El texto de una incidencia puede contener información escrita por quien la reporta: la interfaz pide no incluir datos clínicos, contraseñas ni información personal innecesaria.
 
@@ -27,6 +27,8 @@ La creación también está disponible en `POST /api/v1/admin/cuentas/soporte`, 
 Si Gmail no está configurado, la cuenta se conserva pendiente y Administración ve que el correo no se envió. No se entrega una contraseña compartida ni se muestra un token en la API. Configura el envío para completar la activación. Las pruebas en memoria simulan el correo y prueban el endpoint real de activación, sin enviar mensajes.
 
 ## Persistencia y API
+
+El catálogo de estados de todas las incidencias es únicamente `RECIBIDA`, `EN ATENCIÓN` y `RESUELTA`. La migración convierte abiertas/nuevas a `RECIBIDA`, leídas/en proceso/en revisión a `EN ATENCIÓN` y atendidas/solucionadas a `RESUELTA`. Conserva los tickets, contenido, fechas y notas. Los endpoints actuales rechazan los nombres anteriores al cambiar el estado.
 
 - `backend/src/modules/soporte/soporte.migration.ts` amplía `roles.nombre_rol` e incorpora el cuarto rol sin duplicarlo.
 - La migración existente de incidencias amplía `rol_solicitante` y crea `incidencia_notas` con claves foráneas e índice. Ambas migraciones son transaccionales e idempotentes.

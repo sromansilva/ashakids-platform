@@ -1,6 +1,7 @@
 import { pool } from '../../core/database.js';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
 import { notasRepository } from './infrastructure/notas.repository.js';
+import { estadosIncidencia, normalizarEstadoPersistido, type EstadoIncidencia } from './domain/estado.js';
 
 export interface IncidenciaItem {
   id_incidencia: number;
@@ -16,7 +17,7 @@ export interface IncidenciaItem {
   terapeuta_nombre?: string | null;
   prioridad: number;
   prioridad_texto: 'BAJA' | 'MEDIA' | 'ALTA';
-  estado: string;
+  estado: EstadoIncidencia;
   envio_id?: string | null;
   es_prueba: boolean;
   fecha_creacion: string;
@@ -244,7 +245,7 @@ export class IncidenciasService {
         terapeuta_nombre,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -303,7 +304,7 @@ export class IncidenciasService {
         terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -349,7 +350,7 @@ export class IncidenciasService {
         terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -398,7 +399,7 @@ export class IncidenciasService {
         id_terapeuta: r.id_terapeuta,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
-        estado: r.estado,
+        estado: normalizarEstadoPersistido(r.estado),
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
         fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),
@@ -469,7 +470,7 @@ export class IncidenciasService {
       terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
       prioridad: r.prioridad,
       prioridad_texto: this.prioridadTexto(r.prioridad),
-      estado: r.estado,
+      estado: normalizarEstadoPersistido(r.estado),
       envio_id: r.envio_id,
       es_prueba: r.es_prueba,
       fecha_creacion: new Date(r.fecha_creacion).toISOString(),
@@ -485,14 +486,8 @@ export class IncidenciasService {
     nuevoEstadoRaw: string,
     user: AuthenticatedUser
   ): Promise<IncidenciaItem> {
-    // Normalizar estado
-    let estado = nuevoEstadoRaw.toUpperCase().trim();
-    if (estado === 'LEIDA') estado = 'LEÍDA';
-    if (estado === 'RESUELTA') estado = 'SOLUCIONADA';
-    if (estado === 'ABIERTA') estado = 'RECIBIDA';
-
-    const validStates = ['RECIBIDA', 'LEÍDA', 'LEIDA', 'EN PROCESO', 'SOLUCIONADA', 'ATENDIDA', 'RESUELTA'];
-    if (!validStates.includes(estado)) {
+    const estado = typeof nuevoEstadoRaw === 'string' ? nuevoEstadoRaw : '';
+    if (!estadosIncidencia.some((value) => value === estado)) {
       const err = new Error(`Estado no permitido: ${nuevoEstadoRaw}`);
       (err as any).status = 400;
       throw err;
@@ -563,7 +558,7 @@ export class IncidenciasService {
       id_terapeuta: r.id_terapeuta,
       prioridad: r.prioridad,
       prioridad_texto: this.prioridadTexto(r.prioridad),
-      estado: r.estado,
+      estado: normalizarEstadoPersistido(r.estado),
       es_prueba: r.es_prueba,
       fecha_creacion: new Date(r.fecha_creacion).toISOString(),
       fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),

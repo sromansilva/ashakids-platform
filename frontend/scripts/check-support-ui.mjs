@@ -61,8 +61,8 @@ try {
     await page.getByLabel('Mensaje', { exact: true }).fill('Nota de seguimiento técnico.');
     await page.getByRole('button', { name: 'Guardar nota interna', exact: true }).click();
     await expect(page.getByText('Nota de seguimiento técnico.', { exact: true })).toBeVisible();
-    await page.getByLabel('Estado', { exact: true }).selectOption('SOLUCIONADA');
-    await expect(page.getByLabel('Estado', { exact: true })).toHaveValue('SOLUCIONADA');
+    await page.getByLabel('Estado', { exact: true }).selectOption('RESUELTA');
+    await expect(page.getByLabel('Estado', { exact: true })).toHaveValue('RESUELTA');
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     await page.screenshot({ path: `${output}/support-${viewport.width}.png`, fullPage: true });
     await page.goto(`${base}/admin/cuentas`);

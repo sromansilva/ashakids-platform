@@ -20,10 +20,10 @@ it('lists technical incidents with server filters and supports creating one with
   vi.mocked(soporteService.crear).mockResolvedValue({ ...ticket, titulo: ticket.tipo });
   render(<MemoryRouter initialEntries={['/soporte']}><Routes><Route path="/soporte" element={<SoporteIncidencias />} /><Route path="/soporte/incidencias/:id" element={<p>Detalle creado</p>} /></Routes></MemoryRouter>);
   expect(await screen.findByText('INC-00007')).toBeInTheDocument();
-  fireEvent.change(screen.getByLabelText('Estado'), { target: { value: 'EN PROCESO' } });
+  fireEvent.change(screen.getByLabelText('Estado'), { target: { value: 'EN ATENCIÓN' } });
   fireEvent.change(screen.getByLabelText('Prioridad'), { target: { value: '3' } });
   fireEvent.change(screen.getByLabelText('Buscar'), { target: { value: 'pantalla' } });
-  await waitFor(() => expect(soporteService.listar).toHaveBeenLastCalledWith(expect.objectContaining({ estado: 'EN PROCESO', prioridad: 3, search: 'pantalla', offset: 0 }), expect.any(AbortSignal)));
+  await waitFor(() => expect(soporteService.listar).toHaveBeenLastCalledWith(expect.objectContaining({ estado: 'EN ATENCIÓN', prioridad: 3, search: 'pantalla', offset: 0 }), expect.any(AbortSignal)));
   fireEvent.click(screen.getByRole('button', { name: 'Nueva incidencia' }));
   fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'Pantalla de ayuda' } });
   fireEvent.change(screen.getByLabelText('Descripción breve'), { target: { value: 'Error al abrir la ayuda.' } });
@@ -33,10 +33,11 @@ it('lists technical incidents with server filters and supports creating one with
 });
 
 it('shows detail, saves replies and internal notes, and resolves the ticket', async () => {
-  vi.mocked(soporteService.estado).mockResolvedValue({ ...ticket, estado: 'SOLUCIONADA' });
+  vi.mocked(soporteService.estado).mockResolvedValue({ ...ticket, estado: 'RESUELTA' });
   vi.mocked(soporteService.responder).mockImplementation(async (_id, contenido, interna) => ({ id_nota: interna ? 2 : 1, contenido, interna, fecha_creacion: ticket.fecha_creacion, autor: 'Soporte Técnico' }));
   render(<MemoryRouter initialEntries={['/soporte/incidencias/7']}><Routes><Route path="/soporte/incidencias/:id" element={<SoporteDetalle />} /></Routes></MemoryRouter>);
   expect(await screen.findByRole('heading', { name: 'Funcional' })).toBeInTheDocument();
+  expect(screen.getAllByRole('option').map((option) => (option as HTMLOptionElement).value)).toEqual(['RECIBIDA', 'EN ATENCIÓN', 'RESUELTA']);
   fireEvent.change(screen.getByLabelText('Mensaje'), { target: { value: 'Se corrigió la pantalla.' } });
   fireEvent.click(screen.getByRole('button', { name: 'Enviar respuesta' }));
   expect(await screen.findByText('Se corrigió la pantalla.')).toBeInTheDocument();
@@ -45,9 +46,9 @@ it('shows detail, saves replies and internal notes, and resolves the ticket', as
   fireEvent.click(screen.getByRole('button', { name: 'Guardar nota interna' }));
   expect(await screen.findByText('Nota privada.')).toBeInTheDocument();
   expect(soporteService.responder).toHaveBeenLastCalledWith(7, 'Nota privada.', true);
-  fireEvent.change(screen.getByLabelText('Estado'), { target: { value: 'SOLUCIONADA' } });
-  await waitFor(() => expect(screen.getByLabelText('Estado')).toHaveValue('SOLUCIONADA'));
-  expect(soporteService.estado).toHaveBeenCalledWith(7, 'SOLUCIONADA');
+  fireEvent.change(screen.getByLabelText('Estado'), { target: { value: 'RESUELTA' } });
+  await waitFor(() => expect(screen.getByLabelText('Estado')).toHaveValue('RESUELTA'));
+  expect(soporteService.estado).toHaveBeenCalledWith(7, 'RESUELTA');
 });
 
 it('retains a failed reply draft and reports loading failures without inventing tickets', async () => {
