@@ -83,8 +83,6 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
   const pendingRequests  = incomingRequests.filter(r => r.status === "por confirmar");
   const confirmedApts    = incomingRequests.filter(r => ["confirmada", "completada"].includes(r.status));
 
-  const hours = ["08:00","09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00"];
-
   // ── Navigation ──────────────────────────────────────────────────────────────
   function navigate(dir: 1 | -1) {
     setSelDate(d => {
@@ -105,8 +103,17 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
   // ── Appointment helpers ─────────────────────────────────────────────────────
   function isCancelled(apt: AppointmentRequest) { return apt.status === 'cancelada'; }
 
-  function aptForSlot(day: Date, hour: number): AppointmentRequest | undefined {
-    return confirmedApts.find(apt => {
+  const weekAppointments = confirmedApts.filter(apt => {
+    const d = parseCalDate(apt.date);
+    return d && weekDays.some(wd => isSameDay(wd, d)) && !isCancelled(apt);
+  });
+  const aptHours = weekAppointments.map(a => parseInt(a.time)).filter(h => !isNaN(h));
+  const minHour = Math.min(8, ...aptHours);
+  const maxHour = Math.max(17, ...aptHours);
+  const displayHours = Array.from({ length: maxHour - minHour + 1 }, (_, i) => minHour + i);
+
+  function aptsForSlot(day: Date, hour: number): AppointmentRequest[] {
+    return confirmedApts.filter(apt => {
       const d = parseCalDate(apt.date);
       return d && isSameDay(d, day) && parseInt(apt.time) === hour && !isCancelled(apt);
     });
@@ -117,12 +124,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
       .filter(apt => { const d = parseCalDate(apt.date); return d && isSameDay(d, day) && !isCancelled(apt); })
       .sort((a, b) => a.time.localeCompare(b.time));
   }
-  const visibleAppointments = agView === "semana"
-    ? confirmedApts.filter(apt => {
-        const date = parseCalDate(apt.date);
-        return date && weekDays.some(day => isSameDay(day, date)) && !isCancelled(apt);
-      })
-    : aptsForDay(selDate);
+  const visibleAppointments = agView === "semana" ? weekAppointments : aptsForDay(selDate);
 
   // ── Header ─────────────────────────────────────────────────────────────────
   const headerLabel = agView === "semana"
@@ -269,29 +271,34 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
               </div>
               {/* Time grid */}
               <div className="overflow-y-auto" style={{ maxHeight: "calc(100vh - 250px)" }}>
-                {hours.map((h, hi) => (
-                  <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "72px repeat(7, 1fr)", borderColor: B.border, minHeight: "max(62px, calc((100vh - 260px) / 10))" }}>
-                    <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: "#615274" }}>{h}</div>
-                    {weekDays.map((wd, di) => {
-                      const apt = aptForSlot(wd, hi + 8);
-                      const col = apt ? childColor(apt.child) : "";
-                      return (
-                        <div key={di} className="relative border-r last:border-0 p-1" style={{ borderColor: B.border }}>
-                          {apt && (
-                            <button type="button"
-                              className="w-full text-left rounded-xl px-2 py-1.5 cursor-pointer hover:brightness-95 transition-all"
-                              style={{ background: `${col}20`, border: `1px solid ${col}` }}
-                              onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}
-                            >
-                              <p className="text-[11px] font-extrabold truncate" style={{ color: "#4B4264" }}>{apt.child.split(" ")[0]}</p>
-                              <p className="text-[10px] font-medium truncate" style={{ color: "#4B4264" }}>{apt.time}</p>
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                ))}
+                {displayHours.map(h => {
+                  const hourLabel = `${String(h).padStart(2, '0')}:00`;
+                  return (
+                    <div key={h} className="grid border-b last:border-0" style={{ gridTemplateColumns: "72px repeat(7, 1fr)", borderColor: B.border, minHeight: "max(62px, calc((100vh - 260px) / 10))" }}>
+                      <div className="p-2 text-right pr-3 border-r text-xs font-medium pt-3" style={{ borderColor: B.border, color: "#615274" }}>{hourLabel}</div>
+                      {weekDays.map((wd, di) => {
+                        const slotApts = aptsForSlot(wd, h);
+                        return (
+                          <div key={di} className="relative border-r last:border-0 p-1 flex flex-col gap-1" style={{ borderColor: B.border }}>
+                            {slotApts.map(apt => {
+                              const col = childColor(apt.child);
+                              return (
+                                <button key={apt.id} type="button"
+                                  className="w-full text-left rounded-xl px-2 py-1.5 cursor-pointer hover:brightness-95 transition-all"
+                                  style={{ background: `${col}20`, border: `1px solid ${col}` }}
+                                  onClick={() => setSelectedEvent({ id: apt.id, patient: apt.child, time: apt.time, date: apt.date, type: apt.type })}
+                                >
+                                  <p className="text-[11px] font-extrabold truncate" style={{ color: "#4B4264" }}>{apt.child.split(" ")[0]}</p>
+                                  <p className="text-[10px] font-medium truncate" style={{ color: "#4B4264" }}>{apt.time}</p>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -344,7 +351,7 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
       {/* ── Event detail modal ── */}
       {selectedEvent && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-          <div className="absolute inset-0 bg-black/50" onClick={() => setSelectedEvent(null)} />
+          <div className="absolute inset-0 bg-black/50" />
           <div ref={detailDialog} role="dialog" aria-modal="true" aria-label="Detalle de la atención" onKeyDown={showCancelModal ? undefined : dialogKeys} className="relative flex max-h-[90vh] w-full max-w-6xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
             <div className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#E8E5F4] bg-white/95 px-5 py-4 backdrop-blur sm:px-6">
               <div>

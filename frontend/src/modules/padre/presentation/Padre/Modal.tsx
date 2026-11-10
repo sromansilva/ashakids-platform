@@ -5,7 +5,7 @@ export function Modal({ title, onClose, children, wide = false }: {
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
       <div className={`relative bg-white rounded-3xl shadow-2xl w-full overflow-hidden flex flex-col max-h-[90vh] ${wide ? "max-w-2xl" : "max-w-md"}`}>
         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8E5F4] flex-shrink-0">
           <h2 className="font-extrabold text-[#1C1135] text-lg">{title}</h2>

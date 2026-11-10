@@ -355,7 +355,7 @@ export function SessionPlan({
     if (!open) return null;
     return (
       <div className="fixed inset-0 z-[80] flex items-center justify-center p-4 sm:p-6">
-        <button className="absolute inset-0 cursor-pointer bg-[#1C1135]/45 backdrop-blur-sm" onClick={onClose} aria-label="Cerrar plan de continuidad" />
+        <div className="absolute inset-0 bg-[#1C1135]/45 backdrop-blur-sm" />
         <section role="dialog" aria-modal="true" aria-labelledby={`session-plan-title-${session.id_sesion}`} className="relative z-10 flex max-h-[calc(100vh-2rem)] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-violet-100 bg-white shadow-2xl sm:max-h-[calc(100vh-3rem)]">
           <header className="flex shrink-0 items-center justify-between gap-4 border-b border-[#E8E5F4] bg-gradient-to-r from-white to-violet-50/60 px-5 py-4 sm:px-6">
             <div className="min-w-0">

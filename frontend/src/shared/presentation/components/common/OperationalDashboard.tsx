@@ -51,7 +51,6 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
   const today = (appointments.data ?? []).filter(
     (a) =>
       ["PENDIENTE", "CONFIRMADA"].includes(a.estado_reserva) &&
-      Date.parse(a.fecha_hora_inicio) >= now &&
       Date.parse(a.fecha_hora_fin) > now &&
       limaDay(a.fecha_hora_inicio) === limaDay(now)
   );
@@ -59,7 +58,6 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
     .filter(
       (a) =>
         ["PENDIENTE", "CONFIRMADA"].includes(a.estado_reserva) &&
-        Date.parse(a.fecha_hora_inicio) >= now &&
         Date.parse(a.fecha_hora_fin) > now
     )
     .sort((a, b) => Date.parse(a.fecha_hora_inicio) - Date.parse(b.fecha_hora_inicio));
