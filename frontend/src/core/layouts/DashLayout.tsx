@@ -221,7 +221,7 @@ export function DashLayout({
       </main>
       </div>
       {role === 'admin' && <div className="admin-support-rail">Ayuda y asistente</div>}
-      {!childCenter && role !== "admin" && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
+      {!childCenter && <AshhiFloat key={user?.id_usuario ?? 'guest'} role={role} />}
       {isFamily && <FirstIntroductorySessionModal go={go} />}
     </div>
   );

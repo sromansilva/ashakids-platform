@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Sparkles } from "lucide-react";
+import { PublicIllustration } from "@/shared/presentation/components/illustrations/PublicIllustration";
 import { Role } from "@/shared/domain/types/navigation";
 import { useAuth } from '@/modules/auth/application/useAuth';
 
@@ -17,6 +17,17 @@ const ashiCSS = `
     .ashi-dot1{animation:ashi-dot 1.4s .0s infinite}
     .ashi-dot2{animation:ashi-dot 1.4s .2s infinite}
     .ashi-dot3{animation:ashi-dot 1.4s .4s infinite}
+    .landing-assistant-dock{position:fixed;right:24px;bottom:28px;z-index:50;display:flex;flex-direction:column;gap:10px;user-select:none;}
+    .landing-dock-control{display:flex;flex-direction:column;align-items:center;text-decoration:none;gap:0;background:none;border:none;padding:0;cursor:pointer;outline:none;transition:transform .2s ease;}
+    .landing-dock-control:hover{transform:scale(1.06) translateY(-2px);}
+    .landing-dock-control:focus-visible{outline:2px solid #8728ee;outline-offset:3px;border-radius:9999px;}
+    .landing-dock-ashi,.landing-dock-whatsapp{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;box-shadow:0 6px 18px #5b21b630,inset 0 2px 4px #ffffff80;}
+    .landing-dock-ashi{background:linear-gradient(150deg,#b669ff,#7e20f4);}
+    .landing-dock-ashi img{width:44px;height:44px;object-fit:contain;}
+    .landing-dock-whatsapp{color:white;background:linear-gradient(140deg,#40e579,#07b952);box-shadow:0 6px 18px #07b95230,inset 0 2px 4px #ffffff80;}
+    .landing-dock-whatsapp svg{width:32px;height:32px;}
+    .landing-dock-label{padding:2px 8px;background:#ffffffe8;border-radius:12px;box-shadow:0 4px 10px #29164c12;font-size:11px;font-weight:800;color:var(--asha-ink,#1C1135);margin-top:2px;}
+    @media (max-width:1023px){.landing-assistant-dock{right:12px;bottom:16px;gap:10px;}.landing-dock-ashi,.landing-dock-whatsapp{width:50px;height:50px;}.landing-dock-ashi img,.landing-dock-whatsapp svg{width:34px;height:34px;}}
     @media (prefers-reduced-motion: reduce){.ashi-breathe,.ashi-up,.ashi-float,.ashi-dot1,.ashi-dot2,.ashi-dot3{animation:none!important}}
   `;
 type Msg = {
@@ -331,16 +342,14 @@ const send = (text: string) => {
     }, 1400);
   };
 const AshiAvatar = ({ size = 36 }: { size?: number }) => (
-    <div
-      className="rounded-full flex items-center justify-center flex-shrink-0"
-      style={{
-        width: size,
-        height: size,
-        background: "linear-gradient(135deg, #0D9488, #7C3AED)",
-      }}
-    >
-      <Sparkles size={size * 0.44} color="white" />
-    </div>
+    <PublicIllustration
+      sizes="88px"
+      src="/illustrations/ashi-head-v1.png"
+      alt=""
+      width={size}
+      height={size}
+      style={{ objectFit: 'contain' }}
+    />
   );
 return { role, ashiCSS, open, ashiTriggerRef, closeAshi, tab, setTab, input, setInput, thinking, btnBottom, draftStates, setDraftStates, isDragging, onBtnPointerDown, onBtnPointerMove, onBtnPointerUp, onBtnClick, msgs, ctx, send, AshiAvatar };
 }
