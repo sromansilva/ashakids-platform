@@ -185,18 +185,29 @@ export class CitasService {
         );
         if (!plan.rows.length) throw Object.assign(new Error('El plan no pertenece al paciente o no está activo.'), { status: 400 });
       }
-      const fechaInicio = data.fecha_hora_inicio;
-      const inicioDate = typeof fechaInicio === 'string' ? new Date(fechaInicio) : new Date(Number.NaN);
-      const fechaFin = data.fecha_hora_fin || new Date(new Date(fechaInicio).getTime() + 40 * 60000).toISOString();
-      const finDate = new Date(fechaFin);
-      if (!Number.isFinite(inicioDate.getTime()) || !Number.isFinite(finDate.getTime()) ||
-          inicioDate.getTime() <= Date.now() || finDate.getTime() - inicioDate.getTime() !== 40 * 60000 ||
-          inicioDate.getUTCMinutes() !== 0 || inicioDate.getUTCSeconds() !== 0 || inicioDate.getUTCMilliseconds() !== 0) {
-        throw Object.assign(new Error('Selecciona un turno futuro de 40 minutos que empiece en punto.'), { status: 400 });
+      const esModoPrueba = data.modo_prueba === true || data.es_inmediata_debug === true;
+      let fechaInicio = data.fecha_hora_inicio;
+      let fechaFin = data.fecha_hora_fin;
+
+      if (esModoPrueba) {
+        // En modo prueba / debug se permite agendar inmediatamente para pruebas de videollamadas y ML
+        const nowMs = Date.now();
+        const parsedStart = fechaInicio ? new Date(fechaInicio).getTime() : nowMs;
+        const validStart = Number.isFinite(parsedStart) ? parsedStart : nowMs;
+        fechaInicio = new Date(validStart).toISOString();
+        fechaFin = new Date(validStart + 40 * 60000).toISOString();
+      } else {
+        const inicioDate = typeof fechaInicio === 'string' ? new Date(fechaInicio) : new Date(Number.NaN);
+        const finDate = new Date(fechaFin || new Date(new Date(fechaInicio).getTime() + 40 * 60000).toISOString());
+        if (!Number.isFinite(inicioDate.getTime()) || !Number.isFinite(finDate.getTime()) ||
+            inicioDate.getTime() <= Date.now() || finDate.getTime() - inicioDate.getTime() !== 40 * 60000 ||
+            inicioDate.getUTCMinutes() !== 0 || inicioDate.getUTCSeconds() !== 0 || inicioDate.getUTCMilliseconds() !== 0) {
+          throw Object.assign(new Error('Selecciona un turno futuro de 40 minutos que empiece en punto.'), { status: 400 });
+        }
+        const localStart = getAppointmentLocalParts(inicioDate);
+        const dayOfWeek = localStart.weekday;
+        if (dayOfWeek > 5) throw Object.assign(new Error('No hay turnos disponibles los fines de semana.'), { status: 400 });
       }
-      const localStart = getAppointmentLocalParts(inicioDate);
-      const dayOfWeek = localStart.weekday;
-      if (dayOfWeek > 5) throw Object.assign(new Error('No hay turnos disponibles los fines de semana.'), { status: 400 });
       const modalidad = data.modalidad ?? 'VIRTUAL';
       const topic = `AshaKids · ${data.tipo_cita === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria'}`;
       let meetMeetingId: string | null = null;
@@ -206,18 +217,22 @@ export class CitasService {
       try {
         await client.query('BEGIN;');
         await client.query('SELECT pg_advisory_xact_lock(7421, $1::integer);', [therapistId]);
-        const available = await client.query(
-          'SELECT 1 FROM turnos_semanales WHERE id_terapeuta = $1 AND dia = $2 AND hora = $3 LIMIT 1;',
-          [therapistId, dayOfWeek, localStart.hour],
-        );
-        if (!available.rows.length) {
-          throw Object.assign(new Error('El terapeuta no ofrece ese horario en su disponibilidad semanal.'), { status: 409 });
+        if (!esModoPrueba) {
+          const localStart = getAppointmentLocalParts(new Date(fechaInicio));
+          const dayOfWeek = localStart.weekday;
+          const available = await client.query(
+            'SELECT 1 FROM turnos_semanales WHERE id_terapeuta = $1 AND dia = $2 AND hora = $3 LIMIT 1;',
+            [therapistId, dayOfWeek, localStart.hour],
+          );
+          if (!available.rows.length) {
+            throw Object.assign(new Error('El terapeuta no ofrece ese horario en su disponibilidad semanal.'), { status: 409 });
+          }
+          const overlap = await client.query(
+            "SELECT 1 FROM reservas WHERE id_terapeuta = $1 AND estado_reserva <> 'CANCELADA' AND fecha_hora_inicio < $3::timestamptz AND fecha_hora_fin > $2::timestamptz FOR UPDATE;",
+            [therapistId, fechaInicio, fechaFin],
+          );
+          if (overlap.rows.length) throw Object.assign(new Error('Ese horario ya no está disponible.'), { status: 409 });
         }
-        const overlap = await client.query(
-          "SELECT 1 FROM reservas WHERE id_terapeuta = $1 AND estado_reserva <> 'CANCELADA' AND fecha_hora_inicio < $3::timestamptz AND fecha_hora_fin > $2::timestamptz FOR UPDATE;",
-          [therapistId, fechaInicio, fechaFin],
-        );
-        if (overlap.rows.length) throw Object.assign(new Error('Ese horario ya no está disponible.'), { status: 409 });
         const inserted = await client.query(
           "INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, meet_id, meet_url) VALUES ($1, $2, $3, $4::timestamptz, $5::timestamptz, $6, COALESCE($7, 'INTRODUCTORIA'), 'CONFIRMADA', NOW(), NULL, NULL) RETURNING *;",
           [patientId, therapistId, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita],

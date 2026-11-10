@@ -124,7 +124,7 @@ export const treatmentsService = {
 export const appointmentsService = {
   meeting: (id: number, meet_url: string | null) => apiClient.put<Appointment>(`/citas/${id}/reunion`, { meet_url }),
   ...resource<Appointment>("/citas"),
-  create: (data: Omit<AppointmentTime, 'fecha_hora_fin'> & { fecha_hora_fin?: string; id_tratamiento?: number | null; id_paciente?: number; id_terapeuta?: number; tipo_cita?: 'INTRODUCTORIA' | 'TERAPIA' }) => apiClient.post<Appointment>("/citas", data),
+  create: (data: Omit<AppointmentTime, 'fecha_hora_fin'> & { fecha_hora_fin?: string; id_tratamiento?: number | null; id_paciente?: number; id_terapeuta?: number; tipo_cita?: 'INTRODUCTORIA' | 'TERAPIA'; modo_prueba?: boolean }) => apiClient.post<Appointment>("/citas", data),
   reschedule: (id: number, data: AppointmentTime) => apiClient.put<Appointment>(`/citas/${id}`, data),
   state: (id: number, estado_reserva: "CONFIRMADA" | "CANCELADA") => apiClient.patch<Appointment>(`/citas/${id}/estado`, { estado_reserva }),
 };

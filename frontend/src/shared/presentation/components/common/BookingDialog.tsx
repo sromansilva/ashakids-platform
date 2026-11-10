@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createPortal } from 'react-dom';
-import { Building2, CalendarDays, Check, MapPin, Sparkles, Stethoscope, UserRound, Video, X } from 'lucide-react';
+import { Building2, CalendarDays, Check, FlaskConical, MapPin, Sparkles, Stethoscope, UserRound, Video, X } from 'lucide-react';
 import { Btn } from './Btn';
 import { RemoteFeedback } from './RemoteFeedback';
 import './booking-dialog.css';
@@ -38,6 +38,8 @@ export function BookingDialog({
   const [day, setDay] = useState(appointment ? localDate(appointment.fecha_hora_inicio) : localDate(new Date().toISOString()));
   const [start, setStart] = useState('');
   const [mode, setMode] = useState<'VIRTUAL' | 'PRESENCIAL'>(appointment?.modalidad ?? 'PRESENCIAL');
+  const [isImmediateDebug, setIsImmediateDebug] = useState(false);
+  const [immediateSlot, setImmediateSlot] = useState<{ inicio: string; fin: string } | null>(null);
   const location = mode === 'PRESENCIAL' ? 'Jr. Ricardo Treneman 252, Chorrillos 15064' : 'La reunión será mediante Google Meet.';
   const [review, setReview] = useState(false);
   const [confirmedLabel, setConfirmedLabel] = useState('');
@@ -73,18 +75,26 @@ export function BookingDialog({
   const type = appointment?.tipo_cita ?? (journey.data?.terapia_habilitada ? 'TERAPIA' : 'INTRODUCTORIA');
   const activePlans = plans.data?.filter(t => t.estado_tratamiento === 'ACTIVO') ?? [];
   const selectedPlan = treatment || activePlans[0]?.id_tratamiento;
-  const selected = slots.data?.find(s => s.inicio === start && s.disponible);
+  const selected = isImmediateDebug && immediateSlot
+    ? { inicio: immediateSlot.inicio, fin: immediateSlot.fin, disponible: true, motivo: 'Ahora mismo (Modo prueba)' }
+    : slots.data?.find(s => s.inicio === start && s.disponible);
   const durationMinutes = slots.data?.[0] ? Math.round((Date.parse(slots.data[0].fin) - Date.parse(slots.data[0].inicio)) / 60000) : 40;
-  const blocked = !appointment && (journey.isPending || !!journey.error || !!journey.data?.introduccion_pendiente ||
+  const blocked = !isImmediateDebug && !appointment && (journey.isPending || !!journey.error || !!journey.data?.introduccion_pendiente ||
     (!!journey.data?.introduccion_atendida && !journey.data.terapia_habilitada));
-  const ready = !!patient && !!therapist && !!selected && !blocked && !slots.error && (type === 'INTRODUCTORIA' || activePlans.length === 0 || !!selectedPlan);
+  const ready = !!patient && !!therapist && !!selected && !blocked && (isImmediateDebug || (!slots.error && (type === 'INTRODUCTORIA' || activePlans.length === 0 || !!selectedPlan)));
   const save = useWrite(() => {
     if (!selected) throw new Error('Vuelve a seleccionar un horario disponible.');
-    const body = { fecha_hora_inicio: selected.inicio, fecha_hora_fin: selected.fin, modalidad: mode, localizacion: location };
+    const body = {
+      fecha_hora_inicio: selected.inicio,
+      fecha_hora_fin: selected.fin,
+      modalidad: mode,
+      localizacion: location,
+      modo_prueba: isImmediateDebug ? true : undefined,
+    };
     return appointment ? appointmentsService.reschedule(appointment.id_reserva, body) : appointmentsService.create({ ...body,
-      id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? (selectedPlan || null) : null, tipo_cita: type });
+      id_paciente: patient, id_terapeuta: therapist, id_tratamiento: type === 'TERAPIA' ? (selectedPlan || null) : null, tipo_cita: type, modo_prueba: isImmediateDebug ? true : undefined });
   }, () => setConfirmedLabel(pendingLabel.current));
-  const change = () => { setStart(''); setReview(false); };
+  const change = () => { setStart(''); setIsImmediateDebug(false); setImmediateSlot(null); setReview(false); };
   const isFixedTherapist = Boolean(fixedTherapist || appointment);
   const selectedChild = family.children.find(p => p.id === patient);
   const patientName = selectedChild
@@ -127,7 +137,9 @@ export function BookingDialog({
       }
     }} onSubmit={e => {
       e.preventDefault(); if (!ready) return; if (!review) { setReview(true); return; }
-      pendingLabel.current = `${formattedDay}${selected ? ` a las ${clock(selected.inicio)}` : ''}`;
+      pendingLabel.current = isImmediateDebug
+        ? `Hoy a las ${clock(selected?.inicio || new Date().toISOString())} (modo prueba)`
+        : `${formattedDay}${selected ? ` a las ${clock(selected.inicio)}` : ''}`;
       void save.submit(undefined);
     }}>
       <header className="booking-dialog-header">
@@ -204,8 +216,40 @@ export function BookingDialog({
                 <RemoteFeedback pending={slots.isPending} error={slots.error} retry={() => void slots.refetch()} />
                 {!slots.isPending && !slots.error && slots.data?.length === 0 && <div className="booking-no-slots"><CalendarDays size={22} aria-hidden="true" /><strong>No hay horarios para este día</strong><span>Prueba con otra fecha para ver más opciones.</span></div>}
                 <div className="booking-slots" role="group" aria-label={`Horarios disponibles para el ${formattedDay}`}>
-                  {!slots.error && slots.data?.map(s => <button type="button" key={s.inicio} disabled={!s.disponible} aria-pressed={start === s.inicio} onClick={() => setStart(s.inicio)} className={`booking-slot ${start === s.inicio ? 'is-selected' : ''}`}><span className="booking-slot-time">{clock(s.inicio)}</span><span className="booking-slot-state">{s.motivo ?? (s.disponible ? 'Disponible' : 'No disponible')}</span></button>)}
+                  {!slots.error && slots.data?.map(s => <button type="button" key={s.inicio} disabled={!s.disponible} aria-pressed={!isImmediateDebug && start === s.inicio} onClick={() => { setStart(s.inicio); setIsImmediateDebug(false); setImmediateSlot(null); }} className={`booking-slot ${!isImmediateDebug && start === s.inicio ? 'is-selected' : ''}`}><span className="booking-slot-time">{clock(s.inicio)}</span><span className="booking-slot-state">{s.motivo ?? (s.disponible ? 'Disponible' : 'No disponible')}</span></button>)}
                 </div>
+                {!appointment && (
+                  <div className="booking-debug-immediate-section">
+                    <div className="booking-debug-divider">
+                      <span>o para pruebas inmediatas</span>
+                    </div>
+                    <button
+                      type="button"
+                      aria-pressed={isImmediateDebug}
+                      onClick={() => {
+                        const now = new Date();
+                        const startIso = now.toISOString();
+                        const endIso = new Date(now.getTime() + 40 * 60000).toISOString();
+                        setStart(startIso);
+                        setImmediateSlot({ inicio: startIso, fin: endIso });
+                        setIsImmediateDebug(true);
+                      }}
+                      className={`booking-debug-slot-btn ${isImmediateDebug ? 'is-selected' : ''}`}
+                    >
+                      <div className="booking-debug-slot-info">
+                        <div className="booking-debug-badge">
+                          <FlaskConical size={12} aria-hidden="true" />
+                          <span>Modo prueba / Debug</span>
+                        </div>
+                        <span className="booking-debug-title">⚡ Crear reserva ahora mismo</span>
+                        <span className="booking-debug-desc">
+                          Marca la hora del momento actual ({clock(new Date().toISOString())}) para iniciarla y conectarse a Google Meet y evaluar IA de inmediato.
+                        </span>
+                      </div>
+                      {isImmediateDebug && <span className="booking-selected-badge"><Check size={13} aria-hidden="true" /> Seleccionado</span>}
+                    </button>
+                  </div>
+                )}
               </>}
               {!therapist && <div className="booking-no-slots"><Stethoscope size={22} aria-hidden="true" /><strong>Selecciona un profesional</strong><span>Mostraremos aquí los turnos disponibles.</span></div>}
             </div>
@@ -216,7 +260,7 @@ export function BookingDialog({
             <div className="booking-review-card"><span className="booking-review-card-icon"><UserRound size={17} aria-hidden="true" /></span><div><small>Paciente</small><strong>{patientName}</strong></div></div>
             <div className="booking-review-card"><span className="booking-review-card-icon"><Sparkles size={17} aria-hidden="true" /></span><div><small>Tipo de cita</small><strong>{type === 'INTRODUCTORIA' ? 'Consulta introductoria' : 'Sesión de terapia'}</strong></div></div>
             <div className="booking-review-card"><span className="booking-review-card-icon"><Stethoscope size={17} aria-hidden="true" /></span><div><small>Profesional</small><strong>{selectedProfessional ? `${selectedProfessional.nombres} ${selectedProfessional.apellidos}` : 'Sin seleccionar'}</strong></div></div>
-            <div className="booking-review-card"><span className="booking-review-card-icon"><CalendarDays size={17} aria-hidden="true" /></span><div><small>Fecha y hora</small><strong>{formattedDay}{selected && ` · ${clock(selected.inicio)}–${clock(selected.fin)}`}</strong></div></div>
+            <div className="booking-review-card"><span className="booking-review-card-icon"><CalendarDays size={17} aria-hidden="true" /></span><div><small>Fecha y hora</small><strong>{isImmediateDebug ? `Hoy · Ahora mismo (${selected ? `${clock(selected.inicio)}–${clock(selected.fin)}` : ''}) [Modo prueba]` : `${formattedDay}${selected && ` · ${clock(selected.inicio)}–${clock(selected.fin)}`}`}</strong></div></div>
             <div className="booking-review-card"><span className="booking-review-card-icon">{mode === 'PRESENCIAL' ? <Building2 size={17} aria-hidden="true" /> : <Video size={17} aria-hidden="true" />}</span><div><small>{mode === 'PRESENCIAL' ? 'Atención presencial' : 'Atención virtual'}</small><strong>{location}</strong></div></div>
           </div>
           <p className="booking-review-note">La reserva quedará confirmada al guardar. El sistema volverá a comprobar que el horario siga disponible.</p>

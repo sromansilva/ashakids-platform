@@ -155,3 +155,95 @@
   .booking-progress { padding-bottom: 12px; }
   .booking-dialog-body { padding-top: 16px; padding-bottom: 18px; }
 }
+
+/* ── Botón experimental / Debug de reserva inmediata ── */
+.booking-debug-immediate-section {
+  margin-top: 14px;
+}
+
+.booking-debug-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.booking-debug-divider::before,
+.booking-debug-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px dashed #D6D0E8;
+}
+
+.booking-debug-divider span {
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #7C6F9A;
+}
+
+.booking-debug-slot-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #FAF7FF, #F3EEFF);
+  border: 1.5px dashed #A78BFA;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 6px rgba(107, 70, 254, 0.06);
+}
+
+.booking-debug-slot-btn:hover {
+  background: linear-gradient(135deg, #F5EFFF, #ECE2FE);
+  border-color: #8B5CF6;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(107, 70, 254, 0.12);
+}
+
+.booking-debug-slot-btn.is-selected {
+  background: #EDE9FE;
+  border: 2px solid #6B46FE;
+  box-shadow: 0 0 0 3px rgba(107, 70, 254, 0.18);
+}
+
+.booking-debug-slot-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.booking-debug-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  width: fit-content;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: #DDD6FE;
+  color: #5B21B6;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.booking-debug-title {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #1C1135;
+  margin-top: 2px;
+}
+
+.booking-debug-desc {
+  font-size: 11.5px;
+  color: #615274;
+  line-height: 1.35;
+}
+

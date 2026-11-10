@@ -29,6 +29,7 @@ export class AgendaController {
           : undefined,
         tipo_cita: 'INTRODUCTORIA',
         modalidad: 'VIRTUAL',
+        modo_prueba: dto.modo_prueba,
       }, req.user!);
       res.status(201).json({
         id_cita: result.id_reserva,
