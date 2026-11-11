@@ -994,7 +994,9 @@ CREATE TABLE public.usuarios (
     password_hash character varying(255) NOT NULL,
     activo boolean DEFAULT true NOT NULL,
     fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
-    password_change_required boolean DEFAULT false NOT NULL
+    password_change_required boolean DEFAULT false NOT NULL,
+    intentos_fallidos integer DEFAULT 0 NOT NULL,
+    bloqueado_hasta timestamp with time zone
 );
 
 

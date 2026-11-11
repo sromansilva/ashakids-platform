@@ -4,9 +4,9 @@
  * Identificador de acceso: codigo_usuario (VARCHAR(6)).
  */
 
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React, { useRef, useState } from "react";
-import { ArrowRight, ChevronLeft, CircleAlert, Eye, EyeOff, Loader2, Lock, User as UserIcon } from "lucide-react";
+import { ArrowRight, ChevronLeft, CircleAlert, Clock, Eye, EyeOff, Loader2, Lock, User as UserIcon } from "lucide-react";
 import { AshaKidsLogo } from "@/shared/presentation/components/illustrations/AshaKidsLogo";
 import { useAuth } from "@/modules/auth/application/useAuth";
 import { SemanticRole } from "@/modules/auth/domain/auth";
@@ -25,6 +25,8 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   onForgotPassword,
 }) => {
   const { login } = useAuth();
+  const location = useLocation();
+  const inactivityNotice = (location.state as { inactivityNotice?: string } | null)?.inactivityNotice;
   const [isLoading, setIsLoading] = useState(false);
   const [codigoUsuario, setCodigoUsuario] = useState("");
   const [password, setPassword] = useState("");
@@ -96,6 +98,12 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <section className="login-form-panel" aria-labelledby="login-title">
             <h1 id="login-title">Bienvenido de vuelta</h1>
             <p className="login-description">Inicia sesión con tu código de usuario de ASHAKids.</p>
+            {inactivityNotice && !errorMessage && (
+              <div role="status" className="mb-4 flex items-center gap-2.5 p-3 rounded-2xl bg-[#EDE9FE] border border-violet-200 text-[#1C1135] text-xs sm:text-sm font-semibold">
+                <Clock size={18} className="text-[#6B46FE] shrink-0" />
+                <span>{inactivityNotice}</span>
+              </div>
+            )}
             {errorMessage && <div role="alert" className="login-error"><CircleAlert size={18} /><span>{errorMessage}</span></div>}
             <form onSubmit={handleSubmit} className="login-form">
               <div className="login-field">

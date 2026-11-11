@@ -34,7 +34,9 @@ const envSchema = z.object({
   DB_PASSWORD: z.string().default('1234'),
   DB_SSL_ENABLED: z.string().optional().default('false').transform((v) => v === 'true'),
   SESSION_COOKIE_NAME: z.string().default('ashakids_session'),
-  SESSION_TTL_HOURS: z.string().regex(/^\d+$/, 'debe ser un número entero').default('24').transform((v) => parseInt(v, 10)),
+  SESSION_TTL_HOURS: z.string().regex(/^\d+$/, 'debe ser un número entero').default('3').transform((v) => parseInt(v, 10)),
+  AUTH_MAX_FAILED_ATTEMPTS: z.string().regex(/^\d+$/, 'debe ser un número entero').default('10').transform((v) => parseInt(v, 10)),
+  AUTH_LOCKOUT_MINUTES: z.string().regex(/^\d+$/, 'debe ser un número entero').default('5').transform((v) => parseInt(v, 10)),
   ML_SERVICE_URL: z.string().default('http://127.0.0.1:8001'),
   ML_SERVICE_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
   MEET_ENABLED: z.string().optional().default('true').transform((v) => v === 'true'),
@@ -85,6 +87,12 @@ const envSchema = z.object({
   }
   if (env.SESSION_TTL_HOURS < 1 || env.SESSION_TTL_HOURS > 168) {
     ctx.addIssue({ code: 'custom', path: ['SESSION_TTL_HOURS'], message: 'debe estar entre 1 y 168 horas' });
+  }
+  if (env.AUTH_MAX_FAILED_ATTEMPTS < 1 || env.AUTH_MAX_FAILED_ATTEMPTS > 50) {
+    ctx.addIssue({ code: 'custom', path: ['AUTH_MAX_FAILED_ATTEMPTS'], message: 'debe estar entre 1 y 50 intentos' });
+  }
+  if (env.AUTH_LOCKOUT_MINUTES < 1 || env.AUTH_LOCKOUT_MINUTES > 1440) {
+    ctx.addIssue({ code: 'custom', path: ['AUTH_LOCKOUT_MINUTES'], message: 'debe estar entre 1 y 1440 minutos' });
   }
 });
 

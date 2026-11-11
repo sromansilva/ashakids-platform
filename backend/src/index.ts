@@ -9,6 +9,7 @@ import { migrateNotificacionesSchema } from './modules/notificaciones/notificaci
 import { migrateWhatsApp } from './modules/whatsapp/whatsapp.migration.js';
 import { appointmentReminderScheduler } from './modules/notificaciones/recordatorios.scheduler.js';
 import { migrateSoporteSchema } from './modules/soporte/soporte.migration.js';
+import { migrateAuthSecurity } from './modules/auth/auth.migration.js';
 
 let server: ReturnType<typeof app.listen> | undefined;
 let shutdownRequested = false;
@@ -24,6 +25,7 @@ async function startServer(): Promise<void> {
       await migrateNotificacionesSchema();
       await migrateWhatsApp();
       await migrateSoporteSchema();
+      await migrateAuthSecurity();
       if (process.env.SEED_DEMO_INCIDENCIAS === 'true' && settings.ENVIRONMENT !== 'production') {
         await seedIncidencias();
       }

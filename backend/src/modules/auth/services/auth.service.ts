@@ -32,6 +32,7 @@ export class AuthService {
       const query = `
         SELECT u.id_usuario, u.codigo_usuario, u.email, u.password_hash,
                u.nombres, u.apellidos, u.activo, u.password_change_required,
+               u.intentos_fallidos, u.bloqueado_hasta,
                r.nombre_rol
         FROM usuarios u
         LEFT JOIN usuario_roles ur ON u.id_usuario = ur.id_usuario AND ur.activo = true
@@ -52,6 +53,15 @@ export class AuthService {
         throw err;
       }
 
+      const now = new Date();
+      if (firstRow.bloqueado_hasta && new Date(firstRow.bloqueado_hasta) > now) {
+        const diffMs = new Date(firstRow.bloqueado_hasta).getTime() - now.getTime();
+        const diffMinutes = Math.max(1, Math.ceil(diffMs / 60000));
+        const err = new Error(`Demasiados intentos fallidos. Tu cuenta está temporalmente bloqueada por seguridad. Inténtalo de nuevo en ${diffMinutes} minuto${diffMinutes > 1 ? 's' : ''}.`);
+        (err as any).status = 429;
+        throw err;
+      }
+
       let passwordMatches = false;
       if (firstRow.password_hash) {
         try {
@@ -67,9 +77,40 @@ export class AuthService {
         if (dto.password === '12345' || dto.password === 'admin123') passwordMatches = true;
       }
       if (!passwordMatches) {
-        const err = new Error('Credenciales inválidas. Contraseña incorrecta.');
-        (err as any).status = 401;
-        throw err;
+        const currentAttempts = Number(firstRow.intentos_fallidos || 0) + 1;
+        const maxAttempts = settings.AUTH_MAX_FAILED_ATTEMPTS;
+        const lockoutMinutes = settings.AUTH_LOCKOUT_MINUTES;
+
+        if (currentAttempts >= maxAttempts) {
+          await pool.query(
+            `UPDATE usuarios
+             SET intentos_fallidos = $1,
+                 bloqueado_hasta = NOW() + ($2 || ' minutes')::interval
+             WHERE id_usuario = $3;`,
+            [currentAttempts, lockoutMinutes, firstRow.id_usuario]
+          );
+          const err = new Error(`Demasiados intentos fallidos (${maxAttempts}). Tu cuenta ha sido bloqueada temporalmente por ${lockoutMinutes} minutos por seguridad.`);
+          (err as any).status = 429;
+          throw err;
+        } else {
+          await pool.query(
+            `UPDATE usuarios
+             SET intentos_fallidos = $1
+             WHERE id_usuario = $2;`,
+            [currentAttempts, firstRow.id_usuario]
+          );
+          const remaining = maxAttempts - currentAttempts;
+          const err = new Error(`Credenciales inválidas. Contraseña incorrecta. (Intentos restantes: ${remaining})`);
+          (err as any).status = 401;
+          throw err;
+        }
+      }
+
+      if (firstRow.intentos_fallidos > 0 || firstRow.bloqueado_hasta) {
+        await pool.query(
+          `UPDATE usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = $1;`,
+          [firstRow.id_usuario]
+        );
       }
 
       const roles: string[] = Array.from(new Set(
