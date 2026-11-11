@@ -4,7 +4,7 @@
 
 import React, { createContext, useCallback, useEffect, useState, useRef } from "react";
 import { authService } from "@/modules/auth/infrastructure/authService";
-import { LoginCredentials, SemanticRole, User } from "@/modules/auth/domain/auth";
+import { LoginCredentials, LoginResponse, SemanticRole, User } from "@/modules/auth/domain/auth";
 import { ApiError } from "@/core/api/client";
 import { clearIdentityData } from "@/core/providers/queryClient";
 
@@ -14,7 +14,8 @@ interface AuthContextValue {
   role: SemanticRole | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (credentials: LoginCredentials) => Promise<User>;
+  login: (credentials: LoginCredentials) => Promise<LoginResponse>;
+  verify2fa: (ticket: string, code: string) => Promise<User>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
 }
@@ -58,12 +59,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => window.removeEventListener("ashakids:session-expired", expire);
   }, []);
 
-  const login = async (credentials: LoginCredentials): Promise<User> => {
+  const login = async (credentials: LoginCredentials): Promise<LoginResponse> => {
     clearIdentityData();
     setSessionError(null);
     const version = ++requestVersion.current;
     const res = await authService.login(credentials);
-    if (version === requestVersion.current) setUser(res.user);
+    if (!res.requires_2fa && version === requestVersion.current) {
+      setUser(res.user);
+    }
+    return res;
+  };
+
+  const verify2fa = async (mfaTicket: string, code: string): Promise<User> => {
+    clearIdentityData();
+    setSessionError(null);
+    const version = ++requestVersion.current;
+    const res = await authService.verify2faLogin({ mfa_ticket: mfaTicket, code });
+    if (version === requestVersion.current) {
+      setUser(res.user);
+    }
     return res.user;
   };
 
@@ -94,6 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isAuthenticated,
         isLoading,
         login,
+        verify2fa,
         logout,
         refreshUser,
         sessionError,

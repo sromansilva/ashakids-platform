@@ -83,7 +83,7 @@ async function request<T>(
 
     if (!response.ok) {
       const detail =
-        (isJson && data && (data.detail || data.message)) ||
+        (isJson && data && (data.detail || data.message || data.error || data.mensaje)) ||
         `Error HTTP ${response.status}: ${response.statusText}`;
       const message = typeof detail === "string" ? detail : Array.isArray(detail)
         ? detail.map(item => typeof item?.msg === "string" ? item.msg : "Solicitud inválida").join(". ")

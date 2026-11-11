@@ -165,12 +165,33 @@ export class AdminService {
     let user: Record<string, unknown>;
     try {
       await client.query('BEGIN;');
+
+      const emailNorm = String(data.email).trim().toLowerCase();
+      const existing = await client.query(
+        `SELECT id_usuario, codigo_usuario, email, activo FROM public.usuarios WHERE LOWER(email) = LOWER($1) LIMIT 1;`,
+        [emailNorm]
+      );
+      if (existing.rows.length > 0) {
+        const userEx = existing.rows[0];
+        if (userEx.activo) {
+          throw Object.assign(
+            new Error(`El correo '${emailNorm}' ya está registrado con el código ${userEx.codigo_usuario}. Puedes buscarlo en la lista de cuentas.`),
+            { status: 409 }
+          );
+        } else {
+          throw Object.assign(
+            new Error(`El correo '${emailNorm}' ya pertenece a una cuenta suspendida o inactiva (${userEx.codigo_usuario}). Puedes reactivarla o eliminarla permanentemente desde la lista de cuentas.`),
+            { status: 409 }
+          );
+        }
+      }
+
       const userResult = await client.query(
         `INSERT INTO public.usuarios
           (nombres, apellidos, codigo_usuario, email, password_hash, activo, password_change_required, fecha_creacion)
          VALUES ($1, $2, $3, $4, $5, TRUE, TRUE, NOW())
          RETURNING id_usuario, codigo_usuario, email, nombres, apellidos, activo;`,
-        [data.nombres, data.apellidos, codigo_usuario, String(data.email).trim().toLowerCase(), password_hash],
+        [data.nombres, data.apellidos, codigo_usuario, emailNorm, password_hash],
       );
       user = userResult.rows[0] as Record<string, unknown>;
       const roleResult = await client.query(`SELECT id_rol FROM public.roles WHERE nombre_rol = $1 LIMIT 1;`, [role]);
@@ -217,8 +238,25 @@ export class AdminService {
         }
       }
       await client.query('COMMIT;');
-    } catch (error) {
+    } catch (error: any) {
       await client.query('ROLLBACK;');
+      if (error?.status) throw error;
+      if (error?.code === '23505') {
+        const constraint = error?.constraint;
+        if (constraint === 'usuarios_email_key') {
+          throw Object.assign(
+            new Error(`El correo electrónico '${data.email}' ya se encuentra registrado en el sistema.`),
+            { status: 409 }
+          );
+        }
+        if (constraint === 'usuarios_codigo_usuario_key') {
+          throw Object.assign(
+            new Error('Conflicto con el código de usuario generado. Por favor, intenta de nuevo.'),
+            { status: 409 }
+          );
+        }
+        throw Object.assign(new Error('El registro ya existe en el sistema.'), { status: 409 });
+      }
       throw error;
     } finally {
       client.release();
@@ -244,10 +282,20 @@ export class AdminService {
       if (mailResult?.status === 'ENVIADO') correo_bienvenida = 'ENVIADO';
       else if (mailResult?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
     }
+
+    if (settings.ENVIRONMENT !== 'production') {
+      console.log(`\n======================================================`);
+      console.log(`[DEV ENLACE DE ACTIVACIÓN ASHAKIDS]`);
+      console.log(`Cuenta: ${user.email} (Código: ${user.codigo_usuario})`);
+      console.log(`URL de activación: ${activationUrl}`);
+      console.log(`======================================================\n`);
+    }
+
     return {
       message: role === 'PADRE' ? 'Cuenta familiar creada con éxito' : role === 'TERAPEUTA' ? 'Cuenta de terapeuta creada con éxito' : 'Cuenta de soporte técnico creada con éxito',
       cuenta: { ...user, rol: role },
       correo_bienvenida,
+      activation_url: settings.ENVIRONMENT !== 'production' ? activationUrl : undefined,
     };
   }
 
@@ -270,8 +318,20 @@ export class AdminService {
       const mail = await GmailService.sendAccountActivationEmail({ to: recipient, name: `${user.nombres} ${user.apellidos || ''}`.trim(), role: user.nombre_rol === 'PADRE' ? 'Familia' : 'Terapeuta', code: String(user.codigo_usuario), activationUrl }).catch(() => null);
       if (mail?.status === 'ENVIADO' || mail?.status === 'NO_CONFIGURADO') correo_estado = mail.status;
     }
+
+    if (settings.ENVIRONMENT !== 'production') {
+      console.log(`\n======================================================`);
+      console.log(`[DEV REENVÍO DE ACTIVACIÓN ASHAKIDS]`);
+      console.log(`Cuenta: ${user.email} (Código: ${user.codigo_usuario})`);
+      console.log(`URL de activación: ${activationUrl}`);
+      console.log(`======================================================\n`);
+    }
+
     await pool.query("UPDATE public.solicitudes_acceso_familia SET correo_estado = $2 WHERE id_usuario_creado = $1 AND estado = 'APROBADA'", [id, correo_estado]);
-    return { correo_estado };
+    return {
+      correo_estado,
+      activation_url: settings.ENVIRONMENT !== 'production' ? activationUrl : undefined,
+    };
   }
 
   async crearPadre(data: any) {
@@ -292,50 +352,129 @@ export class AdminService {
   }
 
   async actualizarCuenta(id: number, data: any) {
-    try {
-      await pool.query(
-        `UPDATE usuarios 
-         SET nombres = COALESCE($1, nombres), 
-             apellidos = COALESCE($2, apellidos), 
-             email = COALESCE($3, email),
-             activo = COALESCE($4, activo)
-         WHERE id_usuario = $5;`,
-        [data.nombres, data.apellidos, data.email, data.activo, id]
+    if (data.email) {
+      const emailNorm = String(data.email).trim().toLowerCase();
+      const existing = await pool.query(
+        `SELECT id_usuario FROM usuarios WHERE LOWER(email) = LOWER($1) AND id_usuario != $2 LIMIT 1;`,
+        [emailNorm, id]
       );
-    } catch (err) {
-      console.warn('[AdminService] Fallback actualizarCuenta:', err);
+      if (existing.rows.length > 0) {
+        throw Object.assign(new Error(`El correo '${emailNorm}' ya está en uso por otra cuenta.`), { status: 409 });
+      }
+      data.email = emailNorm;
+    }
+
+    const res = await pool.query(
+      `UPDATE usuarios 
+       SET nombres = COALESCE($1, nombres), 
+           apellidos = COALESCE($2, apellidos), 
+           email = COALESCE($3, email),
+           activo = COALESCE($4, activo)
+       WHERE id_usuario = $5
+       RETURNING id_usuario;`,
+      [data.nombres, data.apellidos, data.email, data.activo, id]
+    );
+    if (!res.rows.length) {
+      throw Object.assign(new Error('La cuenta no existe o fue eliminada.'), { status: 404 });
     }
     const cuenta = await this.getCuenta(id);
     return { message: 'Cuenta actualizada correctamente', cuenta };
   }
 
   async suspenderCuenta(id: number) {
-    try {
-      await pool.query(`UPDATE usuarios SET activo = false WHERE id_usuario = $1;`, [id]);
-    } catch (err) {
-      console.warn('[AdminService] Fallback suspenderCuenta:', err);
+    const res = await pool.query(`UPDATE usuarios SET activo = false WHERE id_usuario = $1 RETURNING id_usuario;`, [id]);
+    if (!res.rows.length) {
+      throw Object.assign(new Error('La cuenta no existe o fue eliminada.'), { status: 404 });
     }
     const cuenta = await this.getCuenta(id);
     return { message: 'Cuenta suspendida correctamente', cuenta: { ...cuenta, activo: false } };
   }
 
   async activarCuenta(id: number) {
-    try {
-      await pool.query(`UPDATE usuarios SET activo = true WHERE id_usuario = $1;`, [id]);
-    } catch (err) {
-      console.warn('[AdminService] Fallback activarCuenta:', err);
+    const res = await pool.query(`UPDATE usuarios SET activo = true WHERE id_usuario = $1 RETURNING id_usuario;`, [id]);
+    if (!res.rows.length) {
+      throw Object.assign(new Error('La cuenta no existe o fue eliminada.'), { status: 404 });
     }
     const cuenta = await this.getCuenta(id);
     return { message: 'Cuenta activada correctamente', cuenta: { ...cuenta, activo: true } };
   }
 
   async eliminarCuenta(id: number) {
+    const client = await pool.connect();
     try {
-      await pool.query(`DELETE FROM usuarios WHERE id_usuario = $1;`, [id]);
-    } catch (err) {
-      console.warn('[AdminService] Fallback eliminarCuenta:', err);
+      await client.query('BEGIN;');
+
+      // 1. Verificar existencia
+      const userRes = await client.query(
+        `SELECT id_usuario, codigo_usuario, email, nombres, apellidos FROM usuarios WHERE id_usuario = $1;`,
+        [id]
+      );
+      if (!userRes.rows.length) {
+        throw Object.assign(new Error('La cuenta no existe o ya fue eliminada.'), { status: 404 });
+      }
+
+      // 2. Si es Padre/Tutor, verificar y limpiar dependencias
+      const tutorRes = await client.query(`SELECT id_tutor FROM tutores WHERE id_usuario = $1;`, [id]);
+      if (tutorRes.rows.length > 0) {
+        const idTutor = tutorRes.rows[0].id_tutor;
+        const resCheck = await client.query(
+          `SELECT COUNT(*) AS total FROM reservas r
+           JOIN pacientes p ON r.id_paciente = p.id_paciente
+           WHERE p.id_tutor = $1;`,
+          [idTutor]
+        );
+        const totalReservas = Number(resCheck.rows[0]?.total ?? 0);
+        if (totalReservas > 0) {
+          throw Object.assign(
+            new Error('No es posible eliminar la cuenta permanentemente porque sus pacientes tienen citas o historial clínico registrado. Puedes suspender la cuenta para desactivar su acceso conservando la integridad clínica.'),
+            { status: 409 }
+          );
+        }
+
+        // Eliminar pacientes asociados (cascada actividades, perfiles, etc.) y el tutor
+        await client.query(`DELETE FROM pacientes WHERE id_tutor = $1;`, [idTutor]);
+        await client.query(`DELETE FROM tutores WHERE id_tutor = $1;`, [idTutor]);
+      }
+
+      // 3. Si es Terapeuta, verificar reservas y limpiar tratamientos huérfanos
+      const terapeutaRes = await client.query(`SELECT id_terapeuta FROM terapeutas WHERE id_usuario = $1;`, [id]);
+      if (terapeutaRes.rows.length > 0) {
+        const idTerapeuta = terapeutaRes.rows[0].id_terapeuta;
+        const resCheck = await client.query(`SELECT COUNT(*) AS total FROM reservas WHERE id_terapeuta = $1;`, [idTerapeuta]);
+        const totalReservas = Number(resCheck.rows[0]?.total ?? 0);
+        if (totalReservas > 0) {
+          throw Object.assign(
+            new Error('No es posible eliminar la cuenta del profesional porque tiene citas o historial clínico registrado. Puedes suspender la cuenta para desactivarla.'),
+            { status: 409 }
+          );
+        }
+        await client.query(`DELETE FROM tratamientos WHERE id_terapeuta = $1;`, [idTerapeuta]);
+        await client.query(`DELETE FROM terapeutas WHERE id_terapeuta = $1;`, [idTerapeuta]);
+      }
+
+      // 4. Limpiar referencias foráneas que admiten NULL
+      await client.query(`UPDATE solicitudes_acceso_familia SET id_usuario_creado = NULL WHERE id_usuario_creado = $1;`, [id]);
+      await client.query(`UPDATE solicitudes_acceso_familia SET revisado_por = NULL WHERE revisado_por = $1;`, [id]);
+
+      // 5. Eliminar usuario (cascada roles, sesiones_autenticacion, notificaciones, etc.)
+      await client.query(`DELETE FROM usuarios WHERE id_usuario = $1;`, [id]);
+
+      await client.query('COMMIT;');
+      return { message: 'Cuenta eliminada permanentemente con éxito' };
+    } catch (err: any) {
+      await client.query('ROLLBACK;');
+      if (err.status) throw err;
+      if (err.code === '23503' || err.code === '23001') {
+        throw Object.assign(
+          new Error('No se pudo eliminar la cuenta debido a registros asociados. Para preservar la integridad clínica, suspende la cuenta.'),
+          { status: 409 }
+        );
+      }
+      console.error('[AdminService] Error al eliminarCuenta:', err);
+      throw Object.assign(new Error('Error interno al eliminar la cuenta.'), { status: 500 });
+    } finally {
+      client.release();
     }
-    return { message: 'Cuenta eliminada correctamente' };
   }
 
   async getHijosDePadre(idUsuario: number) {

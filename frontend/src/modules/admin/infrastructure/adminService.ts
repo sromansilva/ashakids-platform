@@ -15,7 +15,7 @@ import {
 import { HijoListResponse, OperacionHijoResponse } from "@/modules/pacientes/domain/pacientes";
 
 export const adminService = {
-  async reenviarActivacion(id: number): Promise<{ correo_estado: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO' }> {
+  async reenviarActivacion(id: number): Promise<{ correo_estado: 'ENVIADO' | 'PENDIENTE' | 'NO_CONFIGURADO'; activation_url?: string }> {
     return apiClient.post(`/admin/cuentas/${id}/reenviar-activacion`);
   },
   crearSoporte: (payload: { nombres: string; apellidos: string; email: string }) =>

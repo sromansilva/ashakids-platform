@@ -144,6 +144,7 @@ adminRouter.post('/familias', async (req: Request, res: Response, next: NextFunc
 const updateCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.actualizarCuenta(id, req.body);
     res.json(result);
   } catch (err) {
@@ -157,6 +158,7 @@ adminRouter.put('/cuentas/:id', updateCuentaHandler);
 const suspenderCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.suspenderCuenta(id);
     res.json(result);
   } catch (err) {
@@ -170,6 +172,7 @@ adminRouter.put('/cuentas/:id/suspender', suspenderCuentaHandler);
 const activarCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.activarCuenta(id);
     res.json(result);
   } catch (err) {
@@ -183,6 +186,7 @@ adminRouter.put('/cuentas/:id/activar', activarCuentaHandler);
 adminRouter.delete('/cuentas/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.eliminarCuenta(id);
     res.json(result);
   } catch (err) {

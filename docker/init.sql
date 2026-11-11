@@ -996,7 +996,10 @@ CREATE TABLE public.usuarios (
     fecha_creacion timestamp with time zone DEFAULT now() NOT NULL,
     password_change_required boolean DEFAULT false NOT NULL,
     intentos_fallidos integer DEFAULT 0 NOT NULL,
-    bloqueado_hasta timestamp with time zone
+    bloqueado_hasta timestamp with time zone,
+    totp_secret character varying(64),
+    totp_activado boolean DEFAULT false NOT NULL,
+    totp_temp_secret character varying(64)
 );
 
 
