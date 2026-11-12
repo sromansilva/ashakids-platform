@@ -108,6 +108,31 @@ incidenciasRouter.patch('/:id/estado', async (req: Request, res: Response, next:
   }
 });
 
+// PATCH /api/v1/incidencias/:id/redirigir - Redirigir incidencia a otra área
+incidenciasRouter.patch('/:id/redirigir', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const { area_destino, id_terapeuta } = req.body;
+    const user = (req as any).user;
+    const inc = await incidenciasService.redirigir(id, area_destino, id_terapeuta, user);
+    res.json(inc);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// PATCH /api/v1/incidencias/:id/revocar - Revocar estado resuelto (máximo 2 días)
+incidenciasRouter.patch('/:id/revocar', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const user = (req as any).user;
+    const inc = await incidenciasService.revocar(id, user);
+    res.json(inc);
+  } catch (err) {
+    next(err);
+  }
+});
+
 // Handlers heredados para compatibilidad con AdminRouter (/api/v1/admin/incidencias)
 export async function listarIncidenciasAdmin(req: Request, res: Response, next: NextFunction) {
   try {
@@ -126,6 +151,29 @@ export async function cambiarEstadoIncidenciaAdmin(req: Request, res: Response, 
     const { estado } = req.body;
     const user = (req as any).user || { id_usuario: 1, rol: 'ADMIN', roles: ['ADMIN'] };
     const inc = await incidenciasService.cambiarEstado(id, estado, user);
+    res.json(inc);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function redirigirIncidenciaAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const { area_destino, id_terapeuta } = req.body;
+    const user = (req as any).user || { id_usuario: 1, rol: 'ADMIN', roles: ['ADMIN'] };
+    const inc = await incidenciasService.redirigir(id, area_destino, id_terapeuta, user);
+    res.json(inc);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function revocarIncidenciaAdmin(req: Request, res: Response, next: NextFunction) {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    const user = (req as any).user || { id_usuario: 1, rol: 'ADMIN', roles: ['ADMIN'] };
+    const inc = await incidenciasService.revocar(id, user);
     res.json(inc);
   } catch (err) {
     next(err);

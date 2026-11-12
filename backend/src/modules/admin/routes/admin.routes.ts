@@ -2,7 +2,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { adminService } from '../services/admin.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
-import { listarIncidenciasAdmin, cambiarEstadoIncidenciaAdmin } from '../../incidencias/incidencias.routes.js';
+import {
+  listarIncidenciasAdmin,
+  cambiarEstadoIncidenciaAdmin,
+  redirigirIncidenciaAdmin,
+  revocarIncidenciaAdmin,
+} from '../../incidencias/incidencias.routes.js';
 import {
   listarSolicitudesAcceso,
   aprobarSolicitudAcceso,
@@ -229,6 +234,8 @@ adminRouter.put('/pacientes/:id/reactivar', reactivarHijoHandler);
 // Admin Incidencias endpoints
 adminRouter.get('/incidencias', listarIncidenciasAdmin);
 adminRouter.patch('/incidencias/:id', cambiarEstadoIncidenciaAdmin);
+adminRouter.patch('/incidencias/:id/redirigir', redirigirIncidenciaAdmin);
+adminRouter.patch('/incidencias/:id/revocar', revocarIncidenciaAdmin);
 
 // Solicitudes de acceso familiar recibidas por WhatsApp (el DNI solo se expone aquí)
 adminRouter.get('/solicitudes-acceso', listarSolicitudesAcceso);

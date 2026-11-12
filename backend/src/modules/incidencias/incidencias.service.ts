@@ -33,6 +33,7 @@ export interface CreateIncidenciaDTO {
   tipo: string;
   titulo?: string;
   descripcion: string;
+  area_destino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO';
   id_terapeuta?: number | null;
   envio_id?: string;
 }
@@ -43,15 +44,67 @@ export class IncidenciasService {
     return notasRepository.listar(id, false);
   }
   /**
-   * Clasifica automáticamente el área de destino según el rol, tipo y descripción
+   * Clasifica automáticamente el área de destino según el rol, tipo, área explícita y descripción
    */
   clasificarDestinatario(
     rolSolicitante: string,
     tipo: string,
     descripcion: string,
-    idTerapeuta?: number | null
+    idTerapeuta?: number | null,
+    areaDestino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'
   ): { area_destino: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; responsable: string; id_terapeuta: number | null } {
-    // Si quien envía es ADMIN, va dirigido a SOPORTE_TECNICO
+    // 0. Si se especifica un área de destino explícita válida, respetarla
+    if (areaDestino === 'TERAPEUTA') {
+      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+    }
+    if (areaDestino === 'SOPORTE_TECNICO') {
+      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+    }
+    if (areaDestino === 'ADMINISTRACION') {
+      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+    }
+
+    // 1. Mapeo determinista según los tipos oficiales del catálogo
+    const therapistTypes = [
+      'Seguimiento Terapéutico',
+      'Sesiones y Citas',
+      'Mundo ASHA',
+      'Paciente / Agenda',
+    ];
+    if (therapistTypes.includes(tipo)) {
+      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+    }
+
+    const adminTypes = [
+      'Cuentas y Permisos',
+      'Seguridad y Acceso',
+      'Información de Perfil',
+    ];
+    if (adminTypes.includes(tipo)) {
+      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+    }
+
+    const techSupportTypes = [
+      'Funcional',
+      'Visual / Diseño',
+      'Carga / Rendimiento',
+      'Error de datos',
+      'Soporte de Plataforma',
+    ];
+    if (techSupportTypes.includes(tipo)) {
+      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+    }
+
+    if (tipo === 'Otro') {
+      if (idTerapeuta) {
+        return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta };
+      }
+      if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
+        return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      }
+    }
+
+    // Si quien envía es ADMIN, va dirigido a SOPORTE_TECNICO por defecto
     if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
       return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
     }
@@ -174,12 +227,12 @@ export class IncidenciasService {
   ): Promise<IncidenciaItem> {
     const solicitud = data.descripcion || data.titulo || '';
     const tipo = data.tipo || 'Consulta General';
-    const clasif = this.clasificarDestinatario(rol, tipo, solicitud, data.id_terapeuta);
+    const clasif = this.clasificarDestinatario(rol, tipo, solicitud, data.id_terapeuta, data.area_destino);
     const prioridad = this.calcularPrioridad(solicitud, tipo);
 
     try {
-      // Si rol es TERAPEUTA, verificar que si el destino es terapeuta no se autoasigne inconsistente
-      let id_ter = clasif.id_terapeuta;
+      // Si rol es TERAPEUTA o destino es TERAPEUTA, gestionar id_terapeuta
+      let id_ter = clasif.area_destino === 'TERAPEUTA' ? clasif.id_terapeuta : null;
       if (clasif.area_destino === 'TERAPEUTA' && !id_ter) {
         const terRow = await pool.query('SELECT id_terapeuta FROM terapeutas LIMIT 1;');
         id_ter = terRow.rows.length > 0 ? terRow.rows[0].id_terapeuta : null;
@@ -363,7 +416,7 @@ export class IncidenciasService {
   }
 
   /**
-   * Bandeja de incidencias recibidas por Administración (solo área ADMINISTRACION)
+   * Bandeja de incidencias recibidas y supervisadas por Administración
    */
   async listarRecibidasAdmin(
     offset = 0,
@@ -373,16 +426,25 @@ export class IncidenciasService {
       const res = await pool.query(
         `SELECT i.*, 
                 COALESCE(i.rol_solicitante, 'PADRE') as rol,
-                i.solicitante as usuario
+                i.solicitante as usuario,
+                CONCAT(u_ter.nombres, ' ', u_ter.apellidos) as terapeuta_nombre
          FROM public.incidencias i
-         WHERE i.area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO') AND i.rol_solicitante IN ('PADRE', 'TERAPEUTA')
+         JOIN public.usuarios u ON i.id_usuario = u.id_usuario
+         LEFT JOIN public.terapeutas t ON i.id_terapeuta = t.id_terapeuta
+         LEFT JOIN public.usuarios u_ter ON t.id_usuario = u_ter.id_usuario
+         WHERE (i.area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO', 'TERAPEUTA') OR i.area_destino IS NOT NULL)
+           AND (i.rol_solicitante IN ('PADRE', 'TERAPEUTA', 'ADMIN', 'SOPORTE_TECNICO') OR i.rol_solicitante IS NOT NULL)
          ORDER BY i.fecha_creacion DESC
          LIMIT $1 OFFSET $2;`,
         [limit, offset]
       );
 
       const totalRes = await pool.query(
-        "SELECT count(*) as total FROM public.incidencias WHERE area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO') AND rol_solicitante IN ('PADRE', 'TERAPEUTA');"
+        `SELECT count(*) as total 
+         FROM public.incidencias i 
+         JOIN public.usuarios u ON i.id_usuario = u.id_usuario
+         WHERE (i.area_destino IN ('ADMINISTRACION', 'SOPORTE_TECNICO', 'TERAPEUTA') OR i.area_destino IS NOT NULL)
+           AND (i.rol_solicitante IN ('PADRE', 'TERAPEUTA', 'ADMIN', 'SOPORTE_TECNICO') OR i.rol_solicitante IS NOT NULL);`
       );
       const total = parseInt(totalRes.rows[0]?.total ?? '0', 10);
 
@@ -397,13 +459,15 @@ export class IncidenciasService {
         area_destino: r.area_destino,
         responsable: r.responsable,
         id_terapeuta: r.id_terapeuta,
+        terapeuta_nombre: r.terapeuta_nombre ? r.terapeuta_nombre.trim() : null,
         prioridad: r.prioridad,
         prioridad_texto: this.prioridadTexto(r.prioridad),
         estado: normalizarEstadoPersistido(r.estado),
+        envio_id: r.envio_id,
         es_prueba: r.es_prueba,
         fecha_creacion: new Date(r.fecha_creacion).toISOString(),
         fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),
-        usuario: r.usuario.trim(),
+        usuario: (r.usuario || 'Usuario').trim(),
         rol: r.rol,
       }));
 
@@ -509,6 +573,17 @@ export class IncidenciasService {
       throw err;
     }
 
+    // Regla de revocación: Si la incidencia ya fue resuelta y se desea cambiar a otro estado, verificar límite estricto de 2 días (48 horas)
+    if (normalizarEstadoPersistido(inc.estado) === 'RESUELTA' && estado !== 'RESUELTA') {
+      const fechaBase = new Date(inc.fecha_actualizacion || inc.fecha_creacion).getTime();
+      const dosDiasEnMs = 2 * 24 * 60 * 60 * 1000;
+      if (Date.now() - fechaBase > dosDiasEnMs) {
+        const err = new Error('No es posible revocar una incidencia resuelta hace más de 2 días.');
+        (err as any).status = 400;
+        throw err;
+      }
+    }
+
     if (inc.area_destino === 'SOPORTE_TECNICO' && user.rol !== 'ADMIN' && !user.roles?.includes('ADMIN')) {
       const err = new Error('Solo administracion puede gestionar incidencias de soporte.');
       (err as any).status = 403;
@@ -521,15 +596,6 @@ export class IncidenciasService {
       const myTerapeutaId = terRes.rows.length > 0 ? terRes.rows[0].id_terapeuta : 1;
       if (inc.area_destino !== 'TERAPEUTA' || (inc.id_terapeuta && inc.id_terapeuta !== myTerapeutaId)) {
         const err = new Error('Un terapeuta no puede modificar incidencias que no le pertenecen.');
-        (err as any).status = 403;
-        throw err;
-      }
-    }
-
-    // Regla: Administración solo puede modificar incidencias asignadas a Administración
-    if (user.rol === 'ADMIN' || user.roles?.includes('ADMIN')) {
-      if (!['ADMINISTRACION', 'SOPORTE_TECNICO'].includes(inc.area_destino)) {
-        const err = new Error('Administración solo puede modificar incidencias dirigidas a su área.');
         (err as any).status = 403;
         throw err;
       }
@@ -614,6 +680,84 @@ export class IncidenciasService {
       console.warn('[IncidenciasService] Fallback terapeutas relacionados:', err);
       return { previos: [], disponibles: [] };
     }
+  }
+
+  /**
+   * Redirigir una incidencia a otra área de destino (ADMINISTRACION, SOPORTE_TECNICO o TERAPEUTA)
+   */
+  async redirigir(
+    id: number,
+    nuevaArea: 'ADMINISTRACION' | 'SOPORTE_TECNICO' | 'TERAPEUTA',
+    idTerapeuta: number | null | undefined,
+    user: AuthenticatedUser
+  ): Promise<IncidenciaAdminItem> {
+    if (user.rol !== 'ADMIN' && !user.roles?.includes('ADMIN')) {
+      const err = new Error('Solo administración puede redirigir incidencias.');
+      (err as any).status = 403;
+      throw err;
+    }
+
+    const checkRes = await pool.query('SELECT * FROM public.incidencias WHERE id_incidencia = $1;', [id]);
+    if (checkRes.rows.length === 0) {
+      const err = new Error('Incidencia no encontrada.');
+      (err as any).status = 404;
+      throw err;
+    }
+
+    const responsable =
+      nuevaArea === 'SOPORTE_TECNICO' ? 'soporte_tecnico' : nuevaArea === 'TERAPEUTA' ? 'terapeuta' : 'admin';
+    const terId = nuevaArea === 'TERAPEUTA' ? idTerapeuta || null : null;
+
+    const updateRes = await pool.query(
+      `UPDATE public.incidencias
+       SET area_destino = $1, responsable = $2, id_terapeuta = $3, fecha_actualizacion = NOW()
+       WHERE id_incidencia = $4
+       RETURNING *;`,
+      [nuevaArea, responsable, terId, id]
+    );
+
+    const r = updateRes.rows[0];
+    let terapeuta_nombre = null;
+    if (r.id_terapeuta) {
+      const terRes = await pool.query(
+        `SELECT CONCAT(u.nombres, ' ', u.apellidos) as nombre
+         FROM terapeutas t
+         JOIN usuarios u ON t.id_usuario = u.id_usuario
+         WHERE t.id_terapeuta = $1;`,
+        [r.id_terapeuta]
+      );
+      if (terRes.rows.length > 0) terapeuta_nombre = terRes.rows[0].nombre.trim();
+    }
+
+    return {
+      id_incidencia: r.id_incidencia,
+      ticket: r.ticket,
+      tipo: r.tipo,
+      titulo: r.tipo,
+      descripcion: r.solicitud,
+      solicitante: r.solicitante,
+      rol_solicitante: r.rol_solicitante,
+      area_destino: r.area_destino,
+      responsable: r.responsable,
+      id_terapeuta: r.id_terapeuta,
+      terapeuta_nombre,
+      prioridad: r.prioridad,
+      prioridad_texto: this.prioridadTexto(r.prioridad),
+      estado: normalizarEstadoPersistido(r.estado),
+      envio_id: r.envio_id,
+      es_prueba: r.es_prueba,
+      fecha_creacion: new Date(r.fecha_creacion).toISOString(),
+      fecha_actualizacion: new Date(r.fecha_actualizacion || r.fecha_creacion).toISOString(),
+      usuario: (r.solicitante || 'Usuario').trim(),
+      rol: r.rol_solicitante || 'PADRE',
+    };
+  }
+
+  /**
+   * Revocar estado de una incidencia resuelta devolviéndola a 'EN ATENCIÓN', sujeto al límite de 2 días
+   */
+  async revocar(id: number, user: AuthenticatedUser): Promise<IncidenciaItem> {
+    return this.cambiarEstado(id, 'EN ATENCIÓN', user);
   }
 }
 

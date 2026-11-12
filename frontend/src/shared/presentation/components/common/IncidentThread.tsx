@@ -16,7 +16,12 @@ export function IncidentThread({ id, load, reply }: Props) {
   useEffect(() => {
     const controller = new AbortController();
     setNotes([]); setText(''); setError(''); setLoading(true);
-    load(id, controller.signal).then(({ items }) => { if (!controller.signal.aborted) setNotes(items); })
+    const result = load(id, controller.signal);
+    if (!result || typeof result.then !== 'function') {
+      setLoading(false);
+      return () => controller.abort();
+    }
+    result.then(({ items }) => { if (!controller.signal.aborted) setNotes(items || []); })
       .catch((cause: unknown) => { if (!controller.signal.aborted) setError(cause instanceof Error ? cause.message : 'No se pudieron cargar las respuestas.'); })
       .finally(() => { if (!controller.signal.aborted) setLoading(false); });
     return () => controller.abort();

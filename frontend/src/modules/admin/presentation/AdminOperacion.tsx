@@ -121,14 +121,81 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   };
 
-  const countAbiertas = items.filter((i) => i.estado === 'RECIBIDA').length;
-  const countEnRevision = items.filter((i) => i.estado === 'EN ATENCIÓN').length;
-  const countResueltas = items.filter((i) => i.estado === 'RESUELTA').length;
+  const handleRedirigir = async (
+    id: number,
+    nuevaArea: 'ADMINISTRACION' | 'SOPORTE_TECNICO' | 'TERAPEUTA',
+    idTerapeuta?: number | null
+  ) => {
+    setSaving(id);
+    setActionError('');
+    try {
+      const updated = await incidenciasService.redirigir(id, {
+        area_destino: nuevaArea,
+        id_terapeuta: idTerapeuta,
+      });
+      setItems((current) =>
+        current.map((item) =>
+          item.id_incidencia === id
+            ? {
+                ...item,
+                area_destino: nuevaArea,
+                responsable: updated.responsable,
+                id_terapeuta: updated.id_terapeuta,
+                terapeuta_nombre: updated.terapeuta_nombre,
+              }
+            : item
+        )
+      );
+    } catch (cause) {
+      setActionError(cause instanceof Error ? cause.message : 'No se pudo redirigir la incidencia.');
+      throw cause;
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleRevocar = async (id: number) => {
+    setSaving(id);
+    setActionError('');
+    try {
+      await incidenciasService.revocar(id);
+      setItems((current) =>
+        current.map((item) =>
+          item.id_incidencia === id ? { ...item, estado: 'EN ATENCIÓN' } : item
+        )
+      );
+    } catch (cause) {
+      setActionError(cause instanceof Error ? cause.message : 'No se pudo revocar la incidencia.');
+      throw cause;
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  // KPI counts
+  // Recibidas: exclusivamente las dirigidas al área de administración
+  const countRecibidas = items.filter(
+    (i) => i.area_destino === 'ADMINISTRACION' && ['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)
+  ).length;
+  const countEnRevision = items.filter((i) =>
+    ['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN', 'EN ATENCION'].includes(i.estado)
+  ).length;
+  const countResueltas = items.filter((i) =>
+    ['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)
+  ).length;
 
   const filteredItems = items.filter((i) => {
-    if (filterEstado === 'RECIBIDA' && !['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
-    if (filterEstado === 'EN ATENCIÓN' && !['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN'].includes(i.estado)) return false;
-    if (filterEstado === 'RESUELTA' && !['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)) return false;
+    if (filterEstado === 'RECIBIDA') {
+      // Únicamente incidencias reportadas al área de administración
+      if (i.area_destino !== 'ADMINISTRACION') return false;
+      if (!['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
+    }
+    if (filterEstado === 'EN ATENCIÓN') {
+      if (!['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN', 'EN ATENCION'].includes(i.estado)) return false;
+    }
+    if (filterEstado === 'RESUELTA') {
+      if (!['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)) return false;
+    }
     if (filterArea !== 'TODAS' && i.area_destino !== filterArea) return false;
     if (filterRol === 'PADRE' && i.rol !== 'PADRE') return false;
     if (filterRol === 'TERAPEUTA' && i.rol !== 'TERAPEUTA') return false;
@@ -241,8 +308,8 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <FileText size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">Recibidas</p>
-                <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countAbiertas}</p>
+                <p className="text-xs font-bold text-[#615274]">Recibidas (Administración)</p>
+                <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countRecibidas}</p>
               </div>
             </div>
 
@@ -326,6 +393,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <option value="TODAS">Todas las áreas</option>
                 <option value="ADMINISTRACION">Administración</option>
                 <option value="SOPORTE_TECNICO">Soporte técnico</option>
+                <option value="TERAPEUTA">Terapeuta</option>
               </select>
               {/* Role select */}
               <div className="relative shrink-0 w-full sm:w-auto">
@@ -357,6 +425,8 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
             selected={selected}
             setSelected={setSelected}
             onUpdateEstado={update}
+            onRedirigir={handleRedirigir}
+            onRevocar={handleRevocar}
             saving={saving}
             actionError={actionError}
             sortOrder={sortOrder}

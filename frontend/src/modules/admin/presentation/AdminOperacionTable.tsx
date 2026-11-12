@@ -7,13 +7,20 @@ import {
   ChevronRight,
   ArrowUpDown,
 } from 'lucide-react';
+import { AdminIncidentDetailModal } from './AdminIncidentDetailModal';
 
 export interface AdminOperacionTableProps {
   items: any[];
   allItems: any[];
   selected: number | null;
   setSelected: (id: number | null) => void;
-  onUpdateEstado: (id: number, estado: 'EN ATENCIÓN' | 'RESUELTA') => void;
+  onUpdateEstado: (id: number, estado: 'EN ATENCIÓN' | 'RESUELTA') => Promise<void>;
+  onRedirigir: (
+    id: number,
+    nuevaArea: 'ADMINISTRACION' | 'SOPORTE_TECNICO' | 'TERAPEUTA',
+    idTerapeuta?: number | null
+  ) => Promise<void>;
+  onRevocar: (id: number) => Promise<void>;
   saving: number | null;
   actionError: string;
   sortOrder?: 'desc' | 'asc';
@@ -26,6 +33,8 @@ export function AdminOperacionTable({
   selected,
   setSelected,
   onUpdateEstado,
+  onRedirigir,
+  onRevocar,
   saving,
   actionError,
   sortOrder = 'desc',
@@ -118,7 +127,7 @@ export function AdminOperacionTable({
                       </div>
                     </td>
 
-                    <td className="py-4 px-6">{item.area_destino === 'SOPORTE_TECNICO' ? 'Soporte técnico' : 'Administración'}</td>
+                    <td className="py-4 px-6">{item.area_destino === 'SOPORTE_TECNICO' ? 'Soporte técnico' : item.area_destino === 'TERAPEUTA' ? 'Terapeuta' : 'Administración'}</td>
                     <td className="py-4 px-6">
                       {item.estado === 'RECIBIDA' && (
                         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#FEE2E2] text-[#DC2626]">
@@ -150,11 +159,12 @@ export function AdminOperacionTable({
 
                     <td className="py-4 px-6 text-right">
                       <button
-                        onClick={() => setSelected(isSelected ? null : item.id_incidencia)}
+                        type="button"
+                        onClick={() => setSelected(item.id_incidencia)}
                         className="inline-flex items-center gap-1 font-bold text-xs text-[#6B46FE] hover:text-[#5833EA] cursor-pointer"
                       >
                         Ver detalle
-                        <ChevronRight size={14} className={isSelected ? 'rotate-90 transition-transform' : ''} />
+                        <ChevronRight size={14} />
                       </button>
                     </td>
                   </tr>
@@ -165,45 +175,17 @@ export function AdminOperacionTable({
         </table>
       </div>
 
-      {/* Selected incident expanded detail */}
+      {/* Modal con detalle completo, acciones de estado, revocación y redirección */}
       {selectedItem && (
-        <div className="p-6 bg-[#FAF9FE] border-t border-[#E8E5F4]">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h3 className="font-extrabold text-base text-[#1C1135] mb-1">
-                {selectedItem.codigo}: {selectedItem.titulo}
-              </h3>
-              <p className="text-xs text-[#615274] mb-3">
-                Reportado por {selectedItem.usuario} ({selectedItem.rol}) el{' '}
-                {new Date(selectedItem.fecha_creacion).toLocaleString('es-PE')}
-              </p>
-              <p className="text-sm text-[#4B4264] leading-relaxed max-w-3xl whitespace-pre-wrap">
-                {selectedItem.descripcion}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 shrink-0">
-              {selectedItem.estado === 'RECIBIDA' && (
-                <button
-                  disabled={saving !== null}
-                  onClick={() => onUpdateEstado(selectedItem.id_incidencia, 'EN ATENCIÓN')}
-                  className="px-4 py-2 rounded-xl text-xs font-extrabold bg-amber-100 text-amber-900 hover:bg-amber-200 transition cursor-pointer"
-                >
-                  Poner en atención
-                </button>
-              )}
-              {selectedItem.estado !== 'RESUELTA' && (
-                <button
-                  disabled={saving !== null}
-                  onClick={() => onUpdateEstado(selectedItem.id_incidencia, 'RESUELTA')}
-                  className="px-4 py-2 rounded-xl text-xs font-extrabold bg-[#6B46FE] text-white hover:bg-[#5833EA] transition cursor-pointer shadow-xs"
-                >
-                  {saving === selectedItem.id_incidencia ? 'Guardando…' : 'Marcar como resuelta'}
-                </button>
-              )}
-            </div>
-          </div>
-          {actionError && <p role="alert" className="mt-2 text-xs text-red-600 font-bold">{actionError}</p>}
-        </div>
+        <AdminIncidentDetailModal
+          item={selectedItem}
+          onClose={() => setSelected(null)}
+          onUpdateEstado={onUpdateEstado}
+          onRedirigir={onRedirigir}
+          onRevocar={onRevocar}
+          saving={saving}
+          actionError={actionError}
+        />
       )}
     </div>
   );
