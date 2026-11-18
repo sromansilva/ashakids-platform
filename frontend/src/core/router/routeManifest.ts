@@ -61,6 +61,7 @@ export const routePaths = [
   "/mundo-asha/insignias",
   "/mundo-asha/perfil",
   "/terapeuta",
+  "/terapeuta/sesion",
   "/terapeuta/sesion/:appointmentId",
   "/terapeuta/sesion/espera/:appointmentId/:destination",
   "/terapeuta/agenda",

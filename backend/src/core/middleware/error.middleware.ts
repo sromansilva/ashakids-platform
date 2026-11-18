@@ -26,6 +26,8 @@ export function errorHandler(
     res.status(statusCode).json({
       error: err.message,
       mensaje: err.message,
+      detail: err.message,
+      message: err.message,
     });
     return;
   }

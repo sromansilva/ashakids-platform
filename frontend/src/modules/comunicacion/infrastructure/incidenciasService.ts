@@ -53,6 +53,7 @@ export const incidenciasService = {
     tipo: string;
     titulo?: string;
     descripcion: string;
+    area_destino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO';
     id_terapeuta?: number | null;
   }) => apiClient.post<Incidencia>('/incidencias', body),
 
@@ -88,4 +89,15 @@ export const incidenciasService = {
 
   estado: (id: number, estado: IncidentState) =>
     apiClient.patch<Incidencia>(`/admin/incidencias/${id}`, { estado }),
+
+  redirigir: (
+    id: number,
+    body: {
+      area_destino: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO';
+      id_terapeuta?: number | null;
+    }
+  ) => apiClient.patch<IncidenciaAdmin>(`/admin/incidencias/${id}/redirigir`, body),
+
+  revocar: (id: number) =>
+    apiClient.patch<Incidencia>(`/admin/incidencias/${id}/revocar`, {}),
 };

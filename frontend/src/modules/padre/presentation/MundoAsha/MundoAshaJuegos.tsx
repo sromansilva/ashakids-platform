@@ -48,8 +48,8 @@ export function MundoAshaJuegos({ go }: { go: (v: View) => void }) {
 
       {/* Misterio Espacial modal */}
       {misterioModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)" }} onClick={() => setMisterioModal(false)}>
-          <div className="text-center p-8 rounded-3xl w-full max-w-sm" style={{ background: "linear-gradient(135deg, #1E1B4B, #312E81)" }} onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.5)" }}>
+          <div className="text-center p-8 rounded-3xl w-full max-w-sm" style={{ background: "linear-gradient(135deg, #1E1B4B, #312E81)" }}>
             <div className="text-6xl mb-4">🚀</div>
             <h2 className="text-2xl font-black text-white mb-2">Misterio Espacial</h2>
             <span className="inline-block px-3 py-1 rounded-full text-xs font-extrabold text-indigo-300 border border-indigo-500 mb-4">En desarrollo</span>

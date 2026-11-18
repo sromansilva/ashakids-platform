@@ -18,6 +18,7 @@ export const titles: Partial<Record<View, string>> = {
     "padre/evaluacion": "Evaluación Inicial",
     "padre/incidencias": "Incidencias",
     "terapeuta/incidencias": "Incidencias",
+    "terapeuta/sesion": "Espacio profesional",
     terapeuta: "Inicio",
     "terapeuta/agenda": "Agenda",
     "terapeuta/pacientes": "Pacientes",

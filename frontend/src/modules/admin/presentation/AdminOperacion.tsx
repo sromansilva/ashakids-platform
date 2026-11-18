@@ -16,6 +16,7 @@ import { View } from '@/shared/domain/types/navigation';
 import { incidenciasService, Incidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
 import { IncidentForm } from '@/shared/presentation/components/common/IncidentForm';
 import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
+import { IncidentDateRangeFilter } from '@/shared/presentation/components/common/IncidentDateRangeFilter';
 import { AdminOperacionTable } from './AdminOperacionTable';
 
 type FilterEstado = 'TODAS' | 'RECIBIDA' | 'EN ATENCIÓN' | 'RESUELTA';
@@ -37,6 +38,9 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
   const [filterRol, setFilterRol] = useState<FilterRol>('TODOS');
   const [filterArea, setFilterArea] = useState('TODAS');
   const [search, setSearch] = useState('');
+  const [startDate, setStartDate] = useState<string>('');
+  const [endDate, setEndDate] = useState<string>('');
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
 
   // Cargar incidencias recibidas por administración
   useEffect(() => {
@@ -117,14 +121,81 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
     }
   };
 
-  const countAbiertas = items.filter((i) => i.estado === 'RECIBIDA').length;
-  const countEnRevision = items.filter((i) => i.estado === 'EN ATENCIÓN').length;
-  const countResueltas = items.filter((i) => i.estado === 'RESUELTA').length;
+  const handleRedirigir = async (
+    id: number,
+    nuevaArea: 'ADMINISTRACION' | 'SOPORTE_TECNICO' | 'TERAPEUTA',
+    idTerapeuta?: number | null
+  ) => {
+    setSaving(id);
+    setActionError('');
+    try {
+      const updated = await incidenciasService.redirigir(id, {
+        area_destino: nuevaArea,
+        id_terapeuta: idTerapeuta,
+      });
+      setItems((current) =>
+        current.map((item) =>
+          item.id_incidencia === id
+            ? {
+                ...item,
+                area_destino: nuevaArea,
+                responsable: updated.responsable,
+                id_terapeuta: updated.id_terapeuta,
+                terapeuta_nombre: updated.terapeuta_nombre,
+              }
+            : item
+        )
+      );
+    } catch (cause) {
+      setActionError(cause instanceof Error ? cause.message : 'No se pudo redirigir la incidencia.');
+      throw cause;
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const handleRevocar = async (id: number) => {
+    setSaving(id);
+    setActionError('');
+    try {
+      await incidenciasService.revocar(id);
+      setItems((current) =>
+        current.map((item) =>
+          item.id_incidencia === id ? { ...item, estado: 'EN ATENCIÓN' } : item
+        )
+      );
+    } catch (cause) {
+      setActionError(cause instanceof Error ? cause.message : 'No se pudo revocar la incidencia.');
+      throw cause;
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  // KPI counts
+  // Recibidas: exclusivamente las dirigidas al área de administración
+  const countRecibidas = items.filter(
+    (i) => i.area_destino === 'ADMINISTRACION' && ['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)
+  ).length;
+  const countEnRevision = items.filter((i) =>
+    ['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN', 'EN ATENCION'].includes(i.estado)
+  ).length;
+  const countResueltas = items.filter((i) =>
+    ['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)
+  ).length;
 
   const filteredItems = items.filter((i) => {
-    if (filterEstado === 'RECIBIDA' && !['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
-    if (filterEstado === 'EN ATENCIÓN' && !['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN'].includes(i.estado)) return false;
-    if (filterEstado === 'RESUELTA' && !['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)) return false;
+    if (filterEstado === 'RECIBIDA') {
+      // Únicamente incidencias reportadas al área de administración
+      if (i.area_destino !== 'ADMINISTRACION') return false;
+      if (!['ABIERTA', 'NUEVA', 'RECIBIDA'].includes(i.estado)) return false;
+    }
+    if (filterEstado === 'EN ATENCIÓN') {
+      if (!['EN_REVISION', 'LEIDA', 'LEÍDA', 'EN PROCESO', 'EN_PROCESO', 'EN ATENCIÓN', 'EN ATENCION'].includes(i.estado)) return false;
+    }
+    if (filterEstado === 'RESUELTA') {
+      if (!['RESUELTA', 'SOLUCIONADA', 'ATENDIDA'].includes(i.estado)) return false;
+    }
     if (filterArea !== 'TODAS' && i.area_destino !== filterArea) return false;
     if (filterRol === 'PADRE' && i.rol !== 'PADRE') return false;
     if (filterRol === 'TERAPEUTA' && i.rol !== 'TERAPEUTA') return false;
@@ -138,7 +209,23 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
         (i.usuario && i.usuario.toLowerCase().includes(q));
       if (!match) return false;
     }
+    if (startDate) {
+      const start = new Date(`${startDate}T00:00:00`);
+      const itemDate = new Date(i.fecha_creacion);
+      if (!isNaN(itemDate.getTime()) && itemDate < start) return false;
+    }
+    if (endDate) {
+      const end = new Date(`${endDate}T23:59:59.999`);
+      const itemDate = new Date(i.fecha_creacion);
+      if (!isNaN(itemDate.getTime()) && itemDate > end) return false;
+    }
     return true;
+  });
+
+  const sortedItems = [...filteredItems].sort((a, b) => {
+    const timeA = a.fecha_creacion ? new Date(a.fecha_creacion).getTime() : 0;
+    const timeB = b.fecha_creacion ? new Date(b.fecha_creacion).getTime() : 0;
+    return sortOrder === 'asc' ? timeA - timeB : timeB - timeA;
   });
 
   return (
@@ -221,8 +308,8 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 <FileText size={22} />
               </div>
               <div>
-                <p className="text-xs font-bold text-[#615274]">Recibidas</p>
-                <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countAbiertas}</p>
+                <p className="text-xs font-bold text-[#615274]">Recibidas (Administración)</p>
+                <p className="text-3xl font-black text-[#1C1135] mt-0.5 tabular-nums">{countRecibidas}</p>
               </div>
             </div>
 
@@ -273,7 +360,7 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
               ))}
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 flex-1 lg:max-w-xl justify-end">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1 lg:max-w-2xl justify-end">
               {/* Search box */}
               <div className="flex-1 w-full flex items-center gap-2 bg-white border border-[#E8E5F4] rounded-2xl px-4 py-2.5 shadow-2xs">
                 <Search size={17} className="text-[#8C82A8] shrink-0" />
@@ -286,8 +373,27 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
                 />
               </div>
 
-              <select aria-label="Filtrar por área" value={filterArea} onChange={(e) => setFilterArea(e.target.value)} className="rounded-2xl border border-[#E8E5F4] bg-white px-4 py-2.5 text-sm font-bold text-[#1C1135]">
-                <option value="TODAS">Todas las áreas</option><option value="ADMINISTRACION">Administración</option><option value="SOPORTE_TECNICO">Soporte técnico</option>
+              {/* Dynamic Date Range Filter beside search */}
+              <IncidentDateRangeFilter
+                startDate={startDate}
+                endDate={endDate}
+                onChange={(s, e) => {
+                  setStartDate(s);
+                  setEndDate(e);
+                }}
+              />
+
+              {/* Area select */}
+              <select
+                aria-label="Filtrar por área"
+                value={filterArea}
+                onChange={(e) => setFilterArea(e.target.value)}
+                className="rounded-2xl border border-[#E8E5F4] bg-white px-4 py-2.5 text-sm font-bold text-[#1C1135] shadow-2xs"
+              >
+                <option value="TODAS">Todas las áreas</option>
+                <option value="ADMINISTRACION">Administración</option>
+                <option value="SOPORTE_TECNICO">Soporte técnico</option>
+                <option value="TERAPEUTA">Terapeuta</option>
               </select>
               {/* Role select */}
               <div className="relative shrink-0 w-full sm:w-auto">
@@ -314,13 +420,17 @@ export function AdminOperacion({ go: _go }: { go: (v: View) => void }) {
 
           {/* Incidencias Table Subcomponent */}
           <AdminOperacionTable
-            items={filteredItems}
+            items={sortedItems}
             allItems={items}
             selected={selected}
             setSelected={setSelected}
             onUpdateEstado={update}
+            onRedirigir={handleRedirigir}
+            onRevocar={handleRevocar}
             saving={saving}
             actionError={actionError}
+            sortOrder={sortOrder}
+            onToggleSort={() => setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
           />
 
           {/* Bottom informational callout */}

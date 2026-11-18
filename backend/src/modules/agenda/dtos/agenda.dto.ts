@@ -7,6 +7,7 @@ export const agendarCitaSchema = z.object({
   hora_inicio: z.string().regex(/^\d{2}:\d{2}$/),
   hora_fin: z.string().regex(/^\d{2}:\d{2}$/).optional(),
   motivo: z.string().optional(),
+  modo_prueba: z.boolean().optional(),
 });
 
 export type AgendarCitaDTO = z.infer<typeof agendarCitaSchema>;

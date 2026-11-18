@@ -3,7 +3,7 @@ const persisted = new Set([
   "/padre", "/padre/welcome", "/padre/dashboard", "/padre/camino", "/padre/mi-camino", "/padre/recorrido", "/padre/seguimiento",
   "/padre/hijos", "/padre/pacientes", "/padre/progreso", "/padre/config", "/padre/perfil", "/padre/agenda", "/padre/reportes", "/padre/psicologos",
   "/padre/mensajes", "/terapeuta/mensajes", "/terapeuta/valoraciones",
-  "/terapeuta/analiticas", "/terapeuta/datos-actividad", "/terapeuta", "/terapeuta/agenda", "/terapeuta/pacientes", "/terapeuta/reportes",
+  "/terapeuta/analiticas", "/terapeuta/datos-actividad", "/terapeuta", "/terapeuta/sesion", "/terapeuta/agenda", "/terapeuta/pacientes", "/terapeuta/reportes",
   "/admin/cuentas", "/admin/solicitudes", "/admin/operacion", "/admin/auditoria", "/admin/config", "/admin/contenido", "/admin/ml", "/padre/incidencias", "/terapeuta/incidencias",
   "/admin", "/admin/dashboard", "/admin/usuarios", "/admin/pacientes", "/admin/citas", "/admin/sesiones",
 ]);

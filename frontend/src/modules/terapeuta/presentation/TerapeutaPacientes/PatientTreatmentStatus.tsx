@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BarChart3 } from 'lucide-react';
+import { BarChart3, X } from 'lucide-react';
 import { readAllPages } from '@/core/api/readAllPages';
 import { clinicaService, treatmentsService } from '@/modules/clinica/infrastructure/clinicalService';
 import type { Treatment } from '@/modules/clinica/domain/clinical';
@@ -28,9 +28,12 @@ function CloseTreatmentDialog({ treatment, onClose }: { treatment: Treatment; on
   const done = close.isSuccess;
   return (
     <div className="fixed inset-0 z-[80] flex items-center justify-center p-4">
-      <button type="button" className="absolute inset-0 cursor-default bg-[#1C1135]/45" onClick={onClose} aria-label="Cerrar sin guardar" />
+      <div className="absolute inset-0 bg-[#1C1135]/45" />
       <section role="dialog" aria-modal="true" aria-labelledby="close-treatment-title" className="relative z-10 w-full max-w-md space-y-4 rounded-3xl border border-violet-100 bg-white p-5 shadow-2xl">
-        <h2 id="close-treatment-title" className="text-lg font-black text-[#1C1135]">Cerrar tratamiento</h2>
+        <div className="flex items-center justify-between">
+          <h2 id="close-treatment-title" className="text-lg font-black text-[#1C1135]">Cerrar tratamiento</h2>
+          <button type="button" onClick={onClose} aria-label="Cerrar modal" className="rounded-xl p-1.5 text-[#615274] hover:bg-violet-50 hover:text-[#1C1135] transition-colors"><X size={18} /></button>
+        </div>
         {done ? (
           <>
             <p role="status" className="text-sm text-[#4B4264]">El tratamiento quedó cerrado ({outcomeLabels[outcome].toLowerCase()}). No puede volver a activarse.</p>

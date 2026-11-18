@@ -15,7 +15,7 @@ export function PublicDialog({ title, onClose, children }: { title: string; onCl
     const first = controls[0], last = controls.at(-1);
     if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
     else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
-  }} onClick={e => { if (e.target === e.currentTarget) onClose(); }}>
+  }}>
     <div className="landing-dialog-content">
       <button className="landing-dialog-close" type="button" aria-label="Cerrar" onClick={onClose}><X size={24}/></button>
       <h2 id="public-dialog-title">{title}</h2>{children}

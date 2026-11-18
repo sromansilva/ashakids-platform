@@ -13,7 +13,7 @@ export const soporteService = {
     if (!ticket) throw notFound();
     return ticket;
   },
-  async crear(user: AuthenticatedUser, body: { tipo: string; descripcion: string; envio_id?: string }) {
+  async crear(user: AuthenticatedUser, body: { tipo: string; descripcion: string; envio_id?: string; area_destino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; id_terapeuta?: number | null }) {
     // Classification, priority and initial state remain owned by the incident workflow.
     const ticket = await incidenciasService.crear(user.id_usuario, 'SOPORTE_TECNICO', 'Soporte Técnico', {
       ...body, envio_id: body.envio_id ?? randomUUID(),

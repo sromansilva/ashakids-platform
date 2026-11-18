@@ -53,6 +53,7 @@ export const MundoAshaInsignias = lazy(() => import("@/modules/padre/presentatio
 export const MundoAshaPerfil = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaPerfil })));
 export const TerapeutaDashboardPage = lazy(() => import("@/modules/terapeuta/presentation/DashboardPage").then(module => ({ default: module.TerapeutaDashboardPage })));
 export const TerapeutaAgenda = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaAgenda").then(module => ({ default: module.TerapeutaAgenda })));
+export const TerapeutaEspacioProfesionalPage = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaEspacioProfesionalPage").then(module => ({ default: module.TerapeutaEspacioProfesionalPage })));
 export const ActiveClinicalSessionPage = lazy(() => import("@/modules/terapeuta/presentation/ActiveClinicalSessionPage").then(module => ({ default: module.ActiveClinicalSessionPage })));
 export const TerapeutaPacientes = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaPacientes/TerapeutaPacientes").then(module => ({ default: module.TerapeutaPacientes })));
 export const TerapeutaMensajes = lazy(() => import("@/modules/terapeuta/presentation/TerapeutaMensajes").then(module => ({ default: module.TerapeutaMensajes })));

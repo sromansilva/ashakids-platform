@@ -5,6 +5,11 @@ import { authenticate } from '../../../core/middleware/auth.middleware.js';
 export const authRouter = Router();
 
 authRouter.post('/login', (req, res, next) => authController.login(req, res, next));
+authRouter.post('/login/2fa', (req, res, next) => authController.verify2faLogin(req, res, next));
+authRouter.get('/2fa/status', authenticate, (req, res, next) => authController.get2faStatus(req, res, next));
+authRouter.post('/2fa/setup', authenticate, (req, res, next) => authController.setup2fa(req, res, next));
+authRouter.post('/2fa/verify-setup', authenticate, (req, res, next) => authController.confirm2faSetup(req, res, next));
+authRouter.post('/2fa/disable', authenticate, (req, res, next) => authController.disable2fa(req, res, next));
 authRouter.post('/register', (_req, res) => {
   res.status(403).json({
     error: 'El registro público no está disponible. Solicita tu cuenta por el canal oficial de AshaKids.',

@@ -17,6 +17,7 @@ import { SessionLaunchControls } from './SessionLaunchControls';
 import { FileText, ArrowRight } from "lucide-react";
 import { attendanceLabel, sessionStatusLabel } from '@/shared/domain/statusLabels';
 import { canDocumentClinicalSession } from '@/modules/clinica/domain/clinical';
+import { ApiError } from "@/core/api/client";
 
 
 export function SessionActions({
@@ -65,6 +66,7 @@ export function SessionActions({
   const refetchSession = session.refetch;
   const ownsSession = professional && s?.puede_editar !== false;
   const canEdit = ownsSession && !!s && canDocumentClinicalSession(s);
+  const isReport404 = report.error instanceof ApiError && (report.error.status === 404 || report.error.message.includes('404'));
 
   const startMs = Date.parse(s?.cita.fecha_hora_inicio ?? appointment.data?.fecha_hora_inicio ?? '');
 
@@ -224,7 +226,7 @@ export function SessionActions({
       {s && (
         <div ref={reportRef} tabIndex={-1} className={`${compact ? 'session-actions__clinical ' : ''}outline-none`}>
           {s.reporte_disponible && (
-            <RemoteFeedback pending={report.isPending} error={report.error} retry={() => void report.refetch()} />
+            <RemoteFeedback pending={report.isPending} error={!canEdit && isReport404 ? null : report.error} retry={() => void report.refetch()} />
           )}
 
           {/* En modo compacto (Modal de Agenda) se muestra enlace rápido para no sobrecargar el popup */}
@@ -288,17 +290,21 @@ export function SessionActions({
             </p>
           )}
 
-          {!canEdit && report.data && !report.error && (
-            <dl className="space-y-2">
-              {Object.entries(labels).map(([key, label]) => (
-                <div key={key}>
-                  <dt className="font-bold text-sm">{label}</dt>
-                  <dd className="text-sm whitespace-pre-wrap">
-                    {report.data[key as keyof ReportData] || 'No registrado'}
-                  </dd>
-                </div>
-              ))}
-            </dl>
+          {!canEdit && (
+            report.data && !report.error ? (
+              <dl className="space-y-2">
+                {Object.entries(labels).map(([key, label]) => (
+                  <div key={key}>
+                    <dt className="font-bold text-sm">{label}</dt>
+                    <dd className="text-sm whitespace-pre-wrap">
+                      {report.data[key as keyof ReportData] || 'No registrado'}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            ) : (!s.reporte_disponible || isReport404) && !report.isPending ? (
+              <p className="text-sm text-[#4B4264] py-1">Todavía no hay un reporte guardado para esta sesión.</p>
+            ) : null
           )}
 
           <SessionPlan session={s} />
