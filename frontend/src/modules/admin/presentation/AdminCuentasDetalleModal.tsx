@@ -44,12 +44,32 @@ export function AdminCuentasDetalleModal({
 }: AdminCuentasDetalleModalProps) {
   const [reenviando, setReenviando] = useState(false);
   const [mensajeReenvio, setMensajeReenvio] = useState('');
+  const [devActivationUrl, setDevActivationUrl] = useState<string | null>(null);
+  const [enlaceCopiado, setEnlaceCopiado] = useState(false);
+
   async function reenviarActivacion() {
     if (!selected) return;
-    setReenviando(true); setMensajeReenvio('');
-    try { const result = await adminService.reenviarActivacion(selected.id_usuario); setMensajeReenvio(result.correo_estado === 'ENVIADO' ? 'Correo de activación enviado.' : `Correo de activación: ${result.correo_estado}.`); }
-    catch (error) { setMensajeReenvio(error instanceof Error ? error.message : 'No se pudo reenviar la activación.'); }
-    finally { setReenviando(false); }
+    setReenviando(true);
+    setMensajeReenvio('');
+    setDevActivationUrl(null);
+    setEnlaceCopiado(false);
+    try {
+      const result = await adminService.reenviarActivacion(selected.id_usuario);
+      if (result.correo_estado === 'ENVIADO') {
+        setMensajeReenvio('Correo de activación enviado exitosamente.');
+      } else if (result.correo_estado === 'NO_CONFIGURADO') {
+        setMensajeReenvio('Modo desarrollo/simulado (correo no configurado en backend).');
+      } else {
+        setMensajeReenvio('El token de Gmail OAuth ha expirado o no se pudo enviar el correo.');
+      }
+      if (result.activation_url) {
+        setDevActivationUrl(result.activation_url);
+      }
+    } catch (error) {
+      setMensajeReenvio(error instanceof Error ? error.message : 'No se pudo reenviar la activación.');
+    } finally {
+      setReenviando(false);
+    }
   }
   if (!modal || !selected) return null;
 
@@ -161,7 +181,23 @@ export function AdminCuentasDetalleModal({
               </div>
 
               <button type="button" disabled={reenviando} onClick={() => void reenviarActivacion()} className="rounded-2xl border border-violet-200 px-4 py-2 text-sm font-bold text-violet-700 disabled:opacity-60">{reenviando ? 'Enviando...' : 'Reenviar activación'}</button>
-              {mensajeReenvio && <p role="status" className="text-sm">{mensajeReenvio}</p>}
+              {mensajeReenvio && <p role="status" className="text-sm font-semibold text-[#615274]">{mensajeReenvio}</p>}
+              {devActivationUrl && (
+                <div className="rounded-2xl border border-violet-200 bg-violet-50/80 p-3 flex flex-col gap-2">
+                  <p className="text-xs font-bold text-violet-900">Enlace de activación (Modo desarrollo):</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(devActivationUrl);
+                      setEnlaceCopiado(true);
+                      setTimeout(() => setEnlaceCopiado(false), 3000);
+                    }}
+                    className="w-full py-2 px-3 rounded-xl bg-violet-600 text-white text-xs font-black hover:bg-violet-700 transition-colors shadow-sm"
+                  >
+                    {enlaceCopiado ? '¡Enlace copiado al portapapeles!' : 'Copiar enlace directo de activación'}
+                  </button>
+                </div>
+              )}
               {/* Botonera de acciones */}
               <div className="flex flex-col gap-2 pt-2">
                 {selected.rol === "PADRE" && (

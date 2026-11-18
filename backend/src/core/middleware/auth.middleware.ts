@@ -15,6 +15,7 @@ export interface AuthenticatedUser {
   roles: string[];
   activo?: boolean;
   password_change_required?: boolean;
+  totp_activado?: boolean;
 }
 
 declare global {
@@ -55,6 +56,7 @@ function normalizeUserRole(rows: Array<Record<string, unknown>>): AuthenticatedU
     roles,
     activo: Boolean(row.activo),
     password_change_required: Boolean(row.password_change_required),
+    totp_activado: Boolean(row.totp_activado),
   };
 }
 
@@ -109,7 +111,7 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
   try {
     const result = await pool.query(
       `SELECT u.id_usuario, u.codigo_usuario, u.email, u.nombres, u.apellidos,
-              u.activo, u.password_change_required, r.nombre_rol
+              u.activo, u.password_change_required, u.totp_activado, r.nombre_rol
        FROM sesiones_autenticacion s
        JOIN usuarios u ON u.id_usuario = s.id_usuario
        LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
@@ -117,7 +119,8 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
        WHERE s.token_hash = $1
          AND s.revocado = false
          AND s.fecha_expiracion > NOW()
-         AND u.activo = true;`,
+         AND u.activo = true
+         AND (u.totp_activado = false OR s.mfa_verificado = true);`,
       [hashSessionToken(token)],
     );
 
@@ -167,7 +170,7 @@ export async function optionalAuthenticate(req: Request, _res: Response, next: N
   try {
     const result = await pool.query(
       `SELECT u.id_usuario, u.codigo_usuario, u.email, u.nombres, u.apellidos,
-              u.activo, u.password_change_required, r.nombre_rol
+              u.activo, u.password_change_required, u.totp_activado, r.nombre_rol
        FROM sesiones_autenticacion s
        JOIN usuarios u ON u.id_usuario = s.id_usuario
        LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
@@ -175,7 +178,8 @@ export async function optionalAuthenticate(req: Request, _res: Response, next: N
        WHERE s.token_hash = $1
          AND s.revocado = false
          AND s.fecha_expiracion > NOW()
-         AND u.activo = true;`,
+         AND u.activo = true
+         AND (u.totp_activado = false OR s.mfa_verificado = true);`,
       [hashSessionToken(token)],
     );
 

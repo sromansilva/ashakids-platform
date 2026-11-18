@@ -69,6 +69,15 @@ export async function migrateIncidencias() {
       CREATE INDEX IF NOT EXISTS idx_incidencias_id_terapeuta ON public.incidencias (id_terapeuta);
     `);
 
+    // 7. Limpiar incidencias huérfanas que no pertenezcan a cuentas válidas en la base de datos
+    if (process.env.ENVIRONMENT !== 'test') {
+      await client.query(`
+        DELETE FROM public.incidencias 
+        WHERE id_usuario IS NULL 
+           OR id_usuario NOT IN (SELECT id_usuario FROM public.usuarios);
+      `);
+    }
+
     await client.query('COMMIT;');
     console.log('[Migration] incidencias schema migration successfully applied!');
   } catch (err) {

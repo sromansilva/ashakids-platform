@@ -17,6 +17,10 @@ export const pool = new Pool({
   ...(settings.DEVELOPMENT_READ_ONLY ? { options: '-c default_transaction_read_only=on' } : {}),
 });
 
+pool.on('error', (err) => {
+  console.warn('[Database Pool] Idle client connection drop caught:', err instanceof Error ? err.message : String(err));
+});
+
 export const db = drizzle(pool);
 
 export async function testDatabaseConnection(): Promise<boolean> {

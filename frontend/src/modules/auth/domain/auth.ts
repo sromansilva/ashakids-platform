@@ -26,6 +26,24 @@ export interface AuthResponse {
   message: string;
 }
 
+export interface LoginResponse {
+  requires_2fa?: boolean;
+  mfa_ticket?: string;
+  user: User;
+  message: string;
+}
+
+export interface TwoFactorSetupData {
+  qr_code: string;
+  secret: string;
+  manual_code: string;
+  uri: string;
+}
+
+export interface TwoFactorStatusResponse {
+  totp_activado: boolean;
+}
+
 export interface MessageResponse {
   message: string;
   success: boolean;

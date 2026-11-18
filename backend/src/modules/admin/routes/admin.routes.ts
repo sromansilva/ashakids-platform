@@ -2,7 +2,12 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { adminService } from '../services/admin.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
-import { listarIncidenciasAdmin, cambiarEstadoIncidenciaAdmin } from '../../incidencias/incidencias.routes.js';
+import {
+  listarIncidenciasAdmin,
+  cambiarEstadoIncidenciaAdmin,
+  redirigirIncidenciaAdmin,
+  revocarIncidenciaAdmin,
+} from '../../incidencias/incidencias.routes.js';
 import {
   listarSolicitudesAcceso,
   aprobarSolicitudAcceso,
@@ -144,6 +149,7 @@ adminRouter.post('/familias', async (req: Request, res: Response, next: NextFunc
 const updateCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.actualizarCuenta(id, req.body);
     res.json(result);
   } catch (err) {
@@ -157,6 +163,7 @@ adminRouter.put('/cuentas/:id', updateCuentaHandler);
 const suspenderCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.suspenderCuenta(id);
     res.json(result);
   } catch (err) {
@@ -170,6 +177,7 @@ adminRouter.put('/cuentas/:id/suspender', suspenderCuentaHandler);
 const activarCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.activarCuenta(id);
     res.json(result);
   } catch (err) {
@@ -183,6 +191,7 @@ adminRouter.put('/cuentas/:id/activar', activarCuentaHandler);
 adminRouter.delete('/cuentas/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
     const result = await adminService.eliminarCuenta(id);
     res.json(result);
   } catch (err) {
@@ -225,6 +234,8 @@ adminRouter.put('/pacientes/:id/reactivar', reactivarHijoHandler);
 // Admin Incidencias endpoints
 adminRouter.get('/incidencias', listarIncidenciasAdmin);
 adminRouter.patch('/incidencias/:id', cambiarEstadoIncidenciaAdmin);
+adminRouter.patch('/incidencias/:id/redirigir', redirigirIncidenciaAdmin);
+adminRouter.patch('/incidencias/:id/revocar', revocarIncidenciaAdmin);
 
 // Solicitudes de acceso familiar recibidas por WhatsApp (el DNI solo se expone aquí)
 adminRouter.get('/solicitudes-acceso', listarSolicitudesAcceso);

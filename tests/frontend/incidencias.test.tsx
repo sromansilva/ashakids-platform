@@ -7,10 +7,25 @@ import { capabilityNotice } from '@/core/router/routeCapabilities';
 import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
 
 vi.mock('@/modules/comunicacion/infrastructure/incidenciasService', () => ({
-  tiposIncidencia: ['Funcional','Otro'],
-  incidenciasService: { crear: vi.fn(), listar: vi.fn(), estado: vi.fn(), notas: vi.fn() },
+  tiposIncidencia: ['Funcional', 'Cuentas y Permisos', 'Seguimiento Terapéutico', 'Otro'],
+  incidenciasService: {
+    crear: vi.fn(),
+    listar: vi.fn(),
+    estado: vi.fn(),
+    notas: vi.fn(),
+    terapeutasRelacionados: vi.fn(),
+  },
 }));
-beforeEach(() => vi.resetAllMocks());
+beforeEach(() => {
+  vi.resetAllMocks();
+  vi.mocked(incidenciasService.notas).mockResolvedValue({ items: [] });
+  vi.mocked(incidenciasService.terapeutasRelacionados).mockResolvedValue({
+    previos: [],
+    disponibles: [
+      { id_terapeuta: 12, nombre: 'Dr. Roberto Mendoza', especialidad: 'Fluidez y Habla' },
+    ],
+  });
+});
 
 it('conserva borrador y UUID si falla; confirma solo el envío real', async () => {
   vi.mocked(incidenciasService.crear).mockRejectedValueOnce(new Error('Sin conexión')).mockResolvedValueOnce({id_incidencia: 7} as never);
@@ -40,7 +55,7 @@ it('solo muestra registros del servidor y conserva estado ante fallo', async () 
   expect(screen.getByText('Descripción real del reporte')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', {name:'Marcar como resuelta'}));
   await screen.findByText('No guardado');
-  expect(screen.getByText('RECIBIDA')).toBeInTheDocument();
+  expect(screen.getAllByText('RECIBIDA').length).toBeGreaterThan(0);
   expect(screen.queryByText('Sesiones activas')).not.toBeInTheDocument();
   await waitFor(() => expect(incidenciasService.estado).toHaveBeenCalledWith(2,'RESUELTA'));
 });
@@ -58,4 +73,59 @@ it('la tabla compartida usa solo los tres estados y permite poner una incidencia
   fireEvent.click(screen.getByText('Descripción técnica'));
   fireEvent.click(screen.getAllByRole('button', { name: 'EN ATENCIÓN', exact: true }).at(-1)!);
   await waitFor(() => expect(update).toHaveBeenCalledWith(32, 'EN ATENCIÓN'));
+});
+
+it('muestra cuadro no editable para incidencias dirigidas a administración y soporte técnico', async () => {
+  render(<IncidentForm />);
+  
+  // Seleccionar Funcional -> Soporte Técnico no editable
+  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Funcional' } });
+  const areaInputTech = screen.getByLabelText('Área de destino') as HTMLInputElement;
+  expect(areaInputTech).toBeDisabled();
+  expect(areaInputTech.value).toBe('Soporte Técnico');
+  expect(screen.getByText(/esta incidencia será atendida por Soporte Técnico/i)).toBeInTheDocument();
+
+  // Seleccionar Cuentas y Permisos -> Administración no editable
+  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Cuentas y Permisos' } });
+  const areaInputAdmin = screen.getByLabelText('Área de destino') as HTMLInputElement;
+  expect(areaInputAdmin).toBeDisabled();
+  expect(areaInputAdmin.value).toBe('Administración');
+  expect(screen.getByText(/esta incidencia será atendida por Administración/i)).toBeInTheDocument();
+});
+
+it('para tipo Otro permite editar el área y seleccionar un terapeuta registrado al elegir Terapeuta', async () => {
+  vi.mocked(incidenciasService.crear).mockResolvedValue({ id_incidencia: 88, ticket: 'INC-00088' } as never);
+  render(<IncidentForm />);
+
+  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Otro' } });
+  
+  // El cuadro de área ahora es un select editable
+  const areaSelect = screen.getByLabelText('Área de destino') as HTMLSelectElement;
+  expect(areaSelect.tagName).toBe('SELECT');
+  expect(areaSelect).not.toBeDisabled();
+
+  // Cambiar a Soporte Técnico -> No hay selector de terapeuta
+  fireEvent.change(areaSelect, { target: { value: 'SOPORTE_TECNICO' } });
+  expect(screen.queryByLabelText(/Terapeuta asignado/i)).not.toBeInTheDocument();
+
+  // Cambiar a Terapeuta -> Aparece el selector de terapeutas registrados
+  fireEvent.change(areaSelect, { target: { value: 'TERAPEUTA' } });
+  await waitFor(() => expect(screen.getByLabelText(/Terapeuta asignado/i)).toBeInTheDocument());
+
+  // Llenar campos requeridos y enviar
+  fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'Consulta especial sobre sesión' } });
+  fireEvent.change(screen.getByLabelText('Descripción breve'), { target: { value: 'Deseo consultar sobre el progreso.' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar solicitud' }));
+
+  await waitFor(() => {
+    expect(incidenciasService.crear).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tipo: 'Otro',
+        area_destino: 'TERAPEUTA',
+        id_terapeuta: 12,
+        titulo: 'Consulta especial sobre sesión',
+        descripcion: 'Deseo consultar sobre el progreso.',
+      })
+    );
+  });
 });

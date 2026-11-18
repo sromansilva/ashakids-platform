@@ -79,16 +79,13 @@ export function FirstIntroductorySessionModal({ go }: Props) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200"
-      onClick={(e) => {
-        if (e.target === e.currentTarget) handleClose();
-      }}
     >
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="first-intro-modal-title"
         aria-describedby="first-intro-modal-desc"
-        className="relative bg-white w-full max-w-lg rounded-3xl shadow-2xl border border-[#E8E5F4] overflow-hidden flex flex-col p-6 sm:p-8"
+        className="relative bg-white w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl border border-[#E8E5F4] flex flex-col p-6 sm:p-8"
       >
         <button
           type="button"

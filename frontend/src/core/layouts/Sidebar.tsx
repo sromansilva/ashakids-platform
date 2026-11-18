@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle } from "lucide-react";
+import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle, Video } from "lucide-react";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
@@ -80,6 +80,11 @@ export function Sidebar({
               icon: Home,
               label: "Inicio",
               view: "terapeuta" as View,
+            },
+            {
+              icon: Video,
+              label: "Espacio profesional",
+              view: "terapeuta/sesion" as View,
             },
             {
               icon: Users,
@@ -197,7 +202,7 @@ export function Sidebar({
 
   return (
     <aside
-      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : ""}${collapsed ? " sidebar--collapsed" : ""}`}
+      className={`${mobile ? "flex flex-1 min-h-0 w-full static" : "hidden md:flex h-screen sticky top-0 border-r border-[#E8E5F4]"} flex-col bg-white overflow-y-auto flex-shrink-0${role === "padre" ? " family-sidebar" : role === "admin" ? " admin-sidebar" : role === "terapeuta" ? " therapist-sidebar" : ""}${collapsed ? " sidebar--collapsed" : ""}`}
       style={{ width: mobile ? "100%" : collapsed ? 88 : 240 }}
     >
       {!mobile && <div className={`p-5 pb-4 ${collapsed ? "sidebar-brand-collapsed" : ""}`} style={{ position: "relative", zIndex: 1 }}>
@@ -209,7 +214,8 @@ export function Sidebar({
           const active =
             cur === item.view ||
             (item.view === "admin/dashboard" && (cur === "admin" || cur === "admin/dashboard")) ||
-            (item.view === "admin/operacion" && ((cur as string) === "admin/incidencias" || cur === "admin/operacion"));
+            (item.view === "admin/operacion" && ((cur as string) === "admin/incidencias" || cur === "admin/operacion")) ||
+            (item.view === "terapeuta/sesion" && (typeof cur === "string" && cur.startsWith("terapeuta/sesion")));
           return (
             <button
               key={item.view}

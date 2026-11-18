@@ -21,7 +21,7 @@ export function FamilyAppointmentDetail({ id, cancel }: { id: number; cancel: ()
       <div className="space-y-0.5">
         <p className="font-bold text-[#1C1135]">{a.tipo_cita === 'INTRODUCTORIA' ? 'Consulta introductoria' : 'Sesión de terapia'} · {reservationStatusLabel(a.estado_reserva)}</p>
         <p>{a.paciente_nombre} · {a.terapeuta_nombre}</p>
-        <p>{familyDate(a.fecha_hora_inicio)} · {familyTime(a.fecha_hora_inicio)}–{familyTime(a.fecha_hora_fin)} (Lima)</p>
+        <p>{familyDate(a.fecha_hora_inicio)} · {familyTime(a.fecha_hora_inicio)}–{familyTime(a.fecha_hora_fin)}</p>
         {a.modalidad === 'PRESENCIAL' && <p>{a.localizacion || 'Coordina la dirección con el centro antes de asistir.'}</p>}
       </div>
       {['PENDIENTE', 'CONFIRMADA'].includes(a.estado_reserva) && !a.id_sesion && <div className="flex gap-2 flex-wrap"><Btn variant="outline" onClick={() => setReschedule(true)}>Reprogramar cita</Btn><Btn variant="outline" onClick={cancel}>Cancelar cita</Btn></div>}

@@ -1,6 +1,12 @@
 import type { Request, Response, NextFunction } from 'express';
 import * as argon2 from '@node-rs/argon2';
-import { loginSchema, forgotPasswordSchema } from '../dtos/auth.dto.js';
+import {
+  loginSchema,
+  forgotPasswordSchema,
+  login2faSchema,
+  verify2faSetupSchema,
+  disable2faSchema,
+} from '../dtos/auth.dto.js';
 import { authService } from '../services/auth.service.js';
 import { settings } from '../../../core/config.js';
 import { getSessionToken } from '../../../core/middleware/auth.middleware.js';
@@ -26,9 +32,86 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const dto = loginSchema.parse(req.body);
-      const { user, token } = await authService.login(dto);
-      setSessionCookie(res, token);
-      res.json({ message: 'Inicio de sesión exitoso', token, user });
+      const result = await authService.login(dto);
+      if ('requires_2fa' in result && result.requires_2fa) {
+        res.json({
+          requires_2fa: true,
+          mfa_ticket: result.mfa_ticket,
+          message: result.message,
+          user: result.user,
+        });
+        return;
+      }
+      setSessionCookie(res, (result as { token: string }).token);
+      res.json({ message: 'Inicio de sesión exitoso', token: (result as { token: string }).token, user: result.user });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async verify2faLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const dto = login2faSchema.parse(req.body);
+      const result = await authService.verify2faLogin(dto.mfa_ticket, dto.code);
+      setSessionCookie(res, result.token);
+      res.json({ message: 'Inicio de sesión exitoso', token: result.token, user: result.user });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async get2faStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'No autenticado' });
+        return;
+      }
+      const result = await authService.get2faStatus(req.user.id_usuario);
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async setup2fa(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'No autenticado' });
+        return;
+      }
+      const result = await authService.setup2fa(
+        req.user.id_usuario,
+        req.user.codigo_usuario || `USR${req.user.id_usuario}`
+      );
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async confirm2faSetup(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'No autenticado' });
+        return;
+      }
+      const dto = verify2faSetupSchema.parse(req.body);
+      const result = await authService.confirm2faSetup(req.user.id_usuario, dto.code);
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async disable2fa(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'No autenticado' });
+        return;
+      }
+      const dto = disable2faSchema.parse(req.body);
+      const result = await authService.disable2fa(req.user.id_usuario, dto.password, dto.code);
+      res.json(result);
     } catch (err) {
       next(err);
     }
@@ -164,7 +247,9 @@ export class AuthController {
       });
 
       await pool.query(
-        `UPDATE usuarios SET password_hash = $1, password_change_required = false WHERE id_usuario = $2;`,
+        `UPDATE usuarios
+         SET password_hash = $1, password_change_required = false, intentos_fallidos = 0, bloqueado_hasta = NULL
+         WHERE id_usuario = $2;`,
         [newHash, user.id_usuario]
       );
 
