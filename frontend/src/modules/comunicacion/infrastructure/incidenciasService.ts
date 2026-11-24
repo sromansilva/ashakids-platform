@@ -3,19 +3,9 @@ import type { IncidentState } from '@/shared/domain/types/IncidentState';
 import type { IncidentNote } from '@/shared/domain/types/IncidentNote';
 
 export const tiposIncidencia = [
-  'Funcional',
-  'Visual / Diseño',
-  'Carga / Rendimiento',
-  'Error de datos',
-  'Paciente / Agenda',
-  'Seguimiento Terapéutico',
-  'Sesiones y Citas',
-  'Mundo ASHA',
-  'Cuentas y Permisos',
-  'Seguridad y Acceso',
-  'Información de Perfil',
-  'Soporte de Plataforma',
-  'Otro',
+  'Problemas técnicos',
+  'Problemas de permisos',
+  'Problemas de información',
 ];
 
 export type Incidencia = {
