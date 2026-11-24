@@ -53,15 +53,31 @@ export class IncidenciasService {
     idTerapeuta?: number | null,
     areaDestino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'
   ): { area_destino: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; responsable: string; id_terapeuta: number | null } {
+    const destino = (area: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO', terapeutaId: number | null = null) => ({
+      area_destino: area,
+      responsable: area === 'SOPORTE_TECNICO' ? 'soporte_tecnico' : area === 'TERAPEUTA' ? 'terapeuta' : 'admin',
+      id_terapeuta: area === 'TERAPEUTA' ? terapeutaId : null,
+    });
+
+    // New categories are mapped on the server; client supplied destinations are ignored.
+    if (tipo === 'Problemas técnicos') return destino('SOPORTE_TECNICO');
+    if (tipo === 'Problemas de permisos') {
+      return destino(rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
+    }
+    if (tipo === 'Problemas de información') {
+      if (rolSolicitante === 'PADRE' && idTerapeuta) return destino('TERAPEUTA', idTerapeuta);
+      return destino(rolSolicitante === 'PADRE' || rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'SOPORTE_TECNICO');
+    }
+
     // 0. Si se especifica un área de destino explícita válida, respetarla
     if (areaDestino === 'TERAPEUTA') {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta || null);
     }
     if (areaDestino === 'SOPORTE_TECNICO') {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
     if (areaDestino === 'ADMINISTRACION') {
-      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+      return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }
 
     // 1. Mapeo determinista según los tipos oficiales del catálogo
@@ -72,7 +88,7 @@ export class IncidenciasService {
       'Paciente / Agenda',
     ];
     if (therapistTypes.includes(tipo)) {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta || null);
     }
 
     const adminTypes = [
@@ -81,7 +97,7 @@ export class IncidenciasService {
       'Información de Perfil',
     ];
     if (adminTypes.includes(tipo)) {
-      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+      return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }
 
     const techSupportTypes = [
@@ -92,21 +108,21 @@ export class IncidenciasService {
       'Soporte de Plataforma',
     ];
     if (techSupportTypes.includes(tipo)) {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
 
     if (tipo === 'Otro') {
       if (idTerapeuta) {
-        return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta };
+        return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta);
       }
       if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
-        return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+        return destino('SOPORTE_TECNICO');
       }
     }
 
     // Si quien envía es ADMIN, va dirigido a SOPORTE_TECNICO por defecto
     if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
 
     const text = `${tipo} ${descripcion}`.toLowerCase();
@@ -172,27 +188,27 @@ export class IncidenciasService {
       tipo === 'Paciente / Agenda';
 
     if (isTechSupport && !isTherapist && !isAdmin) {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
 
     if (isAdmin && !isTechSupport) {
-      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+      return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }
 
     if (isTherapist && !isTechSupport) {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta || null);
     }
 
     // Si tiene terapeuta explícito asignado
     if (idTerapeuta) {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta);
     }
 
     // Default: si es de plataforma -> SOPORTE_TECNICO; si es de gestión -> ADMINISTRACION
     if (isTechSupport) {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
-    return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+    return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
   }
 
   calcularPrioridad(solicitud: string, tipo: string): number {
@@ -227,7 +243,18 @@ export class IncidenciasService {
   ): Promise<IncidenciaItem> {
     const solicitud = data.descripcion || data.titulo || '';
     const tipo = data.tipo || 'Consulta General';
-    const clasif = this.clasificarDestinatario(rol, tipo, solicitud, data.id_terapeuta, data.area_destino);
+    let terapeutaRelacionado: number | null = null;
+    if (rol === 'PADRE' && tipo === 'Problemas de información') {
+      const relacionados = await this.obtenerTerapeutasRelacionados(userId);
+      terapeutaRelacionado = relacionados.previos[0]?.id_terapeuta ?? null;
+    }
+    const clasif = this.clasificarDestinatario(
+      rol,
+      tipo,
+      solicitud,
+      tipo === 'Problemas de información' && rol === 'PADRE' ? terapeutaRelacionado : data.id_terapeuta,
+      data.area_destino
+    );
     const prioridad = this.calcularPrioridad(solicitud, tipo);
 
     try {
