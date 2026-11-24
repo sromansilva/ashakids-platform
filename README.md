@@ -119,6 +119,9 @@ La base de datos viene precargada con usuarios de prueba para validar cada flujo
 | **Administrador** | `a00001` / `admin@ashakids.com` | `12345` | `/admin` |
 | **Terapeuta** | `t00001` / `terapeuta@ashakids.com` | `12345` | `/terapeuta` |
 | **Familia / Tutor** | `p00001` / `padre@ashakids.com` | `12345` | `/padre` |
+| **Soporte Técnico** | Código individual generado por Administración | Contraseña individual establecida al activar la cuenta; no hay clave compartida de demostración | `/soporte` |
+
+Las credenciales de esta tabla son únicamente para una base local de demostración aislada. No documentes contraseñas de cuentas activas de producción en el README ni las reutilices en los entornos desplegados. Para probar Soporte Técnico, crea una cuenta desde **Administración → Cuentas → Soporte Técnico** y activa su contraseña individual.
 
 ---
 

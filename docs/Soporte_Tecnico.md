@@ -6,6 +6,18 @@
 
 Puede listar y filtrar incidencias técnicas por texto, estado y prioridad, navegar por páginas, consultar el detalle, registrar incidencias, responder, agregar notas internas y actualizar el estado hasta solucionarlas. Los estados son `RECIBIDA`, `EN ATENCIÓN` y `RESUELTA`; se normalizan los nombres heredados al leerlos. La clasificación y la prioridad reutilizan el flujo de incidencias existente.
 
+## Categorías y destinatarios de incidencias
+
+Los formularios de PADRE, TERAPEUTA y ADMIN ofrecen tres categorías. La interfaz muestra el área antes de enviar, pero el backend vuelve a calcular el destino y no confía en el área enviada por el cliente.
+
+| Categoría | PADRE | TERAPEUTA | ADMIN |
+| --- | --- | --- | --- |
+| Problemas técnicos | Soporte Técnico | Soporte Técnico | Soporte Técnico |
+| Problemas de permisos | Administración | Administración | Soporte Técnico |
+| Problemas de información | Terapeuta relacionado con la familia; si no hay uno, Administración | Administración | Soporte Técnico |
+
+Así, ni Administración ni un terapeuta pueden crear incidencias asignadas a su propia área. La consulta de información de una familia se dirige al terapeuta con relación previa registrada; si no existe, llega a Administración.
+
 Solo ve registros con `area_destino = SOPORTE_TECNICO`. La API proyecta ticket, tipo, descripción, rol solicitante, prioridad, estado y fechas. No devuelve datos de contacto, identificadores de pacientes, terapeutas, expedientes o datos de cuenta del solicitante. El texto de una incidencia puede contener información escrita por quien la reporta: la interfaz pide no incluir datos clínicos, contraseñas ni información personal innecesaria.
 
 Las respuestas son visibles en el detalle de la incidencia del solicitante, usando los permisos existentes. Las notas internas solo se consultan desde el módulo de soporte. El autor de cada nota se conserva mediante una clave foránea para trazabilidad, sin exponer su identificador en el hilo.
