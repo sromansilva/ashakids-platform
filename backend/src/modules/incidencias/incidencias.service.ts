@@ -3,6 +3,13 @@ import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js
 import { notasRepository } from './infrastructure/notas.repository.js';
 import { estadosIncidencia, normalizarEstadoPersistido, type EstadoIncidencia } from './domain/estado.js';
 
+const therapistIncidentTypes = new Set([
+  'Seguimiento Terapéutico',
+  'Sesiones y Citas',
+  'Mundo ASHA',
+  'Paciente / Agenda',
+]);
+
 export interface IncidenciaItem {
   id_incidencia: number;
   ticket: string;
@@ -59,6 +66,10 @@ export class IncidenciasService {
       id_terapeuta: area === 'TERAPEUTA' ? terapeutaId : null,
     });
 
+    // Las incidencias creadas desde el panel de soporte permanecen en su bandeja,
+    // aunque la variedad describa permisos o información de otra área.
+    if (rolSolicitante === 'SOPORTE_TECNICO') return destino('SOPORTE_TECNICO');
+
     // New categories are mapped on the server; client supplied destinations are ignored.
     if (tipo === 'Problemas técnicos') return destino('SOPORTE_TECNICO');
     if (tipo === 'Problemas de permisos') {
@@ -81,14 +92,12 @@ export class IncidenciasService {
     }
 
     // 1. Mapeo determinista según los tipos oficiales del catálogo
-    const therapistTypes = [
-      'Seguimiento Terapéutico',
-      'Sesiones y Citas',
-      'Mundo ASHA',
-      'Paciente / Agenda',
-    ];
-    if (therapistTypes.includes(tipo)) {
-      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta || null);
+    if (therapistIncidentTypes.has(tipo)) {
+      if (rolSolicitante === 'PADRE') {
+        return idTerapeuta ? destino('TERAPEUTA', idTerapeuta) : destino('ADMINISTRACION');
+      }
+      if (rolSolicitante === 'TERAPEUTA') return destino('ADMINISTRACION');
+      return destino('SOPORTE_TECNICO');
     }
 
     const adminTypes = [
@@ -244,7 +253,7 @@ export class IncidenciasService {
     const solicitud = data.descripcion || data.titulo || '';
     const tipo = data.tipo || 'Consulta General';
     let terapeutaRelacionado: number | null = null;
-    if (rol === 'PADRE' && tipo === 'Problemas de información') {
+    if (rol === 'PADRE' && therapistIncidentTypes.has(tipo)) {
       const relacionados = await this.obtenerTerapeutasRelacionados(userId);
       terapeutaRelacionado = relacionados.previos[0]?.id_terapeuta ?? null;
     }
@@ -252,7 +261,7 @@ export class IncidenciasService {
       rol,
       tipo,
       solicitud,
-      tipo === 'Problemas de información' && rol === 'PADRE' ? terapeutaRelacionado : data.id_terapeuta,
+      therapistIncidentTypes.has(tipo) && rol === 'PADRE' ? terapeutaRelacionado : data.id_terapeuta,
       data.area_destino
     );
     const prioridad = this.calcularPrioridad(solicitud, tipo);

@@ -13,7 +13,7 @@ export function SoporteLayout({ children }: { children: ReactNode }) {
           <button className="rounded-xl border border-[#E8E5F4] px-4 py-2 font-bold" onClick={async () => { await logout(); navigate('/login'); }}>Cerrar sesión</button>
         </div>
       </div>
-      <nav aria-label="Soporte Técnico" className="mx-auto mt-4 max-w-7xl"><Link to="/soporte/incidencias" className="font-bold text-[#6B46FE]">Incidencias técnicas</Link></nav>
+      <nav aria-label="Soporte Técnico" className="mx-auto mt-4 flex max-w-7xl flex-wrap gap-5"><Link to="/soporte/incidencias" className="font-bold text-[#6B46FE]">Incidencias técnicas</Link><Link to="/soporte/config" className="font-bold text-[#615274] hover:text-[#6B46FE]">Perfil y seguridad</Link></nav>
     </header>
     <main className="mx-auto min-h-0 w-full max-w-7xl flex-1 overflow-y-auto p-4 sm:p-8">{children}</main>
   </div>;

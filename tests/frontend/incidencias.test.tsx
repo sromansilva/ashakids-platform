@@ -7,7 +7,13 @@ import { capabilityNotice } from '@/core/router/routeCapabilities';
 import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
 
 vi.mock('@/modules/comunicacion/infrastructure/incidenciasService', () => ({
-  tiposIncidencia: ['Problemas técnicos', 'Problemas de permisos', 'Problemas de información'],
+  categoriasIncidencia: {
+    'Problemas técnicos': ['Funcional', 'Visual / Diseño', 'Carga / Rendimiento', 'Error de datos', 'Soporte de Plataforma'],
+    'Problemas de permisos': ['Cuentas y Permisos', 'Seguridad y Acceso'],
+    'Problemas de información': ['Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA', 'Otro'],
+  },
+  categoriaDeIncidencia: (tipo: string) => ({ Funcional: 'Problemas técnicos', 'Visual / Diseño': 'Problemas técnicos', 'Carga / Rendimiento': 'Problemas técnicos', 'Error de datos': 'Problemas técnicos', 'Soporte de Plataforma': 'Problemas técnicos', 'Cuentas y Permisos': 'Problemas de permisos', 'Seguridad y Acceso': 'Problemas de permisos', 'Información de Perfil': 'Problemas de información', 'Paciente / Agenda': 'Problemas de información', 'Seguimiento Terapéutico': 'Problemas de información', 'Sesiones y Citas': 'Problemas de información', 'Mundo ASHA': 'Problemas de información', Otro: 'Problemas de información' }[tipo] || null),
+  tiposIncidencia: ['Funcional', 'Cuentas y Permisos', 'Otro'],
   incidenciasService: {
     crear: vi.fn(),
     listar: vi.fn(),
@@ -31,8 +37,9 @@ it('conserva borrador y UUID si falla; confirma solo el envío real', async () =
   vi.mocked(incidenciasService.crear).mockRejectedValueOnce(new Error('Sin conexión')).mockResolvedValueOnce({id_incidencia: 7} as never);
   render(<IncidentForm />);
   const labels = Array.from(document.querySelectorAll('label')).map(el => el.textContent);
-  expect(labels).toEqual(['Tipo de incidencia','Título','Descripción breve']);
-  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), {target: {value:'Problemas técnicos'}});
+  expect(labels).toContain('Tipo general de incidencia');
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), {target: {value:'Problemas técnicos'}});
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), {target: {value:'Funcional'}});
   fireEvent.change(screen.getByLabelText('Título'), {target: {value:'Guardar falla'}});
   fireEvent.change(screen.getByLabelText('Descripción breve'), {target: {value:'No termina de guardar.'}});
   fireEvent.click(screen.getByRole('button', {name:'Enviar solicitud'}));
@@ -75,41 +82,48 @@ it('la tabla compartida usa solo los tres estados y permite poner una incidencia
   await waitFor(() => expect(update).toHaveBeenCalledWith(32, 'EN ATENCIÓN'));
 });
 
-it('muestra a quién se enviará cada categoría y evita el autoenrutamiento', async () => {
+it('muestra categorías y variedades, y evita el autoenrutamiento', async () => {
   vi.mocked(incidenciasService.terapeutasRelacionados).mockResolvedValue({
     previos: [{ id_terapeuta: 12, nombre: 'Terapeuta relacionado', especialidad: 'Lenguaje' }],
     disponibles: [],
   });
   const { rerender } = render(<IncidentForm role="PADRE" />);
-  const select = screen.getByLabelText('Tipo de incidencia');
-  fireEvent.change(select, { target: { value: 'Problemas técnicos' } });
+  const category = screen.getByLabelText('Tipo general de incidencia');
+  fireEvent.change(category, { target: { value: 'Problemas técnicos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Funcional' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Soporte Técnico');
-  fireEvent.change(select, { target: { value: 'Problemas de permisos' } });
+  fireEvent.change(category, { target: { value: 'Problemas de permisos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Cuentas y Permisos' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Administración');
-  fireEvent.change(select, { target: { value: 'Problemas de información' } });
+  fireEvent.change(category, { target: { value: 'Problemas de información' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Paciente / Agenda' } });
   await waitFor(() => expect(screen.getByLabelText('Área de destino')).toHaveValue('Terapeuta relacionado'));
 
   rerender(<IncidentForm role="TERAPEUTA" />);
-  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Problemas de información' } });
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Paciente / Agenda' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Administración');
-  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Problemas técnicos' } });
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas técnicos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Funcional' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Soporte Técnico');
 
   rerender(<IncidentForm role="ADMIN" />);
-  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Problemas de información' } });
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Otro' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Soporte Técnico');
 });
 
 it('envía solo la categoría y la descripción; el servidor determina el destinatario', async () => {
   vi.mocked(incidenciasService.crear).mockResolvedValue({ id_incidencia: 88, ticket: 'INC-00088' } as never);
   render(<IncidentForm role="TERAPEUTA" />);
-  fireEvent.change(screen.getByLabelText('Tipo de incidencia'), { target: { value: 'Problemas técnicos' } });
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas técnicos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Funcional' } });
   fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'El botón no responde' } });
   fireEvent.change(screen.getByLabelText('Descripción breve'), { target: { value: 'No puedo guardar.' } });
   fireEvent.click(screen.getByRole('button', { name: 'Enviar solicitud' }));
   await waitFor(() => expect(incidenciasService.crear).toHaveBeenCalled());
   expect(incidenciasService.crear).toHaveBeenCalledWith(expect.objectContaining({
-    tipo: 'Problemas técnicos', titulo: 'El botón no responde', descripcion: 'No puedo guardar.',
+    tipo: 'Funcional', titulo: 'El botón no responde', descripcion: 'No puedo guardar.',
   }));
   const request = vi.mocked(incidenciasService.crear).mock.calls[0][0];
   expect(request).not.toHaveProperty('area_destino');

@@ -64,5 +64,14 @@ test('Support account authentication and least privilege', { timeout: 90000 }, a
         assert.equal(response.data.user, undefined);
       } finally { stub.mock.restore(); }
     } finally { settings.ENVIRONMENT = 'production'; }
+    const signedIn = await login(support.codigo_usuario, password);
+    support.cookie = signedIn.cookie;
+    assert.equal((await call('/auth/change-password', { method: 'POST', cookie: support.cookie, body: { current_password: password, new_password: 'short' } })).status, 400);
+    assert.equal((await call('/auth/change-password', { method: 'POST', cookie: support.cookie, body: { current_password: 'incorrecta', new_password: 'CambioSeguro123' } })).status, 401);
+    const changed = await call('/auth/change-password', { method: 'POST', cookie: support.cookie, body: { current_password: password, new_password: 'CambioSeguro123' } });
+    assert.equal(changed.status, 200, JSON.stringify(changed.data));
+    assert.equal((await call('/auth/me', { cookie: support.cookie })).status, 200, 'la sesión actual sigue activa');
+    assert.equal((await login(support.codigo_usuario, password)).status, 401);
+    assert.equal((await login(support.codigo_usuario, 'CambioSeguro123')).status, 200);
   });
 });

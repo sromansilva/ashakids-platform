@@ -30,3 +30,26 @@ it('no permite que un terapeuta o administrador se asigne incidencias a su propi
   assert.equal(service.clasificarDestinatario('ADMIN', 'Cuentas y Permisos').area_destino, 'SOPORTE_TECNICO');
   assert.equal(service.clasificarDestinatario('ADMIN', 'Otro', 'Reporte', null, 'ADMINISTRACION').area_destino, 'SOPORTE_TECNICO');
 });
+
+it('clasifica las variedades debajo de las tres categorías y respeta quién reporta', () => {
+  const route = (role, type, therapistId = null) => service.clasificarDestinatario(role, type, 'Descripción', therapistId);
+  for (const type of ['Funcional', 'Visual / Diseño', 'Carga / Rendimiento', 'Error de datos', 'Soporte de Plataforma']) {
+    assert.equal(route('PADRE', type).area_destino, 'SOPORTE_TECNICO');
+    assert.equal(route('TERAPEUTA', type).area_destino, 'SOPORTE_TECNICO');
+    assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');
+  }
+  for (const type of ['Cuentas y Permisos', 'Seguridad y Acceso']) {
+    assert.equal(route('PADRE', type).area_destino, 'ADMINISTRACION');
+    assert.equal(route('TERAPEUTA', type).area_destino, 'ADMINISTRACION');
+    assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');
+  }
+  for (const type of ['Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA']) {
+    assert.deepEqual(route('PADRE', type, 81), { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: 81 });
+    assert.equal(route('PADRE', type).area_destino, 'ADMINISTRACION');
+    assert.equal(route('TERAPEUTA', type).area_destino, 'ADMINISTRACION');
+    assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');
+  }
+  for (const type of ['Funcional', 'Cuentas y Permisos', 'Paciente / Agenda']) {
+    assert.equal(route('SOPORTE_TECNICO', type).area_destino, 'SOPORTE_TECNICO');
+  }
+});

@@ -2,11 +2,34 @@ import { apiClient } from '@/core/api/client';
 import type { IncidentState } from '@/shared/domain/types/IncidentState';
 import type { IncidentNote } from '@/shared/domain/types/IncidentNote';
 
-export const tiposIncidencia = [
-  'Problemas técnicos',
-  'Problemas de permisos',
-  'Problemas de información',
-];
+export const categoriasIncidencia = {
+  'Problemas técnicos': [
+    'Funcional',
+    'Visual / Diseño',
+    'Carga / Rendimiento',
+    'Error de datos',
+    'Soporte de Plataforma',
+  ],
+  'Problemas de permisos': [
+    'Cuentas y Permisos',
+    'Seguridad y Acceso',
+  ],
+  'Problemas de información': [
+    'Información de Perfil',
+    'Paciente / Agenda',
+    'Seguimiento Terapéutico',
+    'Sesiones y Citas',
+    'Mundo ASHA',
+    'Otro',
+  ],
+} as const;
+
+export type CategoriaIncidencia = keyof typeof categoriasIncidencia;
+export const tiposIncidencia = Object.values(categoriasIncidencia).flat();
+
+export function categoriaDeIncidencia(tipo: string): CategoriaIncidencia | null {
+  return (Object.entries(categoriasIncidencia).find(([, variedades]) => variedades.includes(tipo as never))?.[0] as CategoriaIncidencia | undefined) ?? null;
+}
 
 export type Incidencia = {
   id_incidencia: number;

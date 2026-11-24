@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, FileText, Settings, Target } from 'lucide-react';
 import {
+  categoriaDeIncidencia,
+  categoriasIncidencia,
   incidenciasService,
-  tiposIncidencia,
   Incidencia,
 } from '@/modules/comunicacion/infrastructure/incidenciasService';
 
@@ -11,11 +12,16 @@ export function getAutomaticAreaForTipo(
   role: 'PADRE' | 'TERAPEUTA' | 'ADMIN' | 'SOPORTE_TECNICO' = 'PADRE',
   hasRelatedTherapist = false,
 ): 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO' | null {
-  if (tipo === 'Problemas técnicos') return 'SOPORTE_TECNICO';
-  if (tipo === 'Problemas de permisos') return role === 'ADMIN' || role === 'SOPORTE_TECNICO' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
-  if (tipo === 'Problemas de información') {
-    if (role === 'PADRE') return hasRelatedTherapist ? 'TERAPEUTA' : 'ADMINISTRACION';
-    return role === 'TERAPEUTA' ? 'ADMINISTRACION' : 'SOPORTE_TECNICO';
+  if (role === 'SOPORTE_TECNICO') return 'SOPORTE_TECNICO';
+  const categoria = categoriaDeIncidencia(tipo);
+  if (categoria === 'Problemas técnicos') return 'SOPORTE_TECNICO';
+  if (categoria === 'Problemas de permisos') return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
+  if (categoria === 'Problemas de información') {
+    if (['Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA'].includes(tipo)) {
+      if (role === 'PADRE' && hasRelatedTherapist) return 'TERAPEUTA';
+      return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
+    }
+    return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
   }
   return null;
 }
@@ -48,8 +54,10 @@ export function IncidentForm({
   onSuccess,
   submitIncident = incidenciasService.crear,
 }: IncidentFormProps) {
+  const defaultCategory = categoriaDeIncidencia(defaultTipo) ?? '';
+  const [categoria, setCategoria] = useState<keyof typeof categoriasIncidencia | ''>(defaultCategory);
   const [tipo, setTipo] = useState(defaultTipo);
-  const categoryOptions = role === 'SOPORTE_TECNICO' ? [tiposIncidencia[0]] : tiposIncidencia;
+  const variedades = categoria ? categoriasIncidencia[categoria] : [];
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [envio, setEnvio] = useState(() => crypto.randomUUID());
@@ -96,7 +104,7 @@ export function IncidentForm({
   };
 
   const resolvedArea = tipo ? getAutomaticAreaForTipo(tipo, role, hasRelatedTherapist) : null;
-  const waitingForTherapist = role === 'PADRE' && tipo === 'Problemas de información' && !therapistLookupDone;
+  const waitingForTherapist = role === 'PADRE' && ['Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA'].includes(tipo) && !therapistLookupDone;
 
   const isValid =
     !!tipo &&
@@ -130,6 +138,7 @@ export function IncidentForm({
                 onClick={() => {
                   setSent(null);
                   setSentTicket('');
+                  setCategoria(defaultCategory);
                   setTipo(defaultTipo);
                   setTitulo('');
                   setDescripcion('');
@@ -167,30 +176,53 @@ export function IncidentForm({
               }}
             >
               <div>
-                <label htmlFor="incident-type" className="block text-xs font-bold text-[#1C1135] mb-2">
-                  Tipo de incidencia
+                <label htmlFor="incident-category" className="block text-xs font-bold text-[#1C1135] mb-2">
+                  Tipo general de incidencia
                 </label>
                 <select
-                  id="incident-type"
+                  id="incident-category"
                   required
                   disabled={sending}
-                  value={tipo}
+                  value={categoria}
                   className={fieldStyle}
                   onChange={(e) => {
-                    setTipo(e.target.value);
+                    setCategoria(e.target.value as keyof typeof categoriasIncidencia);
+                    setTipo('');
                     changed();
                   }}
                 >
                   <option value="" disabled>
-                    Selecciona el tipo de problema
+                    Selecciona el área del problema
                   </option>
-                  {categoryOptions.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {Object.keys(categoriasIncidencia).map((category) => (
+                    <option key={category} value={category}>
+                      {category}
                     </option>
                   ))}
                 </select>
               </div>
+
+              {!!categoria && (
+                <div>
+                  <label htmlFor="incident-type" className="block text-xs font-bold text-[#1C1135] mb-2">
+                    Variedad de incidencia
+                  </label>
+                  <select
+                    id="incident-type"
+                    required
+                    disabled={sending}
+                    value={tipo}
+                    className={fieldStyle}
+                    onChange={(e) => {
+                      setTipo(e.target.value);
+                      changed();
+                    }}
+                  >
+                    <option value="" disabled>Selecciona la variedad que describe el problema</option>
+                    {variedades.map((variedad) => <option key={variedad} value={variedad}>{variedad}</option>)}
+                  </select>
+                </div>
+              )}
 
               {/* Mostrar el destinatario antes de enviar; el backend decide y valida la asignación. */}
               {!!tipo && (

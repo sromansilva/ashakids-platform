@@ -25,11 +25,13 @@ it('lists technical incidents with server filters and supports creating one with
   fireEvent.change(screen.getByLabelText('Buscar'), { target: { value: 'pantalla' } });
   await waitFor(() => expect(soporteService.listar).toHaveBeenLastCalledWith(expect.objectContaining({ estado: 'EN ATENCIÓN', prioridad: 3, search: 'pantalla', offset: 0 }), expect.any(AbortSignal)));
   fireEvent.click(screen.getByRole('button', { name: 'Nueva incidencia' }));
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de permisos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Cuentas y Permisos' } });
   fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'Pantalla de ayuda' } });
   fireEvent.change(screen.getByLabelText('Descripción breve'), { target: { value: 'Error al abrir la ayuda.' } });
   fireEvent.click(screen.getByRole('button', { name: 'Registrar incidencia' }));
   expect(await screen.findByText('Detalle creado')).toBeInTheDocument();
-  expect(soporteService.crear).toHaveBeenCalledWith(expect.objectContaining({ tipo: 'Problemas técnicos', descripcion: 'Error al abrir la ayuda.' }));
+  expect(soporteService.crear).toHaveBeenCalledWith(expect.objectContaining({ tipo: 'Cuentas y Permisos', descripcion: 'Error al abrir la ayuda.' }));
 });
 
 it('shows detail, saves replies and internal notes, and resolves the ticket', async () => {

@@ -68,6 +68,12 @@ describe('ASHAKids Frontend Routing Tests', () => {
       assert.equal(getRequiredRoleForPath('/admin/sesion/espera/42/panel'), 'ADMIN');
       assert.equal(getRequiredRoleForPath('/admin/sesion/espera/42/meet'), 'ADMIN');
     });
+
+    it('reserva perfil y seguridad de soporte a SOPORTE_TECNICO y protege la configuración administrativa', () => {
+      assert.equal(getRequiredRoleForPath('/soporte/config'), 'SOPORTE_TECNICO');
+      assert.equal(getRequiredRoleForPath('/admin/config'), 'ADMIN');
+      assert.ok(routePaths.includes('/soporte/config'));
+    });
   });
 
   describe('3. Lógica de Protección de Rutas (Simulación Guardias)', () => {
