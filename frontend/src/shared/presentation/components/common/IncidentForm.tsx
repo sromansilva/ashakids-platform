@@ -49,6 +49,7 @@ export function IncidentForm({
   submitIncident = incidenciasService.crear,
 }: IncidentFormProps) {
   const [tipo, setTipo] = useState(defaultTipo);
+  const categoryOptions = role === 'SOPORTE_TECNICO' ? [tiposIncidencia[0]] : tiposIncidencia;
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [envio, setEnvio] = useState(() => crypto.randomUUID());
@@ -183,7 +184,7 @@ export function IncidentForm({
                   <option value="" disabled>
                     Selecciona el tipo de problema
                   </option>
-                  {tiposIncidencia.map((t) => (
+                  {categoryOptions.map((t) => (
                     <option key={t} value={t}>
                       {t}
                     </option>
