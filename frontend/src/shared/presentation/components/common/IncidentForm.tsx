@@ -3,9 +3,10 @@ import { CheckCircle, FileText, Settings, Target } from 'lucide-react';
 import {
   categoriaDeIncidencia,
   categoriasIncidencia,
+  variedadesIncidenciaParaRol,
   incidenciasService,
-  Incidencia,
 } from '@/modules/comunicacion/infrastructure/incidenciasService';
+import type { Incidencia, RolIncidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
 
 export function getAutomaticAreaForTipo(
   tipo: string,
@@ -27,7 +28,7 @@ export function getAutomaticAreaForTipo(
 }
 
 interface IncidentFormProps {
-  role?: 'PADRE' | 'TERAPEUTA' | 'ADMIN' | 'SOPORTE_TECNICO';
+  role?: RolIncidencia;
   submitIncident?: (body: {
     envio_id: string;
     tipo: string;
@@ -57,7 +58,7 @@ export function IncidentForm({
   const defaultCategory = categoriaDeIncidencia(defaultTipo) ?? '';
   const [categoria, setCategoria] = useState<keyof typeof categoriasIncidencia | ''>(defaultCategory);
   const [tipo, setTipo] = useState(defaultTipo);
-  const variedades = categoria ? categoriasIncidencia[categoria] : [];
+  const variedades = categoria ? variedadesIncidenciaParaRol(role, categoria) : [];
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [envio, setEnvio] = useState(() => crypto.randomUUID());
@@ -219,7 +220,7 @@ export function IncidentForm({
                     }}
                   >
                     <option value="" disabled>Selecciona la variedad que describe el problema</option>
-                    {variedades.map((variedad) => <option key={variedad} value={variedad}>{variedad}</option>)}
+                    {variedades.map((variedad) => <option key={variedad.value} value={variedad.value}>{variedad.label}</option>)}
                   </select>
                 </div>
               )}

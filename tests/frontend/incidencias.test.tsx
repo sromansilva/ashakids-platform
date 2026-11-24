@@ -6,22 +6,19 @@ import { incidenciasService } from '@/modules/comunicacion/infrastructure/incide
 import { capabilityNotice } from '@/core/router/routeCapabilities';
 import { IncidentsTable } from '@/shared/presentation/components/common/IncidentsTable';
 
-vi.mock('@/modules/comunicacion/infrastructure/incidenciasService', () => ({
-  categoriasIncidencia: {
-    'Problemas técnicos': ['Funcional', 'Visual / Diseño', 'Carga / Rendimiento', 'Error de datos', 'Soporte de Plataforma'],
-    'Problemas de permisos': ['Cuentas y Permisos', 'Seguridad y Acceso'],
-    'Problemas de información': ['Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA', 'Otro'],
-  },
-  categoriaDeIncidencia: (tipo: string) => ({ Funcional: 'Problemas técnicos', 'Visual / Diseño': 'Problemas técnicos', 'Carga / Rendimiento': 'Problemas técnicos', 'Error de datos': 'Problemas técnicos', 'Soporte de Plataforma': 'Problemas técnicos', 'Cuentas y Permisos': 'Problemas de permisos', 'Seguridad y Acceso': 'Problemas de permisos', 'Información de Perfil': 'Problemas de información', 'Paciente / Agenda': 'Problemas de información', 'Seguimiento Terapéutico': 'Problemas de información', 'Sesiones y Citas': 'Problemas de información', 'Mundo ASHA': 'Problemas de información', Otro: 'Problemas de información' }[tipo] || null),
-  tiposIncidencia: ['Funcional', 'Cuentas y Permisos', 'Otro'],
-  incidenciasService: {
+vi.mock('@/modules/comunicacion/infrastructure/incidenciasService', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/modules/comunicacion/infrastructure/incidenciasService')>();
+  return {
+    ...actual,
+    incidenciasService: {
     crear: vi.fn(),
     listar: vi.fn(),
     estado: vi.fn(),
     notas: vi.fn(),
     terapeutasRelacionados: vi.fn(),
-  },
-}));
+    },
+  };
+});
 beforeEach(() => {
   vi.resetAllMocks();
   vi.mocked(incidenciasService.notas).mockResolvedValue({ items: [] });
@@ -111,6 +108,28 @@ it('muestra categorías y variedades, y evita el autoenrutamiento', async () => 
   fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
   fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Otro' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Soporte Técnico');
+});
+
+it('filtra y aclara las variedades de información según el rol', () => {
+  const parent = render(<IncidentForm role="PADRE" />);
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
+  expect(screen.getByRole('option', { name: 'Mi perfil familiar' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'Datos de mis hijos' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'Juegos y actividad de Mundo ASHA' })).toBeInTheDocument();
+  parent.unmount();
+
+  const therapist = render(<IncidentForm role="TERAPEUTA" />);
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
+  expect(screen.getByRole('option', { name: 'Mi perfil profesional' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'Pacientes y agenda' })).toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Mundo ASHA' })).not.toBeInTheDocument();
+  therapist.unmount();
+
+  render(<IncidentForm role="ADMIN" />);
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
+  expect(screen.getByRole('option', { name: 'Mi perfil de administración' })).toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Seguimiento Terapéutico' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Mundo ASHA' })).not.toBeInTheDocument();
 });
 
 it('envía solo la categoría y la descripción; el servidor determina el destinatario', async () => {
