@@ -38,7 +38,10 @@ it('clasifica las variedades debajo de las tres categorías y respeta quién rep
     assert.equal(route('TERAPEUTA', type).area_destino, 'SOPORTE_TECNICO');
     assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');
   }
-  for (const type of ['Cuentas y Permisos', 'Seguridad y Acceso']) {
+  for (const type of [
+    'Cuentas y Permisos', 'Seguridad y Acceso', 'Acceso a pacientes asignados',
+    'Acceso a agenda y sesiones', 'Permisos para reportes clínicos', 'Acceso a herramientas terapéuticas',
+  ]) {
     assert.equal(route('PADRE', type).area_destino, 'ADMINISTRACION');
     assert.equal(route('TERAPEUTA', type).area_destino, 'ADMINISTRACION');
     assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');

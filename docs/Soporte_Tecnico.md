@@ -18,6 +18,8 @@ Las variedades visibles dependen del rol. El backend vuelve a validar el permiso
 
 Soporte solo puede solicitar permisos o reportar problemas de acceso; esas solicitudes llegan a Administración y no aparecen en la bandeja de Soporte. Soporte no puede reportar incidencias técnicas para sí mismo. Terapeutas no abren solicitudes sobre información que pueden revisar en sus módulos. Administración puede cambiar su contraseña y configurar el segundo factor desde su perfil; para corregir sus datos de identidad debe contactar al titular del sistema u otro administrador autorizado. La consulta de información de una familia se dirige al terapeuta con relación previa registrada; si no existe, llega a Administración.
 
+Para terapeutas, las variedades de permisos identifican el recurso afectado: pacientes asignados, agenda y sesiones, reportes clínicos, herramientas del módulo o seguridad de la cuenta. Todas se asignan a Administración para su revisión; elegir una variedad nunca concede ni amplía permisos automáticamente.
+
 Solo ve registros con `area_destino = SOPORTE_TECNICO`. La API proyecta ticket, tipo, descripción, rol solicitante, prioridad, estado y fechas. No devuelve datos de contacto, identificadores de pacientes, terapeutas, expedientes o datos de cuenta del solicitante. El texto de una incidencia puede contener información escrita por quien la reporta: la interfaz pide no incluir datos clínicos, contraseñas ni información personal innecesaria.
 
 Las respuestas son visibles en el detalle de la incidencia del solicitante, usando los permisos existentes. Las notas internas solo se consultan desde el módulo de soporte. El autor de cada nota se conserva mediante una clave foránea para trazabilidad, sin exponer su identificador en el hilo.

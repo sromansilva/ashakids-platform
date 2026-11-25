@@ -12,7 +12,14 @@ const therapistIncidentTypes = new Set([
 const technicalIncidentTypes = new Set([
   'Funcional', 'Visual / Diseño', 'Carga / Rendimiento', 'Error de datos', 'Soporte de Plataforma',
 ]);
-const permissionIncidentTypes = new Set(['Cuentas y Permisos', 'Seguridad y Acceso']);
+const permissionIncidentTypes = new Set([
+  'Cuentas y Permisos',
+  'Seguridad y Acceso',
+  'Acceso a pacientes asignados',
+  'Acceso a agenda y sesiones',
+  'Permisos para reportes clínicos',
+  'Acceso a herramientas terapéuticas',
+]);
 const informationIncidentTypes = new Set([
   'Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA', 'Otro',
 ]);
@@ -114,11 +121,7 @@ export class IncidenciasService {
       return destino('SOPORTE_TECNICO');
     }
 
-    const adminTypes = [
-      'Cuentas y Permisos',
-      'Seguridad y Acceso',
-      'Información de Perfil',
-    ];
+    const adminTypes = [...permissionIncidentTypes, 'Información de Perfil'];
     if (adminTypes.includes(tipo)) {
       return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }

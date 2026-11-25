@@ -13,6 +13,10 @@ export const categoriasIncidencia = {
   'Problemas de permisos': [
     'Cuentas y Permisos',
     'Seguridad y Acceso',
+    'Acceso a pacientes asignados',
+    'Acceso a agenda y sesiones',
+    'Permisos para reportes clínicos',
+    'Acceso a herramientas terapéuticas',
   ],
   'Problemas de información': [
     'Información de Perfil',
@@ -37,12 +41,21 @@ type VariedadesPorCategoria = Record<CategoriaIncidencia, readonly VariedadIncid
 const opciones = (items: readonly string[], labels: Record<string, string> = {}): VariedadIncidencia[] =>
   items.map((value) => ({ value, label: labels[value] ?? value }));
 const tecnicas = opciones(categoriasIncidencia['Problemas técnicos']);
-const permisosPadre = opciones(categoriasIncidencia['Problemas de permisos'], {
+const permisosPadre = opciones(['Cuentas y Permisos', 'Seguridad y Acceso'], {
   'Cuentas y Permisos': 'Acceso a mi cuenta y permisos familiares',
   'Seguridad y Acceso': 'Seguridad de mi cuenta',
 });
-const permisosTerapeuta = opciones(categoriasIncidencia['Problemas de permisos'], {
-  'Cuentas y Permisos': 'Permisos para pacientes y herramientas',
+const permisosTerapeuta = opciones([
+  'Acceso a pacientes asignados',
+  'Acceso a agenda y sesiones',
+  'Permisos para reportes clínicos',
+  'Acceso a herramientas terapéuticas',
+  'Seguridad y Acceso',
+], {
+  'Acceso a pacientes asignados': 'No puedo abrir un paciente que tengo asignado',
+  'Acceso a agenda y sesiones': 'No tengo permiso para consultar mi agenda o sesiones',
+  'Permisos para reportes clínicos': 'No puedo crear o consultar reportes clínicos',
+  'Acceso a herramientas terapéuticas': 'No puedo usar una herramienta de mi módulo',
   'Seguridad y Acceso': 'Seguridad de mi cuenta profesional',
 });
 const variedadesPorRol: Record<RolIncidencia, VariedadesPorCategoria> = {
@@ -70,7 +83,7 @@ const variedadesPorRol: Record<RolIncidencia, VariedadesPorCategoria> = {
   },
   SOPORTE_TECNICO: {
     'Problemas técnicos': [],
-    'Problemas de permisos': opciones(categoriasIncidencia['Problemas de permisos'], {
+    'Problemas de permisos': opciones(['Cuentas y Permisos', 'Seguridad y Acceso'], {
       'Cuentas y Permisos': 'Solicitar o corregir permisos de una cuenta',
       'Seguridad y Acceso': 'Reportar un problema de acceso o seguridad',
     }),

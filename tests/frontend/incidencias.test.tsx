@@ -119,6 +119,11 @@ it('filtra y aclara las variedades de información según el rol', () => {
 
   const therapist = render(<IncidentForm role="TERAPEUTA" />);
   expect(screen.queryByRole('option', { name: 'Problemas de información' })).not.toBeInTheDocument();
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de permisos' } });
+  expect(screen.getByRole('option', { name: 'No puedo abrir un paciente que tengo asignado' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'No tengo permiso para consultar mi agenda o sesiones' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'No puedo crear o consultar reportes clínicos' })).toBeInTheDocument();
+  expect(screen.getByRole('option', { name: 'No puedo usar una herramienta de mi módulo' })).toBeInTheDocument();
   therapist.unmount();
 
   render(<IncidentForm role="ADMIN" />);

@@ -47,6 +47,16 @@ test('admin and therapist incident APIs share the three-state workflow and rejec
     } });
     assert.equal(rejected.status, 400);
   }
+  for (const tipo of [
+    'Acceso a pacientes asignados', 'Acceso a agenda y sesiones',
+    'Permisos para reportes clínicos', 'Acceso a herramientas terapéuticas',
+  ]) {
+    const submitted = await call('/incidencias', { method: 'POST', cookie: users.TERAPEUTA.cookie, body: {
+      tipo, descripcion: 'No puedo acceder a esta función de mi rol.',
+    } });
+    assert.equal(submitted.status, 201, JSON.stringify(submitted.data));
+    assert.equal(submitted.data.area_destino, 'ADMINISTRACION');
+  }
   const adminCreated = await call('/incidencias', { method: 'POST', cookie: users.PADRE.cookie, body: {
     tipo: 'Cuentas y Permisos', descripcion: 'Consulta sobre permisos de la cuenta.',
   } });
