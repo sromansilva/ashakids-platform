@@ -19,9 +19,9 @@ it('asigna las tres categorías a áreas adecuadas según el rol que reporta', (
   assert.equal(route('TERAPEUTA', 'Problemas de permisos').area_destino, 'ADMINISTRACION');
   assert.equal(route('TERAPEUTA', 'Problemas de información').area_destino, 'ADMINISTRACION');
 
-  for (const type of ['Problemas técnicos', 'Problemas de permisos', 'Problemas de información']) {
-    assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');
-  }
+  assert.equal(route('ADMIN', 'Problemas técnicos').area_destino, 'SOPORTE_TECNICO');
+  assert.equal(route('ADMIN', 'Problemas de permisos').area_destino, 'SOPORTE_TECNICO');
+  assert.equal(route('ADMIN', 'Problemas de información').area_destino, 'SOPORTE_TECNICO');
 });
 
 it('no permite que un terapeuta o administrador se asigne incidencias a su propia área', () => {
@@ -49,7 +49,6 @@ it('clasifica las variedades debajo de las tres categorías y respeta quién rep
     assert.equal(route('TERAPEUTA', type).area_destino, 'ADMINISTRACION');
     assert.equal(route('ADMIN', type).area_destino, 'SOPORTE_TECNICO');
   }
-  for (const type of ['Funcional', 'Cuentas y Permisos', 'Paciente / Agenda']) {
-    assert.equal(route('SOPORTE_TECNICO', type).area_destino, 'SOPORTE_TECNICO');
-  }
+  assert.equal(route('SOPORTE_TECNICO', 'Cuentas y Permisos').area_destino, 'ADMINISTRACION');
+  assert.equal(route('SOPORTE_TECNICO', 'Seguridad y Acceso').area_destino, 'ADMINISTRACION');
 });

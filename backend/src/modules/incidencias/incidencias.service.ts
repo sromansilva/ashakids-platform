@@ -9,6 +9,13 @@ const therapistIncidentTypes = new Set([
   'Mundo ASHA',
   'Paciente / Agenda',
 ]);
+const technicalIncidentTypes = new Set([
+  'Funcional', 'Visual / Diseño', 'Carga / Rendimiento', 'Error de datos', 'Soporte de Plataforma',
+]);
+const permissionIncidentTypes = new Set(['Cuentas y Permisos', 'Seguridad y Acceso']);
+const informationIncidentTypes = new Set([
+  'Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA', 'Otro',
+]);
 
 export interface IncidenciaItem {
   id_incidencia: number;
@@ -66,9 +73,13 @@ export class IncidenciasService {
       id_terapeuta: area === 'TERAPEUTA' ? terapeutaId : null,
     });
 
-    // Las incidencias creadas desde el panel de soporte permanecen en su bandeja,
-    // aunque la variedad describa permisos o información de otra área.
-    if (rolSolicitante === 'SOPORTE_TECNICO') return destino('SOPORTE_TECNICO');
+    // Soporte solo puede escalar permisos/acceso a Administración. El alta
+    // valida la variedad permitida antes de llegar a esta clasificación.
+    if (rolSolicitante === 'SOPORTE_TECNICO') {
+      return permissionIncidentTypes.has(tipo) || tipo === 'Problemas de permisos'
+        ? destino('ADMINISTRACION')
+        : destino('SOPORTE_TECNICO');
+    }
 
     // New categories are mapped on the server; client supplied destinations are ignored.
     if (tipo === 'Problemas técnicos') return destino('SOPORTE_TECNICO');
@@ -252,6 +263,17 @@ export class IncidenciasService {
   ): Promise<IncidenciaItem> {
     const solicitud = data.descripcion || data.titulo || '';
     const tipo = data.tipo || 'Consulta General';
+    const allowedTypes = rol === 'PADRE'
+      ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes])
+      : rol === 'TERAPEUTA'
+        ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes])
+        : rol === 'ADMIN'
+          ? technicalIncidentTypes
+          : permissionIncidentTypes;
+    const knownTypes = new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes]);
+    if ((rol === 'SOPORTE_TECNICO' || knownTypes.has(tipo)) && !allowedTypes.has(tipo)) {
+      throw Object.assign(new Error('Esta variedad de incidencia no está disponible para tu rol.'), { status: 400 });
+    }
     let terapeutaRelacionado: number | null = null;
     if (rol === 'PADRE' && therapistIncidentTypes.has(tipo)) {
       const relacionados = await this.obtenerTerapeutasRelacionados(userId);
