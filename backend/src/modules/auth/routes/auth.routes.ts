@@ -5,6 +5,7 @@ import { authenticate } from '../../../core/middleware/auth.middleware.js';
 export const authRouter = Router();
 
 authRouter.post('/login', (req, res, next) => authController.login(req, res, next));
+authRouter.post('/change-password', authenticate, (req, res, next) => authController.changePassword(req, res, next));
 authRouter.post('/login/2fa', (req, res, next) => authController.verify2faLogin(req, res, next));
 authRouter.get('/2fa/status', authenticate, (req, res, next) => authController.get2faStatus(req, res, next));
 authRouter.post('/2fa/setup', authenticate, (req, res, next) => authController.setup2fa(req, res, next));

@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { soporteService } from '../infrastructure/soporteService';
 import { estadosSoporte, type TicketSoporte } from '../domain/soporte';
 import { IncidentForm } from '@/shared/presentation/components/common/IncidentForm';
 
 const field = 'rounded-xl border border-[#E8E5F4] bg-white px-4 py-3 text-sm';
 export function SoporteIncidencias() {
-  const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [estado, setEstado] = useState('');
   const [prioridad, setPrioridad] = useState('');
@@ -31,10 +30,10 @@ export function SoporteIncidencias() {
   }, [search, estado, prioridad, offset, refresh]);
   return <div className="space-y-6">
     <div className="flex flex-wrap items-center justify-between gap-4">
-      <div><h1 className="text-3xl font-black">Incidencias técnicas</h1><p className="mt-2 text-sm text-[#615274]">Atiende los problemas de la plataforma y registra su solución.</p></div>
-      <button className="rounded-2xl bg-[#6B46FE] px-5 py-3 font-bold text-white hover:bg-[#5833EA]" onClick={() => setCreating(!creating)}>{creating ? 'Cerrar formulario' : 'Nueva incidencia'}</button>
+      <div><h1 className="text-3xl font-black">Incidencias técnicas</h1><p className="mt-2 text-sm text-[#615274]">Atiende y resuelve los problemas técnicos asignados a Soporte.</p></div>
+      <button className="rounded-2xl bg-[#6B46FE] px-5 py-3 font-bold text-white hover:bg-[#5833EA]" onClick={() => setCreating(!creating)}>{creating ? 'Cerrar formulario' : 'Solicitar permisos'}</button>
     </div>
-    {creating && <IncidentForm role="SOPORTE_TECNICO" defaultTipo="Soporte de Plataforma" title="Nueva incidencia técnica" subtitle="Describe el problema técnico sin incluir información clínica, credenciales ni datos personales innecesarios." submitButtonText="Registrar incidencia" submitIncident={soporteService.crear} onSuccess={(ticket) => navigate(`/soporte/incidencias/${ticket.id_incidencia}`)} />}
+    {creating && <IncidentForm role="SOPORTE_TECNICO" title="Solicitud de permisos o acceso" subtitle="Selecciona el permiso que necesitas o describe un problema de acceso. Administración revisará la solicitud; no incluyas contraseñas ni datos clínicos." submitButtonText="Enviar a Administración" submitIncident={soporteService.crear} />}
     <form className="flex flex-wrap gap-3" onSubmit={(event) => event.preventDefault()}>
       <label className="flex flex-col gap-1 text-sm">Buscar<input className={field} value={search} maxLength={150} onChange={(event) => { setSearch(event.target.value); setOffset(0); }} placeholder="Ticket, tipo o descripción" /></label>
       <label className="flex flex-col gap-1 text-sm">Estado<select className={field} value={estado} onChange={(event) => { setEstado(event.target.value); setOffset(0); }}><option value="">Todos</option>{estadosSoporte.map((value) => <option key={value}>{value}</option>)}</select></label>

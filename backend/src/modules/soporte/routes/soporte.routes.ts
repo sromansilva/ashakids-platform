@@ -15,11 +15,9 @@ const filtersSchema = z.object({
   limit: z.coerce.number().int().min(1).max(100).default(30),
 });
 const createSchema = z.object({
-  tipo: z.string().trim().min(1).max(50),
+  tipo: z.enum(['Cuentas y Permisos', 'Seguridad y Acceso']),
   descripcion: z.string().trim().min(5).max(1000),
   envio_id: z.string().uuid().optional(),
-  area_destino: z.enum(['ADMINISTRACION', 'TERAPEUTA', 'SOPORTE_TECNICO']).optional(),
-  id_terapeuta: z.number().int().positive().nullable().optional(),
 }).strict();
 const noteSchema = z.object({ contenido: z.string().trim().min(1).max(4000), interna: z.boolean().default(false) }).strict();
 const route = (handler: RequestHandler): RequestHandler => (req, res, next) => {

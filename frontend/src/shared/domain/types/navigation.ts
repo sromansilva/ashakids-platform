@@ -1,7 +1,7 @@
 
 
 export type View =
-  | "soporte" | "soporte/incidencias"
+  | "soporte" | "soporte/incidencias" | "soporte/config"
   | "landing" | "login"
   | "padre" | "padre/welcome" | "padre/agenda" | "padre/psicologos" | "padre/recompensas" | "padre/mensajes"
   | "padre/hijos" | "padre/progreso" | "padre/reportes" | "padre/config" | "padre/camino" | "padre/ayuda"

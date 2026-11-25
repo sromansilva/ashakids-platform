@@ -34,21 +34,58 @@ test('state migration preserves historical states, incident content, timestamps 
 test('admin and therapist incident APIs share the three-state workflow and reject obsolete inputs', { timeout: 30000 }, async (t) => {
   const { db, users, call } = await memoryApp(t, { migrations: [migrateIncidencias] });
   const therapist = (await db.query('SELECT id_terapeuta FROM terapeutas WHERE id_usuario=$1', [users.TERAPEUTA.id_usuario])).rows[0];
-  for (const role of ['ADMIN', 'TERAPEUTA']) {
-    const created = await call('/incidencias', { method: 'POST', cookie: users.PADRE.cookie, body: role === 'ADMIN'
-      ? { tipo: 'Cuentas y Permisos', descripcion: 'Consulta sobre permisos de la cuenta.' }
-      : { tipo: 'Seguimiento Terapéutico', descripcion: 'Consulta de seguimiento.', id_terapeuta: therapist.id_terapeuta } });
-    assert.equal(created.status, 201);
-    const id = created.data.id_incidencia;
-    const path = role === 'ADMIN' ? `/admin/incidencias/${id}` : `/incidencias/${id}/estado`;
-    for (const estado of ['RECIBIDA', 'EN ATENCIÓN', 'RESUELTA']) {
-      const response = await call(path, { method: 'PATCH', cookie: users[role].cookie, body: { estado } });
-      assert.equal(response.status, 200);
-      assert.equal(response.data.estado, estado);
-    }
-    for (const estado of ['LEIDA', 'LEÍDA', 'EN PROCESO', 'SOLUCIONADA', 'ATENDIDA', 'ABIERTA', null]) {
-      assert.equal((await call(path, { method: 'PATCH', cookie: users[role].cookie, body: { estado } })).status, 400);
-    }
-    assert.equal((await call(`/incidencias/${id}`, { cookie: users.PADRE.cookie })).data.estado, 'RESUELTA');
+  for (const [user, tipo] of [
+    [users.TERAPEUTA, 'Información de Perfil'],
+    [users.TERAPEUTA, 'Problemas de información'],
+    [users.ADMIN, 'Cuentas y Permisos'],
+    [users.ADMIN, 'Problemas de permisos'],
+    [users.ADMIN, 'Paciente / Agenda'],
+    [users.ADMIN, 'Problemas de información'],
+  ]) {
+    const rejected = await call('/incidencias', { method: 'POST', cookie: user.cookie, body: {
+      tipo, descripcion: 'Esta variedad no corresponde al rol solicitante.',
+    } });
+    assert.equal(rejected.status, 400);
   }
+  for (const tipo of [
+    'Acceso a pacientes asignados', 'Acceso a agenda y sesiones',
+    'Permisos para reportes clínicos', 'Acceso a herramientas terapéuticas',
+  ]) {
+    const submitted = await call('/incidencias', { method: 'POST', cookie: users.TERAPEUTA.cookie, body: {
+      tipo, descripcion: 'No puedo acceder a esta función de mi rol.',
+    } });
+    assert.equal(submitted.status, 201, JSON.stringify(submitted.data));
+    assert.equal(submitted.data.area_destino, 'ADMINISTRACION');
+  }
+  const adminCreated = await call('/incidencias', { method: 'POST', cookie: users.PADRE.cookie, body: {
+    tipo: 'Cuentas y Permisos', descripcion: 'Consulta sobre permisos de la cuenta.',
+  } });
+  assert.equal(adminCreated.status, 201);
+  const adminId = adminCreated.data.id_incidencia;
+  const adminPath = `/admin/incidencias/${adminId}`;
+  for (const estado of ['RECIBIDA', 'EN ATENCIÓN', 'RESUELTA']) {
+    const response = await call(adminPath, { method: 'PATCH', cookie: users.ADMIN.cookie, body: { estado } });
+    assert.equal(response.status, 200, JSON.stringify(response.data));
+    assert.equal(response.data.estado, estado);
+  }
+  for (const estado of ['LEIDA', 'LEÍDA', 'EN PROCESO', 'SOLUCIONADA', 'ATENDIDA', 'ABIERTA', null]) {
+    assert.equal((await call(adminPath, { method: 'PATCH', cookie: users.ADMIN.cookie, body: { estado } })).status, 400);
+  }
+  assert.equal((await call(`/incidencias/${adminId}`, { cookie: users.PADRE.cookie })).data.estado, 'RESUELTA');
+
+  const therapistIncident = (await db.query(`INSERT INTO incidencias (
+    id_usuario, tipo, solicitud, solicitante, rol_solicitante, responsable, area_destino,
+    id_terapeuta, prioridad, estado
+  ) VALUES ($1, 'Paciente / Agenda', 'Consulta asignada', 'Familia de prueba', 'PADRE', 'terapeuta',
+    'TERAPEUTA', $2, 2, 'RECIBIDA') RETURNING id_incidencia`, [users.PADRE.id_usuario, therapist.id_terapeuta])).rows[0];
+  const therapistPath = `/incidencias/${therapistIncident.id_incidencia}/estado`;
+  for (const estado of ['RECIBIDA', 'EN ATENCIÓN', 'RESUELTA']) {
+    const response = await call(therapistPath, { method: 'PATCH', cookie: users.TERAPEUTA.cookie, body: { estado } });
+    assert.equal(response.status, 200, JSON.stringify(response.data));
+    assert.equal(response.data.estado, estado);
+  }
+  for (const estado of ['LEIDA', 'LEÍDA', 'EN PROCESO', 'SOLUCIONADA', 'ATENDIDA', 'ABIERTA', null]) {
+    assert.equal((await call(therapistPath, { method: 'PATCH', cookie: users.TERAPEUTA.cookie, body: { estado } })).status, 400);
+  }
+  assert.equal((await call(`/incidencias/${therapistIncident.id_incidencia}`, { cookie: users.PADRE.cookie })).data.estado, 'RESUELTA');
 });

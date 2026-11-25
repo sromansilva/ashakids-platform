@@ -1,6 +1,7 @@
 import { lazy } from "react";
 export const SoporteIncidencias = lazy(() => import('@/modules/soporte/presentation/SoporteIncidencias').then(m => ({ default: m.SoporteIncidencias })));
 export const SoporteDetalle = lazy(() => import('@/modules/soporte/presentation/SoporteDetalle').then(m => ({ default: m.SoporteDetalle })));
+export const SoporteConfig = lazy(() => import('@/modules/soporte/presentation/SoporteConfig').then(m => ({ default: m.SoporteConfig })));
 export const RegisterSelector = lazy(() => import("@/modules/auth/presentation/Auth/RegisterSelector").then(m => ({ default: m.RegisterSelector })));
 export const RegisterPadre = lazy(() => import("@/modules/auth/presentation/Auth/RegisterPadre").then(m => ({ default: m.RegisterPadre })));
 export const RegisterVerify = lazy(() => import("@/modules/auth/presentation/Auth/RegisterVerify").then(m => ({ default: m.RegisterVerify })));

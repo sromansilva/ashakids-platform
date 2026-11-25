@@ -14,6 +14,9 @@ import {
 } from "@/modules/auth/domain/auth";
 
 export const authService = {
+  async changePassword(current_password: string, new_password: string): Promise<MessageResponse> {
+    return apiClient.post<MessageResponse>("/auth/change-password", { current_password, new_password });
+  },
   async createPassword(token: string, new_password: string): Promise<MessageResponse> {
     return apiClient.post("/auth/create-password", { token, new_password });
   },
