@@ -4,7 +4,21 @@
 
 `SOPORTE_TECNICO` es un cuarto rol independiente. Usa la autenticación por contraseña y la cookie de sesión existente. Tras iniciar sesión entra en `/soporte`; su módulo no reutiliza pantallas de Administración.
 
-Puede listar y filtrar incidencias técnicas por texto, estado y prioridad, navegar por páginas, consultar el detalle, registrar incidencias, responder, agregar notas internas y actualizar el estado hasta solucionarlas. Los estados son `RECIBIDA`, `EN ATENCIÓN` y `RESUELTA`; se normalizan los nombres heredados al leerlos. La clasificación y la prioridad reutilizan el flujo de incidencias existente.
+Puede listar y filtrar incidencias técnicas por texto, estado y prioridad, navegar por páginas, consultar el detalle, responder, agregar notas internas y actualizar el estado hasta solucionarlas. Los estados son `RECIBIDA`, `EN ATENCIÓN` y `RESUELTA`; se normalizan los nombres heredados al leerlos. La clasificación y la prioridad reutilizan el flujo de incidencias existente.
+
+## Categorías y destinatarios de incidencias
+
+Las variedades visibles dependen del rol. El backend vuelve a validar el permiso y calcula el destino; no confía en el formulario ni en el área enviada por el cliente.
+
+| Categoría | PADRE | TERAPEUTA | ADMIN | SOPORTE_TECNICO |
+| --- | --- | --- | --- |
+| Problemas técnicos | Soporte Técnico | Soporte Técnico | Soporte Técnico | No disponible |
+| Problemas de permisos | Administración | Administración | No disponible | Administración |
+| Problemas de información | Terapeuta relacionado con la familia; si no hay uno, Administración | No disponible | No disponible | No disponible |
+
+Soporte solo puede solicitar permisos o reportar problemas de acceso; esas solicitudes llegan a Administración y no aparecen en la bandeja de Soporte. Soporte no puede reportar incidencias técnicas para sí mismo. Terapeutas no abren solicitudes sobre información que pueden revisar en sus módulos. Administración puede cambiar su contraseña y configurar el segundo factor desde su perfil; para corregir sus datos de identidad debe contactar al titular del sistema u otro administrador autorizado. La consulta de información de una familia se dirige al terapeuta con relación previa registrada; si no existe, llega a Administración.
+
+Para terapeutas, las variedades de permisos identifican el recurso afectado: pacientes asignados, agenda y sesiones, reportes clínicos, herramientas del módulo o seguridad de la cuenta. Todas se asignan a Administración para su revisión; elegir una variedad nunca concede ni amplía permisos automáticamente.
 
 Solo ve registros con `area_destino = SOPORTE_TECNICO`. La API proyecta ticket, tipo, descripción, rol solicitante, prioridad, estado y fechas. No devuelve datos de contacto, identificadores de pacientes, terapeutas, expedientes o datos de cuenta del solicitante. El texto de una incidencia puede contener información escrita por quien la reporta: la interfaz pide no incluir datos clínicos, contraseñas ni información personal innecesaria.
 
@@ -37,7 +51,7 @@ El catálogo de estados de todas las incidencias es únicamente `RECIBIDA`, `EN 
 
 | Método | Ruta | Operación |
 | --- | --- | --- |
-| GET / POST | `/api/v1/soporte/incidencias` | Listar con filtros / registrar |
+| GET / POST | `/api/v1/soporte/incidencias` | Listar incidencias técnicas con filtros / escalar una solicitud de permisos a Administración |
 | GET | `/api/v1/soporte/incidencias/:id` | Consultar incidencia técnica |
 | PATCH | `/api/v1/soporte/incidencias/:id/estado` | Actualizar `{ estado }` |
 | GET / POST | `/api/v1/soporte/incidencias/:id/notas` | Consultar / guardar `{ contenido, interna }` |

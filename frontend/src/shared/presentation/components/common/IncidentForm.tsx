@@ -1,52 +1,35 @@
 import { useEffect, useState } from 'react';
 import { CheckCircle, FileText, Settings, Target } from 'lucide-react';
 import {
+  categoriaDeIncidencia,
+  categoriasIncidencia,
+  categoriasIncidenciaParaRol,
+  variedadesIncidenciaParaRol,
   incidenciasService,
-  tiposIncidencia,
-  TerapeutaOption,
-  Incidencia,
 } from '@/modules/comunicacion/infrastructure/incidenciasService';
-import { IncidentTherapistSelector } from './IncidentTherapistSelector';
+import type { Incidencia, RolIncidencia } from '@/modules/comunicacion/infrastructure/incidenciasService';
 
-export function getAutomaticAreaForTipo(tipo: string): 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO' | null {
-  if (
-    [
-      'Seguimiento Terapéutico',
-      'Sesiones y Citas',
-      'Mundo ASHA',
-      'Paciente / Agenda',
-    ].includes(tipo)
-  ) {
-    return 'TERAPEUTA';
+export function getAutomaticAreaForTipo(
+  tipo: string,
+  role: 'PADRE' | 'TERAPEUTA' | 'ADMIN' | 'SOPORTE_TECNICO' = 'PADRE',
+  hasRelatedTherapist = false,
+): 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO' | null {
+  if (role === 'SOPORTE_TECNICO') return 'ADMINISTRACION';
+  const categoria = categoriaDeIncidencia(tipo);
+  if (categoria === 'Problemas técnicos') return 'SOPORTE_TECNICO';
+  if (categoria === 'Problemas de permisos') return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
+  if (categoria === 'Problemas de información') {
+    if (['Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA'].includes(tipo)) {
+      if (role === 'PADRE' && hasRelatedTherapist) return 'TERAPEUTA';
+      return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
+    }
+    return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
   }
-
-  if (
-    [
-      'Cuentas y Permisos',
-      'Seguridad y Acceso',
-      'Información de Perfil',
-    ].includes(tipo)
-  ) {
-    return 'ADMINISTRACION';
-  }
-
-  if (
-    [
-      'Funcional',
-      'Visual / Diseño',
-      'Carga / Rendimiento',
-      'Error de datos',
-      'Soporte de Plataforma',
-    ].includes(tipo)
-  ) {
-    return 'SOPORTE_TECNICO';
-  }
-
   return null;
 }
 
 interface IncidentFormProps {
-  role?: 'PADRE' | 'TERAPEUTA' | 'ADMIN' | 'SOPORTE_TECNICO';
+  role?: RolIncidencia;
   submitIncident?: (body: {
     envio_id: string;
     tipo: string;
@@ -73,8 +56,10 @@ export function IncidentForm({
   onSuccess,
   submitIncident = incidenciasService.crear,
 }: IncidentFormProps) {
+  const defaultCategory = categoriaDeIncidencia(defaultTipo) ?? '';
+  const [categoria, setCategoria] = useState<keyof typeof categoriasIncidencia | ''>(defaultCategory);
   const [tipo, setTipo] = useState(defaultTipo);
-  const [manualArea, setManualArea] = useState<'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO' | ''>('');
+  const variedades = categoria ? variedadesIncidenciaParaRol(role, categoria) : [];
   const [titulo, setTitulo] = useState('');
   const [descripcion, setDescripcion] = useState('');
   const [envio, setEnvio] = useState(() => crypto.randomUUID());
@@ -82,33 +67,38 @@ export function IncidentForm({
   const [sent, setSent] = useState<number | null>(null);
   const [sentTicket, setSentTicket] = useState<string>('');
   const [error, setError] = useState('');
+  const categoriasDisponibles = categoriasIncidenciaParaRol(role);
 
-  // Terapeutas relacionados
-  const [terapeutasPrevios, setTerapeutaPrevios] = useState<TerapeutaOption[]>([]);
-  const [terapeutasDisponibles, setTerapeutaDisponibles] = useState<TerapeutaOption[]>([]);
-  const [terapeutaMode, setTerapeutaMode] = useState<'PREVIO' | 'OTRO'>('PREVIO');
-  const [selectedTerapeutaId, setSelectedTerapeutaId] = useState<number | null>(null);
+  const [hasRelatedTherapist, setHasRelatedTherapist] = useState(false);
+  const [therapistLookupDone, setTherapistLookupDone] = useState(role !== 'PADRE');
 
   const fieldStyle =
     'block w-full rounded-2xl border border-[#E8E5F4] bg-white px-4 py-3.5 text-sm text-[#1C1135] placeholder:text-[#9E95B7] focus:outline-hidden focus:border-[#6B46FE] focus:ring-3 focus:ring-[#6B46FE]/15 disabled:opacity-60 transition-all';
 
   useEffect(() => {
-    if (typeof incidenciasService.terapeutasRelacionados === 'function') {
-      incidenciasService
-        .terapeutasRelacionados()
-        .then((data) => {
-          setTerapeutaPrevios(data.previos || []);
-          setTerapeutaDisponibles(data.disponibles || []);
-          if (data.previos && data.previos.length > 0) {
-            setSelectedTerapeutaId(data.previos[0].id_terapeuta);
-          } else if (data.disponibles && data.disponibles.length > 0) {
-            setSelectedTerapeutaId(data.disponibles[0].id_terapeuta);
-          }
-        })
-        .catch(() => {
-          // Fallback silencioso si no hay conexión o en pruebas
-        });
+    if (role !== 'PADRE') {
+      setTherapistLookupDone(true);
+      return;
     }
+    setTherapistLookupDone(false);
+    if (typeof incidenciasService.terapeutasRelacionados !== 'function') {
+      setHasRelatedTherapist(false);
+      setTherapistLookupDone(true);
+      return;
+    }
+    let active = true;
+    incidenciasService
+      .terapeutasRelacionados()
+      .then((data) => {
+        if (active) setHasRelatedTherapist((data.previos || []).length > 0);
+      })
+      .catch(() => {
+        if (active) setHasRelatedTherapist(false);
+      })
+      .finally(() => {
+        if (active) setTherapistLookupDone(true);
+      });
+    return () => { active = false; };
   }, [role]);
 
   const changed = () => {
@@ -116,18 +106,15 @@ export function IncidentForm({
     setError('');
   };
 
-  // Determinar área de destino: automática para tipos estándar, manual para 'Otro'
-  const resolvedArea: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO' | null =
-    tipo === 'Otro' ? (manualArea || null) : (tipo ? getAutomaticAreaForTipo(tipo) : null);
-
-  const isTherapistDestination = resolvedArea === 'TERAPEUTA';
+  const resolvedArea = tipo ? getAutomaticAreaForTipo(tipo, role, hasRelatedTherapist) : null;
+  const waitingForTherapist = role === 'PADRE' && ['Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA'].includes(tipo) && !therapistLookupDone;
 
   const isValid =
     !!tipo &&
     !!resolvedArea &&
     !!titulo.trim() &&
     !!descripcion.trim() &&
-    (!isTherapistDestination || selectedTerapeutaId !== null || terapeutasDisponibles.length === 0);
+    !waitingForTherapist;
 
   return (
     <section className={`${className ? 'w-full max-w-[1320px]' : 'w-full max-w-5xl'} mx-auto p-4 sm:p-8 ${className}`} style={{ fontFamily: '"Nunito", system-ui, sans-serif' }}>
@@ -145,8 +132,9 @@ export function IncidentForm({
                 {sentTicket ? `Ticket ${sentTicket} registrado` : `Reporte #${sent} enviado`}
               </h2>
               <p className="text-sm mt-1 text-emerald-800">
-                Tu solicitud ha sido registrada exitosamente y asignada al área correspondiente. Puedes seguir su estado en
-                tu historial.
+                {role === 'SOPORTE_TECNICO'
+                  ? 'La solicitud de acceso se envió a Administración para su revisión. No aparecerá en la bandeja de Soporte Técnico.'
+                  : 'Tu solicitud ha sido registrada exitosamente y asignada al área correspondiente. Puedes seguir su estado en tu historial.'}
               </p>
               <button
                 type="button"
@@ -154,8 +142,8 @@ export function IncidentForm({
                 onClick={() => {
                   setSent(null);
                   setSentTicket('');
+                  setCategoria(defaultCategory);
                   setTipo(defaultTipo);
-                  setManualArea('');
                   setTitulo('');
                   setDescripcion('');
                   changed();
@@ -178,8 +166,6 @@ export function IncidentForm({
                     tipo,
                     titulo: titulo.trim(),
                     descripcion: descripcion.trim(),
-                    area_destino: resolvedArea || undefined,
-                    id_terapeuta: isTherapistDestination ? selectedTerapeutaId : null,
                   });
                   setSent(result.id_incidencia);
                   if (result.ticket) setSentTicket(result.ticket);
@@ -194,124 +180,74 @@ export function IncidentForm({
               }}
             >
               <div>
-                <label htmlFor="incident-type" className="block text-xs font-bold text-[#1C1135] mb-2">
-                  Tipo de incidencia
+                <label htmlFor="incident-category" className="block text-xs font-bold text-[#1C1135] mb-2">
+                  Tipo general de incidencia
                 </label>
                 <select
-                  id="incident-type"
+                  id="incident-category"
                   required
                   disabled={sending}
-                  value={tipo}
+                  value={categoria}
                   className={fieldStyle}
                   onChange={(e) => {
-                    const newTipo = e.target.value;
-                    setTipo(newTipo);
-                    if (newTipo !== 'Otro') {
-                      setManualArea('');
-                    }
-                    const autoArea = getAutomaticAreaForTipo(newTipo);
-                    if (autoArea === 'TERAPEUTA' && !selectedTerapeutaId) {
-                      if (terapeutasPrevios.length > 0) {
-                        setSelectedTerapeutaId(terapeutasPrevios[0].id_terapeuta);
-                      } else if (terapeutasDisponibles.length > 0) {
-                        setSelectedTerapeutaId(terapeutasDisponibles[0].id_terapeuta);
-                      }
-                    }
+                    setCategoria(e.target.value as keyof typeof categoriasIncidencia);
+                    setTipo('');
                     changed();
                   }}
                 >
                   <option value="" disabled>
-                    Selecciona el tipo de problema
+                    Selecciona el área del problema
                   </option>
-                  {tiposIncidencia.map((t) => (
-                    <option key={t} value={t}>
-                      {t}
+                  {categoriasDisponibles.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
                     </option>
                   ))}
                 </select>
               </div>
 
-              {/* Cuadro de Área de destino y asignación (no editable para tipos definidos, editable para 'Otro') */}
+              {!!categoria && (
+                <div>
+                  <label htmlFor="incident-type" className="block text-xs font-bold text-[#1C1135] mb-2">
+                    Variedad de incidencia
+                  </label>
+                  <select
+                    id="incident-type"
+                    required
+                    disabled={sending}
+                    value={tipo}
+                    className={fieldStyle}
+                    onChange={(e) => {
+                      setTipo(e.target.value);
+                      changed();
+                    }}
+                  >
+                    <option value="" disabled>Selecciona la variedad que describe el problema</option>
+                    {variedades.map((variedad) => <option key={variedad.value} value={variedad.value}>{variedad.label}</option>)}
+                  </select>
+                </div>
+              )}
+
+              {/* Mostrar el destinatario antes de enviar; el backend decide y valida la asignación. */}
               {!!tipo && (
                 <div className="bg-[#FAF9FD] border border-[#E8E5F4] p-4 rounded-2xl space-y-3">
-                  {tipo !== 'Otro' ? (
-                    <div>
-                      <label htmlFor="incident-destination-area" className="block text-xs font-bold text-[#1C1135] mb-2">
-                        Área de destino
-                      </label>
-                      <input
-                        id="incident-destination-area"
-                        type="text"
-                        readOnly
-                        disabled
-                        value={
-                          resolvedArea === 'SOPORTE_TECNICO'
-                            ? 'Soporte Técnico'
-                            : resolvedArea === 'ADMINISTRACION'
-                            ? 'Administración'
-                            : resolvedArea === 'TERAPEUTA'
-                            ? 'Terapeuta'
-                            : ''
-                        }
-                        className={`${fieldStyle} bg-[#F4F2FA] text-[#1C1135] font-bold cursor-not-allowed border-[#DDD8EE] select-none`}
-                      />
-                      <p className="text-[11px] text-[#6B5E8A] font-medium mt-1.5">
-                        {resolvedArea === 'SOPORTE_TECNICO' && 'Asignación automática: esta incidencia será atendida por Soporte Técnico.'}
-                        {resolvedArea === 'ADMINISTRACION' && 'Asignación automática: esta incidencia será atendida por Administración.'}
-                        {resolvedArea === 'TERAPEUTA' && 'Asignación automática: esta incidencia está dirigida al área clínica / terapeuta.'}
-                      </p>
-                    </div>
-                  ) : (
-                    <div>
-                      <label htmlFor="incident-destination-area" className="block text-xs font-bold text-[#1C1135] mb-2">
-                        Área de destino
-                      </label>
-                      <select
-                        id="incident-destination-area"
-                        required
-                        disabled={sending}
-                        value={manualArea}
-                        className={fieldStyle}
-                        onChange={(e) => {
-                          const val = e.target.value as 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO';
-                          setManualArea(val);
-                          if (val === 'TERAPEUTA' && !selectedTerapeutaId) {
-                            if (terapeutasPrevios.length > 0) {
-                              setSelectedTerapeutaId(terapeutasPrevios[0].id_terapeuta);
-                            } else if (terapeutasDisponibles.length > 0) {
-                              setSelectedTerapeutaId(terapeutasDisponibles[0].id_terapeuta);
-                            }
-                          }
-                          changed();
-                        }}
-                      >
-                        <option value="" disabled>
-                          Selecciona el área de destino
-                        </option>
-                        <option value="SOPORTE_TECNICO">Soporte Técnico</option>
-                        <option value="ADMINISTRACION">Administración</option>
-                        <option value="TERAPEUTA">Terapeuta</option>
-                      </select>
-                      <p className="text-[11px] text-[#6B5E8A] font-medium mt-1.5">
-                        Para incidencias tipo &quot;Otro&quot;, puedes elegir libremente a qué área remitir tu reporte.
-                      </p>
-                    </div>
-                  )}
-
-                  {isTherapistDestination && (
-                    <IncidentTherapistSelector
-                      terapeutasPrevios={terapeutasPrevios}
-                      terapeutasDisponibles={terapeutasDisponibles}
-                      terapeutaMode={terapeutaMode}
-                      setTerapeutaMode={setTerapeutaMode}
-                      selectedTerapeutaId={selectedTerapeutaId}
-                      onSelectTerapeuta={(id) => {
-                        setSelectedTerapeutaId(id);
-                        changed();
-                      }}
-                      fieldStyle={fieldStyle}
-                    />
-                  )}
+                  <label htmlFor="incident-destination-area" className="block text-xs font-bold text-[#1C1135] mb-2">
+                    Área de destino
+                  </label>
+                  <input
+                    id="incident-destination-area"
+                    type="text"
+                    readOnly
+                    disabled
+                    value={waitingForTherapist ? 'Consultando destino…' : resolvedArea === 'SOPORTE_TECNICO' ? 'Soporte Técnico' : resolvedArea === 'ADMINISTRACION' ? 'Administración' : 'Terapeuta relacionado'}
+                    className={`${fieldStyle} bg-[#F4F2FA] text-[#1C1135] font-bold cursor-not-allowed border-[#DDD8EE] select-none`}
+                  />
+                  <p className="text-[11px] text-[#6B5E8A] font-medium mt-1.5">
+                    {waitingForTherapist && 'Estamos identificando al terapeuta que atenderá la consulta.'}
+                    {!waitingForTherapist && resolvedArea === 'SOPORTE_TECNICO' && 'Asignación automática: recibirá el reporte Soporte Técnico.'}
+                    {!waitingForTherapist && resolvedArea === 'ADMINISTRACION' && 'Asignación automática: recibirá el reporte Administración.'}
+                    {!waitingForTherapist && resolvedArea === 'TERAPEUTA' && 'Asignación automática: recibirá el reporte el terapeuta relacionado con tu familia.'}
+                  </p>
                 </div>
               )}
 

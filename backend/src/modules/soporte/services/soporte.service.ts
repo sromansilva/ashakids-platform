@@ -13,12 +13,18 @@ export const soporteService = {
     if (!ticket) throw notFound();
     return ticket;
   },
-  async crear(user: AuthenticatedUser, body: { tipo: string; descripcion: string; envio_id?: string; area_destino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; id_terapeuta?: number | null }) {
+  async crear(user: AuthenticatedUser, body: { tipo: 'Cuentas y Permisos' | 'Seguridad y Acceso'; descripcion: string; envio_id?: string }) {
     // Classification, priority and initial state remain owned by the incident workflow.
     const ticket = await incidenciasService.crear(user.id_usuario, 'SOPORTE_TECNICO', 'Soporte Técnico', {
       ...body, envio_id: body.envio_id ?? randomUUID(),
     });
-    return this.obtener(ticket.id_incidencia);
+    return {
+      id_incidencia: ticket.id_incidencia,
+      ticket: ticket.ticket,
+      tipo: ticket.tipo,
+      estado: ticket.estado,
+      fecha_creacion: ticket.fecha_creacion,
+    };
   },
   async estado(id: number, estado: EstadoSoporte) {
     const ticket = await soporteRepository.estado(id, estado);

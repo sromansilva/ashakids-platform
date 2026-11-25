@@ -39,6 +39,7 @@ export const titles: Partial<Record<View, string>> = {
     "admin/ml": "Machine Learning",
     "admin/auditoria": "Auditoría y seguridad",
     "admin/config": "Configuración",
+    "soporte/config": "Perfil y seguridad",
     "admin/solicitudes": "Solicitudes de acceso",
     "mundo-asha": "Mundo ASHA",
     "mundo-asha/cuentos": "Cuentos",

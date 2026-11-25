@@ -5,9 +5,13 @@ import AppRouter from "@/core/router/AppRouter";
 import { authService } from "@/modules/auth/infrastructure/authService";
 import type { SemanticRole, User } from "@/modules/auth/domain/auth";
 vi.mock("@/modules/auth/infrastructure/authService", () => ({ authService: {
-  getCurrentUser: vi.fn(), login: vi.fn(), logout: vi.fn(),
+  getCurrentUser: vi.fn(), login: vi.fn(), logout: vi.fn(), get2faStatus: vi.fn(),
+  changePassword: vi.fn(), setup2fa: vi.fn(), confirm2faSetup: vi.fn(), disable2fa: vi.fn(),
 } }));
-beforeEach(() => vi.clearAllMocks());
+beforeEach(() => {
+  vi.clearAllMocks();
+  vi.mocked(authService.get2faStatus).mockResolvedValue({ totp_activado: false });
+});
 it.each(["PADRE", "TERAPEUTA", "ADMIN"] as SemanticRole[])(
   "Providers restore %s on a direct URL (same bootstrap as reload)", async role => {
     const path = role === "PADRE" ? "/padre/config" : role === "TERAPEUTA" ? "/terapeuta/config" : "/admin/config";

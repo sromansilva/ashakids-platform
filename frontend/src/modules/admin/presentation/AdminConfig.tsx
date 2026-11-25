@@ -1,4 +1,5 @@
 import { Monitor, Database, Link as LinkIcon, Github } from 'lucide-react';
+import { AccountSettings } from '@/modules/auth/presentation/AccountSettings';
 
 interface ToolItem {
   name: string;
@@ -61,6 +62,11 @@ export function AdminConfig() {
             />
           </div>
         </div>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="mb-4 text-xl font-black text-[#1C1135]">Mi cuenta</h2>
+        <AccountSettings />
       </div>
 
       {/* Section 1: Interfaz */}

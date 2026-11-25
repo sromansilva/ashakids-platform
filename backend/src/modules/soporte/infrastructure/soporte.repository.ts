@@ -23,7 +23,7 @@ export const soporteRepository = {
     const predicate = where.join(' AND ');
     const total = await pool.query<{ total: number }>(`SELECT COUNT(*)::int AS total FROM incidencias WHERE ${predicate}`, values);
     const result = await pool.query<TicketSoporte>(`SELECT ${projection} FROM incidencias WHERE ${predicate}
-      ORDER BY prioridad DESC, fecha_creacion DESC, id_incidencia DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+      ORDER BY fecha_creacion DESC, id_incidencia DESC LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
     [...values, filters.limit, filters.offset]);
     return { items: result.rows, total: total.rows[0].total };
   },

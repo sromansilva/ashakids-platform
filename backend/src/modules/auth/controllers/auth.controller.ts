@@ -49,6 +49,31 @@ export class AuthController {
     }
   }
 
+  async changePassword(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      if (!req.user) {
+        res.status(401).json({ error: 'No autenticado' });
+        return;
+      }
+      const body = req.body && typeof req.body === 'object' ? req.body : {};
+      const currentPassword = typeof body.current_password === 'string' ? body.current_password : '';
+      const newPassword = typeof body.new_password === 'string' ? body.new_password : '';
+      if (!currentPassword || newPassword.length < 12 || newPassword.length > 128) {
+        res.status(400).json({ error: 'Ingresa tu contraseña actual y una nueva de 12 a 128 caracteres.' });
+        return;
+      }
+      const result = await authService.changePassword(
+        req.user.id_usuario,
+        currentPassword,
+        newPassword,
+        getSessionToken(req),
+      );
+      res.json(result);
+    } catch (err) {
+      next(err);
+    }
+  }
+
   async verify2faLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
       const dto = login2faSchema.parse(req.body);

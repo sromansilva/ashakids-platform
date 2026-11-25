@@ -3,6 +3,7 @@ export const routePaths = [
   "/soporte",
   "/soporte/incidencias",
   "/soporte/incidencias/:id",
+  "/soporte/config",
   "/",
   "/login",
   "/crear-contrasena",

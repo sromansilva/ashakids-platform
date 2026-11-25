@@ -22,6 +22,54 @@ async function persistSession(queryable: { query: (query: string, values?: unkno
 }
 
 export class AuthService {
+  async changePassword(userId: number, currentPassword: string, newPassword: string, sessionToken?: string) {
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const result = await client.query(
+        `SELECT password_hash FROM usuarios WHERE id_usuario = $1 AND activo = true FOR UPDATE;`,
+        [userId],
+      );
+      const passwordHash = result.rows[0]?.password_hash;
+      let passwordMatches = false;
+      if (passwordHash) {
+        try { passwordMatches = await argon2.verify(passwordHash, currentPassword); } catch { /* fall through to generic rejection */ }
+      }
+      if (!passwordMatches) {
+        const err = new Error('La contraseña actual no es correcta.');
+        (err as any).status = 401;
+        throw err;
+      }
+      if (await argon2.verify(passwordHash, newPassword)) {
+        const err = new Error('La nueva contraseña debe ser diferente de la actual.');
+        (err as any).status = 400;
+        throw err;
+      }
+
+      const newHash = await argon2.hash(newPassword);
+      await client.query(
+        `UPDATE usuarios
+         SET password_hash = $1, password_change_required = false, intentos_fallidos = 0, bloqueado_hasta = NULL
+         WHERE id_usuario = $2;`,
+        [newHash, userId],
+      );
+      const currentTokenHash = sessionToken ? hashSessionToken(sessionToken) : null;
+      await client.query(
+        `UPDATE sesiones_autenticacion
+         SET revocado = true, fecha_cierre = NOW(), ultima_actividad = NOW()
+         WHERE id_usuario = $1 AND revocado = false AND ($2::text IS NULL OR token_hash <> $2);`,
+        [userId, currentTokenHash],
+      );
+      await client.query('COMMIT');
+      return { success: true, message: 'Contraseña actualizada. Se cerraron las demás sesiones activas.' };
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    } finally {
+      client.release();
+    }
+  }
+
   async login(dto: LoginDTO) {
     const rawId = (dto.codigo_usuario || dto.email || '').trim();
     if (!rawId) {

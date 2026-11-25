@@ -43,19 +43,20 @@ test('Soporte Técnico: migration, account activation, real login, ticket workfl
     assert.equal((await call('/soporte/incidencias')).status, 401);
   });
   let ticket;
-  await t.test('creates, persists, lists, filters and retrieves only technical incidents with a minimal projection', async () => {
-    const response = await call('/soporte/incidencias', { method: 'POST', cookie: support.cookie, body: { tipo: 'Funcional', descripcion: 'Error al abrir la pantalla de ayuda.' } });
+  await t.test('lists, filters and retrieves only technical incidents with a minimal projection', async () => {
+    const response = await call('/incidencias', { method: 'POST', cookie: users.PADRE.cookie, body: { tipo: 'Funcional', descripcion: 'Error al abrir la pantalla de ayuda.' } });
     assert.equal(response.status, 201, JSON.stringify(response.data));
     ticket = response.data;
     assert.equal(ticket.estado, 'RECIBIDA');
-    assert.equal(ticket.rol_solicitante, 'SOPORTE_TECNICO');
-    for (const key of ['solicitante', 'email', 'id_usuario', 'id_paciente', 'id_terapeuta', 'envio_id']) assert.equal(key in ticket, false, key);
+    assert.equal(ticket.rol_solicitante, 'PADRE');
     const stored = (await db.query('SELECT area_destino FROM incidencias WHERE id_incidencia = $1', [ticket.id_incidencia])).rows[0];
     assert.equal(stored.area_destino, 'SOPORTE_TECNICO');
     assert.equal((await call(`/soporte/incidencias?search=${ticket.ticket}&prioridad=2&estado=RECIBIDA`, { cookie: support.cookie })).data.total, 1);
     assert.equal((await call('/soporte/incidencias?prioridad=1', { cookie: support.cookie })).data.total, 0);
     assert.equal((await call('/soporte/incidencias?limit=-1', { cookie: support.cookie })).status, 400);
-    assert.equal((await call(`/soporte/incidencias/${ticket.id_incidencia}`, { cookie: support.cookie })).data.ticket, ticket.ticket);
+    const supportView = (await call(`/soporte/incidencias/${ticket.id_incidencia}`, { cookie: support.cookie })).data;
+    assert.equal(supportView.ticket, ticket.ticket);
+    for (const key of ['solicitante', 'email', 'id_usuario', 'id_paciente', 'id_terapeuta', 'envio_id']) assert.equal(key in supportView, false, key);
     for (const area of ['ADMINISTRACION', 'TERAPEUTA']) {
       const other = (await db.query(`INSERT INTO incidencias(tipo, solicitud, solicitante, rol_solicitante, prioridad, area_destino)
         VALUES ('Otro', 'Datos privados fuera de soporte', 'Persona privada', 'PADRE', 2, $1) RETURNING id_incidencia`, [area])).rows[0];
@@ -65,16 +66,32 @@ test('Soporte Técnico: migration, account activation, real login, ticket workfl
     }
     assert.equal((await call('/soporte/incidencias', { cookie: support.cookie })).data.total, 1);
   });
-  await t.test('submission retries are idempotent and cannot overwrite another account ticket', async () => {
+  await t.test('orders the support inbox by creation date newest first, independent of priority', async () => {
+    await db.query("UPDATE incidencias SET fecha_creacion = '2025-01-01T10:00:00Z', prioridad = 3 WHERE id_incidencia = $1", [ticket.id_incidencia]);
+    const newer = (await db.query(`INSERT INTO incidencias (
+      id_usuario, tipo, solicitud, solicitante, rol_solicitante, responsable, area_destino,
+      prioridad, estado, fecha_creacion, fecha_actualizacion
+    ) VALUES ($1, 'Funcional', 'Incidencia más reciente', 'Familia', 'PADRE', 'soporte_tecnico',
+      'SOPORTE_TECNICO', 1, 'RECIBIDA', '2025-02-01T10:00:00Z', '2025-02-01T10:00:00Z') RETURNING id_incidencia`,
+    [users.PADRE.id_usuario])).rows[0];
+    const response = await call('/soporte/incidencias', { cookie: support.cookie });
+    assert.deepEqual(response.data.items.map((item) => item.id_incidencia), [newer.id_incidencia, ticket.id_incidencia]);
+  });
+  await t.test('support can only escalate access requests to Administration', async () => {
+    const forbidden = await call('/soporte/incidencias', { method: 'POST', cookie: support.cookie, body: { tipo: 'Funcional', descripcion: 'No carga la pantalla técnica.' } });
+    assert.equal(forbidden.status, 400);
     const envio_id = randomUUID();
-    const body = { tipo: 'Funcional', descripcion: 'Error de ayuda al abrir la pantalla.', envio_id };
+    const body = { tipo: 'Cuentas y Permisos', descripcion: 'Necesito permisos para revisar una cuenta de soporte.', envio_id };
     const first = await call('/soporte/incidencias', { method: 'POST', cookie: support.cookie, body });
     const retried = await call('/soporte/incidencias', { method: 'POST', cookie: support.cookie, body });
     assert.equal(first.status, 201);
     assert.equal(retried.data.id_incidencia, first.data.id_incidencia);
-    const forbidden = await call('/incidencias', { method: 'POST', cookie: users.PADRE.cookie, body: { ...body, descripcion: 'Intento ajeno de sobrescritura' } });
-    assert.equal(forbidden.status, 409);
-    assert.equal((await call(`/soporte/incidencias/${first.data.id_incidencia}`, { cookie: support.cookie })).data.descripcion, body.descripcion);
+    const overwrite = await call('/incidencias', { method: 'POST', cookie: users.PADRE.cookie, body: { ...body, descripcion: 'Intento ajeno de sobrescritura' } });
+    assert.equal(overwrite.status, 409);
+    const stored = (await db.query('SELECT area_destino FROM incidencias WHERE id_incidencia = $1', [first.data.id_incidencia])).rows[0];
+    assert.equal(stored.area_destino, 'ADMINISTRACION');
+    assert.equal((await call(`/soporte/incidencias/${first.data.id_incidencia}`, { cookie: support.cookie })).status, 404);
+    for (const key of ['descripcion', 'solicitante', 'id_usuario', 'id_paciente', 'id_terapeuta']) assert.equal(key in first.data, false, key);
   });
   await t.test('resolved incidents remain visible through canonical filters', async () => {
     await db.query("UPDATE incidencias SET estado = 'RESUELTA' WHERE id_incidencia = $1", [ticket.id_incidencia]);

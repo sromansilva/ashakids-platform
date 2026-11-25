@@ -3,6 +3,30 @@ import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js
 import { notasRepository } from './infrastructure/notas.repository.js';
 import { estadosIncidencia, normalizarEstadoPersistido, type EstadoIncidencia } from './domain/estado.js';
 
+const therapistIncidentTypes = new Set([
+  'Seguimiento Terapéutico',
+  'Sesiones y Citas',
+  'Mundo ASHA',
+  'Paciente / Agenda',
+]);
+const technicalIncidentTypes = new Set([
+  'Funcional', 'Visual / Diseño', 'Carga / Rendimiento', 'Error de datos', 'Soporte de Plataforma',
+]);
+const permissionIncidentTypes = new Set([
+  'Cuentas y Permisos',
+  'Seguridad y Acceso',
+  'Acceso a pacientes asignados',
+  'Acceso a agenda y sesiones',
+  'Permisos para reportes clínicos',
+  'Acceso a herramientas terapéuticas',
+]);
+const informationIncidentTypes = new Set([
+  'Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA', 'Otro',
+]);
+const categoryIncidentTypes = new Set([
+  'Problemas técnicos', 'Problemas de permisos', 'Problemas de información',
+]);
+
 export interface IncidenciaItem {
   id_incidencia: number;
   ticket: string;
@@ -53,35 +77,53 @@ export class IncidenciasService {
     idTerapeuta?: number | null,
     areaDestino?: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'
   ): { area_destino: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO'; responsable: string; id_terapeuta: number | null } {
+    const destino = (area: 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO', terapeutaId: number | null = null) => ({
+      area_destino: area,
+      responsable: area === 'SOPORTE_TECNICO' ? 'soporte_tecnico' : area === 'TERAPEUTA' ? 'terapeuta' : 'admin',
+      id_terapeuta: area === 'TERAPEUTA' ? terapeutaId : null,
+    });
+
+    // Soporte solo puede escalar permisos/acceso a Administración. El alta
+    // valida la variedad permitida antes de llegar a esta clasificación.
+    if (rolSolicitante === 'SOPORTE_TECNICO') {
+      return permissionIncidentTypes.has(tipo) || tipo === 'Problemas de permisos'
+        ? destino('ADMINISTRACION')
+        : destino('SOPORTE_TECNICO');
+    }
+
+    // New categories are mapped on the server; client supplied destinations are ignored.
+    if (tipo === 'Problemas técnicos') return destino('SOPORTE_TECNICO');
+    if (tipo === 'Problemas de permisos') {
+      return destino(rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
+    }
+    if (tipo === 'Problemas de información') {
+      if (rolSolicitante === 'PADRE' && idTerapeuta) return destino('TERAPEUTA', idTerapeuta);
+      return destino(rolSolicitante === 'PADRE' || rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'SOPORTE_TECNICO');
+    }
+
     // 0. Si se especifica un área de destino explícita válida, respetarla
     if (areaDestino === 'TERAPEUTA') {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta || null);
     }
     if (areaDestino === 'SOPORTE_TECNICO') {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
     if (areaDestino === 'ADMINISTRACION') {
-      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+      return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }
 
     // 1. Mapeo determinista según los tipos oficiales del catálogo
-    const therapistTypes = [
-      'Seguimiento Terapéutico',
-      'Sesiones y Citas',
-      'Mundo ASHA',
-      'Paciente / Agenda',
-    ];
-    if (therapistTypes.includes(tipo)) {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+    if (therapistIncidentTypes.has(tipo)) {
+      if (rolSolicitante === 'PADRE') {
+        return idTerapeuta ? destino('TERAPEUTA', idTerapeuta) : destino('ADMINISTRACION');
+      }
+      if (rolSolicitante === 'TERAPEUTA') return destino('ADMINISTRACION');
+      return destino('SOPORTE_TECNICO');
     }
 
-    const adminTypes = [
-      'Cuentas y Permisos',
-      'Seguridad y Acceso',
-      'Información de Perfil',
-    ];
+    const adminTypes = [...permissionIncidentTypes, 'Información de Perfil'];
     if (adminTypes.includes(tipo)) {
-      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+      return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }
 
     const techSupportTypes = [
@@ -92,21 +134,21 @@ export class IncidenciasService {
       'Soporte de Plataforma',
     ];
     if (techSupportTypes.includes(tipo)) {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
 
     if (tipo === 'Otro') {
       if (idTerapeuta) {
-        return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta };
+        return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta);
       }
       if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
-        return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+        return destino('SOPORTE_TECNICO');
       }
     }
 
     // Si quien envía es ADMIN, va dirigido a SOPORTE_TECNICO por defecto
     if (rolSolicitante === 'ADMIN' || rolSolicitante === 'SOPORTE_TECNICO') {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
 
     const text = `${tipo} ${descripcion}`.toLowerCase();
@@ -172,27 +214,27 @@ export class IncidenciasService {
       tipo === 'Paciente / Agenda';
 
     if (isTechSupport && !isTherapist && !isAdmin) {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
 
     if (isAdmin && !isTechSupport) {
-      return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+      return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
     }
 
     if (isTherapist && !isTechSupport) {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta || null };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta || null);
     }
 
     // Si tiene terapeuta explícito asignado
     if (idTerapeuta) {
-      return { area_destino: 'TERAPEUTA', responsable: 'terapeuta', id_terapeuta: idTerapeuta };
+      return destino(rolSolicitante === 'TERAPEUTA' ? 'ADMINISTRACION' : 'TERAPEUTA', idTerapeuta);
     }
 
     // Default: si es de plataforma -> SOPORTE_TECNICO; si es de gestión -> ADMINISTRACION
     if (isTechSupport) {
-      return { area_destino: 'SOPORTE_TECNICO', responsable: 'soporte_tecnico', id_terapeuta: null };
+      return destino('SOPORTE_TECNICO');
     }
-    return { area_destino: 'ADMINISTRACION', responsable: 'admin', id_terapeuta: null };
+    return destino(rolSolicitante === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION');
   }
 
   calcularPrioridad(solicitud: string, tipo: string): number {
@@ -227,7 +269,29 @@ export class IncidenciasService {
   ): Promise<IncidenciaItem> {
     const solicitud = data.descripcion || data.titulo || '';
     const tipo = data.tipo || 'Consulta General';
-    const clasif = this.clasificarDestinatario(rol, tipo, solicitud, data.id_terapeuta, data.area_destino);
+    const allowedTypes = rol === 'PADRE'
+      ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes, ...categoryIncidentTypes])
+      : rol === 'TERAPEUTA'
+        ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes, 'Problemas técnicos', 'Problemas de permisos'])
+        : rol === 'ADMIN'
+          ? new Set([...technicalIncidentTypes, 'Problemas técnicos'])
+          : permissionIncidentTypes;
+    const knownTypes = new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes, ...categoryIncidentTypes]);
+    if ((rol === 'SOPORTE_TECNICO' || knownTypes.has(tipo)) && !allowedTypes.has(tipo)) {
+      throw Object.assign(new Error('Esta variedad de incidencia no está disponible para tu rol.'), { status: 400 });
+    }
+    let terapeutaRelacionado: number | null = null;
+    if (rol === 'PADRE' && therapistIncidentTypes.has(tipo)) {
+      const relacionados = await this.obtenerTerapeutasRelacionados(userId);
+      terapeutaRelacionado = relacionados.previos[0]?.id_terapeuta ?? null;
+    }
+    const clasif = this.clasificarDestinatario(
+      rol,
+      tipo,
+      solicitud,
+      therapistIncidentTypes.has(tipo) && rol === 'PADRE' ? terapeutaRelacionado : data.id_terapeuta,
+      data.area_destino
+    );
     const prioridad = this.calcularPrioridad(solicitud, tipo);
 
     try {
