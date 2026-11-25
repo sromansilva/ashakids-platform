@@ -36,8 +36,11 @@ test('admin and therapist incident APIs share the three-state workflow and rejec
   const therapist = (await db.query('SELECT id_terapeuta FROM terapeutas WHERE id_usuario=$1', [users.TERAPEUTA.id_usuario])).rows[0];
   for (const [user, tipo] of [
     [users.TERAPEUTA, 'Información de Perfil'],
+    [users.TERAPEUTA, 'Problemas de información'],
     [users.ADMIN, 'Cuentas y Permisos'],
+    [users.ADMIN, 'Problemas de permisos'],
     [users.ADMIN, 'Paciente / Agenda'],
+    [users.ADMIN, 'Problemas de información'],
   ]) {
     const rejected = await call('/incidencias', { method: 'POST', cookie: user.cookie, body: {
       tipo, descripcion: 'Esta variedad no corresponde al rol solicitante.',

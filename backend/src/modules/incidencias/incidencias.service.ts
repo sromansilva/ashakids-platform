@@ -16,6 +16,9 @@ const permissionIncidentTypes = new Set(['Cuentas y Permisos', 'Seguridad y Acce
 const informationIncidentTypes = new Set([
   'Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Mundo ASHA', 'Otro',
 ]);
+const categoryIncidentTypes = new Set([
+  'Problemas técnicos', 'Problemas de permisos', 'Problemas de información',
+]);
 
 export interface IncidenciaItem {
   id_incidencia: number;
@@ -264,13 +267,13 @@ export class IncidenciasService {
     const solicitud = data.descripcion || data.titulo || '';
     const tipo = data.tipo || 'Consulta General';
     const allowedTypes = rol === 'PADRE'
-      ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes])
+      ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes, ...categoryIncidentTypes])
       : rol === 'TERAPEUTA'
-        ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes])
+        ? new Set([...technicalIncidentTypes, ...permissionIncidentTypes, 'Problemas técnicos', 'Problemas de permisos'])
         : rol === 'ADMIN'
-          ? technicalIncidentTypes
+          ? new Set([...technicalIncidentTypes, 'Problemas técnicos'])
           : permissionIncidentTypes;
-    const knownTypes = new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes]);
+    const knownTypes = new Set([...technicalIncidentTypes, ...permissionIncidentTypes, ...informationIncidentTypes, ...categoryIncidentTypes]);
     if ((rol === 'SOPORTE_TECNICO' || knownTypes.has(tipo)) && !allowedTypes.has(tipo)) {
       throw Object.assign(new Error('Esta variedad de incidencia no está disponible para tu rol.'), { status: 400 });
     }
