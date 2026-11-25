@@ -3,6 +3,7 @@ import { CheckCircle, FileText, Settings, Target } from 'lucide-react';
 import {
   categoriaDeIncidencia,
   categoriasIncidencia,
+  categoriasIncidenciaParaRol,
   variedadesIncidenciaParaRol,
   incidenciasService,
 } from '@/modules/comunicacion/infrastructure/incidenciasService';
@@ -13,7 +14,7 @@ export function getAutomaticAreaForTipo(
   role: 'PADRE' | 'TERAPEUTA' | 'ADMIN' | 'SOPORTE_TECNICO' = 'PADRE',
   hasRelatedTherapist = false,
 ): 'ADMINISTRACION' | 'TERAPEUTA' | 'SOPORTE_TECNICO' | null {
-  if (role === 'SOPORTE_TECNICO') return 'SOPORTE_TECNICO';
+  if (role === 'SOPORTE_TECNICO') return 'ADMINISTRACION';
   const categoria = categoriaDeIncidencia(tipo);
   if (categoria === 'Problemas técnicos') return 'SOPORTE_TECNICO';
   if (categoria === 'Problemas de permisos') return role === 'ADMIN' ? 'SOPORTE_TECNICO' : 'ADMINISTRACION';
@@ -66,6 +67,7 @@ export function IncidentForm({
   const [sent, setSent] = useState<number | null>(null);
   const [sentTicket, setSentTicket] = useState<string>('');
   const [error, setError] = useState('');
+  const categoriasDisponibles = categoriasIncidenciaParaRol(role);
 
   const [hasRelatedTherapist, setHasRelatedTherapist] = useState(false);
   const [therapistLookupDone, setTherapistLookupDone] = useState(role !== 'PADRE');
@@ -130,8 +132,9 @@ export function IncidentForm({
                 {sentTicket ? `Ticket ${sentTicket} registrado` : `Reporte #${sent} enviado`}
               </h2>
               <p className="text-sm mt-1 text-emerald-800">
-                Tu solicitud ha sido registrada exitosamente y asignada al área correspondiente. Puedes seguir su estado en
-                tu historial.
+                {role === 'SOPORTE_TECNICO'
+                  ? 'La solicitud de acceso se envió a Administración para su revisión. No aparecerá en la bandeja de Soporte Técnico.'
+                  : 'Tu solicitud ha sido registrada exitosamente y asignada al área correspondiente. Puedes seguir su estado en tu historial.'}
               </p>
               <button
                 type="button"
@@ -195,7 +198,7 @@ export function IncidentForm({
                   <option value="" disabled>
                     Selecciona el área del problema
                   </option>
-                  {Object.keys(categoriasIncidencia).map((category) => (
+                  {categoriasDisponibles.map((category) => (
                     <option key={category} value={category}>
                       {category}
                     </option>

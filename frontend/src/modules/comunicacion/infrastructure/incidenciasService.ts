@@ -45,12 +45,6 @@ const permisosTerapeuta = opciones(categoriasIncidencia['Problemas de permisos']
   'Cuentas y Permisos': 'Permisos para pacientes y herramientas',
   'Seguridad y Acceso': 'Seguridad de mi cuenta profesional',
 });
-const permisosAdmin = opciones(categoriasIncidencia['Problemas de permisos'], {
-  'Cuentas y Permisos': 'Gestión de cuentas y roles',
-  'Seguridad y Acceso': 'Seguridad y permisos de administración',
-});
-const todosLosPermisos = opciones(categoriasIncidencia['Problemas de permisos']);
-
 const variedadesPorRol: Record<RolIncidencia, VariedadesPorCategoria> = {
   PADRE: {
     'Problemas técnicos': tecnicas,
@@ -67,30 +61,27 @@ const variedadesPorRol: Record<RolIncidencia, VariedadesPorCategoria> = {
   TERAPEUTA: {
     'Problemas técnicos': tecnicas,
     'Problemas de permisos': permisosTerapeuta,
-    'Problemas de información': opciones(['Información de Perfil', 'Paciente / Agenda', 'Seguimiento Terapéutico', 'Sesiones y Citas', 'Otro'], {
-      'Información de Perfil': 'Mi perfil profesional',
-      'Paciente / Agenda': 'Pacientes y agenda',
-      'Seguimiento Terapéutico': 'Seguimiento de pacientes',
-      'Sesiones y Citas': 'Agenda y sesiones',
-      Otro: 'Otra consulta profesional',
-    }),
+    'Problemas de información': [],
   },
   ADMIN: {
     'Problemas técnicos': tecnicas,
-    'Problemas de permisos': permisosAdmin,
-    'Problemas de información': opciones(['Información de Perfil', 'Paciente / Agenda', 'Sesiones y Citas', 'Otro'], {
-      'Información de Perfil': 'Mi perfil de administración',
-      'Paciente / Agenda': 'Datos de cuentas y agenda',
-      'Sesiones y Citas': 'Funcionamiento de citas y agenda',
-      Otro: 'Otra consulta sobre información del sistema',
-    }),
+    'Problemas de permisos': [],
+    'Problemas de información': [],
   },
   SOPORTE_TECNICO: {
-    'Problemas técnicos': opciones(categoriasIncidencia['Problemas técnicos']),
-    'Problemas de permisos': todosLosPermisos,
-    'Problemas de información': opciones(categoriasIncidencia['Problemas de información']),
+    'Problemas técnicos': [],
+    'Problemas de permisos': opciones(categoriasIncidencia['Problemas de permisos'], {
+      'Cuentas y Permisos': 'Solicitar o corregir permisos de una cuenta',
+      'Seguridad y Acceso': 'Reportar un problema de acceso o seguridad',
+    }),
+    'Problemas de información': [],
   },
 };
+
+export function categoriasIncidenciaParaRol(rol: RolIncidencia): readonly CategoriaIncidencia[] {
+  return (Object.keys(categoriasIncidencia) as CategoriaIncidencia[])
+    .filter((categoria) => variedadesPorRol[rol][categoria].length > 0);
+}
 
 export function variedadesIncidenciaParaRol(rol: RolIncidencia, categoria: CategoriaIncidencia): readonly VariedadIncidencia[] {
   return variedadesPorRol[rol][categoria];

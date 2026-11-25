@@ -86,7 +86,9 @@ export function AccountSettings() {
           <dd className="break-words rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-3 py-2.5 text-sm font-bold text-[#1C1135]">{value || '—'}</dd>
         </div>)}
       </dl>
-      <p className="mt-4 text-xs text-[#615274]">Para corregir tu nombre o correo, solicita el cambio a Administración. Estos datos identifican tu cuenta en los registros del sistema.</p>
+      <p className="mt-4 text-xs text-[#615274]">{user?.rol === 'ADMIN'
+        ? 'Para corregir tu nombre o correo, contacta al titular del sistema o a otro administrador autorizado. Estos datos identifican tu cuenta en los registros.'
+        : 'Para corregir tu nombre o correo, solicita el cambio a Administración. Estos datos identifican tu cuenta en los registros del sistema.'}</p>
     </section>
 
     <section className="space-y-6 rounded-3xl border border-[#E8E5F4] bg-white p-5 shadow-sm sm:p-7" aria-labelledby="account-security-title">

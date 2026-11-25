@@ -97,16 +97,15 @@ it('muestra categorías y variedades, y evita el autoenrutamiento', async () => 
   await waitFor(() => expect(screen.getByLabelText('Área de destino')).toHaveValue('Terapeuta relacionado'));
 
   rerender(<IncidentForm role="TERAPEUTA" />);
-  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
-  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Paciente / Agenda' } });
-  expect(screen.getByLabelText('Área de destino')).toHaveValue('Administración');
+  expect(Array.from((screen.getByLabelText('Tipo general de incidencia') as HTMLSelectElement).options).map((option) => option.value)).toEqual(['', 'Problemas técnicos', 'Problemas de permisos']);
   fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas técnicos' } });
   fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Funcional' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Soporte Técnico');
 
   rerender(<IncidentForm role="ADMIN" />);
-  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
-  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Otro' } });
+  expect(Array.from((screen.getByLabelText('Tipo general de incidencia') as HTMLSelectElement).options).map((option) => option.value)).toEqual(['', 'Problemas técnicos']);
+  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas técnicos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Funcional' } });
   expect(screen.getByLabelText('Área de destino')).toHaveValue('Soporte Técnico');
 });
 
@@ -119,17 +118,24 @@ it('filtra y aclara las variedades de información según el rol', () => {
   parent.unmount();
 
   const therapist = render(<IncidentForm role="TERAPEUTA" />);
-  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
-  expect(screen.getByRole('option', { name: 'Mi perfil profesional' })).toBeInTheDocument();
-  expect(screen.getByRole('option', { name: 'Pacientes y agenda' })).toBeInTheDocument();
-  expect(screen.queryByRole('option', { name: 'Mundo ASHA' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Problemas de información' })).not.toBeInTheDocument();
   therapist.unmount();
 
   render(<IncidentForm role="ADMIN" />);
-  fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de información' } });
-  expect(screen.getByRole('option', { name: 'Mi perfil de administración' })).toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Problemas de permisos' })).not.toBeInTheDocument();
+  expect(screen.queryByRole('option', { name: 'Problemas de información' })).not.toBeInTheDocument();
   expect(screen.queryByRole('option', { name: 'Seguimiento Terapéutico' })).not.toBeInTheDocument();
   expect(screen.queryByRole('option', { name: 'Mundo ASHA' })).not.toBeInTheDocument();
+});
+
+it('permite a soporte solo escalar solicitudes de permisos a Administración', async () => {
+  vi.mocked(incidenciasService.terapeutasRelacionados).mockResolvedValue({ previos: [], disponibles: [] });
+  render(<IncidentForm role="SOPORTE_TECNICO" />);
+  const category = screen.getByLabelText('Tipo general de incidencia');
+  expect(Array.from((category as HTMLSelectElement).options).map((option) => option.value)).toEqual(['', 'Problemas de permisos']);
+  fireEvent.change(category, { target: { value: 'Problemas de permisos' } });
+  fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Cuentas y Permisos' } });
+  expect(screen.getByLabelText('Área de destino')).toHaveValue('Administración');
 });
 
 it('envía solo la categoría y la descripción; el servidor determina el destinatario', async () => {

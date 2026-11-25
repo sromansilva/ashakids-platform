@@ -16,21 +16,23 @@ beforeEach(() => {
   vi.mocked(soporteService.notas).mockResolvedValue({ items: [] });
 });
 
-it('lists technical incidents with server filters and supports creating one with the shared form', async () => {
-  vi.mocked(soporteService.crear).mockResolvedValue({ ...ticket, titulo: ticket.tipo });
+it('lists technical incidents and sends support access requests to Administration', async () => {
+  vi.mocked(soporteService.crear).mockResolvedValue({ ...ticket, tipo: 'Cuentas y Permisos', titulo: 'Cuentas y Permisos', area_destino: 'ADMINISTRACION' });
   render(<MemoryRouter initialEntries={['/soporte']}><Routes><Route path="/soporte" element={<SoporteIncidencias />} /><Route path="/soporte/incidencias/:id" element={<p>Detalle creado</p>} /></Routes></MemoryRouter>);
   expect(await screen.findByText('INC-00007')).toBeInTheDocument();
   fireEvent.change(screen.getByLabelText('Estado'), { target: { value: 'EN ATENCIÓN' } });
   fireEvent.change(screen.getByLabelText('Prioridad'), { target: { value: '3' } });
   fireEvent.change(screen.getByLabelText('Buscar'), { target: { value: 'pantalla' } });
   await waitFor(() => expect(soporteService.listar).toHaveBeenLastCalledWith(expect.objectContaining({ estado: 'EN ATENCIÓN', prioridad: 3, search: 'pantalla', offset: 0 }), expect.any(AbortSignal)));
-  fireEvent.click(screen.getByRole('button', { name: 'Nueva incidencia' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Solicitar permisos' }));
   fireEvent.change(screen.getByLabelText('Tipo general de incidencia'), { target: { value: 'Problemas de permisos' } });
   fireEvent.change(screen.getByLabelText('Variedad de incidencia'), { target: { value: 'Cuentas y Permisos' } });
   fireEvent.change(screen.getByLabelText('Título'), { target: { value: 'Pantalla de ayuda' } });
   fireEvent.change(screen.getByLabelText('Descripción breve'), { target: { value: 'Error al abrir la ayuda.' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Registrar incidencia' }));
-  expect(await screen.findByText('Detalle creado')).toBeInTheDocument();
+  fireEvent.click(screen.getByRole('button', { name: 'Enviar a Administración' }));
+  expect(await screen.findByText('Ticket INC-00007 registrado')).toBeInTheDocument();
+  expect(screen.getByText(/se envió a Administración para su revisión/i)).toBeInTheDocument();
+  expect(screen.queryByText('Detalle creado')).not.toBeInTheDocument();
   expect(soporteService.crear).toHaveBeenCalledWith(expect.objectContaining({ tipo: 'Cuentas y Permisos', descripcion: 'Error al abrir la ayuda.' }));
 });
 
