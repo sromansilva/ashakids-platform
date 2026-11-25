@@ -66,6 +66,17 @@ test('Soporte Técnico: migration, account activation, real login, ticket workfl
     }
     assert.equal((await call('/soporte/incidencias', { cookie: support.cookie })).data.total, 1);
   });
+  await t.test('orders the support inbox by creation date newest first, independent of priority', async () => {
+    await db.query("UPDATE incidencias SET fecha_creacion = '2025-01-01T10:00:00Z', prioridad = 3 WHERE id_incidencia = $1", [ticket.id_incidencia]);
+    const newer = (await db.query(`INSERT INTO incidencias (
+      id_usuario, tipo, solicitud, solicitante, rol_solicitante, responsable, area_destino,
+      prioridad, estado, fecha_creacion, fecha_actualizacion
+    ) VALUES ($1, 'Funcional', 'Incidencia más reciente', 'Familia', 'PADRE', 'soporte_tecnico',
+      'SOPORTE_TECNICO', 1, 'RECIBIDA', '2025-02-01T10:00:00Z', '2025-02-01T10:00:00Z') RETURNING id_incidencia`,
+    [users.PADRE.id_usuario])).rows[0];
+    const response = await call('/soporte/incidencias', { cookie: support.cookie });
+    assert.deepEqual(response.data.items.map((item) => item.id_incidencia), [newer.id_incidencia, ticket.id_incidencia]);
+  });
   await t.test('support can only escalate access requests to Administration', async () => {
     const forbidden = await call('/soporte/incidencias', { method: 'POST', cookie: support.cookie, body: { tipo: 'Funcional', descripcion: 'No carga la pantalla técnica.' } });
     assert.equal(forbidden.status, 400);
