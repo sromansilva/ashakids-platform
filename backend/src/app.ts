@@ -39,6 +39,7 @@ import { mundoAshaRouter } from './modules/mundo_asha/routes/mundo_asha.routes.j
 
 export function createApp() {
   const app = express();
+  app.set('trust proxy', settings.ENVIRONMENT === 'production' ? 1 : false);
   const frontendDistPath =
     process.env.FRONTEND_DIST_DIR || path.resolve(process.cwd(), '../frontend-dist');
   const frontendIndexPath = path.join(frontendDistPath, 'index.html');
@@ -60,6 +61,48 @@ export function createApp() {
   app.use(`${settings.API_V1_PREFIX}/whatsapp/webhook`, express.raw({ type: 'application/json', limit: '1mb' }));
   app.use(express.json({ limit: '10mb' }));
   app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+  // Protección CSRF para métodos que modifican estado en /api/v1
+  app.use((req, res, next) => {
+    const urlPath = req.originalUrl?.split('?')[0] || req.path;
+    if (!urlPath.startsWith(settings.API_V1_PREFIX)) {
+      return next();
+    }
+    if (urlPath === `${settings.API_V1_PREFIX}/whatsapp/webhook`) {
+      return next();
+    }
+    const modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+    if (!modifyingMethods.includes(req.method)) {
+      return next();
+    }
+
+    const rawOrigin = req.headers['origin'];
+    const rawReferer = req.headers['referer'];
+    const originHeader = Array.isArray(rawOrigin) ? rawOrigin[0] : rawOrigin;
+    const refererHeader = Array.isArray(rawReferer) ? rawReferer[0] : rawReferer;
+
+    let sourceOrigin: string | undefined;
+    if (typeof originHeader === 'string' && originHeader.trim()) {
+      sourceOrigin = originHeader.trim();
+    } else if (typeof refererHeader === 'string' && refererHeader.trim()) {
+      try {
+        sourceOrigin = new URL(refererHeader).origin;
+      } catch {
+        sourceOrigin = refererHeader.trim();
+      }
+    }
+
+    if (!sourceOrigin) {
+      return next();
+    }
+
+    if (!settings.CORS_ORIGINS.includes(sourceOrigin)) {
+      res.status(403).json({ detail: 'Origen no permitido.', error: 'Origen no permitido.' });
+      return;
+    }
+
+    next();
+  });
   if (settings.DEVELOPMENT_READ_ONLY) {
     app.use((req, res, next) => {
       if (!['GET', 'HEAD', 'OPTIONS'].includes(req.method)) {
@@ -97,8 +140,10 @@ export function createApp() {
     try {
       await pool.query('SELECT 1;');
       res.json({ status: 'ready', database: 'connected' });
-    } catch (err: any) {
-      res.status(503).json({ status: 'unready', database: 'disconnected', error: err?.message });
+    } catch (err: unknown) {
+      const code = typeof err === 'object' && err !== null && 'code' in err ? (err as { code: string }).code : undefined;
+      console.error('[Health] Base de datos no disponible', code ? `(código ${code})` : '');
+      res.status(503).json({ status: 'unready', database: 'disconnected', error: 'Servicio no disponible' });
     }
   });
 

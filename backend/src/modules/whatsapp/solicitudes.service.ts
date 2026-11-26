@@ -15,10 +15,11 @@ export type AvisoWhatsAppEstado = 'ENVIADO' | 'NO_CONFIGURADO' | 'ERROR' | 'FUER
 
 export interface SolicitudAcceso {
   id_solicitud: number;
-  telefono: string;
+  /** NULL cuando la solicitud aprobada se anonimizó por retención (V192). */
+  telefono: string | null;
   nombres: string;
   apellidos: string;
-  dni: string;
+  dni: string | null;
   email: string;
   estado: SolicitudEstado;
   consentimiento_en: string;
@@ -55,10 +56,10 @@ function toSolicitud(row: Record<string, unknown>): SolicitudAcceso {
   const iso = (v: unknown) => (v instanceof Date ? v.toISOString() : v == null ? null : String(v));
   return {
     id_solicitud: Number(row.id_solicitud),
-    telefono: String(row.telefono),
+    telefono: row.telefono == null ? null : String(row.telefono),
     nombres: String(row.nombres),
     apellidos: String(row.apellidos),
-    dni: String(row.dni),
+    dni: row.dni == null ? null : String(row.dni),
     email: String(row.email),
     estado: row.estado as SolicitudEstado,
     consentimiento_en: iso(row.consentimiento_en) as string,
@@ -89,12 +90,14 @@ async function notify(
   text: string,
   template?: { name: string; params: string[] },
 ): Promise<AvisoWhatsAppEstado> {
+  const telefono = solicitud.telefono;
+  if (!telefono) return 'OMITIDO'; // anonimizada por retención: ya no hay a quién escribir
   if (inWindow(solicitud.ultimo_mensaje_en)) {
-    return avisoFrom(await WhatsAppService.sendText(solicitud.telefono, text));
+    return avisoFrom(await WhatsAppService.sendText(telefono, text));
   }
   if (template?.name) {
     return avisoFrom(
-      await WhatsAppService.sendTemplate(solicitud.telefono, template.name, settings.WHATSAPP_TEMPLATE_LANG, template.params),
+      await WhatsAppService.sendTemplate(telefono, template.name, settings.WHATSAPP_TEMPLATE_LANG, template.params),
     );
   }
   return 'FUERA_DE_VENTANA';
@@ -136,7 +139,7 @@ export async function aprobarSolicitud(id: number, adminId: number): Promise<Res
       nombres: claimed.nombres,
       apellidos: claimed.apellidos,
       email: claimed.email,
-      telefono: claimed.telefono.length <= TUTOR_PHONE_MAX ? claimed.telefono : undefined,
+      telefono: claimed.telefono && claimed.telefono.length <= TUTOR_PHONE_MAX ? claimed.telefono : undefined,
     }, adminId);
   } catch (err) {
     await pool.query(
@@ -213,10 +216,13 @@ export async function rechazarSolicitud(id: number, adminId: number, motivo: str
   let solicitud = toSolicitud(updated.rows[0]);
   const motivoLimpio = motivo.replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ').replace(/\s+/g, ' ').trim();
 
-  const aviso: AvisoWhatsAppEstado = inWindow(solicitud.ultimo_mensaje_en)
+  const telefono = solicitud.telefono;
+  const aviso: AvisoWhatsAppEstado = !telefono
+    ? 'OMITIDO'
+    : inWindow(solicitud.ultimo_mensaje_en)
     ? avisoFrom(
         await WhatsAppService.sendText(
-          solicitud.telefono,
+          telefono,
           'Hola. Revisamos tu solicitud de acceso a Ashakids y por ahora no pudimos aprobarla. ' +
             `Motivo: ${motivoLimpio.replace(/[.!?…]+\s*$/u, '')}. ` +
             'Si crees que es un error, comunícate con el equipo de Ashakids.',
@@ -268,12 +274,14 @@ export async function verificarDniSolicitud(id: number, adminId?: number) {
   if (!found.rowCount) throw httpError(404, 'Solicitud no encontrada.');
   const solicitud = toSolicitud(found.rows[0]);
   if (solicitud.estado !== 'PENDIENTE') throw httpError(409, 'La solicitud ya fue procesada.');
+  const dni = solicitud.dni;
+  if (!dni) throw httpError(409, 'La solicitud no tiene un DNI que verificar.');
 
   let estado: DniVerificacionEstado = 'NO_CONFIGURADO';
   let nombreReniec: string | undefined;
   if (DecolectaService.isConfigured()) {
     try {
-      const result = await DecolectaService.consultarDni(solicitud.dni);
+      const result = await DecolectaService.consultarDni(dni);
       if (result.success && result.data) {
         const normalizar = (valor: string) => valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim().replace(/\s+/g, ' ');
         const nombres = normalizar(solicitud.nombres).split(' ');

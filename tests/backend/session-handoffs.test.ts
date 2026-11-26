@@ -283,6 +283,10 @@ describe('traspasos terapeuta-familia con base aislada', {
       body: JSON.stringify({ observaciones_iniciales: technicalReport, objetivos_trabajados: 'Trabajar /rr/', nivel_ayuda: 'Ayuda moderada', proximos_pasos: 'Practicar en casa' }),
     });
     assert.equal(save.status, 200, await save.clone().text());
+    const close = await therapist(`/sesiones/${fx.sessionId}/cerrar`, {
+      method: 'POST', body: JSON.stringify({ asistencia: 'ASISTIO' }),
+    });
+    assert.equal(close.status, 200, await close.clone().text());
     const sign = await therapist(`/sesiones/${fx.sessionId}/reporte/firmar`, { method: 'POST' });
     assert.equal(sign.status, 200, await sign.clone().text());
     const item = (await inbox()).find((entry) => entry.tipo === 'REPORTE_PUBLICADO');

@@ -15,8 +15,8 @@ async function persistSession(queryable: { query: (query: string, values?: unkno
   await queryable.query(
     `INSERT INTO sesiones_autenticacion
        (id_usuario, token_hash, fecha_emision, fecha_expiracion, ultima_actividad, mfa_verificado, revocado)
-     VALUES ($1, $2, $3, $4, $5, false, false);`,
-    [userId, tokenHash, now, expiresAt, now],
+     VALUES ($1, $2, NOW(), $3, NOW(), false, false);`,
+    [userId, tokenHash, expiresAt],
   );
   return token;
 }
@@ -91,15 +91,20 @@ export class AuthService {
       `;
       const result = await pool.query(query, [rawId]);
       if (result.rows.length === 0) {
-        const err = new Error('Credenciales inválidas. Usuario no encontrado.');
+        const err = new Error('Credenciales inválidas.');
         (err as any).status = 401;
         throw err;
       }
 
       const firstRow = result.rows[0];
       if (!firstRow.activo) {
-        const err = new Error('Cuenta inactiva. Comuníquese con el administrador.');
-        (err as any).status = 403;
+        // Solo quien acredita la contraseña correcta conoce el estado de la cuenta; el resto recibe la respuesta uniforme.
+        let ownerProven = false;
+        try {
+          ownerProven = Boolean(firstRow.password_hash && await argon2.verify(firstRow.password_hash, dto.password));
+        } catch { /* se trata como credencial inválida */ }
+        const err = new Error(ownerProven ? 'Cuenta inactiva. Comuníquese con el administrador.' : 'Credenciales inválidas.');
+        (err as any).status = ownerProven ? 403 : 401;
         throw err;
       }
 
@@ -127,33 +132,14 @@ export class AuthService {
         if (dto.password === '12345' || dto.password === 'admin123') passwordMatches = true;
       }
       if (!passwordMatches) {
-        const currentAttempts = Number(firstRow.intentos_fallidos || 0) + 1;
-        const maxAttempts = settings.AUTH_MAX_FAILED_ATTEMPTS;
-        const lockoutMinutes = settings.AUTH_LOCKOUT_MINUTES;
-
-        if (currentAttempts >= maxAttempts) {
-          await pool.query(
-            `UPDATE usuarios
-             SET intentos_fallidos = $1,
-                 bloqueado_hasta = NOW() + ($2 || ' minutes')::interval
-             WHERE id_usuario = $3;`,
-            [currentAttempts, lockoutMinutes, firstRow.id_usuario]
-          );
-          const err = new Error(`Demasiados intentos fallidos (${maxAttempts}). Tu cuenta ha sido bloqueada temporalmente por ${lockoutMinutes} minutos por seguridad.`);
-          (err as any).status = 429;
-          throw err;
-        } else {
-          await pool.query(
-            `UPDATE usuarios
-             SET intentos_fallidos = $1
-             WHERE id_usuario = $2;`,
-            [currentAttempts, firstRow.id_usuario]
-          );
-          const remaining = maxAttempts - currentAttempts;
-          const err = new Error(`Credenciales inválidas. Contraseña incorrecta. (Intentos restantes: ${remaining})`);
-          (err as any).status = 401;
-          throw err;
-        }
+        const updated = await pool.query(`UPDATE usuarios SET intentos_fallidos = intentos_fallidos + 1,
+          bloqueado_hasta = CASE WHEN intentos_fallidos + 1 >= $2 THEN NOW() + ($3 * interval '1 minute') ELSE bloqueado_hasta END
+          WHERE id_usuario = $1 RETURNING intentos_fallidos;`,
+          [firstRow.id_usuario, settings.AUTH_MAX_FAILED_ATTEMPTS, settings.AUTH_LOCKOUT_MINUTES]);
+        const locked = Number(updated.rows[0].intentos_fallidos) >= settings.AUTH_MAX_FAILED_ATTEMPTS;
+        const err = new Error(locked ? 'Demasiados intentos fallidos. Inténtalo de nuevo más tarde.' : 'Credenciales inválidas.');
+        (err as any).status = locked ? 429 : 401;
+        throw err;
       }
 
       if (firstRow.intentos_fallidos > 0 || firstRow.bloqueado_hasta) {
@@ -202,8 +188,8 @@ export class AuthService {
         await pool.query(
           `INSERT INTO sesiones_autenticacion
              (id_usuario, token_hash, fecha_emision, fecha_expiracion, ultima_actividad, mfa_verificado, revocado)
-           VALUES ($1, $2, $3, $4, $5, false, false);`,
-          [user.id_usuario, tokenHash, now, expiresAt, now],
+           VALUES ($1, $2, NOW(), $3, NOW(), false, false);`,
+          [user.id_usuario, tokenHash, expiresAt],
         );
         return {
           requires_2fa: true,
@@ -268,36 +254,24 @@ export class AuthService {
 
     const valid = verifyTotpCode(row.totp_secret, code, 1);
     if (!valid) {
-      const currentAttempts = Number(row.intentos_fallidos || 0) + 1;
-      const maxAttempts = settings.AUTH_MAX_FAILED_ATTEMPTS;
-      const lockoutMinutes = settings.AUTH_LOCKOUT_MINUTES;
-
-      if (currentAttempts >= maxAttempts) {
-        await pool.query(
-          `UPDATE usuarios SET intentos_fallidos = $1, bloqueado_hasta = NOW() + ($2 || ' minutes')::interval WHERE id_usuario = $3;`,
-          [currentAttempts, lockoutMinutes, row.id_usuario],
-        );
-        await pool.query(`UPDATE sesiones_autenticacion SET revocado = true WHERE token_hash = $1;`, [tokenHash]);
-        const err = new Error(`Demasiados intentos fallidos (${maxAttempts}). Tu cuenta ha sido bloqueada temporalmente por ${lockoutMinutes} minutos por seguridad.`);
-        (err as any).status = 429;
-        throw err;
-      } else {
-        await pool.query(`UPDATE usuarios SET intentos_fallidos = $1 WHERE id_usuario = $2;`, [currentAttempts, row.id_usuario]);
-        const remaining = maxAttempts - currentAttempts;
-        const err = new Error(`Código 2FA incorrecto o expirado. (Intentos restantes: ${remaining})`);
-        (err as any).status = 401;
-        throw err;
-      }
+      const updated = await pool.query(`UPDATE sesiones_autenticacion SET intentos_mfa = intentos_mfa + 1,
+        revocado = CASE WHEN intentos_mfa + 1 >= 5 THEN true ELSE revocado END
+        WHERE token_hash = $1 AND revocado = false AND mfa_verificado = false RETURNING revocado;`, [tokenHash]);
+      const err = new Error(updated.rows[0]?.revocado ? 'Demasiados intentos. Inicia sesión nuevamente.' : 'Código 2FA incorrecto o expirado.');
+      (err as any).status = updated.rows[0]?.revocado ? 429 : 401;
+      throw err;
     }
 
     // Éxito: extender la expiración a la duración normal configurada y marcar MFA verificado
     const fullExpiresAt = new Date(Date.now() + sessionLifetimeMs);
-    await pool.query(
+    const verified = await pool.query(
       `UPDATE sesiones_autenticacion
        SET mfa_verificado = true, fecha_expiracion = $1, ultima_actividad = NOW()
-       WHERE token_hash = $2;`,
+       WHERE token_hash = $2 AND revocado = false AND mfa_verificado = false AND fecha_expiracion > NOW() RETURNING id_sesion_auth;`,
       [fullExpiresAt, tokenHash],
     );
+
+    if (!verified.rowCount) throw Object.assign(new Error('Desafío de verificación expirado o inválido.'), { status: 401 });
 
     if (row.intentos_fallidos > 0 || row.bloqueado_hasta) {
       await pool.query(`UPDATE usuarios SET intentos_fallidos = 0, bloqueado_hasta = NULL WHERE id_usuario = $1;`, [row.id_usuario]);
@@ -330,7 +304,14 @@ export class AuthService {
     return { token: mfaTicket, user, usuario: user, message: 'Inicio de sesión exitoso' };
   }
 
-  async setup2fa(userId: number, codigoUsuario: string) {
+  async setup2fa(userId: number, codigoUsuario: string, password: string, currentCode?: string) {
+    const result = await pool.query(`SELECT password_hash, totp_activado, totp_secret FROM usuarios WHERE id_usuario = $1 AND activo = true;`, [userId]);
+    const user = result.rows[0];
+    let matches = false;
+    try { matches = Boolean(user?.password_hash && password && await argon2.verify(user.password_hash, password)); } catch { /* reject */ }
+    if (!matches || (user.totp_activado && (!currentCode || !user.totp_secret || !verifyTotpCode(user.totp_secret, currentCode, 1)))) {
+      throw Object.assign(new Error('La contraseña actual y, si corresponde, el código 2FA vigente son obligatorios.'), { status: 403 });
+    }
     const secret = generateTotpSecret(20);
     await pool.query(`UPDATE usuarios SET totp_temp_secret = $1 WHERE id_usuario = $2;`, [secret, userId]);
 
@@ -350,7 +331,7 @@ export class AuthService {
     };
   }
 
-  async confirm2faSetup(userId: number, code: string) {
+  async confirm2faSetup(userId: number, code: string, sessionToken?: string) {
     const res = await pool.query(`SELECT totp_temp_secret FROM usuarios WHERE id_usuario = $1;`, [userId]);
     const tempSecret = res.rows[0]?.totp_temp_secret;
     if (!tempSecret) {
@@ -366,12 +347,18 @@ export class AuthService {
       throw err;
     }
 
-    await pool.query(
-      `UPDATE usuarios
-       SET totp_secret = totp_temp_secret, totp_activado = true, totp_temp_secret = NULL
-       WHERE id_usuario = $1;`,
-      [userId],
-    );
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const changed = await client.query(`UPDATE usuarios SET totp_secret = totp_temp_secret, totp_activado = true, totp_temp_secret = NULL
+        WHERE id_usuario = $1 AND totp_temp_secret = $2 RETURNING id_usuario;`, [userId, tempSecret]);
+      if (!changed.rowCount) throw Object.assign(new Error('La configuración cambió. Inicia el proceso nuevamente.'), { status: 400 });
+      const tokenHash = sessionToken ? hashSessionToken(sessionToken) : null;
+      await client.query(`UPDATE sesiones_autenticacion SET revocado = true, fecha_cierre = NOW()
+        WHERE id_usuario = $1 AND revocado = false AND ($2::text IS NULL OR token_hash <> $2);`, [userId, tokenHash]);
+      await client.query(`UPDATE sesiones_autenticacion SET mfa_verificado = true WHERE id_usuario = $1 AND token_hash = $2 AND revocado = false;`, [userId, tokenHash]);
+      await client.query('COMMIT');
+    } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
 
     return { message: 'Autenticación en dos pasos (2FA) activada correctamente.', totp_activado: true };
   }

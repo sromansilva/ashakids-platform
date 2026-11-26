@@ -17,6 +17,8 @@ export function AccountSettings() {
   const [twoFactorEnabled, setTwoFactorEnabled] = useState<boolean | null>(null);
   const [setup, setSetup] = useState<TwoFactorSetupData | null>(null);
   const [code, setCode] = useState('');
+  const [setupPassword, setSetupPassword] = useState('');
+  const [currentCode, setCurrentCode] = useState('');
   const [disablePassword, setDisablePassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [securityError, setSecurityError] = useState('');
@@ -50,7 +52,7 @@ export function AccountSettings() {
 
   async function startTwoFactor() {
     setBusy(true); setSecurityError(''); setSecurityNotice('');
-    try { setSetup(await authService.setup2fa()); }
+    try { setSetup(await authService.setup2fa({ password: setupPassword, current_code: currentCode || undefined })); }
     catch (error) { setSecurityError(error instanceof Error ? error.message : 'No se pudo iniciar la configuración 2FA.'); }
     finally { setBusy(false); }
   }
@@ -59,7 +61,7 @@ export function AccountSettings() {
     event.preventDefault(); setBusy(true); setSecurityError('');
     try {
       await authService.confirm2faSetup(code);
-      setTwoFactorEnabled(true); setSetup(null); setCode('');
+      setTwoFactorEnabled(true); setSetup(null); setCode(''); setSetupPassword(''); setCurrentCode('');
       setSecurityNotice('Autenticación en dos pasos activada.');
     } catch (error) { setSecurityError(error instanceof Error ? error.message : 'El código no es válido.'); }
     finally { setBusy(false); }
@@ -106,8 +108,12 @@ export function AccountSettings() {
 
       <div className="border-t border-[#E8E5F4] pt-5">
         <div className="flex flex-wrap items-center justify-between gap-3"><div><h3 className="font-extrabold">Autenticación en dos pasos</h3><p className="text-xs text-[#615274]">Estado: {twoFactorEnabled === null ? 'consultando…' : twoFactorEnabled ? 'activada' : 'desactivada'}</p></div>
-          {twoFactorEnabled === false && !setup && <button className={button} type="button" disabled={busy} onClick={() => void startTwoFactor()}>{busy ? 'Preparando…' : 'Activar 2FA'}</button>}
         </div>
+        {twoFactorEnabled !== null && !setup && <div className="mt-4 space-y-3">
+          <label className="block text-xs font-bold text-[#615274]">Contraseña para confirmar el 2FA<input className={field} type="password" autoComplete="current-password" value={setupPassword} onChange={(e) => setSetupPassword(e.target.value)} /></label>
+          {twoFactorEnabled && <label className="block text-xs font-bold text-[#615274]">Código 2FA actual<input className={field} inputMode="numeric" maxLength={6} value={currentCode} onChange={(e) => setCurrentCode(e.target.value.replace(/\D/g, ''))} /></label>}
+          <button className={button} type="button" disabled={busy || (twoFactorEnabled === true && currentCode.length !== 6)} onClick={() => void startTwoFactor()}>{busy ? 'Preparando…' : twoFactorEnabled ? 'Reemplazar 2FA' : 'Activar 2FA'}</button>
+        </div>}
         {setup && <form onSubmit={confirmTwoFactor} className="mt-4 space-y-3">
           <p className="text-sm text-[#615274]">Escanea este QR con tu aplicación autenticadora. Guarda el secreto de recuperación en un lugar seguro.</p>
           <img src={setup.qr_code} alt="Código QR para configurar autenticación en dos pasos" className="mx-auto h-48 w-48 rounded-xl border border-[#E8E5F4] p-2" />

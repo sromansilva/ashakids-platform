@@ -138,7 +138,7 @@ npm run typecheck
   - `TerapeutaPacientes.tsx`: Fila de paciente interactiva y estado de expediente con Ashi y carpeta clínica.
   - `TerapeutaAgenda.tsx`: Agenda semanal (08:00 a 17:00) con selector Día/Semana.
   - `TerapeutaReportes.tsx` + `ClinicalReportEditor.tsx`: Editor clínico estructurado con observaciones, objetivos, nivel de ayuda 1–5 y generación de reportes descargables.
-  - `TerapeutaDatosActividad.tsx`: Seguimiento demostrativo de participación lúdica por mundo con gráfico donut.
+  - `TerapeutaDatosActividad.tsx`: Seguimiento demostrativo de participación lúdica por mundo con tabla y barras.
 
 ### C. Rol ADMIN
 - **Rutas clave**: `/admin`, `/admin/cuentas`, `/admin/citas`, `/admin/sesiones`, `/admin/auditoria`, `/admin/config`.

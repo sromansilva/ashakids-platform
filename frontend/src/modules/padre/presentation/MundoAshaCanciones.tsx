@@ -100,10 +100,8 @@ export function MundoAshaCanciones({ go }: { go: (v: View) => void }) {
 
   const elapsedSec = Math.round((Date.now() - startTime) / 1000);
   const dataLog = {
-    sessionId: `ASHA-SIM-${Date.now().toString(36).toUpperCase()}`,
-    profileId: "P-0421 (pseudonimizado)",
     activityType: "montana-musical",
-    version: "v1.0-demo",
+    version: "v1.0",
     assigned: isAssigned,
     timestamp: new Date().toISOString(),
     durationSeconds: phase === "done" ? elapsedSec : null,

@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from 'express';
 import { ZodError } from 'zod';
+import { settings } from '../config.js';
 
 export function errorHandler(
   err: Error,
@@ -35,7 +36,7 @@ export function errorHandler(
   console.error('[API Error]:', err);
   res.status(statusCode).json({
     error: 'Error interno del servidor.',
-    mensaje: process.env.NODE_ENV === 'production' ? undefined : err.message,
+    mensaje: settings.ENVIRONMENT === 'development' ? err.message : undefined,
   });
 }
 

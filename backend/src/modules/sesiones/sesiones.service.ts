@@ -1,4 +1,5 @@
 import { pool } from '../../core/database.js';
+import { isVirtualModality } from '../citas/modalidad.js';
 import { PHONEME_NAMING_TARGETS } from '../juegos/juegos.service.js';
 import { settings } from '../../core/config.js';
 import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js';
@@ -75,15 +76,16 @@ export class SesionesService {
     if (active.size === 0) this.activePhoneticInferences.delete(sessionId);
   }
 
-  private async assertActivePhoneticSession(idSesion: number) {
+  private async assertActivePhoneticSession(idSesion: number, requireVirtual = false) {
     const result = await pool.query(
-      'SELECT s.estado_sesion, r.id_paciente FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva WHERE s.id_sesion = $1 LIMIT 1;',
+      'SELECT s.estado_sesion, r.id_paciente, r.modalidad FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva WHERE s.id_sesion = $1 LIMIT 1;',
       [idSesion],
     );
     if (!result.rows[0]) throw Object.assign(new Error('Sesión no encontrada.'), { status: 404 });
     if (result.rows[0].estado_sesion !== 'EN_CURSO') {
       throw Object.assign(new Error('La evaluación fonológica solo está disponible durante una sesión en curso.'), { status: 409 });
     }
+    if (requireVirtual && !isVirtualModality(result.rows[0].modalidad)) throw Object.assign(new Error('La captura familiar solo está disponible para citas virtuales.'), { status: 409 });
     await assertConsentAccess(Number(result.rows[0].id_paciente));
   }
 
@@ -157,7 +159,7 @@ export class SesionesService {
     if (!target || target.fonema_objetivo !== payload.fonema_objetivo) {
       throw Object.assign(new Error('Selecciona una palabra y un fonema de los objetivos clínicos disponibles.'), { status: 400 });
     }
-    await this.assertActivePhoneticSession(idSesion);
+    await this.assertActivePhoneticSession(idSesion, true);
     const capture = this.familyPhoneticCaptureStore.create({
       id_sesion: idSesion,
       id_usuario: user.id_usuario,
@@ -524,7 +526,7 @@ export class SesionesService {
           terapeuta_nombre: r.terapeuta_nombre?.trim() || 'Terapeuta Especialista',
           fecha_hora_inicio: new Date(r.fecha_hora_inicio).toISOString(),
           fecha_hora_fin: new Date(r.fecha_hora_fin).toISOString(),
-          modalidad: (r.modalidad === 'ONLINE' ? 'VIRTUAL' : r.modalidad) as any,
+          modalidad: (isVirtualModality(r.modalidad) ? 'VIRTUAL' : r.modalidad) as any,
           localizacion: null,
           estado_reserva: r.estado_reserva as any,
           fecha_creacion: r.fecha_creacion ? new Date(r.fecha_creacion).toISOString() : new Date().toISOString(),
@@ -797,6 +799,7 @@ export class SesionesService {
       `UPDATE reportes_sesion
        SET estado_reporte = 'FIRMADO', id_usuario_firma = $2, fecha_firma = NOW()
        WHERE id_sesion = $1 AND estado_reporte = 'BORRADOR'
+         AND EXISTS (SELECT 1 FROM sesiones s WHERE s.id_sesion = $1 AND s.estado_sesion = 'FINALIZADA' AND s.asistencia = 'ASISTIO')
          AND NULLIF(BTRIM(observaciones_iniciales), '') IS NOT NULL
          AND NULLIF(BTRIM(objetivos_trabajados), '') IS NOT NULL
          AND nivel_ayuda = ANY(ARRAY['Sin ayuda', 'Ayuda mínima', 'Ayuda moderada', 'Ayuda alta', 'Ayuda total']::text[])
@@ -805,6 +808,8 @@ export class SesionesService {
       [key, user.id_usuario],
     );
     if (!result.rows[0]) {
+      const session = await pool.query('SELECT estado_sesion, asistencia FROM sesiones WHERE id_sesion = $1', [key]);
+      if (session.rows[0]?.estado_sesion !== 'FINALIZADA' || session.rows[0]?.asistencia !== 'ASISTIO') throw Object.assign(new Error('Solo se puede firmar un reporte de una sesión finalizada con asistencia.'), { status: 409 });
       const existing = await this.reporte(key);
       if (!existing) throw Object.assign(new Error('Guarda el reporte antes de firmarlo.'), { status: 404 });
       if (existing.estado_reporte === 'FIRMADO') throw Object.assign(new Error('El reporte ya está firmado.'), { status: 409 });

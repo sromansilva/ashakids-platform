@@ -37,7 +37,7 @@ export function SolicitudDetalle({
     { l: "Nombres", v: s.nombres },
     { l: "Apellidos", v: s.apellidos },
     { l: "Correo", v: s.email },
-    { l: "Teléfono (WhatsApp)", v: s.telefono },
+    { l: "Teléfono (WhatsApp)", v: s.telefono ?? "Borrado por retención" },
     { l: "Fecha de solicitud", v: fecha(s.creado_en) },
   ];
 
@@ -68,7 +68,7 @@ export function SolicitudDetalle({
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div>
               <p className="text-xs font-extrabold uppercase tracking-wider text-[#9E95B7]">DNI</p>
-              <p className="text-base font-extrabold text-[#1C1135]">{s.dni}</p>
+              <p className="text-base font-extrabold text-[#1C1135]">{s.dni ?? "Borrado por retención"}</p>
             </div>
             {s.estado === "PENDIENTE" && (
               <button
