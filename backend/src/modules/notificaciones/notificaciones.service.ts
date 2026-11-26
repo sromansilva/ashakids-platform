@@ -8,6 +8,7 @@ export interface NotificationItem {
   texto: string;
   id_reserva: number | null;
   id_conversacion: number | null;
+  id_solicitud: number | null;
   meet_url?: string | null;
   /** La sesión de la cita sigue en curso (permite destacar avisos vigentes sin consultar citas). */
   sesion_en_curso?: boolean;
@@ -42,7 +43,7 @@ export class NotificacionesService {
     const unreadClause = options?.soloSinLeer ? ' AND n.leida_en IS NULL' : '';
     const [res, totalRes] = await Promise.all([
       pool.query(
-        `SELECT n.id_notificacion, n.tipo, n.titulo, n.texto, n.id_reserva, n.id_conversacion,
+        `SELECT n.id_notificacion, n.tipo, n.titulo, n.texto, n.id_reserva, n.id_conversacion, n.id_solicitud,
                 n.fecha_creacion, n.leida_en,
                 CASE WHEN n.tipo IN ('RECORDATORIO', 'SESION_INICIADA')
                        AND r.estado_reserva = 'CONFIRMADA'
@@ -81,6 +82,7 @@ export class NotificacionesService {
         texto: String(row.texto),
         id_reserva: row.id_reserva === null ? null : Number(row.id_reserva),
         id_conversacion: row.id_conversacion === null ? null : Number(row.id_conversacion),
+        id_solicitud: row.id_solicitud == null ? null : Number(row.id_solicitud),
         meet_url: safeGoogleMeetUrl(row.meet_url),
         sesion_en_curso: Boolean(row.sesion_en_curso),
         fecha_creacion: new Date(row.fecha_creacion).toISOString(),
@@ -146,6 +148,7 @@ export class NotificacionesService {
       texto: String(row.texto),
       id_reserva: row.id_reserva === null ? null : Number(row.id_reserva),
       id_conversacion: row.id_conversacion === null ? null : Number(row.id_conversacion),
+      id_solicitud: row.id_solicitud == null ? null : Number(row.id_solicitud),
       fecha_creacion: new Date(row.fecha_creacion).toISOString(),
       leida_en: new Date(row.leida_en).toISOString(),
     };

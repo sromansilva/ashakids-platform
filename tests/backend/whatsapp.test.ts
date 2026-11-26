@@ -254,10 +254,124 @@ describe('Rutas de admin de solicitudes', () => {
       assert.equal((await fetch(base)).status, 401);
       assert.equal((await fetch(`${base}/1/aprobar`, { method: 'POST' })).status, 401);
       assert.equal((await fetch(`${base}/1/rechazar`, { method: 'POST' })).status, 401);
+      assert.equal((await fetch(`${base}/1/verificar-dni`, { method: 'POST' })).status, 401);
+      assert.equal((await fetch(`http://127.0.0.1:${port}/api/v1/identidad/dni/12345678`)).status, 401);
+      assert.equal((await fetch(`http://127.0.0.1:${port}/api/v1/identidad/ruc/12345678901`)).status, 401);
+      assert.equal((await fetch(`http://127.0.0.1:${port}/api/v1/identidad/dni/12345678`, { headers: { 'x-mock-role': 'PADRE' } })).status, 403);
+      assert.equal((await fetch(`http://127.0.0.1:${port}/api/v1/identidad/ruc/12345678901`, { headers: { 'x-mock-role': 'TERAPEUTA' } })).status, 403);
     } finally {
       server.closeAllConnections();
       await new Promise((resolve) => server.close(resolve));
     }
+  });
+});
+
+describe('Revisión de solicitudes con dependencias simuladas', () => {
+  it('Decolecta usa códigos y no registra el cuerpo ni el mensaje de excepciones', async () => {
+    const { DecolectaService } = await import('../../backend/dist/infrastructure/decolecta/decolecta.service.js');
+    const originalFetch = globalThis.fetch, originalWarn = console.warn, originalToken = settings.DECOLECTA_TOKEN;
+    const logs: string[] = [];
+    try {
+      settings.DECOLECTA_TOKEN = 'token-simulado';
+      console.warn = (...args: unknown[]) => { logs.push(args.map(String).join(' ')); };
+      globalThis.fetch = (async () => new Response('documento privado', { status: 404 })) as typeof fetch;
+      assert.equal((await DecolectaService.consultarDni('12345678')).code, 'NOT_FOUND');
+      globalThis.fetch = (async () => new Response('documento privado', { status: 500 })) as typeof fetch;
+      assert.equal((await DecolectaService.consultarDni('12345678')).code, 'ERROR');
+      globalThis.fetch = (async () => { throw new Error('documento privado'); }) as typeof fetch;
+      assert.equal((await DecolectaService.consultarDni('12345678')).code, 'ERROR');
+      await DecolectaService.consultarRuc('12345678901');
+      assert.ok(logs.length >= 3);
+      assert.doesNotMatch(logs.join(' '), /documento privado|12345678/);
+    } finally { globalThis.fetch = originalFetch; console.warn = originalWarn; settings.DECOLECTA_TOKEN = originalToken; }
+  });
+  it('exige motivo válido y lo guarda y envía sin caracteres de control', async () => {
+    const { rechazarSolicitudAcceso } = await import('../../backend/dist/modules/whatsapp/solicitudes.routes.js');
+    const originalQuery = pool.query;
+    const originalSend = WhatsAppService.sendText;
+    let row: any = { id_solicitud: 1, telefono: '51999999999', nombres: 'Ana', apellidos: 'Pérez Soto', dni: '12345678', email: 'a@b.co', estado: 'PENDIENTE', consentimiento_en: new Date(), ultimo_mensaje_en: new Date(), creado_en: new Date() };
+    let sent = '';
+    let status = 200;
+    let json: any;
+    const res: any = { status(n: number) { status = n; return this; }, json(value: any) { json = value; return this; } };
+    const next = (err: unknown) => { throw err; };
+    try {
+      await rechazarSolicitudAcceso({ params: { id: '1' }, body: {}, user: { id_usuario: 1 } } as any, res, next);
+      assert.equal(status, 400);
+      assert.ok(json.detail && json.error);
+      pool.query = (async (sql: string, params: any[]) => {
+        if (sql.includes("SET estado = 'RECHAZADA'")) row = { ...row, estado: 'RECHAZADA', motivo_rechazo: params[2] };
+        return { rowCount: 1, rows: [row] };
+      }) as any;
+      WhatsAppService.sendText = async (_phone: string, text: string) => { sent = text; return { status: 'ENVIADO' }; };
+      status = 200;
+      await rechazarSolicitudAcceso({ params: { id: '1' }, body: { motivo: '  Datos\nincompletos.  ' }, user: { id_usuario: 1 } } as any, res, next);
+      assert.equal(status, 200);
+      assert.equal(json.solicitud.motivo_rechazo, 'Datos\nincompletos.');
+      assert.match(sent, /Motivo: Datos incompletos\. Si/);
+      assert.doesNotMatch(sent, /[\x00-\x1f\x7f-\x9f]/);
+    } finally { pool.query = originalQuery; WhatsAppService.sendText = originalSend; }
+  });
+
+  it('al rechazar envía siempre el motivo por correo, también fuera de la ventana de 24 h', async () => {
+    const { rechazarSolicitud } = await import('../../backend/dist/modules/whatsapp/solicitudes.service.js');
+    const { GmailService } = await import('../../backend/dist/infrastructure/mailer/gmail.service.js');
+    const originalQuery = pool.query, originalSend = WhatsAppService.sendText, originalMail = GmailService.sendMail;
+    const old = new Date(Date.now() - 30 * 60 * 60 * 1000);
+    let row: any = { id_solicitud: 2, telefono: '51999999998', nombres: 'Luis', apellidos: 'Rojas', dni: '87654321', email: 'luis@example.com', estado: 'PENDIENTE', consentimiento_en: old, ultimo_mensaje_en: old, creado_en: old };
+    let saved: any[] = [];
+    let whatsappCalls = 0;
+    let mail: any = null;
+    try {
+      pool.query = (async (sql: string, params: any[]) => {
+        if (sql.includes("SET estado = 'RECHAZADA'")) row = { ...row, estado: 'RECHAZADA', motivo_rechazo: params[2] };
+        if (sql.includes('correo_estado = $3')) { saved = params; row = { ...row, aviso_whatsapp_estado: params[1], correo_estado: params[2] }; }
+        return { rowCount: 1, rows: [row] };
+      }) as any;
+      WhatsAppService.sendText = async () => { whatsappCalls++; return { status: 'ENVIADO' }; };
+      GmailService.sendMail = async (opts: any) => { mail = opts; return { success: true, status: 'ENVIADO' }; };
+      const result = await rechazarSolicitud(2, 1, 'Datos\nincompletos en la solicitud');
+      assert.equal(whatsappCalls, 0);
+      assert.equal(result.aviso_whatsapp, 'FUERA_DE_VENTANA');
+      assert.equal(result.correo_rechazo, 'ENVIADO');
+      assert.deepEqual(saved, [2, 'FUERA_DE_VENTANA', 'ENVIADO']);
+      assert.equal(mail.to, 'luis@example.com');
+      assert.match(mail.text, /Motivo: Datos incompletos en la solicitud/);
+      assert.doesNotMatch(mail.text, /87654321/);
+      GmailService.sendMail = async () => { throw new Error('caído'); };
+      row = { ...row, estado: 'PENDIENTE' };
+      const failed = await rechazarSolicitud(2, 1, 'Datos incompletos en la solicitud');
+      assert.equal(failed.correo_rechazo, 'FALLO');
+      assert.match(failed.message, /no se pudo avisar/);
+    } finally { pool.query = originalQuery; WhatsAppService.sendText = originalSend; GmailService.sendMail = originalMail; }
+  });
+
+  it('verifica coincidencia, ausencia, errores y estado pendiente sin guardar datos RENIEC', async () => {
+    const { verificarDniSolicitud } = await import('../../backend/dist/modules/whatsapp/solicitudes.service.js');
+    const { DecolectaService } = await import('../../backend/dist/infrastructure/decolecta/decolecta.service.js');
+    const originalQuery = pool.query, originalConfigured = DecolectaService.isConfigured, originalDni = DecolectaService.consultarDni;
+    let row: any = { id_solicitud: 1, telefono: '51999999999', nombres: 'Ána María', apellidos: 'Pérez Soto', dni: '12345678', email: 'a@b.co', estado: 'PENDIENTE', consentimiento_en: new Date(), ultimo_mensaje_en: new Date(), creado_en: new Date() };
+    let values: any[] = [];
+    try {
+      pool.query = (async (sql: string, params: any[]) => {
+        if (sql.includes('UPDATE')) { values = params; row = { ...row, dni_verificacion_estado: params[1], dni_verificado_en: new Date() }; }
+        return { rowCount: 1, rows: [row] };
+      }) as any;
+      DecolectaService.isConfigured = () => true;
+      DecolectaService.consultarDni = async () => ({ success: true, data: { numero: '12345678', nombres: 'Ana Maria', apellidoPaterno: 'Perez', apellidoMaterno: 'Soto', apellidos: 'Perez Soto', nombreCompleto: 'Ana Maria Perez Soto', fuente: 'DECOLECTA_RENIEC' } });
+      assert.equal((await verificarDniSolicitud(1)).estado, 'COINCIDE');
+      assert.deepEqual(values, [1, 'COINCIDE']);
+      row.apellidos = 'Distinto Soto';
+      assert.equal((await verificarDniSolicitud(1)).estado, 'NO_COINCIDE');
+      DecolectaService.consultarDni = async () => ({ success: false, code: 'NOT_FOUND', message: 'Mensaje diferente' });
+      assert.equal((await verificarDniSolicitud(1)).estado, 'NO_ENCONTRADO');
+      DecolectaService.consultarDni = async () => ({ success: false, message: 'Error de servicio' });
+      assert.equal((await verificarDniSolicitud(1)).estado, 'ERROR');
+      DecolectaService.isConfigured = () => false;
+      assert.equal((await verificarDniSolicitud(1)).estado, 'NO_CONFIGURADO');
+      row.estado = 'RECHAZADA';
+      await assert.rejects(verificarDniSolicitud(1), (err: any) => err.status === 409);
+    } finally { pool.query = originalQuery; DecolectaService.isConfigured = originalConfigured; DecolectaService.consultarDni = originalDni; }
   });
 });
 

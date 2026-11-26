@@ -1,3 +1,4 @@
+import { emitNotificationEvent } from '../notificaciones/notification-events.js';
 import { pool } from '../../core/database.js';
 import { WhatsAppService } from '../../infrastructure/whatsapp/whatsapp.service.js';
 import { MSG, normalizeCommand, processMessage, type BotDraft, type BotState } from './whatsapp.bot.js';
@@ -110,7 +111,21 @@ export async function applyIncomingMessage(msg: IncomingMessage, now = new Date(
          RETURNING id_solicitud;`,
         [msg.from, s.nombres, s.apellidos, s.dni, s.email, s.consentimiento_en, now],
       );
-      if (inserted.rowCount === 0) {
+      if (inserted.rowCount) {
+        const solicitudId = Number(inserted.rows[0].id_solicitud);
+        const admins = await client.query(`SELECT DISTINCT u.id_usuario FROM public.usuarios u
+          JOIN public.usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = TRUE
+          JOIN public.roles r ON r.id_rol = ur.id_rol AND r.nombre_rol = 'ADMIN'
+          WHERE u.activo = TRUE;`);
+        for (const admin of admins.rows) {
+          await emitNotificationEvent(client, {
+            userId: Number(admin.id_usuario), preference: null, type: 'SOLICITUD_ACCESO',
+            title: 'Nueva solicitud de acceso',
+            text: 'Una familia pidió acceso por WhatsApp. Revísala en Solicitudes.',
+            solicitudId, eventKey: `solicitud-acceso:${solicitudId}`,
+          });
+        }
+      } else {
         reply = MSG.enRevision;
         finalState = 'FINALIZADA';
         finalData = {};

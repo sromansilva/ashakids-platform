@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { Home, Calendar, MessageCircle, Users, Star, LogOut, FileText, BarChart2, Activity, UserPlus, Settings, Shield, Cpu, AlertTriangle, Video } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { B } from "@/shared/presentation/theme/brand/B";
 import { View } from "@/shared/domain/types/navigation";
 import { Role } from "@/shared/domain/types/navigation";
 import { Isotipo } from "@/shared/presentation/components/illustrations/Isotipo";
+import { adminService, SOLICITUDES_PENDIENTES_QUERY_KEY } from "@/modules/admin/infrastructure/adminService";
 
 export function Sidebar({
   role,
@@ -25,6 +27,16 @@ export function Sidebar({
   padreUserName?: string;
 }) {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const isRoleAdmin = role === "admin";
+
+  const solicitudesQuery = useQuery({
+    queryKey: SOLICITUDES_PENDIENTES_QUERY_KEY,
+    queryFn: () => adminService.getSolicitudesAcceso("PENDIENTE"),
+    enabled: isRoleAdmin,
+    refetchInterval: 60000,
+  });
+  const pendingCount = isRoleAdmin ? solicitudesQuery.data?.total ?? 0 : 0;
+
   const nav =
     role === "padre"
       ? [
@@ -216,6 +228,8 @@ export function Sidebar({
             (item.view === "admin/dashboard" && (cur === "admin" || cur === "admin/dashboard")) ||
             (item.view === "admin/operacion" && ((cur as string) === "admin/incidencias" || cur === "admin/operacion")) ||
             (item.view === "terapeuta/sesion" && (typeof cur === "string" && cur.startsWith("terapeuta/sesion")));
+          const isSolicitudesItem = item.view === "admin/solicitudes";
+          const showSolicitudesBadge = isSolicitudesItem && isRoleAdmin && pendingCount > 0;
           return (
             <button
               key={item.view}
@@ -223,7 +237,7 @@ export function Sidebar({
               aria-label={collapsed ? item.label : undefined}
               title={collapsed ? item.label : undefined}
               onClick={() => go(item.view)}
-              className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98] ${collapsed ? "justify-center gap-0 px-0" : ""}
+              className={`relative flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-sm font-bold transition-all duration-150 w-full text-left active:scale-[.98] ${collapsed ? "justify-center gap-0 px-0" : ""}
                 ${
                   active
                     ? "bg-[#6B46FE] text-white shadow-md shadow-violet-200"
@@ -236,7 +250,25 @@ export function Sidebar({
                 aria-hidden="true"
               />
               <span className={`sidebar-nav-label ${collapsed ? "sidebar-nav-label--collapsed" : "truncate"}`}>{item.label}</span>
-              {active && !collapsed && (
+              {showSolicitudesBadge && !collapsed && (
+                <span
+                  aria-label={`${pendingCount} ${pendingCount === 1 ? "solicitud pendiente" : "solicitudes pendientes"}`}
+                  className={`ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full px-2 text-[11px] font-black tabular-nums transition-colors ${
+                    active ? "bg-white text-[#6B46FE]" : "bg-[#EDE9FE] text-[#6B46FE]"
+                  }`}
+                >
+                  {pendingCount}
+                </span>
+              )}
+              {showSolicitudesBadge && collapsed && (
+                <span
+                  aria-label={`${pendingCount} ${pendingCount === 1 ? "solicitud pendiente" : "solicitudes pendientes"}`}
+                  className="absolute top-1.5 right-1.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[#6B46FE] px-1 text-[9px] font-black text-white shadow-sm"
+                >
+                  {pendingCount}
+                </span>
+              )}
+              {active && !collapsed && !showSolicitudesBadge && (
                 <div className="ml-auto w-2 h-2 rounded-full bg-white flex-shrink-0" />
               )}
             </button>
