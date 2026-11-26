@@ -1,3 +1,4 @@
+import { assertReaperturaPermitida } from '../../incidencias/incidencias.service.js';
 import { pool } from '../../../core/database.js';
 import type { FiltrosSoporte, TicketSoporte, EstadoSoporte } from '../domain/soporte.js';
 
@@ -33,8 +34,16 @@ export const soporteRepository = {
     return result.rows[0];
   },
   async estado(id: number, estado: EstadoSoporte) {
-    const result = await pool.query<TicketSoporte>(`UPDATE incidencias SET estado = $2, fecha_actualizacion = now()
-      WHERE id_incidencia = $1 AND area_destino = 'SOPORTE_TECNICO' RETURNING ${projection}`, [id, estado]);
-    return result.rows[0];
+    const client = await pool.connect();
+    try {
+      await client.query('BEGIN');
+      const current = await client.query(`SELECT estado, fecha_actualizacion, fecha_creacion FROM incidencias WHERE id_incidencia = $1 AND area_destino = 'SOPORTE_TECNICO' FOR UPDATE`, [id]);
+      if (!current.rows[0]) { await client.query('COMMIT'); return undefined; }
+      assertReaperturaPermitida(current.rows[0], estado);
+      const result = await client.query<TicketSoporte>(`UPDATE incidencias SET estado = $2, fecha_actualizacion = now()
+        WHERE id_incidencia = $1 AND area_destino = 'SOPORTE_TECNICO' RETURNING ${projection}`, [id, estado]);
+      await client.query('COMMIT');
+      return result.rows[0];
+    } catch (error) { await client.query('ROLLBACK'); throw error; } finally { client.release(); }
   },
 };

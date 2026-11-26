@@ -411,26 +411,6 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
     });
     assert.equal(reportRes.status, 200);
 
-    const signed = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte/firmar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
-      body: JSON.stringify({}),
-    });
-    assert.equal(signed.status, 200);
-    assert.equal((await signed.json() as { estado_reporte: string }).estado_reporte, 'FIRMADO');
-
-    const parentReport = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte`, {
-      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
-    });
-    assert.equal(parentReport.status, 200);
-    assert.equal((await parentReport.json() as { estado_reporte: string }).estado_reporte, 'FIRMADO');
-
-    const parentPdf = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte/pdf`, {
-      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
-    });
-    assert.equal(parentPdf.status, 200);
-    assert.match(parentPdf.headers.get('content-type') ?? '', /application\/pdf/i);
-    assert.equal(Buffer.from(await parentPdf.arrayBuffer()).subarray(0, 5).toString('ascii'), '%PDF-');
   });
 
   it('Paso 3 y 4: El predictor solo responde con un artefacto clínicamente aprobado', async () => {
@@ -466,6 +446,37 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
       body: JSON.stringify({ estado: 'CONFIRMADO_TERAPEUTA', transcripcion_revisada: 'sol', observacion_terapeuta: 'Resultado de revisión sintética para integración.', resultado_clinico: 'REQUIERE_APOYO' }),
     });
     assert.equal(secondReview.status, 200);
+
+    const closeResponse = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/cerrar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({ asistencia: 'ASISTIO' }),
+    });
+    assert.equal(closeResponse.status, 200, await closeResponse.clone().text());
+    const closed = await closeResponse.json() as { estado_sesion: string; asistencia: string };
+    assert.equal(closed.estado_sesion, 'FINALIZADA');
+    assert.equal(closed.asistencia, 'ASISTIO');
+
+    const signed = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte/firmar`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
+      body: JSON.stringify({}),
+    });
+    assert.equal(signed.status, 200);
+    assert.equal((await signed.json() as { estado_reporte: string }).estado_reporte, 'FIRMADO');
+
+    const parentReport = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte`, {
+      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
+    });
+    assert.equal(parentReport.status, 200);
+    assert.equal((await parentReport.json() as { estado_reporte: string }).estado_reporte, 'FIRMADO');
+
+    const parentPdf = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/reporte/pdf`, {
+      headers: { Authorization: devAuth('PADRE', fixture.parentUserId) },
+    });
+    assert.equal(parentPdf.status, 200);
+    assert.match(parentPdf.headers.get('content-type') ?? '', /application\/pdf/i);
+    assert.equal(Buffer.from(await parentPdf.arrayBuffer()).subarray(0, 5).toString('ascii'), '%PDF-');
 
     const catalogRes = await fetch(`${baseUrl}/api/v1/clinica/tratamientos/predictor-catalog`, {
       headers: { Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
@@ -792,16 +803,6 @@ describe('ASHAkids E2E: Flujo Integral de Automatización Fonológica y ML Predi
   });
 
   it('persists attendance in the API contract and blocks prediction for a no-show', async () => {
-    const closeResponse = await fetch(`${baseUrl}/api/v1/sesiones/${fixture.sessionId}/cerrar`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: devAuth('TERAPEUTA', fixture.therapistUserId) },
-      body: JSON.stringify({ asistencia: 'ASISTIO' }),
-    });
-    assert.equal(closeResponse.status, 200);
-    const closed = await closeResponse.json() as { estado_sesion: string; asistencia: string };
-    assert.equal(closed.estado_sesion, 'FINALIZADA');
-    assert.equal(closed.asistencia, 'ASISTIO');
-
     const persisted = await pool.query<{ estado_sesion: string; asistencia: string; estado_reserva: string }>(
       `SELECT s.estado_sesion, s.asistencia, r.estado_reserva
        FROM sesiones s JOIN reservas r ON r.id_reserva = s.id_reserva

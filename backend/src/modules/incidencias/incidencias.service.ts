@@ -3,6 +3,12 @@ import type { AuthenticatedUser } from '../../core/middleware/auth.middleware.js
 import { notasRepository } from './infrastructure/notas.repository.js';
 import { estadosIncidencia, normalizarEstadoPersistido, type EstadoIncidencia } from './domain/estado.js';
 
+export function assertReaperturaPermitida(inc: { estado: string; fecha_actualizacion: Date | string | null; fecha_creacion: Date | string }, estado: string) {
+  if (normalizarEstadoPersistido(inc.estado) === 'RESUELTA' && estado !== 'RESUELTA' && Date.now() - new Date(inc.fecha_actualizacion || inc.fecha_creacion).getTime() > 2 * 24 * 60 * 60 * 1000) {
+    throw Object.assign(new Error('No es posible revocar una incidencia resuelta hace más de 2 días.'), { status: 400 });
+  }
+}
+
 const therapistIncidentTypes = new Set([
   'Seguimiento Terapéutico',
   'Sesiones y Citas',
@@ -440,7 +446,7 @@ export class IncidenciasService {
     try {
       // Buscar el id_terapeuta del usuario
       const terRes = await pool.query('SELECT id_terapeuta FROM public.terapeutas WHERE id_usuario = $1;', [userId]);
-      const id_terapeuta = terRes.rows.length > 0 ? terRes.rows[0].id_terapeuta : 1;
+      const id_terapeuta = terRes.rows.length > 0 ? terRes.rows[0].id_terapeuta : null;
 
       const res = await pool.query(
         `SELECT i.*, CONCAT(u_ter.nombres, ' ', u_ter.apellidos) as terapeuta_nombre
@@ -448,9 +454,9 @@ export class IncidenciasService {
          LEFT JOIN public.terapeutas t ON i.id_terapeuta = t.id_terapeuta
          LEFT JOIN public.usuarios u_ter ON t.id_usuario = u_ter.id_usuario
          WHERE i.area_destino = 'TERAPEUTA' 
-           AND (i.id_terapeuta = $1 OR i.id_terapeuta IS NULL)
+           AND (i.id_terapeuta = $1 OR i.id_usuario = $2)
          ORDER BY i.fecha_creacion DESC;`,
-        [id_terapeuta]
+        [id_terapeuta, userId]
       );
 
       return res.rows.map((r) => ({
@@ -573,7 +579,7 @@ export class IncidenciasService {
         user.id_usuario,
       ]);
       const myTerapeutaId = terRes.rows.length > 0 ? terRes.rows[0].id_terapeuta : null;
-      if (r.area_destino === 'TERAPEUTA' && (r.id_terapeuta === myTerapeutaId || r.id_terapeuta === null)) {
+      if (r.area_destino === 'TERAPEUTA' && (myTerapeutaId !== null && r.id_terapeuta === myTerapeutaId)) {
         esTerapeutaAsignado = true;
       }
     }
@@ -637,16 +643,7 @@ export class IncidenciasService {
       throw err;
     }
 
-    // Regla de revocación: Si la incidencia ya fue resuelta y se desea cambiar a otro estado, verificar límite estricto de 2 días (48 horas)
-    if (normalizarEstadoPersistido(inc.estado) === 'RESUELTA' && estado !== 'RESUELTA') {
-      const fechaBase = new Date(inc.fecha_actualizacion || inc.fecha_creacion).getTime();
-      const dosDiasEnMs = 2 * 24 * 60 * 60 * 1000;
-      if (Date.now() - fechaBase > dosDiasEnMs) {
-        const err = new Error('No es posible revocar una incidencia resuelta hace más de 2 días.');
-        (err as any).status = 400;
-        throw err;
-      }
-    }
+    assertReaperturaPermitida(inc, estado);
 
     if (inc.area_destino === 'SOPORTE_TECNICO' && user.rol !== 'ADMIN' && !user.roles?.includes('ADMIN')) {
       const err = new Error('Solo administracion puede gestionar incidencias de soporte.');
@@ -657,8 +654,8 @@ export class IncidenciasService {
     // Regla: Terapeuta solo puede modificar sus incidencias asignadas
     if (user.rol === 'TERAPEUTA' || user.roles?.includes('TERAPEUTA')) {
       const terRes = await pool.query('SELECT id_terapeuta FROM public.terapeutas WHERE id_usuario = $1;', [user.id_usuario]);
-      const myTerapeutaId = terRes.rows.length > 0 ? terRes.rows[0].id_terapeuta : 1;
-      if (inc.area_destino !== 'TERAPEUTA' || (inc.id_terapeuta && inc.id_terapeuta !== myTerapeutaId)) {
+      const myTerapeutaId = terRes.rows.length > 0 ? terRes.rows[0].id_terapeuta : null;
+      if (inc.area_destino !== 'TERAPEUTA' || (myTerapeutaId === null || inc.id_terapeuta !== myTerapeutaId)) {
         const err = new Error('Un terapeuta no puede modificar incidencias que no le pertenecen.');
         (err as any).status = 403;
         throw err;
