@@ -8,6 +8,10 @@ export async function migrateNotificacionesSchema() {
   const client = await pool.connect();
   try {
     await client.query('BEGIN;');
+    // Mismo candado que migrateWhatsApp, tomado antes de cualquier DDL: la FK a
+    // solicitudes_acceso_familia no puede entrelazarse con otra migración de WhatsApp
+    // en paralelo (evita el deadlock entre procesos que arrancan a la vez).
+    await client.query(`SELECT pg_advisory_xact_lock(hashtext('migrate_whatsapp'));`);
     await client.query('SELECT pg_advisory_xact_lock(8612, 2);');
     await client.query(`
       CREATE TABLE IF NOT EXISTS public.notificacion_email_outbox (

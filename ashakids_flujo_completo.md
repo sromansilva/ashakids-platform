@@ -49,7 +49,7 @@ flowchart TD
     %% Aprobación y Creación de Cuenta PADRE
     A_SOL_DECISION -- "Aprobar" --> A_APROBAR["Creación de cuenta PADRE<br/>(adminService.crearPadre)"]
     A_APROBAR --> A_MAIL_CHECK{"¿Correo de bienvenida enviado?"}
-    A_MAIL_CHECK -- "Fallo en envío" --> A_RESEND["Botón: «Reenviar activación»"]
+    A_MAIL_CHECK -- "Fallo en envío" --> A_RESEND["Botón: «Reenviar activación»<br/>(Solo por correo electrónico)"]
     A_RESEND --> A_MAIL_CHECK
     A_MAIL_CHECK -- "Enviado con éxito" --> A_EMAIL_SENT["Envío automático de correo con enlace de activación<br/>(Vigencia: 2 horas)"]
     A_EMAIL_SENT --> A_WAPP_APPROVE["Aviso por WhatsApp a la familia<br/>(Texto si < 24 h, o plantilla aprobada)"]
@@ -111,7 +111,7 @@ flowchart TD
             FC_8 --> FC_9["Sesión en curso (40 minutos de atención terapéutica)"]
             FC_7B --> FC_9
             FC_9 --> FC_10["Panel muestra datos: niño, terapeuta, tiempo restante y acceso Meet"]
-            FC_10 --> FC_11["Terapeuta identifica dificultades y selecciona fonemas/palabras (/r/, /s/, /g/, etc.)"]
+            FC_10 --> FC_11["Terapeuta identifica dificultades y selecciona fonemas/palabras soportados (/rr/, /r/, /s/, /pl/, /tr/)"]
             FC_11 --> FC_AUDIO_SRC{"Origen de la muestra de audio<br/>(Consentimiento vigente, nunca captura pista de Meet)"}
             FC_AUDIO_SRC -- "Micrófono local terapeuta" --> FC_13A["Captura local desde micrófono del terapeuta"]
             FC_AUDIO_SRC -- "Dispositivo familiar" --> FC_12["Solicitud sincronizada al dispositivo familiar"]
@@ -208,11 +208,12 @@ flowchart TD
         end
 
         subgraph P_CAMINO_DETALLE ["Sección: Mi camino ASHA"]
-            P_SEC_CAMINO --> P_C_ROADMAP["Mapa de ruta del paciente"]
-            P_C_ROADMAP --> P_C_INTRO["Hito 1: Sesión introductoria de evaluación"]
-            P_C_INTRO --> P_C_PLAN["Hito 2: Plan terapéutico activo y objetivos"]
-            P_C_PLAN --> P_C_SESSIONS["Hito 3: Sesiones periódicas completadas"]
-            P_C_SESSIONS --> P_C_BADGES["Hito 4: Logros, estrellas e insignias ganadas"]
+            P_SEC_CAMINO --> P_C_ROADMAP["Mapa de ruta del paciente: 5 hitos asistenciales"]
+            P_C_ROADMAP --> P_C_H1["Hito 1: Perfil del hijo<br/>(Perfil registrado)"]
+            P_C_H1 --> P_C_H2["Hito 2: Introducción<br/>(Introducción finalizada con asistencia)"]
+            P_C_H2 --> P_C_H3["Hito 3: Reporte<br/>(Disponible para la familia)"]
+            P_C_H3 --> P_C_H4["Hito 4: Plan profesional<br/>(Plan publicado desde una atención)"]
+            P_C_H4 --> P_C_H5["Hito 5: Terapia<br/>(Sesión de terapia reservada)"]
         end
 
         subgraph P_FAMILIA_DETALLE ["Sección: Para mi familia (Gestión y Seguimiento)"]
@@ -263,11 +264,11 @@ flowchart TD
             P_F_MENU --> P_F_INC["Centro de Incidencias y Soporte"]
             P_F_INC --> P_FI_NEW["Reportar incidencia:<br/>Técnica, permisos o información"]
             P_FI_NEW --> INC_ROUTER
-            P_FI_NEW --> P_FI_TRACK["Consultar estado de tickets: Enviada, En revisión o Solucionada"]
+            P_FI_NEW --> P_FI_TRACK["Consultar estado de tickets: RECIBIDA, EN ATENCIÓN o RESUELTA"]
         end
 
         P_NAV --> P_LOGOUT["Cerrar sesión"]
-        P_LOGOUT --> L_HOME
+        P_LOGOUT --> L_LOGIN_FORM
     end
 
 
@@ -326,7 +327,7 @@ flowchart TD
         %% Analíticas y Actividad
         T_MENU --> T_SEC_ANALITICAS["Analíticas y Datos de Actividad"]
         T_SEC_ANALITICAS --> T_AN_CLIN["Métricas de efectividad fonológica por paciente y periodo"]
-        T_SEC_ANALITICAS --> T_AN_GAMES["Seguimiento de participación lúdica en los 5 Mundos (gráfico donut)"]
+        T_SEC_ANALITICAS --> T_AN_GAMES["Seguimiento de participación lúdica en los 5 Mundos (tabla y barras)"]
 
         %% Comunicación, Configuración e Incidencias
         T_MENU --> T_SEC_MSG["Mensajería clínica con familias"]
@@ -337,7 +338,7 @@ flowchart TD
         T_SEC_INC --> INC_ROUTER
 
         T_DASH --> T_LOGOUT["Cerrar sesión"]
-        T_LOGOUT --> L_HOME
+        T_LOGOUT --> L_LOGIN_FORM
     end
 
 
@@ -378,7 +379,7 @@ flowchart TD
 
         %% Incidencias
         A_MENU --> A_MENU_INC["Incidencias (/admin/operacion)"]
-        A_MENU_INC --> A_INBOX_INC["Bandeja de incidencias administrativas y escaladas:<br/>Cuentas, permisos y seguridad"]
+        A_MENU_INC --> A_INBOX_INC["Bandeja de incidencias administrativas:<br/>Cuentas, permisos y seguridad"]
         A_INBOX_INC --> A_INC_ACTION["Gestión de permisos, reasignación o resolución"]
 
         %% Auditoría y Seguridad
@@ -390,7 +391,7 @@ flowchart TD
         A_MENU_CONFIG --> A_CONFIG_SYSTEM["Parámetros del sistema, integraciones y políticas"]
 
         A_DASH_HOME --> A_LOGOUT["Cerrar sesión"]
-        A_LOGOUT --> L_HOME
+        A_LOGOUT --> L_LOGIN_FORM
     end
 
 
@@ -400,21 +401,21 @@ flowchart TD
     subgraph PORTAL_SOPORTE ["Portal de Soporte Técnico (/soporte)"]
         S_ENTRY --> S_INBOX["Bandeja de Incidencias Técnicas<br/>(/soporte/incidencias)"]
 
-        S_INBOX --> S_FILTROS["Filtro por estado:<br/>Abiertas, En proceso, Resueltas"]
+        S_INBOX --> S_FILTROS["Filtro por estado unificado:<br/>RECIBIDA, EN ATENCIÓN, RESUELTA"]
         S_FILTROS --> S_TICKET["Detalle de incidencia técnica<br/>(/soporte/incidencias/:id)"]
 
         S_TICKET --> S_ACTIONS{"Acciones de soporte técnico"}
 
         S_ACTIONS --> S_REPLY["Responder al solicitante<br/>(Respuesta pública visible para padre o terapeuta)"]
         S_ACTIONS --> S_INTERNAL_NOTES["Registrar nota interna de diagnóstico<br/>(Uso exclusivo del equipo técnico, no llega al solicitante)"]
-        S_ACTIONS --> S_RESOLVE["Resolver incidencia técnica<br/>(Cambio de estado a RESUELTA / CERRADA)"]
-        S_ACTIONS --> S_ESCALATE["Escalar a Administración<br/>(Problemas de cuentas, acceso o permisos)"]
-        S_ESCALATE --> A_INBOX_INC
+        S_ACTIONS --> S_RESOLVE["Resolver incidencia técnica<br/>(Cambio de estado a RESUELTA)"]
+        S_ACTIONS --> S_ESCALATE["Escalar a Administración:<br/>Crea una solicitud a administración (no transfiere el ticket)"]
+        S_ESCALATE --> A_MENU_SOL
 
         S_TICKET --> S_RESTRICTION["Límites de acceso estrictos:<br/>Sin acceso a cuentas, pagos, citas ni información clínica"]
 
         S_INBOX --> S_LOGOUT["Cerrar sesión"]
-        S_LOGOUT --> L_HOME
+        S_LOGOUT --> L_LOGIN_FORM
     end
 
 

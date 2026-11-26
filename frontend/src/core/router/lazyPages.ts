@@ -42,13 +42,7 @@ export const PadreMensajes = lazy(() => import("@/modules/padre/presentation/Pad
 export const MundoAshaHome = lazy(() => import("@/modules/padre/presentation/Sessions/MundoAshaHome").then(module => ({ default: module.MundoAshaHome })));
 export const PadreIncidencias = lazy(() => import("@/modules/padre/presentation/PadreIncidencias").then(module => ({ default: module.PadreIncidencias })));
 export const MundoASHAPage = lazy(() => import("@/modules/public/presentation/MundoASHAPage").then(module => ({ default: module.MundoASHAPage })));
-export const MundoAshaCuentos = lazy(() => import("@/modules/padre/presentation/MundoAshaCuentos/MundoAshaCuentos").then(module => ({ default: module.MundoAshaCuentos })));
-export const MundoAshaCanciones = lazy(() => import("@/modules/padre/presentation/MundoAshaCanciones").then(module => ({ default: module.MundoAshaCanciones })));
-export const MundoAshaTrabalenguas = lazy(() => import("@/modules/padre/presentation/MundoAshaTrabalenguas").then(module => ({ default: module.MundoAshaTrabalenguas })));
-export const MundoAshaAdivinanzas = lazy(() => import("@/modules/padre/presentation/MundoAshaAdivinanzas").then(module => ({ default: module.MundoAshaAdivinanzas })));
-export const MundoAshaJuegos = lazy(() => import("@/modules/padre/presentation/MundoAsha/MundoAshaJuegos").then(module => ({ default: module.MundoAshaJuegos })));
 export const MundoAshaLaberinto = lazy(() => import("@/modules/padre/presentation/MundoAshaLaberinto").then(module => ({ default: module.MundoAshaLaberinto })));
-export const MundoAshaAcademia = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaAcademia })));
 export const MundoAshaRetos = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaRetos })));
 export const MundoAshaInsignias = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaInsignias })));
 export const MundoAshaPerfil = lazy(() => import("@/modules/padre/presentation/MundoAshaProgreso").then(module => ({ default: module.MundoAshaPerfil })));
