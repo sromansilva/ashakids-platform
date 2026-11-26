@@ -119,6 +119,7 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
        WHERE s.token_hash = $1
          AND s.revocado = false
          AND s.fecha_expiracion > NOW()
+         AND COALESCE(s.ultima_actividad, s.fecha_emision) > NOW() - interval '30 minutes'
          AND u.activo = true
          AND (u.totp_activado = false OR s.mfa_verificado = true);`,
       [hashSessionToken(token)],
@@ -126,6 +127,10 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
 
     const sessionUser = normalizeUserRole(result.rows as Array<Record<string, unknown>>);
     if (sessionUser) {
+      await pool.query(`UPDATE sesiones_autenticacion SET ultima_actividad = NOW()
+        WHERE token_hash = $1 AND revocado = false AND fecha_expiracion > NOW()
+          AND COALESCE(ultima_actividad, fecha_emision) > NOW() - interval '30 minutes'
+          AND (ultima_actividad IS NULL OR ultima_actividad <= NOW() - interval '1 minute');`, [hashSessionToken(token)]);
       req.user = sessionUser;
       next();
       return;
@@ -178,6 +183,7 @@ export async function optionalAuthenticate(req: Request, _res: Response, next: N
        WHERE s.token_hash = $1
          AND s.revocado = false
          AND s.fecha_expiracion > NOW()
+         AND COALESCE(s.ultima_actividad, s.fecha_emision) > NOW() - interval '30 minutes'
          AND u.activo = true
          AND (u.totp_activado = false OR s.mfa_verificado = true);`,
       [hashSessionToken(token)],
@@ -185,6 +191,10 @@ export async function optionalAuthenticate(req: Request, _res: Response, next: N
 
     const sessionUser = normalizeUserRole(result.rows as Array<Record<string, unknown>>);
     if (sessionUser) {
+      await pool.query(`UPDATE sesiones_autenticacion SET ultima_actividad = NOW()
+        WHERE token_hash = $1 AND revocado = false AND fecha_expiracion > NOW()
+          AND COALESCE(ultima_actividad, fecha_emision) > NOW() - interval '30 minutes'
+          AND (ultima_actividad IS NULL OR ultima_actividad <= NOW() - interval '1 minute');`, [hashSessionToken(token)]);
       req.user = sessionUser;
       return next();
     }

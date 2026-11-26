@@ -16,7 +16,7 @@ export function RouteAccess({ children }: { children: ReactNode }) {
   }
   if (required && !isAuthenticated) return <Navigate to="/login" replace state={{ from: location }} />;
   if (user?.password_change_required && location.pathname !== "/crear-contrasena") return <AccountActivation />;
-  if (required && required !== role) return (
+  if (required && !(user?.roles?.includes('SOPORTE_TECNICO') || role === 'SOPORTE_TECNICO' ? required === 'SOPORTE_TECNICO' : required === role || user?.roles?.includes(required))) return (
     <main className="min-h-screen flex items-center justify-center p-6">
       <section className="max-w-md rounded-3xl border p-8 text-center bg-white">
         <h1 className="text-xl font-black">Acceso restringido</h1>

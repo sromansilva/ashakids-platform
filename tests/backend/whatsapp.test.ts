@@ -447,7 +447,8 @@ describe('Aprobación de solicitudes (BD aislada)', { skip: skipDb }, () => {
     const second = await insertSolicitud(email);
     await assert.rejects(aprobarSolicitud(second, null as unknown as number), (err: { status?: number; message: string }) => {
       assert.equal(err.status, 409);
-      assert.match(err.message, /Ya existe una cuenta/);
+      // crearPadre detecta el duplicado antes del INSERT; el 23505 queda para aprobaciones simultáneas.
+      assert.match(err.message, /ya está registrado|Ya existe una cuenta/i);
       return true;
     });
     const row = await pool.query(`SELECT estado FROM public.solicitudes_acceso_familia WHERE id_solicitud = $1;`, [second]);
