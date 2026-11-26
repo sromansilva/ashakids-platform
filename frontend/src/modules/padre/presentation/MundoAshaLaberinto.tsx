@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { ChevronLeft, Volume2, Pause, Play, HelpCircle } from "lucide-react";
 
 import type { View } from "@/shared/domain/types/navigation";
@@ -81,6 +82,7 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
   const preferredTargets: LabyrinthTarget[] = ['/r/', '/rr/', '/s/', '/pl/', '/tr/'];
   const recommendedTarget = preferredTargets.find((target) => recommendedPhonemes.includes(target)) ?? null;
   const isCheckingPlan = patients.isPending || (!!patient && progress.isPending);
+
   type Phase = "pre" | "playing" | "paused" | "done";
   const [phase, setPhase] = useState<Phase>("pre");
   const [stage, setStage] = useState(0);
@@ -98,6 +100,11 @@ export function MundoAshaLaberinto({ go }: { go: (v: View) => void }) {
   const savingRef = useRef(false);
   const attemptKeys = useRef(new Map<number, string>());
   const stageStartedAt = useRef(Date.now());
+
+  // La guardia va tras todos los hooks para respetar el orden de hooks entre renders.
+  if (patients.isSuccess && (!patient || (progress.isSuccess && !language?.asignado))) {
+    return <Navigate to="/mundo-asha" replace />;
+  }
 
   const stages = activePhoneme ? STAGES_BY_PHONEME[activePhoneme] : STAGES_BY_PHONEME['/rr/'];
   const cur = stages[stage];
