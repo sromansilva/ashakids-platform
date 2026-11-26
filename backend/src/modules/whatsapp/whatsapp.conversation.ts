@@ -1,5 +1,6 @@
 import { emitNotificationEvent } from '../notificaciones/notification-events.js';
 import { pool } from '../../core/database.js';
+import { settings } from '../../core/config.js';
 import { WhatsAppService } from '../../infrastructure/whatsapp/whatsapp.service.js';
 import { MSG, normalizeCommand, processMessage, type BotDraft, type BotState } from './whatsapp.bot.js';
 
@@ -59,14 +60,14 @@ export async function applyIncomingMessage(msg: IncomingMessage, now = new Date(
       [msg.from],
     );
     const latestEstado = latest.rows[0]?.estado as string | undefined;
-    if (latestEstado === 'PENDIENTE' && msg.text !== null && normalizeCommand(msg.text) === 'CANCELAR') {
-      // Cumple el aviso de privacidad: antes de aprobarse, la familia puede retirar sus datos.
-      // Solo borra PENDIENTE: si un admin ya la tomó (PROCESANDO), sigue en revisión.
-      const removed = await client.query(
-        `DELETE FROM public.solicitudes_acceso_familia WHERE telefono = $1 AND estado = 'PENDIENTE';`,
-        [msg.from],
-      );
-      if (removed.rowCount) {
+    const isCancelar = msg.text !== null && normalizeCommand(msg.text) === 'CANCELAR';
+
+    if (isCancelar) {
+      if (latestEstado === 'PENDIENTE' || latestEstado === 'RECHAZADA') {
+        await client.query(
+          `DELETE FROM public.solicitudes_acceso_familia WHERE telefono = $1 AND estado = $2;`,
+          [msg.from, latestEstado],
+        );
         await client.query(
           `UPDATE public.whatsapp_conversaciones SET estado = 'INICIO', datos = '{}'::jsonb, ultimo_mensaje_en = $2 WHERE telefono = $1;`,
           [msg.from, now],
@@ -74,7 +75,29 @@ export async function applyIncomingMessage(msg: IncomingMessage, now = new Date(
         await client.query('COMMIT;');
         return MSG.cancelado;
       }
+      if (latestEstado === 'PROCESANDO') {
+        await client.query(
+          `UPDATE public.solicitudes_acceso_familia SET ultimo_mensaje_en = $2
+            WHERE telefono = $1 AND estado = 'PROCESANDO';`,
+          [msg.from, now],
+        );
+        await client.query(
+          `UPDATE public.whatsapp_conversaciones SET ultimo_mensaje_en = $2 WHERE telefono = $1;`,
+          [msg.from, now],
+        );
+        await client.query('COMMIT;');
+        return MSG.noCancelableEnRevision;
+      }
+      if (latestEstado === 'APROBADA') {
+        await client.query(
+          `UPDATE public.whatsapp_conversaciones SET ultimo_mensaje_en = $2 WHERE telefono = $1;`,
+          [msg.from, now],
+        );
+        await client.query('COMMIT;');
+        return MSG.noCancelableAprobada;
+      }
     }
+
     if (latestEstado === 'PENDIENTE' || latestEstado === 'PROCESANDO' || latestEstado === 'APROBADA') {
       if (latestEstado !== 'APROBADA') {
         // Mantiene viva la ventana de 24 h de WhatsApp mientras la solicitud esté abierta.
@@ -149,13 +172,35 @@ export async function applyIncomingMessage(msg: IncomingMessage, now = new Date(
   }
 }
 
-/** Borra borradores abandonados (contienen DNI y correo) e ids de mensajes que Meta ya no reintenta. */
-export async function purgeStaleData(): Promise<void> {
+/**
+ * Borra borradores abandonados (> 24 h), wamids (> 7 d),
+ * borra solicitudes RECHAZADAS con revisado_en más antiguo que el plazo de retención,
+ * y anonimiza solicitudes APROBADAS más antiguas que el plazo de retención (dni y telefono a NULL).
+ */
+export async function purgeStaleData(retentionDays = settings.WHATSAPP_RETENTION_DAYS): Promise<void> {
   await pool.query(
     `UPDATE public.whatsapp_conversaciones SET estado = 'INICIO', datos = '{}'::jsonb
       WHERE ultimo_mensaje_en < now() - interval '24 hours' AND datos <> '{}'::jsonb;`,
   );
   await pool.query(`DELETE FROM public.whatsapp_mensajes_procesados WHERE recibido_en < now() - interval '7 days';`);
+
+  await pool.query(
+    `DELETE FROM public.solicitudes_acceso_familia
+      WHERE estado = 'RECHAZADA'
+        AND revisado_en IS NOT NULL
+        AND revisado_en < now() - ($1 * interval '1 day');`,
+    [retentionDays],
+  );
+
+  await pool.query(
+    `UPDATE public.solicitudes_acceso_familia
+      SET dni = NULL, telefono = NULL
+      WHERE estado = 'APROBADA'
+        AND (dni IS NOT NULL OR telefono IS NOT NULL)
+        AND revisado_en IS NOT NULL
+        AND revisado_en < now() - ($1 * interval '1 day');`,
+    [retentionDays],
+  );
 }
 
 /** Procesa y responde un mensaje. Nunca lanza y nunca registra contenido personal. */
@@ -163,7 +208,6 @@ export async function handleIncomingMessage(msg: IncomingMessage): Promise<void>
   try {
     const reply = await applyIncomingMessage(msg);
     if (reply) await WhatsAppService.sendText(msg.from, reply);
-    await purgeStaleData();
   } catch (err) {
     const code = (err as { code?: string } | null)?.code;
     console.error('[WhatsApp] No se pudo procesar un mensaje entrante', code ? `(código ${code})` : '');

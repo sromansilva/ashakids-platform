@@ -8,6 +8,7 @@ import { migrateClinicaSchema } from './modules/clinica/clinica.migration.js';
 import { migrateNotificacionesSchema } from './modules/notificaciones/notificaciones.migration.js';
 import { migrateWhatsApp } from './modules/whatsapp/whatsapp.migration.js';
 import { appointmentReminderScheduler } from './modules/notificaciones/recordatorios.scheduler.js';
+import { whatsAppRetentionScheduler } from './modules/whatsapp/whatsapp.scheduler.js';
 import { migrateSoporteSchema } from './modules/soporte/soporte.migration.js';
 import { migrateAuthSecurity } from './modules/auth/auth.migration.js';
 
@@ -55,7 +56,10 @@ async function startServer(): Promise<void> {
     console.log(`🚀 ASHAKids TypeScript Backend listening on http://${settings.HOST}:${settings.PORT}`);
     console.log(`📁 Modular Layered Architecture enabled.`);
     console.log(`🔗 API Prefix: ${settings.API_V1_PREFIX}`);
-    if (!settings.DEVELOPMENT_READ_ONLY && !settings.DEVELOPMENT_SKIP_BOOTSTRAP) appointmentReminderScheduler.start();
+    if (!settings.DEVELOPMENT_READ_ONLY && !settings.DEVELOPMENT_SKIP_BOOTSTRAP) {
+      appointmentReminderScheduler.start();
+      whatsAppRetentionScheduler.start();
+    }
   });
 }
 
@@ -65,12 +69,14 @@ process.on('SIGTERM', () => {
   console.log('SIGTERM signal received. Closing HTTP server...');
   shutdownRequested = true;
   if (!server) {
-    void appointmentReminderScheduler.stop().finally(() => pool.end()).finally(() => process.exit(0));
+    void Promise.allSettled([appointmentReminderScheduler.stop(), whatsAppRetentionScheduler.stop()])
+      .finally(() => pool.end())
+      .finally(() => process.exit(0));
     return;
   }
   server.close(async () => {
     console.log('HTTP server closed.');
-    await appointmentReminderScheduler.stop();
+    await Promise.allSettled([appointmentReminderScheduler.stop(), whatsAppRetentionScheduler.stop()]);
     await pool.end();
     process.exit(0);
   });

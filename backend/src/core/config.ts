@@ -58,6 +58,7 @@ const envSchema = z.object({
   WHATSAPP_API_VERSION: z.string().optional().default('v23.0'),
   WHATSAPP_TEMPLATE_ACTIVACION: z.string().optional().default(''),
   WHATSAPP_TEMPLATE_LANG: z.string().optional().default('es'),
+  WHATSAPP_RETENTION_DAYS: z.string().regex(/^\d+$/, 'debe ser un número entero').default('30').transform((v) => parseInt(v, 10)),
   PUBLIC_ORIGIN: z.string().optional().default('https://ashakids.life'),
   CORS_ORIGINS: z.string().default('http://localhost:5173,http://localhost:5174,http://127.0.0.1:5173,http://127.0.0.1:5174')
     .transform((val) => val.split(',').map((s) => s.trim())),
