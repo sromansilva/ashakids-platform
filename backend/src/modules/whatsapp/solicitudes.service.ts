@@ -5,6 +5,7 @@ import { adminService } from '../admin/services/admin.service.js';
 import { maskEmail } from './whatsapp.bot.js';
 import { DecolectaService } from '../../infrastructure/decolecta/decolecta.service.js';
 import { GmailService, type MailSendResult } from '../../infrastructure/mailer/gmail.service.js';
+import { registrarAuditoria } from '../../core/audit/audit.service.js';
 
 export const SOLICITUD_ESTADOS = ['PENDIENTE', 'PROCESANDO', 'APROBADA', 'RECHAZADA'] as const;
 export type SolicitudEstado = (typeof SOLICITUD_ESTADOS)[number];
@@ -136,7 +137,7 @@ export async function aprobarSolicitud(id: number, adminId: number): Promise<Res
       apellidos: claimed.apellidos,
       email: claimed.email,
       telefono: claimed.telefono.length <= TUTOR_PHONE_MAX ? claimed.telefono : undefined,
-    });
+    }, adminId);
   } catch (err) {
     await pool.query(
       `UPDATE public.solicitudes_acceso_familia SET estado = 'PENDIENTE' WHERE id_solicitud = $1 AND estado = 'PROCESANDO';`,
@@ -177,6 +178,22 @@ export async function aprobarSolicitud(id: number, adminId: number): Promise<Res
     [id, aviso],
   );
   solicitud = toSolicitud(saved.rows[0]);
+
+  await registrarAuditoria(
+    pool,
+    {
+      idUsuarioActor: adminId,
+      tabla: 'solicitudes_acceso_familia',
+      entidad: String(id),
+      accion: 'APROBAR',
+      detalle: {
+        id_solicitud: id,
+        id_usuario_creado: idUsuario,
+        estado: 'APROBADA',
+      },
+    },
+    false
+  );
 
   const message =
     correo === 'ENVIADO'
@@ -222,6 +239,23 @@ export async function rechazarSolicitud(id: number, adminId: number, motivo: str
     [id, aviso, correo],
   );
   solicitud = toSolicitud(saved.rows[0]);
+
+  await registrarAuditoria(
+    pool,
+    {
+      idUsuarioActor: adminId,
+      tabla: 'solicitudes_acceso_familia',
+      entidad: String(id),
+      accion: 'RECHAZAR',
+      detalle: {
+        id_solicitud: id,
+        estado: 'RECHAZADA',
+        motivo: 'motivo registrado',
+      },
+    },
+    false
+  );
+
   const message =
     correo === 'ENVIADO' || aviso === 'ENVIADO'
       ? 'Solicitud rechazada. Se avisó a la familia con el motivo.'
@@ -229,7 +263,7 @@ export async function rechazarSolicitud(id: number, adminId: number, motivo: str
   return { message, solicitud, aviso_whatsapp: aviso, correo_rechazo: correo };
 }
 
-export async function verificarDniSolicitud(id: number) {
+export async function verificarDniSolicitud(id: number, adminId?: number) {
   const found = await pool.query(`SELECT * FROM public.solicitudes_acceso_familia WHERE id_solicitud = $1;`, [id]);
   if (!found.rowCount) throw httpError(404, 'Solicitud no encontrada.');
   const solicitud = toSolicitud(found.rows[0]);
@@ -262,5 +296,21 @@ export async function verificarDniSolicitud(id: number) {
   );
   if (!saved.rowCount) throw await conflictOrMissing(id, 'La solicitud ya fue procesada.');
   const actualizada = toSolicitud(saved.rows[0]);
+
+  await registrarAuditoria(
+    pool,
+    {
+      idUsuarioActor: adminId ?? null,
+      tabla: 'solicitudes_acceso_familia',
+      entidad: String(id),
+      accion: 'VERIF_DNI',
+      detalle: {
+        id_solicitud: id,
+        estado_verificacion: estado,
+      },
+    },
+    false
+  );
+
   return { estado, verificado_en: actualizada.dni_verificado_en, ...(nombreReniec ? { nombre_reniec: nombreReniec } : {}), solicitud: actualizada };
 }

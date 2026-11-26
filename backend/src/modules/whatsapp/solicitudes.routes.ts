@@ -79,6 +79,7 @@ export async function verificarDniSolicitudAcceso(req: Request, res: Response, n
       res.status(400).json({ detail: 'Identificador de solicitud no válido.', error: 'Identificador de solicitud no válido.' });
       return;
     }
-    res.json(await verificarDniSolicitud(id.data));
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    res.json(await verificarDniSolicitud(id.data, adminId));
   } catch (err) { sendError(err, res, next); }
 }
