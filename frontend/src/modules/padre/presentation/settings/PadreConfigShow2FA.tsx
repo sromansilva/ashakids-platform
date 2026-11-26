@@ -11,6 +11,9 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
+  const [replacing, setReplacing] = useState(false);
+  const [setupPassword, setSetupPassword] = useState("");
+  const [currentCode, setCurrentCode] = useState("");
   const [setupData, setSetupData] = useState<TwoFactorSetupData | null>(null);
   const [code, setCode] = useState("");
   const [disablePassword, setDisablePassword] = useState("");
@@ -27,11 +30,7 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
         if (!active) return;
         setIsEnabled(status.totp_activado);
 
-        if (!status.totp_activado) {
-          const data = await authService.setup2fa();
-          if (!active) return;
-          setSetupData(data);
-        }
+
       } catch (err: unknown) {
         if (!active) return;
         setErrorMessage(err instanceof Error ? err.message : "No se pudo cargar la configuración 2FA.");
@@ -45,6 +44,23 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
       active = false;
     };
   }, []);
+
+  const handleStartSetup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (submitting || !setupPassword || (isEnabled && currentCode.length !== 6)) return;
+    setErrorMessage(null);
+    setSubmitting(true);
+    try {
+      const data = await authService.setup2fa({ password: setupPassword, current_code: isEnabled ? currentCode : undefined });
+      setSetupData(data);
+      setSetupPassword("");
+      setCurrentCode("");
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : "No se pudo iniciar la configuración 2FA.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   const handleCopySecret = async () => {
     if (!setupData?.secret) return;
@@ -65,6 +81,9 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
     try {
       await authService.confirm2faSetup(code.trim());
       setIsEnabled(true);
+      setSetupData(null);
+      setReplacing(false);
+      setCode("");
       setTwoFADone(true);
       showToast("Autenticación en dos pasos (2FA) activada con éxito.");
     } catch (err: unknown) {
@@ -119,7 +138,7 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
             <Loader2 size={32} className="animate-spin text-[#6B46FE]" />
             <p className="text-xs font-bold text-[#615274]">Cargando configuración de seguridad…</p>
           </div>
-        ) : isEnabled ? (
+        ) : isEnabled && !replacing ? (
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 border border-emerald-100 shadow-xs">
               <ShieldCheck size={32} />
@@ -181,6 +200,13 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
                 </Btn>
                 <button
                   type="button"
+                  onClick={() => { setReplacing(true); setErrorMessage(null); }}
+                  className="text-xs font-bold text-[#6B46FE] hover:text-[#5833EA] py-1"
+                >
+                  Reemplazar autenticación en dos pasos
+                </button>
+                <button
+                  type="button"
                   onClick={() => setShowDisableConfirm(true)}
                   className="text-xs font-bold text-red-500 hover:text-red-700 py-1 transition-colors cursor-pointer"
                 >
@@ -194,9 +220,9 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
             <div className="w-14 h-14 rounded-2xl bg-[#EDE9FE] text-[#6B46FE] flex items-center justify-center mb-2">
               <ShieldCheck size={28} />
             </div>
-            <h2 id="modal-2fa-title" className="text-xl font-black text-[#1C1135]">Activar autenticación en dos pasos</h2>
+            <h2 id="modal-2fa-title" className="text-xl font-black text-[#1C1135]">{isEnabled ? "Reemplazar" : "Activar"} autenticación en dos pasos</h2>
             <p className="text-xs font-semibold text-[#615274] mt-1 mb-4 max-w-sm">
-              Escanea este código con <strong>Google Authenticator</strong> o <strong>Microsoft Authenticator</strong> en tu teléfono.
+              {setupData ? "Escanea el código con tu aplicación autenticadora." : "Confirma tu identidad para continuar."}
             </p>
 
             {errorMessage && (
@@ -205,6 +231,17 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
                 <span>{errorMessage}</span>
               </div>
             )}
+
+            {!setupData && <form onSubmit={handleStartSetup} className="w-full space-y-3 text-left">
+              <label className="block text-xs font-bold text-[#1C1135]">Contraseña actual
+                <input type="password" autoComplete="current-password" required value={setupPassword} onChange={(e) => setSetupPassword(e.target.value)} disabled={submitting} className="mt-1 w-full rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] p-3 text-sm" />
+              </label>
+              {isEnabled && <label className="block text-xs font-bold text-[#1C1135]">Código 2FA actual
+                <input type="text" inputMode="numeric" autoComplete="one-time-code" maxLength={6} required value={currentCode} onChange={(e) => setCurrentCode(e.target.value.replace(/\D/g, ""))} disabled={submitting} className="mt-1 w-full rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] p-3 text-sm" />
+              </label>}
+              <Btn type="submit" variant="cta" className="w-full justify-center" disabled={submitting || !setupPassword || (isEnabled && currentCode.length !== 6)}>{submitting ? "Preparando..." : "Continuar"}</Btn>
+              {isEnabled && <button type="button" onClick={() => { setReplacing(false); setErrorMessage(null); setSetupPassword(""); setCurrentCode(""); }} className="w-full py-2 text-xs font-bold text-[#615274]">Cancelar</button>}
+            </form>}
 
             {setupData?.qr_code && (
               <div className="mb-4 flex flex-col items-center">
@@ -233,7 +270,7 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
               </div>
             )}
 
-            <form onSubmit={handleConfirmSetup} className="w-full space-y-3">
+            {setupData && <form onSubmit={handleConfirmSetup} className="w-full space-y-3">
               <div>
                 <label htmlFor="confirm-2fa-input" className="block text-xs font-bold text-[#1C1135] mb-1 text-left">
                   Ingresa el código de 6 dígitos de tu app:
@@ -275,7 +312,7 @@ export function PadreConfigShow2FA({ setShow2FA, setTwoFADone, twoFADone: _twoFA
                   Cancelar
                 </Btn>
               </div>
-            </form>
+            </form>}
           </div>
         )}
       </div>

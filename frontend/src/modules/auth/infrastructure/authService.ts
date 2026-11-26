@@ -50,8 +50,8 @@ export const authService = {
   /**
    * Inicia la configuración de 2FA generando el secreto y código QR.
    */
-  async setup2fa(): Promise<TwoFactorSetupData> {
-    return apiClient.post<TwoFactorSetupData>("/auth/2fa/setup");
+  async setup2fa(payload: { password: string; current_code?: string }): Promise<TwoFactorSetupData> {
+    return apiClient.post<TwoFactorSetupData>("/auth/2fa/setup", payload);
   },
 
   /**

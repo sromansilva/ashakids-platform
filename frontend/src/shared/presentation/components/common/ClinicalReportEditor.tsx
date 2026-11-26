@@ -61,6 +61,7 @@ export function ClinicalReportEditor({
   const submittedRevision = useRef(0);
   const lastAutoSaveAttempt = useRef(0);
   const incomplete = incompleteTemplateFields(form);
+  const session = useRemote(['session-for-signing', id], (signal) => sessionsService.get(id, signal));
   const history = useRemote(
     ['articulation-history', id],
     (signal) => sessionsService.articulationHistory(id, signal),
@@ -119,6 +120,7 @@ export function ClinicalReportEditor({
   const [confirmingSign, setConfirmingSign] = useState(false);
   // Qué falta para poder firmar: se muestra mientras «Firmar y publicar» está apagado.
   const signBlockers: string[] = [];
+  if (session.data?.estado_sesion !== 'FINALIZADA' || session.data?.asistencia !== 'ASISTIO') signBlockers.push('La sesión debe estar finalizada y registrar asistencia para firmar');
   if (!form.observaciones_iniciales?.trim()) signBlockers.push('Completa las observaciones iniciales');
   if (!form.objetivos_trabajados?.trim()) signBlockers.push('Completa los objetivos trabajados');
   if (!form.nivel_ayuda?.trim()) signBlockers.push('Elige el nivel de ayuda');
