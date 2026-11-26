@@ -135,6 +135,22 @@ it('rechazar exige motivo de al menos 10 caracteres y envía el motivo al servid
   });
 });
 
+it('al rechazar fuera de la ventana de WhatsApp informa que el motivo salió por correo', async () => {
+  vi.spyOn(adminService, 'getSolicitudesAcceso').mockResolvedValue({ items: [base], total: 1 });
+  vi.spyOn(adminService, 'rechazarSolicitud').mockResolvedValue({
+    message: 'Solicitud rechazada. Se avisó a la familia con el motivo.',
+    solicitud: { ...base, estado: 'RECHAZADA', motivo_rechazo: 'DNI no coincide con los apellidos indicados' },
+    aviso_whatsapp: 'FUERA_DE_VENTANA',
+    correo_rechazo: 'ENVIADO',
+  });
+  await openDetail();
+  fireEvent.click(screen.getByRole('button', { name: 'Rechazar' }));
+  fireEvent.change(screen.getByPlaceholderText(/No pudimos verificar/), { target: { value: 'DNI no coincide con los apellidos indicados' } });
+  fireEvent.click(screen.getByRole('button', { name: 'Rechazar solicitud' }));
+  const status = await screen.findByRole('status');
+  expect(within(status).getByText('Le enviamos el motivo por correo a ana@example.com.')).toBeInTheDocument();
+});
+
 it('permite cancelar el diálogo de rechazo sin llamar al servidor', async () => {
   vi.spyOn(adminService, 'getSolicitudesAcceso').mockResolvedValue({ items: [base], total: 1 });
   const reject = vi.spyOn(adminService, 'rechazarSolicitud');

@@ -303,7 +303,7 @@ sequenceDiagram
      - Se enviará la notificación de confirmación a WhatsApp con el correo enmascarado (`ca***@example.com`).
 7. **Rechazo (prueba alternativa)**:
    - En otra solicitud `PENDIENTE`, pulsa **Rechazar** y escribe el motivo (obligatorio, de 10 a 300 caracteres).
-   - Si la familia escribió en las últimas 24 horas, recibe por WhatsApp un mensaje con ese motivo; si no, `aviso_whatsapp_estado` queda en `FUERA_DE_VENTANA` (el rechazo no usa plantilla).
+   - La familia recibe siempre un correo con el motivo (`correo_estado`). Si además escribió en las últimas 24 horas, también le llega por WhatsApp; si no, `aviso_whatsapp_estado` queda en `FUERA_DE_VENTANA` (el rechazo no usa plantilla).
 
 ---
 

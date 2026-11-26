@@ -4,6 +4,7 @@ import { WhatsAppService, type WhatsAppSendResult } from '../../infrastructure/w
 import { adminService } from '../admin/services/admin.service.js';
 import { maskEmail } from './whatsapp.bot.js';
 import { DecolectaService } from '../../infrastructure/decolecta/decolecta.service.js';
+import { GmailService, type MailSendResult } from '../../infrastructure/mailer/gmail.service.js';
 
 export const SOLICITUD_ESTADOS = ['PENDIENTE', 'PROCESANDO', 'APROBADA', 'RECHAZADA'] as const;
 export type SolicitudEstado = (typeof SOLICITUD_ESTADOS)[number];
@@ -37,6 +38,8 @@ export interface ResultadoSolicitud {
   solicitud: SolicitudAcceso;
   correo_bienvenida?: string | null;
   aviso_whatsapp?: AvisoWhatsAppEstado;
+  /** Estado del correo con el motivo de rechazo (solo al rechazar). */
+  correo_rechazo?: MailSendResult['status'];
 }
 
 const WINDOW_MS = 24 * 60 * 60 * 1000;
@@ -191,23 +194,39 @@ export async function rechazarSolicitud(id: number, adminId: number, motivo: str
   );
   if (updated.rowCount === 0) throw await conflictOrMissing(id, 'La solicitud ya fue procesada.');
   let solicitud = toSolicitud(updated.rows[0]);
+  const motivoLimpio = motivo.replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ').replace(/\s+/g, ' ').trim();
 
   const aviso: AvisoWhatsAppEstado = inWindow(solicitud.ultimo_mensaje_en)
     ? avisoFrom(
         await WhatsAppService.sendText(
           solicitud.telefono,
           'Hola. Revisamos tu solicitud de acceso a Ashakids y por ahora no pudimos aprobarla. ' +
-            `Motivo: ${motivo.replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ').trim().replace(/[.!?…]+\s*$/u, '')}. ` +
+            `Motivo: ${motivoLimpio.replace(/[.!?…]+\s*$/u, '')}. ` +
             'Si crees que es un error, comunícate con el equipo de Ashakids.',
         ),
       )
     : 'FUERA_DE_VENTANA';
+
+  // El correo llega siempre, también fuera de la ventana de 24 h de WhatsApp.
+  const correo = await GmailService.sendAccessRequestRejectionEmail({
+    to: solicitud.email,
+    name: solicitud.nombres,
+    motivo: motivoLimpio,
+  })
+    .then((result) => result.status)
+    .catch(() => 'FALLO' as const);
+
   const saved = await pool.query(
-    `UPDATE public.solicitudes_acceso_familia SET aviso_whatsapp_estado = $2 WHERE id_solicitud = $1 RETURNING *;`,
-    [id, aviso],
+    `UPDATE public.solicitudes_acceso_familia SET aviso_whatsapp_estado = $2, correo_estado = $3
+      WHERE id_solicitud = $1 RETURNING *;`,
+    [id, aviso, correo],
   );
   solicitud = toSolicitud(saved.rows[0]);
-  return { message: 'Solicitud rechazada.', solicitud, aviso_whatsapp: aviso };
+  const message =
+    correo === 'ENVIADO' || aviso === 'ENVIADO'
+      ? 'Solicitud rechazada. Se avisó a la familia con el motivo.'
+      : 'Solicitud rechazada, pero no se pudo avisar a la familia (correo y WhatsApp no disponibles).';
+  return { message, solicitud, aviso_whatsapp: aviso, correo_rechazo: correo };
 }
 
 export async function verificarDniSolicitud(id: number) {

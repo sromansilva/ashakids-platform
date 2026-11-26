@@ -44,7 +44,7 @@ flowchart TD
 
     %% Rechazo de Solicitud
     A_SOL_DECISION -- "Rechazar" --> A_RECHAZAR["Registro de motivo obligatorio (10 a 300 caracteres)<br/>Estado RECHAZADA"]
-    A_RECHAZAR --> A_WAPP_REJECT["Aviso por WhatsApp con motivo a la familia<br/>(si está dentro de la ventana de 24 h)"]
+    A_RECHAZAR --> A_WAPP_REJECT["Aviso del motivo a la familia: siempre por correo<br/>y por WhatsApp si está dentro de la ventana de 24 h"]
 
     %% Aprobación y Creación de Cuenta PADRE
     A_SOL_DECISION -- "Aprobar" --> A_APROBAR["Creación de cuenta PADRE<br/>(adminService.crearPadre)"]

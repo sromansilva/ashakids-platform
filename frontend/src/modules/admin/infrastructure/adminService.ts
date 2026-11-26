@@ -201,6 +201,8 @@ export interface ResultadoSolicitudAcceso {
   correo_bienvenida?: string | null;
   /** ENVIADO | NO_CONFIGURADO | ERROR | FUERA_DE_VENTANA | OMITIDO */
   aviso_whatsapp?: string;
+  /** Solo al rechazar: ENVIADO | NO_CONFIGURADO | FALLO */
+  correo_rechazo?: "ENVIADO" | "NO_CONFIGURADO" | "FALLO";
 }
 
 export type AuditoriaItem = {

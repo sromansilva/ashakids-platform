@@ -53,8 +53,17 @@ export function describirResultado(accion: Accion, r: ResultadoSolicitudAcceso):
   const aviso = r.aviso_whatsapp ? AVISO_TEXTO[r.aviso_whatsapp] ?? `Aviso por WhatsApp: ${r.aviso_whatsapp}.` : null;
   if (accion === "rechazar") {
     lines.push("Solicitud rechazada.");
+    const correoRechazo = r.correo_rechazo === "ENVIADO";
+    if (r.correo_rechazo) {
+      lines.push(
+        correoRechazo
+          ? `Le enviamos el motivo por correo a ${r.solicitud.email}.`
+          : "El correo con el motivo NO salió.",
+      );
+    }
     if (aviso) lines.push(aviso);
-    return { tone: r.aviso_whatsapp === "ERROR" ? "warn" : "ok", lines };
+    const avisada = correoRechazo || r.aviso_whatsapp === "ENVIADO";
+    return { tone: avisada ? "ok" : "warn", lines };
   }
   const correoSalio = r.correo_bienvenida === "ENVIADO";
   if (correoSalio) {

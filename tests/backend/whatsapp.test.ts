@@ -313,6 +313,39 @@ describe('Revisión de solicitudes con dependencias simuladas', () => {
     } finally { pool.query = originalQuery; WhatsAppService.sendText = originalSend; }
   });
 
+  it('al rechazar envía siempre el motivo por correo, también fuera de la ventana de 24 h', async () => {
+    const { rechazarSolicitud } = await import('../../backend/dist/modules/whatsapp/solicitudes.service.js');
+    const { GmailService } = await import('../../backend/dist/infrastructure/mailer/gmail.service.js');
+    const originalQuery = pool.query, originalSend = WhatsAppService.sendText, originalMail = GmailService.sendMail;
+    const old = new Date(Date.now() - 30 * 60 * 60 * 1000);
+    let row: any = { id_solicitud: 2, telefono: '51999999998', nombres: 'Luis', apellidos: 'Rojas', dni: '87654321', email: 'luis@example.com', estado: 'PENDIENTE', consentimiento_en: old, ultimo_mensaje_en: old, creado_en: old };
+    let saved: any[] = [];
+    let whatsappCalls = 0;
+    let mail: any = null;
+    try {
+      pool.query = (async (sql: string, params: any[]) => {
+        if (sql.includes("SET estado = 'RECHAZADA'")) row = { ...row, estado: 'RECHAZADA', motivo_rechazo: params[2] };
+        if (sql.includes('correo_estado = $3')) { saved = params; row = { ...row, aviso_whatsapp_estado: params[1], correo_estado: params[2] }; }
+        return { rowCount: 1, rows: [row] };
+      }) as any;
+      WhatsAppService.sendText = async () => { whatsappCalls++; return { status: 'ENVIADO' }; };
+      GmailService.sendMail = async (opts: any) => { mail = opts; return { success: true, status: 'ENVIADO' }; };
+      const result = await rechazarSolicitud(2, 1, 'Datos\nincompletos en la solicitud');
+      assert.equal(whatsappCalls, 0);
+      assert.equal(result.aviso_whatsapp, 'FUERA_DE_VENTANA');
+      assert.equal(result.correo_rechazo, 'ENVIADO');
+      assert.deepEqual(saved, [2, 'FUERA_DE_VENTANA', 'ENVIADO']);
+      assert.equal(mail.to, 'luis@example.com');
+      assert.match(mail.text, /Motivo: Datos incompletos en la solicitud/);
+      assert.doesNotMatch(mail.text, /87654321/);
+      GmailService.sendMail = async () => { throw new Error('caído'); };
+      row = { ...row, estado: 'PENDIENTE' };
+      const failed = await rechazarSolicitud(2, 1, 'Datos incompletos en la solicitud');
+      assert.equal(failed.correo_rechazo, 'FALLO');
+      assert.match(failed.message, /no se pudo avisar/);
+    } finally { pool.query = originalQuery; WhatsAppService.sendText = originalSend; GmailService.sendMail = originalMail; }
+  });
+
   it('verifica coincidencia, ausencia, errores y estado pendiente sin guardar datos RENIEC', async () => {
     const { verificarDniSolicitud } = await import('../../backend/dist/modules/whatsapp/solicitudes.service.js');
     const { DecolectaService } = await import('../../backend/dist/infrastructure/decolecta/decolecta.service.js');

@@ -57,8 +57,8 @@ export function RechazoSolicitudDialog({
         <div className="flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-3.5 text-xs font-semibold text-amber-900">
           <MessageCircle size={18} className="mt-0.5 shrink-0 text-amber-700" />
           <p>
-            Este motivo se enviará a la familia por WhatsApp si el contacto se encuentra dentro de las 24 horas
-            desde su último mensaje.
+            La familia recibirá este motivo por correo y, si escribió en las últimas 24 horas, también por
+            WhatsApp.
           </p>
         </div>
 
