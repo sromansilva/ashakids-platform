@@ -163,10 +163,10 @@ export type DniVerificacionEstado = "COINCIDE" | "NO_COINCIDE" | "NO_ENCONTRADO"
 
 export interface SolicitudAcceso {
   id_solicitud: number;
-  telefono: string;
+  telefono: string | null;
   nombres: string;
   apellidos: string;
-  dni: string;
+  dni: string | null;
   email: string;
   estado: SolicitudAccesoEstado;
   consentimiento_en: string;
