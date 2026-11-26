@@ -30,8 +30,11 @@ export const adminService = {
   async aprobarSolicitudAcceso(id: number): Promise<ResultadoSolicitudAcceso> {
     return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/aprobar`);
   },
-  async rechazarSolicitudAcceso(id: number): Promise<ResultadoSolicitudAcceso> {
-    return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/rechazar`);
+  async rechazarSolicitud(id: number, motivo: string): Promise<ResultadoSolicitudAcceso> {
+    return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/rechazar`, { motivo });
+  },
+  async verificarDniSolicitud(id: number): Promise<VerificarDniResponse> {
+    return apiClient.post<VerificarDniResponse>(`/admin/solicitudes-acceso/${id}/verificar-dni`);
   },
   async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
     const { password, hijos, tipo_documento: _tipoDocumento, numero_documento: _numeroDocumento, ...adulto } = payload;
@@ -152,7 +155,11 @@ export const adminService = {
   },
 };
 
+export const SOLICITUDES_QUERY_KEY = ["admin", "solicitudes-acceso"] as const;
+export const SOLICITUDES_PENDIENTES_QUERY_KEY = ["admin", "solicitudes-acceso", "PENDIENTE"] as const;
+
 export type SolicitudAccesoEstado = "PENDIENTE" | "PROCESANDO" | "APROBADA" | "RECHAZADA";
+export type DniVerificacionEstado = "COINCIDE" | "NO_COINCIDE" | "NO_ENCONTRADO" | "NO_CONFIGURADO" | "ERROR";
 
 export interface SolicitudAcceso {
   id_solicitud: number;
@@ -168,6 +175,9 @@ export interface SolicitudAcceso {
   revisado_en: string | null;
   correo_estado: string | null;
   aviso_whatsapp_estado: string | null;
+  motivo_rechazo: string | null;
+  dni_verificacion_estado: DniVerificacionEstado | null;
+  dni_verificado_en: string | null;
   ultimo_mensaje_en: string;
   creado_en: string;
 }
@@ -175,6 +185,13 @@ export interface SolicitudAcceso {
 export interface SolicitudesAccesoResponse {
   items: SolicitudAcceso[];
   total: number;
+}
+
+export interface VerificarDniResponse {
+  estado: DniVerificacionEstado;
+  verificado_en: string | null;
+  nombre_reniec?: string;
+  solicitud: SolicitudAcceso;
 }
 
 export interface ResultadoSolicitudAcceso {

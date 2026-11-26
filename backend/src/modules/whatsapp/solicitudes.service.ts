@@ -3,9 +3,11 @@ import { settings } from '../../core/config.js';
 import { WhatsAppService, type WhatsAppSendResult } from '../../infrastructure/whatsapp/whatsapp.service.js';
 import { adminService } from '../admin/services/admin.service.js';
 import { maskEmail } from './whatsapp.bot.js';
+import { DecolectaService } from '../../infrastructure/decolecta/decolecta.service.js';
 
 export const SOLICITUD_ESTADOS = ['PENDIENTE', 'PROCESANDO', 'APROBADA', 'RECHAZADA'] as const;
 export type SolicitudEstado = (typeof SOLICITUD_ESTADOS)[number];
+export type DniVerificacionEstado = 'COINCIDE' | 'NO_COINCIDE' | 'NO_ENCONTRADO' | 'NO_CONFIGURADO' | 'ERROR';
 
 export type AvisoWhatsAppEstado = 'ENVIADO' | 'NO_CONFIGURADO' | 'ERROR' | 'FUERA_DE_VENTANA' | 'OMITIDO';
 
@@ -23,6 +25,9 @@ export interface SolicitudAcceso {
   revisado_en: string | null;
   correo_estado: string | null;
   aviso_whatsapp_estado: string | null;
+  motivo_rechazo: string | null;
+  dni_verificacion_estado: DniVerificacionEstado | null;
+  dni_verificado_en: string | null;
   ultimo_mensaje_en: string;
   creado_en: string;
 }
@@ -58,6 +63,9 @@ function toSolicitud(row: Record<string, unknown>): SolicitudAcceso {
     revisado_en: iso(row.revisado_en),
     correo_estado: row.correo_estado == null ? null : String(row.correo_estado),
     aviso_whatsapp_estado: row.aviso_whatsapp_estado == null ? null : String(row.aviso_whatsapp_estado),
+    motivo_rechazo: row.motivo_rechazo == null ? null : String(row.motivo_rechazo),
+    dni_verificacion_estado: (row.dni_verificacion_estado as DniVerificacionEstado | null) ?? null,
+    dni_verificado_en: iso(row.dni_verificado_en),
     ultimo_mensaje_en: iso(row.ultimo_mensaje_en) as string,
     creado_en: iso(row.creado_en) as string,
   };
@@ -174,12 +182,12 @@ export async function aprobarSolicitud(id: number, adminId: number): Promise<Res
   return { message, solicitud, correo_bienvenida: correo, aviso_whatsapp: aviso };
 }
 
-export async function rechazarSolicitud(id: number, adminId: number): Promise<ResultadoSolicitud> {
+export async function rechazarSolicitud(id: number, adminId: number, motivo: string): Promise<ResultadoSolicitud> {
   const updated = await pool.query(
     `UPDATE public.solicitudes_acceso_familia
-        SET estado = 'RECHAZADA', revisado_por = $2, revisado_en = now()
+        SET estado = 'RECHAZADA', revisado_por = $2, revisado_en = now(), motivo_rechazo = $3
       WHERE id_solicitud = $1 AND estado = 'PENDIENTE' RETURNING *;`,
-    [id, adminId],
+    [id, adminId, motivo],
   );
   if (updated.rowCount === 0) throw await conflictOrMissing(id, 'La solicitud ya fue procesada.');
   let solicitud = toSolicitud(updated.rows[0]);
@@ -189,6 +197,7 @@ export async function rechazarSolicitud(id: number, adminId: number): Promise<Re
         await WhatsAppService.sendText(
           solicitud.telefono,
           'Hola. Revisamos tu solicitud de acceso a Ashakids y por ahora no pudimos aprobarla. ' +
+            `Motivo: ${motivo.replace(/[\u0000-\u001f\u007f-\u009f]/g, ' ').trim().replace(/[.!?…]+\s*$/u, '')}. ` +
             'Si crees que es un error, comunícate con el equipo de Ashakids.',
         ),
       )
@@ -199,4 +208,40 @@ export async function rechazarSolicitud(id: number, adminId: number): Promise<Re
   );
   solicitud = toSolicitud(saved.rows[0]);
   return { message: 'Solicitud rechazada.', solicitud, aviso_whatsapp: aviso };
+}
+
+export async function verificarDniSolicitud(id: number) {
+  const found = await pool.query(`SELECT * FROM public.solicitudes_acceso_familia WHERE id_solicitud = $1;`, [id]);
+  if (!found.rowCount) throw httpError(404, 'Solicitud no encontrada.');
+  const solicitud = toSolicitud(found.rows[0]);
+  if (solicitud.estado !== 'PENDIENTE') throw httpError(409, 'La solicitud ya fue procesada.');
+
+  let estado: DniVerificacionEstado = 'NO_CONFIGURADO';
+  let nombreReniec: string | undefined;
+  if (DecolectaService.isConfigured()) {
+    try {
+      const result = await DecolectaService.consultarDni(solicitud.dni);
+      if (result.success && result.data) {
+        const normalizar = (valor: string) => valor.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase().trim().replace(/\s+/g, ' ');
+        const nombres = normalizar(solicitud.nombres).split(' ');
+        const nombresReniec = normalizar(result.data.nombres).split(' ');
+        const apellidos = normalizar(solicitud.apellidos);
+        const apellidosReniec = normalizar(result.data.apellidos);
+        // Se exige el primer nombre y todos los apellidos en el mismo orden; no se infiere identidad por coincidencias parciales.
+        estado = nombres[0] && nombres[0] === nombresReniec[0] && apellidos && apellidos === apellidosReniec ? 'COINCIDE' : 'NO_COINCIDE';
+        nombreReniec = result.data.nombreCompleto;
+      } else {
+        estado = result.code === 'NOT_FOUND' ? 'NO_ENCONTRADO' : 'ERROR';
+      }
+    } catch {
+      estado = 'ERROR';
+    }
+  }
+  const saved = await pool.query(
+    `UPDATE public.solicitudes_acceso_familia SET dni_verificacion_estado = $2, dni_verificado_en = now()
+     WHERE id_solicitud = $1 AND estado = 'PENDIENTE' RETURNING *;`, [id, estado],
+  );
+  if (!saved.rowCount) throw await conflictOrMissing(id, 'La solicitud ya fue procesada.');
+  const actualizada = toSolicitud(saved.rows[0]);
+  return { estado, verificado_en: actualizada.dni_verificado_en, ...(nombreReniec ? { nombre_reniec: nombreReniec } : {}), solicitud: actualizada };
 }

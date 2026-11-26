@@ -12,6 +12,7 @@ import {
   listarSolicitudesAcceso,
   aprobarSolicitudAcceso,
   rechazarSolicitudAcceso,
+  verificarDniSolicitudAcceso,
 } from '../../whatsapp/solicitudes.routes.js';
 
 export const adminRouter = Router();
@@ -241,3 +242,4 @@ adminRouter.patch('/incidencias/:id/revocar', revocarIncidenciaAdmin);
 adminRouter.get('/solicitudes-acceso', listarSolicitudesAcceso);
 adminRouter.post('/solicitudes-acceso/:id/aprobar', aprobarSolicitudAcceso);
 adminRouter.post('/solicitudes-acceso/:id/rechazar', rechazarSolicitudAcceso);
+adminRouter.post('/solicitudes-acceso/:id/verificar-dni', verificarDniSolicitudAcceso);

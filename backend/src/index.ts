@@ -22,8 +22,8 @@ async function startServer(): Promise<void> {
       await migrateIncidencias();
       await migrateTerapeutaProfile();
       await migrateClinicaSchema();
-      await migrateNotificacionesSchema();
       await migrateWhatsApp();
+      await migrateNotificacionesSchema();
       await migrateSoporteSchema();
       await migrateAuthSecurity();
       if (process.env.SEED_DEMO_INCIDENCIAS === 'true' && settings.ENVIRONMENT !== 'production') {

@@ -1,7 +1,9 @@
 import { Router, Request, Response } from 'express';
 import { DecolectaService } from '../../infrastructure/decolecta/decolecta.service.js';
+import { authenticate, requireRoles } from '../../core/middleware/auth.middleware.js';
 
 export const identidadRouter = Router();
+identidadRouter.use(authenticate, requireRoles(['ADMIN']));
 
 /**
  * GET /api/v1/identidad/dni/:numero

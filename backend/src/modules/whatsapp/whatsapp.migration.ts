@@ -47,6 +47,13 @@ export async function migrateWhatsApp() {
     `);
 
     await client.query(`
+      ALTER TABLE public.solicitudes_acceso_familia
+        ADD COLUMN IF NOT EXISTS motivo_rechazo varchar(300),
+        ADD COLUMN IF NOT EXISTS dni_verificacion_estado varchar(20),
+        ADD COLUMN IF NOT EXISTS dni_verificado_en timestamptz;
+    `);
+
+    await client.query(`
       CREATE UNIQUE INDEX IF NOT EXISTS uq_solicitudes_acceso_telefono_abierta
         ON public.solicitudes_acceso_familia (telefono)
         WHERE estado IN ('PENDIENTE', 'PROCESANDO');
