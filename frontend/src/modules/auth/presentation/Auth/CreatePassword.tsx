@@ -45,8 +45,8 @@ export function CreatePassword() {
       setError("Las contraseñas no coinciden. Por favor verifica.");
       return;
     }
-    if (password.length < 8) {
-      setError("La contraseña debe tener al menos 8 caracteres.");
+    if (password.length < 12) {
+      setError("La contraseña debe tener al menos 12 caracteres.");
       return;
     }
 
@@ -109,7 +109,7 @@ export function CreatePassword() {
         <p className="text-sm text-[#615274] leading-relaxed mb-6">
           {done
             ? "Tu nueva contraseña ha sido guardada de forma segura. Ya puedes iniciar sesión con tu código de usuario."
-            : "Elige una contraseña personal de al menos 8 caracteres. Después inicia sesión con el código que recibiste por correo."}
+            : "Elige una contraseña personal de al menos 12 caracteres. Después inicia sesión con el código que recibiste por correo."}
         </p>
 
         {error && (
@@ -151,7 +151,7 @@ export function CreatePassword() {
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
                   required
-                  minLength={8}
+                  minLength={12}
                   maxLength={128}
                   disabled={busy}
                   value={password}
@@ -181,7 +181,7 @@ export function CreatePassword() {
                   type={showConfirmation ? "text" : "password"}
                   autoComplete="new-password"
                   required
-                  minLength={8}
+                  minLength={12}
                   maxLength={128}
                   disabled={busy}
                   value={confirmation}
