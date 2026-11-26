@@ -103,9 +103,11 @@ describe('señal sin voz', () => {
 describe('editor del reporte', () => {
   it('explica qué falta para firmar y pide confirmación antes de firmar', async () => {
     let signed = 0;
+    let estadoSesion = 'EN_CURSO';
     vi.mocked(fetch).mockImplementation(async (input, init = {}) => {
       const path = new URL(String(input)).pathname.replace('/api/v1', '');
       if (path === '/sesiones/5/reporte/firmar' && init.method === 'POST') { signed += 1; return json({ estado_reporte: 'FIRMADO' }); }
+      if (path === '/sesiones/5') return json({ id_sesion: 5, estado_sesion: estadoSesion, asistencia: 'ASISTIO' });
       return json([]);
     });
     const incomplete = { ...emptyReport, observaciones_iniciales: 'Obs', objetivos_trabajados: 'Obj', proximos_pasos: 'Casa' };
@@ -114,9 +116,16 @@ describe('editor del reporte', () => {
     expect(screen.getByRole('note', { name: 'Qué falta para firmar' })).toHaveTextContent('Elige el nivel de ayuda');
     view.unmount();
 
+    // Con la sesión aún en curso no se puede firmar, aunque el reporte esté completo.
+    const enCurso = renderAs(<ClinicalReportEditor id={5} initial={{ ...incomplete, nivel_ayuda: 'Ayuda moderada' }} />, 'TERAPEUTA');
+    await waitFor(() => expect(screen.getByRole('note', { name: 'Qué falta para firmar' })).toHaveTextContent(/finalizada/));
+    expect(screen.getByRole('button', { name: 'Firmar y publicar reporte' })).toBeDisabled();
+    enCurso.unmount();
+
+    estadoSesion = 'FINALIZADA';
     renderAs(<ClinicalReportEditor id={5} initial={{ ...incomplete, nivel_ayuda: 'Ayuda moderada' }} />, 'TERAPEUTA');
     const sign = screen.getByRole('button', { name: 'Firmar y publicar reporte' });
-    expect(sign).toBeEnabled();
+    await waitFor(() => expect(sign).toBeEnabled());
     fireEvent.click(sign);
     expect(signed).toBe(0);
     expect(screen.getByRole('alertdialog')).toHaveTextContent('irreversible');
