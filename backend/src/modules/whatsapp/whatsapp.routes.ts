@@ -1,5 +1,6 @@
 import { Router, type NextFunction, type Request, type Response } from 'express';
 import { createHmac, timingSafeEqual } from 'node:crypto';
+import { rateLimit } from '../../core/middleware/rate-limit.js';
 import { settings } from '../../core/config.js';
 import { handleIncomingMessage, type IncomingMessage } from './whatsapp.conversation.js';
 
@@ -93,7 +94,7 @@ async function processPayload(payload: unknown): Promise<void> {
 }
 
 // El cuerpo llega crudo (express.raw montado en app.ts antes de express.json).
-whatsappRouter.post('/webhook', (req: Request, res: Response) => {
+whatsappRouter.post('/webhook', rateLimit(300, 60_000), (req: Request, res: Response) => {
   const raw = req.body;
   const signature = req.header('x-hub-signature-256');
   if (!Buffer.isBuffer(raw) || !verifyMetaSignature(raw, signature, settings.WHATSAPP_APP_SECRET)) {

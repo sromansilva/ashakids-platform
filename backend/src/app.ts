@@ -39,6 +39,7 @@ import { mundoAshaRouter } from './modules/mundo_asha/routes/mundo_asha.routes.j
 
 export function createApp() {
   const app = express();
+  app.set('trust proxy', settings.ENVIRONMENT === 'production' ? 1 : false);
   const frontendDistPath =
     process.env.FRONTEND_DIST_DIR || path.resolve(process.cwd(), '../frontend-dist');
   const frontendIndexPath = path.join(frontendDistPath, 'index.html');

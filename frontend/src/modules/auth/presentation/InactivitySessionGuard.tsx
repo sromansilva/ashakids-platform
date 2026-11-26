@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Clock, LogOut, ArrowRight, ShieldAlert } from 'lucide-react';
+import { authService } from '@/modules/auth/infrastructure/authService';
 import { useAuth } from '@/modules/auth/application/useAuth';
 
 // Configuración por defecto: 5 minutos de inactividad (al minuto 4 sale el modal de advertencia durante 60s)
@@ -31,6 +32,7 @@ export const InactivitySessionGuard: React.FC = () => {
   const [secondsRemaining, setSecondsRemaining] = useState(60);
 
   const lastActivityRef = useRef<number>(Date.now());
+  const lastHeartbeatRef = useRef<number>(Date.now());
   const isWarningActiveRef = useRef<boolean>(false);
   const isLoggingOutRef = useRef<boolean>(false);
 
@@ -39,6 +41,8 @@ export const InactivitySessionGuard: React.FC = () => {
     lastActivityRef.current = Date.now();
     isWarningActiveRef.current = false;
     setShowWarning(false);
+    lastHeartbeatRef.current = Date.now();
+    void authService.getCurrentUser().catch(() => undefined);
     const { warningMs } = getTimeoutSettings();
     setSecondsRemaining(Math.round(warningMs / 1000));
   }, []);
@@ -66,6 +70,10 @@ export const InactivitySessionGuard: React.FC = () => {
     const now = Date.now();
     if (now - lastActivityRef.current > 500) {
       lastActivityRef.current = now;
+      if (now - lastHeartbeatRef.current >= 60_000) {
+        lastHeartbeatRef.current = now;
+        void authService.getCurrentUser().catch(() => undefined);
+      }
     }
   }, []);
 
