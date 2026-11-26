@@ -2,7 +2,6 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { once } from 'node:events';
-if (process.env.DB_NAME !== 'ashakids_v190_test' || process.env.DB_HOST !== '127.0.0.1' || process.env.ENVIRONMENT !== 'test') throw new Error('Se requiere la base local ashakids_v190_test');
 const require = createRequire(new URL('../../backend/package.json', import.meta.url));
 const argon2 = require('@node-rs/argon2');
 const { pool } = await import('../../backend/dist/core/database.js');
@@ -12,7 +11,16 @@ const { createApp } = await import('../../backend/dist/app.js');
 const { createSessionToken } = await import('../../backend/dist/core/security/session-token.js');
 const { generateTotpCode } = await import('../../backend/dist/core/security/totp.js');
 
-test('endurecimiento de acceso con base local aislada', async (t) => {
+// Requiere PostgreSQL aislado: se omite salvo que se declare explícitamente una base de prueba.
+const isolatedDb =
+  process.env.ASHAKIDS_RUN_DB_E2E === '1' &&
+  settings.ENVIRONMENT === 'test' &&
+  ['localhost', '127.0.0.1', '::1'].includes(settings.DB_HOST) &&
+  /_(test|e2e)$/.test(settings.DB_NAME);
+const skipDb = isolatedDb ? false : 'requiere ASHAKIDS_RUN_DB_E2E=1, ENVIRONMENT=test, DB local y DB_NAME terminado en _test o _e2e';
+if (!isolatedDb) await pool.end();
+
+test('endurecimiento de acceso con base local aislada', { skip: skipDb }, async (t) => {
   await migrateAuthSecurity();
   const code = `z${String(Date.now()).slice(-5)}`;
   const hash = await argon2.hash('Clave-segura-para-prueba-2026');
