@@ -16,6 +16,9 @@ export async function migrateAuthSecurity(): Promise<void> {
       ADD COLUMN IF NOT EXISTS totp_activado boolean DEFAULT false NOT NULL,
       ADD COLUMN IF NOT EXISTS totp_temp_secret character varying(64);
     `);
+    await client.query(`ALTER TABLE public.sesiones_autenticacion ADD COLUMN IF NOT EXISTS intentos_mfa integer NOT NULL DEFAULT 0;`);
+    await client.query(`ALTER TABLE public.sesiones_autenticacion ALTER COLUMN ultima_actividad SET DEFAULT NOW();`);
+    await client.query(`UPDATE public.sesiones_autenticacion SET ultima_actividad = COALESCE(ultima_actividad, fecha_emision) WHERE ultima_actividad IS NULL;`);
     await client.query('COMMIT;');
   } catch (err) {
     await client.query('ROLLBACK;').catch(() => undefined);

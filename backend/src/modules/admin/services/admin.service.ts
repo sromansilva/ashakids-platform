@@ -4,6 +4,14 @@ import { pool } from '../../../core/database.js';
 import { settings } from '../../../core/config.js';
 import { GmailService } from '../../../infrastructure/mailer/gmail.service.js';
 import { createResetToken } from '../../../core/security/password-reset-token.js';
+import { registrarAuditoria } from '../../../core/audit/audit.service.js';
+
+function maskEmail(email: string): string {
+  const [local, domain] = email.split('@');
+  if (!domain) return email;
+  const visible = local.slice(0, 2);
+  return `${visible}***@${domain}`;
+}
 
 export interface CuentaItem {
   id_usuario: number;
@@ -151,7 +159,12 @@ export class AdminService {
     return res.cuenta;
   }
 
-  private async createInvitedAccount(data: any, role: 'PADRE' | 'TERAPEUTA' | 'SOPORTE_TECNICO', children: any[] = []) {
+  private async createInvitedAccount(
+    data: any,
+    role: 'PADRE' | 'TERAPEUTA' | 'SOPORTE_TECNICO',
+    children: any[] = [],
+    actorId?: number | null
+  ) {
     const prefix = role === 'PADRE' ? 'p' : role === 'TERAPEUTA' ? 't' : 's';
     const codigo_usuario = `${prefix}${randomInt(10000, 100000)}`;
     const oneTimePassword = randomBytes(48);
@@ -237,6 +250,26 @@ export class AdminService {
           `, [newTerId]);
         }
       }
+
+      // Registro de auditoría dentro de la transacción de creación
+      const accionCreacion = role === 'PADRE' ? 'CREAR_PADRE' : role === 'TERAPEUTA' ? 'CREAR_TERAP' : 'CREAR_SOP';
+      await registrarAuditoria(
+        client,
+        {
+          idUsuarioActor: actorId,
+          tabla: 'usuarios',
+          entidad: String(user.id_usuario),
+          accion: accionCreacion,
+          detalle: {
+            id_usuario: Number(user.id_usuario),
+            codigo_usuario: String(user.codigo_usuario),
+            rol: role,
+            ...(role === 'PADRE' ? { total_hijos: children.length } : {}),
+          },
+        },
+        true
+      );
+
       await client.query('COMMIT;');
     } catch (error: any) {
       await client.query('ROLLBACK;');
@@ -283,11 +316,14 @@ export class AdminService {
       else if (mailResult?.status === 'NO_CONFIGURADO') correo_bienvenida = 'NO_CONFIGURADO';
     }
 
+    const shouldLogActivationLink = process.env.ENVIRONMENT === 'development' && process.env.DEV_LOG_ACTIVATION_LINKS === 'true';
     if (settings.ENVIRONMENT !== 'production') {
       console.log(`\n======================================================`);
       console.log(`[DEV ENLACE DE ACTIVACIÓN ASHAKIDS]`);
-      console.log(`Cuenta: ${user.email} (Código: ${user.codigo_usuario})`);
-      console.log(`URL de activación: ${activationUrl}`);
+      console.log(`Cuenta: ${maskEmail(String(user.email))} (Código: ${user.codigo_usuario})`);
+      if (shouldLogActivationLink) {
+        console.log(`URL de activación: ${activationUrl}`);
+      }
       console.log(`======================================================\n`);
     }
 
@@ -299,7 +335,7 @@ export class AdminService {
     };
   }
 
-  async reenviarActivacion(id: number) {
+  async reenviarActivacion(id: number, actorId?: number | null) {
     const result = await pool.query(`SELECT u.id_usuario, u.codigo_usuario, u.email, u.password_hash, u.nombres, u.apellidos, u.activo, u.password_change_required, r.nombre_rol
       FROM usuarios u LEFT JOIN usuario_roles ur ON ur.id_usuario = u.id_usuario AND ur.activo = true
       LEFT JOIN roles r ON r.id_rol = ur.id_rol
@@ -319,39 +355,59 @@ export class AdminService {
       if (mail?.status === 'ENVIADO' || mail?.status === 'NO_CONFIGURADO') correo_estado = mail.status;
     }
 
+    const shouldLogActivationLink = process.env.ENVIRONMENT === 'development' && process.env.DEV_LOG_ACTIVATION_LINKS === 'true';
     if (settings.ENVIRONMENT !== 'production') {
       console.log(`\n======================================================`);
       console.log(`[DEV REENVÍO DE ACTIVACIÓN ASHAKIDS]`);
-      console.log(`Cuenta: ${user.email} (Código: ${user.codigo_usuario})`);
-      console.log(`URL de activación: ${activationUrl}`);
+      console.log(`Cuenta: ${maskEmail(String(user.email))} (Código: ${user.codigo_usuario})`);
+      if (shouldLogActivationLink) {
+        console.log(`URL de activación: ${activationUrl}`);
+      }
       console.log(`======================================================\n`);
     }
 
     await pool.query("UPDATE public.solicitudes_acceso_familia SET correo_estado = $2 WHERE id_usuario_creado = $1 AND estado = 'APROBADA'", [id, correo_estado]);
+
+    await registrarAuditoria(
+      pool,
+      {
+        idUsuarioActor: actorId,
+        tabla: 'usuarios',
+        entidad: String(id),
+        accion: 'REENVIAR_ACT',
+        detalle: {
+          id_usuario: id,
+          codigo_usuario: String(user.codigo_usuario),
+          estado_envio: correo_estado,
+        },
+      },
+      false
+    );
+
     return {
       correo_estado,
       activation_url: settings.ENVIRONMENT !== 'production' ? activationUrl : undefined,
     };
   }
 
-  async crearPadre(data: any) {
-    return this.createInvitedAccount(data, 'PADRE');
+  async crearPadre(data: any, actorId?: number | null) {
+    return this.createInvitedAccount(data, 'PADRE', [], actorId);
   }
 
-  async crearTerapeuta(data: any) {
-    return this.createInvitedAccount(data, 'TERAPEUTA');
+  async crearTerapeuta(data: any, actorId?: number | null) {
+    return this.createInvitedAccount(data, 'TERAPEUTA', [], actorId);
   }
 
-  async crearSoporte(data: { nombres: string; apellidos: string; email: string }) {
-    return this.createInvitedAccount(data, 'SOPORTE_TECNICO');
+  async crearSoporte(data: { nombres: string; apellidos: string; email: string }, actorId?: number | null) {
+    return this.createInvitedAccount(data, 'SOPORTE_TECNICO', [], actorId);
   }
 
-  async registrarFamilia(data: any) {
-    const result = await this.createInvitedAccount(data, 'PADRE', Array.isArray(data.hijos) ? data.hijos : []);
+  async registrarFamilia(data: any, actorId?: number | null) {
+    const result = await this.createInvitedAccount(data, 'PADRE', Array.isArray(data.hijos) ? data.hijos : [], actorId);
     return { ...result, message: 'Familia registrada con éxito' };
   }
 
-  async actualizarCuenta(id: number, data: any) {
+  async actualizarCuenta(id: number, data: any, actorId?: number | null) {
     if (data.email) {
       const emailNorm = String(data.email).trim().toLowerCase();
       const existing = await pool.query(
@@ -377,29 +433,115 @@ export class AdminService {
     if (!res.rows.length) {
       throw Object.assign(new Error('La cuenta no existe o fue eliminada.'), { status: 404 });
     }
+
+    if (data.rol) {
+      const rolUpper = String(data.rol).trim().toUpperCase();
+      if (actorId && actorId === id && rolUpper !== 'ADMIN') {
+        throw Object.assign(
+          new Error('Un administrador no puede retirarse a sí mismo el rol ADMIN.'),
+          { status: 403 }
+        );
+      }
+      await this.cambiarRol(id, rolUpper, actorId);
+    }
+
+    const modifiedFields = Object.keys(data).filter(k => k !== 'rol' && data[k] !== undefined);
+    if (modifiedFields.length > 0) {
+      await registrarAuditoria(
+        pool,
+        {
+          idUsuarioActor: actorId,
+          tabla: 'usuarios',
+          entidad: String(id),
+          accion: 'UPDATE',
+          detalle: { id_usuario: id, campos_modificados: modifiedFields },
+        },
+        false
+      );
+    }
+
     const cuenta = await this.getCuenta(id);
     return { message: 'Cuenta actualizada correctamente', cuenta };
   }
 
-  async suspenderCuenta(id: number) {
+  async cambiarRol(id: number, nuevoRol: string, actorId?: number | null) {
+    const rolUpper = nuevoRol.trim().toUpperCase();
+    if (!['ADMIN', 'TERAPEUTA', 'PADRE', 'SOPORTE_TECNICO'].includes(rolUpper)) {
+      throw Object.assign(new Error(`Rol inválido: ${nuevoRol}. Debe ser ADMIN, TERAPEUTA, PADRE o SOPORTE_TECNICO.`), { status: 400 });
+    }
+    if (actorId && actorId === id && rolUpper !== 'ADMIN') {
+      throw Object.assign(
+        new Error('Un administrador no puede retirarse a sí mismo el rol ADMIN.'),
+        { status: 403 }
+      );
+    }
+    const rolRes = await pool.query(`SELECT id_rol FROM roles WHERE UPPER(nombre_rol) = $1 LIMIT 1;`, [rolUpper]);
+    if (!rolRes.rows[0]) {
+      throw Object.assign(new Error(`Rol no encontrado en el sistema: ${nuevoRol}`), { status: 400 });
+    }
+    const idRol = Number(rolRes.rows[0].id_rol);
+    await pool.query(`UPDATE usuario_roles SET activo = false WHERE id_usuario = $1;`, [id]);
+    await pool.query(
+      `INSERT INTO usuario_roles (id_usuario, id_rol, fecha_asignacion, activo)
+       VALUES ($1, $2, NOW(), true)
+       ON CONFLICT (id_usuario, id_rol) DO UPDATE SET activo = true, fecha_asignacion = NOW();`,
+      [id, idRol]
+    );
+    await registrarAuditoria(
+      pool,
+      {
+        idUsuarioActor: actorId,
+        tabla: 'usuario_roles',
+        entidad: String(id),
+        accion: 'CAMBIAR_ROL',
+        detalle: { id_usuario: id, nuevo_rol: rolUpper },
+      },
+      false
+    );
+    return { message: `Rol actualizado a ${rolUpper}`, id_usuario: id, rol: rolUpper };
+  }
+
+  async suspenderCuenta(id: number, actorId?: number | null) {
     const res = await pool.query(`UPDATE usuarios SET activo = false WHERE id_usuario = $1 RETURNING id_usuario;`, [id]);
     if (!res.rows.length) {
       throw Object.assign(new Error('La cuenta no existe o fue eliminada.'), { status: 404 });
     }
+    await registrarAuditoria(
+      pool,
+      {
+        idUsuarioActor: actorId,
+        tabla: 'usuarios',
+        entidad: String(id),
+        accion: 'DESACTIVAR',
+        detalle: { id_usuario: id, activo: false },
+      },
+      false
+    );
     const cuenta = await this.getCuenta(id);
     return { message: 'Cuenta suspendida correctamente', cuenta: { ...cuenta, activo: false } };
   }
 
-  async activarCuenta(id: number) {
+  async activarCuenta(id: number, actorId?: number | null) {
     const res = await pool.query(`UPDATE usuarios SET activo = true WHERE id_usuario = $1 RETURNING id_usuario;`, [id]);
     if (!res.rows.length) {
       throw Object.assign(new Error('La cuenta no existe o fue eliminada.'), { status: 404 });
     }
+    await registrarAuditoria(
+      pool,
+      {
+        idUsuarioActor: actorId,
+        tabla: 'usuarios',
+        entidad: String(id),
+        accion: 'ACTIVAR',
+        detalle: { id_usuario: id, activo: true },
+      },
+      false
+    );
     const cuenta = await this.getCuenta(id);
     return { message: 'Cuenta activada correctamente', cuenta: { ...cuenta, activo: true } };
   }
 
-  async eliminarCuenta(id: number) {
+  async eliminarCuenta(id: number, actorId?: number | null) {
     const client = await pool.connect();
     try {
       await client.query('BEGIN;');
@@ -459,6 +601,23 @@ export class AdminService {
       // 5. Eliminar usuario (cascada roles, sesiones_autenticacion, notificaciones, etc.)
       await client.query(`DELETE FROM usuarios WHERE id_usuario = $1;`, [id]);
 
+      // 6. Registrar auditoría de eliminación dentro de la transacción usando client
+      await registrarAuditoria(
+        client,
+        {
+          idUsuarioActor: actorId,
+          tabla: 'usuarios',
+          entidad: String(id),
+          accion: 'ELIMINAR',
+          detalle: {
+            id_usuario: id,
+            codigo_usuario: String(userRes.rows[0].codigo_usuario),
+            eliminado: true,
+          },
+        },
+        true
+      );
+
       await client.query('COMMIT;');
       return { message: 'Cuenta eliminada permanentemente con éxito' };
     } catch (err: any) {
@@ -517,34 +676,28 @@ export class AdminService {
   async getAuditoria() {
     try {
       const res = await pool.query(
-        `SELECT id_auditoria, id_usuario_actor, nombre_tabla, nombre_entidad, accion, fecha_evento
-         FROM auditoria_cambios
-         ORDER BY fecha_evento DESC
-         LIMIT 20;`
+        `SELECT a.id_auditoria, a.id_usuario_actor, a.nombre_tabla, a.nombre_entidad, a.accion, a.fecha_evento,
+                u.nombres, u.apellidos, u.codigo_usuario
+         FROM public.auditoria_cambios a
+         LEFT JOIN public.usuarios u ON a.id_usuario_actor = u.id_usuario
+         ORDER BY a.fecha_evento DESC, a.id_auditoria DESC
+         LIMIT 100;`
       );
-      if (res.rows.length > 0) {
-        return {
-          items: res.rows.map(r => ({
-            id_auditoria: r.id_auditoria,
-            actor: r.id_usuario_actor ? `Usuario #${r.id_usuario_actor}` : 'Admin',
-            nombre_tabla: r.nombre_tabla,
-            nombre_entidad: r.nombre_entidad || '1',
-            accion: r.accion,
-            fecha_evento: new Date(r.fecha_evento).toISOString(),
-          })),
-          total: res.rows.length,
-        };
-      }
+      const items = res.rows.map(r => ({
+        id_auditoria: Number(r.id_auditoria),
+        actor: r.id_usuario_actor
+          ? (r.nombres ? `${r.nombres} ${r.apellidos || ''}`.trim() + (r.codigo_usuario ? ` (${r.codigo_usuario})` : '') : `Usuario #${r.id_usuario_actor}`)
+          : 'Sistema',
+        nombre_tabla: r.nombre_tabla,
+        nombre_entidad: r.nombre_entidad || '1',
+        accion: r.accion,
+        fecha_evento: new Date(r.fecha_evento).toISOString(),
+      }));
+      return { items, total: items.length };
     } catch (err) {
-      console.warn('[AdminService] Fallback auditoria:', err);
+      console.warn('[AdminService] Error al obtener auditoria:', (err as any)?.message || err);
+      return { items: [], total: 0 };
     }
-    return {
-      items: [
-        { id_auditoria: 1, actor: 'Admin', nombre_tabla: 'usuarios', nombre_entidad: '1', accion: 'LOGIN', fecha_evento: new Date().toISOString() },
-        { id_auditoria: 2, actor: 'Admin', nombre_tabla: 'reservas', nombre_entidad: '10', accion: 'UPDATE', fecha_evento: new Date().toISOString() },
-      ],
-      total: 2,
-    };
   }
 }
 

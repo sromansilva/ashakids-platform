@@ -1,5 +1,5 @@
 import { useId, useState, useRef, useEffect } from 'react';
-import { Bell, Check, ChevronDown } from 'lucide-react';
+import { Bell, Check, ChevronDown, UserPlus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/application/useAuth';
@@ -147,6 +147,11 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                       {date(item.fecha_creacion)}
                     </time>
                     <div className="flex gap-2 pt-1">
+                      {item.tipo === 'SOLICITUD_ACCESO' && role === 'ADMIN' && (
+                        <Btn size="sm" onClick={() => { setOpen(false); routerNavigate('/admin/solicitudes'); }}>
+                          <UserPlus size={14} className="mr-1" /> Ver solicitudes
+                        </Btn>
+                      )}
                       {item.id_reserva && role === 'PADRE' && familyActions[item.tipo] && (
                         <Btn size="sm" onClick={() => { setOpen(false); routerNavigate(`/padre/agenda?cita=${item.id_reserva}`); }}>
                           {familyActions[item.tipo]}

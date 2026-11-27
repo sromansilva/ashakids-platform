@@ -7,7 +7,7 @@ import { NotFoundPage } from "@/modules/public/presentation/NotFoundPage";
 import { SoporteIncidencias, SoporteDetalle, SoporteConfig } from './lazyPages';
 import { useDemoWorkflow } from "@/shared/application/hooks/useDemoWorkflow";
 import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminSolicitudes, ScheduledSessionLaunchGate } from "./lazyPages";
-import { Landing, LoginPage, Onboarding, ForgotPassword, ResourcesPage, PublicAshi, AboutUsPage, PublicAyuda, PublicContacto, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaEspacioProfesionalPage, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
+import { Landing, LoginPage, Onboarding, ForgotPassword, ResourcesPage, PublicAshi, AboutUsPage, PublicAyuda, PublicContacto, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaLaberinto, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaEspacioProfesionalPage, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
 
 function RedirectToJourney() {
   const [searchParams] = useSearchParams();
@@ -61,14 +61,14 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/padre/recompensas" element={<MundoAshaHome go={go} padrePlan={padrePlan} />} />
 <Route path="/padre/incidencias" element={<PadreIncidencias go={go} />} />
 <Route path="/mundo-asha" element={authRole === "PADRE" ? <MundoAshaHome go={go} padrePlan={padrePlan} /> : <MundoASHAPage go={go} />} />
-<Route path="/mundo-asha/cuentos" element={<MundoAshaCuentos go={go} />} />
-<Route path="/mundo-asha/canciones" element={<MundoAshaCanciones go={go} />} />
-<Route path="/mundo-asha/trabalenguas" element={<MundoAshaTrabalenguas go={go} />} />
-<Route path="/mundo-asha/adivinanzas" element={<MundoAshaAdivinanzas go={go} />} />
-<Route path="/mundo-asha/juegos" element={<MundoAshaJuegos go={go} />} />
+<Route path="/mundo-asha/cuentos" element={<Navigate to="/mundo-asha" replace />} />
+<Route path="/mundo-asha/canciones" element={<Navigate to="/mundo-asha" replace />} />
+<Route path="/mundo-asha/trabalenguas" element={<Navigate to="/mundo-asha" replace />} />
+<Route path="/mundo-asha/adivinanzas" element={<Navigate to="/mundo-asha" replace />} />
+<Route path="/mundo-asha/juegos" element={<Navigate to="/mundo-asha" replace />} />
 <Route path="/mundo-asha/laberinto" element={<MundoAshaLaberinto go={go} />} />
 <Route path="/mundo-asha/isla" element={<Navigate to="/mundo-asha" replace />} />
-<Route path="/mundo-asha/academia" element={<MundoAshaAcademia go={go} />} />
+<Route path="/mundo-asha/academia" element={<Navigate to="/mundo-asha" replace />} />
 <Route path="/mundo-asha/retos" element={<MundoAshaRetos go={go} />} />
 <Route path="/mundo-asha/insignias" element={<MundoAshaInsignias go={go} />} />
 <Route path="/mundo-asha/perfil" element={<MundoAshaPerfil go={go} />} />

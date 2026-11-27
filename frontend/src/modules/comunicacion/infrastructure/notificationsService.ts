@@ -4,7 +4,7 @@ export interface NotificationPreferences {
 }
 export interface Notification {
   id_notificacion: number; tipo: string; titulo: string; texto: string;
-  id_reserva: number | null; id_conversacion: number | null; fecha_creacion: string; leida_en: string | null;
+  id_reserva: number | null; id_conversacion: number | null; id_solicitud: number | null; fecha_creacion: string; leida_en: string | null;
   meet_url?: string | null;
   sesion_en_curso?: boolean;
 }

@@ -13,6 +13,7 @@ import {
   listarSolicitudesAcceso,
   aprobarSolicitudAcceso,
   rechazarSolicitudAcceso,
+  verificarDniSolicitudAcceso,
 } from '../../whatsapp/solicitudes.routes.js';
 
 export const adminRouter = Router();
@@ -54,6 +55,9 @@ const therapistAccountSchema = accountIdentitySchema.extend({
   anios_experiencia: z.number().int().min(0).max(70).optional(),
   idiomas: z.string().trim().max(50).optional(),
   descripcion_profesional: z.string().trim().max(2000).optional(),
+});
+const changeRoleSchema = z.object({
+  rol: z.enum(['ADMIN', 'TERAPEUTA', 'PADRE', 'SOPORTE_TECNICO']),
 });
 
 // GET /api/v1/admin/me
@@ -117,27 +121,31 @@ adminRouter.post('/cuentas/padres', async (req: Request, res: Response, next: Ne
   try {
     const parsed = parentAccountSchema.safeParse(req.body);
     if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos, correo y datos de contacto.' }); return; }
-    const result = await adminService.crearPadre(parsed.data);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    const result = await adminService.crearPadre(parsed.data, adminId);
     res.status(201).json(result);
   } catch (err) {
     next(err);
   }
 });
 
-// POST /api/v1/admin/cuentas/terapeutas
+// POST /api/v1/admin/cuentas/soporte
 adminRouter.post('/cuentas/soporte', async (req, res, next) => {
   try {
     const parsed = accountIdentitySchema.strict().safeParse(req.body);
     if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos y correo.' }); return; }
-    res.status(201).json(await adminService.crearSoporte(parsed.data));
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    res.status(201).json(await adminService.crearSoporte(parsed.data, adminId));
   } catch (error) { next(error); }
 });
 
+// POST /api/v1/admin/cuentas/terapeutas
 adminRouter.post('/cuentas/terapeutas', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const parsed = therapistAccountSchema.safeParse(req.body);
     if (!parsed.success) { res.status(400).json({ error: 'Revisa nombres, apellidos, correo y perfil profesional.' }); return; }
-    const result = await adminService.crearTerapeuta(parsed.data);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    const result = await adminService.crearTerapeuta(parsed.data, adminId);
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -149,7 +157,8 @@ adminRouter.post('/familias', async (req: Request, res: Response, next: NextFunc
   try {
     const parsed = familyAccountSchema.safeParse(req.body);
     if (!parsed.success) { res.status(400).json({ error: 'Completa los datos de la familia y registra al menos un niño de 3 a 12 años.' }); return; }
-    const result = await adminService.registrarFamilia(parsed.data);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    const result = await adminService.registrarFamilia(parsed.data, adminId);
     res.status(201).json(result);
   } catch (err) {
     next(err);
@@ -161,7 +170,23 @@ const updateCuentaHandler = async (req: Request, res: Response, next: NextFuncti
   try {
     const id = parseInt(String(req.params.id), 10);
     if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
-    const result = await adminService.actualizarCuenta(id, req.body);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    if (req.body.rol) {
+      const parsedRole = changeRoleSchema.safeParse({ rol: req.body.rol });
+      if (!parsedRole.success) {
+        return res.status(400).json({
+          error: 'Rol inválido. Debe ser ADMIN, TERAPEUTA, PADRE o SOPORTE_TECNICO.',
+          detail: 'Rol inválido. Debe ser ADMIN, TERAPEUTA, PADRE o SOPORTE_TECNICO.',
+        });
+      }
+      if (adminId && adminId === id && parsedRole.data.rol !== 'ADMIN') {
+        return res.status(403).json({
+          error: 'Un administrador no puede retirarse a sí mismo el rol ADMIN.',
+          detail: 'Un administrador no puede retirarse a sí mismo el rol ADMIN.',
+        });
+      }
+    }
+    const result = await adminService.actualizarCuenta(id, req.body, adminId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -170,12 +195,41 @@ const updateCuentaHandler = async (req: Request, res: Response, next: NextFuncti
 adminRouter.patch('/cuentas/:id', updateCuentaHandler);
 adminRouter.put('/cuentas/:id', updateCuentaHandler);
 
+// PATCH & PUT /api/v1/admin/cuentas/:id/rol
+const updateRolHandler = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = parseInt(String(req.params.id), 10);
+    if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
+    const parsed = changeRoleSchema.safeParse(req.body);
+    if (!parsed.success) {
+      return res.status(400).json({
+        error: 'Rol inválido. Debe ser ADMIN, TERAPEUTA, PADRE o SOPORTE_TECNICO.',
+        detail: 'Rol inválido. Debe ser ADMIN, TERAPEUTA, PADRE o SOPORTE_TECNICO.',
+      });
+    }
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    if (adminId && adminId === id && parsed.data.rol !== 'ADMIN') {
+      return res.status(403).json({
+        error: 'Un administrador no puede retirarse a sí mismo el rol ADMIN.',
+        detail: 'Un administrador no puede retirarse a sí mismo el rol ADMIN.',
+      });
+    }
+    const result = await adminService.cambiarRol(id, parsed.data.rol, adminId);
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+};
+adminRouter.patch('/cuentas/:id/rol', updateRolHandler);
+adminRouter.put('/cuentas/:id/rol', updateRolHandler);
+
 // PATCH & PUT /api/v1/admin/cuentas/:id/suspender
 const suspenderCuentaHandler = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const id = parseInt(String(req.params.id), 10);
     if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
-    const result = await adminService.suspenderCuenta(id);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    const result = await adminService.suspenderCuenta(id, adminId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -189,7 +243,8 @@ const activarCuentaHandler = async (req: Request, res: Response, next: NextFunct
   try {
     const id = parseInt(String(req.params.id), 10);
     if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
-    const result = await adminService.activarCuenta(id);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    const result = await adminService.activarCuenta(id, adminId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -203,7 +258,8 @@ adminRouter.delete('/cuentas/:id', async (req: Request, res: Response, next: Nex
   try {
     const id = parseInt(String(req.params.id), 10);
     if (isNaN(id) || id <= 0) return res.status(400).json({ error: 'Identificador inválido.', detail: 'Identificador inválido.' });
-    const result = await adminService.eliminarCuenta(id);
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    const result = await adminService.eliminarCuenta(id, adminId);
     res.json(result);
   } catch (err) {
     next(err);
@@ -214,7 +270,8 @@ adminRouter.post('/cuentas/:id/reenviar-activacion', async (req: Request, res: R
   try {
     const id = z.coerce.number().int().positive().safeParse(req.params.id);
     if (!id.success) return res.status(400).json({ detail: 'Identificador invalido.' });
-    return res.json(await adminService.reenviarActivacion(id.data));
+    const adminId = req.user?.id_usuario ? Number(req.user.id_usuario) : undefined;
+    return res.json(await adminService.reenviarActivacion(id.data, adminId));
   } catch (err) { return next(err); }
 });
 
@@ -252,3 +309,4 @@ adminRouter.patch('/incidencias/:id/revocar', revocarIncidenciaAdmin);
 adminRouter.get('/solicitudes-acceso', listarSolicitudesAcceso);
 adminRouter.post('/solicitudes-acceso/:id/aprobar', aprobarSolicitudAcceso);
 adminRouter.post('/solicitudes-acceso/:id/rechazar', rechazarSolicitudAcceso);
+adminRouter.post('/solicitudes-acceso/:id/verificar-dni', verificarDniSolicitudAcceso);

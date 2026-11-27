@@ -40,4 +40,10 @@ sudo docker compose --project-name ashakids-ec2 --env-file .env.ec2 --file docke
 curl -fsS "https://$(grep '^APP_HOST=' .env.ec2 | cut -d= -f2)/health/ready"
 ```
 
+## WhatsApp (opcional)
+
+El chatbot de WhatsApp mediante Meta Cloud API permite captar solicitudes de acceso familiar en estado `PENDIENTE`. Para activarlo en producción se requiere un dominio DNS propio con certificado SSL público (`TLS_MODE=domain`), ya que Meta exige HTTPS con nombre de host público y no acepta certificados IP de corta duración ni sin dominio.
+
+Consulta la guía detallada de configuración en [docs/WhatsApp_Meta_Setup.md](../docs/WhatsApp_Meta_Setup.md) para dar de alta la app en Meta for Developers, obtener el Phone Number ID, generar el token permanente y registrar el webhook.
+
 Antes de producción con datos reales, prueba el inicio/cierre de sesión por HTTPS, los permisos por rol, la separación de datos, y un respaldo con restauración. No guardes credenciales reales en Git ni en archivos del frontend.

@@ -102,12 +102,12 @@ export function ExitConfirmModal({
 
 // ─── ASHA Session therapist info ───────────────────────────────────────────────
 export const SESSION_THERAPIST = {
-  name: "Dra. Ana Ruiz",
+  name: "Especialista asignado",
   specialty: "Terapia del Lenguaje",
-  av: "AR",
+  av: "EA",
   color: B.violet,
-  date: "30 Jul 2026",
-  time: "10:00 AM",
+  date: "—",
+  time: "—",
   duration: "45 min",
   type: "Virtual",
   status: "Confirmada",

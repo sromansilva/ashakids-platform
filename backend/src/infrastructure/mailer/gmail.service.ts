@@ -1,4 +1,5 @@
 import { settings } from '../../core/config.js';
+import { maskEmail } from '../../core/security/masking.js';
 
 export interface SendMailOptions {
   to: string;
@@ -56,8 +57,7 @@ export class GmailService {
       });
 
       if (!res.ok) {
-        const errorText = await res.text();
-        console.error('[GmailService] Error renovando OAuth token:', res.status, errorText);
+        console.error('[GmailService] Error renovando OAuth token:', res.status);
         return null;
       }
 
@@ -71,7 +71,7 @@ export class GmailService {
 
       return data.access_token;
     } catch (err) {
-      console.error('[GmailService] Excepción renovando OAuth token:', err);
+      console.error('[GmailService] Excepción renovando OAuth token:', err instanceof Error ? err.message : String(err));
       return null;
     }
   }
@@ -125,7 +125,7 @@ export class GmailService {
   static async sendMail(opts: SendMailOptions): Promise<MailSendResult> {
     if (!this.isConfigured()) {
       console.log(
-        `[GmailService] Modo simulado (GMAIL_ENABLED=false o faltan credenciales): Destino=${opts.to}, Asunto="${opts.subject}"`
+        `[GmailService] Modo simulado (GMAIL_ENABLED=false o faltan credenciales): Destino=${maskEmail(opts.to)}, Asunto="${opts.subject}"`
       );
       return { success: true, status: 'NO_CONFIGURADO' };
     }
@@ -149,14 +149,14 @@ export class GmailService {
 
       if (!res.ok) {
         const errJson = await res.text();
-        console.error('[GmailService] Error enviando correo:', res.status, errJson);
+        console.error('[GmailService] Error enviando correo:', res.status);
         return { success: false, status: 'FALLO', error: `Gmail API ${res.status}: ${errJson}` };
       }
 
       const data = (await res.json()) as { id?: string };
       return { success: true, status: 'ENVIADO', messageId: data.id };
     } catch (err: any) {
-      console.error('[GmailService] Excepción enviando correo:', err);
+      console.error('[GmailService] Excepción enviando correo:', err instanceof Error ? err.message : String(err));
       return { success: false, status: 'FALLO', error: err?.message || 'Error desconocido' };
     }
   }
@@ -361,6 +361,31 @@ Abre este enlace para crear tu contraseña personal. El enlace vence en dos hora
 ${params.activationUrl}
 
 Si no esperabas esta invitación, contacta al centro.
+
+Equipo Ashakids
+https://ashakids.life`,
+    });
+  }
+
+  /**
+   * Avisa a la familia que su solicitud de acceso no fue aprobada, con el motivo del admin.
+   * Es el aviso que siempre llega: WhatsApp solo admite texto libre dentro de la ventana de 24 h.
+   */
+  static async sendAccessRequestRejectionEmail(params: {
+    to: string;
+    name: string;
+    motivo: string;
+  }): Promise<MailSendResult> {
+    return this.sendMail({
+      to: params.to,
+      subject: 'Sobre tu solicitud de acceso a Ashakids',
+      text: `Hola ${params.name},
+
+Revisamos la solicitud de acceso que nos enviaste por WhatsApp y por ahora no pudimos aprobarla.
+
+Motivo: ${params.motivo}
+
+Si crees que es un error o quieres corregir tus datos, puedes escribirnos de nuevo por WhatsApp para enviar una nueva solicitud o comunicarte con el equipo de Ashakids.
 
 Equipo Ashakids
 https://ashakids.life`,

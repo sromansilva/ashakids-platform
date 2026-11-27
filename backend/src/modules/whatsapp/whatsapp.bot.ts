@@ -1,4 +1,8 @@
 import { z } from 'zod';
+import { settings } from '../../core/config.js';
+import { maskEmail } from '../../core/security/masking.js';
+
+export { maskEmail };
 
 /**
  * Máquina de estados PURA del chatbot de solicitud de acceso familiar.
@@ -58,7 +62,7 @@ export const MSG = {
   bienvenida:
     '¡Hola! Soy el asistente de Ashakids 💜. Aquí puedes pedir acceso para tu familia.\n\n' +
     'Aviso de privacidad: usaremos tus datos (nombres, apellidos, DNI, correo y este número) solo para ' +
-    'revisar tu solicitud y, si se aprueba, crear tu cuenta. Puedes escribir CANCELAR para borrarlos mientras tu solicitud no se haya aprobado.\n\n' +
+    `revisar tu solicitud y, si se aprueba, crear tu cuenta (si tu solicitud se rechaza, borramos tus datos a los ${settings.WHATSAPP_RETENTION_DAYS} días). Puedes escribir CANCELAR para borrarlos mientras tu solicitud no se haya aprobado.\n\n` +
     'Para continuar, responde SI.',
   pedirConsentimiento: 'Para continuar necesito tu aceptación. Responde SI para seguir o CANCELAR para salir.',
   pedirNombres: 'Gracias. ¿Cuáles son tus nombres? (máximo 60 caracteres)',
@@ -71,6 +75,8 @@ export const MSG = {
   correoInvalido: 'Ese correo no parece válido. Revisa que tenga el formato nombre@dominio.com e inténtalo de nuevo.',
   soloTexto: 'Por ahora solo puedo leer mensajes de texto. ¿Me respondes escribiendo, por favor?',
   cancelado: 'Listo, cancelé la solicitud y borré los datos que me diste. Cuando quieras empezar de nuevo, escríbeme.',
+  noCancelableEnRevision: 'Tu solicitud ya está en revisión por nuestro equipo y no puede cancelarse en este momento. Te avisaremos cuando tengamos novedades.',
+  noCancelableAprobada: 'Tu solicitud ya fue aprobada y tu cuenta está activa. Para solicitar la baja de tu cuenta o eliminar tus datos, debes comunicarte con el equipo de soporte de Ashakids.',
   finalizada:
     '¡Gracias! Tu solicitud quedó en revisión. Nuestro equipo la revisará y, si se aprueba, recibirás un correo ' +
     'con el enlace para activar tu cuenta.',
@@ -109,13 +115,6 @@ function cleanLine(text: string): string {
 
 function result(state: BotState, data: BotDraft, reply: string): BotOutput {
   return { state, data, reply, crearSolicitud: false, solicitud: null };
-}
-
-export function maskEmail(email: string): string {
-  const [local = '', domain = ''] = email.trim().toLowerCase().split('@');
-  if (!domain) return '***';
-  const visible = local.length <= 2 ? local.slice(0, 1) : local.slice(0, 2);
-  return `${visible}***@${domain}`;
 }
 
 export function processMessage(input: BotInput): BotOutput {
