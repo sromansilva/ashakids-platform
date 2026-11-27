@@ -72,14 +72,13 @@ return (<div className="flex flex-col gap-5">
                     border: "1px solid #FECACA",
                   }}
                 >
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
                       <p className="font-extrabold text-sm text-red-700 mb-0.5">
-                        Eliminar cuenta
+                        Solicitar desactivación de la cuenta
                       </p>
                       <p className="text-xs text-red-600 font-medium">
-                        Esta acción es permanente e
-                        irreversible.
+                        Tu solicitud será enviada a administración para su evaluación antes de suspender la cuenta.
                       </p>
                     </div>
                     <Btn
@@ -87,7 +86,7 @@ return (<div className="flex flex-col gap-5">
                       size="sm"
                       onClick={() => setShowDeleteAccount(true)}
                     >
-                      <Trash2 size={12} /> Eliminar
+                      <Trash2 size={12} /> Solicitar desactivación de la cuenta
                     </Btn>
                   </div>
                 </div>

@@ -17,16 +17,11 @@ export const Landing = lazy(() => import("@/modules/public/presentation/landing/
 export const LoginPage = lazy(() => import("@/modules/auth/presentation/LoginPage").then(module => ({ default: module.LoginPage })));
 export const Onboarding = lazy(() => import("@/modules/auth/presentation/Auth/Onboarding").then(module => ({ default: module.Onboarding })));
 export const ForgotPassword = lazy(() => import("@/modules/auth/presentation/Auth/ForgotPassword").then(module => ({ default: module.ForgotPassword })));
-export const SpecialistsPage = lazy(() => import("@/modules/public/presentation/SpecialistsPage").then(module => ({ default: module.SpecialistsPage })));
-export const PublicEspecialidades = lazy(() => import("@/modules/public/presentation/Public/PublicEspecialidades").then(module => ({ default: module.PublicEspecialidades })));
 export const ResourcesPage = lazy(() => import("@/modules/public/presentation/ResourcesPage").then(module => ({ default: module.ResourcesPage })));
 export const PublicAshi = lazy(() => import("@/modules/public/presentation/Public/PublicAshi").then(module => ({ default: module.PublicAshi })));
-export const PublicHistorias = lazy(() => import("@/modules/public/presentation/Public/PublicHistorias").then(module => ({ default: module.PublicHistorias })));
 export const AboutUsPage = lazy(() => import("@/modules/public/presentation/AboutUsPage").then(module => ({ default: module.AboutUsPage })));
-export const PublicPlanes = lazy(() => import("@/modules/public/presentation/Public/PublicPlanes").then(module => ({ default: module.PublicPlanes })));
 export const PublicAyuda = lazy(() => import("@/modules/public/presentation/Public/PublicAyuda").then(module => ({ default: module.PublicAyuda })));
 export const PublicContacto = lazy(() => import("@/modules/public/presentation/Public/PublicContacto").then(module => ({ default: module.PublicContacto })));
-export const PublicTrabaja = lazy(() => import("@/modules/public/presentation/Public/PublicTrabaja").then(module => ({ default: module.PublicTrabaja })));
 export const PadreHome = lazy(() => import("@/modules/padre/presentation/dashboard/PadreHome").then(module => ({ default: module.PadreHome })));
 export const PadreWelcome = lazy(() => import("@/modules/padre/presentation/dashboard/PadreWelcome").then(module => ({ default: module.PadreWelcome })));
 export const PadreAyuda = lazy(() => import("@/modules/padre/presentation/PadreAyuda").then(module => ({ default: module.PadreAyuda })));

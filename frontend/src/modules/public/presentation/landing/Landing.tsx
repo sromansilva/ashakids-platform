@@ -28,6 +28,14 @@ export function Landing(props: Parameters<typeof useLanding>[0]) {
     document.head.append(canonical);
     return () => canonical.remove();
   }, []);
+  useEffect(() => {
+    if (!window.location.hash) return;
+    const id = window.location.hash.slice(1);
+    const target = document.getElementById(id);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, []);
   return <div className="asha-landing asha-ui asha-unified">
     <a className="landing-skip" href="#landing-content">Saltar al contenido</a>
     <PublicNav go={go} cur="landing"/>

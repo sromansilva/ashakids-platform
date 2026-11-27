@@ -15,17 +15,12 @@ export function viewToPath(v: View | string): string {
   if (v === "onboarding") return "/onboarding";
 
   // Páginas públicas
-  if (v === "public/especialistas") return "/especialistas";
-  if (v === "public/especialidades") return "/especialidades";
   if (v === "public/mundo") return "/mundo-asha";
   if (v === "public/recursos") return "/recursos";
   if (v === "public/nosotros") return "/sobre-nosotros";
-  if (v === "public/planes") return "/planes";
   if (v === "public/ayuda") return "/ayuda";
   if (v === "public/contacto") return "/contacto";
-  if (v === "public/trabaja") return "/trabaja";
   if (v === "public/ashi") return "/ashi";
-  if (v === "public/historias") return "/historias";
 
   if (v.startsWith("register")) {
     return `/${v}`;
@@ -50,16 +45,11 @@ export function pathToView(pathname: string, userRole?: SemanticRole | null): Vi
   if (cleanPath === "/onboarding") return "onboarding";
   if (cleanPath.startsWith("/register")) return "register" as View;
 
-  if (cleanPath === "/especialistas") return "public/especialistas";
-  if (cleanPath === "/especialidades") return "public/especialidades";
   if (cleanPath === "/recursos") return "public/recursos";
   if (cleanPath === "/sobre-nosotros" || cleanPath === "/nosotros") return "public/nosotros";
-  if (cleanPath === "/planes") return "public/planes";
   if (cleanPath === "/ayuda") return "public/ayuda";
   if (cleanPath === "/contacto") return "public/contacto";
-  if (cleanPath === "/trabaja") return "public/trabaja";
   if (cleanPath === "/ashi") return "public/ashi";
-  if (cleanPath === "/historias") return "public/historias";
 
   // Mundo ASHA público vs módulo familiar
   if (cleanPath === "/mundo-asha") {
@@ -94,17 +84,12 @@ export function getRequiredRoleForPath(pathname: string, userRole?: SemanticRole
     cleanPath === "/forgot-password" ||
     cleanPath === "/onboarding" ||
     cleanPath.startsWith("/register") ||
-    cleanPath === "/especialistas" ||
-    cleanPath === "/especialidades" ||
     cleanPath === "/recursos" ||
     cleanPath === "/sobre-nosotros" ||
     cleanPath === "/nosotros" ||
-    cleanPath === "/planes" ||
     cleanPath === "/ayuda" ||
     cleanPath === "/contacto" ||
-    cleanPath === "/trabaja" ||
-    cleanPath === "/ashi" ||
-    cleanPath === "/historias"
+    cleanPath === "/ashi"
   ) {
     return null;
   }

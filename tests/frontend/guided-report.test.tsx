@@ -1,5 +1,5 @@
 import { expect, it, vi } from 'vitest';
-import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import { renderRoute } from './helpers';
 
 const patientName = 'Leo Ejemplo';
@@ -16,14 +16,33 @@ function api(initial = legacy) {
   });
 }
 
-it('autosaves partial clinical notes as a draft without waiting for the completed report', async () => {
+it('autosaves partial clinical notes after 20 seconds of inactivity without saving prematurely', async () => {
   const calls = api({ observaciones_iniciales: '', objetivos_trabajados: '', nivel_ayuda: '', proximos_pasos: '' });
   renderRoute('/terapeuta/reportes', 'TERAPEUTA');
   const observations = await screen.findByLabelText('Observaciones iniciales');
-  fireEvent.change(observations, { target: { value: 'Nota clínica durante la sesión.' } });
-  expect(screen.getByRole('status')).toHaveTextContent('Se guardarán automáticamente en unos segundos.');
 
-  await waitFor(() => {
+  vi.useFakeTimers();
+  try {
+    fireEvent.change(observations, { target: { value: 'Nota clínica inicial.' } });
+    expect(screen.getByRole('status')).toHaveTextContent('Se guardarán automáticamente tras 20 segundos sin edición.');
+
+    // Después de 10 segundos no debe haberse guardado todavía
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10_000);
+    });
+    expect(calls.mock.calls.filter(([, init]) => init?.method === 'PUT')).toHaveLength(0);
+
+    // Si el terapeuta escribe de nuevo, el temporizador de 20s se reinicia
+    fireEvent.change(observations, { target: { value: 'Nota clínica durante la sesión.' } });
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(15_000);
+    });
+    expect(calls.mock.calls.filter(([, init]) => init?.method === 'PUT')).toHaveLength(0);
+
+    // Tras completar los 20 segundos sin edición, guarda automáticamente
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(5_100);
+    });
     const writes = calls.mock.calls.filter(([, init]) => init?.method === 'PUT');
     expect(writes).toHaveLength(1);
     expect(JSON.parse(String(writes[0][1]?.body))).toEqual({
@@ -32,17 +51,25 @@ it('autosaves partial clinical notes as a draft without waiting for the complete
       nivel_ayuda: '',
       proximos_pasos: '',
     });
-  }, { timeout: 2500 });
+  } finally {
+    vi.useRealTimers();
+  }
 });
 
-it('inserts personalized templates on demand, blocks incomplete text and saves completed narratives with the selected help level', async () => {
+it('inserts personalized templates on demand, blocks incomplete text and saves completed narratives with inverted autosuficiencia stars', async () => {
   const calls = api({observaciones_iniciales:'',objetivos_trabajados:'',nivel_ayuda:'',proximos_pasos:''});
   renderRoute('/terapeuta/reportes','TERAPEUTA');
   const observations = await screen.findByLabelText('Observaciones iniciales');
   expect(observations).toHaveValue('');
   expect(observations).toHaveAttribute('placeholder',expect.stringContaining(patientName));
-  expect(screen.getAllByRole('radio')).toHaveLength(5);
-  expect(screen.getAllByRole('radio').every(input => !(input as HTMLInputElement).checked)).toBe(true);
+  expect(screen.getByText('Nivel de autosuficiencia')).toBeInTheDocument();
+  const radios = screen.getAllByRole('radio');
+  expect(radios).toHaveLength(5);
+  expect(radios.every(input => !(input as HTMLInputElement).checked)).toBe(true);
+  // 1 estrella = Ayuda total, 5 estrellas = Sin ayuda
+  expect((radios[0] as HTMLInputElement).value).toBe('Ayuda total');
+  expect((radios[4] as HTMLInputElement).value).toBe('Sin ayuda');
+
   for (const name of ['observaciones iniciales','objetivos trabajados','próximos pasos']) {
     fireEvent.click(screen.getByRole('button',{name:`Usar plantilla de ${name}`}));
   }
@@ -61,24 +88,24 @@ it('inserts personalized templates on demand, blocks incomplete text and saves c
   for(const [key,label] of [['observaciones_iniciales','Observaciones iniciales'],['objetivos_trabajados','Objetivos trabajados'],['proximos_pasos','Próximos pasos']] as const) {
     fireEvent.change(screen.getByLabelText(label),{target:{value:completed[key]}});
   }
-  for(const name of ['Sin ayuda','Ayuda mínima','Ayuda moderada','Ayuda alta','Ayuda total']) {
+  for(const name of ['Ayuda total','Ayuda alta','Ayuda moderada','Ayuda mínima','Sin ayuda']) {
     fireEvent.click(screen.getByRole('radio',{name}));
     expect(screen.getByRole('radio',{name})).toBeChecked();
     expect(screen.getAllByRole('radio').filter(input=>(input as HTMLInputElement).checked)).toHaveLength(1);
   }
-  expect(screen.getByText('Necesita acompañamiento paso a paso durante toda la actividad.')).toBeInTheDocument();
+  expect(screen.getByText('Logró realizar la actividad por sí solo, sin necesitar ayuda.')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button',{name:'Guardar reporte'}));
   await screen.findByText('Reporte guardado en el servidor.');
   const writes=calls.mock.calls.filter(([,init])=>init?.method==='PUT');
   expect(writes).toHaveLength(1);
-  expect(JSON.parse(String(writes[0][1]?.body))).toEqual({...completed,nivel_ayuda:'Ayuda total'});
+  expect(JSON.parse(String(writes[0][1]?.body))).toEqual({...completed,nivel_ayuda:'Sin ayuda'});
 });
 
 it('preserves historical free text and its help level until the professional selects a new intensity', async () => {
   const calls = api(); renderRoute('/terapeuta/reportes','TERAPEUTA');
   expect(await screen.findByDisplayValue(legacy.observaciones_iniciales)).toBeInTheDocument();
   expect(screen.getByText(`Nivel guardado: ${legacy.nivel_ayuda}. Puedes conservarlo o elegir una de las cinco opciones.`)).toBeInTheDocument();
-  expect(screen.queryByRole('textbox',{name:'Nivel de ayuda'})).not.toBeInTheDocument();
+  expect(screen.queryByRole('textbox',{name:'Nivel de autosuficiencia'})).not.toBeInTheDocument();
   expect(screen.queryByRole('button',{name:/Usar plantilla/})).not.toBeInTheDocument();
   fireEvent.change(screen.getByLabelText('Objetivos trabajados'),{target:{value:'Objetivo actualizado'}});
   fireEvent.click(screen.getByRole('button',{name:'Guardar reporte'}));

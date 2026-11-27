@@ -90,3 +90,18 @@ padreRouter.delete('/hijos/:id', async (req: Request, res: Response, next: NextF
     next(err);
   }
 });
+
+// POST /api/v1/padres/solicitud-baja
+padreRouter.post('/solicitud-baja', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const password = typeof req.body?.password === 'string' ? req.body.password : '';
+    const totp_code = typeof req.body?.totp_code === 'string' ? req.body.totp_code : undefined;
+    const result = await padreService.solicitarDesactivacionCuenta(req.user!.id_usuario, {
+      password,
+      totp_code,
+    });
+    res.status(201).json(result);
+  } catch (err) {
+    next(err);
+  }
+});

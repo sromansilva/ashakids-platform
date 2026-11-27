@@ -140,7 +140,7 @@ export function PadreConfig(props: Parameters<typeof usePadreConfig>[0]) {
             <div className="w-6 h-6 rounded-full border-2 border-[#6B46FE] flex items-center justify-center font-bold text-xs shrink-0">
               <Info size={14} className="text-[#6B46FE]" />
             </div>
-            <span>Para cambiar tus datos de cuenta, contacta a administración.</span>
+            <span>Para cambiar tus datos de cuenta, contacta a administración desde el apartado de incidencias -&gt; Problemas de permisos -&gt; Acceso a mi cuenta.</span>
           </div>
         </div>
       )}

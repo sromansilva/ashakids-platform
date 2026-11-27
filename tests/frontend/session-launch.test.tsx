@@ -1,5 +1,6 @@
 import { afterEach, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import type { Appointment } from '@/modules/clinica/domain/clinical';
 import { SessionLaunchControls, startBlockReason } from '@/shared/presentation/components/common/SessionLaunchControls';
@@ -22,7 +23,14 @@ const appointment: Appointment = {
   tipo_cita: 'TERAPIA', id_sesion: null, meet_url: MEET, estado_sesion: null,
 };
 const view = (value: Partial<Appointment>, now: number) => render(
-  <QueryClientProvider client={new QueryClient()}><SessionLaunchControls appointment={{ ...appointment, ...value }} now={now} /></QueryClientProvider>,
+  <QueryClientProvider client={new QueryClient()}>
+    <MemoryRouter initialEntries={['/terapeuta/agenda']}>
+      <Routes>
+        <Route path="/terapeuta/agenda" element={<SessionLaunchControls appointment={{ ...appointment, ...value }} now={now} />} />
+        <Route path="/terapeuta/sesion" element={<div>Espacio profesional destino</div>} />
+      </Routes>
+    </MemoryRouter>
+  </QueryClientProvider>,
 );
 afterEach(() => { vi.restoreAllMocks(); start.mockClear(); create.mockClear(); });
 
@@ -40,23 +48,25 @@ it('fuera de horario el boton esta apagado, muestra el motivo y no hay modo prue
   expect(screen.queryByRole('button', { name: /modo prueba/ })).not.toBeInTheDocument();
 });
 
-it('el modo prueba abre panel y Meet de inmediato, crea la sesion y la inicia con modo_prueba', async () => {
+it('el modo prueba redirige a /terapeuta/sesion en la misma pestana, abre Meet, crea la sesion y la inicia con modo_prueba', async () => {
   const open = vi.spyOn(window, 'open').mockReturnValue(null);
   view({ modo_prueba_disponible: true }, START - 60 * 60_000);
   expect(screen.getByText('Solo para pruebas: ignora el horario.')).toBeInTheDocument();
   fireEvent.click(screen.getByRole('button', { name: /Iniciar ahora \(modo prueba\)/ }));
-  expect(open).toHaveBeenNthCalledWith(1, '/terapeuta/sesion/45', '_blank', 'noopener,noreferrer');
-  expect(open).toHaveBeenNthCalledWith(2, MEET, '_blank', 'noopener,noreferrer');
+  expect(open).toHaveBeenCalledTimes(1);
+  expect(open).toHaveBeenCalledWith(MEET, '_blank', 'noopener,noreferrer');
   await waitFor(() => expect(start).toHaveBeenCalledWith(77, true));
   expect(create).toHaveBeenCalledWith(45);
+  expect(await screen.findByText('Espacio profesional destino')).toBeInTheDocument();
 });
 
-it('el inicio normal usa las pestanas de espera y no activa el modo prueba', async () => {
+it('el inicio normal redirige a /terapeuta/sesion en la misma pestana y no activa el modo prueba', async () => {
   const open = vi.spyOn(window, 'open').mockReturnValue(null);
   view({ id_sesion: 9 }, START + 60_000);
   fireEvent.click(screen.getByRole('button', { name: 'Iniciar reunión' }));
-  expect(open).toHaveBeenNthCalledWith(1, '/terapeuta/sesion/espera/45/panel', '_blank', 'noopener,noreferrer');
-  expect(open).toHaveBeenNthCalledWith(2, '/terapeuta/sesion/espera/45/meet', '_blank', 'noopener,noreferrer');
+  expect(open).toHaveBeenCalledTimes(1);
+  expect(open).toHaveBeenCalledWith('/terapeuta/sesion/espera/45/meet', '_blank', 'noopener,noreferrer');
   await waitFor(() => expect(start).toHaveBeenCalledWith(9, false));
   expect(create).not.toHaveBeenCalled();
+  expect(await screen.findByText('Espacio profesional destino')).toBeInTheDocument();
 });

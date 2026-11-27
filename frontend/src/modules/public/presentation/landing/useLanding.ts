@@ -101,7 +101,7 @@ const faqs = [
     },
     {
       q: "¿Cuántas sesiones necesita mi hijo?",
-      a: "En la evaluación inicial el terapeuta diseñará un plan personalizado con la frecuencia y duración recomendadas.",
+      a: "En la evaluación inicial el terapeuta diseñará un plan personalizado con la frecuencia recomendada según las necesidades de tu hijo. Cada sesión tiene una duración de 40 minutos.",
     },
     {
       q: "¿Por qué es importante acompañar el lenguaje de mi hijo?",

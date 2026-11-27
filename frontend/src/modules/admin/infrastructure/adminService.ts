@@ -23,6 +23,10 @@ export const adminService = {
   async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
     return apiClient.get("/admin/auditoria");
   },
+  /** Solicitudes de baja de cuenta enviadas por padres (GET /admin/solicitudes-baja). */
+  async getSolicitudesBaja(): Promise<SolicitudesBajaResponse> {
+    return apiClient.get<SolicitudesBajaResponse>("/admin/solicitudes-baja");
+  },
   /** Solicitudes de acceso familiar recibidas por WhatsApp (GET /admin/solicitudes-acceso). */
   async getSolicitudesAcceso(estado?: SolicitudAccesoEstado): Promise<SolicitudesAccesoResponse> {
     return apiClient.get<SolicitudesAccesoResponse>("/admin/solicitudes-acceso", { params: { estado } });
@@ -203,6 +207,22 @@ export interface ResultadoSolicitudAcceso {
   aviso_whatsapp?: string;
   /** Solo al rechazar: ENVIADO | NO_CONFIGURADO | FALLO */
   correo_rechazo?: "ENVIADO" | "NO_CONFIGURADO" | "FALLO";
+}
+
+export interface SolicitudBajaItem {
+  id_solicitud: number;
+  id_usuario: number;
+  padre_nombre: string;
+  codigo_usuario: string;
+  email: string;
+  cuenta_activa: boolean;
+  estado: string;
+  fecha_solicitud: string | null;
+}
+
+export interface SolicitudesBajaResponse {
+  items: SolicitudBajaItem[];
+  total: number;
 }
 
 export type AuditoriaItem = {

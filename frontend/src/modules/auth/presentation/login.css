@@ -49,11 +49,62 @@
   backdrop-filter: blur(14px);
   box-shadow: 0 4px 16px rgba(28, 17, 53, 0.04);
 }
-.asha-login .login-header > div > span {
-  color: var(--asha-primary) !important;
-  font-size: 20px;
+.asha-login .login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 0;
+  border: 0;
+  background: transparent;
+  border-radius: 14px;
+  cursor: pointer;
+}
+.asha-login .login-brand img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+.asha-login .login-wordmark {
+  position: relative;
+  font-size: 26px;
   font-weight: 900;
-  letter-spacing: -0.5px;
+  letter-spacing: -1.1px;
+  line-height: 1;
+}
+.asha-login .login-wordmark > span:first-child {
+  color: #7C3AED;
+  text-transform: uppercase;
+}
+.asha-login .login-wordmark > span:nth-child(2) {
+  color: var(--asha-orange);
+}
+.asha-login .login-logo-rays {
+  position: absolute;
+  width: 18px;
+  height: 22px;
+  right: -20px;
+  top: -5px;
+}
+.asha-login .login-logo-rays::before,
+.asha-login .login-logo-rays::after {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 10px;
+  background: var(--asha-orange);
+  border-radius: 6px;
+  transform: rotate(30deg);
+}
+.asha-login .login-logo-rays::after {
+  top: 11px;
+  left: 7px;
+  height: 8px;
+  transform: rotate(75deg);
+}
+@media (min-width: 1024px) {
+  .asha-login .login-brand > img {
+    display: none;
+  }
 }
 .asha-login .login-home {
   display: inline-flex;

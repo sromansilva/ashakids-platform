@@ -7,7 +7,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { View } from "@/shared/domain/types/navigation";
-import { adminService } from "@/modules/admin/infrastructure/adminService";
+import { adminService, type SolicitudBajaItem } from "@/modules/admin/infrastructure/adminService";
 import {
   ActualizarCuentaPayload,
   CrearPadrePayload,
@@ -25,34 +25,16 @@ import { AdminCuentasTable } from "./AdminCuentasTable";
 import { AdminCuentasStats } from "./AdminCuentasStats";
 import { emptyChild } from "./FamilyChildrenFields";
 import { AdminSoporteCrearModal } from './AdminSoporteCrearModal';
+import { AdminSolicitudesBajaModal } from "./AdminSolicitudesBajaModal";
 // ─── Tipos Locales y Mapeos ────────────────────────────────────────────────────────
 export type TabRole = "PADRE" | "TERAPEUTA" | "SOPORTE_TECNICO";
 // Compatibilidad hacia atrás (re-exportado por Admin.tsx)
 export type AccountRole = "familia" | "terapeuta";
 export type AccountStatus = "activa" | "pendiente" | "suspendida";
-export type ManagedAccount = {
-  id: string;
-  name: string;
-  email: string;
-  role: AccountRole;
-  status: AccountStatus;
-  createdAt: string;
-  detail: string;
-  avatar: string;
-  phone?: string;
-  specialty?: string;
-};
+export type ManagedAccount = { id: string; name: string; email: string; role: AccountRole; status: AccountStatus; createdAt: string; detail: string; avatar: string; phone?: string; specialty?: string };
 export const INITIAL_ACCOUNTS: ManagedAccount[] = [];
-export const STATUS_LABEL: Record<AccountStatus, string> = {
-  activa: "Activa",
-  pendiente: "Pendiente",
-  suspendida: "Suspendida",
-};
-export const STATUS_COLOR: Record<AccountStatus, { bg: string; color: string }> = {
-  activa: { bg: "#ECFDF5", color: "#059669" },
-  pendiente: { bg: "#FFFBEB", color: "#D97706" },
-  suspendida: { bg: "#FEF2F2", color: "#DC2626" },
-};
+export const STATUS_LABEL: Record<AccountStatus, string> = { activa: "Activa", pendiente: "Pendiente", suspendida: "Suspendida" };
+export const STATUS_COLOR: Record<AccountStatus, { bg: string; color: string }> = { activa: { bg: "#ECFDF5", color: "#059669" }, pendiente: { bg: "#FFFBEB", color: "#D97706" }, suspendida: { bg: "#FEF2F2", color: "#DC2626" } };
 export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [tab, setTab] = useState<TabRole>("PADRE");
   const [cuentas, setCuentas] = useState<CuentaItem[]>([]);
@@ -66,6 +48,12 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
     "nueva" | "detail" | "editar" | "suspender" | "activar" | "eliminar" | null
   >(null);
   const [selected, setSelected] = useState<CuentaItem | null>(null);
+  // Estado para solicitudes de baja
+  const [modalSolicitudesBaja, setModalSolicitudesBaja] = useState<boolean>(false);
+  const [solicitudesBaja, setSolicitudesBaja] = useState<SolicitudBajaItem[]>([]);
+  const [loadingSolicitudesBaja, setLoadingSolicitudesBaja] = useState<boolean>(false);
+  const [errorSolicitudesBaja, setErrorSolicitudesBaja] = useState<string | null>(null);
+
   // Estado para gestión administrativa de hijos
   const [modalHijos, setModalHijos] = useState<boolean>(false);
   const [hijosPadre, setHijosPadre] = useState<PacienteItem[]>([]);
@@ -75,27 +63,13 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   const [reactivando, setReactivando] = useState<boolean>(false);
   // Formulario de Creación
   const [formPadre, setFormPadre] = useState<CrearPadrePayload>({
-    nombres: "",
-    apellidos: "",
-    email: "",
-    password: "",
-    parentesco: "Padre",
-    hijos: [],
-    telefono: "",
-    direccion: "",
-    tipo_documento: "DNI",
-    numero_documento: "",
+    nombres: "", apellidos: "", email: "", password: "", parentesco: "Padre",
+    hijos: [], telefono: "", direccion: "", tipo_documento: "DNI", numero_documento: "",
   });
   const [hijoEnEdicion, setHijoEnEdicion] = useState<RegistroHijo>(emptyChild());
   const [formTerapeuta, setFormTerapeuta] = useState<CrearTerapeutaPayload>({
-    nombres: "",
-    apellidos: "",
-    email: "",
-    password: "",
-    especialidad: "Terapia de lenguaje",
-    anios_experiencia: 1,
-    idiomas: "Español",
-    descripcion_profesional: "",
+    nombres: "", apellidos: "", email: "", password: "", especialidad: "Terapia de lenguaje",
+    anios_experiencia: 1, idiomas: "Español", descripcion_profesional: "",
     tipo_documento: "DNI", numero_documento: "", ruc: "", razon_social: "",
   });
   // Formulario de Edición
@@ -115,8 +89,23 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
       setLoading(false);
     }
   }
+  async function cargarSolicitudesBaja() {
+    setLoadingSolicitudesBaja(true);
+    setErrorSolicitudesBaja(null);
+    try {
+      const res = await adminService.getSolicitudesBaja();
+      setSolicitudesBaja(res.items || []);
+    } catch (err: unknown) {
+      const msg =
+        err instanceof ApiError ? err.message : "Error al cargar las solicitudes de baja.";
+      setErrorSolicitudesBaja(msg);
+    } finally {
+      setLoadingSolicitudesBaja(false);
+    }
+  }
   useEffect(() => {
     cargarCuentas();
+    cargarSolicitudesBaja();
   }, []);
   // Notificación temporal
   function showToast(msg: string) {
@@ -151,30 +140,9 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
   }
   // Apertura de Modales
   function openNueva() {
-    setFormPadre({
-      nombres: "",
-      apellidos: "",
-      email: "",
-      password: "",
-      parentesco: "Padre",
-      hijos: [],
-      telefono: "",
-      direccion: "",
-      tipo_documento: "DNI",
-      numero_documento: "",
-    });
+    setFormPadre({ nombres: "", apellidos: "", email: "", password: "", parentesco: "Padre", hijos: [], telefono: "", direccion: "", tipo_documento: "DNI", numero_documento: "" });
     setHijoEnEdicion(emptyChild());
-    setFormTerapeuta({
-      nombres: "",
-      apellidos: "",
-      email: "",
-      password: "",
-      especialidad: "Terapia de lenguaje",
-      anios_experiencia: 1,
-      idiomas: "Español",
-      descripcion_profesional: "",
-      tipo_documento: "DNI", numero_documento: "", ruc: "", razon_social: "",
-    });
+    setFormTerapeuta({ nombres: "", apellidos: "", email: "", password: "", especialidad: "Terapia de lenguaje", anios_experiencia: 1, idiomas: "Español", descripcion_profesional: "", tipo_documento: "DNI", numero_documento: "", ruc: "", razon_social: "" });
     setErrorBanner(null);
     setModal("nueva");
   }
@@ -411,6 +379,11 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
           setSearch("");
         }}
         onSearchChange={setSearch}
+        solicitudesBajaCount={solicitudesBaja.filter((s) => s.cuenta_activa).length}
+        onOpenSolicitudesBaja={() => {
+          setModalSolicitudesBaja(true);
+          void cargarSolicitudesBaja();
+        }}
       />
 
       {/* Listado de Cuentas */}
@@ -478,6 +451,25 @@ export function AdminCuentas({ go: _go }: { go: (v: View) => void }) {
         onSelectReactivar={(hijo) => setHijoAReactivar(hijo)}
         onCancelReactivar={() => setHijoAReactivar(null)}
         onConfirmReactivar={handleConfirmarReactivacion}
+      />
+      <AdminSolicitudesBajaModal
+        isOpen={modalSolicitudesBaja}
+        loading={loadingSolicitudesBaja}
+        error={errorSolicitudesBaja}
+        items={solicitudesBaja}
+        formatDate={formatDate}
+        onClose={() => setModalSolicitudesBaja(false)}
+        onRefresh={() => {
+          void cargarSolicitudesBaja();
+        }}
+        onInspectAccount={(idUsuario) => {
+          const found = cuentas.find((c) => c.id_usuario === idUsuario);
+          setModalSolicitudesBaja(false);
+          if (found) {
+            setTab(found.rol === "TERAPEUTA" ? "TERAPEUTA" : found.rol === "SOPORTE_TECNICO" ? "SOPORTE_TECNICO" : "PADRE");
+            openDetail(found);
+          }
+        }}
       />
     </div>
   );

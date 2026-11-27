@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useLayoutEffect, useState, useCallback } from 'react';
 import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import { ChevronDown, Check, Users, LogOut, Sparkles, Compass, User } from 'lucide-react';
 import { useAuth } from '@/modules/auth/application/useAuth';
@@ -76,6 +76,50 @@ export function FamilyTopNav({
     }
     return false;
   };
+
+  const activeIndex = navLinks.findIndex((item) => isItemActive(item));
+  const navScrollRef = useRef<HTMLDivElement>(null);
+  const navBtnRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [indicator, setIndicator] = useState<{ left: number; width: number; ready: boolean }>({
+    left: 0,
+    width: 0,
+    ready: false,
+  });
+
+  const measureIndicator = useCallback(() => {
+    if (activeIndex < 0) {
+      setIndicator((prev) => (prev.ready ? { ...prev, ready: false } : prev));
+      return;
+    }
+    const activeBtn = navBtnRefs.current[activeIndex];
+    if (!activeBtn) return;
+    setIndicator({
+      left: activeBtn.offsetLeft,
+      width: activeBtn.offsetWidth,
+      ready: activeBtn.offsetWidth > 0,
+    });
+  }, [activeIndex]);
+
+  useLayoutEffect(() => {
+    measureIndicator();
+  }, [measureIndicator]);
+
+  useEffect(() => {
+    const container = navScrollRef.current;
+    window.addEventListener('resize', measureIndicator);
+    let observer: ResizeObserver | null = null;
+    if (container && typeof ResizeObserver !== 'undefined') {
+      observer = new ResizeObserver(measureIndicator);
+      observer.observe(container);
+      navBtnRefs.current.forEach((btn) => {
+        if (btn) observer?.observe(btn);
+      });
+    }
+    return () => {
+      window.removeEventListener('resize', measureIndicator);
+      observer?.disconnect();
+    };
+  }, [measureIndicator]);
 
   return (
     <header className="ftn-header flex items-center justify-between px-6 py-3 bg-white/90 backdrop-blur-md border-b border-[#E8E5F4] shrink-0 sticky top-0 z-20" role="banner">
@@ -157,27 +201,35 @@ export function FamilyTopNav({
 
       {/* Center Nav Pills */}
       <nav className="ftn-nav-bar flex items-center gap-1.5 sm:gap-2" aria-label="Navegación del Centro Familiar">
-        <div className="ftn-nav-scroll">
-        {navLinks.map((item) => {
-          const Icon = item.icon;
-          const active = isItemActive(item);
-          return (
-            <button
-              key={item.label}
-              type="button"
-              aria-label={`Ir a ${item.label}`}
-              onClick={() => handleNavClick(item)}
-              className={`ftn-nav-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-all duration-150 ${active ? 'ftn-nav-btn--active' : ''} ${
-                active
-                  ? 'bg-[#F3EFFE] text-[#6B46FE] shadow-xs'
-                  : 'text-[#625779] hover:bg-violet-50/70 hover:text-[#6B46FE]'
-              }`}
-            >
-              <Icon size={17} className={active ? 'text-[#6B46FE]' : 'text-[#8C82A8]'} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
+        <div className="ftn-nav-scroll" ref={navScrollRef}>
+          <span
+            aria-hidden="true"
+            className={`ftn-nav-indicator ${indicator.ready ? 'ftn-nav-indicator--visible' : ''}`}
+            style={{
+              width: `${indicator.width}px`,
+              transform: `translate3d(${indicator.left}px, 0, 0)`,
+            }}
+          />
+          {navLinks.map((item, idx) => {
+            const Icon = item.icon;
+            const active = activeIndex === idx;
+            return (
+              <button
+                key={item.label}
+                ref={(el) => {
+                  navBtnRefs.current[idx] = el;
+                }}
+                type="button"
+                aria-label={`Ir a ${item.label}`}
+                aria-current={active ? 'page' : undefined}
+                onClick={() => handleNavClick(item)}
+                className={`ftn-nav-btn flex items-center gap-2 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-extrabold transition-colors duration-200 ${active ? 'ftn-nav-btn--active text-[#6B46FE]' : 'text-[#625779] hover:text-[#6B46FE]'}`}
+              >
+                <Icon size={17} className={active ? 'text-[#6B46FE]' : 'text-[#8C82A8]'} />
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
         </div>
       </nav>
 

@@ -4,14 +4,18 @@
 .asha-professional {
   color: #1c1135;
   background:
-    radial-gradient(ellipse at 85% 2%, rgb(237 233 254 / 60%), transparent 42%),
+    radial-gradient(ellipse at 85% 2%, rgb(237 233 254 / 62%), transparent 44%),
+    radial-gradient(ellipse at 12% 88%, rgb(255 237 213 / 52%), transparent 42%),
     #f7f8fc !important;
 }
 
 @media (min-width: 768px) {
   .asha-professional {
     color: #1C1135;
-    background: #F8F7FC !important;
+    background:
+      radial-gradient(ellipse at 90% 4%, rgb(237 233 254 / 52%), transparent 40%),
+      radial-gradient(ellipse at 10% 92%, rgb(255 237 213 / 44%), transparent 38%),
+      #F8F7FC !important;
   }
   .asha-professional ::selection {
     background: #EDE9FE;
@@ -262,7 +266,11 @@
 .asha-professional .operational-dashboard__metrics { order: 1; }
 .asha-professional .operational-dashboard__actions { order: 2; }
 .asha-professional .operational-dashboard__workspace { order: 3; }
-.asha-professional .operational-dashboard__hero { min-height: 220px; background: linear-gradient(115deg, #fff 0%, #fff 60%, #fbf9ff 100%); }
+.asha-professional .operational-dashboard__hero {
+  min-height: 220px;
+  background: linear-gradient(115deg, #fff 0%, #fbf9ff 58%, #fff7ed 100%);
+  border-color: #e8def8;
+}
 .asha-professional .operational-dashboard__hero h1 { font-size: clamp(32px, 3.1vw, 46px); line-height: 1.12; }
 .asha-professional .operational-dashboard__metrics > div { min-height: 142px; border-radius: 26px; }
 .asha-professional .operational-dashboard__actions > button { min-height: 126px; border-radius: 24px; }
@@ -414,51 +422,42 @@
 }
 
 .asha-professional .session-actions--agenda {
-  display: grid;
-  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
-  align-items: start;
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   margin-top: 0;
   border-top: 0;
   padding-top: 0;
 }
 
-.session-actions--agenda > h3,
-.session-actions--agenda .session-actions__feedback {
-  grid-column: 1 / -1;
-}
-
-.session-actions--agenda .session-actions__workflow,
-.session-actions--agenda .session-actions__clinical {
-  min-width: 0;
-  border: 1px solid #e8e5f4;
-  border-radius: 18px;
-  padding: 16px;
-  background: #fff;
-}
-
 .session-actions--agenda .session-actions__workflow {
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  border: 1px solid #ddd6fe;
+  border-radius: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f5ff 0%, #ffffff 62%, #fff7ed 100%);
+  box-shadow: 0 8px 22px rgb(48 33 87 / 5%);
+}
+
+.session-actions--agenda .session-actions__clinical {
+  width: 100%;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #faf9fd;
+  border: 0;
+  padding: 0;
+  background: transparent;
 }
 
-.session-actions--agenda .session-actions__workflow--solo { grid-column: 1 / -1; }
-.session-actions--agenda .session-actions__clinical {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: start;
-  gap: 12px;
-}
-.session-actions--agenda .session-actions__clinical > :first-child { margin-top: 0; }
-.session-actions--agenda .session-actions__clinical > div:last-child { grid-column: 1 / -1; }
-
-@media (max-width: 767px) {
-  .asha-professional .session-actions--agenda { grid-template-columns: minmax(0, 1fr); }
-  .session-actions--agenda .session-actions__workflow--solo { grid-column: auto; }
-  .session-actions--agenda .session-actions__clinical { grid-template-columns: minmax(0, 1fr); }
-  .session-actions--agenda .session-actions__clinical > div:last-child { grid-column: auto; }
+.session-actions--agenda .session-actions__clinical > * {
+  width: 100%;
+  min-width: 0;
+  margin-top: 0;
 }
 
 

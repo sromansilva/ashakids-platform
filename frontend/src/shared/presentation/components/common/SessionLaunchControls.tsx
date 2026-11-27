@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/application/useAuth';
 import { useWrite } from '@/shared/application/hooks/useRemoteData';
 import { sessionsService } from '@/modules/clinica/infrastructure/clinicalService';
@@ -29,41 +30,47 @@ export function startBlockReason(appointment: Pick<Appointment, 'estado_reserva'
 
 /**
  * Un solo botón "Iniciar reunión" (crea la sesión si falta) y, solo si el servidor lo permite,
- * un botón de modo prueba que ignora el horario. Las ventanas se abren de forma síncrona en el clic.
+ * un botón de modo prueba que ignora el horario. Redirige directamente a /terapeuta/sesion en la misma pestaña.
  */
 export function SessionLaunchControls({ appointment, session, now, panelMode = false, disabled = false }: {
   appointment: Appointment;
   session?: Session;
   now: number;
-  /** En el panel clínico ya abierto solo se ofrece el modo prueba, sin abrir ventanas. */
+  /** En el panel clínico ya abierto solo se ofrece el modo prueba, sin redirigir. */
   panelMode?: boolean;
   disabled?: boolean;
 }) {
   const { role } = useAuth();
+  const navigate = useNavigate();
   const [opened, setOpened] = useState<{ meet: boolean; test: boolean } | null>(null);
   const sessionId = session?.id_sesion ?? appointment.id_sesion ?? null;
-  const launch = useWrite(async ({ testMode }: { testMode: boolean }) => {
-    let id = sessionId;
-    if (!id) id = (await sessionsService.create(appointment.id_reserva)).id_sesion;
-    await sessionsService.start(id, testMode);
-  });
+  const base = role === 'ADMIN' ? '/admin/sesion' : '/terapeuta/sesion';
+  const destinationPath = role === 'ADMIN' ? `${base}/${appointment.id_reserva}` : '/terapeuta/sesion';
+
+  const launch = useWrite(
+    async ({ testMode }: { testMode: boolean }) => {
+      let id = sessionId;
+      if (!id) id = (await sessionsService.create(appointment.id_reserva)).id_sesion;
+      await sessionsService.start(id, testMode);
+    },
+    () => {
+      if (!panelMode) {
+        navigate(destinationPath);
+      }
+    }
+  );
   const sessionState = session?.estado_sesion;
   if (appointment.estado_reserva === 'CANCELADA' || (sessionState && sessionState !== 'PROGRAMADA')) return null;
 
   const reason = startBlockReason(appointment, now);
   const busy = disabled || launch.isPending;
   const virtualMeet = appointment.modalidad === 'VIRTUAL' && isMeetingUrl(appointment.meet_url);
-  const base = role === 'ADMIN' ? '/admin/sesion' : '/terapeuta/sesion';
 
   const open = (testMode: boolean) => {
     if (!panelMode) {
-      // Debe ejecutarse en el mismo turno del clic para que el navegador no bloquee las ventanas.
-      if (testMode) {
-        window.open(`${base}/${appointment.id_reserva}`, '_blank', 'noopener,noreferrer');
-        if (virtualMeet) window.open(appointment.meet_url!, '_blank', 'noopener,noreferrer');
-      } else {
-        window.open(`${base}/espera/${appointment.id_reserva}/panel`, '_blank', 'noopener,noreferrer');
-        if (virtualMeet) window.open(`${base}/espera/${appointment.id_reserva}/meet`, '_blank', 'noopener,noreferrer');
+      if (virtualMeet) {
+        const meetTarget = testMode ? appointment.meet_url! : `${base}/espera/${appointment.id_reserva}/meet`;
+        window.open(meetTarget, '_blank', 'noopener,noreferrer');
       }
       setOpened({ meet: virtualMeet, test: testMode });
     }
@@ -74,7 +81,7 @@ export function SessionLaunchControls({ appointment, session, now, panelMode = f
     <div className="w-full space-y-2">
       {!panelMode && (
         <div className="flex flex-wrap items-center gap-2">
-          <Btn disabled={busy || reason !== null} onClick={() => open(false)}>
+          <Btn variant="cta" disabled={busy || reason !== null} onClick={() => open(false)}>
             {launch.isPending ? 'Iniciando…' : appointment.modalidad === 'VIRTUAL' ? 'Iniciar reunión' : 'Iniciar sesión'}
           </Btn>
         </div>
@@ -101,9 +108,8 @@ export function SessionLaunchControls({ appointment, session, now, panelMode = f
       {opened && (
         <p role="status" className="text-xs font-medium text-[#615274]">
           {opened.test
-            ? `Se abrieron el panel clínico${opened.meet ? ' y Google Meet' : ''} sin esperar el horario (modo prueba).`
-            : `Se prepararon el panel clínico${opened.meet ? ' y Google Meet' : ''}; se abrirán en cuanto la reunión inicie.`}
-          {' '}Si no aparecen, permite las ventanas emergentes para este sitio.
+            ? `Redirigiendo al espacio profesional${opened.meet ? ' y abriendo Google Meet' : ''} (modo prueba)…`
+            : `Redirigiendo al espacio profesional${opened.meet ? ' y preparando Google Meet' : ''}…`}
         </p>
       )}
       <RemoteFeedback error={launch.error} />
