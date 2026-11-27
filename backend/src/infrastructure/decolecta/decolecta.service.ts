@@ -14,6 +14,7 @@ export interface DecolectaResponse {
   success: boolean;
   data?: DniConsultaResult;
   message?: string;
+  code?: 'NOT_FOUND' | 'UNAUTHORIZED' | 'TIMEOUT' | 'NOT_CONFIGURED' | 'INVALID' | 'ERROR';
 }
 
 export interface RucConsultaResult {
@@ -62,12 +63,13 @@ export class DecolectaService {
     if (!/^\d{8}$/.test(cleanDni)) {
       return {
         success: false,
+        code: 'INVALID',
         message: 'El número de DNI debe contener exactamente 8 dígitos numéricos.',
       };
     }
 
     if (!this.isConfigured()) {
-      return this.mockConsultaDni(cleanDni);
+      return { ...this.mockConsultaDni(cleanDni), code: 'NOT_CONFIGURED' };
     }
 
     try {
@@ -91,6 +93,7 @@ export class DecolectaService {
       if (res.status === 404) {
         return {
           success: false,
+          code: 'NOT_FOUND',
           message: 'El número de DNI no se encuentra registrado en el padrón de RENIEC.',
         };
       }
@@ -99,15 +102,16 @@ export class DecolectaService {
         console.warn('[DecolectaService] Error de autenticación con Decolecta:', res.status);
         return {
           success: false,
+          code: 'UNAUTHORIZED',
           message: 'El servicio de consulta RENIEC no está autorizado con las credenciales actuales.',
         };
       }
 
       if (!res.ok) {
-        const errorText = await res.text().catch(() => '');
-        console.warn(`[DecolectaService] Error HTTP ${res.status}:`, errorText);
+        console.warn('[DecolectaService] Error HTTP:', res.status);
         return {
           success: false,
+          code: 'ERROR',
           message: 'Ocurrió un inconveniente al consultar RENIEC. Inténtalo de nuevo o ingresa los datos manualmente.',
         };
       }
@@ -145,6 +149,7 @@ export class DecolectaService {
       if (!nombres && !apellidos) {
         return {
           success: false,
+          code: 'ERROR',
           message: 'La respuesta de RENIEC no contiene nombres válidos para este documento.',
         };
       }
@@ -163,9 +168,10 @@ export class DecolectaService {
       };
     } catch (err: unknown) {
       const isAbort = err instanceof Error && err.name === 'AbortError';
-      console.warn('[DecolectaService] Excepción consultando DNI:', isAbort ? 'Timeout' : err);
+      console.warn('[DecolectaService] Excepción consultando DNI:', err instanceof Error ? err.name : 'Error');
       return {
         success: false,
+        code: isAbort ? 'TIMEOUT' : 'ERROR',
         message: isAbort
           ? 'El servicio de RENIEC tardó demasiado en responder. Por favor ingresa los datos manualmente.'
           : 'No se pudo conectar con el servicio de RENIEC en este momento.',
@@ -278,7 +284,7 @@ export class DecolectaService {
       };
     } catch (err: unknown) {
       const isAbort = err instanceof Error && err.name === 'AbortError';
-      console.warn('[DecolectaService] Excepción consultando RUC:', isAbort ? 'Timeout' : err);
+      console.warn('[DecolectaService] Excepción consultando RUC:', err instanceof Error ? err.name : 'Error');
       return {
         success: false,
         message: isAbort

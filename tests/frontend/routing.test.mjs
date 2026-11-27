@@ -16,17 +16,12 @@ describe('ASHAKids Frontend Routing Tests', () => {
       '/crear-contrasena',
       '/reset-password',
       '/onboarding',
-      '/especialistas',
-      '/especialidades',
       '/recursos',
       '/sobre-nosotros',
       '/nosotros',
-      '/planes',
       '/ayuda',
       '/contacto',
-      '/trabaja',
       '/ashi',
-      '/historias',
     ];
 
     for (const path of publicPaths) {
@@ -101,7 +96,7 @@ describe('ASHAKids Frontend Routing Tests', () => {
     }
 
     it('Ruta pública sin sesión: debe permitir acceso', () => {
-      const result = simulateGuard({ pathname: '/especialistas', userRole: null, isAuthenticated: false });
+      const result = simulateGuard({ pathname: '/recursos', userRole: null, isAuthenticated: false });
       assert.equal(result.status, 'ALLOW_PUBLIC');
     });
 
@@ -173,8 +168,11 @@ describe('ASHAKids Frontend Routing Tests', () => {
     it('debe mapear correctamente viewToPath', () => {
       assert.equal(viewToPath('landing'), '/');
       assert.equal(viewToPath('login'), '/login');
-      assert.equal(viewToPath('public/especialistas'), '/especialistas');
+      assert.equal(viewToPath('public/recursos'), '/recursos');
       assert.equal(viewToPath('public/nosotros'), '/sobre-nosotros');
+      assert.equal(viewToPath('public/ayuda'), '/ayuda');
+      assert.equal(viewToPath('public/contacto'), '/contacto');
+      assert.equal(viewToPath('public/ashi'), '/ashi');
       assert.equal(viewToPath('padre/hijos'), '/padre/hijos');
       assert.equal(viewToPath('terapeuta/agenda'), '/terapeuta/agenda');
       assert.equal(viewToPath('admin/cuentas'), '/admin/cuentas');
@@ -191,7 +189,7 @@ describe('ASHAKids Frontend Routing Tests', () => {
 
 
 describe('Rutas retiradas', () => {
-  it('no registra pagos ni rutas de ejemplo retiradas', () => {
-    for (const path of ['/pay', '/pay/history', '/pay/wallet', '/padre/compras', '/admin/pagos', '/admin/analiticas', '/admin/mensajes', '/admin/moderacion', '/admin/core', '/admin/reportes', '/terapeuta/ingresos', '/session', '/session/active']) assert.equal(routePaths.includes(path), false, path);
+  it('no registra pagos ni rutas obsoletas retiradas', () => {
+    for (const path of ['/especialistas', '/especialidades', '/historias', '/trabaja', '/planes', '/pay', '/pay/history', '/pay/wallet', '/padre/compras', '/admin/pagos', '/admin/analiticas', '/admin/mensajes', '/admin/moderacion', '/admin/core', '/admin/reportes', '/terapeuta/ingresos', '/session', '/session/active']) assert.equal(routePaths.includes(path), false, path);
   });
 });

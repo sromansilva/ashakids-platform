@@ -1,5 +1,5 @@
 import React from "react";
-import { AudioLines, Search, ShieldCheck, ShieldOff, Users } from "lucide-react";
+import { AudioLines, Search, ShieldCheck, ShieldOff, Users, UserX } from "lucide-react";
 import type { TabRole } from "./AdminCuentas";
 
 interface AdminCuentasStatsProps {
@@ -11,6 +11,8 @@ interface AdminCuentasStatsProps {
   search: string;
   onTabChange: (t: TabRole) => void;
   onSearchChange: (s: string) => void;
+  solicitudesBajaCount?: number;
+  onOpenSolicitudesBaja?: () => void;
 }
 
 export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
@@ -22,6 +24,8 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
   search,
   onTabChange,
   onSearchChange,
+  solicitudesBajaCount = 0,
+  onOpenSolicitudesBaja,
 }) => {
   return (
     <>
@@ -77,6 +81,21 @@ export const AdminCuentasStats: React.FC<AdminCuentasStatsProps> = ({
             className="flex-1 bg-transparent text-sm font-medium text-[#1C1135] placeholder-[#8C82A8] outline-none"
           />
         </div>
+        {onOpenSolicitudesBaja && (
+          <button
+            type="button"
+            onClick={onOpenSolicitudesBaja}
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-[#E8E5F4] bg-white hover:bg-[#FEF2F2] hover:border-[#FECACA] text-sm font-extrabold text-[#1C1135] hover:text-[#DC2626] shadow-sm transition-colors shrink-0 cursor-pointer"
+          >
+            <UserX size={16} aria-hidden="true" />
+            <span>Solicitudes de baja</span>
+            {solicitudesBajaCount > 0 && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-black bg-[#FEE2E2] text-[#DC2626]">
+                {solicitudesBajaCount}
+              </span>
+            )}
+          </button>
+        )}
       </div>
     </>
   );

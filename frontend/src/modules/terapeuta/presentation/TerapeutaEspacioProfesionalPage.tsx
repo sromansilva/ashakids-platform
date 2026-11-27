@@ -136,17 +136,17 @@ export function TerapeutaEspacioProfesionalPage({ go }: TerapeutaEspacioProfesio
 
         {/* Pasos explicativos */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-left pt-2 max-w-2xl mx-auto">
-          <div className="rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] p-4">
+          <div className="rounded-2xl border border-violet-200/70 bg-violet-50/55 p-4">
             <p className="text-[11px] font-black uppercase text-[#6B46FE]">Paso 1</p>
             <p className="font-extrabold text-xs text-[#1C1135] mt-1">Revisa tu agenda</p>
             <p className="text-[11px] text-[#615274] mt-0.5">Consulta tus citas confirmadas para el día de hoy.</p>
           </div>
-          <div className="rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] p-4">
-            <p className="text-[11px] font-black uppercase text-[#6B46FE]">Paso 2</p>
+          <div className="rounded-2xl border border-orange-200/70 bg-orange-50/55 p-4">
+            <p className="text-[11px] font-black uppercase text-orange-600">Paso 2</p>
             <p className="font-extrabold text-xs text-[#1C1135] mt-1">Inicia la reunión</p>
             <p className="text-[11px] text-[#615274] mt-0.5">Presiona &quot;Iniciar reunión&quot; en la agenda o notificación.</p>
           </div>
-          <div className="rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] p-4">
+          <div className="rounded-2xl border border-violet-200/70 bg-violet-50/55 p-4">
             <p className="text-[11px] font-black uppercase text-[#6B46FE]">Paso 3</p>
             <p className="font-extrabold text-xs text-[#1C1135] mt-1">Trabaja en paralelo</p>
             <p className="text-[11px] text-[#615274] mt-0.5">El panel clínico cargará de inmediato en esta vista.</p>
@@ -204,14 +204,14 @@ export function TerapeutaEspacioProfesionalPage({ go }: TerapeutaEspacioProfesio
           <button
             type="button"
             onClick={() => goTo('terapeuta/agenda', '/terapeuta/agenda')}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#6B46FE] px-6 py-3.5 text-sm font-extrabold text-white shadow-sm transition-all hover:bg-[#5833EA] active:scale-[.98]"
+            className="inline-flex items-center gap-2 rounded-2xl bg-orange-500 px-6 py-3.5 text-sm font-extrabold text-white shadow-sm shadow-orange-200 transition-all hover:bg-orange-600 active:scale-[.98] cursor-pointer"
           >
             <Calendar size={16} /> Ir a mi Agenda para iniciar reunión <ArrowRight size={15} />
           </button>
           <button
             type="button"
             onClick={() => goTo('terapeuta/reportes', '/terapeuta/reportes')}
-            className="inline-flex items-center gap-2 rounded-2xl border border-[#E8E5F4] bg-[#F8F7FC] px-5 py-3.5 text-sm font-bold text-[#615274] transition-all hover:bg-violet-50 hover:text-[#6B46FE]"
+            className="inline-flex items-center gap-2 rounded-2xl border border-violet-200 bg-violet-50 px-5 py-3.5 text-sm font-extrabold text-[#6B46FE] transition-all hover:bg-violet-100 cursor-pointer"
           >
             <FileText size={16} /> Ver historial de reportes
           </button>

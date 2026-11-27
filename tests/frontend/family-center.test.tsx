@@ -73,7 +73,8 @@ it('does not open a world through an unassigned URL or invent journey events',as
 
 it('handles empty profiles and retries errors without falling back to sample names',async()=>{
   api({empty:true}); const view=renderRoute('/padre','PADRE');
-  await screen.findByRole('heading',{name:'Aún no tienes hijos registrados'});
+  await screen.findByRole('heading',{name:'Tus primeros pasos en ASHA'});
+  expect(screen.getByRole('button',{name:'Registrar hijo'})).toBeInTheDocument();
   expect(screen.queryByRole('button',{name:'Explorar'})).not.toBeInTheDocument();
   view.unmount(); api({error:true}); renderRoute('/padre','PADRE');
   await screen.findByRole('alert'); api();

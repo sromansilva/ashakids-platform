@@ -361,25 +361,25 @@ export function TerapeutaAgenda({ go }: { go: (v: View) => void; requests?: Appo
               <button onClick={() => setSelectedEvent(null)} aria-label="Cerrar detalle" className="rounded-xl p-2 text-[#7C6F9A] transition-colors hover:bg-violet-50 hover:text-[#6B46FE]"><X size={17} /></button>
             </div>
             <div className="min-h-0 overflow-y-auto p-4 sm:p-6">
-              <section className="mb-4 flex flex-col gap-4 rounded-2xl border border-violet-100 bg-gradient-to-r from-[#F8F6FF] to-white p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+              <section className="mb-5 flex flex-col gap-4 rounded-2xl border border-violet-200/80 bg-gradient-to-r from-[#F5F3FF] via-white to-[#FFF7ED] p-4 sm:flex-row sm:items-center sm:justify-between sm:px-5 shadow-xs">
                 <div className="flex min-w-0 items-center gap-3">
                   <Av initials={selectedEvent.patient.split(/\s+/).filter(Boolean).map((part) => part[0]).join("").slice(0, 2)} color={B.violet} size="md" />
                   <div className="min-w-0">
-                    <p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-[#8C82A8]">Paciente</p>
+                    <p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-[#6B46FE]">Paciente</p>
                     <p className="break-words text-base font-extrabold text-[#1C1135]">{selectedEvent.patient}</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                  <div className="rounded-xl border border-[#E8E5F4] bg-white px-3 py-2">
-                    <span className="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-wide text-[#8C82A8]"><Calendar size={11} aria-hidden="true" /> Fecha</span>
+                  <div className="rounded-xl border border-violet-100 bg-white px-3 py-2">
+                    <span className="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-wide text-[#6B46FE]"><Calendar size={11} aria-hidden="true" /> Fecha</span>
                     <p className="mt-0.5 text-xs font-extrabold text-[#1C1135]">{selectedEvent.date}</p>
                   </div>
-                  <div className="rounded-xl border border-[#E8E5F4] bg-white px-3 py-2">
-                    <span className="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-wide text-[#8C82A8]"><Clock size={11} aria-hidden="true" /> Hora</span>
+                  <div className="rounded-xl border border-orange-100 bg-white px-3 py-2">
+                    <span className="flex items-center gap-1.5 text-[9px] font-extrabold uppercase tracking-wide text-orange-600"><Clock size={11} aria-hidden="true" /> Hora</span>
                     <p className="mt-0.5 text-xs font-extrabold text-[#1C1135]">{selectedEvent.time}</p>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 rounded-xl border border-[#E8E5F4] bg-white px-3 py-2 text-xs font-extrabold"
-                    style={selectedEvent.type === "presencial" ? { color:"#0D9488" } : { color:"#7C3AED" }}>
+                  <span className="inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-extrabold"
+                    style={selectedEvent.type === "presencial" ? { color:"#0D9488", background: "#F0FDFA", borderColor: "#CCFBF1" } : { color:"#6B46FE", background: "#F5F3FF", borderColor: "#DDD6FE" }}>
                     {selectedEvent.type === "presencial" ? <MapPin size={13} aria-hidden="true" /> : <Video size={13} aria-hidden="true" />}
                     {selectedEvent.type === "presencial" ? "Presencial" : "Virtual"}
                   </span>

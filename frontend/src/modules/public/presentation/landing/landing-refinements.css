@@ -74,15 +74,39 @@
 .asha-unified { --landing-motion-ease: cubic-bezier(.16, 1, .3, 1); }
 .asha-unified .landing-nav-link {
   position: relative; text-decoration: none;
-  transition: color 140ms ease;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  transition: color 140ms ease, background-color 140ms ease;
 }
 .asha-unified .landing-nav-link::after {
-  content: ''; position: absolute; left: 0; right: 0; bottom: 3px;
+  content: ''; position: absolute; left: 12px; right: 12px; bottom: 3px;
   height: 2px; border-radius: 2px; background: var(--asha-primary);
   transform: scaleX(0); transform-origin: left;
   transition: transform 180ms var(--landing-motion-ease);
 }
-.asha-unified .landing-nav-link:focus-visible::after { transform: scaleX(1); }
+.asha-unified .landing-nav-link:focus-visible::after,
+.asha-unified .landing-nav-link.is-active::after { transform: scaleX(1); }
+.asha-unified .landing-nav-link.is-active {
+  color: var(--asha-primary-dark);
+  background: var(--asha-lavender-soft);
+}
+.asha-unified .landing-mobile-links a.is-active,
+.asha-unified .landing-mobile-links button.is-active {
+  color: var(--asha-primary);
+  background: var(--asha-lavender-soft);
+  padding-inline: 12px;
+  border-radius: 12px;
+}
+.asha-unified .landing-mobile-links button:not(.asha-btn) {
+  padding: 12px 0;
+  min-height: 48px;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--asha-primary-dark);
+}
 .asha-unified .asha-btn > svg,
 .asha-unified .landing-context-link > svg {
   transition: transform 160ms var(--landing-motion-ease);
@@ -222,9 +246,179 @@
   .asha-unified .landing-ashi-hero,
   .asha-unified .landing-ashi-bubble,
   .asha-unified .landing-voice-decoration,
-  .asha-unified .landing-hero-actions .asha-btn {
+  .asha-unified .landing-hero-actions .asha-btn,
+  .asha-unified .landing-team-track {
     animation: none;
     transition: none;
     transform: none;
   }
+}
+
+/* Dynamic therapist carousel & detail modal */
+.asha-unified .landing-team-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.asha-unified .landing-carousel-counter {
+  min-width: 52px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--asha-muted);
+  font-variant-numeric: tabular-nums;
+}
+.asha-unified .landing-carousel-btn {
+  border-radius: 14px;
+}
+.asha-unified .landing-team-viewport {
+  overflow: hidden;
+  margin-inline: -6px;
+  padding: 6px;
+}
+.asha-unified .landing-team-track {
+  display: flex;
+  transition: transform 420ms cubic-bezier(.22, 1, .36, 1);
+  will-change: transform;
+}
+.asha-unified .landing-team-slide {
+  flex: 0 0 100%;
+  min-width: 100%;
+}
+.asha-unified .landing-therapist-btn {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 180ms var(--landing-motion-ease), border-color 180ms ease, box-shadow 180ms ease;
+}
+.asha-unified .landing-therapist-btn:hover {
+  transform: translateY(-3px);
+  border-color: var(--asha-primary);
+  box-shadow: var(--asha-shadow-raised);
+}
+.asha-unified .landing-therapist-photo {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 16px rgb(28 17 53 / 12%);
+  z-index: 1;
+}
+.asha-unified .landing-therapist-btn .landing-therapist-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  width: 100%;
+}
+.asha-unified .landing-therapist-specialty {
+  color: var(--asha-muted);
+  margin-top: 6px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.asha-unified .landing-therapist-cta {
+  margin-top: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--asha-primary-dark);
+}
+.asha-unified .landing-carousel-dots {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+.asha-unified .landing-carousel-dot {
+  width: 10px;
+  height: 10px;
+  min-height: 10px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--asha-border);
+  cursor: pointer;
+  transition: width 200ms ease, background-color 200ms ease;
+}
+.asha-unified .landing-carousel-dot.is-active {
+  width: 28px;
+  background: var(--asha-primary);
+}
+
+.asha-unified .landing-therapist-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+.asha-unified .landing-therapist-modal-avatar {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: var(--asha-lavender);
+  color: var(--asha-primary-dark);
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 900;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--asha-border);
+}
+.asha-unified .landing-therapist-modal-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.asha-unified .landing-therapist-modal-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--asha-lavender);
+  color: var(--asha-primary-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+.asha-unified .landing-therapist-modal-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--asha-muted);
+}
+.asha-unified .landing-therapist-modal-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.asha-unified .landing-therapist-modal-bio {
+  margin: 18px 0 !important;
+  font-size: 15px !important;
+  line-height: 1.65 !important;
+  color: var(--asha-ink) !important;
+}
+.asha-unified .landing-therapist-modal-note {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: var(--asha-teal-soft);
+  color: var(--asha-teal-dark);
+  font-size: 13.5px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+.asha-unified .landing-therapist-modal-note svg {
+  flex-shrink: 0;
 }

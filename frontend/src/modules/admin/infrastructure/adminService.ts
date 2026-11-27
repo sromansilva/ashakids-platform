@@ -23,6 +23,10 @@ export const adminService = {
   async getAuditoria(): Promise<{ items: AuditoriaItem[]; total: number }> {
     return apiClient.get("/admin/auditoria");
   },
+  /** Solicitudes de baja de cuenta enviadas por padres (GET /admin/solicitudes-baja). */
+  async getSolicitudesBaja(): Promise<SolicitudesBajaResponse> {
+    return apiClient.get<SolicitudesBajaResponse>("/admin/solicitudes-baja");
+  },
   /** Solicitudes de acceso familiar recibidas por WhatsApp (GET /admin/solicitudes-acceso). */
   async getSolicitudesAcceso(estado?: SolicitudAccesoEstado): Promise<SolicitudesAccesoResponse> {
     return apiClient.get<SolicitudesAccesoResponse>("/admin/solicitudes-acceso", { params: { estado } });
@@ -30,8 +34,11 @@ export const adminService = {
   async aprobarSolicitudAcceso(id: number): Promise<ResultadoSolicitudAcceso> {
     return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/aprobar`);
   },
-  async rechazarSolicitudAcceso(id: number): Promise<ResultadoSolicitudAcceso> {
-    return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/rechazar`);
+  async rechazarSolicitud(id: number, motivo: string): Promise<ResultadoSolicitudAcceso> {
+    return apiClient.post<ResultadoSolicitudAcceso>(`/admin/solicitudes-acceso/${id}/rechazar`, { motivo });
+  },
+  async verificarDniSolicitud(id: number): Promise<VerificarDniResponse> {
+    return apiClient.post<VerificarDniResponse>(`/admin/solicitudes-acceso/${id}/verificar-dni`);
   },
   async registrarFamilia(payload: CrearPadrePayload): Promise<OperacionCuentaResponse> {
     const { password, hijos, tipo_documento: _tipoDocumento, numero_documento: _numeroDocumento, ...adulto } = payload;
@@ -152,14 +159,18 @@ export const adminService = {
   },
 };
 
+export const SOLICITUDES_QUERY_KEY = ["admin", "solicitudes-acceso"] as const;
+export const SOLICITUDES_PENDIENTES_QUERY_KEY = ["admin", "solicitudes-acceso", "PENDIENTE"] as const;
+
 export type SolicitudAccesoEstado = "PENDIENTE" | "PROCESANDO" | "APROBADA" | "RECHAZADA";
+export type DniVerificacionEstado = "COINCIDE" | "NO_COINCIDE" | "NO_ENCONTRADO" | "NO_CONFIGURADO" | "ERROR";
 
 export interface SolicitudAcceso {
   id_solicitud: number;
-  telefono: string;
+  telefono: string | null;
   nombres: string;
   apellidos: string;
-  dni: string;
+  dni: string | null;
   email: string;
   estado: SolicitudAccesoEstado;
   consentimiento_en: string;
@@ -168,6 +179,9 @@ export interface SolicitudAcceso {
   revisado_en: string | null;
   correo_estado: string | null;
   aviso_whatsapp_estado: string | null;
+  motivo_rechazo: string | null;
+  dni_verificacion_estado: DniVerificacionEstado | null;
+  dni_verificado_en: string | null;
   ultimo_mensaje_en: string;
   creado_en: string;
 }
@@ -177,6 +191,13 @@ export interface SolicitudesAccesoResponse {
   total: number;
 }
 
+export interface VerificarDniResponse {
+  estado: DniVerificacionEstado;
+  verificado_en: string | null;
+  nombre_reniec?: string;
+  solicitud: SolicitudAcceso;
+}
+
 export interface ResultadoSolicitudAcceso {
   message: string;
   solicitud: SolicitudAcceso;
@@ -184,6 +205,24 @@ export interface ResultadoSolicitudAcceso {
   correo_bienvenida?: string | null;
   /** ENVIADO | NO_CONFIGURADO | ERROR | FUERA_DE_VENTANA | OMITIDO */
   aviso_whatsapp?: string;
+  /** Solo al rechazar: ENVIADO | NO_CONFIGURADO | FALLO */
+  correo_rechazo?: "ENVIADO" | "NO_CONFIGURADO" | "FALLO";
+}
+
+export interface SolicitudBajaItem {
+  id_solicitud: number;
+  id_usuario: number;
+  padre_nombre: string;
+  codigo_usuario: string;
+  email: string;
+  cuenta_activa: boolean;
+  estado: string;
+  fecha_solicitud: string | null;
+}
+
+export interface SolicitudesBajaResponse {
+  items: SolicitudBajaItem[];
+  total: number;
 }
 
 export type AuditoriaItem = {

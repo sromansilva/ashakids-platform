@@ -1,9 +1,17 @@
 import { pool } from '../../core/database.js';
+import { migrateWhatsApp } from '../whatsapp/whatsapp.migration.js';
 
 export async function migrateNotificacionesSchema() {
+  // La FK id_solicitud depende de solicitudes_acceso_familia. Esta migración también se invoca
+  // sola (pruebas y scripts), así que asegura su dependencia; migrateWhatsApp es idempotente.
+  await migrateWhatsApp();
   const client = await pool.connect();
   try {
     await client.query('BEGIN;');
+    // Mismo candado que migrateWhatsApp, tomado antes de cualquier DDL: la FK a
+    // solicitudes_acceso_familia no puede entrelazarse con otra migración de WhatsApp
+    // en paralelo (evita el deadlock entre procesos que arrancan a la vez).
+    await client.query(`SELECT pg_advisory_xact_lock(hashtext('migrate_whatsapp'));`);
     await client.query('SELECT pg_advisory_xact_lock(8612, 2);');
     await client.query(`
       CREATE TABLE IF NOT EXISTS public.notificacion_email_outbox (
@@ -30,10 +38,21 @@ export async function migrateNotificacionesSchema() {
     `);
     // Amplía (de forma idempotente) los tipos permitidos con los avisos críticos del flujo clínico.
     await client.query(`
+      ALTER TABLE public.notificaciones ADD COLUMN IF NOT EXISTS id_solicitud integer;
+      ALTER TABLE public.notificaciones ALTER COLUMN id_reserva DROP NOT NULL;
+      ALTER TABLE public.notificaciones DROP CONSTRAINT IF EXISTS notificaciones_id_solicitud_fkey;
+      ALTER TABLE public.notificaciones ADD CONSTRAINT notificaciones_id_solicitud_fkey
+        FOREIGN KEY (id_solicitud) REFERENCES public.solicitudes_acceso_familia(id_solicitud) ON DELETE CASCADE;
+      ALTER TABLE public.notificaciones DROP CONSTRAINT IF EXISTS ck_notificacion_recurso;
+      ALTER TABLE public.notificaciones ADD CONSTRAINT ck_notificacion_recurso CHECK (
+        (tipo = 'MENSAJE' AND id_conversacion IS NOT NULL AND id_reserva IS NULL AND id_solicitud IS NULL)
+        OR (tipo = 'SOLICITUD_ACCESO' AND id_solicitud IS NOT NULL AND id_reserva IS NULL AND id_conversacion IS NULL)
+        OR (tipo NOT IN ('MENSAJE', 'SOLICITUD_ACCESO') AND id_reserva IS NOT NULL AND id_conversacion IS NULL AND id_solicitud IS NULL)
+      );
       ALTER TABLE public.notificaciones DROP CONSTRAINT IF EXISTS notificaciones_tipo_check;
       ALTER TABLE public.notificaciones ADD CONSTRAINT notificaciones_tipo_check CHECK (
         tipo::text = ANY (ARRAY['NUEVA_CITA', 'CANCELACION', 'REPROGRAMACION', 'RECORDATORIO', 'MENSAJE',
-                                'SESION_INICIADA', 'MUESTRA_SOLICITADA', 'REPORTE_PUBLICADO']::text[])
+                                'SESION_INICIADA', 'MUESTRA_SOLICITADA', 'REPORTE_PUBLICADO', 'SOLICITUD_ACCESO']::text[])
       );
     `);
     await client.query(`

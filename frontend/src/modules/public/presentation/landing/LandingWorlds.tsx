@@ -24,7 +24,7 @@ export function LandingWorlds() {
   }
   return <section id="landing-worlds" className="landing-section landing-worlds"><div className="landing-container">
     <div className="landing-section-heading"><h2>Descubre <span>Mundo ASHA</span></h2><p>Cinco mundos para explorar, practicar y acompañar el desarrollo del lenguaje a través del juego.</p></div>
-    <ul className="landing-world-indicators"><li>5 mundos de práctica</li><li>3 niveles por mundo</li><li>Actividades seleccionadas por el terapeuta</li></ul>
+    <ul className="landing-world-indicators"><li>5 mundos de práctica</li><li>3 niveles a más por mundo</li><li>Actividades seleccionadas por el terapeuta</li></ul>
     <RemoteFeedback pending={catalog.isPending} error={catalog.error} retry={() => void catalog.refetch()}/>
     <WorldCards items={catalog.data ?? []} onExplore={explore} disabled={isLoading}/>
     {selected && <PublicDialog title={sessionError ? 'Verifiquemos tu sesión' : restricted ? 'Este espacio es para familias' : '¡Una aventura te espera!'} onClose={() => setSelected(null)}>

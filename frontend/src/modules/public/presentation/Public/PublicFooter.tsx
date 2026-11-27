@@ -1,36 +1,89 @@
-import { B } from "@/shared/presentation/theme/brand/B";
+import { useNavigate } from "react-router-dom";
 import { View } from "@/shared/domain/types/navigation";
 import { Isotipo } from "@/shared/presentation/components/illustrations/Isotipo";
 
-// ─── Shared public nav ────────────────────────────────────────────────────────
+type FooterLink =
+  | { label: string; kind: "anchor"; hash: string }
+  | { label: string; kind: "view"; view: View };
+
+const footerCols: { title: string; links: FooterLink[] }[] = [
+  {
+    title: "Plataforma",
+    links: [
+      { label: "Especialistas", kind: "anchor", hash: "#landing-specialists" },
+      { label: "Mundo ASHA", kind: "anchor", hash: "#landing-worlds" },
+      { label: "ASHI Intelligence", kind: "view", view: "public/ashi" },
+    ],
+  },
+  {
+    title: "Empresa",
+    links: [
+      { label: "Sobre Nosotros", kind: "view", view: "public/nosotros" },
+      { label: "Recursos", kind: "view", view: "public/recursos" },
+    ],
+  },
+  {
+    title: "Soporte",
+    links: [
+      { label: "Centro de Ayuda", kind: "view", view: "public/ayuda" },
+      { label: "Contacto", kind: "view", view: "public/contacto" },
+    ],
+  },
+];
 
 export function PublicFooter({ go, landing = false }: { go: (v: View) => void; landing?: boolean }) {
-  const cols = [
-    { title: "Plataforma",  links: [{ l: "Especialistas", v: "public/especialistas" as View }, { l: "Mundo ASHA", v: "public/mundo" as View }, { l: "ASHI Intelligence", v: "public/ashi" as View }] },
-    { title: "Empresa",     links: [{ l: "Sobre Nosotros", v: "public/nosotros" as View }, { l: "Historias", v: "public/historias" as View }, { l: "Trabaja con nosotros", v: "public/trabaja" as View }] },
-    { title: "Soporte",     links: [{ l: "Centro de Ayuda", v: "public/ayuda" as View }, { l: "Contacto", v: "public/contacto" as View }] },
-  ];
-  if (landing) cols[0]?.links.push({ l: 'Recursos', v: 'public/recursos' });
+  const navigate = useNavigate();
+
+  const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, hash: string) => {
+    if (landing) return;
+    e.preventDefault();
+    navigate(`/${hash}`);
+  };
+
   return (
-    <footer style={landing ? undefined : { background: B.violetDeep }} className={landing ? 'landing-footer' : 'text-white mt-16'}>
+    <footer className="landing-footer">
       <div className="max-w-7xl mx-auto px-6 py-12 grid md:grid-cols-4 gap-8">
         <div>
-          <div className={`flex items-center gap-2 mb-3 ${landing ? 'landing-footer-brand' : ''}`}>
-            <Isotipo size={landing ? 96 : 32} />
-            {landing ? <span className="landing-wordmark" aria-label="ASHAKids"><span>ASHA</span><span>Kids</span></span> : <span className="font-extrabold text-lg">AshaKids</span>}
-          </div>
-          <p className="text-sm font-medium opacity-70 leading-relaxed">Plataforma de terapia de lenguaje infantil virtual. Conectamos familias con especialistas certificados.</p>
+          <button
+            type="button"
+            onClick={() => go("landing")}
+            className="flex items-center gap-2 mb-3 landing-footer-brand text-left"
+            aria-label="Ir al inicio de ASHAKids"
+          >
+            <Isotipo size={96} />
+            <span className="landing-wordmark" aria-label="ASHAKids">
+              <span>ASHA</span>
+              <span>Kids</span>
+            </span>
+          </button>
+          <p className="text-sm font-medium opacity-70 leading-relaxed">
+            Plataforma de terapia de lenguaje infantil virtual. Conectamos familias con especialistas certificados.
+          </p>
         </div>
-        {cols.map(col => (
+        {footerCols.map((col) => (
           <div key={col.title}>
             <p className="font-extrabold text-sm mb-3 opacity-90">{col.title}</p>
             <div className="flex flex-col gap-2">
-              {col.links.map(lk => landing && (lk.v === 'public/especialistas' || lk.v === 'public/mundo') ? (
-                <a key={lk.l} href={lk.v === 'public/especialistas' ? '#landing-specialists' : '#landing-worlds'}>{lk.l}</a>
-              ) : (
-                <button key={lk.l} type="button" onClick={() => go(lk.v)}
-                  className="text-left text-sm opacity-60 hover:opacity-100 transition-opacity font-medium">{lk.l}</button>
-              ))}
+              {col.links.map((lk) =>
+                lk.kind === "anchor" ? (
+                  <a
+                    key={lk.label}
+                    href={landing ? lk.hash : `/${lk.hash}`}
+                    onClick={(e) => handleAnchorClick(e, lk.hash)}
+                  >
+                    {lk.label}
+                  </a>
+                ) : (
+                  <button
+                    key={lk.label}
+                    type="button"
+                    onClick={() => go(lk.view)}
+                    className="text-left text-sm font-medium"
+                  >
+                    {lk.label}
+                  </button>
+                )
+              )}
             </div>
           </div>
         ))}

@@ -39,30 +39,30 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
       <RemoteFeedback pending={sessions.isPending} error={sessions.error} retry={() => void sessions.refetch()} />
 
       {/* Main Grid: Left session lists + Right Editor */}
-      <div className="grid grid-cols-1 items-start gap-6 xl:grid-cols-[minmax(330px,0.85fr)_minmax(0,2.15fr)] 2xl:gap-7">
-        <div className="space-y-4">
+      <div className="grid grid-cols-1 gap-6 xl:h-[calc(100dvh-7.5rem)] xl:grid-cols-[minmax(330px,0.85fr)_minmax(0,2.15fr)] xl:items-stretch 2xl:gap-7">
+        <div className="flex flex-col gap-4 xl:h-full xl:min-h-0">
           {/* Sesiones Listas para Redactar Reporte */}
-            <div className="min-h-[136px] rounded-2xl border border-violet-200 bg-gradient-to-br from-violet-50/80 via-white to-white p-5 shadow-[0_10px_26px_rgba(95,68,170,0.08)]">
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2 2xl:flex-nowrap">
+            <div className="shrink-0 rounded-2xl border border-orange-200/80 bg-gradient-to-br from-orange-50/75 via-white to-violet-50/40 p-5 shadow-[0_10px_26px_rgba(95,68,170,0.08)] xl:max-h-[38%] xl:flex xl:flex-col">
+              <div className="mb-3 flex shrink-0 flex-wrap items-center justify-between gap-2 2xl:flex-nowrap">
                 <div className="flex min-w-0 shrink-0 items-center gap-2">
-                  <div className="h-2 w-2 shrink-0 rounded-full bg-[#6B46FE]" />
+                  <div className="h-2.5 w-2.5 shrink-0 rounded-full bg-orange-500" />
                   <h2 className="whitespace-nowrap text-sm font-extrabold text-[#1C1135]">Sesiones por redactar</h2>
                 </div>
                 <div className="flex shrink-0 items-center gap-1.5">
-                  <span className="whitespace-nowrap rounded-full bg-violet-100 px-2 py-1 text-[10px] font-bold text-[#6B46FE]">
+                  <span className="whitespace-nowrap rounded-full bg-orange-100 px-2.5 py-1 text-[10px] font-extrabold text-orange-700">
                     {eligible.length} {eligible.length === 1 ? 'pendiente' : 'pendientes'}
                   </span>
                   <button
                     onClick={() => setNewReportOpen(true)}
                     disabled={sessions.isPending || !!sessions.error}
-                    className="inline-flex items-center gap-1 rounded-xl bg-[#6B46FE] px-2.5 py-1.5 text-[11px] font-extrabold text-white shadow-[0_6px_14px_rgba(107,70,254,0.18)] transition-colors hover:bg-[#5833EA] disabled:opacity-50 cursor-pointer"
+                    className="inline-flex items-center gap-1 rounded-xl bg-orange-500 px-2.5 py-1.5 text-[11px] font-extrabold text-white shadow-[0_6px_14px_rgba(249,115,22,0.22)] transition-colors hover:bg-orange-600 disabled:opacity-50 cursor-pointer"
                   >
                     <Plus size={14} />
                     Nuevo reporte
                   </button>
                 </div>
               </div>
-              <div className="space-y-3">
+              <div className="space-y-3 xl:flex-1 xl:min-h-0 xl:overflow-y-auto xl:pr-1">
                 {eligible.map((s) => {
                   const isCur = (selected?.id_sesion ?? 0) === s.id_sesion;
                   return (
@@ -71,8 +71,8 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                       onClick={() => setSelectedId(s.id_sesion)}
                       className={`group w-full rounded-xl p-4 text-left transition-all border flex items-center justify-between gap-3 cursor-pointer ${
                         isCur
-                          ? 'bg-[#F8F7FC] border-[#6B46FE] ring-2 ring-[#6B46FE]/30'
-                          : 'bg-white border-[#E8E5F4] hover:border-violet-300'
+                          ? 'bg-orange-50/70 border-orange-400 ring-2 ring-orange-200'
+                          : 'bg-white border-[#E8E5F4] hover:border-orange-300'
                       }`}
                     >
                       <div className="min-w-0 flex-1">
@@ -81,17 +81,17 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                         </p>
                         <div className="flex items-center gap-2.5 mt-1">
                           <span className="text-xs text-[#615274]">{dateLabel(s)}</span>
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-[#EDE9FE] text-[#6B46FE]">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-orange-100 text-orange-700">
                             Redactar ahora
                           </span>
                         </div>
                       </div>
-                      <ChevronRight size={16} className={isCur ? 'text-[#6B46FE]' : 'text-[#9E95B7]'} />
+                      <ChevronRight size={16} className={isCur ? 'text-orange-600' : 'text-[#9E95B7]'} />
                     </button>
                   );
                 })}
                 {sessions.isSuccess && !sessions.error && eligible.length === 0 && (
-                  <p className="rounded-xl border border-dashed border-violet-200 bg-white/70 px-3.5 py-4 text-sm text-[#615274]">
+                  <p className="rounded-xl border border-dashed border-orange-200 bg-white/80 px-3.5 py-4 text-sm text-[#615274]">
                     No hay sesiones pendientes para redactar.
                   </p>
                 )}
@@ -99,15 +99,20 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
             </div>
 
           {/* Saved Reports Card */}
-          <div className="min-h-[132px] rounded-2xl border border-[#E8E5F4] bg-white p-6 shadow-[0_8px_24px_rgba(48,33,87,0.045)]">
-            <div className="flex items-center gap-2.5 mb-4">
-              <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet-50"><FileText size={17} className="text-[#6B46FE]" /></span>
-              <div>
-                <h2 className="text-base font-extrabold text-[#1C1135]">Reportes guardados</h2>
-                <p className="text-xs text-[#8C82A8]">Sesiones con informe registrado</p>
+          <div className="flex flex-col rounded-2xl border border-[#E8E5F4] bg-white p-5 sm:p-6 shadow-[0_8px_24px_rgba(48,33,87,0.045)] xl:flex-1 xl:min-h-0">
+            <div className="flex shrink-0 items-center justify-between gap-2.5 mb-4">
+              <div className="flex items-center gap-2.5">
+                <span className="grid h-9 w-9 place-items-center rounded-xl bg-violet-50"><FileText size={17} className="text-[#6B46FE]" /></span>
+                <div>
+                  <h2 className="text-base font-extrabold text-[#1C1135]">Reportes guardados</h2>
+                  <p className="text-xs text-[#8C82A8]">Sesiones con informe registrado</p>
+                </div>
               </div>
+              <span className="rounded-full bg-[#EDE9FE] px-2.5 py-0.5 text-[11px] font-extrabold text-[#6B46FE]">
+                {reports.length}
+              </span>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-3 overflow-y-auto pr-1 max-h-[420px] xl:max-h-none xl:flex-1 xl:min-h-0">
               {reports.map((s) => {
                 const isCur = (selected?.id_sesion ?? 0) === s.id_sesion;
                 return (
@@ -143,11 +148,11 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
 
         </div>
 
-        <div className="min-w-0 overflow-hidden rounded-[26px] border border-[#E8E5F4] bg-white shadow-[0_14px_36px_rgba(48,33,87,0.07)] xl:min-h-[440px]">
+        <div className="flex min-w-0 flex-col overflow-hidden rounded-[26px] border border-[#E8E5F4] bg-white shadow-[0_14px_36px_rgba(48,33,87,0.07)] xl:h-full xl:min-h-0">
           {selected && !sessions.error ? (
-            <div>
+            <div className="flex h-full min-h-0 flex-col">
               {/* Editor Header */}
-              <div className="flex flex-col items-start justify-between gap-3 border-b border-[#E8E5F4] bg-gradient-to-r from-white via-white to-violet-50/60 px-6 py-5 sm:flex-row sm:items-center 2xl:px-7">
+              <div className="flex shrink-0 flex-col items-start justify-between gap-3 border-b border-[#E8E5F4] bg-gradient-to-r from-violet-50/55 via-white to-orange-50/60 px-6 py-5 sm:flex-row sm:items-center 2xl:px-7">
                 <div>
                   <div className="flex items-center gap-2">
                     <p className="text-xs font-bold text-[#615274]">Sesión clínica · {selected.cita.paciente_nombre}</p>
@@ -160,20 +165,22 @@ export function TerapeutaReportes({ go: _go }: { go: (v: View) => void }) {
                   <button
                     onClick={() => setPreviewOpen(true)}
                     disabled={!selected.reporte_disponible}
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-[#E8E5F4] text-xs font-extrabold text-[#1C1135] hover:bg-violet-50 disabled:opacity-40 transition-all cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-orange-50 border border-orange-200 text-xs font-extrabold text-orange-700 hover:bg-orange-100 disabled:opacity-40 transition-all cursor-pointer"
                   >
-                    <Eye size={14} className="text-[#6B46FE]" />
+                    <Eye size={14} className="text-orange-600" />
                     Vista previa
                   </button>
                 </div>
               </div>
 
               {/* Editor Body */}
-              <ReportWorkspace key={selected.id_sesion} session={selected} />
+              <div className="flex-1 min-h-0 overflow-y-auto">
+                <ReportWorkspace key={selected.id_sesion} session={selected} />
+              </div>
             </div>
           ) : (
-            <div className="p-12 text-center flex flex-col items-center justify-center space-y-4">
-              <div className="w-16 h-16 rounded-3xl bg-violet-50 border border-violet-100 flex items-center justify-center text-[#6B46FE]">
+            <div className="flex flex-1 flex-col items-center justify-center space-y-4 p-12 text-center">
+              <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-violet-100 to-orange-100 border border-violet-200/70 flex items-center justify-center text-[#6B46FE]">
                 <Mic size={28} />
               </div>
               <div>

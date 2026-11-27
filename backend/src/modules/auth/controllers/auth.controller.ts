@@ -106,7 +106,9 @@ export class AuthController {
       }
       const result = await authService.setup2fa(
         req.user.id_usuario,
-        req.user.codigo_usuario || `USR${req.user.id_usuario}`
+        req.user.codigo_usuario || `USR${req.user.id_usuario}`,
+        typeof req.body?.password === 'string' ? req.body.password : '',
+        typeof req.body?.current_code === 'string' ? req.body.current_code : undefined
       );
       res.json(result);
     } catch (err) {
@@ -121,7 +123,7 @@ export class AuthController {
         return;
       }
       const dto = verify2faSetupSchema.parse(req.body);
-      const result = await authService.confirm2faSetup(req.user.id_usuario, dto.code);
+      const result = await authService.confirm2faSetup(req.user.id_usuario, dto.code, getSessionToken(req));
       res.json(result);
     } catch (err) {
       next(err);
@@ -194,8 +196,7 @@ export class AuthController {
         }
       }
 
-      let mailStatus = 'NO_CONFIGURADO';
-      if (recipient) {
+      if (recipient && userFound) {
         let targetEmail = recipient;
         if (targetEmail.endsWith('@ashakids.test') && settings.GMAIL_SENDER_EMAIL) {
           targetEmail = settings.GMAIL_SENDER_EMAIL;
@@ -216,13 +217,10 @@ export class AuthController {
           console.warn('[AuthController] Error enviando correo de reseteo:', e);
           return null;
         });
-        if (mailRes?.status) mailStatus = mailRes.status;
+        void mailRes;
       }
 
-      res.json({
-        message: `Si ${dto.email || dto.codigo_usuario} está registrado, recibirá instrucciones de recuperación.`,
-        status: mailStatus,
-      });
+      res.json({ message: 'Si la cuenta está registrada, recibirás instrucciones de recuperación.' });
     } catch (err) {
       next(err);
     }
@@ -237,8 +235,8 @@ export class AuthController {
         res.status(400).json({ error: 'Token de recuperación no proporcionado.' });
         return;
       }
-      if (!newPassword || newPassword.length < 8) {
-        res.status(400).json({ error: 'La nueva contraseña debe tener al menos 8 caracteres.' });
+      if (!newPassword || newPassword.length < 12) {
+        res.status(400).json({ error: 'La nueva contraseña debe tener al menos 12 caracteres.' });
         return;
       }
 

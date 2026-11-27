@@ -1,3 +1,5 @@
+import { pacientesService } from '../pacientes/services/pacientes.service.js';
+import { isVirtualModality } from './modalidad.js';
 import { pool } from '../../core/database.js';
 import { GoogleCalendarService } from '../../infrastructure/calendar/google-calendar.service.js';
 import { MeetService } from '../../infrastructure/meet/meet.service.js';
@@ -140,7 +142,7 @@ export class CitasService {
         terapeuta_nombre: r.terapeuta_nombre.trim() || 'Terapeuta Especialista',
         fecha_hora_inicio: new Date(r.fecha_hora_inicio).toISOString(),
         fecha_hora_fin: new Date(r.fecha_hora_fin).toISOString(),
-        modalidad: (r.modalidad === 'ONLINE' ? 'VIRTUAL' : r.modalidad) as any,
+        modalidad: (isVirtualModality(r.modalidad) ? 'VIRTUAL' : r.modalidad) as any,
         estado_reserva: r.estado_reserva as any,
         id_sesion: r.id_sesion ?? null,
         puede_editar: true,
@@ -172,6 +174,10 @@ export class CitasService {
         throw Object.assign(new Error('La modalidad indicada no es válida.'), { status: 400 });
       }
       await assertPatientOwner(user, patientId);
+      // La UI familiar exige introducción atendida y plan activo; administración sigue la misma regla.
+      if (data.tipo_cita === 'TERAPIA' && !(await pacientesService.recorrido(patientId)).terapia_habilitada) {
+        throw Object.assign(new Error('Para reservar terapia, primero completa la sesión introductoria y guarda un plan activo.'), { status: 409 });
+      }
       if (!Number.isInteger(therapistId) || !(await isActiveTherapist(therapistId))) {
         throw Object.assign(new Error('El terapeuta seleccionado no existe o está inactivo.'), { status: 400 });
       }
@@ -217,6 +223,7 @@ export class CitasService {
       try {
         await client.query('BEGIN;');
         await client.query('SELECT pg_advisory_xact_lock(7421, $1::integer);', [therapistId]);
+        await client.query('SELECT pg_advisory_xact_lock(7422, $1::integer);', [patientId]);
         if (!esModoPrueba) {
           const localStart = getAppointmentLocalParts(new Date(fechaInicio));
           const dayOfWeek = localStart.weekday;
@@ -233,6 +240,8 @@ export class CitasService {
           );
           if (overlap.rows.length) throw Object.assign(new Error('Ese horario ya no está disponible.'), { status: 409 });
         }
+        const patientOverlap = await client.query("SELECT 1 FROM reservas WHERE id_paciente = $1 AND estado_reserva <> 'CANCELADA' AND fecha_hora_inicio < $3::timestamptz AND fecha_hora_fin > $2::timestamptz FOR UPDATE;", [patientId, fechaInicio, fechaFin]);
+        if (patientOverlap.rows.length) throw Object.assign(new Error('El paciente ya tiene una cita en ese horario.'), { status: 409 });
         const inserted = await client.query(
           "INSERT INTO reservas (id_paciente, id_terapeuta, id_tratamiento, fecha_hora_inicio, fecha_hora_fin, modalidad, tipo_cita, estado_reserva, fecha_creacion, meet_id, meet_url) VALUES ($1, $2, $3, $4::timestamptz, $5::timestamptz, $6, COALESCE($7, 'INTRODUCTORIA'), 'CONFIRMADA', NOW(), NULL, NULL) RETURNING *;",
           [patientId, therapistId, data.id_tratamiento ?? null, fechaInicio, fechaFin, modalidad, data.tipo_cita],
@@ -387,7 +396,7 @@ export class CitasService {
         terapeuta_nombre: names?.terapeuta_nombre?.trim() || 'Terapeuta Especialista',
         fecha_hora_inicio: new Date(row.fecha_hora_inicio).toISOString(),
         fecha_hora_fin: new Date(row.fecha_hora_fin).toISOString(),
-        modalidad: (row.modalidad === 'ONLINE' ? 'VIRTUAL' : row.modalidad),
+        modalidad: (isVirtualModality(row.modalidad) ? 'VIRTUAL' : row.modalidad),
         estado_reserva: row.estado_reserva,
         id_sesion: null,
         puede_editar: true,
@@ -402,14 +411,16 @@ export class CitasService {
     }
   }
 
-  async reprogramar(key: number, data: { fecha_hora_inicio: string; fecha_hora_fin?: string }, user: AuthenticatedUser): Promise<CitaRow> {
+  async reprogramar(key: number, data: { fecha_hora_inicio: string; fecha_hora_fin?: string; tipo_cita?: 'INTRODUCTORIA' | 'TERAPIA' }, user: AuthenticatedUser): Promise<CitaRow> {
     await assertReservationAccess(user, key);
     const current = await pool.query(
-      'SELECT id_terapeuta, tipo_cita, modalidad, estado_reserva, meet_url, google_calendar_event_id, fecha_hora_inicio FROM reservas WHERE id_reserva = $1 LIMIT 1;',
+      'SELECT id_paciente, id_terapeuta, tipo_cita, modalidad, estado_reserva, meet_url, google_calendar_event_id, fecha_hora_inicio FROM reservas WHERE id_reserva = $1 LIMIT 1;',
       [key],
     );
     if (!current.rows[0]) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
     if (current.rows[0].estado_reserva === 'CANCELADA') throw Object.assign(new Error('No se puede reprogramar una cita cancelada.'), { status: 409 });
+    if (data.tipo_cita !== undefined && !['INTRODUCTORIA', 'TERAPIA'].includes(data.tipo_cita)) throw Object.assign(new Error('El tipo de cita indicado no es válido.'), { status: 400 });
+    if (data.tipo_cita === 'TERAPIA' && current.rows[0].tipo_cita !== 'TERAPIA' && !(await pacientesService.recorrido(Number(current.rows[0].id_paciente))).terapia_habilitada) throw Object.assign(new Error('Para reservar terapia, primero completa la sesión introductoria y guarda un plan activo.'), { status: 409 });
     const inicio = new Date(data.fecha_hora_inicio);
     const fechaFin = data.fecha_hora_fin || new Date(new Date(data.fecha_hora_inicio).getTime() + 40 * 60000).toISOString();
     const fin = new Date(fechaFin);
@@ -427,6 +438,7 @@ export class CitasService {
     try {
       await client.query('BEGIN;');
       await client.query('SELECT pg_advisory_xact_lock(7421, $1::integer);', [therapistId]);
+      await client.query('SELECT pg_advisory_xact_lock(7422, $1::integer);', [Number(current.rows[0].id_paciente)]);
       const locked = await client.query(
         'SELECT fecha_hora_inicio, estado_reserva FROM reservas WHERE id_reserva = $1 FOR UPDATE;',
         [key],
@@ -444,9 +456,11 @@ export class CitasService {
         [therapistId, data.fecha_hora_inicio, fechaFin, key],
       );
       if (overlap.rows.length) throw Object.assign(new Error('Ese horario ya no está disponible.'), { status: 409 });
+      const patientOverlap = await client.query("SELECT 1 FROM reservas WHERE id_reserva <> $4 AND id_paciente = $1 AND estado_reserva <> 'CANCELADA' AND fecha_hora_inicio < $3::timestamptz AND fecha_hora_fin > $2::timestamptz FOR UPDATE;", [Number(current.rows[0].id_paciente), data.fecha_hora_inicio, fechaFin, key]);
+      if (patientOverlap.rows.length) throw Object.assign(new Error('El paciente ya tiene una cita en ese horario.'), { status: 409 });
       await client.query(
-        'UPDATE reservas SET fecha_hora_inicio = $1::timestamptz, fecha_hora_fin = $2::timestamptz WHERE id_reserva = $3;',
-        [data.fecha_hora_inicio, fechaFin, key],
+        'UPDATE reservas SET fecha_hora_inicio = $1::timestamptz, fecha_hora_fin = $2::timestamptz, tipo_cita = COALESCE($4, tipo_cita) WHERE id_reserva = $3;',
+        [data.fecha_hora_inicio, fechaFin, key, data.tipo_cita ?? null],
       );
       if (previousStart.getTime() !== inicio.getTime()) {
         const participants = await client.query(
@@ -485,7 +499,7 @@ export class CitasService {
     }
     const eventId = current.rows[0].google_calendar_event_id;
     if (eventId) {
-      const topic = 'AshaKids · ' + (current.rows[0].tipo_cita === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria');
+      const topic = 'AshaKids · ' + ((data.tipo_cita ?? current.rows[0].tipo_cita) === 'TERAPIA' ? 'Sesión de Terapia' : 'Consulta Introductoria');
       await GoogleCalendarService.updateAppointmentEvent(String(eventId), {
         topic,
         startTime: data.fecha_hora_inicio,
@@ -581,13 +595,18 @@ export class CitasService {
     if (meet_url && !isMeetingUrl(meet_url)) {
       throw Object.assign(new Error('Comparte un enlace HTTPS de Google Meet válido.'), { status: 400 });
     }
-    await pool.query(
-      `UPDATE reservas SET meet_url = $1, meet_id = NULL WHERE id_reserva = $2;`,
+    const updated = await pool.query(
+      `UPDATE reservas SET meet_url = $1, meet_id = NULL WHERE id_reserva = $2 RETURNING google_calendar_event_id, tipo_cita, fecha_hora_inicio;`,
       [meet_url, key]
     );
     const cita = await this.detalle(key, user);
     if (!cita) throw Object.assign(new Error('Cita no encontrada.'), { status: 404 });
-    // Calendar event IDs are not stored, so a manually changed link updates the reservation only.
+    const event = updated.rows[0];
+    if (event?.google_calendar_event_id) {
+      try {
+        await GoogleCalendarService.updateAppointmentEvent(String(event.google_calendar_event_id), { topic: event.tipo_cita === 'TERAPIA' ? 'AshaKids · Sesión de Terapia' : 'AshaKids · Consulta Introductoria', startTime: new Date(event.fecha_hora_inicio).toISOString(), durationMinutes: 40, meetUrl: meet_url });
+      } catch (error) { console.warn('[CitasService] No se pudo actualizar Calendar:', error); }
+    }
     return {
       ...cita,
       ...buildMeetFields({ meet_url, meet_origen: meet_url ? 'MANUAL' : null, estado_sesion: cita.estado_sesion }, user),

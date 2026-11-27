@@ -9,10 +9,12 @@ import { TherapistVoiceAIWidget } from './TherapistVoiceAIWidget';
 import { helpLevels, incompleteTemplateFields, reportTemplates, type NarrativeField } from './reportFormGuidance';
 import { appendArticulationResultToObservations, parseArticulationHistory } from '@/shared/application/articulationReportEntries';
 
+export const REPORT_AUTOSAVE_DELAY_MS = 20_000;
+
 export const reportLabels = {
   observaciones_iniciales: 'Observaciones iniciales',
   objetivos_trabajados: 'Objetivos trabajados',
-  nivel_ayuda: 'Nivel de ayuda',
+  nivel_ayuda: 'Nivel de autosuficiencia',
   proximos_pasos: 'Próximos pasos',
 } as const;
 
@@ -61,6 +63,7 @@ export function ClinicalReportEditor({
   const submittedRevision = useRef(0);
   const lastAutoSaveAttempt = useRef(0);
   const incomplete = incompleteTemplateFields(form);
+  const session = useRemote(['session-for-signing', id], (signal) => sessionsService.get(id, signal));
   const history = useRemote(
     ['articulation-history', id],
     (signal) => sessionsService.articulationHistory(id, signal),
@@ -105,7 +108,7 @@ export function ClinicalReportEditor({
       lastAutoSaveAttempt.current = revision;
       submittedRevision.current = revision;
       void saveSubmitRef.current(draft);
-    }, 900);
+    }, REPORT_AUTOSAVE_DELAY_MS);
     return () => window.clearTimeout(timeout);
   }, [dirty, form, reportStatus, save.isPending]);
   const sign = useWrite<void>(
@@ -119,10 +122,11 @@ export function ClinicalReportEditor({
   const [confirmingSign, setConfirmingSign] = useState(false);
   // Qué falta para poder firmar: se muestra mientras «Firmar y publicar» está apagado.
   const signBlockers: string[] = [];
+  if (session.data?.estado_sesion !== 'FINALIZADA' || session.data?.asistencia !== 'ASISTIO') signBlockers.push('La sesión debe estar finalizada y registrar asistencia para firmar');
   if (!form.observaciones_iniciales?.trim()) signBlockers.push('Completa las observaciones iniciales');
   if (!form.objetivos_trabajados?.trim()) signBlockers.push('Completa los objetivos trabajados');
-  if (!form.nivel_ayuda?.trim()) signBlockers.push('Elige el nivel de ayuda');
-  else if (!hasStandardHelpLevel) signBlockers.push('Selecciona uno de los cinco niveles de ayuda (el nivel histórico solo se conserva al guardar)');
+  if (!form.nivel_ayuda?.trim()) signBlockers.push('Elige el nivel de autosuficiencia');
+  else if (!hasStandardHelpLevel) signBlockers.push('Selecciona uno de los cinco niveles de autosuficiencia (el nivel histórico solo se conserva al guardar)');
   if (!form.proximos_pasos?.trim()) signBlockers.push('Completa los próximos pasos');
   if (dirty || save.isPending) signBlockers.push('Espera a que se guarde el borrador');
   const blockersId = `${formId}-sign-blockers`;
@@ -318,7 +322,7 @@ export function ClinicalReportEditor({
           )}
           {save.isPending && <p role="status" className="text-xs font-bold text-[#6B46FE]">Guardando borrador automáticamente…</p>}
           {save.isSuccess && !dirty && <p role="status" className="text-xs font-bold text-[#16A34A]">Reporte guardado en el servidor.</p>}
-          {dirty && !save.isPending && <p role="status" className="text-xs font-bold text-[#D97706]">● Cambios sin guardar. Se guardarán automáticamente en unos segundos.</p>}
+          {dirty && !save.isPending && <p role="status" className="text-xs font-bold text-[#EA580C]">Cambios sin guardar. Se guardarán automáticamente tras 20 segundos sin edición.</p>}
           {downloadAction}
           <button
             type="submit"

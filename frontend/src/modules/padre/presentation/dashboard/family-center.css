@@ -50,7 +50,8 @@
 .fc-destinations { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; position: relative; isolation: isolate; }
 .fc-destinations::before { content: ''; position: absolute; inset: 12% 0 0; z-index: -1; border-radius: 48px; background: radial-gradient(ellipse at 22% 40%,#cabaf5 0%,transparent 62%),radial-gradient(ellipse at 92% 50%,#b9e7df 0%,transparent 60%); }
 .fc-destination,.fc-glass { background: rgb(255 255 255 / 74%); border: 1px solid #7c3aed33; border-radius: 24px; box-shadow: 0 10px 30px #4524780a,inset 0 1px 0 #fff; -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px); }
-.fc-destination { display: flex; flex-direction: column; align-items: center; padding: 20px 28px 28px; text-align: center; }
+.fc-destination { display: flex; flex-direction: column; align-items: center; padding: 20px 28px 28px; text-align: center; transition: transform 200ms ease-out, box-shadow 200ms ease-out, border-color 200ms ease-out; will-change: transform; }
+@media (hover:hover) { .fc-destination:hover { transform: scale(1.03); border-color: #7c3aed66; box-shadow: 0 18px 36px #45247816, inset 0 1px 0 #fff; } }
 .fc-destination-art { width: 100%; height: 220px; object-fit: contain; transition: transform 220ms cubic-bezier(.16,1,.3,1); }
 .fc-destination--journey .fc-destination-art { max-width: 280px; }
 .fc-destination > div { width: 100%; margin-top: auto; }

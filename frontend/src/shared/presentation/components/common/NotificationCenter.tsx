@@ -1,5 +1,5 @@
 import { useId, useState, useRef, useEffect } from 'react';
-import { Bell, Check, ChevronDown } from 'lucide-react';
+import { Bell, Check, ChevronDown, UserPlus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/modules/auth/application/useAuth';
@@ -147,6 +147,11 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                       {date(item.fecha_creacion)}
                     </time>
                     <div className="flex gap-2 pt-1">
+                      {item.tipo === 'SOLICITUD_ACCESO' && role === 'ADMIN' && (
+                        <Btn size="sm" onClick={() => { setOpen(false); routerNavigate('/admin/solicitudes'); }}>
+                          <UserPlus size={14} className="mr-1" /> Ver solicitudes
+                        </Btn>
+                      )}
                       {item.id_reserva && role === 'PADRE' && familyActions[item.tipo] && (
                         <Btn size="sm" onClick={() => { setOpen(false); routerNavigate(`/padre/agenda?cita=${item.id_reserva}`); }}>
                           {familyActions[item.tipo]}
@@ -172,12 +177,13 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                           const base = role === 'ADMIN' ? '/admin/sesion/espera' : '/terapeuta/sesion/espera';
                           const launchPath = `${base}/${item.id_reserva}`;
                           const hasValidMeet = isMeetingUrl(item.meet_url);
-                          window.open(`${launchPath}/panel`, '_blank', 'noopener,noreferrer');
                           if (hasValidMeet) window.open(`${launchPath}/meet`, '_blank', 'noopener,noreferrer');
                           setLaunchMessage({
                             reservationId: item.id_reserva!,
-                            text: `${hasValidMeet ? 'Se solicitaron el panel y la reunión' : 'Se solicitó el panel clínico; falta un enlace de Meet válido'}; el panel respetará la hora de la cita. Si no apareció alguna pestaña, permite ventanas emergentes.`,
+                            text: `${hasValidMeet ? 'Se abrió la sala de espera de Meet y se redirige al espacio profesional' : 'Redirigiendo al espacio profesional; falta un enlace de Meet válido'}; el panel respetará la hora de la cita.`,
                           });
+                          setOpen(false);
+                          routerNavigate(role === 'TERAPEUTA' ? '/terapeuta/sesion' : `${launchPath}/panel`);
                         }}>
                           Preparar inicio de reunión
                         </Btn>

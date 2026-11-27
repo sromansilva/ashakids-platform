@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { AlertTriangle, FilePlus2, FileText, Layers, Pencil, RefreshCw, Search, ShieldCheck, Trash2, Users } from "lucide-react";
 import { adminService, type AuditoriaItem } from "@/modules/admin/infrastructure/adminService";
 import { ApiError } from "@/core/api/client";
-import { auditActions, auditCategory, auditDay, filterAudit, groupAudit, type AuditCategory } from './auditView';
+import { auditCategory, auditDay, filterAudit, getAuditActionLabel, groupAudit, type AuditCategory } from './auditView';
 
 const categories: { value: AuditCategory; label: string; icon: typeof Users }[] = [
   { value: 'all', label: 'Todos', icon: Layers },
@@ -12,7 +12,26 @@ const categories: { value: AuditCategory; label: string; icon: typeof Users }[] 
 ];
 
 const moduleLabels = { users: 'Usuarios', patients: 'Pacientes', other: 'Otros módulos' };
-const actions = { INSERT: FilePlus2, UPDATE: Pencil, DELETE: Trash2 };
+const actions: Record<string, typeof FilePlus2> = {
+  CREAR_PADRE: FilePlus2,
+  CREAR_TERAP: FilePlus2,
+  CREAR_SOP: FilePlus2,
+  ACTIVAR: Pencil,
+  DESACTIVAR: Pencil,
+  ELIMINAR: Trash2,
+  CAMBIAR_ROL: Pencil,
+  UPDATE: Pencil,
+  REENVIAR_ACT: Pencil,
+  APROBAR: Pencil,
+  RECHAZAR: Trash2,
+  VERIF_DNI: Pencil,
+  INSERT: FilePlus2,
+  DELETE: Trash2,
+};
+
+const isCreacion = (acc: string) => ['CREAR_PADRE', 'CREAR_TERAP', 'CREAR_SOP', 'INSERT'].includes(acc);
+const isModificacion = (acc: string) => ['ACTIVAR', 'DESACTIVAR', 'CAMBIAR_ROL', 'UPDATE', 'REENVIAR_ACT', 'APROBAR', 'VERIF_DNI'].includes(acc);
+const isEliminacion = (acc: string) => ['ELIMINAR', 'RECHAZAR', 'DELETE'].includes(acc);
 
 function dayTitle(day: string) {
   const today = auditDay(new Date().toISOString());
@@ -57,9 +76,9 @@ export function AdminAuditoria() {
 
   const stats = [
     { label: 'Total de eventos', value: total, icon: FileText, bg: 'bg-[#F3E8FF]', color: 'text-[#6B46FE]', note: 'En el sistema' },
-    { label: 'Creaciones', value: items.filter(i => i.accion === 'INSERT').length, icon: FilePlus2, bg: 'bg-[#E6FFFA]', color: 'text-[#00A389]', note: 'En los eventos cargados' },
-    { label: 'Actualizaciones', value: items.filter(i => i.accion === 'UPDATE').length, icon: Pencil, bg: 'bg-[#FFF4E5]', color: 'text-[#FF8A00]', note: 'En los eventos cargados' },
-    { label: 'Eliminaciones', value: items.filter(i => i.accion === 'DELETE').length, icon: Trash2, bg: 'bg-[#FEE2E2]', color: 'text-[#EF4444]', note: 'En los eventos cargados' },
+    { label: 'Creaciones', value: items.filter(i => isCreacion(i.accion)).length, icon: FilePlus2, bg: 'bg-[#E6FFFA]', color: 'text-[#00A389]', note: 'En los eventos cargados' },
+    { label: 'Actualizaciones', value: items.filter(i => isModificacion(i.accion)).length, icon: Pencil, bg: 'bg-[#FFF4E5]', color: 'text-[#FF8A00]', note: 'En los eventos cargados' },
+    { label: 'Eliminaciones', value: items.filter(i => isEliminacion(i.accion)).length, icon: Trash2, bg: 'bg-[#FEE2E2]', color: 'text-[#EF4444]', note: 'En los eventos cargados' },
   ];
 
   return (
@@ -249,11 +268,11 @@ export function AdminAuditoria() {
 
                           {/* Event Icon badge */}
                           <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
-                            item.accion === 'INSERT'
+                            isCreacion(item.accion)
                               ? 'bg-[#E6FFFA] text-[#00A389]'
-                              : item.accion === 'UPDATE'
-                              ? 'bg-[#FFF4E5] text-[#FF8A00]'
-                              : 'bg-[#FEE2E2] text-[#EF4444]'
+                              : isEliminacion(item.accion)
+                              ? 'bg-[#FEE2E2] text-[#EF4444]'
+                              : 'bg-[#FFF4E5] text-[#FF8A00]'
                           }`}>
                             <Icon size={18} />
                           </div>
@@ -263,7 +282,7 @@ export function AdminAuditoria() {
                             <div className="flex items-start justify-between gap-2">
                               <div>
                                 <h3 className="text-sm font-extrabold text-[#1C1135]">
-                                  {auditActions[item.accion] ?? item.accion}
+                                  {getAuditActionLabel(item.accion)}
                                 </h3>
                                 <p className="text-xs text-[#615274] mt-0.5 font-medium">
                                   Actor: <strong className="text-[#1C1135]">{item.actor ?? 'Administrador Sistema'}</strong>
