@@ -7,7 +7,7 @@
 import { Link, useLocation } from "react-router-dom";
 import React, { useRef, useState } from "react";
 import { ArrowRight, ChevronLeft, CircleAlert, Clock, Eye, EyeOff, Loader2, Lock, ShieldCheck, User as UserIcon } from "lucide-react";
-import { AshaKidsLogo } from "@/shared/presentation/components/illustrations/AshaKidsLogo";
+import { Isotipo } from "@/shared/presentation/components/illustrations/Isotipo";
 import { useAuth } from "@/modules/auth/application/useAuth";
 import { SemanticRole } from "@/modules/auth/domain/auth";
 
@@ -97,7 +97,19 @@ export const LoginPage: React.FC<LoginPageProps> = ({
   return (
     <main className="asha-login">
       <header className="login-header">
-        <AshaKidsLogo variant="header" />
+        <button
+          type="button"
+          onClick={onGoHome}
+          className="login-brand"
+          aria-label="Ir al inicio de ASHAKids"
+        >
+          <Isotipo size={32} />
+          <span className="login-wordmark">
+            <span>Asha</span>
+            <span>Kids</span>
+            <i className="login-logo-rays" aria-hidden="true" />
+          </span>
+        </button>
         <button type="button" onClick={onGoHome} className="login-home"><ChevronLeft size={16} /> Volver al inicio</button>
       </header>
       <div className="login-layout">

@@ -5,9 +5,21 @@ export function PublicDialog({ title, onClose, children }: { title: string; onCl
   const ref = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     const previous = document.activeElement as HTMLElement | null;
-    const dialog = ref.current!;
-    dialog.showModal();
-    return () => { dialog.close(); previous?.focus(); };
+    const dialog = ref.current;
+    if (!dialog) return;
+    if (typeof dialog.showModal === 'function') {
+      if (!dialog.open) dialog.showModal();
+    } else {
+      dialog.setAttribute('open', '');
+    }
+    return () => {
+      if (typeof dialog.close === 'function') {
+        if (dialog.open) dialog.close();
+      } else {
+        dialog.removeAttribute('open');
+      }
+      previous?.focus();
+    };
   }, []);
   return <dialog ref={ref} className="landing-dialog" aria-labelledby="public-dialog-title" onCancel={onClose} onKeyDown={e => {
     if (e.key !== 'Tab') return;

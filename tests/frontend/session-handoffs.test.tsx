@@ -111,7 +111,7 @@ describe('editor del reporte', () => {
     const incomplete = { ...emptyReport, observaciones_iniciales: 'Obs', objetivos_trabajados: 'Obj', proximos_pasos: 'Casa' };
     const view = renderAs(<ClinicalReportEditor id={5} initial={incomplete} />, 'TERAPEUTA');
     expect(screen.getByRole('button', { name: 'Firmar y publicar reporte' })).toBeDisabled();
-    expect(screen.getByRole('note', { name: 'Qué falta para firmar' })).toHaveTextContent('Elige el nivel de ayuda');
+    expect(screen.getByRole('note', { name: 'Qué falta para firmar' })).toHaveTextContent('Elige el nivel de autosuficiencia');
     view.unmount();
 
     renderAs(<ClinicalReportEditor id={5} initial={{ ...incomplete, nivel_ayuda: 'Ayuda moderada' }} />, 'TERAPEUTA');

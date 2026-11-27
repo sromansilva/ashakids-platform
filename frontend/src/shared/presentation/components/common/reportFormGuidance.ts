@@ -1,11 +1,11 @@
 import type { ReportData } from '@/modules/clinica/domain/clinical';
 
 export const helpLevels = [
-  { value: 'Sin ayuda', description: 'Realiza la actividad de forma autónoma.' },
-  { value: 'Ayuda mínima', description: 'Necesita indicaciones o recordatorios ocasionales.' },
-  { value: 'Ayuda moderada', description: 'Necesita indicaciones frecuentes y apoyo en parte de la actividad.' },
-  { value: 'Ayuda alta', description: 'Necesita apoyo continuo durante gran parte de la actividad.' },
-  { value: 'Ayuda total', description: 'Necesita acompañamiento paso a paso durante toda la actividad.' },
+  { value: 'Ayuda total', description: 'Necesitó bastante apoyo paso a paso durante toda la actividad.' },
+  { value: 'Ayuda alta', description: 'Necesitó apoyo continuo durante gran parte de la actividad.' },
+  { value: 'Ayuda moderada', description: 'Necesitó indicaciones frecuentes y apoyo en parte de la actividad.' },
+  { value: 'Ayuda mínima', description: 'Necesitó indicaciones o recordatorios ocasionales.' },
+  { value: 'Sin ayuda', description: 'Logró realizar la actividad por sí solo, sin necesitar ayuda.' },
 ] as const;
 
 export type NarrativeField = Exclude<keyof ReportData, 'nivel_ayuda'>;

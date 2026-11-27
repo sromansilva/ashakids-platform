@@ -6,6 +6,8 @@ export interface ProfessionalItem {
   nombres: string;
   apellidos: string;
   especialidad: string | null;
+  anios_experiencia: number | null;
+  idiomas: string | null;
   descripcion_profesional: string | null;
   foto_perfil_url: string | null;
 }
@@ -87,6 +89,8 @@ export class TerapeutaService {
           u.nombres,
           u.apellidos,
           COALESCE(t.especialidad, 'Terapia del Lenguaje') as especialidad,
+          t.anios_experiencia,
+          COALESCE(NULLIF(TRIM(t.idiomas), ''), 'Español') as idiomas,
           COALESCE(t.descripcion_profesional, 'Especialista en fonoaudiología y comunicación infantil.') as descripcion_profesional,
           t.foto_perfil,
           t.foto_perfil_mime
@@ -111,6 +115,8 @@ export class TerapeutaService {
         nombres: r.nombres,
         apellidos: r.apellidos,
         especialidad: r.especialidad,
+        anios_experiencia: typeof r.anios_experiencia === 'number' ? r.anios_experiencia : null,
+        idiomas: r.idiomas || 'Español',
         descripcion_profesional: r.descripcion_profesional,
         foto_perfil_url: Buffer.isBuffer(r.foto_perfil) && r.foto_perfil_mime
           ? `data:${r.foto_perfil_mime};base64,${r.foto_perfil.toString('base64')}`
@@ -126,6 +132,8 @@ export class TerapeutaService {
             nombres: 'Sergei',
             apellidos: 'Ramirez',
             especialidad: 'Terapia del Lenguaje y Fonología',
+            anios_experiencia: 5,
+            idiomas: 'Español',
             descripcion_profesional: 'Certificado en intervención temprana y habla infantil.',
             foto_perfil_url: null,
           },

@@ -232,25 +232,25 @@ export function SessionActions({
           {/* En modo compacto (Modal de Agenda) se muestra enlace rápido para no sobrecargar el popup */}
           {compact ? (
             canEdit && (
-              <div className="p-4 rounded-2xl bg-[#F8F7FC] border border-[#E8E5F4] space-y-2 mt-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-black text-[#1C1135]">Informe clínico de sesión</span>
+              <div className="p-5 rounded-2xl bg-gradient-to-br from-violet-50/70 via-white to-orange-50/50 border border-violet-200/80 space-y-3 shadow-xs">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <span className="text-sm font-black text-[#5B21B6]">Informe clínico de sesión</span>
                   <button
                     type="button"
                     onClick={() => setShowInPlaceEditor((prev) => !prev)}
-                    className="text-[11px] font-bold text-[#6B46FE] hover:underline cursor-pointer"
+                    className="rounded-xl border border-violet-200 bg-white px-3 py-1.5 text-xs font-extrabold text-[#6B46FE] hover:bg-violet-50 transition-colors cursor-pointer"
                   >
                     {showInPlaceEditor ? 'Ocultar editor aquí' : 'Abrir editor aquí'}
                   </button>
                 </div>
-                <p className="text-xs text-[#615274] font-medium">
+                <p className="text-xs text-[#615274] font-medium leading-relaxed">
                   Permite obtener una transcripción tentativa con consentimiento vigente; el terapeuta la revisa antes de incorporarla al informe. Los indicadores de apoyo que acompañan al texto no tienen validación clínica ni diagnostican.
                 </p>
                 {onGoToReports && (
                   <button
                     type="button"
                     onClick={onGoToReports}
-                    className="w-full inline-flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-extrabold text-xs shadow-sm transition-all cursor-pointer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-extrabold text-xs shadow-sm shadow-orange-200 transition-all cursor-pointer"
                   >
                     <FileText size={14} /> Ir al editor completo de reportes <ArrowRight size={14} />
                   </button>

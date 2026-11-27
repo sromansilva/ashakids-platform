@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import { adminService } from '../services/admin.service.js';
+import { padreService } from '../../padre/services/padre.service.js';
 import { authenticate, requireRoles } from '../../../core/middleware/auth.middleware.js';
 import {
   listarIncidenciasAdmin,
@@ -83,6 +84,16 @@ adminRouter.get('/cuentas', async (req: Request, res: Response, next: NextFuncti
     const search = req.query.search as string | undefined;
     const activo = req.query.activo !== undefined ? req.query.activo === 'true' : undefined;
     const result = await adminService.getCuentas({ rol, search, activo });
+    res.json(result);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// GET /api/v1/admin/solicitudes-baja
+adminRouter.get('/solicitudes-baja', async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await padreService.listarSolicitudesBaja();
     res.json(result);
   } catch (err) {
     next(err);

@@ -172,12 +172,13 @@ export function NotificationCenter({ go, compact = false }: { go: (view: View) =
                           const base = role === 'ADMIN' ? '/admin/sesion/espera' : '/terapeuta/sesion/espera';
                           const launchPath = `${base}/${item.id_reserva}`;
                           const hasValidMeet = isMeetingUrl(item.meet_url);
-                          window.open(`${launchPath}/panel`, '_blank', 'noopener,noreferrer');
                           if (hasValidMeet) window.open(`${launchPath}/meet`, '_blank', 'noopener,noreferrer');
                           setLaunchMessage({
                             reservationId: item.id_reserva!,
-                            text: `${hasValidMeet ? 'Se solicitaron el panel y la reunión' : 'Se solicitó el panel clínico; falta un enlace de Meet válido'}; el panel respetará la hora de la cita. Si no apareció alguna pestaña, permite ventanas emergentes.`,
+                            text: `${hasValidMeet ? 'Se abrió la sala de espera de Meet y se redirige al espacio profesional' : 'Redirigiendo al espacio profesional; falta un enlace de Meet válido'}; el panel respetará la hora de la cita.`,
                           });
+                          setOpen(false);
+                          routerNavigate(role === 'TERAPEUTA' ? '/terapeuta/sesion' : `${launchPath}/panel`);
                         }}>
                           Preparar inicio de reunión
                         </Btn>

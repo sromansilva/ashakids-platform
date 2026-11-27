@@ -87,7 +87,11 @@ export function OperationalDashboard({ go, mode }: { go: (view: View) => void; m
           <button
             onClick={reload}
             disabled={queries.some((q) => q.isFetching)}
-            className="mt-6 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl bg-[#6B46FE] hover:bg-[#5833EA] text-white font-bold text-sm shadow-md shadow-violet-200 transition-all active:scale-[.98] disabled:opacity-50"
+            className={`mt-6 inline-flex items-center gap-2.5 px-5 py-2.5 rounded-2xl text-white font-bold text-sm shadow-md transition-all active:scale-[.98] disabled:opacity-50 cursor-pointer ${
+              admin
+                ? "bg-[#6B46FE] hover:bg-[#5833EA] shadow-violet-200"
+                : "bg-orange-500 hover:bg-orange-600 shadow-orange-200"
+            }`}
           >
             <RotateCw size={16} className={queries.some((q) => q.isFetching) ? "animate-spin" : ""} />
             Actualizar panel

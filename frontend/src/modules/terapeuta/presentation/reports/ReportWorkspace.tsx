@@ -35,8 +35,8 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
           <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#EDE9FE] text-[#6B46FE]"><User size={15} /></span>
           <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Paciente</p><p className="truncate text-xs font-black text-[#1C1135]">{session.cita.paciente_nombre}</p></div>
         </div>
-        <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-[#E8E5F4] bg-[#F8F7FC] px-4 py-3">
-          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#EDE9FE] text-[#6B46FE]"><Calendar size={15} /></span>
+        <div className="flex min-w-0 items-center gap-2.5 rounded-xl border border-orange-100 bg-orange-50/55 px-4 py-3">
+          <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-orange-100 text-orange-600"><Calendar size={15} /></span>
           <div className="min-w-0"><p className="text-[10px] font-bold text-[#615274]">Fecha</p><p className="truncate text-xs font-black text-[#1C1135]">
             {new Date(session.cita.fecha_hora_inicio).toLocaleString('es-PE', { timeZone: 'America/Lima', dateStyle: 'short', timeStyle: 'medium' })}
           </p></div>
@@ -70,7 +70,7 @@ export function ReportWorkspace({ session, readOnly = false }: { session: Sessio
               aria-haspopup="dialog"
               aria-expanded={planOpen}
               onClick={() => setPlanOpen((current) => !current)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-violet-200 bg-violet-50 px-3 py-2 text-xs font-extrabold text-[#6B46FE] transition-colors hover:bg-violet-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-700"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-extrabold text-orange-700 transition-colors hover:bg-orange-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500 cursor-pointer"
             >
               <ClipboardList size={14} />
               Plan de continuidad

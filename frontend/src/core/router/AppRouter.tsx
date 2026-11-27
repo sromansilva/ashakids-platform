@@ -7,7 +7,7 @@ import { NotFoundPage } from "@/modules/public/presentation/NotFoundPage";
 import { SoporteIncidencias, SoporteDetalle, SoporteConfig } from './lazyPages';
 import { useDemoWorkflow } from "@/shared/application/hooks/useDemoWorkflow";
 import { RegisterSelector, RegisterPadre, RegisterVerify, RegisterTerapeuta, TerapeutaLanding, RegisterTerapeutaSuccess, AdminUsuarios, AdminPacientes, AdminCitas, AdminSesiones, AdminSolicitudes, ScheduledSessionLaunchGate } from "./lazyPages";
-import { Landing, LoginPage, Onboarding, ForgotPassword, SpecialistsPage, PublicEspecialidades, ResourcesPage, PublicAshi, PublicHistorias, AboutUsPage, PublicPlanes, PublicAyuda, PublicContacto, PublicTrabaja, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaEspacioProfesionalPage, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
+import { Landing, LoginPage, Onboarding, ForgotPassword, ResourcesPage, PublicAshi, AboutUsPage, PublicAyuda, PublicContacto, PadreHome, PadreWelcome, PadreAyuda, PadreRecorrido, PadreConsentimiento, PadreSeguimiento, EvaluacionInicial, PadreReportes, PadreConfig, PadrePsicologos, PadreAgenda, PadreMensajes, MundoAshaHome, PadreIncidencias, MundoASHAPage, MundoAshaCuentos, MundoAshaCanciones, MundoAshaTrabalenguas, MundoAshaAdivinanzas, MundoAshaJuegos, MundoAshaLaberinto, MundoAshaAcademia, MundoAshaRetos, MundoAshaInsignias, MundoAshaPerfil, TerapeutaDashboardPage, TerapeutaAgenda, TerapeutaEspacioProfesionalPage, ActiveClinicalSessionPage, TerapeutaPacientes, TerapeutaMensajes, TerapeutaReportes, TerapeutaAnaliticas, TerapeutaValoraciones, TerapeutaConfig, TerapeutaDatosActividad, TerapeutaIncidencias, AdminDashboardPage, AdminCuentas, AdminOperacion, AdminContenido, AdminML, AdminAuditoria, AdminConfig } from "@/core/router/lazyPages";
 
 function RedirectToJourney() {
   const [searchParams] = useSearchParams();
@@ -37,17 +37,12 @@ return <RouteAccess><PageBoundary><Routes>
 <Route path="/register/terapeuta/success" element={<RegisterTerapeutaSuccess go={go} />} />
 <Route path="/onboarding" element={<Onboarding go={go} onComplete={() => navigate("/padre/welcome")} />} />
 <Route path="/forgot-password" element={<ForgotPassword go={go} />} />
-<Route path="/especialistas" element={<SpecialistsPage go={go} />} />
-<Route path="/especialidades" element={<PublicEspecialidades go={go} />} />
 <Route path="/recursos" element={<ResourcesPage go={go} />} />
 <Route path="/ashi" element={<PublicAshi go={go} />} />
-<Route path="/historias" element={<PublicHistorias go={go} />} />
 <Route path="/sobre-nosotros" element={<AboutUsPage go={go} />} />
-<Route path="/nosotros" element={<AboutUsPage go={go} />} />
-<Route path="/planes" element={<PublicPlanes go={go} />} />
+<Route path="/nosotros" element={<Navigate to="/sobre-nosotros" replace />} />
 <Route path="/ayuda" element={<PublicAyuda go={go} />} />
 <Route path="/contacto" element={<PublicContacto go={go} />} />
-<Route path="/trabaja" element={<PublicTrabaja go={go} />} />
 <Route path="/padre" element={<PadreHome go={go} padreUserName={padreUserName} padrePlan={padrePlan} extraNotifs={padreExtraNotifs} onNotifsRead={()=>setPadreExtraNotifs([])} />} />
 <Route path="/padre/welcome" element={<PadreWelcome go={go} />} />
 <Route path="/padre/camino" element={<RedirectToJourney />} />
